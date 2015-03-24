@@ -15,7 +15,7 @@ import java.util.ServiceLoader;
  */
 public final class LanguageRegistry {
 
-    private static LanguageRegistry instance;
+    private static LanguageRegistry instance = new LanguageRegistry();
 
     private Map<String, Language> languages;
 
@@ -27,10 +27,7 @@ public final class LanguageRegistry {
         }
     }
 
-    protected static LanguageRegistry getInstance() {
-        if(instance == null) {
-            instance = new LanguageRegistry();
-        }
+    public static LanguageRegistry getInstance() {
         return instance;
     }
 
@@ -57,13 +54,13 @@ public final class LanguageRegistry {
 
     public static LanguageVersion findLanguageVersionByTerseName(String terseName) {
         String version = null;
-        if(terseName.contains(" ")) {
+        if (terseName.contains(" ")) {
             version = terseName.substring(terseName.lastIndexOf(' ') + 1);
             terseName = terseName.substring(0, terseName.lastIndexOf(' '));
         }
         Language language = findLanguageByTerseName(terseName);
-        if(language != null) {
-            if(version == null) {
+        if (language != null) {
+            if (version == null) {
                 return language.getDefaultVersion();
             } else {
                 return language.getVersion(version);
@@ -84,8 +81,8 @@ public final class LanguageRegistry {
 
     public static List<LanguageVersion> findAllVersions() {
         List<LanguageVersion> versions = new ArrayList<LanguageVersion>();
-        for(Language language : getLanguages()) {
-            for(LanguageVersion languageVersion : language.getVersions()) {
+        for (Language language : getLanguages()) {
+            for (LanguageVersion languageVersion : language.getVersions()) {
                 versions.add(languageVersion);
             }
         }
@@ -94,6 +91,7 @@ public final class LanguageRegistry {
 
     /**
      * A utility method to find the Languages which have Rule support.
+     * 
      * @return A List of Languages with Rule support.
      */
     public static List<Language> findWithRuleSupport() {
@@ -124,7 +122,7 @@ public final class LanguageRegistry {
 
         StringBuilder builder = new StringBuilder();
         builder.append(languageVersions.get(0).getTerseName());
-        for (int i=1; i<languageVersions.size(); i++) {
+        for (int i = 1; i < languageVersions.size(); i++) {
             builder.append(", ").append(languageVersions.get(i).getTerseName());
         }
         return builder.toString();

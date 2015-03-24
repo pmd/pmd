@@ -81,7 +81,6 @@ public class PMDParameters {
         private static final char SEPARATOR = '=';
 
         public Properties convert(String value) {
-            Properties properties = new Properties();
             int indexOfSeparator = value.indexOf(SEPARATOR);
             if (indexOfSeparator < 0) {
                 throw new ParameterException(
@@ -89,6 +88,7 @@ public class PMDParameters {
             }
             String propertyName = value.substring(0, indexOfSeparator);
             String propertyValue = value.substring(indexOfSeparator + 1);
+            Properties properties = new Properties();
             properties.put(propertyName, propertyValue);
             return properties;
         }

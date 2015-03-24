@@ -31,120 +31,114 @@ import com.beust.jcommander.converters.FileConverter;
  */
 public class CPDConfiguration extends AbstractConfiguration {
 
-	public final static String DEFAULT_LANGUAGE = "java";
+    public final static String DEFAULT_LANGUAGE = "java";
 
-	public final static String DEFAULT_RENDERER = "text";
+    public final static String DEFAULT_RENDERER = "text";
 
-	@Parameter(names = "--language", description = "Sources code language. Default value is "
-			+ DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
-	private Language language;
+    @Parameter(names = "--language", description = "Sources code language. Default value is " + DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
+    private Language language;
 
-	@Parameter(names = "--minimum-tokens", description = "The minimum token length which should be reported as a duplicate.", required = true)
-	private int minimumTileSize;
+    @Parameter(names = "--minimum-tokens", description = "The minimum token length which should be reported as a duplicate.", required = true)
+    private int minimumTileSize;
 
-	@Parameter(names = "--skip-duplicate-files", description = "Ignore multiple copies of files of the same name and length in comparison", required = false)
-	private boolean skipDuplicates;
+    @Parameter(names = "--skip-duplicate-files", description = "Ignore multiple copies of files of the same name and length in comparison", required = false)
+    private boolean skipDuplicates;
 
-	@Parameter(names = "--format", description = "Report format. Default value is "
-		+ DEFAULT_RENDERER, required = false)
-	private String rendererName;
+    @Parameter(names = "--format", description = "Report format. Default value is " + DEFAULT_RENDERER, required = false)
+    private String rendererName;
 
-	/**
-	 * The actual renderer. constructed by using the {@link #rendererName}.
-	 * This property is only valid after {@link #postContruct()} has been called!
-	 */
-	private Renderer renderer;
+    /**
+     * The actual renderer. constructed by using the {@link #rendererName}. This
+     * property is only valid after {@link #postContruct()} has been called!
+     */
+    private Renderer renderer;
 
-	private String encoding;
+    private String encoding;
 
-	@Parameter(names = "--ignore-literals", description = "Ignore number values and string contents when comparing text", required = false)
-	private boolean ignoreLiterals;
+    @Parameter(names = "--ignore-literals", description = "Ignore number values and string contents when comparing text", required = false)
+    private boolean ignoreLiterals;
 
-	@Parameter(names = "--ignore-identifiers", description = "Ignore constant and variable names when comparing text", required = false)
-	private boolean ignoreIdentifiers;
+    @Parameter(names = "--ignore-identifiers", description = "Ignore constant and variable names when comparing text", required = false)
+    private boolean ignoreIdentifiers;
 
-	@Parameter(names = "--ignore-annotations", description = "Ignore language annotations when comparing text", required = false)
-	private boolean ignoreAnnotations;
+    @Parameter(names = "--ignore-annotations", description = "Ignore language annotations when comparing text", required = false)
+    private boolean ignoreAnnotations;
 
-	@Parameter(names = "--skip-lexical-errors", description = "Skip files which can't be tokenized due to invalid characters instead of aborting CPD", required = false)
-	private boolean skipLexicalErrors = false;
+    @Parameter(names = "--skip-lexical-errors", description = "Skip files which can't be tokenized due to invalid characters instead of aborting CPD", required = false)
+    private boolean skipLexicalErrors = false;
 
-	@Parameter(names = "--no-skip-blocks", description = "Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif)", required = false)
-	private boolean noSkipBlocks = false;
+    @Parameter(names = "--no-skip-blocks", description = "Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif)", required = false)
+    private boolean noSkipBlocks = false;
 
-	@Parameter(names = "--skip-blocks-pattern", description = "Pattern to find the blocks to skip. Start and End pattern separated by |. "
-	        + "Default is \"" + Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN + "\".", required = false)
-	private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
+    @Parameter(names = "--skip-blocks-pattern", description = "Pattern to find the blocks to skip. Start and End pattern separated by |. "
+            + "Default is \"" + Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN + "\".", required = false)
+    private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
 
-	@Parameter(names = "--files", variableArity = true, description = "List of files and directories to process", required = false, converter = FileConverter.class)
-	private List<File> files;
+    @Parameter(names = "--files", variableArity = true, description = "List of files and directories to process", required = false, converter = FileConverter.class)
+    private List<File> files;
 
-	@Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check", required = false, converter = FileConverter.class)
-	private List<File> excludes;
+    @Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check", required = false, converter = FileConverter.class)
+    private List<File> excludes;
 
-	@Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
-        private boolean nonRecursive;
+    @Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
+    private boolean nonRecursive;
 
-	@Parameter(names = "--uri", description = "URI to process", required = false)
-	private String uri;
+    @Parameter(names = "--uri", description = "URI to process", required = false)
+    private String uri;
 
-	@Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
-	private boolean help;
+    @Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
+    private boolean help;
 
-	// this has to be a public static class, so that JCommander can use it!
-	public static class LanguageConverter implements IStringConverter<Language> {
+    // this has to be a public static class, so that JCommander can use it!
+    public static class LanguageConverter implements IStringConverter<Language> {
 
+        public Language convert(String languageString) {
+            if (languageString == null || "".equals(languageString)) {
+                languageString = DEFAULT_LANGUAGE;
+            }
+            return LanguageFactory.createLanguage(languageString);
+        }
+    }
 
-		public Language convert(String languageString) {
-			if (languageString == null || "".equals(languageString)) {
-				languageString = DEFAULT_LANGUAGE;
-			}
-			return LanguageFactory.createLanguage(languageString);
-		}
-	}
+    public CPDConfiguration() {
+    }
 
-	public CPDConfiguration()
-	{
-	}
+    @Deprecated
+    public CPDConfiguration(int minimumTileSize, Language language, String encoding) {
+        setMinimumTileSize(minimumTileSize);
+        setLanguage(language);
+        setEncoding(encoding);
+    }
 
-	@Deprecated
-	public CPDConfiguration(int minimumTileSize, Language language, String encoding)
-	{
-		setMinimumTileSize(minimumTileSize);
-		setLanguage(language);
-		setEncoding(encoding);
-	}
+    @Parameter(names = "--encoding", description = "Character encoding to use when processing files", required = false)
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+        setSourceEncoding(encoding);
+    }
 
+    public SourceCode sourceCodeFor(File file) {
+        return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding()));
+    }
 
-	@Parameter(names = "--encoding", description = "Character encoding to use when processing files", required = false)
-	public void setEncoding(String encoding) {
-	    this.encoding = encoding;
-	    setSourceEncoding(encoding);
-	}
+    public SourceCode sourceCodeFor(Reader reader, String sourceCodeName) {
+        return new SourceCode(new SourceCode.ReaderCodeLoader(reader, sourceCodeName));
+    }
 
-	public SourceCode sourceCodeFor(File file) {
-		return new SourceCode(new SourceCode.FileCodeLoader(file,
-				getSourceEncoding()));
-	}
-
-	public SourceCode sourceCodeFor(Reader reader, String sourceCodeName ) {
-		return new SourceCode(new SourceCode.ReaderCodeLoader(reader, sourceCodeName ));
-	}
-
-	public void postContruct() {
-		if ( this.getLanguage() == null ) {
-			this.setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
-		}
-		if (this.getRendererName() == null ) {
-		    this.setRendererName(DEFAULT_RENDERER);
-		}
-		if ( this.getRenderer() == null ) {
-			this.setRenderer(getRendererFromString(getRendererName(), this.getEncoding()));
-		}
-	}
+    public void postContruct() {
+        if (this.getLanguage() == null) {
+            this.setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
+        }
+        if (this.getRendererName() == null) {
+            this.setRendererName(DEFAULT_RENDERER);
+        }
+        if (this.getRenderer() == null) {
+            this.setRenderer(getRendererFromString(getRendererName(), this.getEncoding()));
+        }
+    }
 
     /**
      * Gets a renderer with the platform's default encoding.
+     * 
      * @param name renderer name
      * @return a fresh renderer instance
      * @deprecated use {@link #getRendererFromString(String, String)} instead
@@ -154,28 +148,29 @@ public class CPDConfiguration extends AbstractConfiguration {
         return getRendererFromString(name, System.getProperty("file.encoding"));
     }
 
-    private static final Map<String, Class<? extends Renderer>> renderers = new HashMap<String, Class<? extends Renderer>>();
+    private static final Map<String, Class<? extends Renderer>> RENDERERS = new HashMap<String, Class<? extends Renderer>>();
     static {
-        renderers.put(DEFAULT_RENDERER, SimpleRenderer.class);
-        renderers.put("xml", XMLRenderer.class);
-        renderers.put("csv", CSVRenderer.class);
-        renderers.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
-        renderers.put("vs", VSRenderer.class);
+        RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
+        RENDERERS.put("xml", XMLRenderer.class);
+        RENDERERS.put("csv", CSVRenderer.class);
+        RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
+        RENDERERS.put("vs", VSRenderer.class);
     }
-	public static Renderer getRendererFromString(String name, String encoding) {
-	    String clazzname = name;
-	    if (clazzname == null || "".equals(clazzname)) {
-	        clazzname = DEFAULT_RENDERER;
-	    }
-	    Class<? extends Renderer> clazz = renderers.get(clazzname.toLowerCase(Locale.ROOT));
-	    if (clazz == null) {
-	        try {
-	            clazz = Class.forName(clazzname).asSubclass(Renderer.class);
-	        } catch (ClassNotFoundException e) {
-	            System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
-	            clazz = SimpleRenderer.class;
-	        }
-	    }
+
+    public static Renderer getRendererFromString(String name, String encoding) {
+        String clazzname = name;
+        if (clazzname == null || "".equals(clazzname)) {
+            clazzname = DEFAULT_RENDERER;
+        }
+        Class<? extends Renderer> clazz = RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
+        if (clazz == null) {
+            try {
+                clazz = Class.forName(clazzname).asSubclass(Renderer.class);
+            } catch (ClassNotFoundException e) {
+                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
+                clazz = SimpleRenderer.class;
+            }
+        }
         try {
             Renderer renderer = clazz.getDeclaredConstructor().newInstance();
 
@@ -185,85 +180,86 @@ public class CPDConfiguration extends AbstractConfiguration {
                 method.invoke(renderer, encoding);
             }
             return renderer;
-	    } catch (Exception e) {
-	        System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
-	        return new SimpleRenderer();
-	    }
-	}
-	public static String[] getRenderers() {
-	    String[] result = renderers.keySet().toArray(new String[renderers.size()]);
-	    Arrays.sort(result);
-	    return result;
-	}
+        } catch (Exception e) {
+            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
+            return new SimpleRenderer();
+        }
+    }
 
-	public static Language getLanguageFromString(String languageString) {
-		return LanguageFactory.createLanguage(languageString);
-	}
+    public static String[] getRenderers() {
+        String[] result = RENDERERS.keySet().toArray(new String[RENDERERS.size()]);
+        Arrays.sort(result);
+        return result;
+    }
 
-	public static void setSystemProperties(CPDConfiguration configuration) {
-		Properties properties = new Properties();
-		if (configuration.isIgnoreLiterals()) {
-			properties.setProperty(Tokenizer.IGNORE_LITERALS, "true");
-		} else {
-		    properties.remove(Tokenizer.IGNORE_LITERALS);
-		}
-		if (configuration.isIgnoreIdentifiers()) {
-			properties.setProperty(Tokenizer.IGNORE_IDENTIFIERS, "true");
+    public static Language getLanguageFromString(String languageString) {
+        return LanguageFactory.createLanguage(languageString);
+    }
+
+    public static void setSystemProperties(CPDConfiguration configuration) {
+        Properties properties = new Properties();
+        if (configuration.isIgnoreLiterals()) {
+            properties.setProperty(Tokenizer.IGNORE_LITERALS, "true");
+        } else {
+            properties.remove(Tokenizer.IGNORE_LITERALS);
+        }
+        if (configuration.isIgnoreIdentifiers()) {
+            properties.setProperty(Tokenizer.IGNORE_IDENTIFIERS, "true");
         } else {
             properties.remove(Tokenizer.IGNORE_IDENTIFIERS);
-		}
-		if (configuration.isIgnoreAnnotations()) {
-			properties.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
+        }
+        if (configuration.isIgnoreAnnotations()) {
+            properties.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
         } else {
             properties.remove(Tokenizer.IGNORE_ANNOTATIONS);
-		}
-	    properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
-	    properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
-		configuration.getLanguage().setProperties(properties);
-	}
+        }
+        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
+        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
+        configuration.getLanguage().setProperties(properties);
+    }
 
-	public Language getLanguage() {
-		return language;
-	}
+    public Language getLanguage() {
+        return language;
+    }
 
-	public void setLanguage(Language language) {
-		this.language = language;
-	}
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
 
-	public int getMinimumTileSize() {
-		return minimumTileSize;
-	}
+    public int getMinimumTileSize() {
+        return minimumTileSize;
+    }
 
-	public void setMinimumTileSize(int minimumTileSize) {
-		this.minimumTileSize = minimumTileSize;
-	}
+    public void setMinimumTileSize(int minimumTileSize) {
+        this.minimumTileSize = minimumTileSize;
+    }
 
-	public boolean isSkipDuplicates() {
-		return skipDuplicates;
-	}
+    public boolean isSkipDuplicates() {
+        return skipDuplicates;
+    }
 
-	public void setSkipDuplicates(boolean skipDuplicates) {
-		this.skipDuplicates = skipDuplicates;
-	}
+    public void setSkipDuplicates(boolean skipDuplicates) {
+        this.skipDuplicates = skipDuplicates;
+    }
 
-	public String getRendererName() {
-	    return rendererName;
-	}
+    public String getRendererName() {
+        return rendererName;
+    }
 
-	public void setRendererName(String rendererName) {
-	    this.rendererName = rendererName;
-	}
+    public void setRendererName(String rendererName) {
+        this.rendererName = rendererName;
+    }
 
-	public Renderer getRenderer() {
-		return renderer;
-	}
+    public Renderer getRenderer() {
+        return renderer;
+    }
 
-	public Tokenizer tokenizer() {
-		if ( language == null ) {
-			throw new IllegalStateException("Language is null.");
-		}
-		return language.getTokenizer();
-	}
+    public Tokenizer tokenizer() {
+        if (language == null) {
+            throw new IllegalStateException("Language is null.");
+        }
+        return language.getTokenizer();
+    }
 
     public FilenameFilter filenameFilter() {
         if (language == null) {
@@ -300,85 +296,85 @@ public class CPDConfiguration extends AbstractConfiguration {
         return filter;
     }
 
-	public void setRenderer(Renderer renderer) {
-		this.renderer = renderer;
-	}
+    public void setRenderer(Renderer renderer) {
+        this.renderer = renderer;
+    }
 
-	public boolean isIgnoreLiterals() {
-		return ignoreLiterals;
-	}
+    public boolean isIgnoreLiterals() {
+        return ignoreLiterals;
+    }
 
-	public void setIgnoreLiterals(boolean ignoreLiterals) {
-		this.ignoreLiterals = ignoreLiterals;
-	}
+    public void setIgnoreLiterals(boolean ignoreLiterals) {
+        this.ignoreLiterals = ignoreLiterals;
+    }
 
-	public boolean isIgnoreIdentifiers() {
-		return ignoreIdentifiers;
-	}
+    public boolean isIgnoreIdentifiers() {
+        return ignoreIdentifiers;
+    }
 
-	public void setIgnoreIdentifiers(boolean ignoreIdentifiers) {
-		this.ignoreIdentifiers = ignoreIdentifiers;
-	}
+    public void setIgnoreIdentifiers(boolean ignoreIdentifiers) {
+        this.ignoreIdentifiers = ignoreIdentifiers;
+    }
 
-	public boolean isIgnoreAnnotations() {
-		return ignoreAnnotations;
-	}
+    public boolean isIgnoreAnnotations() {
+        return ignoreAnnotations;
+    }
 
-	public void setIgnoreAnnotations(boolean ignoreAnnotations) {
-		this.ignoreAnnotations = ignoreAnnotations;
-	}
+    public void setIgnoreAnnotations(boolean ignoreAnnotations) {
+        this.ignoreAnnotations = ignoreAnnotations;
+    }
 
-	public boolean isSkipLexicalErrors() {
-	    return skipLexicalErrors;
-	}
+    public boolean isSkipLexicalErrors() {
+        return skipLexicalErrors;
+    }
 
-	public void setSkipLexicalErrors(boolean skipLexicalErrors) {
-	    this.skipLexicalErrors = skipLexicalErrors;
-	}
+    public void setSkipLexicalErrors(boolean skipLexicalErrors) {
+        this.skipLexicalErrors = skipLexicalErrors;
+    }
 
-	public List<File> getFiles() {
-		return files;
-	}
+    public List<File> getFiles() {
+        return files;
+    }
 
-	public void setFiles(List<File> files) {
-		this.files = files;
-	}
+    public void setFiles(List<File> files) {
+        this.files = files;
+    }
 
-	public String getURI() {
-		return uri;
-	}
+    public String getURI() {
+        return uri;
+    }
 
-	public void setURI(String uri) {
-		this.uri = uri;
-	}
+    public void setURI(String uri) {
+        this.uri = uri;
+    }
 
-	public List<File> getExcludes() {
-	    return excludes;
-	}
+    public List<File> getExcludes() {
+        return excludes;
+    }
 
-	public void setExcludes(List<File> excludes) {
-	    this.excludes = excludes;
-	}
+    public void setExcludes(List<File> excludes) {
+        this.excludes = excludes;
+    }
 
-	public boolean isNonRecursive() {
-		return nonRecursive;
-	}
+    public boolean isNonRecursive() {
+        return nonRecursive;
+    }
 
-	public void setNonRecursive(boolean nonRecursive) {
-		this.nonRecursive = nonRecursive;
-	}
+    public void setNonRecursive(boolean nonRecursive) {
+        this.nonRecursive = nonRecursive;
+    }
 
-	public boolean isHelp() {
-		return help;
-	}
+    public boolean isHelp() {
+        return help;
+    }
 
-	public void setHelp(boolean help) {
-		this.help = help;
-	}
+    public void setHelp(boolean help) {
+        this.help = help;
+    }
 
-	public String getEncoding() {
-		return encoding;
-	}
+    public String getEncoding() {
+        return encoding;
+    }
 
     public boolean isNoSkipBlocks() {
         return noSkipBlocks;

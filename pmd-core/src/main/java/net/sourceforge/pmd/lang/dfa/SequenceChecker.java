@@ -183,7 +183,9 @@ public class SequenceChecker {
          * StackObjects, preventing infinite loops within the SequenceChecker.
          */
         int maximumIterations = this.bracesList.size() * this.bracesList.size();
-        for (int i = 0, l = 0; i < this.bracesList.size(); l++, i++) {
+        int l = -1;
+        for (int i = 0; i < this.bracesList.size(); i++) {
+            l++;
             StackObject so = bracesList.get(i);
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("Processing bracesList(l,i)=(" + l + "," + i + ") of Type "
@@ -196,7 +198,9 @@ public class SequenceChecker {
             // Attempt to get to this StackObject's NodeType from the current
             // State
             aktStatus = this.aktStatus.step(so.getType());
-            LOGGER.finest("Transition aktStatus=" + aktStatus);
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("Transition aktStatus=" + aktStatus);
+            }
 
             if (aktStatus == null) { // Not a valid Node from the current State
                 if (lookAhead) {
