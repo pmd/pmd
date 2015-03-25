@@ -24,7 +24,7 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
     }
 
     public Object visit(ASTName name, Object ctx) {
-        if (name.getImage() == null ||  !name.getImage().endsWith("finalize")) {
+        if (name.getImage() == null || !name.getImage().endsWith("finalize")) {
             return ctx;
         }
         MethodScope meth = name.getScope().getEnclosingScope(MethodScope.class);
@@ -42,7 +42,7 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
     public Object visit(ASTPrimaryPrefix pp, Object ctx) {
         List<ASTPrimarySuffix> primarySuffixes = pp.jjtGetParent().findChildrenOfType(ASTPrimarySuffix.class);
         ASTPrimarySuffix firstSuffix = null;
-        if (primarySuffixes.size() > 0) {
+        if (!primarySuffixes.isEmpty()) {
             firstSuffix = primarySuffixes.get(0);
         }
         if (firstSuffix == null || firstSuffix.getImage() == null || !firstSuffix.getImage().endsWith("finalize")) {

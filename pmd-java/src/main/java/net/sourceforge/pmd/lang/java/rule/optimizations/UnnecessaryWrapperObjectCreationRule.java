@@ -18,26 +18,11 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
 
-    private static final Set<String> PREFIX_SET = CollectionUtil.asSet(new String[] {
-        "Byte.valueOf",
-        "Short.valueOf",
-        "Integer.valueOf",
-        "Long.valueOf",
-        "Float.valueOf",
-        "Double.valueOf",
-        "Character.valueOf"
-    });
+    private static final Set<String> PREFIX_SET = CollectionUtil.asSet(new String[] { "Byte.valueOf", "Short.valueOf",
+            "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf" });
 
-    private static final Set<String> SUFFIX_SET = CollectionUtil.asSet(new String[] {
-        "toString",
-        "byteValue",
-        "shortValue",
-        "intValue",
-        "longValue",
-        "floatValue",
-        "doubleValue",
-        "charValue"
-    });
+    private static final Set<String> SUFFIX_SET = CollectionUtil.asSet(new String[] { "toString", "byteValue",
+            "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue" });
 
     public Object visit(ASTPrimaryPrefix node, Object data) {
         if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
@@ -49,9 +34,10 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
             image = image.substring(10);
         }
 
-        boolean checkBoolean = ((RuleContext) data).getLanguageVersion().compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
+        boolean checkBoolean = ((RuleContext) data).getLanguageVersion().compareTo(
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
 
-        if (PREFIX_SET.contains(image)||(checkBoolean && "Boolean.valueOf".equals(image))) {
+        if (PREFIX_SET.contains(image) || checkBoolean && "Boolean.valueOf".equals(image)) {
             ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
             if (parent.jjtGetNumChildren() >= 3) {
                 Node n = parent.jjtGetChild(2);
@@ -59,7 +45,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
                     ASTPrimarySuffix suffix = (ASTPrimarySuffix) n;
                     image = suffix.getImage();
 
-                    if (SUFFIX_SET.contains(image)||(checkBoolean && "booleanValue".equals(image))) {
+                    if (SUFFIX_SET.contains(image) || checkBoolean && "booleanValue".equals(image)) {
                         super.addViolation(data, node);
                         return data;
                     }

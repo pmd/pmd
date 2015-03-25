@@ -15,35 +15,37 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class AvoidReassigningParametersRule extends AbstractJavaRule {
 
-	@Override
+    @Override
     public Object visit(ASTMethodDeclarator node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> params = node.getScope().getDeclarations(VariableNameDeclaration.class);
+        Map<VariableNameDeclaration, List<NameOccurrence>> params = node.getScope().getDeclarations(
+                VariableNameDeclaration.class);
         this.lookForViolation(params, data);
         return super.visit(node, data);
     }
 
-	private void lookForViolation(Map<VariableNameDeclaration,List<NameOccurrence>> params,Object data) {
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: params.entrySet()) {
+    private void lookForViolation(Map<VariableNameDeclaration, List<NameOccurrence>> params, Object data) {
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : params.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
             List<NameOccurrence> usages = entry.getValue();
-            for (NameOccurrence occ: usages) {
-                JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
-                if ((jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) &&
-                        jocc.getNameForWhichThisIsAQualifier() == null &&
-                    (! jocc.useThisOrSuper()) &&
-                    (!decl.isArray() || jocc.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() == 1))
-                {
-                    // not an array or no primary suffix to access the array values
+            for (NameOccurrence occ : usages) {
+                JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
+                if ((jocc.isOnLeftHandSide() || jocc.isSelfAssignment())
+                        && jocc.getNameForWhichThisIsAQualifier() == null
+                        && !jocc.useThisOrSuper()
+                        && (!decl.isArray() || jocc.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() == 1)) {
+                    // not an array or no primary suffix to access the array
+                    // values
                     addViolation(data, decl.getNode(), decl.getImage());
                 }
             }
         }
-	}
+    }
 
     @Override
-    public Object visit(ASTConstructorDeclaration node,Object data) {
-    	Map<VariableNameDeclaration,List<NameOccurrence>> params = node.getScope().getDeclarations(VariableNameDeclaration.class);
-    	this.lookForViolation(params, data);
-    	return super.visit(node,data);
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> params = node.getScope().getDeclarations(
+                VariableNameDeclaration.class);
+        this.lookForViolation(params, data);
+        return super.visit(node, data);
     }
 }

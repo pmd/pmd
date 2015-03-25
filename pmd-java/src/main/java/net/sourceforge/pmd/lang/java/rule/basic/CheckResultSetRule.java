@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class CheckResultSetRule extends AbstractJavaRule {
 
     private Map<String, Node> resultSetVariables = new HashMap<String, Node>();
-    
+
     private static Set<String> methods = new HashSet<String>();
     static {
         methods.add(".next");
@@ -45,15 +45,15 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        ASTClassOrInterfaceType type = node.getFirstChildOfType(ASTType.class).getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        ASTClassOrInterfaceType type = node.getFirstChildOfType(ASTType.class).getFirstDescendantOfType(
+                ASTClassOrInterfaceType.class);
         if (type != null
                 && (type.getType() != null && "java.sql.ResultSet".equals(type.getType().getName()) || "ResultSet"
                         .equals(type.getImage()))) {
             ASTVariableDeclarator declarator = node.getFirstChildOfType(ASTVariableDeclarator.class);
             if (declarator != null) {
                 ASTName name = declarator.getFirstDescendantOfType(ASTName.class);
-                if (type.getType() != null
-                        || (name != null && name.getImage().endsWith("executeQuery"))) {
+                if (type.getType() != null || name != null && name.getImage().endsWith("executeQuery")) {
                     ASTVariableDeclaratorId id = declarator.getFirstChildOfType(ASTVariableDeclaratorId.class);
                     resultSetVariables.put(id.getImage(), node);
                 }
@@ -67,8 +67,8 @@ public class CheckResultSetRule extends AbstractJavaRule {
         String image = node.getImage();
         String var = getResultSetVariableName(image);
         if (var != null && resultSetVariables.containsKey(var)
-            && node.getFirstParentOfType(ASTIfStatement.class)== null
-            && node.getFirstParentOfType(ASTWhileStatement.class) == null) {
+                && node.getFirstParentOfType(ASTIfStatement.class) == null
+                && node.getFirstParentOfType(ASTWhileStatement.class) == null) {
 
             addViolation(data, resultSetVariables.get(var));
         }

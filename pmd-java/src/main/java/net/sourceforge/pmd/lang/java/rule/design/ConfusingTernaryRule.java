@@ -51,8 +51,7 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  */
 public class ConfusingTernaryRule extends AbstractJavaRule {
     private static BooleanProperty ignoreElseIfProperty = new BooleanProperty("ignoreElseIf",
-            "Ignore conditions with an else-if case",
-            Boolean.FALSE, 0);
+            "Ignore conditions with an else-if case", Boolean.FALSE, 0);
 
     public ConfusingTernaryRule() {
         super();
@@ -68,12 +67,8 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
                 if (isMatch(jnode)) {
 
                     if (!getProperty(ignoreElseIfProperty)
-                            || (
-                                !(node.jjtGetChild(2).jjtGetChild(0) instanceof ASTIfStatement)
-                                &&
-                                !(node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement)
-                               )
-                        ) {
+                            || !(node.jjtGetChild(2).jjtGetChild(0) instanceof ASTIfStatement)
+                            && !(node.jjtGetParent().jjtGetParent() instanceof ASTIfStatement)) {
                         addViolation(data, node);
                     }
                 }
@@ -95,31 +90,23 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
 
     // recursive!
     private static boolean isMatch(Node node) {
-        return
-                isUnaryNot(node) ||
-                isNotEquals(node) ||
-                isConditionalWithAllMatches(node) ||
-                isParenthesisAroundMatch(node);
+        return isUnaryNot(node) || isNotEquals(node) || isConditionalWithAllMatches(node)
+                || isParenthesisAroundMatch(node);
     }
 
     private static boolean isUnaryNot(Node node) {
         // look for "!x"
-        return
-                node instanceof ASTUnaryExpressionNotPlusMinus &&
-                "!".equals(node.getImage());
+        return node instanceof ASTUnaryExpressionNotPlusMinus && "!".equals(node.getImage());
     }
 
     private static boolean isNotEquals(Node node) {
         // look for "x != y"
-        return
-                node instanceof ASTEqualityExpression &&
-                "!=".equals(node.getImage());
+        return node instanceof ASTEqualityExpression && "!=".equals(node.getImage());
     }
 
     private static boolean isConditionalWithAllMatches(Node node) {
         // look for "match && match" or "match || match"
-        if (!(node instanceof ASTConditionalAndExpression) &&
-                !(node instanceof ASTConditionalOrExpression)) {
+        if (!(node instanceof ASTConditionalAndExpression) && !(node instanceof ASTConditionalOrExpression)) {
             return false;
         }
         int n = node.jjtGetNumChildren();
@@ -139,18 +126,15 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
 
     private static boolean isParenthesisAroundMatch(Node node) {
         // look for "(match)"
-        if (!(node instanceof ASTPrimaryExpression) ||
-                (node.jjtGetNumChildren() != 1)) {
+        if (!(node instanceof ASTPrimaryExpression) || node.jjtGetNumChildren() != 1) {
             return false;
         }
         Node inode = node.jjtGetChild(0);
-        if (!(inode instanceof ASTPrimaryPrefix) ||
-                (inode.jjtGetNumChildren() != 1)) {
+        if (!(inode instanceof ASTPrimaryPrefix) || inode.jjtGetNumChildren() != 1) {
             return false;
         }
         Node jnode = inode.jjtGetChild(0);
-        if (!(jnode instanceof ASTExpression) ||
-                (jnode.jjtGetNumChildren() != 1)) {
+        if (!(jnode instanceof ASTExpression) || jnode.jjtGetNumChildren() != 1) {
             return false;
         }
         Node knode = jnode.jjtGetChild(0);

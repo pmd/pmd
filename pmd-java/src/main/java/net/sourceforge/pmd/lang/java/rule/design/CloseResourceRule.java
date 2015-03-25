@@ -36,8 +36,9 @@ import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 import org.jaxen.JaxenException;
 
 /**
- * Makes sure you close your database connections. It does this by
- * looking for code patterned like this:
+ * Makes sure you close your database connections. It does this by looking for
+ * code patterned like this:
+ * 
  * <pre>
  *  Connection c = X;
  *  try {
@@ -45,7 +46,7 @@ import org.jaxen.JaxenException;
  *  } finally {
  *   c.close();
  *  }
- *
+ * 
  *  @author original author unknown
  *  @author Contribution from Pierre Mathien
  * </pre>
@@ -57,14 +58,14 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private Set<String> closeTargets = new HashSet<String>();
     private static final StringMultiProperty CLOSE_TARGETS_DESCRIPTOR = new StringMultiProperty("closeTargets",
-            "Methods which may close this resource", new String[]{}, 1.0f, ',');
+            "Methods which may close this resource", new String[] {}, 1.0f, ',');
 
-    private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types",
-            "Affected types", new String[]{"java.sql.Connection","java.sql.Statement","java.sql.ResultSet"}, 2.0f, ',');
-    
+    private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types", "Affected types",
+            new String[] { "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet" }, 2.0f, ',');
+
     public CloseResourceRule() {
-	definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
-	definePropertyDescriptor(TYPES_DESCRIPTOR);
+        definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
+        definePropertyDescriptor(TYPES_DESCRIPTOR);
     }
 
     @Override
@@ -109,7 +110,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         List<ASTVariableDeclaratorId> ids = new ArrayList<ASTVariableDeclaratorId>();
 
         // find all variable references to Connection objects
-        for (ASTLocalVariableDeclaration var: vars) {
+        for (ASTLocalVariableDeclaration var : vars) {
             ASTType type = var.getTypeNode();
 
             if (type.jjtGetChild(0) instanceof ASTReferenceType) {
@@ -117,12 +118,13 @@ public class CloseResourceRule extends AbstractJavaRule {
                 if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
 
-                    if (clazz.getType() != null && types.contains(clazz.getType().getName())
-                        || (clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage())))
-                        || types.contains(clazz.getImage())) {
+                    if (clazz.getType() != null && types.contains(clazz.getType().getName()) || clazz.getType() == null
+                            && simpleTypes.contains(toSimpleType(clazz.getImage())) || types.contains(clazz.getImage())) {
 
-                        // if the variables are initialized with null, then they are ignored.
-                        // At some point later in the code, there is an assignment - however, this is currently ignored
+                        // if the variables are initialized with null, then they
+                        // are ignored.
+                        // At some point later in the code, there is an
+                        // assignment - however, this is currently ignored
                         if (!hasNullInitializer(var)) {
                             ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
                             ids.add(id);
@@ -142,7 +144,8 @@ public class CloseResourceRule extends AbstractJavaRule {
         ASTVariableInitializer init = var.getFirstDescendantOfType(ASTVariableInitializer.class);
         if (init != null) {
             try {
-                List<?> nulls = init.findChildNodesWithXPath("Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral");
+                List<?> nulls = init
+                        .findChildNodesWithXPath("Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral");
                 return !nulls.isEmpty();
             } catch (JaxenException e) {
                 return false;
@@ -151,8 +154,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         return false;
     }
 
-    private void ensureClosed(ASTLocalVariableDeclaration var,
-                              ASTVariableDeclaratorId id, Object data) {
+    private void ensureClosed(ASTLocalVariableDeclaration var, ASTVariableDeclaratorId id, Object data) {
         // What are the chances of a Connection being instantiated in a
         // for-loop init block? Anyway, I'm lazy!
         String variableToClose = id.getImage();
@@ -176,7 +178,8 @@ public class CloseResourceRule extends AbstractJavaRule {
         // block.
         for (ASTTryStatement t : tryblocks) {
 
-            // verifies that there are no critical statements between the variable declaration and
+            // verifies that there are no critical statements between the
+            // variable declaration and
             // the beginning of the try block.
             ASTBlockStatement tryBlock = t.getFirstParentOfType(ASTBlockStatement.class);
             if (parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
@@ -188,7 +191,8 @@ public class CloseResourceRule extends AbstractJavaRule {
 
                 for (int i = parentBlockIndex + 1; i < tryBlockIndex; i++) {
                     // assume variable declarations are not critical
-                    ASTLocalVariableDeclaration varDecl = blocks.get(i).getFirstDescendantOfType(ASTLocalVariableDeclaration.class);
+                    ASTLocalVariableDeclaration varDecl = blocks.get(i).getFirstDescendantOfType(
+                            ASTLocalVariableDeclaration.class);
                     if (varDecl == null) {
                         criticalStatements = true;
                         break;
@@ -208,20 +212,19 @@ public class CloseResourceRule extends AbstractJavaRule {
                         closed = true;
                         break;
                     }
-					if (name.contains(".")) {
-						String[] parts = name.split("\\.");
-						if (parts.length == 2) {
-							String methodName = parts[1];
-							String varName = parts[0];
-							if (varName.equals(variableToClose)
-									&& closeTargets.contains(methodName)
-									&& nullCheckIfCondition(f, oName, varName)) {
-								closed = true;
-								break;
-							}
+                    if (name.contains(".")) {
+                        String[] parts = name.split("\\.");
+                        if (parts.length == 2) {
+                            String methodName = parts[1];
+                            String varName = parts[0];
+                            if (varName.equals(variableToClose) && closeTargets.contains(methodName)
+                                    && nullCheckIfCondition(f, oName, varName)) {
+                                closed = true;
+                                break;
+                            }
 
-						}
-					}
+                        }
+                    }
                 }
                 if (closed) {
                     break;
@@ -230,29 +233,28 @@ public class CloseResourceRule extends AbstractJavaRule {
                 List<ASTStatementExpression> exprs = new ArrayList<ASTStatementExpression>();
                 f.findDescendantsOfType(ASTStatementExpression.class, exprs, true);
                 for (ASTStatementExpression stmt : exprs) {
-                    ASTPrimaryExpression expr =
-                        stmt.getFirstChildOfType(ASTPrimaryExpression.class);
+                    ASTPrimaryExpression expr = stmt.getFirstChildOfType(ASTPrimaryExpression.class);
                     if (expr != null) {
                         ASTPrimaryPrefix prefix = expr.getFirstChildOfType(ASTPrimaryPrefix.class);
                         ASTPrimarySuffix suffix = expr.getFirstChildOfType(ASTPrimarySuffix.class);
-                        if ((prefix != null) && (suffix != null)) {
+                        if (prefix != null && suffix != null) {
                             if (prefix.getImage() == null) {
                                 ASTName prefixName = prefix.getFirstChildOfType(ASTName.class);
-                                if ((prefixName != null)
-                                        && closeTargets.contains(prefixName.getImage()))
-                                {
-                                    // Found a call to a "close target" that is a direct
-                                    // method call without a "ClassName." prefix.
+                                if (prefixName != null && closeTargets.contains(prefixName.getImage())) {
+                                    // Found a call to a "close target" that is
+                                    // a direct
+                                    // method call without a "ClassName."
+                                    // prefix.
                                     closed = variableIsPassedToMethod(expr, variableToClose);
                                     if (closed) {
                                         break;
                                     }
                                 }
                             } else if (suffix.getImage() != null) {
-                                String prefixPlusSuffix =
-                                        prefix.getImage()+ "." + suffix.getImage();
+                                String prefixPlusSuffix = prefix.getImage() + "." + suffix.getImage();
                                 if (closeTargets.contains(prefixPlusSuffix)) {
-                                    // Found a call to a "close target" that is a method call
+                                    // Found a call to a "close target" that is
+                                    // a method call
                                     // in the form "ClassName.methodName".
                                     closed = variableIsPassedToMethod(expr, variableToClose);
                                     if (closed) {
@@ -260,24 +262,26 @@ public class CloseResourceRule extends AbstractJavaRule {
                                     }
                                 }
                             }
-                         // look for primary suffix containing the close Targets elements.
-                            // If the .close is executed in another class accessed by a method
-                            // this form : getProviderInstance().closeConnexion(connexion)
-                            // For this use case, we assume the variable is correctly closed
-                            // in the other class since there is no way to really check it.
-                            if (!closed)
-                            {
+                            // look for primary suffix containing the close
+                            // Targets elements.
+                            // If the .close is executed in another class
+                            // accessed by a method
+                            // this form :
+                            // getProviderInstance().closeConnexion(connexion)
+                            // For this use case, we assume the variable is
+                            // correctly closed
+                            // in the other class since there is no way to
+                            // really check it.
+                            if (!closed) {
                                 List<ASTPrimarySuffix> suffixes = new ArrayList<ASTPrimarySuffix>();
                                 expr.findDescendantsOfType(ASTPrimarySuffix.class, suffixes, true);
                                 for (ASTPrimarySuffix oSuffix : suffixes) {
                                     String suff = oSuffix.getImage();
-                                    if (closeTargets.contains(suff)) 
-                                    {
+                                    if (closeTargets.contains(suff)) {
                                         closed = variableIsPassedToMethod(expr, variableToClose);
-                                        if(closed)
-                                        { 
-                                            break;                    
-                                        }                                                        
+                                        if (closed) {
+                                            break;
+                                        }
                                     }
 
                                 }
@@ -299,7 +303,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             top.findDescendantsOfType(ASTReturnStatement.class, returns, true);
             for (ASTReturnStatement returnStatement : returns) {
                 ASTName name = returnStatement.getFirstDescendantOfType(ASTName.class);
-                if ((name != null) && name.getImage().equals(variableToClose)) {
+                if (name != null && name.getImage().equals(variableToClose)) {
                     closed = true;
                     break;
                 }
@@ -320,7 +324,8 @@ public class CloseResourceRule extends AbstractJavaRule {
         expr.findDescendantsOfType(ASTName.class, methodParams, true);
         for (ASTName pName : methodParams) {
             String paramName = pName.getImage();
-            // also check if we've got the a parameter (i.e if it's an argument !) 
+            // also check if we've got the a parameter (i.e if it's an argument
+            // !)
             ASTArgumentList parentParam = pName.getFirstParentOfType(ASTArgumentList.class);
             if (paramName.equals(variable) && parentParam != null) {
                 return true;
@@ -339,23 +344,26 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     /**
-     * Checks, whether the given node is inside a if condition, and if so, whether this
-     * is a null check for the given varName.
+     * Checks, whether the given node is inside a if condition, and if so,
+     * whether this is a null check for the given varName.
      *
-     * @param enclosingBlock where to search for if statements
-     * @param node the node, where the call for the close is done
-     * @param varName the variable, that is maybe null-checked
-     * @return <code>true</code> if no if condition is involved or if the if condition is a null-check.
+     * @param enclosingBlock
+     *            where to search for if statements
+     * @param node
+     *            the node, where the call for the close is done
+     * @param varName
+     *            the variable, that is maybe null-checked
+     * @return <code>true</code> if no if condition is involved or if the if
+     *         condition is a null-check.
      */
     private boolean nullCheckIfCondition(ASTBlock enclosingBlock, Node node, String varName) {
         ASTIfStatement ifStatement = findIfStatement(enclosingBlock, node);
         if (ifStatement != null) {
             try {
                 // find expressions like: varName != null or null != varName
-                List<?> nodes = ifStatement.findChildNodesWithXPath(
-                        "Expression/EqualityExpression[@Image='!=']" +
-                        "  [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]" +
-                        "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
+                List<?> nodes = ifStatement.findChildNodesWithXPath("Expression/EqualityExpression[@Image='!=']"
+                        + "  [PrimaryExpression/PrimaryPrefix/Name[@Image='" + varName + "']]"
+                        + "  [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]");
                 return !nodes.isEmpty();
             } catch (JaxenException e) {
                 // no boolean literals or other condition

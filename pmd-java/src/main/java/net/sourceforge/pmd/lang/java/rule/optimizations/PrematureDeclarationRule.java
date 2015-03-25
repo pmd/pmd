@@ -83,7 +83,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
 
         Node currentParent = node.jjtGetParent();
 
-        while (currentParent != topParent) {
+        while (!currentParent.equals(topParent)) {
             currentParent = currentParent.jjtGetParent();
             if (currentParent.getClass().equals(intermediateParentClass)) {
                 return true;
@@ -112,15 +112,16 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
 
         // now check to see if the ones we have are part of a method on a
         // declared inner class
+        boolean result = false;
         for (int i = 0; i < exitBlocks.size(); i++) {
             Node exitNode = (Node) exitBlocks.get(i);
-            if (hasAsParentBetween(exitNode, ASTMethodDeclaration.class, block)) {
-                continue;
+            if (!hasAsParentBetween(exitNode, ASTMethodDeclaration.class, block)) {
+                result = true;
+                break;
             }
-            return true;
         }
 
-        return false;
+        return result;
     }
 
     /**

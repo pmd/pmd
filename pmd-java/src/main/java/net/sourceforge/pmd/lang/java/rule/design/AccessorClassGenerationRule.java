@@ -20,15 +20,13 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 
 /**
- * 1. Note all private constructors.
- * 2. Note all instantiations from outside of the class by way of the private
- * constructor.
- * 3. Flag instantiations.
+ * 1. Note all private constructors. 2. Note all instantiations from outside of
+ * the class by way of the private constructor. 3. Flag instantiations.
  * <p/>
  * <p/>
  * Parameter types can not be matched because they can come as exposed members
- * of classes.  In this case we have no way to know what the type is.  We can
- * make a best effort though which can filter some?
+ * of classes. In this case we have no way to know what the type is. We can make
+ * a best effort though which can filter some?
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  * @author David Konecny (david.konecny@)
@@ -41,7 +39,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
     private String packageName;
 
     public Object visit(ASTEnumDeclaration node, Object data) {
-        return data;  // just skip Enums
+        return data; // just skip Enums
     }
 
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -105,29 +103,33 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
             if (node.jjtGetChild(1) instanceof ASTArguments) {
                 ASTArguments aa = (ASTArguments) node.jjtGetChild(1);
                 argumentCount = aa.getArgumentCount();
-                //Get name and strip off all superfluous data
-                //strip off package name if it is current package
+                // Get name and strip off all superfluous data
+                // strip off package name if it is current package
                 if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
-                    throw new RuntimeException("BUG: Expected a ASTClassOrInterfaceType, got a " + node.jjtGetChild(0).getClass());
+                    throw new RuntimeException("BUG: Expected a ASTClassOrInterfaceType, got a "
+                            + node.jjtGetChild(0).getClass());
                 }
                 ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) node.jjtGetChild(0);
                 name = stripString(aPackageName + '.', an.getImage());
 
-                //strip off outer class names
-                //try OuterClass, then try OuterClass.InnerClass, then try OuterClass.InnerClass.InnerClass2, etc...
+                // strip off outer class names
+                // try OuterClass, then try OuterClass.InnerClass, then try
+                // OuterClass.InnerClass.InnerClass2, etc...
                 String findName = "";
-                for (ListIterator<String> li = classQualifyingNames.listIterator(classQualifyingNames.size()); li.hasPrevious();) {
+                for (ListIterator<String> li = classQualifyingNames.listIterator(classQualifyingNames.size()); li
+                        .hasPrevious();) {
                     String aName = li.previous();
                     findName = aName + '.' + findName;
                     if (name.startsWith(findName)) {
-                        //strip off name and exit
+                        // strip off name and exit
                         name = name.substring(findName.length());
                         break;
                     }
                 }
             } else if (node.jjtGetChild(1) instanceof ASTArrayDimsAndInits) {
-                //this is incomplete because I dont need it.
-                //				child 0 could be primitive or object (ASTName or ASTPrimitiveType)
+                // this is incomplete because I dont need it.
+                // child 0 could be primitive or object (ASTName or
+                // ASTPrimitiveType)
                 isArray = true;
             }
             allocationExpression = node;
@@ -161,7 +163,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
                 int formerID = getClassID();
                 setClassID(classDataList.size());
                 ClassData newClassData = new ClassData(interfaceName);
-                //store the names of any outer classes of this class in the classQualifyingName List
+                // store the names of any outer classes of this class in the
+                // classQualifyingName List
                 ClassData formerClassData = classDataList.get(formerID);
                 newClassData.addClassQualifyingName(formerClassData.getClassName());
                 classDataList.add(getClassID(), newClassData);
@@ -184,7 +187,6 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
             }
         } else if (!(node.jjtGetParent().jjtGetParent() instanceof ASTCompilationUnit)) {
             // not a top level class
-            String className = node.getImage();
             int formerID = getClassID();
             setClassID(classDataList.size());
             // TODO
@@ -194,8 +196,10 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
             if (formerID == -1 || formerID >= classDataList.size()) {
                 return null;
             }
-            //store the names of any outer classes of this class in the classQualifyingName List
+            // store the names of any outer classes of this class in the
+            // classQualifyingName List
             ClassData formerClassData = classDataList.get(formerID);
+            String className = node.getImage();
             ClassData newClassData = new ClassData(className);
             newClassData.addClassQualifyingName(formerClassData.getClassName());
             classDataList.add(getClassID(), newClassData);
@@ -204,14 +208,14 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
             return o;
         }
         // outer classes
-        if ( ! node.isStatic() ) {	// See bug# 1807370
-        String className = node.getImage();
-        classDataList.clear();
-        setClassID(0);//first class
-        classDataList.add(getClassID(), new ClassData(className));
+        if (!node.isStatic()) { // See bug# 1807370
+            String className = node.getImage();
+            classDataList.clear();
+            setClassID(0);// first class
+            classDataList.add(getClassID(), new ClassData(className));
         }
         Object o = super.visit(node, data);
-        if (o != null && ! node.isStatic() ) { // See bug# 1807370
+        if (o != null && !node.isStatic()) { // See bug# 1807370
             processRule(o);
         } else {
             processRule(data);
@@ -246,20 +250,25 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
     }
 
     private void processRule(Object ctx) {
-        //check constructors of outerIterator against allocations of innerIterator
+        // check constructors of outerIterator against allocations of
+        // innerIterator
         for (ClassData outerDataSet : classDataList) {
-            for (Iterator<ASTConstructorDeclaration> constructors = outerDataSet.getPrivateConstructorIterator(); constructors.hasNext();) {
+            for (Iterator<ASTConstructorDeclaration> constructors = outerDataSet.getPrivateConstructorIterator(); constructors
+                    .hasNext();) {
                 ASTConstructorDeclaration cd = constructors.next();
 
                 for (ClassData innerDataSet : classDataList) {
                     if (outerDataSet.equals(innerDataSet)) {
                         continue;
                     }
-                    for (Iterator<AllocData> allocations = innerDataSet.getInstantiationIterator(); allocations.hasNext();) {
+                    for (Iterator<AllocData> allocations = innerDataSet.getInstantiationIterator(); allocations
+                            .hasNext();) {
                         AllocData ad = allocations.next();
-                        //if the constructor matches the instantiation
-                        //flag the instantiation as a generator of an extra class
-                        if (outerDataSet.getClassName().equals(ad.getName()) && (cd.getParameterCount() == ad.getArgumentCount())) {
+                        // if the constructor matches the instantiation
+                        // flag the instantiation as a generator of an extra
+                        // class
+                        if (outerDataSet.getClassName().equals(ad.getName())
+                                && cd.getParameterCount() == ad.getArgumentCount()) {
                             addViolation(ctx, ad.getASTAllocationExpression());
                         }
                     }
@@ -287,20 +296,21 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         return classID;
     }
 
-    //remove = Fire.
-    //value = someFire.Fighter
-    //        0123456789012345
-    //index = 4
-    //remove.size() = 5
-    //value.substring(0,4) = some
-    //value.substring(4 + remove.size()) = Fighter
-    //return "someFighter"
-    
-    // TODO move this into StringUtil    
+    // remove = Fire.
+    // value = someFire.Fighter
+    // 0123456789012345
+    // index = 4
+    // remove.size() = 5
+    // value.substring(0,4) = some
+    // value.substring(4 + remove.size()) = Fighter
+    // return "someFighter"
+
+    // TODO move this into StringUtil
     private static String stripString(String remove, String value) {
         String returnValue;
         int index = value.indexOf(remove);
-        if (index != -1) {	//if the package name can start anywhere but 0 please inform the author because this will break
+        if (index != -1) { // if the package name can start anywhere but 0
+                           // please inform the author because this will break
             returnValue = value.substring(0, index) + value.substring(index + remove.length());
         } else {
             returnValue = value;

@@ -27,24 +27,23 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
-        if (isJUnitMethod(method, data))  {
-            if (!containsAssert(method.getBlock(), false)
-                && !containsExpect(method.jjtGetParent())) {
+        if (isJUnitMethod(method, data)) {
+            if (!containsAssert(method.getBlock(), false) && !containsExpect(method.jjtGetParent())) {
                 addViolation(data, method);
             }
         }
-		return data;
-	}
+        return data;
+    }
 
     private boolean containsAssert(Node n, boolean assertFound) {
         if (!assertFound) {
             if (n instanceof ASTStatementExpression) {
-                if (isAssertOrFailStatement((ASTStatementExpression)n)) {
+                if (isAssertOrFailStatement((ASTStatementExpression) n)) {
                     return true;
                 }
             }
             if (!assertFound) {
-                for (int i=0;i<n.jjtGetNumChildren() && ! assertFound;i++) {
+                for (int i = 0; i < n.jjtGetNumChildren() && !assertFound; i++) {
                     Node c = n.jjtGetChild(i);
                     if (containsAssert(c, assertFound)) {
                         return true;
@@ -62,8 +61,8 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         List<ASTNormalAnnotation> annotations = methodParent.findDescendantsOfType(ASTNormalAnnotation.class);
         for (ASTNormalAnnotation annotation : annotations) {
             ASTName name = annotation.getFirstChildOfType(ASTName.class);
-            if (name != null && ("Test".equals(name.getImage())
-                    || (name.getType() != null && name.getType().equals(JUNIT4_CLASS)))) {
+            if (name != null
+                    && ("Test".equals(name.getImage()) || name.getType() != null && name.getType().equals(JUNIT4_CLASS))) {
                 List<ASTMemberValuePair> memberValues = annotation.findDescendantsOfType(ASTMemberValuePair.class);
                 for (ASTMemberValuePair pair : memberValues) {
                     if ("expected".equals(pair.getImage())) {
@@ -79,16 +78,16 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
      * Tells if the expression is an assert statement or not.
      */
     private boolean isAssertOrFailStatement(ASTStatementExpression expression) {
-        if (expression!=null
-                && expression.jjtGetNumChildren()>0
-                && expression.jjtGetChild(0) instanceof ASTPrimaryExpression
-                ) {
+        if (expression != null && expression.jjtGetNumChildren() > 0
+                && expression.jjtGetChild(0) instanceof ASTPrimaryExpression) {
             ASTPrimaryExpression pe = (ASTPrimaryExpression) expression.jjtGetChild(0);
-            if (pe.jjtGetNumChildren()> 0 && pe.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
+            if (pe.jjtGetNumChildren() > 0 && pe.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
                 ASTPrimaryPrefix pp = (ASTPrimaryPrefix) pe.jjtGetChild(0);
-                if (pp.jjtGetNumChildren()>0 && pp.jjtGetChild(0) instanceof ASTName) {
+                if (pp.jjtGetNumChildren() > 0 && pp.jjtGetChild(0) instanceof ASTName) {
                     String img = ((ASTName) pp.jjtGetChild(0)).getImage();
-                    if (img != null && (img.startsWith("assert") || img.startsWith("fail") || img.startsWith("Assert.assert") || img.startsWith("Assert.fail") )) {
+                    if (img != null
+                            && (img.startsWith("assert") || img.startsWith("fail") || img.startsWith("Assert.assert") || img
+                                    .startsWith("Assert.fail"))) {
                         return true;
                     }
                 }

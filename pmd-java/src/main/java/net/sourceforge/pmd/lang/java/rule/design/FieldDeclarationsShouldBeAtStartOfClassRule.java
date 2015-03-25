@@ -52,7 +52,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             if (child.jjtGetNumChildren() > 0) {
                 child = child.jjtGetChild(0);
             }
-            if (child == node) {
+            if (child.equals(node)) {
                 break;
             }
             if (child instanceof ASTFieldDeclaration) {

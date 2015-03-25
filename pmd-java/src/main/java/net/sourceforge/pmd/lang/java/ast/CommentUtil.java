@@ -142,8 +142,9 @@ public final class CommentUtil {
         }
 
         // all of them empty?
-        if (firstNonEmpty == lines.size())
+        if (firstNonEmpty == lines.size()) {
             return Collections.emptyList();
+        }
 
         int lastNonEmpty = lines.size() - 1;
         for (; lastNonEmpty > 0; lastNonEmpty--) {

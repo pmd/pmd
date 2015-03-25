@@ -28,14 +28,16 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
- * This scope represents one Java class.
- * It can have variable declarations, method declarations and inner class declarations.
+ * This scope represents one Java class. It can have variable declarations,
+ * method declarations and inner class declarations.
  */
 public class ClassScope extends AbstractJavaScope {
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
-        protected Integer initialValue() { return Integer.valueOf(1); }
+        protected Integer initialValue() {
+            return Integer.valueOf(1);
+        }
     };
 
     private String className;
@@ -48,12 +50,13 @@ public class ClassScope extends AbstractJavaScope {
     /**
      * This is only for anonymous inner classes
      * <p/>
-     * FIXME - should have name like Foo$1, not Anonymous$1
-     * to get this working right, the parent scope needs
-     * to be passed in when instantiating a ClassScope
+     * FIXME - should have name like Foo$1, not Anonymous$1 to get this working
+     * right, the parent scope needs to be passed in when instantiating a
+     * ClassScope
      */
     public ClassScope() {
-        //this.className = getParent().getEnclosingClassScope().getClassName() + "$" + String.valueOf(anonymousInnerClassCounter);
+        // this.className = getParent().getEnclosingClassScope().getClassName()
+        // + "$" + String.valueOf(anonymousInnerClassCounter);
         int v = anonymousInnerClassCounter.get().intValue();
         this.className = "Anonymous$" + v;
         anonymousInnerClassCounter.set(v + 1);
@@ -72,7 +75,7 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
-        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence)occurrence;
+        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence) occurrence;
         NameDeclaration decl = findVariableHere(javaOccurrence);
         if (decl != null && (javaOccurrence.isMethodOrConstructorInvocation() || javaOccurrence.isMethodReference())) {
             List<NameOccurrence> nameOccurrences = getMethodDeclarations().get(decl);
@@ -116,20 +119,20 @@ public class ClassScope extends AbstractJavaScope {
     protected NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
-        if (occurrence.isThisOrSuper() ||
-                (occurrence.getImage() != null && occurrence.getImage().equals(className))) {
+        if (occurrence.isThisOrSuper() || occurrence.getImage() != null && occurrence.getImage().equals(className)) {
             if (variableDeclarations.isEmpty() && methodDeclarations.isEmpty()) {
                 // this could happen if you do this:
                 // public class Foo {
-                //  private String x = super.toString();
+                // private String x = super.toString();
                 // }
                 return null;
             }
-            // return any name declaration, since all we really want is to get the scope
+            // return any name declaration, since all we really want is to get
+            // the scope
             // for example, if there's a
             // public class Foo {
-            //  private static final int X = 2;
-            //  private int y = Foo.X;
+            // private static final int X = 2;
+            // private int y = Foo.X;
             // }
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
@@ -140,25 +143,27 @@ public class ClassScope extends AbstractJavaScope {
         }
 
         if (occurrence.isMethodOrConstructorInvocation()) {
-            for (MethodNameDeclaration mnd: methodDeclarations.keySet()) {
+            for (MethodNameDeclaration mnd : methodDeclarations.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
                     List<TypedNameDeclaration> parameterTypes = determineParameterTypes(mnd);
                     List<TypedNameDeclaration> argumentTypes = determineArgumentTypes(occurrence, parameterTypes);
 
                     if (!mnd.isVarargs()
                             && occurrence.getArgumentCount() == mnd.getParameterCount()
-                            && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()
-                                    || parameterTypes.equals(argumentTypes))) {
+                            && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath() || parameterTypes
+                                    .equals(argumentTypes))) {
                         return mnd;
                     } else if (mnd.isVarargs()) {
                         int varArgIndex = parameterTypes.size() - 1;
                         TypedNameDeclaration varArgType = parameterTypes.get(varArgIndex);
 
-                        // first parameter is varArg, calling method might have 0 or more arguments
-                        // or the calling method has enough arguments to fill in the parameters before the vararg
+                        // first parameter is varArg, calling method might have
+                        // 0 or more arguments
+                        // or the calling method has enough arguments to fill in
+                        // the parameters before the vararg
                         if ((varArgIndex == 0 || argumentTypes.size() >= varArgIndex)
-                            && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()
-                                    || parameterTypes.subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex)))) {
+                                && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath() || parameterTypes
+                                        .subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex)))) {
 
                             if (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()) {
                                 return mnd;
@@ -181,7 +186,7 @@ public class ClassScope extends AbstractJavaScope {
             return null;
         }
         if (occurrence.isMethodReference()) {
-            for (MethodNameDeclaration mnd: methodDeclarations.keySet()) {
+            for (MethodNameDeclaration mnd : methodDeclarations.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
                     return mnd;
                 }
@@ -215,17 +220,21 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     /**
-     * Provide a list of types of the parameters of the given method declaration.
-     * The types are simple type images. 
-     * @param mnd the method declaration.
+     * Provide a list of types of the parameters of the given method
+     * declaration. The types are simple type images.
+     * 
+     * @param mnd
+     *            the method declaration.
      * @return List of types
      */
     private List<TypedNameDeclaration> determineParameterTypes(MethodNameDeclaration mnd) {
         List<TypedNameDeclaration> parameterTypes = new ArrayList<TypedNameDeclaration>();
-        List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode().findDescendantsOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode().findDescendantsOfType(
+                ASTFormalParameter.class);
         for (ASTFormalParameter p : parameters) {
             String typeImage = p.getTypeNode().getTypeImage();
-            // typeImage might be qualified/unqualified. If it refers to a type, defined in the same toplevel class,
+            // typeImage might be qualified/unqualified. If it refers to a type,
+            // defined in the same toplevel class,
             // we should normalize the name here.
             // It might also refer to a type, that is imported.
             typeImage = qualifyTypeName(typeImage);
@@ -244,7 +253,7 @@ public class ClassScope extends AbstractJavaScope {
             int fullLength = qualified.length();
             int nameLength = typeImage.length();
             if (qualified.endsWith(typeImage)
-                 && (fullLength == nameLength || qualified.substring(0, fullLength - nameLength).endsWith("."))) {
+                    && (fullLength == nameLength || qualified.substring(0, fullLength - nameLength).endsWith("."))) {
                 return qualified;
             }
         }
@@ -257,15 +266,20 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     /**
-     * Provide a list of types of the arguments of the given method call.
-     * The types are simple type images. If the argument type cannot be determined (e.g. because it is itself
-     * the result of a method call), the parameter type is used - so it is assumed, it is of the correct type.
-     * This might cause confusion when methods are overloaded.
-     * @param occurrence the method call
-     * @param parameterTypes the parameter types of the called method
+     * Provide a list of types of the arguments of the given method call. The
+     * types are simple type images. If the argument type cannot be determined
+     * (e.g. because it is itself the result of a method call), the parameter
+     * type is used - so it is assumed, it is of the correct type. This might
+     * cause confusion when methods are overloaded.
+     * 
+     * @param occurrence
+     *            the method call
+     * @param parameterTypes
+     *            the parameter types of the called method
      * @return the list of argument types
      */
-    private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence, List<TypedNameDeclaration> parameterTypes) {
+    private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence,
+            List<TypedNameDeclaration> parameterTypes) {
         List<TypedNameDeclaration> argumentTypes = new ArrayList<TypedNameDeclaration>();
         Map<String, Node> qualifiedTypeNames = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames();
         ASTArgumentList arguments = null;
@@ -289,7 +303,7 @@ public class ClassScope extends AbstractJavaScope {
                 }
                 TypedNameDeclaration type = null;
                 if (child instanceof ASTName) {
-                    ASTName name = (ASTName)child;
+                    ASTName name = (ASTName) child;
                     Scope s = name.getScope();
                     while (s != null) {
                         if (s.contains(new JavaNameOccurrence(name, name.getImage()))) {
@@ -298,20 +312,21 @@ public class ClassScope extends AbstractJavaScope {
                         s = s.getParent();
                     }
                     if (s != null) {
-                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = s.getDeclarations(VariableNameDeclaration.class);
+                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = s
+                                .getDeclarations(VariableNameDeclaration.class);
                         for (VariableNameDeclaration d : vars.keySet()) {
                             if (d.getImage().equals(name.getImage())) {
                                 String typeName = d.getTypeImage();
                                 typeName = qualifyTypeName(typeName);
                                 Node declaringNode = qualifiedTypeNames.get(typeName);
-                                type = new SimpleTypedNameDeclaration(typeName,
-                                        this.getEnclosingScope(SourceFileScope.class).resolveType(typeName), determineSuper(declaringNode));
+                                type = new SimpleTypedNameDeclaration(typeName, this.getEnclosingScope(
+                                        SourceFileScope.class).resolveType(typeName), determineSuper(declaringNode));
                                 break;
                             }
                         }
                     }
                 } else if (child instanceof ASTLiteral) {
-                    ASTLiteral literal = (ASTLiteral)child;
+                    ASTLiteral literal = (ASTLiteral) child;
                     if (literal.isCharLiteral()) {
                         type = new SimpleTypedNameDeclaration("char", literal.getType());
                     } else if (literal.isStringLiteral()) {
@@ -327,21 +342,31 @@ public class ClassScope extends AbstractJavaScope {
                     } else if (literal.jjtGetNumChildren() == 1 && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
                         type = new SimpleTypedNameDeclaration("boolean", Boolean.TYPE);
                     }
-                } else if (child instanceof ASTAllocationExpression && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                    ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType)child.jjtGetChild(0);
+                } else if (child instanceof ASTAllocationExpression
+                        && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
+                    ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType) child.jjtGetChild(0);
                     type = convertToSimpleType(classInterface);
                 }
                 if (type == null && !parameterTypes.isEmpty()) {
-                    // replace the unknown type with the correct parameter type of the method.
-                    // in case the argument is itself a method call, we can't determine the result type of the called
+                    // replace the unknown type with the correct parameter type
+                    // of the method.
+                    // in case the argument is itself a method call, we can't
+                    // determine the result type of the called
                     // method. Therefore the parameter type is used.
-                    // This might cause confusion, if method overloading is used.
+                    // This might cause confusion, if method overloading is
+                    // used.
 
-                    // the method might be vararg, so, there might be more arguments than parameterTypes
+                    // the method might be vararg, so, there might be more
+                    // arguments than parameterTypes
                     if (parameterTypes.size() > i) {
                         type = parameterTypes.get(i);
                     } else {
-                        type = parameterTypes.get(parameterTypes.size() - 1); // last parameter is the vararg type
+                        type = parameterTypes.get(parameterTypes.size() - 1); // last
+                                                                              // parameter
+                                                                              // is
+                                                                              // the
+                                                                              // vararg
+                                                                              // type
                     }
                 }
                 if (type != null && type.getType() == null) {
@@ -359,7 +384,7 @@ public class ClassScope extends AbstractJavaScope {
     private SimpleTypedNameDeclaration determineSuper(Node declaringNode) {
         SimpleTypedNameDeclaration result = null;
         if (declaringNode instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceDeclaration classDeclaration = (ASTClassOrInterfaceDeclaration)declaringNode;
+            ASTClassOrInterfaceDeclaration classDeclaration = (ASTClassOrInterfaceDeclaration) declaringNode;
             ASTImplementsList implementsList = classDeclaration.getFirstChildOfType(ASTImplementsList.class);
             if (implementsList != null) {
                 List<ASTClassOrInterfaceType> types = implementsList.findChildrenOfType(ASTClassOrInterfaceType.class);
@@ -392,30 +417,35 @@ public class ClassScope extends AbstractJavaScope {
         }
         return result;
     }
+
     private SimpleTypedNameDeclaration convertToSimpleType(ASTClassOrInterfaceType t) {
         String typeImage = t.getImage();
         typeImage = qualifyTypeName(typeImage);
         Node declaringNode = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().get(typeImage);
-        return new SimpleTypedNameDeclaration(typeImage,
-                this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage), determineSuper(declaringNode));
+        return new SimpleTypedNameDeclaration(typeImage, this.getEnclosingScope(SourceFileScope.class).resolveType(
+                typeImage), determineSuper(declaringNode));
     }
+
     /**
-     * Tries to resolve a given typeImage as a generic Type. If the Generic Type is found,
-     * any defined ClassOrInterfaceType below this type declaration is used (this is typically
-     * a type bound, e.g. {@code <T extends List>}.
+     * Tries to resolve a given typeImage as a generic Type. If the Generic Type
+     * is found, any defined ClassOrInterfaceType below this type declaration is
+     * used (this is typically a type bound, e.g. {@code <T extends List>}.
      *
-     * @param argument the node, from where to start searching.
-     * @param typeImage the type as string
+     * @param argument
+     *            the node, from where to start searching.
+     * @param typeImage
+     *            the type as string
      * @return the resolved class or <code>null</code> if nothing was found.
      */
     private Class<?> resolveGenericType(Node argument, String typeImage) {
         List<ASTTypeParameter> types = new ArrayList<ASTTypeParameter>();
         // first search only within the same method
-        types.addAll(argument.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class)
-                .findDescendantsOfType(ASTTypeParameter.class));
+        types.addAll(argument.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class).findDescendantsOfType(
+                ASTTypeParameter.class));
 
         // then search class level types
-        ASTClassOrInterfaceDeclaration enclosingClassOrEnum = argument.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTClassOrInterfaceDeclaration enclosingClassOrEnum = argument
+                .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         if (enclosingClassOrEnum == null) {
             argument.getFirstParentOfType(ASTEnumDeclaration.class);
         }
@@ -463,10 +493,11 @@ public class ClassScope extends AbstractJavaScope {
         }
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         if (!methodDeclarations.isEmpty()) {
-            for (MethodNameDeclaration mnd: methodDeclarations.keySet()) {
+            for (MethodNameDeclaration mnd : methodDeclarations.keySet()) {
                 res.append(mnd.toString());
                 int usages = methodDeclarations.get(mnd).size();
-                res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages).append(" usages)");
+                res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages)
+                        .append(" usages)");
                 res.append(", ");
             }
         }

@@ -101,8 +101,9 @@ public class CommentContentRule extends AbstractCommentRule {
             return Collections.emptyList();
         }
 
-        if (!caseSensitive)
+        if (!caseSensitive) {
             commentText = commentText.toUpperCase();
+        }
 
         List<String> foundWords = new ArrayList<String>();
 

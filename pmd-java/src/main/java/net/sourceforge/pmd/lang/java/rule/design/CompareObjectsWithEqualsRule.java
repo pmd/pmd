@@ -19,29 +19,30 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
     private boolean hasName(Node n) {
         return n.jjtGetNumChildren() > 0 && n.jjtGetChild(0) instanceof ASTName;
     }
-    
+
     /**
-	 * Indicate whether this node is allocating a new object.
-	 * 
-	 * @param n
-	 *            node that might be allocating a new object
-	 * @return true if child 0 is an AllocationExpression
-	 */
-	private boolean isAllocation(Node n) {
-        return n.jjtGetNumChildren() > 0 && n.jjtGetChild(0) instanceof ASTAllocationExpression && n.jjtGetParent().jjtGetNumChildren() == 1;
-	}
-        
+     * Indicate whether this node is allocating a new object.
+     * 
+     * @param n
+     *            node that might be allocating a new object
+     * @return true if child 0 is an AllocationExpression
+     */
+    private boolean isAllocation(Node n) {
+        return n.jjtGetNumChildren() > 0 && n.jjtGetChild(0) instanceof ASTAllocationExpression
+                && n.jjtGetParent().jjtGetNumChildren() == 1;
+    }
+
     public Object visit(ASTEqualityExpression node, Object data) {
         Node c0 = node.jjtGetChild(0).jjtGetChild(0);
         Node c1 = node.jjtGetChild(1).jjtGetChild(0);
 
         // If either side is allocating a new object, there's no way an
         // equals expression is correct
-        if ((isAllocation(c0)) || (isAllocation(c1))) {
+        if (isAllocation(c0) || isAllocation(c1)) {
             addViolation(data, node);
             return data;
         }
-        
+
         // skip if either child is not a simple name
         if (!hasName(c0) || !hasName(c1)) {
             return data;
@@ -61,11 +62,12 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
         if (!node.getParentsOfType(ASTInitializer.class).isEmpty()) {
             return data;
         }
-              
+
         ASTName n0 = (ASTName) c0.jjtGetChild(0);
         ASTName n1 = (ASTName) c1.jjtGetChild(0);
 
-        if (n0.getNameDeclaration() instanceof VariableNameDeclaration && n1.getNameDeclaration() instanceof VariableNameDeclaration) {
+        if (n0.getNameDeclaration() instanceof VariableNameDeclaration
+                && n1.getNameDeclaration() instanceof VariableNameDeclaration) {
             VariableNameDeclaration nd0 = (VariableNameDeclaration) n0.getNameDeclaration();
             VariableNameDeclaration nd1 = (VariableNameDeclaration) n1.getNameDeclaration();
 
@@ -77,8 +79,10 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
 
             if (nd0.isReferenceType() && nd1.isReferenceType()) {
 
-                ASTReferenceType type0 = (ASTReferenceType)((Node) nd0.getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0);
-                ASTReferenceType type1 = (ASTReferenceType)((Node) nd1.getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0);
+                ASTReferenceType type0 = (ASTReferenceType) ((Node) nd0.getAccessNodeParent()).jjtGetChild(0)
+                        .jjtGetChild(0);
+                ASTReferenceType type1 = (ASTReferenceType) ((Node) nd1.getAccessNodeParent()).jjtGetChild(0)
+                        .jjtGetChild(0);
                 // skip, if it is an enum
                 if (type0.getType() != null && type0.getType().equals(type1.getType()) && type0.getType().isEnum()) {
                     return data;
@@ -92,10 +96,11 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
     }
 
     /**
-     * Checks whether the given node contains a qualified name, consisting of one
-     * ASTPrimaryPrefix and one or more ASTPrimarySuffix nodes.
+     * Checks whether the given node contains a qualified name, consisting of
+     * one ASTPrimaryPrefix and one or more ASTPrimarySuffix nodes.
      * 
-     * @param node the node
+     * @param node
+     *            the node
      * @return <code>true</code> if it is a qualified name
      */
     private boolean isPartOfQualifiedName(Node node) {

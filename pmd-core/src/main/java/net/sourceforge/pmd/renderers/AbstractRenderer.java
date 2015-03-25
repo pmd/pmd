@@ -21,99 +21,104 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     protected String name;
     protected String description;
 
-    @Deprecated // use PropertySource.getPropertyDescriptors() instead
+    @Deprecated
+    // use PropertySource.getPropertyDescriptors() instead
     protected Map<String, String> propertyDefinitions = new LinkedHashMap<String, String>();
     protected boolean showSuppressedViolations = true;
     protected Writer writer;
 
     public AbstractRenderer(String name, String description) {
-		this.name = name;
-		this.description = description;
+        this.name = name;
+        this.description = description;
     }
 
     /**
      * {@inheritDoc}
      */
     public String getName() {
-	return name;
+        return name;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     /**
      * {@inheritDoc}
      */
     public String getDescription() {
-	return description;
+        return description;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setDescription(String description) {
-	this.description = description;
+        this.description = description;
     }
 
     /**
      * {@inheritDoc}
      */
-    @Deprecated // use PropertySource.getPropertyDescriptors() instead
+    @Deprecated
+    // use PropertySource.getPropertyDescriptors() instead
     public Map<String, String> getPropertyDefinitions() {
-	return propertyDefinitions;
+        return propertyDefinitions;
     }
 
     /**
      * Define a property.
+     * 
      * @param name The property name.
      * @param description The description of the property.
      */
-    @Deprecated // please use AbstractPropertySource.definePropertyDescriptor() directly instead
+    @Deprecated
+    // please use AbstractPropertySource.definePropertyDescriptor() directly
+    // instead
     protected void defineProperty(String name, String description) {
-	StringProperty propertyDescriptor = new StringProperty(name, description, null, 0);
-	definePropertyDescriptor(propertyDescriptor);
-	propertyDefinitions.put(name, description);
+        StringProperty propertyDescriptor = new StringProperty(name, description, null, 0);
+        definePropertyDescriptor(propertyDescriptor);
+        propertyDefinitions.put(name, description);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isShowSuppressedViolations() {
-	return showSuppressedViolations;
+        return showSuppressedViolations;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setShowSuppressedViolations(boolean showSuppressedViolations) {
-	this.showSuppressedViolations = showSuppressedViolations;
+        this.showSuppressedViolations = showSuppressedViolations;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setWriter(Writer writer) {
-	    this.writer = writer;
+        this.writer = writer;
     }
 
     /**
      * {@inheritDoc}
      */
     public Writer getWriter() {
-	    return writer;
+        return writer;
     }
 
-    public void flush()  {
+    public void flush() {
         try {
-    		this.writer.flush();
-    	} catch (IOException e) {
-    		throw new IllegalStateException(e);
-    	} finally {
-    		IOUtils.closeQuietly(writer);
-    	}
+            this.writer.flush();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
     }
 }

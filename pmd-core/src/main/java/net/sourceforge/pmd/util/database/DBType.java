@@ -406,7 +406,9 @@ public class DBType {
 
         // Return class for source code
         if (null != this.properties.getProperty("returnType")) {
-            LOGGER.finest("returnType" + this.properties.getProperty("returnType"));
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.finest("returnType" + this.properties.getProperty("returnType"));
+            }
             this.sourceCodeReturnType = Integer.parseInt(this.properties.getProperty("returnType"));
         }
 

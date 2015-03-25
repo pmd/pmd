@@ -39,7 +39,7 @@ public final class PMDASMClassLoader extends ClassLoader {
      * units.
      */
     public static synchronized PMDASMClassLoader getInstance(ClassLoader parent) {
-        if (parent == cachedClassLoader) {
+        if (parent.equals(cachedClassLoader)) {
             return cachedPMDASMClassLoader;
         }
         cachedClassLoader = parent;
