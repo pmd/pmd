@@ -53,6 +53,9 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
             if (hasArraysCopyOf(ret)) {
                 continue;
             }
+            if (hasClone(ret, vn)) {
+                continue;
+            }
             if (!isLocalVariable(vn, method)) {
                 addViolation(data, ret, vn);
             } else {
@@ -69,12 +72,29 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
         return data;
     }
 
+    private boolean hasClone(ASTReturnStatement ret, String varName) {
+        List<ASTPrimaryExpression> expressions = ret.findDescendantsOfType(ASTPrimaryExpression.class);
+        for (ASTPrimaryExpression e : expressions) {
+            if (e.jjtGetChild(0) instanceof ASTPrimaryPrefix
+                    && e.jjtGetNumChildren() == 2
+                    && e.jjtGetChild(1) instanceof ASTPrimarySuffix
+                    && ((ASTPrimarySuffix) e.jjtGetChild(1)).isArguments()
+                    && ((ASTPrimarySuffix) e.jjtGetChild(1)).getArgumentCount() == 0) {
+                ASTName name = e.getFirstDescendantOfType(ASTName.class);
+                if (name != null && name.hasImageEqualTo(varName + ".clone")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean hasArraysCopyOf(ASTReturnStatement ret) {
         List<ASTPrimaryExpression> expressions = ret.findDescendantsOfType(ASTPrimaryExpression.class);
         for (ASTPrimaryExpression e : expressions) {
             if (e.jjtGetNumChildren() == 2 && e.jjtGetChild(0) instanceof ASTPrimaryPrefix
                     && e.jjtGetChild(0).jjtGetNumChildren() == 1 && e.jjtGetChild(0).jjtGetChild(0) instanceof ASTName
-                    && ((ASTName)e.jjtGetChild(0).jjtGetChild(0)).getImage().endsWith("Arrays.copyOf")) {
+                    && e.jjtGetChild(0).jjtGetChild(0).getImage().endsWith("Arrays.copyOf")) {
                 return true;
             }
         }

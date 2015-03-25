@@ -85,6 +85,7 @@ and will be removed with the next release of PMD.
 * [#1317](https://sourceforge.net/p/pmd/bugs/1317/): RuntimeException when parsing class with multiple lambdas
 * [#1319](https://sourceforge.net/p/pmd/bugs/1319/): PMD stops with NoClassDefFoundError (typeresolution)
 * [#1321](https://sourceforge.net/p/pmd/bugs/1321/): CPD format XML fails with NullPointer
+* [#1324](https://sourceforge.net/p/pmd/bugs/1324/): MethodReturnsInternalArray false positive with clone()
 
 **API Changes:**
 

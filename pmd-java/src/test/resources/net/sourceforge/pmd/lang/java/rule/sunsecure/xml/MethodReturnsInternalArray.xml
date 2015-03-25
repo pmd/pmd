@@ -161,4 +161,17 @@ public class WebServiceResponseMessage {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1324 MethodReturnsInternalArray false positive with clone()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private Hit[] hits;
+    public Hit[] getHits() {
+        return hits == null ? null : hits.clone();
+    }
+}
+]]>
+        </code>
+    </test-code>
 </test-data>
