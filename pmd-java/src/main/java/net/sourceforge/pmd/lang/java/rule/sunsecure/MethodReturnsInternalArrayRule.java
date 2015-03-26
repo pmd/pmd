@@ -34,7 +34,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
-        if (!method.getResultType().returnsArray()) {
+        if (!method.getResultType().returnsArray() || method.isPrivate()) {
             return data;
         }
         List<ASTReturnStatement> returns = method.findDescendantsOfType(ASTReturnStatement.class);
