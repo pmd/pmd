@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -17,6 +18,22 @@ import org.junit.Test;
 
 
 public class GeneralFiddlingTest extends ParserTst {
+
+    /**
+     * Unit test for https://sourceforge.net/p/pmd/bugs/1325/
+     * @throws Throwable any error
+     */
+    @Test
+    public void innerClassShouldWork() throws Throwable {
+        ASTCompilationUnit acu = buildDFA(
+                  "class Foo {"
+                + "    void bar() {"
+                + "        class X {}"
+                + "        int i;"
+                + "    }"
+                + "}");
+        assertNotNull(acu);
+    }
 
     @Test
     public void test1() throws Throwable {
