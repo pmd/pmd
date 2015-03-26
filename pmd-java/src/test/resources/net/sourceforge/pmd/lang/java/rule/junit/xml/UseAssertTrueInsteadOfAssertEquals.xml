@@ -19,7 +19,7 @@
         <description><![CDATA[
 		JUnit Test contains assertEquals on boolean literal
      ]]></description>
-        <expected-problems>4</expected-problems>
+        <expected-problems>5</expected-problems>
         <code><![CDATA[
 		public class MyTestCase extends TestCase {
 			public void testMyCaseWithAssertEqualsOnBoolean() {
@@ -28,8 +28,27 @@
 				assertEquals("myVar is true", myVar, true);
 				assertEquals("myVar is true", false, myVar);
 				assertEquals("myVar is true", myVar, false);
+                assertEquals(true, myVar);
 			}
 		}
      ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1323 False positive case of UseAssertTrueInsteadOfAssertEquals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.groupon.mostest.refractor;
+import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Test;
+public class TestWithAssertEquals {
+    @Test
+    public void testMethodWithBooleanParam() {
+        assertEquals(methodWithBooleanParam(true), "a String value", "they should be equal!");
+    }
+    public String methodWithBooleanParam(boolean param) {
+        return "a String value";
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

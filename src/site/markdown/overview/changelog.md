@@ -85,6 +85,7 @@ and will be removed with the next release of PMD.
 * [#1317](https://sourceforge.net/p/pmd/bugs/1317/): RuntimeException when parsing class with multiple lambdas
 * [#1319](https://sourceforge.net/p/pmd/bugs/1319/): PMD stops with NoClassDefFoundError (typeresolution)
 * [#1321](https://sourceforge.net/p/pmd/bugs/1321/): CPD format XML fails with NullPointer
+* [#1323](https://sourceforge.net/p/pmd/bugs/1323/): False positive case of UseAssertTrueInsteadOfAssertEquals
 * [#1324](https://sourceforge.net/p/pmd/bugs/1324/): MethodReturnsInternalArray false positive with clone()
 * [#1325](https://sourceforge.net/p/pmd/bugs/1325/): Inner class declared within a method fails to parse (ClassCastException)
 

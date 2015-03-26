@@ -414,7 +414,7 @@ When asserting a value is the same as a boolean literal, use assertTrue/assertFa
 			<property name="xpath">
 				<value>
 <![CDATA[
-//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']][PrimarySuffix/Arguments/ArgumentList//Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
+//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']][PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
 ]]>
 			</value>
 			</property>
