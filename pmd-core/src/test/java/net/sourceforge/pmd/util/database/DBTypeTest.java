@@ -22,9 +22,7 @@ import org.junit.Test;
  */
 public class DBTypeTest {
 
-    private static String TEST_FILE_NAME = "/tmp/test.properties";
-
-    private File absoluteFile = new File(TEST_FILE_NAME);
+    private File absoluteFile;
 
     private Properties testProperties;
     private Properties includeProperties;
@@ -42,6 +40,7 @@ public class DBTypeTest {
 
         PrintStream printStream = null;
         try {
+            absoluteFile = File.createTempFile("dbtypetest", ".properties");
             FileOutputStream fileOutputStream = new FileOutputStream(absoluteFile);
             printStream = new PrintStream(fileOutputStream);
 
@@ -64,7 +63,7 @@ public class DBTypeTest {
     @Test
     public void testGetPropertiesFromFile() throws Exception {
         System.out.println("getPropertiesFromFile");
-        DBType instance = new DBType("/tmp/test.properties");
+        DBType instance = new DBType(absoluteFile.getAbsolutePath());
         Properties expResult = testProperties;
         Properties result = instance.getProperties();
         Assert.assertEquals(expResult, result);

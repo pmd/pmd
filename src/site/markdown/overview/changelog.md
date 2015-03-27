@@ -89,6 +89,7 @@ and will be removed with the next release of PMD.
 * [#1323](https://sourceforge.net/p/pmd/bugs/1323/): False positive case of UseAssertTrueInsteadOfAssertEquals
 * [#1324](https://sourceforge.net/p/pmd/bugs/1324/): MethodReturnsInternalArray false positive with clone()
 * [#1325](https://sourceforge.net/p/pmd/bugs/1325/): Inner class declared within a method fails to parse (ClassCastException)
+* [#1326](https://sourceforge.net/p/pmd/bugs/1326/): PMD 5.3.0-SNAPSHOT doesn't compile under Windows
 
 **API Changes:**
 
