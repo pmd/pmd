@@ -68,6 +68,7 @@ and will be removed with the next release of PMD.
 **Bugfixes:**
 
 * [#914](https://sourceforge.net/p/pmd/bugs/914/): False +ve from UnusedImports with wildcard static imports
+* [#1197](https://sourceforge.net/p/pmd/bugs/1197/): JUnit4TestShouldUseTestAnnotation for private method
 * [#1277](https://sourceforge.net/p/pmd/bugs/1277/): Delete BooleanInversion as it makes no sense
 * [#1283](https://sourceforge.net/p/pmd/bugs/1283/): Rename UncommentedEmptyMethod to UncommentedEmptyMethodBody
 * [#1296](https://sourceforge.net/p/pmd/bugs/1296/): PMD UnusedPrivateMethod invalid detection of 'private void method(int,boolean,Integer...)'

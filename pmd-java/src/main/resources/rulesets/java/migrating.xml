@@ -382,7 +382,7 @@ In JUnit 4, only methods annotated with the @Test annotation are executed.
           <property name="xpath">
               <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[starts-with(@Image,'test')]]
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
 [count(Annotation//Name[@Image='Test'])=0]
 ]]>
               </value>

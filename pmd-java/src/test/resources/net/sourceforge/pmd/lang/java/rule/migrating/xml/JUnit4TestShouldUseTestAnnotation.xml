@@ -67,4 +67,24 @@ public class Foo extends TestCase{
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1197 JUnit4TestShouldUseTestAnnotation for private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Faa
+{
+    @Test
+    public void test()
+    {
+        testHelper();
+        fail( "Not yet implemented" );
+    }
+
+    private boolean testHelper()  // <- JUnit4TestShouldUseTestAnnotation
+    {
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
