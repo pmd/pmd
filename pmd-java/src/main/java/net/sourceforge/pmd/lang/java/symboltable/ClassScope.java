@@ -17,12 +17,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.JavaParserTreeConstants;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -42,6 +48,8 @@ public class ClassScope extends AbstractJavaScope {
 
     private String className;
 
+    private boolean isEnum;
+
     public ClassScope(String className) {
         this.className = className;
         anonymousInnerClassCounter.set(Integer.valueOf(1));
@@ -60,6 +68,10 @@ public class ClassScope extends AbstractJavaScope {
         int v = anonymousInnerClassCounter.get().intValue();
         this.className = "Anonymous$" + v;
         anonymousInnerClassCounter.set(v + 1);
+    }
+
+    public void setIsEnum(boolean isEnum) {
+        this.isEnum = isEnum;
     }
 
     public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
@@ -183,6 +195,9 @@ public class ClassScope extends AbstractJavaScope {
                     }
                 }
             }
+            if (isEnum && "valueOf".equals(occurrence.getImage())) {
+                return createBuiltInMethodDeclaration("valueOf", 1);
+            }
             return null;
         }
         if (occurrence.isMethodReference()) {
@@ -217,6 +232,49 @@ public class ClassScope extends AbstractJavaScope {
             }
         }
         return result;
+    }
+
+    /**
+     * Creates a fake method name declaration for built-in methods from Java like
+     * the Enum Method "valueOf".
+     *
+     * @param methodName the method name
+     * @param parameterCount the parameter count of the method
+     * @return a method name declaration
+     */
+    private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName, final int parameterCount) {
+        ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(JavaParserTreeConstants.JJTMETHODDECLARATION);
+        methodDeclaration.setPublic(true);
+        methodDeclaration.setScope(this);
+
+        ASTMethodDeclarator methodDeclarator = new ASTMethodDeclarator(JavaParserTreeConstants.JJTMETHODDECLARATOR);
+        methodDeclarator.setImage(methodName);
+        methodDeclarator.setScope(this);
+
+        ASTFormalParameters formalParameters = new ASTFormalParameters(JavaParserTreeConstants.JJTFORMALPARAMETERS);
+        formalParameters.setScope(this);
+
+        methodDeclaration.jjtAddChild(methodDeclarator, 0);
+        methodDeclarator.jjtSetParent(methodDeclaration);
+        methodDeclarator.jjtAddChild(formalParameters, 0);
+        formalParameters.jjtSetParent(methodDeclarator);
+
+        for (int i = 0; i < parameterCount; i++) {
+            ASTFormalParameter formalParameter = new ASTFormalParameter(JavaParserTreeConstants.JJTFORMALPARAMETER);
+            formalParameters.jjtAddChild(formalParameter, i);
+            formalParameter.jjtSetParent(formalParameters);
+
+            ASTType type = new ASTType(JavaParserTreeConstants.JJTTYPE);
+            formalParameter.jjtAddChild(type, 0);
+            type.jjtSetParent(formalParameter);
+            ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(JavaParserTreeConstants.JJTVARIABLEDECLARATORID);
+            variableDeclaratorId.setImage("arg" + i);
+            formalParameter.jjtAddChild(variableDeclaratorId, 1);
+            variableDeclaratorId.jjtSetParent(formalParameter);
+        }
+
+        MethodNameDeclaration mnd = new MethodNameDeclaration(methodDeclarator);
+        return mnd;
     }
 
     /**

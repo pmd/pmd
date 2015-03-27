@@ -78,6 +78,7 @@ and will be removed with the next release of PMD.
 * [#1304](https://sourceforge.net/p/pmd/bugs/1304/): UseCollectionIsEmpty false positive comparing to 1
 * [#1305](https://sourceforge.net/p/pmd/bugs/1305/): variable declaration inside switch causes ClassCastException
 * [#1306](https://sourceforge.net/p/pmd/bugs/1306/): False positive on duplicate when using static imports
+* [#1307](https://sourceforge.net/p/pmd/bugs/1307/): False positive: SingularField and lambda-expression
 * [#1308](https://sourceforge.net/p/pmd/bugs/1308/): PMD runs endlessly on some generated files
 * [#1312](https://sourceforge.net/p/pmd/bugs/1312/): Rule reference must not override rule name of referenced rule
 * [#1313](https://sourceforge.net/p/pmd/bugs/1313/): Missing assertion message in assertEquals with delta not detected

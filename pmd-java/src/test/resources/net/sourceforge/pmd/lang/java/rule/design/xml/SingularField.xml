@@ -510,4 +510,27 @@ public enum MyEnum {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>#1307 False positive: SingularField and lambda-expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.foo;
+
+import java.util.Optional;
+
+public enum Supplier {
+    bar("Bar");
+
+    private final String supplierName;
+
+    private Supplier(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public static String getSupplierNameIfPresent(String supplier) {
+        return Optional.ofNullable(supplier).map(foo -> valueOf(supplier).supplierName).orElse("");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
