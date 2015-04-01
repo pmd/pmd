@@ -1,6 +1,6 @@
 # Changelog
 
-## ???? - 5.3.0
+## April 1, 2015 - 5.3.0
 
 **New Supported Languages:**
 
