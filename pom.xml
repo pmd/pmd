@@ -244,7 +244,7 @@
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
         <url>https://github.com/pmd/pmd</url>
-        <tag>HEAD</tag>
+        <tag>pmd/5.3.x</tag>
     </scm>
     <distributionManagement>
         <site>
