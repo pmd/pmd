@@ -501,6 +501,45 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>pmd</goal>
+                            <goal>cpd</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>${java.version}</targetJdk>
+                    <rulesets>
+                        <ruleset>${pmd.dogfood.ruleset}</ruleset>
+                    </rulesets>
+                    <excludeRoots>
+                        <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                    </excludeRoots>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>${checkstyle.configLocation}</configLocation>
+                    <suppressionsFile>${checkstyle.suppressionsFile}</suppressionsFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -730,129 +769,6 @@
             <properties>
                 <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
             </properties>
-        </profile>
-        <profile>
-            <id>sf-release</id>
-            <distributionManagement>
-                <repository>
-                    <id>pmd-repo</id>
-                    <name>Default Repository</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/maven2</url>
-                </repository>
-                <site>
-                    <id>pmd-site</id>
-                    <name>Default Site</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/pmd-${project.version}</url>
-                </site>
-            </distributionManagement>
-            <properties>
-                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <inherited>true</inherited>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <inherited>true</inherited>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <inherited>true</inherited>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <updateReleaseInfo>true</updateReleaseInfo>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>sf-snapshot</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>pmd-snapshot-repo</id>
-                    <name>Snapshot Repository</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/snapshot/maven2</url>
-                    <uniqueVersion>true</uniqueVersion>
-                </snapshotRepository>
-                <site>
-                    <id>pmd-snapshot-site</id>
-                    <name>Default Site</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/snapshot</url>
-                </site>
-            </distributionManagement>
-        </profile>
-
-        <profile>
-            <id>reports</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>pmd</goal>
-                                    <goal>cpd</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <minimumTokens>100</minimumTokens>
-                            <targetJdk>${java.version}</targetJdk>
-                            <rulesets>
-                                <ruleset>${pmd.dogfood.ruleset}</ruleset>
-                            </rulesets>
-                            <excludeRoots>
-                                <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                            </excludeRoots>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>checkstyle</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <configLocation>${checkstyle.configLocation}</configLocation>
-                            <suppressionsFile>${checkstyle.suppressionsFile}</suppressionsFile>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
 
         <profile>
