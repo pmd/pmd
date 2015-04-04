@@ -65,8 +65,6 @@
       <item href="http://pmd.sourceforge.net/" name="PMD"/>
     </breadcrumbs>
 
-    <menu ref="modules" />
-
     <menu name="Overview">
       <item href="https://sourceforge.net/projects/pmd/files/pmd/${version}/" name="Download PMD ${version}"/>
       <item href="/overview/changelog.html" name="What's new in PMD ${version}"/>
@@ -111,6 +109,7 @@
     <menu name="Misc.">
       <item href="http://webhostinggeeks.com/science/xpath-sourceforge-ka" name="XPath tutorial (Gregorian)"/>
     </menu>
+    <menu ref="modules"/>
     <menu ref="reports"/>
   </body>
 </project>
