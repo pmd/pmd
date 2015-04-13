@@ -373,7 +373,8 @@ public class ClassScope extends AbstractJavaScope {
                         Map<VariableNameDeclaration, List<NameOccurrence>> vars = s
                                 .getDeclarations(VariableNameDeclaration.class);
                         for (VariableNameDeclaration d : vars.keySet()) {
-                            if (d.getImage().equals(name.getImage())) {
+                            // in case of simple lambda expression, the type might be unknown
+                            if (d.getImage().equals(name.getImage()) && d.getTypeImage() != null) {
                                 String typeName = d.getTypeImage();
                                 typeName = qualifyTypeName(typeName);
                                 Node declaringNode = qualifiedTypeNames.get(typeName);

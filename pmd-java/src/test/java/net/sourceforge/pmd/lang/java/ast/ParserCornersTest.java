@@ -74,6 +74,28 @@ public class ParserCornersTest extends ParserTst {
     	parseJava18(test18);
     }
 
+    /**
+     * Test for https://sourceforge.net/p/pmd/bugs/1333/
+     */
+    @Test
+    public void testLambdaBug1333() {
+        parseJava18("final class Bug1333 {\n" + 
+                "    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);\n" + 
+                "\n" + 
+                "    public void deleteDirectoriesByNamePattern() {\n" + 
+                "        delete(path -> deleteDirectory(path));\n" + 
+                "    }\n" + 
+                "\n" + 
+                "    private void delete(Consumer<? super String> consumer) {\n" + 
+                "        LOG.debug(consumer.toString());\n" + 
+                "    }\n" + 
+                "\n" + 
+                "    private void deleteDirectory(String path) {\n" + 
+                "        LOG.debug(path);\n" + 
+                "    }\n" + 
+                "}");
+    }
+
     @Test
     public void testMultipleExceptionCatching() {
     	String code = "public class Foo { public void bar() { "
