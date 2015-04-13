@@ -50,6 +50,7 @@ public class SingleMethodSingletonRule extends AbstractJavaRule {
 	@Override
 	public Object visit(ASTMethodDeclaration node, Object data) {
 
+		violation=false;
 		if (node.getResultType().isVoid()) {
 			return super.visit(node, data);
 		}
