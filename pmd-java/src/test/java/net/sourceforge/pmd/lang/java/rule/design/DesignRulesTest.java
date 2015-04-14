@@ -46,7 +46,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "NonCaseLabelInSwitchStatement");
         addRule(RULESET, "NonStaticInitializer");
         addRule(RULESET, "NonThreadSafeSingleton");
-        addRule(RULESET,"SingleMethodSingletonRule");
+        addRule(RULESET,"SingleMethodSingleton");
         addRule(RULESET, "SingletonClassReturningNewInstance");
         addRule(RULESET, "OptimizableToArrayCall");
         // addRule(RULESET, "PositionalIteratorRule"); This rule does not yet
