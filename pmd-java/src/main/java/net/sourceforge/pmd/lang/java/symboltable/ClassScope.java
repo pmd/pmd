@@ -307,6 +307,9 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     private String qualifyTypeName(String typeImage) {
+        if (typeImage == null) {
+            return null;
+        }
         for (String qualified : this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().keySet()) {
             int fullLength = qualified.length();
             int nameLength = typeImage.length();
