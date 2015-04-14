@@ -1297,11 +1297,11 @@ public static Foo getFoo() {
         ]]></example>
     </rule>
 
-<rule name="SingleMethodSingletonRule"
+<rule name="SingleMethodSingleton"
 		since="5.4"
 		externalInfoUrl=""
 		message="Class contains multiple getInstance methods. Please review."
-		class="net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingleton">
+		class="net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule">
 <description>
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
 is that the instance created using the overloaded method is not cached and so, 
@@ -1327,11 +1327,11 @@ public static Singleton getInstance(Object obj){
 </example>
 </rule>
 
-<rule name="SingletonClassReturningNewInstanceRule"
+<rule name="SingletonClassReturningNewInstance"
 		since="5.4"
 		externalInfoUrl=""
 		message="getInstance method always creates a new object and hence does not comply to Singleton Design Pattern behaviour. Please review"
-		class="net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstance">
+		class="net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule">
 <description>
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
 is that the instance created using the overloaded method is not cached and so, 

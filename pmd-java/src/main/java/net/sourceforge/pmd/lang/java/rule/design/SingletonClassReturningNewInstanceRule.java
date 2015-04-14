@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-public class SingletonClassReturningNewInstance extends AbstractJavaRule {
+public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
 	
 	@Override
 	public Object visit(ASTMethodDeclaration node, Object data) {

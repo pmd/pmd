@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-public class SingleMethodSingleton extends AbstractJavaRule {
+public class SingleMethodSingletonRule extends AbstractJavaRule {
 
 	private static Map<String, ASTFieldDeclaration> fieldDecls = new HashMap<String, ASTFieldDeclaration>();
 	private static Set<ASTFieldDeclaration> returnset = new HashSet<ASTFieldDeclaration>();
