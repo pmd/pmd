@@ -90,10 +90,22 @@ public class TypeSetTest {
         assertEquals(long.class, r.resolve("long"));
     }
 
+    @Test(expected=ClassNotFoundException.class)
+    public void testPrimitiveTypeResolverWithNull() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.PrimitiveTypeResolver();
+        r.resolve(null);
+    }
+
     @Test
     public void testVoidTypeResolver() throws Throwable {
         TypeSet.Resolver r = new TypeSet.VoidResolver();
         assertEquals(void.class, r.resolve("void"));
+    }
+
+    @Test(expected=ClassNotFoundException.class)
+    public void testVoidTypeResolverWithNull() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.VoidResolver();
+        r.resolve(null);
     }
 
     @Test
@@ -102,6 +114,20 @@ public class TypeSetTest {
         imports.add("java.io.File");
         TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(pmdClassLoader, imports);
         assertEquals(File.class, r.resolve("File"));
+    }
+
+    @Test(expected=ClassNotFoundException.class)
+    public void testExplicitImportResolverWithNull() throws Throwable {
+        Set<String> imports = new HashSet<String>();
+        imports.add("java.io.File");
+        TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(pmdClassLoader, imports);
+        r.resolve(null);
+    }
+
+    @Test(expected=ClassNotFoundException.class)
+    public void testExplicitImportResolverWithNullAndEmptyImports() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(pmdClassLoader, new HashSet<String>());
+        r.resolve(null);
     }
 
     @Test
@@ -116,10 +142,22 @@ public class TypeSetTest {
         r.resolve("PMD");
     }
 
+    @Test(expected=ClassNotFoundException.class)
+    public void testImplicitImportResolverWithNull() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver(pmdClassLoader);
+        r.resolve(null);
+    }
+
     @Test
     public void testCurrentPackageResolverPass() throws Throwable {
         TypeSet.Resolver r = new TypeSet.CurrentPackageResolver(pmdClassLoader, "net.sourceforge.pmd");
         assertEquals(PMD.class, r.resolve("PMD"));
+    }
+
+    @Test(expected=ClassNotFoundException.class)
+    public void testCurrentPackageResolverWithNull() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.CurrentPackageResolver(pmdClassLoader, "net.sourceforge.pmd");
+        r.resolve(null);
     }
 
     @Test
@@ -127,6 +165,12 @@ public class TypeSetTest {
         TypeSet.Resolver r = getResolver();
         assertEquals(Set.class, r.resolve("Set"));
         assertEquals(File.class, r.resolve("File"));
+    }
+
+    @Test(expected = ClassNotFoundException.class)
+    public void testImportOnDemandResolverWithNull() throws Throwable {
+        TypeSet.Resolver r = getResolver();
+        r.resolve(null);
     }
 
     @Test(expected = ClassNotFoundException.class)
@@ -147,6 +191,12 @@ public class TypeSetTest {
         imports.add("java.util.*");
         TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(pmdClassLoader, imports);
         return r;
+    }
+
+    @Test(expected = ClassNotFoundException.class)
+    public void testFullyQualifiedNameResolverWithNull() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.FullyQualifiedNameResolver(pmdClassLoader);
+        r.resolve(null);
     }
 
     public static junit.framework.Test suite() {
