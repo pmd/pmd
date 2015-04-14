@@ -1320,7 +1320,7 @@ public static Singleton getInstance( ) {
 }
 public static Singleton getInstance(Object obj){
 	Singleton singleton = (Singleton) obj;
-	return singleton;
+	return singleton;			//violation
 }
 }
 ]]>
