@@ -502,8 +502,11 @@ public class ClassScope extends AbstractJavaScope {
     private Class<?> resolveGenericType(Node argument, String typeImage) {
         List<ASTTypeParameter> types = new ArrayList<ASTTypeParameter>();
         // first search only within the same method
-        types.addAll(argument.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class).findDescendantsOfType(
-                ASTTypeParameter.class));
+        ASTClassOrInterfaceBodyDeclaration firstParentOfType =
+                argument.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        if (firstParentOfType != null) {
+            types.addAll(firstParentOfType.findDescendantsOfType(ASTTypeParameter.class));
+        }
 
         // then search class level types
         ASTClassOrInterfaceDeclaration enclosingClassOrEnum = argument

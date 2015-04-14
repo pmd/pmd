@@ -35,6 +35,11 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
+    public void testEnumTypeParameter() {
+        parseCode15(ENUM_TYPE_PARAMETER);
+    }
+
+    @Test
     public void testVarArgsEmpty() {
         parseCode15(
                 "public class Foo {\n" +
@@ -385,6 +390,15 @@ public class ClassScopeTest extends STBBaseTst {
             "public abstract class NullTypeTest {" + PMD.EOL +
             "   protected Comparator<TreeNode> nodesComparator = (o1, o2) -> StringHelper.saveCompare(getFilterableString(o1), getFilterableString(o2));" + PMD.EOL +
             "   public abstract String getFilterableString(TreeNode node);" + PMD.EOL +
+            "}";
+
+    private static final String ENUM_TYPE_PARAMETER =
+            "public enum Foo {" + PMD.EOL +
+            "   BAR(isCustomer(BazEnum.FOO_BAR));" + PMD.EOL +
+            "   Foo(boolean isCustomer) { }" + PMD.EOL +
+            "   private static boolean isCustomer(BazEnum baz) {" + PMD.EOL +
+            "      return false;" + PMD.EOL +
+            "   }" + PMD.EOL +
             "}";
 
     public static junit.framework.Test suite() {
