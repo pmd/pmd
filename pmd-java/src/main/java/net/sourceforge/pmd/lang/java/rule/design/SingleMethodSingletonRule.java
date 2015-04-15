@@ -60,33 +60,6 @@ public class SingleMethodSingletonRule extends AbstractJavaRule {
 			if(!methodset.add(node.getMethodName())){
 				violation=true;
 			}
-			List<ASTReturnStatement> rsl = node
-					.findDescendantsOfType(ASTReturnStatement.class);
-			ASTReturnStatement rs = rsl.get(0);
-			if (rsl.size() != 1) {
-				return super.visit(node, data);
-			} else {
-				List<ASTPrimaryExpression> pel = rs
-						.findDescendantsOfType(ASTPrimaryExpression.class);
-				ASTPrimaryExpression ape = pel.get(0);
-				Node lastChild = ape.jjtGetChild(0);
-				String returnVariableName = null;
-				if (lastChild instanceof ASTPrimaryPrefix) {
-					returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
-				}
-				/*if(lastChild instanceof ASTPrimarySuffix){
-					returnVariableName = getNameFromPrimarySuffix((ASTPrimarySuffix) lastChild);
-				}*/
-				if (returnVariableName != null
-						&& fieldDecls.containsKey(returnVariableName)) {
-					//boolean added = returnset.add(fieldDecls
-						//	.get(returnVariableName));
-					if (!returnset.add(fieldDecls
-							.get(returnVariableName))) {
-						violation=true;
-					}
-				}
-			}
 		}
 		
 		if(violation){
@@ -94,21 +67,6 @@ public class SingleMethodSingletonRule extends AbstractJavaRule {
 		}
 		return super.visit(node, data);
 	}
-
-	/*private String getNameFromPrimarySuffix(ASTPrimarySuffix lastChild) {
-		
-		List<ASTPrimaryExpression> pel=lastChild.findDescendantsOfType(ASTPrimaryExpression.class);
-		ASTPrimaryExpression ape=pel.get(0);
-		Node lastNode = ape.jjtGetChild(0);
-		String returnVariableName = null;
-		if (lastNode instanceof ASTPrimaryPrefix) {
-			returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastNode);
-		}
-		if(lastChild instanceof ASTPrimarySuffix){
-			returnVariableName = getNameFromPrimarySuffix((ASTPrimarySuffix) lastChild);
-		}
-		return returnVariableName;
-	}*/
 
 	private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
 		if ((pp.jjtGetNumChildren() == 1)
