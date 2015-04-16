@@ -1299,7 +1299,7 @@ public static Foo getFoo() {
 
 <rule name="SingleMethodSingleton"
 		since="5.4"
-		externalInfoUrl=""
+		externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SingleMethodSingleton"
 		message="Class contains multiple getInstance methods. Please review."
 		class="net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule">
 <description>
@@ -1329,7 +1329,7 @@ public static Singleton getInstance(Object obj){
 
 <rule name="SingletonClassReturningNewInstance"
 		since="5.4"
-		externalInfoUrl=""
+		externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SingletonClassReturningNewInstance"
 		message="getInstance method always creates a new object and hence does not comply to Singleton Design Pattern behaviour. Please review"
 		class="net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule">
 <description>

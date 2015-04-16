@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.rule.design;
 
 
@@ -23,7 +26,7 @@ public class SingleMethodSingletonRule extends AbstractJavaRule {
 
 	private static Map<String, ASTFieldDeclaration> fieldDecls = new HashMap<String, ASTFieldDeclaration>();
 	private static Set<ASTFieldDeclaration> returnset = new HashSet<ASTFieldDeclaration>();
-	boolean violation=false;
+	private boolean violation = false;
 	private static Set<String> methodset = new HashSet<String>();
 	@Override
 	public Object visit(ASTFieldDeclaration node, Object data) {
