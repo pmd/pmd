@@ -17,112 +17,97 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
-	
-	@Override
-	public Object visit(ASTMethodDeclaration node, Object data) {
 
-		boolean violation = false;
-		String localVarName = null;
-		String returnVariableName = null;
+    @Override
+    public Object visit(ASTMethodDeclaration node, Object data) {
 
-		if (node.getResultType().isVoid()) {
-			return super.visit(node, data);
-		}
+        boolean violation = false;
+        String localVarName = null;
+        String returnVariableName = null;
 
-		if ("getInstance".equals(node.getMethodName())) {
-			List<ASTReturnStatement> rsl = node
-					.findDescendantsOfType(ASTReturnStatement.class);
-			if (rsl.isEmpty()) {
-				return super.visit(node, data);
-			} else {
-				for(ASTReturnStatement rs : rsl){
-				
-				List<ASTPrimaryExpression> pel = rs
-						.findDescendantsOfType(ASTPrimaryExpression.class);
-				ASTPrimaryExpression ape = pel.get(0);
-				if (ape.getFirstDescendantOfType(ASTAllocationExpression.class) != null) {
-					violation = true;
-					break;
-					}
-				}
-			}
+        if (node.getResultType().isVoid()) {
+            return super.visit(node, data);
+        }
 
-			/*
-			 * public class Singleton {
-			 * 
-			 * private static Singleton m_instance=null;
-			 * 
-			 * public static Singleton getInstance() {
-			 * 
-			 * Singleton m_instance=null;
-			 * 
-			 * if ( m_instance == null ) { 
-			 * 		synchronized(Singleton.class) { 
-			 * 			if(m_instance == null) { 
-			 * 						m_instance = new Singleton(); 
-			 * 			} 
-			 * 		} 
-			 * } 
-			 * return m_instance; 
-			 * } 
-			 * }
-			 * 
-			 */
+        if ("getInstance".equals(node.getMethodName())) {
+            List<ASTReturnStatement> rsl = node.findDescendantsOfType(ASTReturnStatement.class);
+            if (rsl.isEmpty()) {
+                return super.visit(node, data);
+            } else {
+                for (ASTReturnStatement rs : rsl) {
 
-			List<ASTBlockStatement> ASTBlockStatements = node
-					.findDescendantsOfType(ASTBlockStatement.class);
-			returnVariableName = getReturnVariableName(node);
-			if (ASTBlockStatements.size() != 0) {
-				for (ASTBlockStatement blockStatement : ASTBlockStatements) {
-					if (blockStatement
-							.hasDescendantOfType(ASTLocalVariableDeclaration.class)) {
-						List<ASTLocalVariableDeclaration> lVarList=blockStatement.findDescendantsOfType(ASTLocalVariableDeclaration.class);
-						if(!lVarList.isEmpty()){
-							for(ASTLocalVariableDeclaration localVar : lVarList){
-								localVarName = localVar.getVariableName();
-								if (returnVariableName != null
-										&& returnVariableName.equals(localVarName)) {
-									violation = true;
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		if (violation) {
-			addViolation(data, node);
-		}
-		return super.visit(node, data);
-	}
+                    List<ASTPrimaryExpression> pel = rs.findDescendantsOfType(ASTPrimaryExpression.class);
+                    ASTPrimaryExpression ape = pel.get(0);
+                    if (ape.getFirstDescendantOfType(ASTAllocationExpression.class) != null) {
+                        violation = true;
+                        break;
+                    }
+                }
+            }
 
-	private String getReturnVariableName(ASTMethodDeclaration node) {
+            /*
+             * public class Singleton {
+             * 
+             * private static Singleton m_instance=null;
+             * 
+             * public static Singleton getInstance() {
+             * 
+             * Singleton m_instance=null;
+             * 
+             * if ( m_instance == null ) { synchronized(Singleton.class) {
+             * if(m_instance == null) { m_instance = new Singleton(); } } }
+             * return m_instance; } }
+             */
 
-		List<ASTReturnStatement> rsl = node
-				.findDescendantsOfType(ASTReturnStatement.class);
-		ASTReturnStatement rs = rsl.get(0);
-		List<ASTPrimaryExpression> pel = rs
-				.findDescendantsOfType(ASTPrimaryExpression.class);
-		ASTPrimaryExpression ape = pel.get(0);
-		Node lastChild = ape.jjtGetChild(0);
-		String returnVariableName = null;
-		if (lastChild instanceof ASTPrimaryPrefix) {
-			returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
-		}
-		/*
-		 * if(lastChild instanceof ASTPrimarySuffix){ returnVariableName =
-		 * getNameFromPrimarySuffix((ASTPrimarySuffix) lastChild); }
-		 */
-		return returnVariableName;
+            List<ASTBlockStatement> ASTBlockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
+            returnVariableName = getReturnVariableName(node);
+            if (ASTBlockStatements.size() != 0) {
+                for (ASTBlockStatement blockStatement : ASTBlockStatements) {
+                    if (blockStatement.hasDescendantOfType(ASTLocalVariableDeclaration.class)) {
+                        List<ASTLocalVariableDeclaration> lVarList = blockStatement
+                                .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                        if (!lVarList.isEmpty()) {
+                            for (ASTLocalVariableDeclaration localVar : lVarList) {
+                                localVarName = localVar.getVariableName();
+                                if (returnVariableName != null && returnVariableName.equals(localVarName)) {
+                                    violation = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (violation) {
+            addViolation(data, node);
+        }
+        return super.visit(node, data);
+    }
 
-	}
+    private String getReturnVariableName(ASTMethodDeclaration node) {
 
-	private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
-		if ((pp.jjtGetNumChildren() == 1)
-				&& (pp.jjtGetChild(0) instanceof ASTName)) {
-			return ((ASTName) pp.jjtGetChild(0)).getImage();
-		}
-		return null;
-	}
+        List<ASTReturnStatement> rsl = node.findDescendantsOfType(ASTReturnStatement.class);
+        ASTReturnStatement rs = rsl.get(0);
+        List<ASTPrimaryExpression> pel = rs.findDescendantsOfType(ASTPrimaryExpression.class);
+        ASTPrimaryExpression ape = pel.get(0);
+        Node lastChild = ape.jjtGetChild(0);
+        String returnVariableName = null;
+        if (lastChild instanceof ASTPrimaryPrefix) {
+            returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
+        }
+        /*
+         * if(lastChild instanceof ASTPrimarySuffix){ returnVariableName =
+         * getNameFromPrimarySuffix((ASTPrimarySuffix) lastChild); }
+         */
+        return returnVariableName;
+
+    }
+
+    private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
+        if ((pp.jjtGetNumChildren() == 1) && (pp.jjtGetChild(0) instanceof ASTName)) {
+            return ((ASTName) pp.jjtGetChild(0)).getImage();
+        }
+        return null;
+    }
 }
