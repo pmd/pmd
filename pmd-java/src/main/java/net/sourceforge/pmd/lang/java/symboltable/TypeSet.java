@@ -99,6 +99,9 @@ public class TypeSet {
         }
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
+            if (name == null) {
+                throw new ClassNotFoundException();
+            }
             for (String importStmt : importStmts) {
                 if (importStmt.endsWith(name)) {
                     return pmdClassLoader.loadClass(importStmt);
@@ -210,7 +213,7 @@ public class TypeSet {
     public static class VoidResolver implements Resolver {
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
-            if (name.equals("void")) {
+            if ("void".equals(name)) {
                 return void.class;
             }
             throw new ClassNotFoundException(name);
@@ -231,6 +234,9 @@ public class TypeSet {
         }
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
+            if (name == null) {
+                throw new ClassNotFoundException();
+            }
             return pmdClassLoader.loadClass(name);
         }
     }
