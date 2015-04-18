@@ -125,7 +125,7 @@ Exception, or Error, use a subclassed exception or error instead.
       <property name="xpath">
         <value>
             <![CDATA[
-//AllocationExpression
+//ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
  (@Image='Throwable' and count(//ImportDeclaration/Name[ends-with(@Image,'Throwable')]) = 0)
 or
