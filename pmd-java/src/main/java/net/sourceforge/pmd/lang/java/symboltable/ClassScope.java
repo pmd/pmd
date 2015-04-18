@@ -4,8 +4,10 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -310,16 +312,17 @@ public class ClassScope extends AbstractJavaScope {
         if (typeImage == null) {
             return null;
         }
-        for (String qualified : this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().keySet()) {
+
+        Set<String> qualifiedNames = new LinkedHashSet<String>();
+        qualifiedNames.addAll(this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().keySet());
+        qualifiedNames.addAll(this.getEnclosingScope(SourceFileScope.class).getExplicitImports());
+
+        int nameLength = typeImage.length();
+
+        for (String qualified : qualifiedNames) {
             int fullLength = qualified.length();
-            int nameLength = typeImage.length();
             if (qualified.endsWith(typeImage)
                     && (fullLength == nameLength || qualified.substring(0, fullLength - nameLength).endsWith("."))) {
-                return qualified;
-            }
-        }
-        for (String qualified : this.getEnclosingScope(SourceFileScope.class).getExplicitImports()) {
-            if (qualified.endsWith(typeImage)) {
                 return qualified;
             }
         }
