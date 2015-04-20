@@ -8,6 +8,9 @@
 
 **New/Modified/Deprecated Rules:**
 
+*   Language Java, ruleset design.xml: The rule "UseSingleton" *has been renamed* to "UseUtilityClass".
+    See also bugs [#1059](https://sourceforge.net/p/pmd/bugs/1059) and [#1339](https://sourceforge.net/p/pmd/bugs/1339/).
+
 **Pull Requests:**
 
 *   [#53](https://github.com/pmd/pmd/pull/53): Fix some NullPointerExceptions
