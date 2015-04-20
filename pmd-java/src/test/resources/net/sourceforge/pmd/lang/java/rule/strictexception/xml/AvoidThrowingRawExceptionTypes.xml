@@ -40,4 +40,17 @@ public class PmdTest {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1337: False positive "Avoid throwing raw exception types" when exception is not thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PmdTest {
+    private Throwable cause;
+
+    public void setUp() {
+        cause = new Throwable();
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
