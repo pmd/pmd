@@ -851,7 +851,8 @@ perform efficient map reads without blocking other threads.
       <property name="xpath">
         <value>
 <![CDATA[
-//Type[../VariableDeclarator/VariableInitializer//AllocationExpression]/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
+//Type[../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
+/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
 ]]>
         </value>
       </property>

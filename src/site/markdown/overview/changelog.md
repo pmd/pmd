@@ -12,4 +12,6 @@
 
 **Bugfixes:**
 
+*   [#1342](https://sourceforge.net/p/pmd/bugs/1342/): UseConcurrentHashMap false positive (with documentation example)
+
 **API Changes:**
