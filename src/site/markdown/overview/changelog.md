@@ -15,11 +15,15 @@
     "getInstance" returns a cached instance not always a fresh, new instance.
 *   Language Java, ruleset design.xml: The rule "UseSingleton" *has been renamed* to "UseUtilityClass".
     See also bugs [#1059](https://sourceforge.net/p/pmd/bugs/1059) and [#1339](https://sourceforge.net/p/pmd/bugs/1339/).
+*   New Rule: rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion: Checks the usage of ${project.version} in
+    Maven POM files. This rule can be found in the pmd-xml module.
+
 
 **Pull Requests:**
 
 *   [#21](https://github.com/adangel/pmd/pull/21): Added PMD Rules for Singleton pattern violations.
 *   [#53](https://github.com/pmd/pmd/pull/53): Fix some NullPointerExceptions
+*   [#54](https://github.com/pmd/pmd/pull/54): Add a new rulesets for Maven's POM rules
 
 **Bugfixes:**
 

@@ -8,8 +8,8 @@
 The Basic POM Ruleset contains a collection of good practices regarding Maven's POM files.
   </description>
 
-	<rule name="ProjectVersionAsDependencyVersion"
-    	 language="xml"
+    <rule name="ProjectVersionAsDependencyVersion"
+         language="xml"
          since="5.4"
          message="Do not use project's version to express a dependency's version."
          class="net.sourceforge.pmd.lang.rule.XPathRule"
