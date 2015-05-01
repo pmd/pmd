@@ -122,4 +122,16 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1341 pmd:GuardDebugLogging violates LOGGER.debug with format "{}"</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class GuardDebugFalsePositive {
+    public void test() {
+        String tempSelector = "a";
+        LOGGER.debug("MessageSelector={}" , tempSelector);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
