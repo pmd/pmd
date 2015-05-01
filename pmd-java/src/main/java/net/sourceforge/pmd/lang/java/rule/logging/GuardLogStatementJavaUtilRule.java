@@ -3,9 +3,11 @@
  */
 package net.sourceforge.pmd.lang.java.rule.logging;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
 public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
 
@@ -24,6 +26,10 @@ public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
 	
 	@Override
 	public Object visit(ASTCompilationUnit unit, Object data) {
+	    if (isSlf4jImported(unit)) {
+	        return data;
+	    }
+
 	    String[] logLevels = getProperty(LOG_LEVELS);
 	    String[] guardMethods = getProperty(GUARD_METHODS);
 
@@ -36,6 +42,16 @@ public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
         findViolationForEachLogStatement(unit, data, extendedXPath);
 		return super.visit(unit,data);
 	}
+
+    private boolean isSlf4jImported(ASTCompilationUnit unit) {
+        List<ASTImportDeclaration> imports = unit.findChildrenOfType(ASTImportDeclaration.class);
+        for (ASTImportDeclaration i : imports) {
+            if (i.getImportedName().startsWith("org.slf4j")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void configureGuards(String[] logLevels, String[] guardMethods) {
         String[] methods = guardMethods;

@@ -12,6 +12,7 @@
 
 **Bugfixes:**
 
+*   [#1335](https://sourceforge.net/p/pmd/bugs/1335/): GuardLogStatementJavaUtil should not apply to SLF4J Logger
 *   [#1342](https://sourceforge.net/p/pmd/bugs/1342/): UseConcurrentHashMap false positive (with documentation example)
 
 **API Changes:**
