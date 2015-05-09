@@ -348,4 +348,14 @@ public class X {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1349 VariableNamingConventions : underscore in final but at first position ?</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class X {
+    private final String _projection;
+    private final String _projectionID;
+}
+        ]]></code>
+    </test-code>
 </test-data>
