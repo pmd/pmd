@@ -6,6 +6,8 @@
 
 **Feature Request and Improvements:**
 
+*   [#1344](https://sourceforge.net/p/pmd/bugs/1344/): AbstractNaming should check reverse
+
 **New/Modified/Deprecated Rules:**
 
 *   New Rule: rulesets/java/design.xml/SingleMethodSingletonRule: Verifies that there is only one method called
@@ -19,6 +21,9 @@
     Maven POM files. This rule can be found in the pmd-xml module.
 *   New Rule: rulesets/pom/basic.xml/InvalidDependencyTypes: Verifies that only the default types (jar, war, ...)
     for dependencies are used. This rule can be found in the pmd-xml module.
+*   Modified Rule: rulesets/java/naming.xml/AbstractNaming: By default, this rule flags now classes,
+    that are named "Abstract" but are not abstract. This behavior can be disabled by setting
+    the new property "strict" to false.
 
 
 **Pull Requests:**
