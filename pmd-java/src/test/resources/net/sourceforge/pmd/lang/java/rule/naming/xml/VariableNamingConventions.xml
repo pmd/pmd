@@ -333,4 +333,19 @@ public class X {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1346 VariableNamingConventions do not work for method parameters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <rule-property name="checkParameters">true</rule-property>
+        <rule-property name="checkNativeMethodParameters">false</rule-property>
+        <code><![CDATA[
+public class X {
+    private long horsTout;
+    public void setHorsTout(long hors_tout) {
+        this.horsTout = hors_tout;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
