@@ -51,6 +51,7 @@ public class Foo {
     <test-code>
         <description>#1227 GuardLogStatementJavaUtil doesn't catch log(Level.FINE, "msg" + " msg") calls</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -79,6 +80,22 @@ public class GuardLogTest {
 
     public void foo() {
         LOGGER.info("foo" + "bar");
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1347 False positive for GuardLogStatementJavaUtil</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class GuardLogTest {
+    Logger LOG;
+    public void foo() {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("update: After spool map size: " + map.size());
+        }
     }
 }
         ]]></code>
