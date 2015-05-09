@@ -12,5 +12,6 @@ This ruleset contains links to rules that are new in PMD v5.4.0
     <rule ref="rulesets/java/design.xml/SingletonClassReturningNewInstance"/>
 
     <rule ref="rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion"/>
+    <rule ref="rulesets/pom/basic.xml/InvalidDependencyTypes"/>
 </ruleset>
 

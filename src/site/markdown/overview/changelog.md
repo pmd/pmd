@@ -17,6 +17,8 @@
     See also bugs [#1059](https://sourceforge.net/p/pmd/bugs/1059) and [#1339](https://sourceforge.net/p/pmd/bugs/1339/).
 *   New Rule: rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion: Checks the usage of ${project.version} in
     Maven POM files. This rule can be found in the pmd-xml module.
+*   New Rule: rulesets/pom/basic.xml/InvalidDependencyTypes: Verifies that only the default types (jar, war, ...)
+    for dependencies are used. This rule can be found in the pmd-xml module.
 
 
 **Pull Requests:**
