@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -31,9 +32,11 @@ public class OnlyOneReturnRule extends AbstractJavaRule {
 
         List<ASTReturnStatement> returnNodes = new ArrayList<ASTReturnStatement>();
         node.findDescendantsOfType(ASTReturnStatement.class, returnNodes, false);
+        returnNodes = filterLambdaExpressions(returnNodes);
+
         if (returnNodes.size() > 1) {
             for (Iterator<ASTReturnStatement> i = returnNodes.iterator(); i.hasNext();) {
-        	Node problem = i.next();
+                Node problem = i.next();
                 // skip the last one, it's OK
                 if (!i.hasNext()) {
                     continue;
@@ -44,4 +47,21 @@ public class OnlyOneReturnRule extends AbstractJavaRule {
         return data;
     }
 
+    /**
+     * Checks whether the return statement is inside a lambda expression, and if
+     * so, this return statement is removed.
+     * 
+     * @param returnNodes
+     *            all the return statements inside the method
+     * @return all return statements, that are NOT within a lambda expression.
+     */
+    private List<ASTReturnStatement> filterLambdaExpressions(List<ASTReturnStatement> returnNodes) {
+        List<ASTReturnStatement> filtered = new ArrayList<ASTReturnStatement>();
+        for (ASTReturnStatement ret : returnNodes) {
+            if (ret.getFirstParentOfType(ASTLambdaExpression.class) == null) {
+                filtered.add(ret);
+            }
+        }
+        return filtered;
+    }
 }
