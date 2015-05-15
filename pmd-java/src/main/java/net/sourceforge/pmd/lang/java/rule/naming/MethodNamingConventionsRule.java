@@ -3,9 +3,14 @@
  */
 package net.sourceforge.pmd.lang.java.rule.naming;
 
+import java.util.List;
+
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
@@ -30,6 +35,10 @@ public class MethodNamingConventionsRule extends AbstractJavaRule {
             return data;
         }
 
+        if (isOverriddenMethod(node)) {
+            return data;
+        }
+
         String methodName = node.getImage();
 
         if (Character.isUpperCase(methodName.charAt(0))) {
@@ -41,4 +50,15 @@ public class MethodNamingConventionsRule extends AbstractJavaRule {
         return data;
     }
 
+    private boolean isOverriddenMethod(ASTMethodDeclarator node) {
+        ASTClassOrInterfaceBodyDeclaration declaration = node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        List<ASTMarkerAnnotation> annotations = declaration.findDescendantsOfType(ASTMarkerAnnotation.class);
+        for (ASTMarkerAnnotation ann : annotations) {
+            ASTName name = ann.getFirstChildOfType(ASTName.class);
+            if (name != null && name.hasImageEqualTo("Override")) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
