@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -50,7 +51,11 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
         for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
             Node child = parent.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0) {
-                child = child.jjtGetChild(0);
+                if (!(child.jjtGetChild(0) instanceof ASTAnnotation) || child.jjtGetNumChildren() == 1) {
+                    child = child.jjtGetChild(0);
+                } else {
+                    child = child.jjtGetChild(1);
+                }
             }
             if (child.equals(node)) {
                 break;

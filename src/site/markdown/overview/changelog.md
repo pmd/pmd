@@ -17,5 +17,6 @@
 *   [#1343](https://sourceforge.net/p/pmd/bugs/1343/): MethodNamingConventions for overrided methods
 *   [#1345](https://sourceforge.net/p/pmd/bugs/1345/): UseCollectionIsEmpty throws NullPointerException
 *   [#1353](https://sourceforge.net/p/pmd/bugs/1353/): False positive "Only One Return" with lambda
+*   [#1354](https://sourceforge.net/p/pmd/bugs/1354/): Complex FieldDeclarationsShouldBeAtStartOfClass false positive with Spring annotations
 
 **API Changes:**
