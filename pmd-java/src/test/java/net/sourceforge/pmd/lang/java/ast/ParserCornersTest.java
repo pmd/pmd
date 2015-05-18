@@ -79,6 +79,14 @@ public class ParserCornersTest extends ParserTst {
                 + "    private void deleteDirectory(String path) {\n" + "        LOG.debug(path);\n" + "    }\n" + "}");
     }
 
+    /**
+     * Test for https://sourceforge.net/p/pmd/bugs/1355/
+     */
+    @Test
+    public void emptyFileJustComment() {
+        parseJava18("// just a comment");
+    }
+
     @Test
     public void testMultipleExceptionCatching() {
         String code = "public class Foo { public void bar() { "
