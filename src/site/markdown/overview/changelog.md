@@ -7,6 +7,7 @@
 **Feature Request and Improvements:**
 
 *   [#1344](https://sourceforge.net/p/pmd/bugs/1344/): AbstractNaming should check reverse
+*   [#1361](https://sourceforge.net/p/pmd/bugs/1361/): ShortVariable and ShortMethodName configuration
 
 **New/Modified/Deprecated Rules:**
 
@@ -24,6 +25,10 @@
 *   Modified Rule: rulesets/java/naming.xml/AbstractNaming: By default, this rule flags now classes,
     that are named "Abstract" but are not abstract. This behavior can be disabled by setting
     the new property "strict" to false.
+*   Modified Rule: rulesets/java/naming.xml/ShortVariable: Additional property `minimum` to configure
+    the minimum required length of a variable name.
+*   Modified Rule: rulesets/java/naming.xml/ShortMethodName: Additional property `minimum` to configure
+    the minimum required length of a method name.
 
 
 **Pull Requests:**

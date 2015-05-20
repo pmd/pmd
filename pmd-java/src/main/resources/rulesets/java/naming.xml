@@ -20,10 +20,11 @@ Fields, local variables, or parameter names that are very short are not helpful 
     </description>
     <priority>3</priority>
       <properties>
+          <property name="minimum" type="Integer" value="3" min="1" max="100" description="Number of characters that are required as a minimum for a variable name."/>
           <property name="xpath">
               <value>
                   <![CDATA[
-//VariableDeclaratorId[string-length(@Image) < 3]
+//VariableDeclaratorId[string-length(@Image) < $minimum]
  [not(ancestor::ForInit)]
  [not(../../VariableDeclarator and ../../../LocalVariableDeclaration and ../../../../ForStatement)]
  [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
@@ -95,10 +96,11 @@ Method names that are very short are not helpful to the reader.
      </description>
       <priority>3</priority>
       <properties>
+          <property name="minimum" type="Integer" value="3" min="1" max="100" description="Number of characters that are required as a minimum for a method name."/>
           <property name="xpath">
               <value>
                   <![CDATA[
-//MethodDeclarator[string-length(@Image) < 3]
+//MethodDeclarator[string-length(@Image) < $minimum]
                   ]]>
               </value>
           </property>
