@@ -79,7 +79,7 @@ public class ShortMethodName {
         <code><![CDATA[
 public class ShortMethodName {
     public void longMethodName() {}
-    public void bar() {} // too short
+    public void bar() {} // that's ok now
 }
         ]]></code>
     </test-code>
