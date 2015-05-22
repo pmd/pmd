@@ -70,21 +70,21 @@ public class ParserCornersTest extends ParserTst {
      */
     @Test
     public void testLambdaBug1333() {
-        parseJava18("final class Bug1333 {\n" + 
-                "    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);\n" + 
-                "\n" + 
-                "    public void deleteDirectoriesByNamePattern() {\n" + 
-                "        delete(path -> deleteDirectory(path));\n" + 
-                "    }\n" + 
-                "\n" + 
-                "    private void delete(Consumer<? super String> consumer) {\n" + 
-                "        LOG.debug(consumer.toString());\n" + 
-                "    }\n" + 
-                "\n" + 
-                "    private void deleteDirectory(String path) {\n" + 
-                "        LOG.debug(path);\n" + 
-                "    }\n" + 
-                "}");
+        parseJava18("final class Bug1333 {\n"
+                + "    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);\n" + "\n"
+                + "    public void deleteDirectoriesByNamePattern() {\n"
+                + "        delete(path -> deleteDirectory(path));\n" + "    }\n" + "\n"
+                + "    private void delete(Consumer<? super String> consumer) {\n"
+                + "        LOG.debug(consumer.toString());\n" + "    }\n" + "\n"
+                + "    private void deleteDirectory(String path) {\n" + "        LOG.debug(path);\n" + "    }\n" + "}");
+    }
+
+    /**
+     * Test for https://sourceforge.net/p/pmd/bugs/1355/
+     */
+    @Test
+    public void emptyFileJustComment() {
+        parseJava18("// just a comment");
     }
 
     @Test

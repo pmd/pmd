@@ -104,14 +104,32 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
     private boolean isCompare(Node equality) {
         if (isLiteralLeftHand(equality)) {
             return checkComparison(inverse.get(equality.getImage()), equality, 0);
-        } else {
+        } else if (isLiteralRightHand(equality)) {
             return checkComparison(equality.getImage(), equality, 1);
         }
+        return false;
     }
 
     private boolean isLiteralLeftHand(Node equality) {
-        return equality.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0
-                && equality.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral;
+        return isLiteral(equality, 0);
+    }
+
+    private boolean isLiteralRightHand(Node equality) {
+        return isLiteral(equality, 1);
+    }
+
+    private boolean isLiteral(Node equality, int child) {
+        Node target = equality.jjtGetChild(child);
+        target = getFirstChildOrThis(target);
+        target = getFirstChildOrThis(target);
+        return target instanceof ASTLiteral;
+    }
+
+    private Node getFirstChildOrThis(Node node) {
+        if (node.jjtGetNumChildren() > 0) {
+            return node.jjtGetChild(0);
+        }
+        return node;
     }
 
     /**
@@ -126,7 +144,10 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @see #getComparisonTargets()
      */
     private boolean checkComparison(String operator, Node equality, int i) {
-        Node target = equality.jjtGetChild(i).jjtGetChild(0).jjtGetChild(0);
+        Node target = equality
+                .jjtGetChild(i)
+                .jjtGetChild(0)
+                .jjtGetChild(0);
         return target instanceof ASTLiteral && getComparisonTargets().get(operator).contains(target.getImage());
     }
 

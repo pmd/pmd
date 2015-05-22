@@ -156,4 +156,21 @@ public class MyClass {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>#1354 Complex FieldDeclarationsShouldBeAtStartOfClass false positive with Spring annotations</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyClass {
+    private static final String MY_STRING = "STRING";
+
+    @Autowired
+    private MyPrivate myPrivate;
+
+    @Bean
+    public void myPublicBean() {}
+
+    private static void myPrivateStatic() {}
+}
+    ]]></code>
+  </test-code>
 </test-data>

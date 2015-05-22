@@ -237,4 +237,15 @@ public class PmdBug {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1330 AvoidReassigningParameters does not work with varargs</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AvoidReassigningParameters {
+    public void a(String... s) {
+        s[0] =  "";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

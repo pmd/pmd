@@ -34,14 +34,9 @@
 **Pull Requests:**
 
 *   [#21](https://github.com/adangel/pmd/pull/21): Added PMD Rules for Singleton pattern violations.
-*   [#53](https://github.com/pmd/pmd/pull/53): Fix some NullPointerExceptions
 *   [#54](https://github.com/pmd/pmd/pull/54): Add a new rulesets for Maven's POM rules
 
 **Bugfixes:**
 
-*   [#1332](https://sourceforge.net/p/pmd/bugs/1332/): False Positive: UnusedPrivateMethod
-*   [#1333](https://sourceforge.net/p/pmd/bugs/1333/): Error while processing Java file with Lambda expressions
-*   [#1337](https://sourceforge.net/p/pmd/bugs/1337/): False positive "Avoid throwing raw exception types" when exception is not thrown
-*   [#1338](https://sourceforge.net/p/pmd/bugs/1338/): The pmd-java8 POM bears the wrong parent module version
 
 **API Changes:**

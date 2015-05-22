@@ -294,4 +294,27 @@ public class PMDIsEmptyFalsePositive {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1345 UseCollectionIsEmpty throws NullPointerException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package org.oikarinen.pmdbugbait;
+import java.util.List;
+
+public class PmdBugBait {
+    public int getSize() {
+        return 0;
+    }
+
+    /**
+     * "this." before the method call triggers the bug
+     */
+    public void compareSizeToThisPointMethod(List<String> list) {
+        if (list.size() < this.getSize()) {
+            throw new IllegalArgumentException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
