@@ -1,14 +1,6 @@
 # Changelog
 
-## ????? - 5.3.2-SNAPSHOT
-
-**New Supported Languages:**
-
-**Feature Request and Improvements:**
-
-**New/Modified/Deprecated Rules:**
-
-**Pull Requests:**
+## 22-May-2015 - 5.3.2
 
 **Bugfixes:**
 
@@ -20,5 +12,3 @@
 *   [#1353](https://sourceforge.net/p/pmd/bugs/1353/): False positive "Only One Return" with lambda
 *   [#1354](https://sourceforge.net/p/pmd/bugs/1354/): Complex FieldDeclarationsShouldBeAtStartOfClass false positive with Spring annotations
 *   [#1355](https://sourceforge.net/p/pmd/bugs/1355/): NullPointerException in a java file having a single comment line
-
-**API Changes:**
