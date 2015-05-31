@@ -12,4 +12,6 @@
 
 **Bugfixes:**
 
+*   [#1364](https://sourceforge.net/p/pmd/bugs/1364/): FieldDeclarationsShouldBeAtStartOfClass false positive using multiple annotations
+
 **API Changes:**
