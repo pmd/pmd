@@ -521,6 +521,8 @@
                         <reports>
                             <report>javadoc</report>
                             <report>test-javadoc</report>
+                            <report>aggregate</report>
+                            <report>test-aggregate</report>
                         </reports>
                     </reportSet>
                 </reportSets>

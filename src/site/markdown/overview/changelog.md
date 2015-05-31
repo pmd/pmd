@@ -13,5 +13,6 @@
 **Bugfixes:**
 
 *   [#1364](https://sourceforge.net/p/pmd/bugs/1364/): FieldDeclarationsShouldBeAtStartOfClass false positive using multiple annotations
+*   [#1365](https://sourceforge.net/p/pmd/bugs/1365/): Aggregated javadoc report is missing
 
 **API Changes:**
