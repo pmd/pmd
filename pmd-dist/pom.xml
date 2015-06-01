@@ -142,6 +142,19 @@
 
     <profiles>
         <profile>
+            <id>jdk8-modules</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>net.sourceforge.pmd</groupId>
+                    <artifactId>pmd-ui</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>jdk9-disabled</id>
             <activation>
                 <jdk>!1.9</jdk>

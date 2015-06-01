@@ -778,12 +778,13 @@
         </profile>
 
         <profile>
-            <id>jdk8-integration</id>
+            <id>jdk8-modules</id>
             <activation>
                 <jdk>1.8</jdk>
             </activation>
             <modules>
                 <module>pmd-java8</module>
+                <module>pmd-ui</module>
             </modules>
         </profile>
 
