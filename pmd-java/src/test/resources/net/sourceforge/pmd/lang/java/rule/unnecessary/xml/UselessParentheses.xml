@@ -243,4 +243,15 @@ public class NewClass {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1366 UselessParentheses false positive on multiple equality operators</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Useless {
+    public boolean test(Object a, Object b) {
+        return (a == null) == (b == null);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

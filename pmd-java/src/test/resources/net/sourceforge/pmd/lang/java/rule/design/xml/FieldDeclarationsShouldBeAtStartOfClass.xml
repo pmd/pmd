@@ -173,4 +173,28 @@ public class MyClass {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description>#1364 FieldDeclarationsShouldBeAtStartOfClass false positive using multiple annotations</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyEntity {
+
+  private static final String MY_STRING = "STRING";
+
+  @Id
+  @Column
+  private Long id;
+
+  @NotNull
+  @ManyToOne
+  @JoinColumn
+  @Valid
+  private RelationEntity relation;
+
+  public MyEntity() {
+  }
+
+}
+    ]]></code>
+  </test-code>
 </test-data>

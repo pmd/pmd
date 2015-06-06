@@ -11,102 +11,126 @@ Summary
 <table>
     <tr>
         <th>IDE</th>
+        <th>Homepage</th>
         <th>Source Code</th>
         <th>Maintainers</th>
     </tr>
 
     <tr>
         <td><a href="#BlueJ">BlueJ</a></td>
-        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-bluej/">pmd-bluej</a></td>
+        <td></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
     <tr>
         <td><a href="#Code_Guide">CodeGuide</a></td>
+        <td></td>
         <td>N/A</td>
         <td>Austin Moore</td>
     </tr>
 
     <tr>
         <td><a href="#Eclipse">Eclipse</a></td>
-        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-eclipse-plugin/">pmd-eclipse</a></td>
+        <td></td>
+        <td><a href="https://github.com/pmd/pmd-eclipse-plugin">github: pmd/pmd-eclipse</a></td>
         <td>Philippe Herlin</td>
     </tr>
 
     <tr>
+        <td>eclipse-pmd</td>
+        <td><a href="http://acanda.github.io/eclipse-pmd/">http://acanda.github.io/eclipse-pmd/</a></td>
+        <td><a href="https://github.com/acanda/eclipse-pmd/">github: acanda/eclipse-pmd</a></td>
+        <td>Philip Graf</td>
+    </tr>
+
+    <tr>
         <td><a href="#Emacs">Emacs</a></td>
-        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-emacs/">pmd-emacs</a></td>
+        <td></td>
+        <td><a href="https://github.com/pmd/pmd-emacs/">github: pmd/pmd-emacs</a></td>
         <td>Nascif Abousalh Neto</td>
     </tr>
 
     <tr>
         <td><a href="#Gel">Gel</a></td>
-        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-gel/">pmd-gel</a></td>
+        <td></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-gel/">github: pmd/pmd-misc/pmd-gel</a></td>
         <td>Andrei Lumianski</td>
     </tr>
 
     <tr>
         <td><a href="#IDEA">IntelliJ IDEA</a></td>
+        <td></td>
         <td>N/A</td>
         <td>Amit Dev, <a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
     <tr>
         <td><a href="#IDEA_-_QAPlug">IntelliJ IDEA - QAPlug</a></td>
+        <td></td>
         <td>N/A</td>
         <td>Jakub Sławiński</td>
     </tr>
 
     <tr>
         <td><a href="#JBuilder">JBuilder</a></td>
-        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-jbuilder/">pmd-jbuilder</a></td>
+        <td></td>
+        <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-jbuilder/">github: pmd/pmd-misc/pmd-jbuilder</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
     <tr>
         <td><a href="#JCreator">JCreator</a></td>
+        <td></td>
         <td>N/A</td>
         <td>Brant Gurganus</td>
     </tr>
 
     <tr>
         <td><a href="#JDeveloper">JDeveloper</a></td>
-        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-jdeveloper.12.1.2/">pmd-jdeveloper</a></td>
+        <td></td>
+        <td><a href="https://github.com/pmd/pmd-jdeveloper">github: pmd/pmd-jdeveloper</a></td>
         <td><a href="http://develishdevelopment.wordpress.com/">Torsten Kleiber</a></td>
     </tr>
 
     <tr>
         <td><a href="#JEdit">JEdit</a></td>
-        <td><a href="https://github.com/pmd/pmd/tree/master/pmd-jedit/">pmd-jedit</a></td>
-        <td>Jiger Patel</td>
+        <td><a href="http://plugins.jedit.org/plugins/?PMDPlugin">jEdit - PMD Plugin</a></td>
+        <td><a href="https://sourceforge.net/p/jedit/PMDPlugin/ci/master/tree/">sourceforge: jedit/PMDPlugin</a></td>
+        <td>Jiger Patel, Dale Anson</td>
     </tr>
 
     <tr>
         <td><a href="#Maven">Maven</a></td>
+        <td></td>
         <td>N/A</td>
         <td>N/A</td>
     </tr>
 
     <tr>
         <td><a href="#Maven_2">Maven 2</a></td>
+        <td></td>
         <td>N/A</td>
         <td><a href="http://maven.apache.org/plugins/maven-pmd-plugin/">apache.org / maven</a></td>
     </tr>
 
     <tr>
         <td><a href="#NetBeans">NetBeans</a></td>
+        <td></td>
         <td><a href="http://kenai.com/projects/sqe/">SQE</a></td>
         <td>N/A</td>
     </tr>
 
     <tr>
         <td><a href="#TextPad">TextPad</a></td>
+        <td></td>
         <td>N/A</td>
         <td>Jeff Epstein</td>
     </tr>
 
     <tr>
         <td><a href="#WebLogic_Workshop_8.1.x">WebLogic Workshop 8.1.x</a></td>
+        <td></td>
         <td>N/A</td>
         <td>Kevin Conaway</td>
     </tr>

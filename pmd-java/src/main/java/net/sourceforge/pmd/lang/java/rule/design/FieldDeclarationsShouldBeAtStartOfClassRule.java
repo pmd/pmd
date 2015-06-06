@@ -51,11 +51,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
         for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
             Node child = parent.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0) {
-                if (!(child.jjtGetChild(0) instanceof ASTAnnotation) || child.jjtGetNumChildren() == 1) {
-                    child = child.jjtGetChild(0);
-                } else {
-                    child = child.jjtGetChild(1);
-                }
+                child = skipAnnotations(child);
             }
             if (child.equals(node)) {
                 break;
@@ -79,5 +75,22 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             }
         }
         return data;
+    }
+
+    /**
+     * Ignore all annotations, until anything, that is not an annotation and
+     * return this node
+     * @param child the node from where to start the search
+     * @return the first child or the first child after annotations
+     */
+    private Node skipAnnotations(Node child) {
+        Node nextChild = child.jjtGetChild(0);
+        for (int j = 0; j < child.jjtGetNumChildren(); j++) {
+            if (!(child.jjtGetChild(j) instanceof ASTAnnotation)) {
+                nextChild = child.jjtGetChild(j);
+                break;
+            }
+        }
+        return nextChild;
     }
 }

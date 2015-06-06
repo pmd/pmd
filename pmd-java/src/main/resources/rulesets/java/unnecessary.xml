@@ -253,7 +253,8 @@ public class Test {
     count(./InclusiveOrExpression)=0 and
     count(./ExclusiveOrExpression)=0 and
     count(./ConditionalAndExpression)=0 and
-    count(./ConditionalOrExpression)=0]
+    count(./ConditionalOrExpression)=0 and
+    count(./EqualityExpression)=0]
           ]]>
           </value>
        </property>
