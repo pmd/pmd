@@ -58,7 +58,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private Set<String> closeTargets = new HashSet<String>();
     private static final StringMultiProperty CLOSE_TARGETS_DESCRIPTOR = new StringMultiProperty("closeTargets",
-            "Methods which may close this resource", new String[] {}, 1.0f, ',');
+            "Methods which may close this resource", new String[] {"close"}, 1.0f, ',');
 
     private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types", "Affected types",
             new String[] { "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet" }, 2.0f, ',');
@@ -121,14 +121,8 @@ public class CloseResourceRule extends AbstractJavaRule {
                     if (clazz.getType() != null && types.contains(clazz.getType().getName()) || clazz.getType() == null
                             && simpleTypes.contains(toSimpleType(clazz.getImage())) || types.contains(clazz.getImage())) {
 
-                        // if the variables are initialized with null, then they
-                        // are ignored.
-                        // At some point later in the code, there is an
-                        // assignment - however, this is currently ignored
-                        if (!hasNullInitializer(var)) {
-                            ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-                            ids.add(id);
-                        }
+                        ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+                        ids.add(id);
                     }
                 }
             }
@@ -158,7 +152,6 @@ public class CloseResourceRule extends AbstractJavaRule {
         // What are the chances of a Connection being instantiated in a
         // for-loop init block? Anyway, I'm lazy!
         String variableToClose = id.getImage();
-        String target = variableToClose + ".close";
         Node n = var;
 
         while (!(n instanceof ASTBlock) && !(n instanceof ASTConstructorDeclaration)) {
@@ -182,7 +175,9 @@ public class CloseResourceRule extends AbstractJavaRule {
             // variable declaration and
             // the beginning of the try block.
             ASTBlockStatement tryBlock = t.getFirstParentOfType(ASTBlockStatement.class);
-            if (parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
+            if (!hasNullInitializer(var) // no need to check for critical statements, if
+                                         // the variable has been initialized with null
+                && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
 
                 List<ASTBlockStatement> blocks = parentBlock.jjtGetParent().findChildrenOfType(ASTBlockStatement.class);
                 int parentBlockIndex = blocks.indexOf(parentBlock);
@@ -208,11 +203,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 List<ASTName> names = f.findDescendantsOfType(ASTName.class);
                 for (ASTName oName : names) {
                     String name = oName.getImage();
-                    if (name.equals(target) && nullCheckIfCondition(f, oName, variableToClose)) {
-                        closed = true;
-                        break;
-                    }
-                    if (name.contains(".")) {
+                    if (name != null && name.contains(".")) {
                         String[] parts = name.split("\\.");
                         if (parts.length == 2) {
                             String methodName = parts[1];
