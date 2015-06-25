@@ -17,7 +17,6 @@ public class WsdlLanguageModule extends BaseLanguageModule {
     public WsdlLanguageModule() {
         super(NAME, null, TERSE_NAME, XmlRuleChainVisitor.class, "wsdl");
         addVersion("", new XmlHandler(), true);
-        System.err.println("Carregou modulo WSDL");
     }
 
 }
