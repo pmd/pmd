@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.xml.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -33,6 +34,15 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
 
     public AbstractXmlRule() {
 	super.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
+	defineProperties();
+    }
+    
+    protected AbstractXmlRule(Language language) {
+	super.setLanguage(language);
+	defineProperties();
+    }
+    
+    private void defineProperties() {
 	definePropertyDescriptor(COALESCING_DESCRIPTOR);
 	definePropertyDescriptor(EXPAND_ENTITY_REFERENCES_DESCRIPTOR);
 	definePropertyDescriptor(IGNORING_COMMENTS_DESCRIPTOR);
