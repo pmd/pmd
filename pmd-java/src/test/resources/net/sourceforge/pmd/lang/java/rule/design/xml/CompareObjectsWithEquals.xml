@@ -189,4 +189,16 @@ class SomeObject {
 */
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1376 CompareObjectsWithEquals fails for type annotated method parameter</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class CompareWithEqualsTest {
+   public static boolean test(@Nullable Object a, Object b)
+   {
+      return a == b;
+   }
+}
+        ]]></code>
+    </test-code>
 </test-data>
