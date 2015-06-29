@@ -1237,4 +1237,32 @@ public class Escape {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1369 ConsecutiveLiteralAppends not detected properly on StringBuffer</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,12</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literal Strings. Use a single append with a single combined String.</message>
+            <message>StringBuffer (or StringBuilder).append is called 3 consecutive times with literal Strings. Use a single append with a single combined String.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class StringBufferTest {
+
+    public void test() {
+
+        // This lint is reported as ConsecutiveLiteralAppends, but says ".append is called **5** consecutive times"
+        final StringBuffer stringBuffer = new StringBuffer().append("agrego ").append("un ");
+        stringBuffer.append("string "); // and in this line says ".append is called **4** consecutive times"
+        Log.i(TAG, stringBuffer.toString());
+
+        final StringBuffer stringBuffer2 = new StringBuffer();
+        // ConsecutiveLiteralAppends is not reported on any of these lines
+        stringBuffer2.append("agrego ");
+        stringBuffer2.append("un ");
+        stringBuffer2.append("string ");
+        Log.i(TAG, stringBuffer2.toString());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
