@@ -4,6 +4,8 @@
 package net.sourceforge.pmd.cli;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -60,8 +62,9 @@ public class PMDParameters {
     @Parameter(names = { "-minimumpriority", "-min" }, description = "Rule priority threshold; rules with lower priority than configured here won't be used. Default is '5' which is the lowest priority.", converter = RulePriorityConverter.class)
     private RulePriority minimumPriority = RulePriority.LOW;
 
-    @Parameter(names = { "-property", "-P" }, description = "{name}={value}: Define a property for the report format.", converter = PropertyConverter.class)
-    private Properties properties = new Properties();
+    @Parameter(names = { "-property", "-P" }, description = "{name}={value}: Define a property for the report format.",
+            converter = PropertyConverter.class)
+    private List<Properties> properties = new ArrayList<Properties>();
 
     @Parameter(names = { "-reportfile", "-r" }, description = "Sends report output to a file; default to System.out.")
     private String reportfile = null;
@@ -186,7 +189,11 @@ public class PMDParameters {
     }
 
     public Properties getProperties() {
-        return properties;
+        Properties result = new Properties();
+        for (Properties p : properties) {
+            result.putAll(p);
+        }
+        return result;
     }
 
     public String getReportfile() {

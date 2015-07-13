@@ -21,5 +21,6 @@
 *   [#1372](https://sourceforge.net/p/pmd/bugs/1372/): False Negative for CloseResource rule.
 *   [#1375](https://sourceforge.net/p/pmd/bugs/1375/): CloseResource not detected properly
 *   [#1376](https://sourceforge.net/p/pmd/bugs/1376/): CompareObjectsWithEquals fails for type annotated method parameter
+*   [#1379](https://sourceforge.net/p/pmd/bugs/1379/): PMD CLI: Cannot specify multiple properties
 
 **API Changes:**

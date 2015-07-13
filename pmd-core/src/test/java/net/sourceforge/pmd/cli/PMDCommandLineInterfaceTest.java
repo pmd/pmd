@@ -35,7 +35,21 @@ public class PMDCommandLineInterfaceTest {
 
         Assert.assertEquals("output_folder", params.getProperties().getProperty("outputDir"));
     }
-    
+
+    @Test
+    public void testMultipleProperties() {
+        PMDParameters params = new PMDParameters();
+        String[] args = { "-d", "source_folder", "-f", "ideaj", "-P", "sourcePath=/home/user/source/",
+                "-P", "fileName=Foo.java",
+                "-P", "classAndMethodName=Foo.method",
+                "-R", "java-empty" };
+        PMDCommandLineInterface.extractParameters(params, args, "PMD");
+
+        Assert.assertEquals("/home/user/source/", params.getProperties().getProperty("sourcePath"));
+        Assert.assertEquals("Foo.java", params.getProperties().getProperty("fileName"));
+        Assert.assertEquals("Foo.method", params.getProperties().getProperty("classAndMethodName"));
+    }
+
     @Test
     public void testSetStatusCodeOrExit_DoExit() {
         exit.expectSystemExitWithStatus(0);
