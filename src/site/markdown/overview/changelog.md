@@ -22,5 +22,6 @@
 *   [#1375](https://sourceforge.net/p/pmd/bugs/1375/): CloseResource not detected properly
 *   [#1376](https://sourceforge.net/p/pmd/bugs/1376/): CompareObjectsWithEquals fails for type annotated method parameter
 *   [#1379](https://sourceforge.net/p/pmd/bugs/1379/): PMD CLI: Cannot specify multiple properties
+*   [#1381](https://sourceforge.net/p/pmd/bugs/1381/): CPD Cannot use CSV/VS Renderers because they don't support encoding property
 
 **API Changes:**
