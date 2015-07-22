@@ -14,5 +14,6 @@ public class CommentRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "CommentRequired");
         addRule(RULESET, "CommentSize");
         addRule(RULESET, "CommentContent");
+        addRule(RULESET, "CommentDefaultAccessModifier");
     }
 }
