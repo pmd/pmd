@@ -37,5 +37,6 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ReturnFromFinallyBlock");
         addRule(RULESET, "DontCallThreadRun");
         addRule(RULESET, "DontUseFloatTypeForLoopIndices");
+        addRule(RULESET, "SimplifiedTernary");
     }
 }

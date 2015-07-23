@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? true : foo
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public boolean test() {
+        return condition ? true : something();
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? false : foo
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public void test() {
+        final boolean value = condition ? false : something();
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? foo : true
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public boolean test() {
+        return condition ? something() : true;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? foo : false
+            ]]>
+        </description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public void test() {
+        final boolean otherValue = condition ? something() : false;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+condition ? true : false
+            ]]>
+        </description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+public class Foo {
+    public boolean test() {
+        return condition ? true : false; // Existing rule
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+</test-data>
