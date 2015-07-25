@@ -162,10 +162,10 @@ In case of releasing from a release branch:
 
 Go to <https://github.com/pmd/pmd/releases>
 
-*   Select the just pushed tag: "pmd_releases/<version>"
-*   Set the title: "PMD <version> (DD-MMMM-YYYY)"
+*   Select the just pushed tag: "pmd_releases/&lt;version>"
+*   Set the title: "PMD &lt;version> (DD-MMMM-YYYY)"
 *   Copy/Paste the changelog.md file
-*   Upload the 3 zip files (pmd-<version>-{src,bin,doc}.zip).
+*   Upload the 3 zip files (pmd-&lt;version>-{src,bin,doc}.zip).
 *   Publish the release
 
 ## Submit a news on SF
@@ -186,8 +186,8 @@ Go to <https://github.com/pmd/pmd/releases>
 
 ### Create new milestone
 
-Under <https://sourceforge.net/p/pmd/bugs/milestones> close the milestone "PMD-<version>"
-and create a new milestone for the next version (PMD-<version+1>).
+Under <https://sourceforge.net/p/pmd/bugs/milestones> close the milestone "PMD-&lt;version>"
+and create a new milestone for the next version (PMD-&lt;version+1>).
 
 ### Update changelog
 
@@ -217,12 +217,5 @@ and create a new milestone for the next version (PMD-<version+1>).
 
         $ git commit -m "Prepare next development version"
         $ git push origin master
-
-
-
-
-
-
-
 
 
