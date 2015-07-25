@@ -114,6 +114,16 @@ public class CPDCommandLineInterfaceTest {
         Assert.assertTrue(out.contains("<duplication lines=\"3\" tokens=\"10\">"));
     }
 
+    @Test
+    public void testCSVFormat() throws Exception {
+        runCPD("--minimum-tokens", "100",
+               "--files", "src/test/resources/net/sourceforge/pmd/cpd/badandgood/",
+               "--language", "c",
+               "--format", "csv");
+        String out = bufferStdout.toString("UTF-8");
+        Assert.assertFalse(out.contains("Couldn't instantiate renderer"));
+    }
+
     private void runCPD(String... args) {
         System.setProperty(CPDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
         CPD.main(args);

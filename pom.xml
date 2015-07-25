@@ -311,7 +311,7 @@
                         <localCheckout>true</localCheckout>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>pmd_releases/@{project.version}</tagNameFormat>
-                        <goals>deploy site site:stage</goals>
+                        <goals>deploy</goals>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -775,7 +775,7 @@
         <profile>
             <id>pmd-release</id>
             <properties>
-                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
+                <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
             </properties>
         </profile>
 

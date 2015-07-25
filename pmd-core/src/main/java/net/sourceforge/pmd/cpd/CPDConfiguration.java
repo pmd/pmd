@@ -3,10 +3,12 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -173,16 +175,24 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
         try {
             Renderer renderer = clazz.getDeclaredConstructor().newInstance();
-
-            PropertyDescriptor encodingProperty = new PropertyDescriptor("encoding", clazz);
-            Method method = encodingProperty.getWriteMethod();
-            if (method != null) {
-                method.invoke(renderer, encoding);
-            }
+            setRendererEncoding(renderer, encoding);
             return renderer;
         } catch (Exception e) {
             System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
             return new SimpleRenderer();
+        }
+    }
+
+    private static void setRendererEncoding(Renderer renderer, String encoding)
+            throws IllegalAccessException, InvocationTargetException {
+        try {
+            PropertyDescriptor encodingProperty = new PropertyDescriptor("encoding", renderer.getClass());
+            Method method = encodingProperty.getWriteMethod();
+            if (method != null) {
+                method.invoke(renderer, encoding);
+            }
+        } catch (IntrospectionException e) {
+            // ignored - maybe this renderer doesn't have a encoding property
         }
     }
 
