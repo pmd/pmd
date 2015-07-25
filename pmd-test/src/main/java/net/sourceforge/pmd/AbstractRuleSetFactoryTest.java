@@ -115,7 +115,7 @@ public abstract class AbstractRuleSetFactoryTest {
                     messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute"
                             + PMD.EOL;
                 } else {
-                    String expectedExternalInfoURL = "http://pmd.sourceforge.net/.+/rules/"
+                    String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/rules/"
                             + fileName.replaceAll("rulesets/", "").replaceAll(".xml", "") + ".html#" + rule.getName();
                     if (rule.getExternalInfoUrl() == null
                             || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {

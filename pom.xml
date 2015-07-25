@@ -736,7 +736,7 @@
         <profile>
             <id>pmd-release</id>
             <properties>
-                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
+                <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
             </properties>
         </profile>
         <profile>
@@ -754,7 +754,7 @@
                 </site>
             </distributionManagement>
             <properties>
-                <pmd.website.baseurl>http://pmd.sourceforge.net/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
+                <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
             </properties>
             <build>
                 <plugins>
