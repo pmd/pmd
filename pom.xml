@@ -311,7 +311,7 @@
                         <localCheckout>true</localCheckout>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>pmd_releases/@{project.version}</tagNameFormat>
-                        <goals>deploy site site:stage</goals>
+                        <goals>deploy</goals>
                     </configuration>
                 </plugin>
                 <plugin>
