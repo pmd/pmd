@@ -20,8 +20,8 @@ Make sure code is up to date and everything is committed and pushed with git:
 *   Ensure all the new rules are listed in a the proper file:
     `pmd-core/src/main/resources/rulesets/releases/<version>.xml` file.
 *   Update version/release info in **src/site/markdown/changelog.md**.
-*   Update **../pmd.sourceforge.net/.htaccess** of our website, to redirect to the new version
-*   Update **../pmd.sourceforge.net/index.html** to mention the new release
+*   Update **../pmd.github.io/latest/index.html** of our website, to redirect to the new version
+*   Update **../pmd.github.io/index.html** to mention the new release
 
 
     $ mvn clean install
@@ -95,12 +95,7 @@ start again with release:clean release:prepare):
 
     $ git tag -d pmd_releases/<version>
 
-## Create new milestone
-
-Under <https://sourceforge.net/p/pmd/bugs/> rename
-the bug milestone "PMD-next" to "PMD-&lt;version>" and create a new "PMD-next" milestone.
-
-## Publish artifacts
+## Publish maven artifacts
 
 Finally, in order to publish the release to Maven central,
 you need to release PMD via Sonatype Nexus:
@@ -114,15 +109,12 @@ you need to release PMD via Sonatype Nexus:
     eventually available through
     [maven central](http://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/).
 
-## Publish the release site on sourceforge
+## Create and publish the site / documentation
 
-Build it again - you can reuse the cleanly checked out local repository from maven-release-plugin.
-
-Upload command below will first create the maven site and then upload it:
+You can reuse the cleanly checked out local repository from maven-release-plugin.
 
     $ cd target/checkout/
-    $ mvn clean install site site:stage   # it's import to execute install,
-                                          # so that all pmd-*.jars are created and included in the zip packages
+    $ mvn site site:stage
 
 *   Before you upload the zip files, unzip and test once (just to be on the safe side of the road):
 
@@ -132,16 +124,17 @@ Upload command below will first create the maven site and then upload it:
         $ ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f html -R rulesets/java/unusedcode.xml
         $ cd ..; cd ../..
 
-*   While the site will be deployed to sourceforge, it's still usefull, to have it downloadable at once:
+*   While the site will be deployed to github, it's still usefull, to have it downloadable at once:
 
         $ cd target
         $ mv staging pmd-doc-<version>
         $ zip -r pmd-doc-<version>.zip pmd-doc-<version>/
         $ cd ..
 
-*   Upload the site to sourceforge:
+*   Add the site to the pmd.github.io repo:
 
-        $ rsync -avhzP target/pmd-doc-<version>/ your_sf_login@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-<version>/
+        $ rsync -avhP target/pmd-doc-<version>/ ../../../pmd.github.io/pmd-<version>/
+        $ (cd ../../../pmd.github.io; git add pmd-<version>; git commit -m "Added pmd-<version>")
 
 *   Upload the zip-files to sourceforge's file section:
 
@@ -155,19 +148,27 @@ Upload command below will first create the maven site and then upload it:
 *   Go to [Files](https://sourceforge.net/projects/pmd/files/pmd/), to folder "pmd/&lt;version>",
     and make the new binary pmd zip file the default download for all platforms.
 
-**Upload changes to pmd.sourceforge.net**
+## Push the repos
 
-    cd ../pmd.sourceforge.net
-    rsync -avhpz \
-      --exclude=bin/ \
-      --exclude=src/ \
-      --exclude=.classpath \
-      --exclude=.project \
-      --exclude=.git \
-      \
-      ./ your_sf_login@web.sourceforge.net:/home/project-web/pmd/htdocs/
+In case of releasing from master:
 
-## Social side of release
+        $ git push origin master; git push origin tag pmd_releases/<version>
+
+In case of releasing from a release branch:
+
+        $ git push origin pmd/<version>.x; git push origin tag pmd_releases/<version>
+
+## Create a new release on github
+
+Go to <https://github.com/pmd/pmd/releases>
+
+*   Select the just pushed tag: "pmd_releases/<version>"
+*   Set the title: "PMD <version> (DD-MMMM-YYYY)"
+*   Copy/Paste the changelog.md file
+*   Upload the 3 zip files (pmd-<version>-{src,bin,doc}.zip).
+*   Publish the release
+
+## Submit a news on SF
 
 *   Submit news to SF on the [PMD Project News](https://sourceforge.net/p/pmd/news/) page. You can use
     the following template:
@@ -175,9 +176,53 @@ Upload command below will first create the maven site and then upload it:
         PMD <version> released
         
         * minor version with lots of bug fixes
-        * Changelog: http://pmd.sourceforge.net/pmd-<version>/overview/changelog.html
-        * Download: https://sourceforge.net/projects/pmd/files/pmd/<version>/
+        * Changelog: https://pmd.github.io/pmd-<version>/overview/changelog.html
+        * Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F<version>
         * Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-<version>/
-        * Documentation: http://pmd.sourceforge.net/pmd-<version>/
+        * Documentation: https://pmd.github.io/pmd-<version>/
 
-*   Facebook, Google+, Twitter, LinkedIn and Xing (add whatever you feel is missing here...)
+
+## Prepare the next version
+
+### Create new milestone
+
+Under <https://sourceforge.net/p/pmd/bugs/milestones> close the milestone "PMD-<version>"
+and create a new milestone for the next version (PMD-<version+1>).
+
+### Update changelog
+
+*   Move version/releaseinfo from **src/site/markdown/overview/changelog.md** to **src/site/markdown/overview/changelog-old.md**.
+*   Update version/release info in **src/site/markdown/overview/changelog.md**. Use the following template:
+
+        # Changelog
+        
+        ## ????? - ${DEVELOPMENT_VERSION}
+        
+        **New Supported Languages:**
+        
+        **Feature Request and Improvements:**
+        
+        **New/Modified/Deprecated Rules:**
+        
+        **Pull Requests:**
+        
+        **Bugfixes:**
+        
+        **API Changes:**
+
+*   Update pmd-java8/pom.xml - the version is probably wrong.
+    Set it to the parent's=next development version.
+*   If you released from a release-branch, now merge the branch back into master.
+*   Commit and push
+
+        $ git commit -m "Prepare next development version"
+        $ git push origin master
+
+
+
+
+
+
+
+
+
