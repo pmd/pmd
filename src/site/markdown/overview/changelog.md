@@ -29,6 +29,9 @@
     the minimum required length of a variable name.
 *   Modified Rule: rulesets/java/naming.xml/ShortMethodName: Additional property `minimum` to configure
     the minimum required length of a method name.
+*   New Rule: rulesets/java/comments.xml/CommentDefaultAccessModifier: In order to avoid mistakes with
+    forgotten access modifiers for methods, this rule ensures, that you explicitly mark the usage of the
+    default access modifier by placing a comment.
 
 
 **Pull Requests:**
@@ -37,6 +40,7 @@
 *   [#54](https://github.com/pmd/pmd/pull/54): Add a new rulesets for Maven's POM rules
 *   [#55](https://github.com/pmd/pmd/pull/55): Fix run.sh for paths with spaces
 *   [#56](https://github.com/pmd/pmd/pull/56): Adding support for WSDL rules
+*   [#57](https://github.com/pmd/pmd/pull/57): Add default access modifier as comment rule
 
 **Bugfixes:**
 
