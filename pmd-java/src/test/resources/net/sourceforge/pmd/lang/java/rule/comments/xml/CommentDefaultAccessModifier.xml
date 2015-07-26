@@ -24,6 +24,7 @@ public class Foo {
     <test-code>
         <description>Some methods and Fields with default access modifier in a class</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
         <code-ref id="some-methods-fields-with-default-access-modifier"/>
     </test-code>
 
@@ -47,6 +48,7 @@ public class Foo {
     <test-code>
         <description>All methods and Field with default access modifier in a class</description>
         <expected-problems>6</expected-problems>
+        <expected-linenumbers>2,3,4,6,9,12</expected-linenumbers>
         <code-ref id="all-methods-fields-with-default-access-modifier"/>
     </test-code>
 
@@ -106,6 +108,7 @@ public class Foo {
     <test-code>
         <description>Nested classes with default access modifier</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,10</expected-linenumbers>
         <code-ref id="nested-class-with-default-access-modifier"/>
     </test-code>
 
@@ -130,6 +133,7 @@ public class Foo {
         <description>Test own regex to default access modifier rule</description>
         <rule-property name="regex">\/\*\s+package-private\s+\*\/</rule-property>
         <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,4,13</expected-linenumbers>
         <code-ref id="own-regex-to-default-access-modifier-rule"/>
     </test-code>
 </test-data>
