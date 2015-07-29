@@ -797,7 +797,7 @@ public class Count {
 
   <rule name="SimplifiedTernary"
     language="java"
-    since="5.3.2"
+    since="5.4.0"
     message="Ternary operators that can be simplified with || or &amp;&amp;"
     class="net.sourceforge.pmd.lang.rule.XPathRule"
     externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#SimplifiedTernary">
@@ -818,9 +818,9 @@ condition && foo  when the literalBoolean is false
     <properties>
         <property name="xpath">
             <value><![CDATA[
-//ConditionalExpression[not(PrimaryExpression//BooleanLiteral) and (Expression//BooleanLiteral)]
+//ConditionalExpression[@Ternary='true'][not(PrimaryExpression//BooleanLiteral) and (Expression//BooleanLiteral)]
 |
-//ConditionalExpression[not(Expression//BooleanLiteral) and (PrimaryExpression//BooleanLiteral)]
+//ConditionalExpression[@Ternary='true'][not(Expression//BooleanLiteral) and (PrimaryExpression//BooleanLiteral)]
 ]]>
             </value>
         </property>

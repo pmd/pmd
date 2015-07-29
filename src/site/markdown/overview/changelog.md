@@ -32,6 +32,8 @@
 *   New Rule: rulesets/java/comments.xml/CommentDefaultAccessModifier: In order to avoid mistakes with
     forgotten access modifiers for methods, this rule ensures, that you explicitly mark the usage of the
     default access modifier by placing a comment.
+*   New Rule: rulesets/java/basic.xml/SimplifiedTernary: Ternary operator with a boolean literal
+    can be simplified with a boolean expression.
 
 
 **Pull Requests:**
@@ -41,6 +43,7 @@
 *   [#55](https://github.com/pmd/pmd/pull/55): Fix run.sh for paths with spaces
 *   [#56](https://github.com/pmd/pmd/pull/56): Adding support for WSDL rules
 *   [#57](https://github.com/pmd/pmd/pull/57): Add default access modifier as comment rule
+*   [#58](https://github.com/pmd/pmd/pull/58): Add rule for unnecessary literal boolean in ternary operators
 
 **Bugfixes:**
 
