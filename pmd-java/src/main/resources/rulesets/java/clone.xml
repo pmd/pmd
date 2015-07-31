@@ -128,5 +128,44 @@ public class MyClass {
         </example>
     </rule>
 
-</ruleset>
+    <rule name="CloneMethodReturnTypeMustMatchClassName"
+        language="java"
+        since="5.4.0"
+        message="The return type of the clone() method must be the class name when implements Cloneable"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneMethodReturnTypeMustMatchClassName">
+        <description>
+If a class implements cloneable the return type of the method clone() must be the class name.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration
+[
+MethodDeclarator/@Image = 'clone'
+and MethodDeclarator/FormalParameters/@ParameterCount = 0
+and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image)
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class Foo implements Cloneable {
+    @Override
+    protected Object clone() { // Violation, Object must be Foo
+    }
+}
 
+public class Foo implements Cloneable {
+    @Override
+    public Foo clone() { //Ok
+    }
+}
+            ]]>
+        </example>
+    </rule>
+</ruleset>
