@@ -12,4 +12,6 @@
 
 **Bugfixes:**
 
+*   [#1384](https://sourceforge.net/p/pmd/bugs/1384/): NullPointerException in ConsecutiveLiteralAppendsRule
+
 **API Changes:**

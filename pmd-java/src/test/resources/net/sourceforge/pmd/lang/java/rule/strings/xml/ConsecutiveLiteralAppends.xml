@@ -1265,4 +1265,24 @@ public class StringBufferTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1384 NullPointerException in ConsecutiveLiteralAppendsRule - 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsRuleTest {
+private StringBuilder cdata;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1384 NullPointerException in ConsecutiveLiteralAppendsRule - 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ConsecutiveLiteralAppendsRuleTest {
+    public void appendChar(final StringBuilder s) {
+        // do nothing
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
