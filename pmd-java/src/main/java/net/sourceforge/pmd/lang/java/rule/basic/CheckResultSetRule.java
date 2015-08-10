@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -68,7 +69,8 @@ public class CheckResultSetRule extends AbstractJavaRule {
         String var = getResultSetVariableName(image);
         if (var != null && resultSetVariables.containsKey(var)
                 && node.getFirstParentOfType(ASTIfStatement.class) == null
-                && node.getFirstParentOfType(ASTWhileStatement.class) == null) {
+                && node.getFirstParentOfType(ASTWhileStatement.class) == null
+                && node.getFirstParentOfType(ASTReturnStatement.class) == null) {
 
             addViolation(data, resultSetVariables.get(var));
         }
