@@ -34,6 +34,8 @@
     default access modifier by placing a comment.
 *   New Rule: rulesets/java/basic.xml/SimplifiedTernary: Ternary operator with a boolean literal
     can be simplified with a boolean expression.
+*   Modified Rule: rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals: This rule also flags
+    assertEquals, that use Boolean.TRUE/FALSE constants.
 
 
 **Pull Requests:**
@@ -44,6 +46,7 @@
 *   [#56](https://github.com/pmd/pmd/pull/56): Adding support for WSDL rules
 *   [#57](https://github.com/pmd/pmd/pull/57): Add default access modifier as comment rule
 *   [#58](https://github.com/pmd/pmd/pull/58): Add rule for unnecessary literal boolean in ternary operators
+*   [#59](https://github.com/pmd/pmd/pull/59): Add check to Boxed booleans in UseAssertTrueInsteadOfAssertEquals rule
 
 **Bugfixes:**
 
