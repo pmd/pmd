@@ -36,6 +36,8 @@
     can be simplified with a boolean expression.
 *   Modified Rule: rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals: This rule also flags
     assertEquals, that use Boolean.TRUE/FALSE constants.
+*   New Rule: rulesets/java/unnecessary.xml/UselessQualifiedThis: Flags unnecessary qualified usages
+    of this, when `this` alone would be unique. E.g. use just `this` instead of `Foo.this`.
 
 
 **Pull Requests:**
@@ -47,6 +49,7 @@
 *   [#57](https://github.com/pmd/pmd/pull/57): Add default access modifier as comment rule
 *   [#58](https://github.com/pmd/pmd/pull/58): Add rule for unnecessary literal boolean in ternary operators
 *   [#59](https://github.com/pmd/pmd/pull/59): Add check to Boxed booleans in UseAssertTrueInsteadOfAssertEquals rule
+*   [#60](https://github.com/pmd/pmd/pull/60): Add UselessQualifiedThisRule
 
 **Bugfixes:**
 

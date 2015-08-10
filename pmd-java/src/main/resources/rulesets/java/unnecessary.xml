@@ -275,5 +275,55 @@ public class Foo {
     ]]>
     </example>
   </rule>
-  
+
+  <rule name="UselessQualifiedThis"
+      language="java"
+      since="5.4.0"
+      message="Useless qualified this usage in the same class."
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessQualifiedThis">
+    <description>Look for qualified this usages in the same class.</description>
+    <priority>3</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+//PrimaryExpression[
+  PrimaryPrefix/Name[@Image] and PrimarySuffix[@Arguments='false']
+  and ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']
+]/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <example>
+    <![CDATA[
+public class Foo {
+    final Foo otherFoo = Foo.this;  // use "this" directly
+
+    public void doSomething() {
+         final Foo anotherFoo = Foo.this;  // use "this" directly
+    }
+
+    private ActionListener returnListener() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doSomethingWithQualifiedThis(Foo.this);  // This is fine
+            }
+        };
+    }
+
+    private class Foo3 {
+        final Foo myFoo = Foo.this;  // This is fine
+    }
+
+    private class Foo2 {
+        final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
+    }
+}
+    ]]>
+    </example>
+  </rule>
+
 </ruleset>
