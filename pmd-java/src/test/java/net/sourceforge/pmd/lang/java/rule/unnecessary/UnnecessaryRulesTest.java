@@ -21,5 +21,6 @@ public class UnnecessaryRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UselessOverridingMethod");
         addRule(RULESET, "UselessOperationOnImmutable");
         addRule(RULESET, "UselessParentheses");
+        addRule(RULESET, "UselessQualifiedThis");
     }
 }
