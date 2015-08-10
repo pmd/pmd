@@ -51,4 +51,46 @@ public class TestWithAssertEquals {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+JUnit Test contains assertEquals with Boxed booleans
+            ]]>
+        </description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test() {
+		final boolean myVar = true;
+		assertEquals("myVar is true", Boolean.TRUE, myVar);
+		assertEquals("myVar is true", myVar, Boolean.TRUE);
+		assertEquals(Boolean.TRUE, myVar);
+		assertEquals(myVar, Boolean.TRUE);
+		assertEquals("myVar is false", Boolean.FALSE, myVar);
+		assertEquals("myVar is false", myVar, Boolean.FALSE);
+		assertEquals(myVar, Boolean.FALSE);
+		assertEquals(Boolean.FALSE, myVar);
+		assertTrue(myVar);
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+JUnit Test contains assertEquals with Boxed booleans as param
+            ]]>
+        </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void test() {
+		assertEquals(methodWithBooleanParam(Boolean.TRUE), "a String value", "they should be equal!");
+	}
+	public String methodWithBooleanParam(Boolean param) {
+		return "a String value";
+	}
+}
+     ]]></code>
+    </test-code>
 </test-data>
