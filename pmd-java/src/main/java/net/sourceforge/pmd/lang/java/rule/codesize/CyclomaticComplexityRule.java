@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 
 /**
  * @author Donald A. Leckie,
@@ -18,6 +19,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
  * @since January 14, 2003
  */
 public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
+
+    public CyclomaticComplexityRule(){
+        super();
+        setProperty(StatisticalRule.IGNORE_METHODS, new String[0]);
+    }
 
   @Override
 public Object visit(ASTIfStatement node, Object data) {

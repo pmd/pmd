@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -462,9 +463,15 @@ public abstract class AbstractRuleSetFactoryTest {
             assertEquals(message + ", Rule property descriptor ",
                     propertyDescriptors1, propertyDescriptors2);
             for (int j = 0; j < propertyDescriptors1.size(); j++) {
-                assertEquals(message + ", Rule property value " + j, rule1
-                        .getProperty(propertyDescriptors1.get(j)), rule2
-                        .getProperty(propertyDescriptors2.get(j)));
+                if (rule1.getProperty(propertyDescriptors2.get(j)) instanceof Object[] ){
+                    assertArrayEquals(message + ", Rule property value " + j,
+                            ((Object[]) rule1.getProperty(propertyDescriptors1.get(j))),
+                            (Object[]) rule2.getProperty(propertyDescriptors2.get(j)));
+                } else {
+                    assertEquals(message + ", Rule property value " + j, rule1
+                            .getProperty(propertyDescriptors1.get(j)), rule2
+                            .getProperty(propertyDescriptors2.get(j)));
+                }
             }
             assertEquals(message + ", Rule property descriptor count",
                     propertyDescriptors1.size(), propertyDescriptors2.size());

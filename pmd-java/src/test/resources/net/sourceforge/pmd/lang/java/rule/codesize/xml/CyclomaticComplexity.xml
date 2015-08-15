@@ -183,4 +183,42 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Ignore method</description>
+        <rule-property name="reportLevel">2</rule-property>
+        <rule-property name="ignore-methods">foo</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (a == 1) {
+        } else {
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore multiple methods</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <rule-property name="ignore-methods">foo,foo2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Cyclomatic Complexity of 1 (Highest = 0).</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (a == 1) {
+        } else {
+        }
+    }
+    public void foo2() {
+        if (a == 1) {
+        } else {
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
