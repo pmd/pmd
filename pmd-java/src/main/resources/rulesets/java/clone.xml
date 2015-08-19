@@ -130,6 +130,7 @@ public class MyClass {
 
     <rule name="CloneMethodReturnTypeMustMatchClassName"
         language="java"
+        minimumLanguageVersion="1.5"
         since="5.4.0"
         message="The return type of the clone() method must be the class name when implements Cloneable"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
