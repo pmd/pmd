@@ -136,7 +136,10 @@ public class MyClass {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneMethodReturnTypeMustMatchClassName">
         <description>
-If a class implements cloneable the return type of the method clone() must be the class name.
+If a class implements cloneable the return type of the method clone() must be the class name. That way, the caller
+of the clone method doesn't need to cast the returned clone to the correct type.
+
+Note: This is only possible with Java 1.5 or higher.
         </description>
         <priority>3</priority>
         <properties>
