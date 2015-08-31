@@ -982,4 +982,18 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>
+#1371 InsufficientStringBufferDeclaration not detected properly on StringBuffer
+        </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class StringBufferTest {
+    public void test() {
+        final StringBuffer stringBuffer = new StringBuffer().append("Added ").append(" a ");
+        stringBuffer.append("string ");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
