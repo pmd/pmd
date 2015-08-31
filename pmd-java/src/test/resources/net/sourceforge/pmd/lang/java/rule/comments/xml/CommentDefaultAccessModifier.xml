@@ -136,4 +136,16 @@ public class Foo {
         <expected-linenumbers>2,4,13</expected-linenumbers>
         <code-ref id="own-regex-to-default-access-modifier-rule"/>
     </test-code>
+
+    <test-code>
+        <description>Declarations inside an enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum TestEnum {
+    FOO;
+
+    public String getName() { return "foo"; }
+}
+        ]]></code>
+    </test-code>
 </test-data>

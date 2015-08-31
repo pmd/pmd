@@ -82,8 +82,10 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
 	}
 
 	private boolean shouldReport(final AbstractJavaAccessNode decl) {
+		List<ASTClassOrInterfaceDeclaration> parentClassOrInterface =
+		        decl.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
 		// ignore if is a Interface
-		return !decl.getParentsOfType(ASTClassOrInterfaceDeclaration.class).get(0).isInterface()
+        return (!parentClassOrInterface.isEmpty() && !parentClassOrInterface.get(0).isInterface())
 		// check if the field/method/nested class has a default access modifier
 		&& decl.isPackagePrivate()
 		// if is a default access modifier check if there is a comment in this line
