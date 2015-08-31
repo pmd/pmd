@@ -10,6 +10,7 @@
 *   [#1361](https://sourceforge.net/p/pmd/bugs/1361/): ShortVariable and ShortMethodName configuration
 
 **New Rules:**
+
 *   New Rule: rulesets/java/design.xml/SingleMethodSingletonRule: Verifies that there is only one method called
     "getInstance". If there are more methods that return the singleton, than it can easily happen, that these
     are not the same instances - and thus no singleton.
