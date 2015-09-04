@@ -172,4 +172,49 @@ public class Foo implements Cloneable {
             ]]>
         </example>
     </rule>
+
+    <rule name="CloneMethodMustBePublic"
+        language="java"
+        since="5.4.0"
+        message="clone() method must be public if the class implements Cloneable"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneMethodMustBePublic">
+        <description>
+The java Manual says "By convention, classes that implement this interface should override
+Object.clone (which is protected) with a public method."
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[@Public='false']
+[
+MethodDeclarator/@Image = 'clone'
+and MethodDeclarator/FormalParameters/@ParameterCount = 0
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class Foo implements Cloneable {
+    @Override
+    protected Object clone() throws CloneNotSupportedException { // Violation, must be public
+    }
+}
+
+public class Foo implements Cloneable {
+    @Override
+    protected Foo clone() { // Violation, must be public
+    }
+}
+
+public class Foo implements Cloneable {
+    @Override
+    public Object clone() // Ok
+}
+]]></example>
+    </rule>
 </ruleset>

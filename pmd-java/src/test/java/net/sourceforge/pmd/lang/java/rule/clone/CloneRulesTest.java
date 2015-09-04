@@ -15,5 +15,6 @@ public class CloneRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "CloneThrowsCloneNotSupportedException");
         addRule(RULESET, "ProperCloneImplementation");
         addRule(RULESET, "CloneMethodReturnTypeMustMatchClassName");
+        addRule(RULESET, "CloneMethodMustBePublic");
     }
 }
