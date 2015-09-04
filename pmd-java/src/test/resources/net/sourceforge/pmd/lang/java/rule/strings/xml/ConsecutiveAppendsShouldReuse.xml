@@ -219,4 +219,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1370 ConsecutiveAppendsShouldReuse not detected properly on StringBuffer - part 2</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumber>7,8</expected-linenumber>
+        <code><![CDATA[
+public class StringBufferTest {
+    private static String TAG = "TAG";
+    public void test() {
+         final StringBuffer stringBuffer2 = new StringBuffer();
+        // the following 2 lines are reported as ConsecutiveAppendsShouldReuse
+        stringBuffer2.append("agrego ");
+        stringBuffer2.append("un ");
+        stringBuffer2.append("string ");    // but not on this one
+        Log.i(TAG, stringBuffer2.toString());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
