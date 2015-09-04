@@ -21,6 +21,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.util.FileFinder;
+import net.sourceforge.pmd.util.FileUtil;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
@@ -285,10 +286,10 @@ public class CPDConfiguration extends AbstractConfiguration {
                 if (excludedFile.isDirectory()) {
                     List<File> files = finder.findFilesFrom(excludedFile, languageFilter, true);
                     for (File f : files) {
-                        exclusions.add(f.getAbsolutePath());
+                        exclusions.add(FileUtil.normalizeFilename(f.getAbsolutePath()));
                     }
                 } else {
-                    exclusions.add(excludedFile.getAbsolutePath());
+                    exclusions.add(FileUtil.normalizeFilename(excludedFile.getAbsolutePath()));
                 }
             }
         }
@@ -296,7 +297,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         FilenameFilter filter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
-                if (exclusions.contains(f.getAbsolutePath())) {
+                if (exclusions.contains(FileUtil.normalizeFilename(f.getAbsolutePath()))) {
                     System.err.println("Excluding " + f.getAbsolutePath());
                     return false;
                 }
