@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -44,6 +45,20 @@ public final class FileUtil {
         }
 
         return name;
+    }
+
+    /**
+     * Normalizes the filename by taking the casing into account, e.g. on Windows,
+     * the filename is changed to lowercase only.
+     * @param fileName the file name
+     * @return the normalized file name
+     */
+    public static String normalizeFilename(String fileName) {
+        if (fileName != null && File.separatorChar == '\\') {
+            // windows
+            return fileName.toLowerCase(Locale.ROOT);
+        }
+        return fileName;
     }
 
     /**

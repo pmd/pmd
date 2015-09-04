@@ -70,5 +70,6 @@
 **Bugfixes:**
 
 *   [#1370](https://sourceforge.net/p/pmd/bugs/1370/): ConsecutiveAppendsShouldReuse not detected properly on StringBuffer
+*   [#1402](https://sourceforge.net/p/pmd/bugs/1402/): Windows-Only: File exclusions are not case insensitive
 
 **API Changes:**
