@@ -63,6 +63,7 @@
 *   [#61](https://github.com/pmd/pmd/pull/61): Add CloneMethodReturnTypeMustMatchClassName rule
 *   [#62](https://github.com/pmd/pmd/pull/62): Add CloneMethodMustBePublic rule
 *   [#63](https://github.com/pmd/pmd/pull/63): Change CheckResultSet to allow for the result of the navigation methods to be returned
+*   [#65](https://github.com/pmd/pmd/pull/65): Fix ClassCastException in UselessOverridingMethodRule.
 
 **Bugfixes:**
 
