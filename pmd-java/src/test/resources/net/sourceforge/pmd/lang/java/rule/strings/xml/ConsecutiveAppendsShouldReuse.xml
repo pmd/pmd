@@ -237,4 +237,17 @@ public class StringBufferTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1370 ConsecutiveAppendsShouldReuse not detected properly on StringBuffer - part 3</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        final StringBuffer stringBuffer; // declaration of the var is a different statement
+        stringBuffer = new StringBuffer().append("agrego ").append("un ");
+        stringBuffer.append("string ");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
