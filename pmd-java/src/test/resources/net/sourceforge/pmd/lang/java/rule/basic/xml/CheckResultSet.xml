@@ -308,4 +308,18 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Allow the result of ResultSet navigation methods to be returned</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+
+public class Foo {
+    public boolean bar() {
+        ResultSet results = stmt.executeQuery();
+        return results.next();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
