@@ -25,7 +25,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
@@ -60,6 +62,9 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
         constructorLength = getConstructorLength(node, constructorLength);
         anticipatedLength = getInitialLength(node);
+
+        anticipatedLength += getConstructorAppendsLength(node);
+
         List<NameOccurrence> usage = node.getUsages();
         Map<Node, Map<Node, Integer>> blocks = new HashMap<Node, Map<Node, Integer>>();
         for (NameOccurrence no : usage) {
@@ -259,8 +264,6 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             } else {
                 iConstructorLength = Integer.parseInt(str);
             }
-        } else {
-            iConstructorLength = -1;
         }
 
         if (iConstructorLength == 0) {
@@ -295,6 +298,23 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         }
 
         return 0;
+    }
+
+    private int getConstructorAppendsLength(final Node node) {
+      final Node parent = node.getFirstParentOfType(ASTVariableDeclarator.class);
+       int size = 0;
+       if (parent != null) {
+         final Node initializer = parent.getFirstChildOfType(ASTVariableInitializer.class);
+         final Node primExp = initializer.getFirstDescendantOfType(ASTPrimaryExpression.class);
+         for (int i = 0; i < primExp.jjtGetNumChildren(); i++) {
+           final Node sn = primExp.jjtGetChild(i);
+           if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
+             continue;
+           }
+           size += processNode(sn);
+         }
+       }
+       return size;
     }
 
     private boolean isAdditive(Node n) {
