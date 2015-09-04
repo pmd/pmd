@@ -130,7 +130,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        ASTStatement statement = (ASTStatement) block.jjtGetChild(0).jjtGetChild(0);
+        Node statement = block.jjtGetChild(0).jjtGetChild(0);
         if (statement.jjtGetChild(0).jjtGetNumChildren() == 0) {
             return data; // skips empty return statements
         }
