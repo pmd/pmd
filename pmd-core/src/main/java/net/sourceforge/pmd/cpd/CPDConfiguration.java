@@ -10,7 +10,6 @@ import java.io.FilenameFilter;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -278,7 +277,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
 
         final FilenameFilter languageFilter = language.getFileFilter();
-        final Set<Path> exclusions = new HashSet<Path>();
+        final Set<String> exclusions = new HashSet<String>();
 
         if (excludes != null) {
             FileFinder finder = new FileFinder();
@@ -286,10 +285,10 @@ public class CPDConfiguration extends AbstractConfiguration {
                 if (excludedFile.isDirectory()) {
                     List<File> files = finder.findFilesFrom(excludedFile, languageFilter, true);
                     for (File f : files) {
-                        exclusions.add(f.toPath());
+                        exclusions.add(f.getAbsolutePath());
                     }
                 } else {
-                    exclusions.add(excludedFile.toPath());
+                    exclusions.add(excludedFile.getAbsolutePath());
                 }
             }
         }
@@ -297,7 +296,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         FilenameFilter filter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
-                if (exclusions.contains(f.toPath())) {
+                if (exclusions.contains(f.getAbsolutePath())) {
                     System.err.println("Excluding " + f.getAbsolutePath());
                     return false;
                 }
