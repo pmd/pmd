@@ -46,6 +46,8 @@
     the minimum required length of a method name.
 *   Modified Rule: rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals: This rule also flags
     assertEquals, that use Boolean.TRUE/FALSE constants.
+*   Modified Rule: rulesets/java/basic.xml/CheckResultSet: Do not require to check the result of a navigation
+    method, if it is returned.
 
 
 **Pull Requests:**
@@ -60,6 +62,7 @@
 *   [#60](https://github.com/pmd/pmd/pull/60): Add UselessQualifiedThisRule
 *   [#61](https://github.com/pmd/pmd/pull/61): Add CloneMethodReturnTypeMustMatchClassName rule
 *   [#62](https://github.com/pmd/pmd/pull/62): Add CloneMethodMustBePublic rule
+*   [#63](https://github.com/pmd/pmd/pull/63): Change CheckResultSet to allow for the result of the navigation methods to be returned
 
 **Bugfixes:**
 
