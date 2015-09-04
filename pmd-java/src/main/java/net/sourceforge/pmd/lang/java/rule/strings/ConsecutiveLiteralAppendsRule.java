@@ -90,7 +90,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         threshold = getProperty(THRESHOLD_DESCRIPTOR);
 
         int concurrentCount = checkConstructor(node, data);
-        concurrentCount += checkInitializerExpressions(node);
+        if (hasInitializer(node)) {
+            concurrentCount += checkInitializerExpressions(node);
+        }
         Node lastBlock = getFirstParentBlock(node);
         Node currentBlock = lastBlock;
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope().getDeclarations(
@@ -217,6 +219,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         }
 
         return result;
+    }
+
+    private boolean hasInitializer(ASTVariableDeclaratorId node) {
+        return node.jjtGetParent().hasDescendantOfType(ASTVariableInitializer.class);
     }
 
     private int processAdditive(Object data, int concurrentCount, Node sn, Node rootNode) {
