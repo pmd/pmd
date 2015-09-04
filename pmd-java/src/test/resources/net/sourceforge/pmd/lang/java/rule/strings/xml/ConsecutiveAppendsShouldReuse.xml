@@ -214,6 +214,7 @@ public class Foo {
 public class Foo {
     public void foo() {
         final StringBuffer stringBuffer = new StringBuffer().append("agrego ").append("un ");
+        stringBuffer = new StringBuffer().append("agrego ").append("un ");
         stringBuffer.append("string ");
     }
 }
@@ -233,6 +234,19 @@ public class StringBufferTest {
         stringBuffer2.append("un ");
         stringBuffer2.append("string ");    // but not on this one
         Log.i(TAG, stringBuffer2.toString());
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1370 ConsecutiveAppendsShouldReuse not detected properly on StringBuffer - part 3</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        final StringBuffer stringBuffer;
+        stringBuffer = new StringBuffer().append("agrego ").append("un ");
+        stringBuffer.append("string ");
     }
 }
         ]]></code>
