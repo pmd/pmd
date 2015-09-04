@@ -211,8 +211,6 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 }
             }
         }
-        StringBuffer sb = new StringBuffer();
-        sb.append(3);
         return anticipatedLength;
     }
 
