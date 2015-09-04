@@ -8,10 +8,15 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
@@ -97,11 +102,31 @@ public class ConsecutiveAppendsShouldReuseRule  extends AbstractJavaRule {
                     }
                 }
             }
+        } else if (isFirstChild(node, ASTLocalVariableDeclaration.class)) {
+            ASTLocalVariableDeclaration lvd = (ASTLocalVariableDeclaration) node.jjtGetChild(0);
+
+            ASTVariableDeclaratorId vdId =  lvd.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+            ASTExpression exp =  lvd.getFirstDescendantOfType(ASTExpression.class);
+
+            if (exp != null) {
+                ASTPrimarySuffix primarySuffix = exp.getFirstDescendantOfType(ASTPrimarySuffix.class);
+                if (primarySuffix != null) {
+                    final String name = primarySuffix.getImage();
+                    if (name != null && name.equals("append")) {
+                        String variable = vdId.getImage();
+                        if (isAStringBuilderBuffer(primarySuffix, variable)) {
+                            return variable;
+                        }
+                    }
+                }
+            }
         }
+
         return null;
     }
-    private boolean isAStringBuilderBuffer(ASTPrimaryPrefix prefix, String name) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> declarations = prefix.getScope().getDeclarations(VariableNameDeclaration.class);
+
+    private boolean isAStringBuilderBuffer(AbstractJavaNode node, String name) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> declarations = node.getScope().getDeclarations(VariableNameDeclaration.class);
         for (VariableNameDeclaration decl : declarations.keySet()) {
             if (decl.getName().equals(name) && TypeHelper.isEither(decl, StringBuilder.class, StringBuffer.class)) {
                 return true;
@@ -109,7 +134,7 @@ public class ConsecutiveAppendsShouldReuseRule  extends AbstractJavaRule {
         }
         return false;
     }
-    
+
     private boolean isFirstChild(Node node, Class<?> clazz) {
         if (node.jjtGetNumChildren() == 1 && clazz.isAssignableFrom(node.jjtGetChild(0).getClass())) {
             return true;
