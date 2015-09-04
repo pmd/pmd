@@ -29,6 +29,9 @@
     of this, when `this` alone would be unique. E.g. use just `this` instead of `Foo.this`.
 *   New Rule: rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName: If a class implements cloneable
     the return type of the method clone() must be the class name.
+*   New Rule: rulesets/java/clone.xml/CloneMethodMustBePublic: The java manual says "By convention,
+    classes that implement the cloneable interface should override Object.clone (which is protected)
+    with a public method."
 
 **Modified/Deprecated Rules:**
 
@@ -56,6 +59,7 @@
 *   [#59](https://github.com/pmd/pmd/pull/59): Add check to Boxed booleans in UseAssertTrueInsteadOfAssertEquals rule
 *   [#60](https://github.com/pmd/pmd/pull/60): Add UselessQualifiedThisRule
 *   [#61](https://github.com/pmd/pmd/pull/61): Add CloneMethodReturnTypeMustMatchClassName rule
+*   [#62](https://github.com/pmd/pmd/pull/62): Add CloneMethodMustBePublic rule
 
 **Bugfixes:**
 
