@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.rule.naming;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -111,9 +112,12 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         }
         boolean isStatic = node.isStatic();
         boolean isFinal = node.isFinal();
+
+        Node type = node.jjtGetParent().jjtGetParent().jjtGetParent();
         // Anything from an interface is necessarily static and final
-        if (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration
-                && ((ASTClassOrInterfaceDeclaration) node.jjtGetParent().jjtGetParent().jjtGetParent()).isInterface()) {
+        // Anything inside an annotation type is also static and final
+        if (type instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) type).isInterface()
+            || type instanceof ASTAnnotationTypeDeclaration) {
             isStatic = true;
             isFinal = true;
         }
