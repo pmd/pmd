@@ -47,4 +47,16 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1400 False positive with JUnit4TestShouldUseBeforeAnnotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Before("@ResetEsSetup")
+    public void setUp() {
+        esSetup.execute(EsSetup.deleteAll());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

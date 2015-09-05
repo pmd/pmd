@@ -311,7 +311,7 @@ JUnit 4 skips the setUp method and executes all methods annotated with @Before b
               <value>
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
-[count(Annotation/MarkerAnnotation/Name[@Image='Before'])=0]
+[count(Annotation//Name[@Image='Before'])=0]
 ]]>
               </value>
           </property>
@@ -347,7 +347,7 @@ JUnit 4 skips the tearDown method and executes all methods annotated with @After
               <value>
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
-[count(Annotation/MarkerAnnotation/Name[@Image='After'])=0]
+[count(Annotation//Name[@Image='After'])=0]
 ]]>
               </value>
           </property>
