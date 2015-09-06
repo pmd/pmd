@@ -100,4 +100,20 @@ public class GuardLogTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1398 False positive for GuardLogStatementJavaUtil with Log4j</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.log4j.Logger;
+
+public class GuardLogTest {
+    Logger LOG;
+    public void foo() {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("update: After spool map size: " + map.size());
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

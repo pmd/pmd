@@ -26,7 +26,7 @@ public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
 	
 	@Override
 	public Object visit(ASTCompilationUnit unit, Object data) {
-	    if (isSlf4jImported(unit)) {
+	    if (isSlf4jOrLog4jImported(unit)) {
 	        return data;
 	    }
 
@@ -43,10 +43,10 @@ public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
 		return super.visit(unit,data);
 	}
 
-    private boolean isSlf4jImported(ASTCompilationUnit unit) {
+    private boolean isSlf4jOrLog4jImported(ASTCompilationUnit unit) {
         List<ASTImportDeclaration> imports = unit.findChildrenOfType(ASTImportDeclaration.class);
         for (ASTImportDeclaration i : imports) {
-            if (i.getImportedName().startsWith("org.slf4j")) {
+            if (i.getImportedName().startsWith("org.slf4j") || i.getImportedName().startsWith("org.apache.log4j")) {
                 return true;
             }
         }
