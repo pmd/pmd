@@ -132,4 +132,18 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1397 StringToString should ignore method references</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void log(Supplier<String> msg) { }
+    public void run() {
+        String abc = "abc";
+        log(abc::toString); // fails rule
+        log(() -> abc); // passes rule
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
