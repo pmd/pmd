@@ -15,6 +15,7 @@
 *   [#1370](https://sourceforge.net/p/pmd/bugs/1370/): ConsecutiveAppendsShouldReuse not detected properly on StringBuffer
 *   [#1371](https://sourceforge.net/p/pmd/bugs/1371/): InsufficientStringBufferDeclaration not detected properly on StringBuffer
 *   [#1384](https://sourceforge.net/p/pmd/bugs/1384/): NullPointerException in ConsecutiveLiteralAppendsRule
+*   [#1396](https://sourceforge.net/p/pmd/bugs/1396/): PrematureDeclaration lambda false positive
 *   [#1397](https://sourceforge.net/p/pmd/bugs/1397/): StringToString should ignore method references
 *   [#1398](https://sourceforge.net/p/pmd/bugs/1398/): False positive for GuardLogStatementJavaUtil with Log4j
 *   [#1399](https://sourceforge.net/p/pmd/bugs/1399/): False positive for VariableNamingConventions with annotation @interface
