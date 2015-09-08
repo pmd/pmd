@@ -262,7 +262,7 @@
         <surefire.version>2.17</surefire.version>
         <checkstyle.version>2.13</checkstyle.version>
         <clover.version>2.5.1</clover.version>
-        <pmd.plugin.version>3.4</pmd.plugin.version>
+        <pmd.plugin.version>3.5</pmd.plugin.version>
         <java.version>1.6</java.version>
         <ant.version>1.9.4</ant.version>
         <javadoc.plugin.version>2.10.1</javadoc.plugin.version>
@@ -500,6 +500,45 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>pmd</goal>
+                            <goal>cpd</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>${java.version}</targetJdk>
+                    <rulesets>
+                        <ruleset>${pmd.dogfood.ruleset}</ruleset>
+                    </rulesets>
+                    <excludeRoots>
+                        <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                    </excludeRoots>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>${checkstyle.configLocation}</configLocation>
+                    <suppressionsFile>${checkstyle.suppressionsFile}</suppressionsFile>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -811,56 +850,6 @@
                     <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/snapshot</url>
                 </site>
             </distributionManagement>
-        </profile>
-
-        <profile>
-            <id>reports</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>pmd</goal>
-                                    <goal>cpd</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <minimumTokens>100</minimumTokens>
-                            <targetJdk>${java.version}</targetJdk>
-                            <rulesets>
-                                <ruleset>${pmd.dogfood.ruleset}</ruleset>
-                            </rulesets>
-                            <excludeRoots>
-                                <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                            </excludeRoots>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>checkstyle</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <configLocation>${checkstyle.configLocation}</configLocation>
-                            <suppressionsFile>${checkstyle.suppressionsFile}</suppressionsFile>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
 
         <profile>
