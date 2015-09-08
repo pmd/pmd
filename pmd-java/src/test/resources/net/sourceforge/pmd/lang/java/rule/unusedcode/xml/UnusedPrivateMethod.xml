@@ -1446,4 +1446,25 @@ public class FooTest {
 }
     ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1395 UnusedPrivateMethod false positive for array element method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedPrivateMethod {
+    public void doSomething() {
+        File[] files = getFiles();
+        for (int i = 0; i < files.length; i++) {
+            String name = getNameFromFilename(files[i].getName());
+            System.out.println("name is " + name);
+        }
+    }
+
+    private String getNameFromFilename(String fileName) {
+        int index = fileName.lastIndexOf('.');
+        return fileName.substring(0, index);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
