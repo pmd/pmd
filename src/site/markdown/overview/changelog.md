@@ -15,6 +15,7 @@
 *   [#1370](https://sourceforge.net/p/pmd/bugs/1370/): ConsecutiveAppendsShouldReuse not detected properly on StringBuffer
 *   [#1371](https://sourceforge.net/p/pmd/bugs/1371/): InsufficientStringBufferDeclaration not detected properly on StringBuffer
 *   [#1384](https://sourceforge.net/p/pmd/bugs/1384/): NullPointerException in ConsecutiveLiteralAppendsRule
+*   [#1394](https://sourceforge.net/p/pmd/bugs/1394/): dogfood.xml - Unable to exclude rules [UncommentedEmptyMethod]
 *   [#1395](https://sourceforge.net/p/pmd/bugs/1395/): UnusedPrivateMethod false positive for array element method call
 *   [#1396](https://sourceforge.net/p/pmd/bugs/1396/): PrematureDeclaration lambda false positive
 *   [#1397](https://sourceforge.net/p/pmd/bugs/1397/): StringToString should ignore method references
