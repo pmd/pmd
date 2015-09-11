@@ -123,7 +123,7 @@ at the expense of some readability.
 <![CDATA[
 //PrimaryExpression
  [PrimaryPrefix/Name
-  [ends-with(@Image, '.startsWith')]]
+  [ends-with(@Image, '.startsWith')] or PrimarySuffix[@Image='startsWith']]
  [PrimarySuffix/Arguments/ArgumentList
   /Expression/PrimaryExpression/PrimaryPrefix
   /Literal
