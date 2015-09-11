@@ -1291,8 +1291,9 @@ private static Foo foo = null;
 
 //multiple simultaneous callers may see partially initialized objects
 public static Foo getFoo() {
-    if (foo==null)
+    if (foo==null) {
         foo = new Foo();
+    }
     return foo;
 }
         ]]></example>
