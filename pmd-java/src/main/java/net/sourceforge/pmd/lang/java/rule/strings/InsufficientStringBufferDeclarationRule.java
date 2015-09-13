@@ -192,8 +192,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 	ASTLiteral literal = (ASTLiteral) xn.jjtGetChild(0);
                     String str = xn.jjtGetChild(0).getImage();
                     if (str != null) {
-	                    if(isStringOrCharLiteral(literal)){
-	                        anticipatedLength += str.length() - 2;
+                        if (literal.isStringLiteral()) {
+                            anticipatedLength += str.length() - 2;
+                        } else if (literal.isCharLiteral()) {
+                            anticipatedLength += 1;
 	                    } else if(literal.isIntLiteral() && str.startsWith("0x")){
 	                    	// but only if we are not inside a cast expression
 	                    	Node parentNode = literal.jjtGetParent().jjtGetParent().jjtGetParent();
@@ -316,7 +318,10 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     }
 
     private boolean isAdditive(Node n) {
-        return n.hasDescendantOfType(ASTAdditiveExpression.class);
+        ASTAdditiveExpression add = n.getFirstDescendantOfType(ASTAdditiveExpression.class);
+        // if the first descendant additive expression is deeper than 4 levels,
+        // it belongs to a nested method call and not anymore to the append argument.
+        return add != null && add.getNthParent(4) == n;
     }
 
     /**
