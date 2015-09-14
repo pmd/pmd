@@ -533,11 +533,14 @@ public class ClassScope extends AbstractJavaScope {
         for (ASTTypeParameter type : types) {
             if (typeImage.equals(type.getImage())) {
                 ASTClassOrInterfaceType bound = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                if (bound != null && bound.getType() != null) {
-                    return bound.getType();
-                }
                 if (bound != null) {
-                    return this.getEnclosingScope(SourceFileScope.class).resolveType(bound.getImage());
+                    if (bound.getType() != null) {
+                        return bound.getType();
+                    } else {
+                        return this.getEnclosingScope(SourceFileScope.class).resolveType(bound.getImage());
+                    }
+                } else {
+                    return Object.class; // type parameter found, but no binding.
                 }
             }
         }

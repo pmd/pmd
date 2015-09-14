@@ -27,5 +27,6 @@
 *   [#1400](https://sourceforge.net/p/pmd/bugs/1400/): False positive with JUnit4TestShouldUseBeforeAnnotation
 *   [#1401](https://sourceforge.net/p/pmd/bugs/1401/): False positive for StringBuilder.append called with constructor
 *   [#1402](https://sourceforge.net/p/pmd/bugs/1402/): Windows-Only: File exclusions are not case insensitive
+*   [#1403](https://sourceforge.net/p/pmd/bugs/1403/): False positive UnusedPrivateMethod with JAVA8
 
 **API Changes:**
