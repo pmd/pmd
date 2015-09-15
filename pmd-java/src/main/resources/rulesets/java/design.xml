@@ -737,13 +737,13 @@ have unusual conventions, i.e. Turkish.
     <![CDATA[
 class Foo {
  // BAD
- if (x.toLowerCase().equals("list"))...
+ if (x.toLowerCase().equals("list")) { }
  /*
  This will not match "LIST" when in Turkish locale
  The above could be
- if (x.toLowerCase(Locale.US).equals("list")) ...
+ if (x.toLowerCase(Locale.US).equals("list")) { }
  or simply
- if (x.equalsIgnoreCase("list")) ...
+ if (x.equalsIgnoreCase("list")) { }
  */
  // GOOD
  String z = a.toLowerCase(Locale.EN);
@@ -1794,13 +1794,15 @@ Use opposite operator instead of negating the whole expression with a logic comp
     <![CDATA[
 public boolean bar(int a, int b) {
 
-	if (!(a == b)) // use !=
+    if (!(a == b)) { // use !=
          return false;
+     }
 
-	if (!(a < b)) // use >=
+    if (!(a < b)) { // use >=
          return false;
+    }
 
-	return true;
+    return true;
 }
     ]]>
     </example>
