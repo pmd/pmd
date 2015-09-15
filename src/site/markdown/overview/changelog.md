@@ -68,6 +68,7 @@
 *   [#67](https://github.com/pmd/pmd/pull/67): Use Path instead of string to check file exclusions to fix windows-only bug
 *   [#68](https://github.com/pmd/pmd/pull/68): #1370 ConsecutiveAppendsShouldReuse not detected properly on StringBuffer
 *   [#69](https://github.com/pmd/pmd/pull/69): #1371 InsufficientStringBufferDeclaration not detected properly on StringBuffer
+*   [#70](https://github.com/pmd/pmd/pull/70): Fix code example
 
 **Bugfixes:**
 
