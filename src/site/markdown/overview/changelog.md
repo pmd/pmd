@@ -28,6 +28,7 @@
 *   [#1401](https://sourceforge.net/p/pmd/bugs/1401/): False positive for StringBuilder.append called with constructor
 *   [#1402](https://sourceforge.net/p/pmd/bugs/1402/): Windows-Only: File exclusions are not case insensitive
 *   [#1403](https://sourceforge.net/p/pmd/bugs/1403/): False positive UnusedPrivateMethod with JAVA8
+*   [#1404](https://sourceforge.net/p/pmd/bugs/1404/): Java8 'Unnecessary use of fully qualified name' in Streams Collector
 *   [#1405](https://sourceforge.net/p/pmd/bugs/1405/): UnusedPrivateMethod false positive?
 
 **API Changes:**
