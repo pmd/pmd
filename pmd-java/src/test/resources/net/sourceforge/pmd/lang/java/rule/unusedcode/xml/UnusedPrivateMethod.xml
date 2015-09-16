@@ -1487,4 +1487,21 @@ public class Something {
 }
         ]]></code>
     </test-code>
+
+    <test-code useAuxClasspath="false">
+        <description>#1405 UnusedPrivateMethod false positive?</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class blabla implements blabla2 {
+    @Override
+    public List<String> getProductImageUrls(final ApparelStyleVariantProductModel product, final String format) {
+        return getImageUrlsListForVariant(product, format);
+    }
+    private List<String> getImageUrlsListForVariant(final VariantProductModel variant, final String format) {
+        final SortedMap<Integer, String> imageUrls = getImageUrlsMapForVariant(variant, format);
+        return new ArrayList<String>(imageUrls.values());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
