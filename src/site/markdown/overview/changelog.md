@@ -53,6 +53,7 @@
 **Pull Requests:**
 
 *   [#21](https://github.com/adangel/pmd/pull/21): Added PMD Rules for Singleton pattern violations.
+*   [#23](https://github.com/adangel/pmd/pull/23): Extended Objective-C grammar to accept Unicode characters in identifiers
 *   [#54](https://github.com/pmd/pmd/pull/54): Add a new rulesets for Maven's POM rules
 *   [#55](https://github.com/pmd/pmd/pull/55): Fix run.sh for paths with spaces
 *   [#56](https://github.com/pmd/pmd/pull/56): Adding support for WSDL rules
