@@ -228,25 +228,25 @@ public class PMDTaskImpl {
     }
 
     private void setupClassLoader() {
-
         if (classpath == null) {
-            project.log("Using the normal ClassLoader", Project.MSG_VERBOSE);
-        } else {
-            project.log("Using the AntClassLoader", Project.MSG_VERBOSE);
-            // must be true, otherwise you'll get ClassCastExceptions as classes
-            // are loaded twice
-            // and exist in multiple class loaders
-            boolean parentFirst = true;
-            configuration.setClassLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(), project,
-                    classpath, parentFirst));
+            classpath = new Path(project);
         }
+        /*
+         * 'basedir' is added to the path to make sure that relative paths
+         * such as "<ruleset>resources/custom_ruleset.xml</ruleset>" still
+         * work when ant is invoked from a different directory using "-f"
+         */
+        classpath.add(new Path(null, project.getBaseDir().toString()));
+
+        project.log("Using the AntClassLoader: " + classpath, Project.MSG_VERBOSE);
+        // must be true, otherwise you'll get ClassCastExceptions as classes
+        // are loaded twice
+        // and exist in multiple class loaders
+        boolean parentFirst = true;
+        configuration.setClassLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(), project,
+                classpath, parentFirst));
+
         try {
-            /*
-             * 'basedir' is added to the path to make sure that relative paths
-             * such as "<ruleset>resources/custom_ruleset.xml</ruleset>" still
-             * work when ant is invoked from a different directory using "-f"
-             */
-            configuration.prependClasspath(project.getBaseDir().toString());
             if (auxClasspath != null) {
                 project.log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
                 configuration.prependClasspath(auxClasspath.toString());
