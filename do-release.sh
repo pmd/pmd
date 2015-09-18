@@ -74,7 +74,7 @@ if [ "" = "$DEVELOPMENT_VERSION" ]; then
     read DEVELOPMENT_VERSION
 fi
 if [ "" = "$CURRENT_BRANCH" ]; then
-    echo -n "What is the branch you wnat to release from? (e.g. master or pmd/5.3.x) "
+    echo -n "What is the branch you want to release from? (e.g. master or pmd/5.3.x) "
     read CURRENT_BRANCH
 fi
 
@@ -192,9 +192,10 @@ rsync -avhP src/site/markdown/overview/changelog.md $SFUSER@web.sourceforge.net:
 echo
 
 if [ ! "" = "$PMD_LOCAL_BINARIES" -a -d $PMD_LOCAL_BINARIES ]; then
-echo "Copying the files to local storage directory $PMD_LOCAL_BINARIES..."
-cp -av pmd-dist/target/pmd-*-${RELEASE_VERSION}.zip target/pmd-doc-${RELEASE_VERSION}.zip $PMD_LOCAL_BINARIES
-echo
+    echo "Copying the files to local storage directory $PMD_LOCAL_BINARIES..."
+    cp -av pmd-dist/target/pmd-*-${RELEASE_VERSION}.zip target/pmd-doc-${RELEASE_VERSION}.zip $PMD_LOCAL_BINARIES
+    echo
+fi
 
 
 echo
