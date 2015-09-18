@@ -21,14 +21,27 @@ if [ "" = "$PMD_SF_USER" ]; then
     exit 1
 fi
 
-if [ "" = "$PMD_GPG_KEY" ]; then
-    echo "No env variable PMD_GPG_KEY specified. This is your gpg key, that will be used"
+if [ "" = "$PMD_GPG_PROFILE" ]; then
+    echo "No env variable PMD_GPG_PROFILE specified. This is your maven profile, which configures"
+    echo "the properties gpg.keyname and gpg.passphrase used"
     echo "to sign the created release artifacts before uploading to maven central."
     echo
     echo "Please set the variable, e.g. in your ~/.bashrc:"
     echo
-    echo "PMD_GPG_KEY=AB123CDE"
-    echo "export PMD_GPG_KEY"
+    echo "PMD_GPG_PROFILE=pmd-gpg"
+    echo "export PMD_GPG_PROFILE"
+    echo
+    echo "And in your ~/.m2/settings.xml file:"
+    echo
+    echo "  <profiles>"
+    echo "    <profile>"
+    echo "      <id>pmd-gpg</id>"
+    echo "        <properties>"
+    echo "          <gpg.keyname>AB123CDE</gpg.keyname>"
+    echo "          <gpg.passphrase></gpg.passphrase>"
+    echo "        </properties>"
+    echo "    </profile>"
+    echo "  </profiles"
     echo
     exit 1
 fi
@@ -134,8 +147,10 @@ mvn -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
     -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
-    -Darguments=-Dgpg.keyname=${PMD_GPG_KEY}
-mvn -B release:perform
+    -P${PMD_GPG_PROFILE}
+mvn -B release:perform \
+    -P${PMD_GPG_PROFILE} \
+    -DreleaseProfiles=pmd-release,${PMD_GPG_PROFILE}
 
 (
     cd target/checkout/
