@@ -17,6 +17,9 @@ import net.sourceforge.pmd.lang.dfa.NodeType;
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;
 
+    /** Maximum loops to prevent hanging of PMD. See https://sourceforge.net/p/pmd/bugs/1393/ */
+    private static final int MAX_LOOPS = 100;
+
     private DataFlowNode rootNode;
     private Executable shim;
     private CurrentPath currentPath = new CurrentPath();
@@ -59,7 +62,9 @@ public class DAAPathFinder {
      * Builds up the path.
      * */
     private void phase2(boolean flag) {
-        while (!currentPath.isEndNode()) { 
+        int i = 0;
+        while (!currentPath.isEndNode() && i < MAX_LOOPS) {
+            i++;
             if (currentPath.isBranch() || currentPath.isFirstDoStatement()) {
                 if (flag) {
                     addNodeToTree();
@@ -126,8 +131,9 @@ public class DAAPathFinder {
             PathElement last = (PathElement) stack.getLastLeaf().getUserObject();
             DataFlowNode inode = currentPath.getLast();
             if (inode.getChildren().size() > last.currentChild) { 
-                // for some unknown reasons last.currentChild might not be a children of inode, see bug 1597987 
-        	DataFlowNode child = inode.getChildren().get(last.currentChild);
+                // for some unknown reasons last.currentChild might not be a children of inode, see bug 1597987
+                // see https://sourceforge.net/p/pmd/bugs/606/
+                DataFlowNode child = inode.getChildren().get(last.currentChild);
                 this.currentPath.addLast(child);
             }
         } else {
@@ -313,6 +319,7 @@ public class DAAPathFinder {
         int counter = 0;
         if (treeNode.getParent() != null) {
             // for some unknown reasons the parent of treeNode might be null, see bug 1597987
+            // see https://sourceforge.net/p/pmd/bugs/606/
             int childCount = treeNode.getParent().getChildCount();
             for (int i = 0; i < childCount; i++) {
                 DefaultMutableTreeNode tNode = (DefaultMutableTreeNode) treeNode.getParent().getChildAt(i);

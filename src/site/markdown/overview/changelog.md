@@ -18,6 +18,7 @@
 *   [#1384](https://sourceforge.net/p/pmd/bugs/1384/): NullPointerException in ConsecutiveLiteralAppendsRule
 *   [#1388](https://sourceforge.net/p/pmd/bugs/1388/): ConstructorCallsOverridableMethodRule doesn't work with params?
 *   [#1392](https://sourceforge.net/p/pmd/bugs/1392/): SimplifyStartsWith false-negative
+*   [#1393](https://sourceforge.net/p/pmd/bugs/1393/): PMD hanging during DataflowAnomalyAnalysis
 *   [#1394](https://sourceforge.net/p/pmd/bugs/1394/): dogfood.xml - Unable to exclude rules [UncommentedEmptyMethod]
 *   [#1395](https://sourceforge.net/p/pmd/bugs/1395/): UnusedPrivateMethod false positive for array element method call
 *   [#1396](https://sourceforge.net/p/pmd/bugs/1396/): PrematureDeclaration lambda false positive
