@@ -134,7 +134,7 @@ mvn -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
     -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
-    -Dgpg.keyname=${PMD_GPG_KEY}
+    -Darguments=-Dgpg.keyname=${PMD_GPG_KEY}
 mvn -B release:perform
 
 (
