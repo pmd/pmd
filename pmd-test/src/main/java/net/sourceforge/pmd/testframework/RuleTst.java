@@ -94,7 +94,7 @@ public abstract class RuleTst {
                     }
                 }
 
-                report = processUsingStringReader(test.getCode(), rule, test.getLanguageVersion());
+                report = processUsingStringReader(test, rule);
                 res = report.size();
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -190,10 +190,9 @@ public abstract class RuleTst {
         System.out.println("--------------------------------------------------------------");
     }
 
-    private Report processUsingStringReader(String code, Rule rule,
-   			LanguageVersion languageVersion) throws PMDException {
+    private Report processUsingStringReader(TestDescriptor test, Rule rule) throws PMDException {
         Report report = new Report();
-        runTestFromString(code, rule, report, languageVersion);
+        runTestFromString(test, rule, report);
         return report;
     }
 
@@ -201,10 +200,16 @@ public abstract class RuleTst {
      * Run the rule on the given code and put the violations in the report.
      */
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) {
+        runTestFromString(code, rule, report, languageVersion, true);
+    }
+
+    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
-            p.getConfiguration().prependClasspath("."); // configure the "auxclasspath" option for unit testing
+            if (isUseAuxClasspath) {
+                p.getConfiguration().prependClasspath("."); // configure the "auxclasspath" option for unit testing
+            }
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
             ctx.setSourceCodeFilename("n/a");
@@ -216,6 +221,10 @@ public abstract class RuleTst {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void runTestFromString(TestDescriptor test, Rule rule, Report report) {
+        runTestFromString(test.getCode(), rule, report, test.getLanguageVersion(), test.isUseAuxClasspath());
     }
 
     /**
@@ -307,6 +316,15 @@ public abstract class RuleTst {
                 }
             }
 
+            boolean isUseAuxClasspath = true;
+            Node useAuxClasspathAttribute = testCode.getAttributes().getNamedItem("useAuxClasspath");
+            if (useAuxClasspathAttribute != null) {
+                String useAuxClasspathValue = useAuxClasspathAttribute.getNodeValue();
+                if ("false".equalsIgnoreCase(useAuxClasspathValue)) {
+                    isUseAuxClasspath = false;
+                }
+            }
+
             NodeList ruleProperties = testCode.getElementsByTagName("rule-property");
             Properties properties = new Properties();
             for (int j = 0; j < ruleProperties.getLength(); j++) {
@@ -373,6 +391,7 @@ public abstract class RuleTst {
             }
             tests[i].setReinitializeRule(reinitializeRule);
             tests[i].setRegressionTest(isRegressionTest);
+            tests[i].setUseAuxClasspath(isUseAuxClasspath);
             tests[i].setExpectedMessages(messages);
             tests[i].setExpectedLineNumbers(expectedLineNumbers);
             tests[i].setProperties(properties);

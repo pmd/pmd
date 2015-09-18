@@ -262,4 +262,19 @@ public class ExcessiveLengthRule extends AbstractStatisticalJavaRule {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1388 ConstructorCallsOverridableMethodRule doesn't work with params?</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        bar(true);
+    }
+
+    public void bar(boolean b) {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

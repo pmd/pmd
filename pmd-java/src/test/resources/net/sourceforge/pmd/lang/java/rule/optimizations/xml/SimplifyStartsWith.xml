@@ -54,4 +54,20 @@ public class Foo {
      ]]></code>
     </test-code>
 -->
+
+    <test-code>
+        <description>#1392 SimplifyStartsWith false-negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class SimplifyStartsWith {
+    private static boolean isImmediatelyFollowedByText(DetailNode tag) {
+        final DetailNode nextSibling = JavadocUtils.getNextSibling(tag);
+        return nextSibling.getType() == JavadocTokenTypes.NEWLINE
+                || nextSibling.getType() == JavadocTokenTypes.EOF
+                || nextSibling.getText().startsWith(" ");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -288,4 +288,34 @@ import a.*;
 public class Test {}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1404 Java8 'Unnecessary use of fully qualified name' in Streams Collector</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>17</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'Collectors.toList' due to existing static import 'java.util.stream.Collectors.toList'</message>
+        </expected-messages>
+        <code><![CDATA[
+// https://github.com/FenixEdu/fenixedu-learning/blob/master/src/main/java/org/fenixedu/learning/domain/executionCourse/components/InitialPageComponent.java#L50
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+
+public class InitialPageComponent extends BaseExecutionCourseComponent {
+    public void handle(Page page, TemplateContext componentContext, TemplateContext globalContext) {
+        ExecutionCourse executionCourse = ((ExecutionCourseSite) page.getSite()).getExecutionCourse();
+        globalContext.put(
+                "professorships",
+                executionCourse
+                        .getProfessorshipsSet()
+                        .stream()
+                        .sorted(Comparator.comparing(Professorship::isResponsibleFor).reversed()
+                                .thenComparing(Professorship.COMPARATOR_BY_PERSON_NAME)).collect(Collectors.toList()));
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

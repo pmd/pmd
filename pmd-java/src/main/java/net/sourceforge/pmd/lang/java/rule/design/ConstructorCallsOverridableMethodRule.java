@@ -916,7 +916,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static List<String> getMethodDeclaratorParameterTypes(Node methodOrConstructorDeclarator) {
-        List<ASTFormalParameter> parameters = methodOrConstructorDeclarator.findChildrenOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = methodOrConstructorDeclarator.findDescendantsOfType(ASTFormalParameter.class);
         List<String> parameterTypes = new ArrayList<String>();
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {

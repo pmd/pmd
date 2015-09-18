@@ -27,6 +27,7 @@ public class TestDescriptor {
     private LanguageVersion languageVersion;
     private boolean reinitializeRule = true;   //default, avoids unintentional mixing of state between test cases
     private boolean isRegressionTest = true;
+    private boolean useAuxClasspath = true;
     private int numberInDocument = -1;
 
     // Empty descriptor added to please mvn surefire plugin
@@ -134,5 +135,13 @@ public class TestDescriptor {
 
     public void setRegressionTest(boolean isRegressionTest) {
         this.isRegressionTest = isRegressionTest;
+    }
+
+    public void setUseAuxClasspath(boolean useAuxClasspath) {
+        this.useAuxClasspath = useAuxClasspath;
+    }
+
+    public boolean isUseAuxClasspath() {
+        return useAuxClasspath;
     }
 }

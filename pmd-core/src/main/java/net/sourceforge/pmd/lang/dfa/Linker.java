@@ -17,6 +17,9 @@ public class Linker {
     private final static Logger LOGGER = Logger.getLogger(Linker.class.getName());
     private final static String CLASS_NAME = Linker.class.getCanonicalName();
 
+    /** Maximum loops to prevent hanging of PMD. See https://sourceforge.net/p/pmd/bugs/1393/ */
+    private static final int MAX_LOOPS = 100;
+
     private final DataFlowHandler dataFlowHandler;
     private List<StackObject> braceStack;
     private List<StackObject> continueBreakReturnStack;
@@ -37,7 +40,9 @@ public class Linker {
         // the last index of the sequence.
         LOGGER.fine("SequenceChecking continueBreakReturnStack elements");
         SequenceChecker sc = new SequenceChecker(braceStack);
-        while (!sc.run()) {
+        int i = 0;
+        while (!sc.run() && i < MAX_LOOPS) {
+            i++;
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("After sc.run - starting Sequence checking loop with firstIndex=" + sc.getFirstIndex()
                         + ", lastIndex " + sc.getLastIndex() + " with this StackList " + dump("braceStack", braceStack));

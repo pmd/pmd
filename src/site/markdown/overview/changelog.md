@@ -2,12 +2,15 @@
 
 ## ????? - 5.4.0-SNAPSHOT
 
+
 **New Supported Languages:**
+
 
 **Feature Request and Improvements:**
 
 *   [#1344](https://sourceforge.net/p/pmd/bugs/1344/): AbstractNaming should check reverse
 *   [#1361](https://sourceforge.net/p/pmd/bugs/1361/): ShortVariable and ShortMethodName configuration
+
 
 **New Rules:**
 
@@ -32,6 +35,7 @@
 *   New Rule: rulesets/java/clone.xml/CloneMethodMustBePublic: The java manual says "By convention,
     classes that implement the cloneable interface should override Object.clone (which is protected)
     with a public method."
+
 
 **Modified/Deprecated Rules:**
 
@@ -71,11 +75,9 @@
 *   [#69](https://github.com/pmd/pmd/pull/69): #1371 InsufficientStringBufferDeclaration not detected properly on StringBuffer
 *   [#70](https://github.com/pmd/pmd/pull/70): Fix code example
 
+
 **Bugfixes:**
 
-*   [#1370](https://sourceforge.net/p/pmd/bugs/1370/): ConsecutiveAppendsShouldReuse not detected properly on StringBuffer
-*   [#1371](https://sourceforge.net/p/pmd/bugs/1371/): InsufficientStringBufferDeclaration not detected properly on StringBuffer
-*   [#1384](https://sourceforge.net/p/pmd/bugs/1384/): NullPointerException in ConsecutiveLiteralAppendsRule
-*   [#1402](https://sourceforge.net/p/pmd/bugs/1402/): Windows-Only: File exclusions are not case insensitive
 
 **API Changes:**
+

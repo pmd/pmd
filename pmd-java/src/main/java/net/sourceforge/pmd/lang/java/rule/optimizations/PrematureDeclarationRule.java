@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -54,7 +55,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
         List<ASTBlockStatement> nextBlocks = blocksAfter(grandparent, node);
 
         for (ASTBlockStatement block : nextBlocks) {
-            if (hasReferencesIn(block, varName)) {
+            if (hasReferencesIn(block, varName) || isLambda(block)) {
                 break;
             }
 
@@ -65,6 +66,10 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
         }
 
         return visit((AbstractJavaNode) node, data);
+    }
+
+    private boolean isLambda(ASTBlockStatement block) {
+        return block.getFirstParentOfType(ASTLambdaExpression.class) != null;
     }
 
     /**
@@ -112,10 +117,12 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
 
         // now check to see if the ones we have are part of a method on a
         // declared inner class
+        // or part of a lambda expression
         boolean result = false;
         for (int i = 0; i < exitBlocks.size(); i++) {
             Node exitNode = (Node) exitBlocks.get(i);
-            if (!hasAsParentBetween(exitNode, ASTMethodDeclaration.class, block)) {
+            if (!hasAsParentBetween(exitNode, ASTMethodDeclaration.class, block)
+                && !hasAsParentBetween(exitNode, ASTLambdaExpression.class, block)) {
                 result = true;
                 break;
             }

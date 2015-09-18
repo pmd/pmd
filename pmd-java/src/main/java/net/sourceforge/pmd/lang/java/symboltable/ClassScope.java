@@ -361,12 +361,14 @@ public class ClassScope extends AbstractJavaScope {
             for (int i = 0; i < arguments.jjtGetNumChildren(); i++) {
                 Node argument = arguments.jjtGetChild(i);
                 Node child = null;
+                boolean isMethodCall = false;
                 if (argument.jjtGetNumChildren() > 0 && argument.jjtGetChild(0).jjtGetNumChildren() > 0
                         && argument.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0) {
                     child = argument.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+                    isMethodCall = argument.jjtGetChild(0).jjtGetNumChildren() > 1;
                 }
                 TypedNameDeclaration type = null;
-                if (child instanceof ASTName) {
+                if (child instanceof ASTName && !isMethodCall) {
                     ASTName name = (ASTName) child;
                     Scope s = name.getScope();
                     while (s != null) {
@@ -531,11 +533,14 @@ public class ClassScope extends AbstractJavaScope {
         for (ASTTypeParameter type : types) {
             if (typeImage.equals(type.getImage())) {
                 ASTClassOrInterfaceType bound = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                if (bound != null && bound.getType() != null) {
-                    return bound.getType();
-                }
                 if (bound != null) {
-                    return this.getEnclosingScope(SourceFileScope.class).resolveType(bound.getImage());
+                    if (bound.getType() != null) {
+                        return bound.getType();
+                    } else {
+                        return this.getEnclosingScope(SourceFileScope.class).resolveType(bound.getImage());
+                    }
+                } else {
+                    return Object.class; // type parameter found, but no binding.
                 }
             }
         }

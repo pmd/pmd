@@ -1285,4 +1285,18 @@ public class ConsecutiveLiteralAppendsRuleTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1401 False positive for StringBuilder.append called with constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String foo(final String value)
+    {
+        StringBuilder s = new StringBuilder("start:").append(value).append(":end");
+
+        return s.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

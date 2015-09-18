@@ -125,7 +125,7 @@ import static Yoko; // Too much !
    		language="java"
 	      since="5.0"
         	class="net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule"
-        	message="Unnecessary use of fully qualified name ''{0}'' due to existing import ''{1}''"
+        	message="Unnecessary use of fully qualified name ''{0}'' due to existing {2}import ''{1}''"
        		externalInfoUrl="${pmd.website.baseurl}/rules/java/imports.html#UnnecessaryFullyQualifiedName">
        		<description><![CDATA[
 Import statements allow the use of non-fully qualified names.  The use of a fully qualified name

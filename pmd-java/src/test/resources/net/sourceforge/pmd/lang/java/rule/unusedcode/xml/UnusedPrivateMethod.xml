@@ -1446,4 +1446,62 @@ public class FooTest {
 }
     ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1395 UnusedPrivateMethod false positive for array element method call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnusedPrivateMethod {
+    public void doSomething() {
+        File[] files = getFiles();
+        for (int i = 0; i < files.length; i++) {
+            String name = getNameFromFilename(files[i].getName());
+            System.out.println("name is " + name);
+        }
+    }
+
+    private String getNameFromFilename(String fileName) {
+        int index = fileName.lastIndexOf('.');
+        return fileName.substring(0, index);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1403 False positive UnusedPrivateMethod with JAVA8</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    @Test public void mapMergeShouldReturnTheUnionWhenGivenDifferentSetsWithSomeCommonValues() {
+        final Map<String, Purse> actual
+            = Combiners.mapMerge(mapOf(annPurse5, bobPurse7), mapOf(bobPurse9, calPurse10), ADDITION);
+        assertEquals(mapOf(annPurse5, bobPurse16, calPurse10), actual);
+    }
+    private static Map<String, Purse> mapOf(final Purse... values) {
+        return mapOf2(Purse::getOwner, values);
+    }
+    private static <K, V> Map<K, V> mapOf2(final Function<V, K> keyMapper, final V... values) {
+        return Stream.of(values).collect(Collectors.toMap(keyMapper, Function.identity()));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code useAuxClasspath="false">
+        <description>#1405 UnusedPrivateMethod false positive?</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class blabla implements blabla2 {
+    @Override
+    public List<String> getProductImageUrls(final ApparelStyleVariantProductModel product, final String format) {
+        return getImageUrlsListForVariant(product, format);
+    }
+    private List<String> getImageUrlsListForVariant(final VariantProductModel variant, final String format) {
+        final SortedMap<Integer, String> imageUrls = getImageUrlsMapForVariant(variant, format);
+        return new ArrayList<String>(imageUrls.values());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

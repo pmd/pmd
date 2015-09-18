@@ -98,27 +98,16 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 		if (importDeclaration.isStatic()) {
 		    String[] importParts = importDeclaration.getImportedName().split("\\.");
 		    String[] nameParts = name.split("\\.");
-		    boolean checkClassImport = false;
 		    if (importDeclaration.isImportOnDemand()) {
 			//  Name class part matches class part of static import?
 			if (nameParts[nameParts.length - 2].equals(importParts[importParts.length - 1])) {
-			    checkClassImport = true;
+			    matches.add(importDeclaration);
 			}
 		    } else {
 			// Last 2 parts match?
 			if (nameParts[nameParts.length - 1].equals(importParts[importParts.length - 1])
 				&& nameParts[nameParts.length - 2].equals(importParts[importParts.length - 2])) {
-			    checkClassImport = true;
-			}
-		    }
-		    if (checkClassImport) {
-			// Name class part matches a direct class import?
-			String nameEnd = "." + nameParts[nameParts.length - 2];
-			for (ASTImportDeclaration importDeclaration2 : imports) {
-			    if (!importDeclaration2.isStatic() && !importDeclaration2.isImportOnDemand()
-				    && importDeclaration2.getImportedName().endsWith(nameEnd)) {
-				matches.add(importDeclaration2);
-			    }
+			    matches.add(importDeclaration);
 			}
 		    }
 		}
@@ -126,8 +115,10 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 	}
 
 	if (!matches.isEmpty()) {
-	    String importStr = matches.get(0).getImportedName() + (matches.get(0).isImportOnDemand() ? ".*" : "");
-	    addViolation(data, node, new Object[] { node.getImage(), importStr });
+	    ASTImportDeclaration firstMatch = matches.get(0);
+        String importStr = firstMatch.getImportedName() + (matches.get(0).isImportOnDemand() ? ".*" : "");
+	    String type = firstMatch.isStatic() ? "static " : "";
+	    addViolation(data, node, new Object[] { node.getImage(), importStr, type });
 	}
 
 	matches.clear();

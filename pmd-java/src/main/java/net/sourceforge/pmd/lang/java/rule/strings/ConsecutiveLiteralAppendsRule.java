@@ -213,6 +213,11 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
                     ASTLiteral literal = suffix.getFirstDescendantOfType(ASTLiteral.class);
                     if (literal != null && literal.isStringLiteral()) {
                         result++;
+                    } else {
+                        // if it was not a String literal that was appended, then we don't
+                        // have a consecutive literal string append anymore and we can skip
+                        // checking the remainder of the initializer
+                        break;
                     }
                 }
             }
