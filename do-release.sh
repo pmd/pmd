@@ -133,7 +133,8 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 mvn -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
-    -DdevelopmentVersion=${DEVELOPMENT_VERSION}
+    -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
+    -Dgpg.keyname=${PMD_GPG_KEY}
 mvn -B release:perform
 
 (
@@ -187,8 +188,8 @@ rsync -avhP target/pmd-doc-${RELEASE_VERSION}/ ../../../pmd.github.io/pmd-${RELE
 
 echo
 echo "Uploading the zip files..."
-rsync -avhP pmd-dist/target/pmd-*-${RELEASE_VERSION}.zip target/pmd-doc-${RELEASE_VERSION}.zip $SFUSER@web.sourceforge.net:/home/frs/project/pmd/pmd/${RELEASE_VERSION}/
-rsync -avhP src/site/markdown/overview/changelog.md $SFUSER@web.sourceforge.net:/home/frs/project/pmd/pmd/${RELEASE_VERSION}/ReadMe.md
+rsync -avhP pmd-dist/target/pmd-*-${RELEASE_VERSION}.zip target/pmd-doc-${RELEASE_VERSION}.zip $PMD_SF_USER@web.sourceforge.net:/home/frs/project/pmd/pmd/${RELEASE_VERSION}/
+rsync -avhP src/site/markdown/overview/changelog.md $PMD_SF_USER@web.sourceforge.net:/home/frs/project/pmd/pmd/${RELEASE_VERSION}/ReadMe.md
 echo
 
 if [ ! "" = "$PMD_LOCAL_BINARIES" -a -d $PMD_LOCAL_BINARIES ]; then
