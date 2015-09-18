@@ -1,14 +1,6 @@
 # Changelog
 
-## ????? - 5.3.4-SNAPSHOT
-
-**New Supported Languages:**
-
-**Feature Request and Improvements:**
-
-**New/Modified/Deprecated Rules:**
-
-**Pull Requests:**
+## 18-September-2015 - 5.3.4
 
 **Bugfixes:**
 
@@ -31,5 +23,3 @@
 *   [#1403](https://sourceforge.net/p/pmd/bugs/1403/): False positive UnusedPrivateMethod with JAVA8
 *   [#1404](https://sourceforge.net/p/pmd/bugs/1404/): Java8 'Unnecessary use of fully qualified name' in Streams Collector
 *   [#1405](https://sourceforge.net/p/pmd/bugs/1405/): UnusedPrivateMethod false positive?
-
-**API Changes:**
