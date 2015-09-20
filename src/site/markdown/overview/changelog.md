@@ -16,6 +16,8 @@
 
 **Bugfixes:**
 
+*   java-controversial/DefaultPackage:
+    [#1410](https://sourceforge.net/p/pmd/bugs/1410/): DefaultPackage triggers on field annotated with @VisibleForTesting
 
 **API Changes:**
 
