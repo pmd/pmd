@@ -1026,4 +1026,17 @@ public class StringBuilderWithMessageRetrieval {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1409 NullPointerException in InsufficientStringBufferRule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullPointer {
+    public void run(String[] strings) {
+        StringBuilder builder;
+        builder = new StringBuilder();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
