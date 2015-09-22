@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A scope is a region within variables and other declarations are visible.
@@ -69,8 +70,8 @@ public interface Scope {
     /**
      * Adds a {@link NameOccurrence} to this scope - only call this after getting
      * a true back from {@link #contains(NameOccurrence)}.
-     * @return the {@link NameDeclaration} that is references by the given {@link NameOccurrence},
-     * if the {@link NameOccurrence} could be added. Otherwise <code>null</code> is returned.
+     * @return the {@link NameDeclaration}s that are referenced by the given {@link NameOccurrence},
+     * if the {@link NameOccurrence} could be added. Otherwise an empty set is returned.
      */
-    NameDeclaration addNameOccurrence(NameOccurrence occurrence);
+    Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence);
 }

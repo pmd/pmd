@@ -78,6 +78,14 @@
 
 **Bugfixes:**
 
+*   java-unusedcode/UnusedPrivateMethod:
+    [#1412](https://sourceforge.net/p/pmd/bugs/1412/): UnusedPrivateMethod false positive: Issue #1403 not completely solved
 
 **API Changes:**
 
+*   pmd-core: `net.sourceforge.pmd.lang.symboltable.Scope`: The method `addNameOccurrence` returns now a Set of
+    NameDeclarations to which the given occurrence has been added. This is useful in case there are ambiguous declarations
+    of methods.
+*   pmd-core: `net.sourceforge.pmd.lang.symboltable.AbstractScope`: The method `findVariableHere` returns now
+    a Set of NameDeclarations which match the given occurrence.  This is useful in case there are ambiguous declarations
+    of methods.

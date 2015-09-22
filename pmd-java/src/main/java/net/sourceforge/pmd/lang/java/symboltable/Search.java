@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -11,7 +14,7 @@ public class Search {
     private static final boolean TRACE = false;
 
     private NameOccurrence occ;
-    private NameDeclaration decl;
+    private Set<NameDeclaration> declarations = new HashSet<NameDeclaration>();
 
     public Search(JavaNameOccurrence occ) {
         if (TRACE) {
@@ -21,24 +24,26 @@ public class Search {
     }
 
     public void execute() {
-        decl = searchUpward(occ, occ.getLocation().getScope());
+        Set<NameDeclaration> found = searchUpward(occ, occ.getLocation().getScope());
         if (TRACE) {
-            System.out.println("found " + decl);
+            System.out.println("found " + found);
         }
+        declarations.addAll(found);
     }
 
     public void execute(Scope startingScope) {
-        decl = searchUpward(occ, startingScope);
+        Set<NameDeclaration> found = searchUpward(occ, startingScope);
         if (TRACE) {
-            System.out.println("found " + decl);
+            System.out.println("found " + found);
         }
+        declarations.addAll(found);
     }
 
-    public NameDeclaration getResult() {
-        return decl;
+    public Set<NameDeclaration> getResult() {
+        return declarations;
     }
 
-    private NameDeclaration searchUpward(NameOccurrence nameOccurrence, Scope scope) {
+    private Set<NameDeclaration> searchUpward(NameOccurrence nameOccurrence, Scope scope) {
         if (TRACE) {
             System.out.println(" checking scope " + scope + " for name occurrence " + nameOccurrence);
         }
@@ -54,6 +59,6 @@ public class Search {
             }
             return scope.addNameOccurrence(nameOccurrence);
         }
-        return null;
+        return new HashSet<NameDeclaration>();
     }
 }

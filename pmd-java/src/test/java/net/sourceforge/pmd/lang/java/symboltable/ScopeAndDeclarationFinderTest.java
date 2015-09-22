@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -37,7 +38,9 @@ public class ScopeAndDeclarationFinderTest extends STBBaseTst {
             Assert.assertEquals(2, scope.getVariableDeclarations().size());
             Assert.assertTrue(scope.contains(new JavaNameOccurrence(null, "o")));
             Assert.assertTrue(scope.contains(new JavaNameOccurrence(null, "arg")));
-            NameDeclaration decl = scope.findVariableHere(new JavaNameOccurrence(null, "arg"));
+            Set<NameDeclaration> declarations = scope.findVariableHere(new JavaNameOccurrence(null, "arg"));
+            Assert.assertEquals(1, declarations.size());
+            NameDeclaration decl = declarations.iterator().next();
             Assert.assertEquals(1, scope.getVariableDeclarations().get(decl).size());
         }
     }

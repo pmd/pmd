@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -113,10 +114,14 @@ public class SourceFileScope extends AbstractJavaScope {
         return (ClassNameDeclaration)finder.getDecl();
     }
 
-    protected NameDeclaration findVariableHere(JavaNameOccurrence occ) {
+    protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occ) {
+        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
         ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
         Applier.apply(finder, getDeclarations().keySet().iterator());
-        return finder.getDecl();
+        if (finder.getDecl() != null) {
+            result.add(finder.getDecl());
+        }
+        return result;
     }
 
     /**

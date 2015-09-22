@@ -4,9 +4,11 @@
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for any {@link Scope}.
@@ -84,11 +86,11 @@ public abstract class AbstractScope implements Scope {
     }
 
     @Override
-    public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
-        NameDeclaration result = null;
+    public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
+        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
         for (Map.Entry<NameDeclaration, List<NameOccurrence>> e : getDeclarations().entrySet()) {
             if (e.getKey().getImage().equals(occurrence.getImage())) {
-                result = e.getKey();
+                result.add(e.getKey());
                 e.getValue().add(occurrence);
             }
         }

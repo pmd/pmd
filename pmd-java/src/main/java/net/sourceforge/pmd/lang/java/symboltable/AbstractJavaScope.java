@@ -30,10 +30,10 @@ public abstract class AbstractJavaScope extends AbstractScope {
 
     @Override
     public boolean contains(NameOccurrence occurrence) {
-        return findVariableHere((JavaNameOccurrence)occurrence) != null;
+        return !findVariableHere((JavaNameOccurrence)occurrence).isEmpty();
     }
 
-    protected abstract NameDeclaration findVariableHere(JavaNameOccurrence occurrence);
+    protected abstract Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence);
 
     protected <T> String glomNames(Set<T> s) {
     	StringBuilder result = new StringBuilder();

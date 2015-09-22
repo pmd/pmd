@@ -3,8 +3,11 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -20,18 +23,20 @@ public class LocalScope extends AbstractJavaScope {
         return getDeclarations(VariableNameDeclaration.class);
     }
 
-    public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
+    public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
         JavaNameOccurrence javaOccurrence = (JavaNameOccurrence) occurrence;
-        NameDeclaration decl = findVariableHere(javaOccurrence);
-        if (decl != null && !javaOccurrence.isThisOrSuper()) {
-            List<NameOccurrence> nameOccurrences = getVariableDeclarations().get(decl);
-            nameOccurrences.add(javaOccurrence);
-            Node n = javaOccurrence.getLocation();
-            if (n instanceof ASTName) {
-                ((ASTName) n).setNameDeclaration(decl);
-            } // TODO what to do with PrimarySuffix case?
+        Set<NameDeclaration> declarations = findVariableHere(javaOccurrence);
+        if (!declarations.isEmpty() && !javaOccurrence.isThisOrSuper()) {
+            for (NameDeclaration decl : declarations) {
+                List<NameOccurrence> nameOccurrences = getVariableDeclarations().get(decl);
+                nameOccurrences.add(javaOccurrence);
+                Node n = javaOccurrence.getLocation();
+                if (n instanceof ASTName) {
+                    ((ASTName) n).setNameDeclaration(decl);
+                } // TODO what to do with PrimarySuffix case?
+            }
         }
-        return decl;
+        return declarations;
     }
 
     public void addDeclaration(NameDeclaration nameDecl) {
@@ -43,13 +48,17 @@ public class LocalScope extends AbstractJavaScope {
         super.addDeclaration(nameDecl);
     }
 
-    public NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {
+    public Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
+        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
-            return null;
+            return result;
         }
         ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
-        return finder.getDecl();
+        if (finder.getDecl() != null) {
+            result.add(finder.getDecl());
+        }
+        return result;
     }
 
     public String toString() {
