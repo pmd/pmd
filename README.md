@@ -1,7 +1,7 @@
-[![PMD - Don't shoot the messenger][PMDLogo]][website]
-
 PMD
 ===
+
+[![Build Status](https://travis-ci.org/pmd/pmd.svg?branch=master)](https://travis-ci.org/pmd/pmd)
 
 About
 -----
@@ -13,15 +13,12 @@ Java, C, C++, C#, PHP, Ruby, Fortran, JavaScript.
 Source
 ------
 Our latest source of PMD can be found on [GitHub]. Fork us!
-The current status of this repo can be seen at [BuildHive].
 
 News and Website
 ----------------
 More information can be found on our [Website] and on [SourceForge].
 
 
-[PMDLogo]: http://pmd.sourceforge.net/pmd_logo.png
 [GitHub]: https://github.com/pmd/pmd
-[BuildHive]: https://buildhive.cloudbees.com/job/pmd/
-[Website]: http://pmd.sourceforge.net
+[Website]: https://pmd.github.io
 [SourceForge]: https://sourceforge.net/projects/pmd/
