@@ -1,5 +1,20 @@
 language: java
-jdk:
-  - oraclejdk8
-  - oraclejdk7
-  - openjdk6
+matrix:
+  include:
+  - jdk: oraclejdk7
+    script: mvn -q deploy --settings .travis-settings.xml
+  - jdk: oraclejdk8
+    script: mvn -q install
+notifications:
+  email:
+    recipients:
+    - adangel@users.sourceforge.net
+    on_success: always
+    on_failure: always
+cache:
+  directories:
+  - "$HOME/.m2"
+env:
+  global:
+  - secure: KBEuB6U1p5RQXSYe157AwydFr/zpXQPA0IChVCgZV+X1mMyy9ZtrjH1J1AXuviseDDXDbaT25sRnsvpl82rfRw2xOkMGXHy4N95/ylTSr8DjHxTao71BhXsvFycNobFva5y2EGNWqDvpS8I2oSZo7Qk4la3yep3rcJQvcy6RDbbhpDTbL1QMFyadunIBm0WtqbunrMqtjSqaoPsXz8TiQuxHvX4vEXzVbaxV1QQt79Vi+daa6wAV3mRQAugnx+UffsC8JqMxgm06usWeJgCJzxgm8E7clZCLmf53B2TL8dK6bIYbqyvOY3uFxitsTG0d8Z0GOJwXBgZNgbniTRO8ZJSty5eZP8LBybbjVLSL25DNTWtCjADUL/uySnXIEidlMt2N/3QmH7zrGAfAk/tIwKpdRca2GLLydeXf6PSkiahnPEkIY/QupcsOLELhdifpdOjb8QW1OenA+vUbNM9dccLwKnX6Fj9cu4VQG601AcYDr2eyhq8WYkr3wYdw/6KdUa3hmplowTBs+qguppP+eOSgGuEsy38KLtqnvm6WlHy6tcLmcVYKG3DmR1b7TWXsOXC6/VMH8BHBkvsF1QdRg9+Cgx07vX3Hw7roPiYzmaO9Ajs20ATsUfRskMuWCTeTSK5pN8X27veRCZlhFjeKQMDdmfVwzpAfRgKsl3TEn1I=
+  - secure: U1DfAv6acUUWe+dao/ZSDUX64JRadNJY16rITsdrM4ZNAJSuXpEY3p/LWcYjN7D49YmyutbXH9+L3KKQUQGrGXj9QTarfYvd8ZsKt4FK8yv7AFy+RQNIbAjNEHBzHx15p+srMheTaetl7aLwY0qhF+D/RtGapxHKyY4dBHrb0lp8VGyiCiL7Aop8GGskosi1mtirPBp/BStPZ2bEyxG0QzU5SsVWkJWwV9aWLPVAR/n7Xgx/6Gjl6Fed2c/WSrWi4vchm3Ny8pfTweOax3PGYYjBVxIfuX0mqmwuJsY7gNfXCfN3dPiPKGJPFy1pC+LGyGkklO5ReKFLd4O1ME6fU0dlIGfD6n+Q4H6/w9FHXegcKTfWIJm/MFa6vA/tJM5R6zJQuiTQJboHm/UmS/iQj76z0p6sK15Xp5vFId+/dHKqa8xY+Bt6HiXy6z401HOc8QcYBAf7TqhqUt/ZE7HN4be46uR90KmzIrWz6wEoDW7HfwQ9ZMbs55zoOXrvekyE9/gXskypO0p2JT3Y0vlvO27KQvIrSwI480kOVOrlyrYA+LZqlcKaayOuCuZh4lITQUYinUoZZict5joYthH+Cyh2zovoBpxsntDJdMnaZNLtSC7hlhpbMBYaT2y1O6vZH5Yix0mxuDvs/x6ogP5CNBeUYlXhaL+g4GnwKyr0ZA0=
