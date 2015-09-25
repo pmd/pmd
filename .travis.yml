@@ -2,9 +2,9 @@ language: java
 matrix:
   include:
   - jdk: oraclejdk7
-    script: mvn -q deploy --settings .travis-settings.xml
+    script: mvn test deploy --settings .travis-settings.xml
   - jdk: oraclejdk8
-    script: mvn -q install
+    script: mvn test
 notifications:
   email:
     recipients:
