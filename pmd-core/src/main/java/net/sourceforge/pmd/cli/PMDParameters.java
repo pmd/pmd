@@ -78,6 +78,9 @@ public class PMDParameters {
     @Parameter(names = "-auxclasspath", description = "Specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
     private String auxclasspath;
 
+    @Parameter(names = {"-failOnViolation", "--failOnViolation"}, arity = 1, description = "By default PMD exits with status 4 if violations are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
+    private boolean failOnViolation = true;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -135,6 +138,7 @@ public class PMDParameters {
         configuration.setStressTest(params.isStress());
         configuration.setSuppressMarker(params.getSuppressmarker());
         configuration.setThreads(params.getThreads());
+        configuration.setFailOnViolation(params.isFailOnViolation());
 
         LanguageVersion languageVersion = LanguageRegistry.findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
         if(languageVersion != null) {
@@ -222,6 +226,10 @@ public class PMDParameters {
 
     public String getFormat() {
         return format;
+    }
+
+    public boolean isFailOnViolation() {
+        return failOnViolation;
     }
 
     /**

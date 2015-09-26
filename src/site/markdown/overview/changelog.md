@@ -11,6 +11,10 @@
 
 *   [#1344](https://sourceforge.net/p/pmd/bugs/1344/): AbstractNaming should check reverse
 *   [#1361](https://sourceforge.net/p/pmd/bugs/1361/): ShortVariable and ShortMethodName configuration
+*   [#1414](https://sourceforge.net/p/pmd/bugs/1414/): Command line parameter to disable "failOnViolation" behavior
+    PMD and CPD Command Line Interfaces have a new optional parameter: `failOnViolation`. Executing PMD with the option
+    `-failOnViolation false` will perform the PMD checks but won't fail the build and still exit with status 0.
+    This is useful if you only want to generate the report with violations but don't want to fail your build.
 
 
 **New Rules:**

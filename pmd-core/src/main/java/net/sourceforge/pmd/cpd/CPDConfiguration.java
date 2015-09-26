@@ -92,6 +92,9 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
     private boolean help;
 
+    @Parameter(names = {"--failOnViolation", "-failOnViolation"}, arity = 1, description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
+    private boolean failOnViolation = true;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class LanguageConverter implements IStringConverter<Language> {
 
@@ -401,5 +404,13 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setSkipBlocksPattern(String skipBlocksPattern) {
         this.skipBlocksPattern = skipBlocksPattern;
+    }
+
+    public boolean isFailOnViolation() {
+        return failOnViolation;
+    }
+
+    public void setFailOnViolation(boolean failOnViolation) {
+        this.failOnViolation = failOnViolation;
     }
 }

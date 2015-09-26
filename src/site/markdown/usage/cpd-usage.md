@@ -130,6 +130,13 @@ The options "minimum-tokens" and "files" are the two required options; there are
         <td></td>
     </tr>
     <tr>
+        <td>--failOnViolation {true|false}</td>
+        <td>By default CPD exits with status 4 if code duplications are found.
+            Disable this option with '--failOnViolation false' to exit with 0 instead and just write the report.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
         <td>--ignore-literals</td>
         <td>Ignore number values and string contents when comparing text</td>
         <td>no</td>
@@ -231,7 +238,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <table>
 <tr><td>0</td><td>Everything is fine, now code duplications found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one code duplication has been detected</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless '--failOnViolation false' is used.</td></tr>
 </table>
 
 

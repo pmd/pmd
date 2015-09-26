@@ -190,6 +190,14 @@ The tool comes with a rather extensive help text, simply running with `-help`!
         <td>no</td>
         <td></td>
     </tr>
+    <tr>
+        <td>-failOnViolation {true|false}</td>
+        <td>By default PMD exits with status 4 if violations are found.
+            Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.
+        </td>
+        <td>no</td>
+        <td></td>
+    </tr>
 </table>
 
 
@@ -202,7 +210,7 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 <table>
 <tr><td>0</td><td>Everything is fine, now violations found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or PMD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one violation has been detected</td></tr>
+<tr><td>4</td><td>At least one violation has been detected unless '-failOnViolation false' is set.</td></tr>
 </table>
 
 

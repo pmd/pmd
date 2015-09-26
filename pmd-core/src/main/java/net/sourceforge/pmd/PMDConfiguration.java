@@ -101,6 +101,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean reportShortNames = false;
     private Properties reportProperties = new Properties();
     private boolean showSuppressedViolations = false;
+    private boolean failOnViolation = true;
 
     private boolean stressTest;
     private boolean benchmark;
@@ -492,5 +493,23 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setBenchmark(boolean benchmark) {
         this.benchmark = benchmark;
+    }
+
+    /**
+     * Whether PMD should exit with status 4 (the default behavior, true) if violations
+     * are found or just with 0 (to not break the build, e.g.).
+     * @return failOnViolation
+     */
+    public boolean isFailOnViolation() {
+        return failOnViolation;
+    }
+
+    /**
+     * Sets whether PMD should exit with status 4 (the default behavior, true) if violations
+     * are found or just with 0 (to not break the build, e.g.).
+     * @param failOnViolation failOnViolation
+     */
+    public void setFailOnViolation(boolean failOnViolation) {
+        this.failOnViolation = failOnViolation;
     }
 }

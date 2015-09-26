@@ -51,6 +51,21 @@ public class CPDCommandLineInterfaceTest {
     }
 
     /**
+     * Test ignore identifiers argument with failOnViolation=false
+     */
+    @Test
+    public void testIgnoreIdentifiersFailOnViolationFalse() throws Exception {
+        runCPD("--minimum-tokens", "34", "--language", "java",
+               "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
+               "--ignore-identifiers",
+               "--failOnViolation", "false");
+
+        String out = bufferStdout.toString("UTF-8");
+        Assert.assertTrue(out.contains("Found a 7 line (36 tokens) duplication"));
+        Assert.assertEquals(0, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
+    }
+
+    /**
      * Test excludes option.
      */
     @Test

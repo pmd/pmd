@@ -457,7 +457,7 @@ public class PMD {
                                 // already been initialized at this point
         try {
             int violations = PMD.doPMD(configuration);
-            if (violations > 0) {
+            if (violations > 0 && configuration.isFailOnViolation()) {
                 status = PMDCommandLineInterface.VIOLATIONS_FOUND;
             } else {
                 status = 0;
