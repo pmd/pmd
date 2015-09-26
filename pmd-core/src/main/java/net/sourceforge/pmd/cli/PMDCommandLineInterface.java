@@ -37,7 +37,7 @@ public class PMDCommandLineInterface {
 			if (arguments.isHelp()) {
 				jcommander.usage();
 				System.out.println(buildUsageText(jcommander));
-				setStatusCodeOrExit(0);
+				setStatusCodeOrExit(ERROR_STATUS);
 			}
 		} catch (ParameterException e) {
 			jcommander.usage();

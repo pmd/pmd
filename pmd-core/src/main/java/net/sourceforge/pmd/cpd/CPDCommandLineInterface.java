@@ -22,6 +22,7 @@ public class CPDCommandLineInterface {
     private final static Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
 	private static final int DUPLICATE_CODE_FOUND = 4;
+	private static final int ERROR_STATUS = 1;
 
 	public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
 	public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
@@ -58,14 +59,14 @@ public class CPDCommandLineInterface {
 			if (arguments.isHelp()) {
 				jcommander.usage();
 				System.out.println(buildUsageText());
-				setStatusCodeOrExit(1);
+				setStatusCodeOrExit(ERROR_STATUS);
 				return;
 			}
 		} catch (ParameterException e) {
 			jcommander.usage();
 			System.out.println(buildUsageText());
 			System.err.println(" " + e.getMessage());
-			setStatusCodeOrExit(1);
+			setStatusCodeOrExit(ERROR_STATUS);
 			return;
 		}
 		arguments.postContruct();
@@ -74,24 +75,29 @@ public class CPDCommandLineInterface {
 		CPDConfiguration.setSystemProperties(arguments);
 		CPD cpd = new CPD(arguments);
 
-                //Add files 
-                if ( null != arguments.getFiles() && ! arguments.getFiles().isEmpty() )
-                {
-                  addSourcesFilesToCPD(arguments.getFiles(), arguments.filenameFilter(), cpd, !arguments.isNonRecursive());
-                }
+        try {
+            // Add files
+            if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
+                addSourcesFilesToCPD(arguments.getFiles(), arguments.filenameFilter(), cpd, !arguments.isNonRecursive());
+            }
 
-                //Add Database URIS
-                if ( null != arguments.getURI() && ! "".equals(arguments.getURI()) )
-                {
-                  addSourceURIToCPD(arguments.getURI(),cpd);
-                }
+            // Add Database URIS
+            if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
+                addSourceURIToCPD(arguments.getURI(), cpd);
+            }
 
-		cpd.go();
-		if (cpd.getMatches().hasNext()) {
-			System.out.println(arguments.getRenderer().render(cpd.getMatches()));
-			setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
-		}
-	}
+            cpd.go();
+            if (cpd.getMatches().hasNext()) {
+                System.out.println(arguments.getRenderer().render(cpd.getMatches()));
+                setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
+            } else {
+                setStatusCodeOrExit(0);
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            setStatusCodeOrExit(ERROR_STATUS);
+        }
+    }
 
 	private static void addSourcesFilesToCPD(List<File> files, FilenameFilter filter, CPD cpd, boolean recursive) {
 		try {

@@ -228,6 +228,13 @@ If you specify a source directory but don't want to scan the sub-directories, yo
 Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0).
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
+<table>
+<tr><td>0</td><td>Everything is fine, now code duplications found</td></tr>
+<tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected</td></tr>
+</table>
+
+
 ### Supported Languages
 
 * cs

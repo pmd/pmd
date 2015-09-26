@@ -47,6 +47,7 @@ public class CPDCommandLineInterfaceTest {
 
         String out = bufferStdout.toString("UTF-8");
         Assert.assertTrue(out.contains("Found a 7 line (36 tokens) duplication"));
+        Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 
     /**
@@ -62,6 +63,7 @@ public class CPDCommandLineInterfaceTest {
 
         String out = bufferStdout.toString("UTF-8");
         Assert.assertFalse(out.contains("Found a 7 line (34 tokens) duplication"));
+        Assert.assertEquals(0, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 
     /**
@@ -86,6 +88,7 @@ public class CPDCommandLineInterfaceTest {
         String out = bufferStdout.toString("UTF-8");
         Assert.assertTrue(out.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
         Assert.assertTrue(Pattern.compile("System\\.out\\.println\\([ij] \\+ \"ä\"\\);").matcher(out).find());
+        Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 
     /**
@@ -102,6 +105,7 @@ public class CPDCommandLineInterfaceTest {
         String out = bufferStdout.toString("UTF-8");
         Assert.assertTrue(Pattern.compile("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file").matcher(out).find());
         Assert.assertTrue(out.contains("Found a 5 line (13 tokens) duplication"));
+        Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 
     @Test
@@ -112,6 +116,7 @@ public class CPDCommandLineInterfaceTest {
                "--format", "xml");
         String out = bufferStdout.toString("UTF-8");
         Assert.assertTrue(out.contains("<duplication lines=\"3\" tokens=\"10\">"));
+        Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 
     @Test
@@ -122,6 +127,7 @@ public class CPDCommandLineInterfaceTest {
                "--format", "csv");
         String out = bufferStdout.toString("UTF-8");
         Assert.assertFalse(out.contains("Couldn't instantiate renderer"));
+        Assert.assertEquals(0, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 
     private void runCPD(String... args) {
