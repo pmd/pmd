@@ -26,6 +26,8 @@
     [#1387](https://sourceforge.net/p/pmd/bugs/1387/): CloseResource has false positive for ResultSet
 *   java-strings/InsufficientStringBufferDeclaration:
     [#1409](https://sourceforge.net/p/pmd/bugs/1409/): NullPointerException in InsufficientStringBufferRule
+*   java-unnecessary/UselessParentheses:
+    [#1407](https://sourceforge.net/p/pmd/bugs/1407/): UselessParentheses "&" and "+" operator precedence
 
 **API Changes:**
 
