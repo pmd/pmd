@@ -263,11 +263,14 @@
         <checkstyle.version>2.13</checkstyle.version>
         <pmd.plugin.version>3.5</pmd.plugin.version>
         <java.version>1.7</java.version>
+        <jacoco.version>0.7.5.201505241946</jacoco.version>
         <ant.version>1.9.4</ant.version>
         <javadoc.plugin.version>2.10.1</javadoc.plugin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot/${project.artifactId}</pmd.website.baseurl>
+
+        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
         <config.basedir>${basedir}/pmd-core</config.basedir>
         <pmd.dogfood.ruleset>${config.basedir}/src/main/resources/rulesets/internal/dogfood.xml</pmd.dogfood.ruleset>
@@ -365,7 +368,6 @@
                     <version>${surefire.version}</version>
                     <configuration>
                         <forkMode>once</forkMode>
-                        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
                         <runOrder>alphabetical</runOrder>
                     </configuration>
                 </plugin>
@@ -480,6 +482,19 @@
                 </executions>
             </plugin>
             <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>${jacoco.version}</version>
+              <executions>
+                  <execution>
+                      <id>default-prepare-agent</id>
+                      <goals>
+                          <goal>prepare-agent</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <executions>
@@ -562,7 +577,6 @@
                 </configuration>
             </plugin>
 
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -610,6 +624,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>${surefire.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
             </plugin>
 
             <plugin>
