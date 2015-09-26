@@ -69,10 +69,10 @@ echo "Releasing PMD"
 echo "-------------------------------------------"
 
 
-MVN_VERSION=$(mvn --version | grep "Java version: 1.6")
+MVN_VERSION=$(mvn --version | grep "Java version: 1.7")
 if [ $? -ne 0 ]; then
     echo "Wrong java version!"
-    echo "Expected 1.6, but was:"
+    echo "Expected 1.7, but was:"
     mvn --version
     exit 1
 fi

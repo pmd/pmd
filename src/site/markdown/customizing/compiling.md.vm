@@ -7,7 +7,7 @@
 
 ## Requirements
 
-*   JDK 1.6 or higher
+*   JDK 1.7 or higher
 *   [Apache Maven][maven] 3 or later.
 
 [maven]: http://maven.apache.org

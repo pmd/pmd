@@ -2,6 +2,7 @@
 
 ## ????? - 5.4.0-SNAPSHOT
 
+**Note**: PMD 5.4.0 requires JDK 1.7 or above.
 
 **New Supported Languages:**
 
@@ -82,6 +83,7 @@
 
 **API Changes:**
 
+*   pmd requires now JDK 1.7 or above.
 *   pmd-core: `net.sourceforge.pmd.lang.symboltable.Scope`: The method `addNameOccurrence` returns now a Set of
     NameDeclarations to which the given occurrence has been added. This is useful in case there are ambiguous declarations
     of methods.
