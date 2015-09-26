@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 import org.jaxen.JaxenException;
@@ -58,20 +59,27 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private Set<String> closeTargets = new HashSet<String>();
     private static final StringMultiProperty CLOSE_TARGETS_DESCRIPTOR = new StringMultiProperty("closeTargets",
-            "Methods which may close this resource", new String[] {"close"}, 1.0f, ',');
+            "Methods which may close this resource", new String[] {}, 1.0f, ',');
 
     private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types", "Affected types",
             new String[] { "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet" }, 2.0f, ',');
 
+    private static final BooleanProperty USE_CLOSE_AS_DEFAULT_TARGET = new BooleanProperty("closeAsDefaultTarget",
+            "Consider 'close' as a target by default", true, 3.0f);
+
     public CloseResourceRule() {
         definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
         definePropertyDescriptor(TYPES_DESCRIPTOR);
+        definePropertyDescriptor(USE_CLOSE_AS_DEFAULT_TARGET);
     }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         if (closeTargets.isEmpty() && getProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
             closeTargets.addAll(Arrays.asList(getProperty(CLOSE_TARGETS_DESCRIPTOR)));
+        }
+        if (getProperty(USE_CLOSE_AS_DEFAULT_TARGET) && !closeTargets.contains("close")) {
+            closeTargets.add("close");
         }
         if (types.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
             types.addAll(Arrays.asList(getProperty(TYPES_DESCRIPTOR)));
