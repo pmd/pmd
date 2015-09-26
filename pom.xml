@@ -261,7 +261,6 @@
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.17</surefire.version>
         <checkstyle.version>2.13</checkstyle.version>
-        <clover.version>2.5.1</clover.version>
         <pmd.plugin.version>3.5</pmd.plugin.version>
         <java.version>1.7</java.version>
         <ant.version>1.9.4</ant.version>
@@ -480,27 +479,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- As Clover can be quite an hassle, know that you can skip 
-                it by using the following option when running mvn: $ mvn clean -Dmaven.clover.skip=true 
-                site -->
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-clover2-plugin</artifactId>
-                <version>${clover.version}</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <jdk>${java.version}</jdk>
-                    <licenseLocation>${config.basedir}/licences/clover2.license</licenseLocation>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>instrument</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -584,12 +562,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Emma is a test coverage tools to be used instead of clover. 
-                As the mvn2 plugin is not released yet, the plugin is commented out, so you 
-                build won't fail: You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762 
-                Download the tarball, extract, cd into dir, run $ mvn install. -->
-            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId> 
-                </plugin> -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -638,15 +610,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>${surefire.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-clover2-plugin</artifactId>
-                <version>${clover.version}</version>
-                <configuration>
-                    <licenseLocation>${config.basedir}/licences/clover2.license</licenseLocation>
-                    <reportDescriptor>${config.basedir}/etc/default-clover-report.xml</reportDescriptor>
-                </configuration>
             </plugin>
 
             <plugin>
