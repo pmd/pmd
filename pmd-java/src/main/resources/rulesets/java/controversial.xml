@@ -287,6 +287,7 @@ Use explicit scoping instead of the default package private level.
 //ClassOrInterfaceDeclaration[@Interface='false']
 /ClassOrInterfaceBody
 /ClassOrInterfaceBodyDeclaration
+[not(Annotation//Name[ends-with(@Image, 'VisibleForTesting')])]
 [
 FieldDeclaration[@PackagePrivate='true']
 or MethodDeclaration[@PackagePrivate='true']

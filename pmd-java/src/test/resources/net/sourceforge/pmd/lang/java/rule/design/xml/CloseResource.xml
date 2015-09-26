@@ -607,4 +607,52 @@ public class CloseResourceTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1387 CloseResource has false positive for ResultSet</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="closeTargets">closeConnection,closeCloseable,closeReader,closeResource,closeResultSet,closeStream,closeStatement</rule-property>
+        <code><![CDATA[
+public class CloseResource {
+    public void querySomething(Connection connection) {
+        Statement stmt = null; // it complains this is not closed
+        ResultSet resultSet = null; // it complains this is not closed
+        String someSql = "select something...";
+        try {
+            stmt = connection.createStatement();
+            resultSet = stmt.executQuery(someSql);
+            while (resultSet.next()) {
+                // do something
+            }
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify closeAsDefaultTarget property</description>
+        <expected-problems>2</expected-problems>
+        <rule-property name="closeAsDefaultTarget">false</rule-property>
+        <code><![CDATA[
+public class CloseResource {
+    public void doSomething() {
+        Statement stmt = connection.createStatement();
+        ResultSet resultSet = stmt.executeQuery("select ...");
+        try {
+        } finally {
+            resultSet.close();
+            stmt.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

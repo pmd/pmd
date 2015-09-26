@@ -56,4 +56,14 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1410 DefaultPackage triggers on field annotated with @VisibleForTesting</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @VisibleForTesting static final int[] ints = {};
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.rule.strings;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -242,7 +244,15 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             return DEFAULT_BUFFER_SIZE;
         }
 
-        List<ASTLiteral> literals = block.findDescendantsOfType(ASTLiteral.class);
+        List<ASTLiteral> literals;
+        ASTAllocationExpression constructorCall = block.getFirstDescendantOfType(ASTAllocationExpression.class);
+        if (constructorCall != null) {
+            // if this is a constructor call, only consider the literals within it.
+            literals = constructorCall.findDescendantsOfType(ASTLiteral.class);
+        } else {
+            // otherwise it might be a setLength call...
+            literals = block.findDescendantsOfType(ASTLiteral.class);
+        }
         if (literals.isEmpty()) {
             List<ASTName> name = block.findDescendantsOfType(ASTName.class);
             if (!name.isEmpty()) {
@@ -264,6 +274,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             } else {
                 iConstructorLength = Integer.parseInt(str);
             }
+        } else {
+            iConstructorLength = -1;
         }
 
         if (iConstructorLength == 0) {
@@ -305,13 +317,17 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
        int size = 0;
        if (parent != null) {
          final Node initializer = parent.getFirstChildOfType(ASTVariableInitializer.class);
-         final Node primExp = initializer.getFirstDescendantOfType(ASTPrimaryExpression.class);
-         for (int i = 0; i < primExp.jjtGetNumChildren(); i++) {
-           final Node sn = primExp.jjtGetChild(i);
-           if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
-             continue;
-           }
-           size += processNode(sn);
+         if (initializer != null) {
+             final Node primExp = initializer.getFirstDescendantOfType(ASTPrimaryExpression.class);
+             if (primExp != null) {
+                 for (int i = 0; i < primExp.jjtGetNumChildren(); i++) {
+                   final Node sn = primExp.jjtGetChild(i);
+                   if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
+                     continue;
+                   }
+                   size += processNode(sn);
+                 }
+             }
          }
        }
        return size;

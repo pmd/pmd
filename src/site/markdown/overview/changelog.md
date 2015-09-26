@@ -53,7 +53,6 @@
 *   Modified Rule: rulesets/java/basic.xml/CheckResultSet: Do not require to check the result of a navigation
     method, if it is returned.
 
-
 **Pull Requests:**
 
 *   [#21](https://github.com/adangel/pmd/pull/21): Added PMD Rules for Singleton pattern violations.

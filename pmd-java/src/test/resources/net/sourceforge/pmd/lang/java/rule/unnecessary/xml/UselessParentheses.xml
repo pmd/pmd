@@ -254,4 +254,45 @@ public class Useless {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1407 UselessParentheses "&amp;" and "+" operator precedence</description>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>3,4,5,6,7,8,9,10,11,12,13,14</expected-linenumbers>
+        <code><![CDATA[
+class ExampleClass {
+  void exampleExpressions() {
+    eUseless = (a++) + b;
+    eUseless = (a--) + b;
+    eUseless = (++a) + b;
+    eUseless = (--a) + b;
+    eUseless = (+a) + b;
+    eUseless = (-a) + b;
+    eUseless = (~a) + b;
+    eUseless = (!a) + b;
+    eUseless = (a * b) + c;
+    eUseless = (a / b) + c;
+    eUseless = (a % b) + c;
+    eUseless = (a + b) + c;
+    eGood = (a - b) + c;
+    eGood = (a << b) + c;
+    eGood = (a >> b) + c;
+    eGood = (a >>> b) + c;
+    eGood = (a < b) + c;
+    eGood = (a > b) + c;
+    eGood = (a <= b) + c;
+    eGood = (a >= b) + c;
+    eGood = (a instanceof b) + c;
+    eGood = (a == b) + c;
+    eGood = (a != b) + c;
+    eGood = (a & b) + c;
+    eGood = (a ^ b) + c;
+    eGood = (a | b) + c;
+    eGood = (a && b) + c;
+    eGood = (a || b) + c;
+    eGood = (a ? b : c) + d;
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>
