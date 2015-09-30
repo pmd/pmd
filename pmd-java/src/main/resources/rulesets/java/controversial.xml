@@ -278,7 +278,8 @@ public class Foo {
         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/controversial.html#DefaultPackage">
         <description>
-Use explicit scoping instead of the default package private level.
+Use explicit scoping instead of accidental usage of default package private level.
+The rule allows methods and fields annotated with Guava's @VisibleForTesting.
         </description>
         <priority>3</priority>
         <properties>
