@@ -2,7 +2,9 @@ language: java
 matrix:
   include:
   - jdk: oraclejdk7
-    script: mvn test deploy --settings .travis-settings.xml
+    script:
+      - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn test deploy --settings .travis-settings.xml'
+      - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] || mvn test'
   - jdk: oraclejdk8
     script: mvn test
 notifications:
