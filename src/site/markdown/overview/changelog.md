@@ -22,14 +22,16 @@
 **Bugfixes:**
 
 *   java-controversial/DefaultPackage:
-    *    [#1410](https://sourceforge.net/p/pmd/bugs/1410/): DefaultPackage triggers on field annotated with @VisibleForTesting
+    *   [#1410](https://sourceforge.net/p/pmd/bugs/1410/): DefaultPackage triggers on field annotated with @VisibleForTesting
 *   java-design/CloseResource:
-    *    [#1387](https://sourceforge.net/p/pmd/bugs/1387/): CloseResource has false positive for ResultSet
+    *   [#1387](https://sourceforge.net/p/pmd/bugs/1387/): CloseResource has false positive for ResultSet
+*   java-optimizations/RedundantFieldInitializer
+    *   [#1418](https://sourceforge.net/p/pmd/bugs/1418/): RedundantFieldInitializer false positive with large long value
 *   java-strings/InsufficientStringBufferDeclaration:
-    *    [#1409](https://sourceforge.net/p/pmd/bugs/1409/): NullPointerException in InsufficientStringBufferRule
-    *    [#1413](https://sourceforge.net/p/pmd/bugs/1413/): False positive StringBuffer constructor with ?: int value
+    *   [#1409](https://sourceforge.net/p/pmd/bugs/1409/): NullPointerException in InsufficientStringBufferRule
+    *   [#1413](https://sourceforge.net/p/pmd/bugs/1413/): False positive StringBuffer constructor with ?: int value
 *   java-unnecessary/UselessParentheses:
-    *    [#1407](https://sourceforge.net/p/pmd/bugs/1407/): UselessParentheses "&" and "+" operator precedence
+    *   [#1407](https://sourceforge.net/p/pmd/bugs/1407/): UselessParentheses "&" and "+" operator precedence
 
 
 **API Changes:**

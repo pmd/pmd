@@ -1292,4 +1292,14 @@ public class Bar {
 }
         </code>
     </test-code>
+
+    <test-code>
+        <description>#1418 RedundantFieldInitializer false positive with large long value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomeClass {
+    private long someNumber = 0x100000000000L;
+}
+        ]]></code>
+    </test-code>
 </test-data>
