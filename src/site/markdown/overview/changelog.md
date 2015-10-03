@@ -17,6 +17,7 @@
 
 **Pull Requests:**
 
+*   [#71](https://github.com/pmd/pmd/pull/71): #1410 Improve description of DefaultPackage rule
 
 **Bugfixes:**
 
