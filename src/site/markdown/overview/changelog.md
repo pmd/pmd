@@ -4,11 +4,7 @@
 
 
 <div style="border: 1px solid red; border-radius: 5px; border-left-width: 10px; padding: 5px 1em; background-color: lightyellow;">
-
-**Note**:
-
-PMD 5.4.0 requires JDK 1.7 or above.
-
+<strong>Note</strong>: PMD 5.4.0 requires JDK 1.7 or above.
 </div>
 
 **Summary:**
@@ -32,50 +28,42 @@ PMD 5.4.0 requires JDK 1.7 or above.
 
 *   Java:
 
-    *   Basic: **SimplifiedTernary** (rulesets/java/basic.xml/SimplifiedTernary)
+    *   Basic: **SimplifiedTernary** (rulesets/java/basic.xml/SimplifiedTernary)<br/>
+        Ternary operator with a boolean literal can be simplified with a boolean
+        expression.
 
-        Ternary operator with a boolean literal can be simplified with a boolean expression.
-
-    *   Clone: **CloneMethodMustBePublic** (rulesets/java/clone.xml/CloneMethodMustBePublic)
-
+    *   Clone: **CloneMethodMustBePublic** (rulesets/java/clone.xml/CloneMethodMustBePublic)<br/>
         The java manual says "By convention,
         classes that implement the `Cloneable` interface should override `Object.clone` (which is protected)
         with a public method."
 
-    *   Clone: **CloneMethodReturnTypeMustMatchClassName** (rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName)
-
+    *   Clone: **CloneMethodReturnTypeMustMatchClassName** (rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName)<br/>
         If a class implements `Cloneable`
         the return type of the method `clone()` must be the class name.
 
-    *   Comments: **CommentDefaultAccessModifier** (rulesets/java/comments.xml/CommentDefaultAccessModifier)
-
+    *   Comments: **CommentDefaultAccessModifier** (rulesets/java/comments.xml/CommentDefaultAccessModifier)<br/>
         In order to avoid mistakes with
         forgotten access modifiers for methods, this rule ensures, that you explicitly mark the usage of the
         default access modifier by placing a comment.
 
-    *   Design: **SingletonClassReturningNewInstance** (rulesets/java/design.xml/SingletonClassReturningNewInstance)
-
+    *   Design: **SingletonClassReturningNewInstance** (rulesets/java/design.xml/SingletonClassReturningNewInstance)<br/>
         Verifies that the method called `getInstance` returns a cached instance and not always a fresh, new instance.
 
-    *   Design: **SingleMethodRule** (rulesets/java/design.xml/SingleMethodSingletonRule)
-
+    *   Design: **SingleMethodRule** (rulesets/java/design.xml/SingleMethodSingletonRule)<br/>
         Verifies that there is only one method called
         `getInstance`. If there are more methods that return the singleton, then it can easily happen, that these
         are not the same instances - and thus no singleton.
 
-    *   Unnecessary: **UselessQualifiedThis** (rulesets/java/unnecessary.xml/UselessQualifiedThis)
-
+    *   Unnecessary: **UselessQualifiedThis** (rulesets/java/unnecessary.xml/UselessQualifiedThis)<br/>
         Flags unnecessary qualified usages
         of this, when `this` alone would be unique. E.g. use just `this` instead of `Foo.this`.
 
 *   Maven POM: (The rules can be found in the *pmd-xml* module)
 
-    *   Basic: **ProjectVersionAsDependencyVersion** (rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion)
-
+    *   Basic: **ProjectVersionAsDependencyVersion** (rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion)<br/>
         Checks the usage of `${project.version}` in Maven POM files.
 
-    *   Basic: **InvalidDependencyTypes** (rulesets/pom/basic.xml/InvalidDependencyTypes)
-
+    *   Basic: **InvalidDependencyTypes** (rulesets/pom/basic.xml/InvalidDependencyTypes)<br/>
         Verifies that only the default types (jar, war, ...) for dependencies are used.
 
 Ruleset snippet to activate the new rules:
@@ -96,50 +84,43 @@ Ruleset snippet to activate the new rules:
 
 *   Java
 
-    *   Basic: **CheckResultSet** (rulesets/java/basic.xml/CheckResultSet)
-
+    *   Basic: **CheckResultSet** (rulesets/java/basic.xml/CheckResultSet)<br/>
         Do not require to check the result of a navigation method, if it is returned.
 
-    *   JUnit: **UseAssertTrueInsteadOfAssertEquals** (rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals)
-
+    *   JUnit: **UseAssertTrueInsteadOfAssertEquals** (rulesets/java/junit.xml/UseAssertTrueInsteadOfAssertEquals)<br/>
         This rule also flags assertEquals, that use Boolean.TRUE/FALSE constants.
 
-    *   Naming: **AbstractNaming** (rulesets/java/naming.xml/AbstractNaming)
-
+    *   Naming: **AbstractNaming** (rulesets/java/naming.xml/AbstractNaming)<br/>
         By default, this rule flags now classes,
         that are named "Abstract" but are not abstract. This behavior can be disabled by setting
         the new property `strict` to false.
 
-    *   Naming: **ShortMethodName** (rulesets/java/naming.xml/ShortMethodName)
-
+    *   Naming: **ShortMethodName** (rulesets/java/naming.xml/ShortMethodName)<br/>
         Additional property `minimum` to configure the minimum required length of a method name.
 
-    *   Naming: **ShortVariable** (rulesets/java/naming.xml/ShortVariable)
-
+    *   Naming: **ShortVariable** (rulesets/java/naming.xml/ShortVariable)<br/>
         Additional property `minimum` to configure the minimum required length of a variable name.
 
-    *   UnusedCode: **UnusedPrivateField** (rulesets/java/unusedcode.xml/UnusedPrivateField)
-
+    *   UnusedCode: **UnusedPrivateField** (rulesets/java/unusedcode.xml/UnusedPrivateField)<br/>
         This rule won't trigger anymore if [Lombok](https://projectlombok.org) is in use.
         See [#1420](https://sourceforge.net/p/pmd/bugs/1420/).
 
 **Renamed Rules:**
 
 *   Java
-    *   Design: **<del>UseSingleton</del>** - **UseUtilityClass** (rulesets/java/design.xml/UseUtilityClass)
-
+    *   Design: **<del>UseSingleton</del>** - **UseUtilityClass** (rulesets/java/design.xml/UseUtilityClass)<br/>
         The rule "UseSingleton" *has been renamed* to "UseUtilityClass".
         See also bugs [#1059](https://sourceforge.net/p/pmd/bugs/1059) and [#1339](https://sourceforge.net/p/pmd/bugs/1339/).
 
 **Removed Rules:**
 
 *   Java
-    *   Basic: The following rules of ruleset "Basic" were marked as deprecated and are removed with this release now:
-
+    *   Basic: The following rules of ruleset "Basic" were marked as deprecated and are removed with this release now:<br/>
+        <br/>
         EmptyCatchBlock, EmptyIfStatement, EmptyWhileStmt, EmptyTryBlock, EmptyFinallyBlock, EmptySwitchStatements, EmptySynchronizedBlock, EmptyStatementNotInLoop, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer
-
+        <br/><br/>
         UnnecessaryConversionTemporary, UnnecessaryReturn, UnnecessaryFinalModifier, UselessOverridingMethod, UselessOperationOnImmutable, UnusedNullCheckInEquals, UselessParentheses
-
+        <br/><br/>
         These rules are still available in the rulesets "Empty" (rulesets/java/empty.xml) and
         "Unnecessary" (rulesets/java/unnecessary.xml) respectively.
 
