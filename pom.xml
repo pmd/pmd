@@ -583,7 +583,7 @@
                 <version>${checkstyle.version}</version>
                 <configuration>
                     <configLocation>${checkstyle.configLocation}</configLocation>
-                    <suppressionsFile>${checkstyle.suppressionsFile}</suppressionsFile>
+                    <suppressionsLocation>${checkstyle.suppressionsFile}</suppressionsLocation>
                 </configuration>
                 <reportSets>
                     <reportSet>
