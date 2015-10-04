@@ -379,7 +379,7 @@
                 <plugin>
                     <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-build</artifactId>
-                    <version>0.10-SNAPSHOT</version>
+                    <version>0.10</version>
                     <executions>
                         <execution>
                             <goals>
