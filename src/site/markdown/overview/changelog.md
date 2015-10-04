@@ -1,6 +1,6 @@
 # Changelog
 
-## ????? - 5.4.0-SNAPSHOT
+## 04-October-2015 - 5.4.0
 
 
 <div style="border: 1px solid red; border-radius: 5px; border-left-width: 10px; padding: 5px 1em; background-color: lightyellow;">
