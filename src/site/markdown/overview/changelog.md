@@ -15,7 +15,7 @@
     PMD and CPD Command Line Interfaces have a new optional parameter: `failOnViolation`. Executing PMD with the option
     `-failOnViolation false` will perform the PMD checks but won't fail the build and still exit with status 0.
     This is useful if you only want to generate the report with violations but don't want to fail your build.
-
+*   [#1420](https://sourceforge.net/p/pmd/bugs/1420/): UnusedPrivateField: Ignore fields if using lombok
 
 **New Rules:**
 
@@ -57,6 +57,8 @@
     assertEquals, that use Boolean.TRUE/FALSE constants.
 *   Modified Rule: rulesets/java/basic.xml/CheckResultSet: Do not require to check the result of a navigation
     method, if it is returned.
+*   Modified Rule: rulesets/java/unusedcode.xml/UnusedPrivateField: This rule won't trigger anymore if
+    [Lombok](https://projectlombok.org) is in use. See [#1420](https://sourceforge.net/p/pmd/bugs/1420/).
 
 **Pull Requests:**
 
