@@ -20,9 +20,6 @@ public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
                 "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" +
                 "  <description>Custom ruleset for tests</description>\n" +
-                "  <rule ref=\"rulesets/java/basic.xml\">\n" +
-                "    <exclude name=\"UselessParentheses\"/>\n" +
-                "  </rule>\n" +
                 "  <rule ref=\"rulesets/java/unnecessary.xml\">\n" +
                 "    <exclude name=\"UselessParentheses\"/>\n" +
                 "  </rule>\n" +
