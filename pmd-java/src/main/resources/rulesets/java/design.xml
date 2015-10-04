@@ -1353,7 +1353,6 @@ class Singleton {
 </example>
 </rule>
 
-    <rule deprecated="true" name="UncommentedEmptyMethod" ref="UncommentedEmptyMethodBody" />
     <rule name="UncommentedEmptyMethodBody"
           language="java"
           since="3.4"

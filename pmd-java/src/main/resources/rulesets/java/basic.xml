@@ -847,25 +847,4 @@ public class Foo {
         ]]>
     </example>
   </rule>
-
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyCatchBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyIfStmt" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyWhileStmt" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyTryBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyFinallyBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptySwitchStatements" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptySynchronizedBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyStatementNotInLoop" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyInitializer" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyStatementBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyStaticInitializer" />
-
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryConversionTemporary" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryReturn" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryFinalModifier" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessOverridingMethod" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnusedNullCheckInEquals" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessParentheses" />
-
 </ruleset>

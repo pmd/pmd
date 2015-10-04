@@ -131,6 +131,24 @@ Ruleset snippet to activate the new rules:
         The rule "UseSingleton" *has been renamed* to "UseUtilityClass".
         See also bugs [#1059](https://sourceforge.net/p/pmd/bugs/1059) and [#1339](https://sourceforge.net/p/pmd/bugs/1339/).
 
+**Removed Rules:**
+
+*   Java
+    *   Basic: The following rules of ruleset "Basic" were marked as deprecated and are removed with this release now:
+
+        EmptyCatchBlock, EmptyIfStatement, EmptyWhileStmt, EmptyTryBlock, EmptyFinallyBlock, EmptySwitchStatements, EmptySynchronizedBlock, EmptyStatementNotInLoop, EmptyInitializer, EmptyStatementBlock, EmptyStaticInitializer
+
+        UnnecessaryConversionTemporary, UnnecessaryReturn, UnnecessaryFinalModifier, UselessOverridingMethod, UselessOperationOnImmutable, UnusedNullCheckInEquals, UselessParentheses
+
+        These rules are still available in the rulesets "Empty" (rulesets/java/empty.xml) and
+        "Unnecessary" (rulesets/java/unnecessary.xml) respectively.
+
+    *   Design: The rule "UncommentedEmptyMethod" has been renamed last release to "UncommentedEmptyMethodBody". The
+        old rule name reference has been removed with this release now.
+
+    *   Controversial: The rule "BooleanInversion" has been deprecated last release
+        and has been removed with this release completely.
+
 **Pull Requests:**
 
 *   [#21](https://github.com/adangel/pmd/pull/21): Added PMD Rules for Singleton pattern violations.

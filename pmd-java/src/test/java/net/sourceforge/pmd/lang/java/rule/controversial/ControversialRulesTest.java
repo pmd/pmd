@@ -19,7 +19,6 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidUsingVolatile");
         addRule(RULESET, "AtLeastOneConstructor");
         addRule(RULESET, "AvoidFinalLocalVariable");
-        addRule(RULESET, "BooleanInversion");
         addRule(RULESET, "CallSuperInConstructor");
         addRule(RULESET, "DataflowAnomalyAnalysis");
         addRule(RULESET, "DefaultPackage");
