@@ -58,6 +58,13 @@ public class CLITest extends BaseCLITest {
         assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
     }
 
+    @Test
+    public void exitStatusWithViolationsAndWithoutFailOnViolations() {
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-empty", "-failOnViolation", "false" };
+        String resultFilename = runTest(args, "exitStatusWithViolationsAndWithoutFailOnViolations", 0);
+        assertTrue(FileUtil.findPatternInFile(new File(resultFilename), "Avoid empty if"));
+    }
+
     /**
      * See https://sourceforge.net/p/pmd/bugs/1231/
      */
