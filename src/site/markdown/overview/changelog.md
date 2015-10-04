@@ -1,14 +1,8 @@
 # Changelog
 
-## ????? - 5.3.5-SNAPSHOT
+## 04-October-2015 - 5.3.5
 
-**New Supported Languages:**
-
-
-**Feature Request and Improvements:**
-
-
-**New/Modified/Deprecated Rules:**
+**Modified Rules:**
 
 *   java-design/CloseResource: New Property *closeAsDefaultTarget* which is *true* by default to stay
     backwards compatible. If this property is *true*, the rule will make sure, that `close` itself is
@@ -32,7 +26,4 @@
     *   [#1413](https://sourceforge.net/p/pmd/bugs/1413/): False positive StringBuffer constructor with ?: int value
 *   java-unnecessary/UselessParentheses:
     *   [#1407](https://sourceforge.net/p/pmd/bugs/1407/): UselessParentheses "&" and "+" operator precedence
-
-
-**API Changes:**
 
