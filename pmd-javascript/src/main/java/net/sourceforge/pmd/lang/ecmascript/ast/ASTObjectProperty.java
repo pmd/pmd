@@ -18,10 +18,10 @@ public class ASTObjectProperty extends AbstractInfixEcmascriptNode<ObjectPropert
     }
 
     public boolean isGetter() {
-	return node.isGetter();
+	return node.isGetterMethod();
     }
 
     public boolean isSetter() {
-	return node.isSetter();
+	return node.isSetterMethod();
     }
 }

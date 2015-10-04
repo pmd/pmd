@@ -50,14 +50,14 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
     }
 
     public boolean isGetter() {
-	return node.isGetter();
+	return node.isGetterMethod();
     }
 
     public boolean isSetter() {
-	return node.isSetter();
+	return node.isSetterMethod();
     }
 
     public boolean isGetterOrSetter() {
-	return node.isGetterOrSetter();
+        return isGetter() || isSetter();
     }
 }
