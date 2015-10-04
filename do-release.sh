@@ -302,6 +302,7 @@ echo "   * Set the title: PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
 echo "   * copy/paste the changelog.md"
 echo "   * Upload the binary zip file"
 echo "   * Upload the doc zip file"
+echo "   * Upload the src zip file"
 echo
 echo "Press enter to continue..."
 read
