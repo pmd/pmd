@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
@@ -28,5 +29,18 @@ public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
         RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
         Rule rule = ruleset.getRuleByName("UselessParentheses");
         assertNull(rule);
+    }
+
+    /**
+     * Makes sure that the internal dogfood.xml ruleset is valid and doesn't reference any
+     * unknown rules.
+     * @throws RuleSetNotFoundException if dogfood couldn't be found at all
+     */
+    @Test
+    public void testDogfoodRuleset() throws RuleSetNotFoundException {
+        RuleSetReferenceId ref = RuleSetReferenceId.parse("rulesets/internal/dogfood.xml").get(0);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
+        assertNotNull(ruleset);
     }
 }
