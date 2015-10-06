@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -397,4 +398,22 @@ public abstract class AbstractNode implements Node {
     public void setUserData(Object userData) {
         this.userData = userData;
     }
+    
+    protected GenericToken firstToken, lastToken;
+
+	public GenericToken jjtGetFirstToken() {
+		return firstToken;
+	}
+
+	public void jjtSetFirstToken(GenericToken token) {
+		this.firstToken = token;
+	}
+
+	public GenericToken jjtGetLastToken() {
+		return lastToken;
+	}
+
+	public void jjtSetLastToken(GenericToken token) {
+		this.lastToken = token;
+	}
 }

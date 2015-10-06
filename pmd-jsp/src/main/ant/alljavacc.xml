@@ -61,6 +61,12 @@
 
 public class]]></replacevalue>
         </replace>
+    	<replace file="${target}/net/sourceforge/pmd/lang/jsp/ast/Token.java">
+    	    <replacetoken>public class Token</replacetoken>
+    	    <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
+
+public class Token extends GenericToken]]></replacevalue>
+		</replace>
 
         <delete>
             <fileset dir="${target}/net/sourceforge/pmd/lang/jsp/ast">
