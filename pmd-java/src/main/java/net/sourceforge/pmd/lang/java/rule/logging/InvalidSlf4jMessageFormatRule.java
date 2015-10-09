@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -108,7 +106,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 				+ (expectedArguments > 1 ? " arguments " : " argument ") + "but have " + params.size();
 	}
 
-	private int expectedArguments(@Nonnull final ASTPrimaryExpression node) {
+	private int expectedArguments(final ASTPrimaryExpression node) {
 		int count = 0;
 		// look if the logger have a literal message
 		if (node.getFirstDescendantOfType(ASTLiteral.class) != null) {
