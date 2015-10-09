@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+missing argument
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+	public void call() {
+		final String oneArg = "one argument";
+		LOGGER.error("forget the arg {} and {}", oneArg);
+	}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+too many arguments
+         ]]></description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+	private final String MESSAGE = "too many args {}";
+
+	public void call() {
+		LOGGER.error(MESSAGE, "arg1", "arg2");
+	}
+}
+         ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Logger without problems
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+	public void call() {
+		final String message = "expected {} argument";
+		LOGGER.error(message, 1);
+	}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+         <description><![CDATA[
+ignore the exception param
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+	public void call() {
+		LOGGER.error("params {} and {}", "arg1", "arg2", new IllegalStateException("Extra arg"));
+	}
+}
+        ]]></code>
+    </test-code>
+</test-data>
