@@ -108,6 +108,12 @@ public class ParserCornersTest extends ParserTst {
         }
     }
 
+    @Test
+    public void testBug1429ParseError() throws Exception {
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1429.java"));
+        parseJava18(c);
+    }
+
     private String readAsString(String resource) {
         InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
         try {
