@@ -7,6 +7,9 @@ matrix:
       - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] || mvn test'
   - jdk: oraclejdk8
     script: mvn test
+branches:
+  except:
+    - /^pmd_releases\/\d/
 notifications:
   email:
     recipients:
