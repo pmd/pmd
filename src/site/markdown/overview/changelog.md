@@ -12,4 +12,6 @@
 
 **Bugfixes:**
 
+*   [#1429](https://sourceforge.net/p/pmd/bugs/1429/): Java - Parse Error: Cast in return expression
+
 **API Changes:**
