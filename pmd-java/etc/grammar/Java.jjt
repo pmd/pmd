@@ -1,4 +1,8 @@
 /**
+ * Added capability for Tracking Tokens.
+ *
+ * Amit Kumar Prasad 10/2015
+ *====================================================================
  * Fix for Cast Expression not detected properly in Return statements
  * Bug #1429
  *
@@ -109,6 +113,7 @@ options {
   MULTI = true;
   VISITOR = true;
   NODE_USES_PARSER = true;
+  TRACK_TOKENS = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
 
   //DEBUG_PARSER = true;

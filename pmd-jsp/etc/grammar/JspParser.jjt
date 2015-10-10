@@ -1,4 +1,9 @@
-    /* JSP Parser for PMD.
+/* 
+ * Added capability for Tracking Tokens.
+ *
+ * Amit Kumar Prasad 10/2015
+ *====================================================================
+ * JSP Parser for PMD.
  * It supports supports more-or-less well written JSP files.
  * The JSP Document style is supported, except for inline DTD.
  * The JSP Page style (<% ... %>) is supported.
@@ -16,6 +21,7 @@ options {
 	
 	MULTI=true;
 	VISITOR=true;
+	TRACK_TOKENS = true;
 } 
 
 PARSER_BEGIN(JspParser)
