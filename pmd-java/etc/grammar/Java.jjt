@@ -1,4 +1,9 @@
 /**
+ * Fix for Cast Expression not detected properly in Return statements
+ * Bug #1429
+ *
+ * Andreas Dangel 10/2015
+ *====================================================================
  * Fix for Lambda expressions without variables.
  *
  * Andreas Dangel 11/2014
@@ -1725,6 +1730,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
 | LOOKAHEAD( CastExpression() ) CastExpression()
+| LOOKAHEAD("(" Type() ")" "(") CastExpression()
 | PostfixExpression()
 }
 
