@@ -3,7 +3,7 @@ matrix:
   include:
   - jdk: oraclejdk7
     script:
-      - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn test deploy --settings .travis-settings.xml'
+      - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && mvn test deploy --settings .travis-settings.xml || ( [ "${TRAVIS_PULL_REQUEST}" != "false" ] && echo "Skipping Deploy - it is a pull request" )'
       - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] || mvn test'
   - jdk: oraclejdk8
     script: mvn test
