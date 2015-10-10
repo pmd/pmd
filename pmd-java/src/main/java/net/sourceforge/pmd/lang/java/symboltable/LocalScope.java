@@ -47,7 +47,7 @@ public class LocalScope extends AbstractJavaScope {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return null;
         }
-        ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
+        DeclarationFinderFunction finder = new DeclarationFinderFunction(occurrence);
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         return finder.getDecl();
     }
