@@ -16,5 +16,6 @@ public class LoggingJavaRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "MoreThanOneLogger");
         addRule(RULESET, "SystemPrintln");
         addRule(RULESET, "GuardLogStatementJavaUtil");
+        addRule(RULESET, "InvalidSlf4jMessageFormat");
     }
 }
