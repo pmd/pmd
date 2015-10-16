@@ -593,19 +593,25 @@ starts-with(@Image,'Runtime.getRuntime') and
         <example>
             <![CDATA[
 public class GCCall {
-    public GCCall()	{
+    public GCCall() {
         // Explicit gc call !
         System.gc();
     }
 
     public void doSomething() {
-    // Explicit gc call !
-       Runtime.getRuntime().gc();
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
     }
 
-    public explicitGCcall() { // Explicit gc call ! System.gc(); }
+    public explicitGCcall() {
+        // Explicit gc call !
+        System.gc();
+    }
 
-    public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); }
+    public void doSomething() {
+        // Explicit gc call !
+        Runtime.getRuntime().gc();
+    }
 }
       ]]>
     </example>
