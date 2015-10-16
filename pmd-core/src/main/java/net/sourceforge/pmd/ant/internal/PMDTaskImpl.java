@@ -110,7 +110,7 @@ public class PMDTaskImpl {
                 // Substitute env variables/properties
                 configuration.setRuleSets(project.replaceProperties(ruleSets));
             }
-            RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
+            RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets(), configuration.getPmdRuleSets());
             ruleSetFactory.setWarnDeprecated(false);
             logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {

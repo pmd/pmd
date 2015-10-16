@@ -91,6 +91,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     // Rule and source file options
     private String ruleSets;
+    private RuleSets pmdRuleSets;
     private RulePriority minimumPriority = RulePriority.LOW;
     private String inputPaths;
     private String inputUri;
@@ -265,6 +266,24 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setRuleSets(String ruleSets) {
         this.ruleSets = ruleSets;
+    }
+
+    /**
+     * Get the RuleSets.
+     * 
+     * @return the pmdRuleSets
+     */
+    public RuleSets getPmdRuleSets() {
+        return pmdRuleSets;
+    }
+
+    /**
+     * Set the RuleSets
+     * 
+     * @param pmdRuleSets the pmdRuleSets to set
+     */
+    public void setPmdRuleSets(RuleSets pmdRuleSets) {
+        this.pmdRuleSets = pmdRuleSets;
     }
 
     /**

@@ -36,6 +36,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 			final RuleContext ctx, final List<Renderer> renderers) {
 
 		RuleSets rs = createRuleSets(ruleSetFactory);
+		configuration.setPmdRuleSets(rs);
 		rs.start(ctx);
 
 		PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
