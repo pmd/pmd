@@ -11,6 +11,7 @@
 **Pull Requests:**
 
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
+*   [#75](https://github.com/pmd/pmd/pull/75): RuleSetFactory Performance Enhancement
 
 **Bugfixes:**
 

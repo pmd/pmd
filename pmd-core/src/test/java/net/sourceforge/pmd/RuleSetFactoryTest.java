@@ -57,7 +57,7 @@ public class RuleSetFactoryTest {
 	    Assert.assertNotNull("Test ruleset not found - can't continue with test!", in);
 
 	    RuleSetFactory rsf = new RuleSetFactory();
-	    RuleSets rs = rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml", null);
+	    RuleSets rs = rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
 	    // added by referencing a complete ruleset (TestRuleset1.xml)
 	    assertNotNull(rs.getRuleByName("MockRule1"));
 	    assertNotNull(rs.getRuleByName("MockRule2"));

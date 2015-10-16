@@ -271,22 +271,22 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Get the RuleSets.
      * 
-	 * @return the pmdRuleSets
-	 */
-	public RuleSets getPmdRuleSets() {
-		return pmdRuleSets;
-	}
+     * @return the pmdRuleSets
+     */
+    public RuleSets getPmdRuleSets() {
+        return pmdRuleSets;
+    }
 
-	/**
-	 * Set the RuleSets
-	 * 
-	 * @param pmdRuleSets the pmdRuleSets to set
-	 */
-	public void setPmdRuleSets(RuleSets pmdRuleSets) {
-		this.pmdRuleSets = pmdRuleSets;
-	}
+    /**
+     * Set the RuleSets
+     * 
+     * @param pmdRuleSets the pmdRuleSets to set
+     */
+    public void setPmdRuleSets(RuleSets pmdRuleSets) {
+        this.pmdRuleSets = pmdRuleSets;
+    }
 
-	/**
+    /**
      * Get the minimum priority threshold when loading Rules from RuleSets.
      * 
      * @return The minimum priority threshold.

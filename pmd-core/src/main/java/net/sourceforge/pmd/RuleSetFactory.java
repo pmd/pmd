@@ -105,6 +105,21 @@ public class RuleSetFactory {
     }
 
     /**
+     * Create a RuleSets from a comma separated list of RuleSet reference IDs
+     * when the parameter ruleSets is null. This is a convenience method which
+     * calls {@link RuleSetReferenceId#parse(String)}, and then calls
+     * {@link #createRuleSets(List)}. The currently configured ClassLoader is
+     * used.
+     *
+     * @param referenceString A comma separated list of RuleSet reference IDs.
+     * @return The new RuleSets.
+     * @throws RuleSetNotFoundException if unable to find a resource.
+     */
+    public synchronized RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
+        return createRuleSets(referenceString, null);
+    }
+
+    /**
      * Create a RuleSets from a comma separated list of RuleSet reference IDs when the parameter ruleSets is null.
      * This is a convenience method which calls
      * {@link RuleSetReferenceId#parse(String)}, and then calls
@@ -113,12 +128,13 @@ public class RuleSetFactory {
      *
      * @param referenceString A comma separated list of RuleSet reference IDs.
      * @param ruleSets RuleSets initialized in PMDConfiguration.
-     * @return The new RuleSets.
+     * @return The new RuleSets or the rulesets from PMDConfiguration if not null
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
     public synchronized RuleSets createRuleSets(String referenceString, RuleSets ruleSets) throws RuleSetNotFoundException {
-    	if(ruleSets != null)
-    		return ruleSets;
+        if (ruleSets != null) {
+            return ruleSets;
+        }
         return createRuleSets(RuleSetReferenceId.parse(referenceString));
     }
 
