@@ -51,7 +51,7 @@ public abstract class AbstractPMDProcessor {
 	}
 
 	protected RuleSets createRuleSets(RuleSetFactory factory) {
-		return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
+		return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), configuration.getPmdRuleSets(), factory);
 	}
 	
 }
