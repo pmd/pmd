@@ -165,4 +165,22 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1425 Invalid XML Characters in Output</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The String literal "Tokenizer \ud801\udc1ctest" appears 4 times in this file; the first occurrence is on line 2</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Duplicate {
+    String s1 = "Tokenizer \ud801\udc1ctest";
+    String s2 = "Tokenizer \ud801\udc1ctest";
+    String s3 = "Tokenizer \ud801\udc1ctest";
+    String s4 = "Tokenizer \ud801\udc1ctest";
+    char c = '\uffef';
+    char c\u0030 = 'a';
+}
+        ]]></code>
+    </test-code>
 </test-data>

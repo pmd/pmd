@@ -189,7 +189,10 @@ public final class StringUtil {
      *
      * @param buf The destination XML stream
      * @param src The String to append to the stream
+     *
+     * @deprecated use {@link #appendXmlEscaped(StringBuilder, String, boolean)} instead
      */
+    @Deprecated
     public static void appendXmlEscaped(StringBuilder buf, String src) {
         appendXmlEscaped(buf, src, SUPPORTS_UTF8);
     }
@@ -244,7 +247,14 @@ public final class StringUtil {
             c = src.charAt(i);
             if (c > '~') {// 126
                 if (!supportUTF8) {
-                    buf.append("&#x").append(Integer.toHexString(c)).append(';');
+                    int codepoint = c;
+                    // surrogate characters are not allowed in XML
+                    if (Character.isHighSurrogate(c)) {
+                        char low = src.charAt(i + 1);
+                        codepoint = Character.toCodePoint(c, low);
+                        i += 1;
+                    }
+                    buf.append("&#x").append(Integer.toHexString(codepoint)).append(';');
                 } else {
                     buf.append(c);
                 }

@@ -8,19 +8,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-
 import org.junit.Test;
 
-public class AvoidDuplicateLiteralsRuleTest extends SimpleAggregatorTst {
-    @Test
-    public void testAll() {
-        Rule rule = findRule("java-strings", "AvoidDuplicateLiterals");
-        rule.setProperty(AvoidDuplicateLiteralsRule.THRESHOLD_DESCRIPTOR, 2);
-        runTests(rule);
-    }
-
+public class AvoidDuplicateLiteralsRuleTest {
     @Test
     public void testStringParserEmptyString() {
         AvoidDuplicateLiteralsRule.ExceptionParser p = new AvoidDuplicateLiteralsRule.ExceptionParser(',');
