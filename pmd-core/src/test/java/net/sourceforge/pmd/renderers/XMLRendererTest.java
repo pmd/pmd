@@ -3,8 +3,26 @@
  */
 package net.sourceforge.pmd.renderers;
 
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.ReportTest;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 public class XMLRendererTest extends AbstractRendererTst {
 
@@ -64,5 +82,44 @@ public class XMLRendererTest extends AbstractRendererTst {
     public String filter(String expected) {
         String result = expected.replaceAll(" timestamp=\"[^\"]+\">", " timestamp=\"\">");
         return result;
+    }
+
+    private static RuleViolation createRuleViolation(String description) {
+        DummyNode node = new DummyNode(1);
+        node.testingOnly__setBeginLine(1);
+        node.testingOnly__setBeginColumn(1);
+        node.testingOnly__setEndLine(1);
+        node.testingOnly__setEndColumn(1);
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("n/a");
+        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, description);
+    }
+
+    private void verifyXmlEscaping(Renderer renderer, String shouldContain) throws Exception {
+        Report report = new Report();
+        String surrogatePair = "\ud801\udc1c";
+        String msg = "The String literal \"Tokenizer " + surrogatePair + "\" appears...";
+        report.addRuleViolation(createRuleViolation(msg));
+        String actual = ReportTest.render(renderer, report);
+        Assert.assertTrue(actual.contains(shouldContain));
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(actual)));
+        NodeList violations = doc.getElementsByTagName("violation");
+        Assert.assertEquals(1, violations.getLength());
+        Assert.assertEquals(msg,
+                violations.item(0).getTextContent().trim());
+    }
+
+    @Test
+    public void testXMLEscapingWithUTF8() throws Exception {
+        Renderer renderer = getRenderer();
+        renderer.setProperty(XMLRenderer.ENCODING, "UTF-8");
+        verifyXmlEscaping(renderer, "\ud801\udc1c");
+    }
+
+    @Test
+    public void testXMLEscapingWithoutUTF8() throws Exception {
+        Renderer renderer = getRenderer();
+        renderer.setProperty(XMLRenderer.ENCODING, "ISO-8859-1");
+        verifyXmlEscaping(renderer, "&#x1041c;");
     }
 }

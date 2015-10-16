@@ -105,6 +105,35 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     /**
+     * Tries to reconstruct the original string literal.
+     * If the original length is greater than the parsed String literal, then
+     * probably some unicode escape sequences have been used.
+     *
+     * @return
+     */
+    public String getEscapedStringLiteral() {
+        String image = getImage();
+        if (!isStringLiteral() && !isCharLiteral()) {
+            return image;
+        }
+        int fullLength = getEndColumn() - getBeginColumn();
+        if (fullLength > image.length()) {
+            StringBuilder result = new StringBuilder(fullLength);
+            for (int i = 0; i < image.length(); i++) {
+                char c = image.charAt(i);
+                if (c < 0x20 || c > 0xff || image.length() == 1) {
+                    String hex = "0000" + Integer.toHexString(c);
+                    result.append("\\u").append(hex.substring(hex.length() - 4));
+                } else {
+                    result.append(c);
+                }
+            }
+            return result.toString();
+        }
+        return image;
+    }
+
+    /**
      * Returns true if this is a String literal with only one character.
      * Handles octal and escape characters.
      *

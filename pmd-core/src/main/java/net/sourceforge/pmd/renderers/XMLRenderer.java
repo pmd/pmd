@@ -24,6 +24,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     public static final StringProperty ENCODING = new StringProperty("encoding",
             "XML encoding format, defaults to UTF-8.", "UTF-8", 0);
+    private boolean useUTF8 = false;
+
 
     public XMLRenderer() {
         super(NAME, "XML format.");
@@ -45,6 +47,9 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
+        if (encoding.equalsIgnoreCase("utf-8")) {
+            useUTF8 = true;
+        }
 
         Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
@@ -76,7 +81,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 }
                 filename = rv.getFilename();
                 buf.append("<file name=\"");
-                StringUtil.appendXmlEscaped(buf, filename);
+                StringUtil.appendXmlEscaped(buf, filename, useUTF8);
                 buf.append("\">").append(PMD.EOL);
             }
 
@@ -85,9 +90,9 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             buf.append("\" begincolumn=\"").append(rv.getBeginColumn());
             buf.append("\" endcolumn=\"").append(rv.getEndColumn());
             buf.append("\" rule=\"");
-            StringUtil.appendXmlEscaped(buf, rv.getRule().getName());
+            StringUtil.appendXmlEscaped(buf, rv.getRule().getName(), useUTF8);
             buf.append("\" ruleset=\"");
-            StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName());
+            StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName(), useUTF8);
             buf.append('"');
             maybeAdd("package", rv.getPackageName(), buf);
             maybeAdd("class", rv.getClassName(), buf);
@@ -97,7 +102,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             buf.append(" priority=\"");
             buf.append(rv.getRule().getPriority().getPriority());
             buf.append("\">").append(PMD.EOL);
-            StringUtil.appendXmlEscaped(buf, rv.getDescription());
+            StringUtil.appendXmlEscaped(buf, rv.getDescription(), useUTF8);
 
             buf.append(PMD.EOL);
             buf.append("</violation>");
@@ -121,9 +126,9 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         for (Report.ProcessingError pe : errors) {
             buf.setLength(0);
             buf.append("<error ").append("filename=\"");
-            StringUtil.appendXmlEscaped(buf, pe.getFile());
+            StringUtil.appendXmlEscaped(buf, pe.getFile(), useUTF8);
             buf.append("\" msg=\"");
-            StringUtil.appendXmlEscaped(buf, pe.getMsg());
+            StringUtil.appendXmlEscaped(buf, pe.getMsg(), useUTF8);
             buf.append("\"/>").append(PMD.EOL);
             writer.write(buf.toString());
         }
@@ -133,13 +138,13 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             for (Report.SuppressedViolation s : suppressed) {
                 buf.setLength(0);
                 buf.append("<suppressedviolation ").append("filename=\"");
-                StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getFilename());
+                StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getFilename(), useUTF8);
                 buf.append("\" suppressiontype=\"");
-                StringUtil.appendXmlEscaped(buf, s.suppressedByNOPMD() ? "nopmd" : "annotation");
+                StringUtil.appendXmlEscaped(buf, s.suppressedByNOPMD() ? "nopmd" : "annotation", useUTF8);
                 buf.append("\" msg=\"");
-                StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getDescription());
+                StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getDescription(), useUTF8);
                 buf.append("\" usermsg=\"");
-                StringUtil.appendXmlEscaped(buf, s.getUserMessage() == null ? "" : s.getUserMessage());
+                StringUtil.appendXmlEscaped(buf, s.getUserMessage() == null ? "" : s.getUserMessage(), useUTF8);
                 buf.append("\"/>").append(PMD.EOL);
                 writer.write(buf.toString());
             }
@@ -151,7 +156,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     private void maybeAdd(String attr, String value, StringBuilder buf) {
         if (value != null && value.length() > 0) {
             buf.append(' ').append(attr).append("=\"");
-            StringUtil.appendXmlEscaped(buf, value);
+            StringUtil.appendXmlEscaped(buf, value, useUTF8);
             buf.append('"');
         }
     }

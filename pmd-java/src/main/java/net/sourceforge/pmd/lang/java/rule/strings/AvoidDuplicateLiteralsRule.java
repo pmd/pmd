@@ -143,9 +143,11 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         for (Map.Entry<String, List<ASTLiteral>> entry : literals.entrySet()) {
             List<ASTLiteral> occurrences = entry.getValue();
             if (occurrences.size() >= threshold) {
-                Object[] args = new Object[] { entry.getKey(), Integer.valueOf(occurrences.size()),
-                        Integer.valueOf(occurrences.get(0).getBeginLine()) };
-                addViolation(data, occurrences.get(0), args);
+                ASTLiteral first = occurrences.get(0);
+                String rawImage = first.getEscapedStringLiteral();
+                Object[] args = new Object[] { rawImage, Integer.valueOf(occurrences.size()),
+                        Integer.valueOf(first.getBeginLine()) };
+                addViolation(data, first, args);
             }
         }
     }

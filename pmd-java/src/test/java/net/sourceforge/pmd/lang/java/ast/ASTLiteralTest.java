@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -54,6 +55,50 @@ public class ASTLiteralTest extends ParserTst {
         assertTrue(((ASTLiteral)(literals.iterator().next())).isCharLiteral());
     }
 
+    @Test
+    public void testStringUnicodeEscapesNotEscaped() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setStringLiteral();
+        literal.setImage("abcüabc");
+        literal.testingOnly__setBeginColumn(1);
+        literal.testingOnly__setEndColumn(7);
+        assertEquals("abcüabc", literal.getEscapedStringLiteral());
+        assertEquals("abcüabc", literal.getImage());
+    }
+
+    @Test
+    public void testStringUnicodeEscapesInvalid() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setStringLiteral();
+        literal.setImage("abc\\uXYZAabc");
+        literal.testingOnly__setBeginColumn(1);
+        literal.testingOnly__setEndColumn(12);
+        assertEquals("abc\\uXYZAabc", literal.getEscapedStringLiteral());
+        assertEquals("abc\\uXYZAabc", literal.getImage());
+    }
+
+    @Test
+    public void testStringUnicodeEscapesValid() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setStringLiteral();
+        literal.setImage("abc\u1234abc");
+        literal.testingOnly__setBeginColumn(1);
+        literal.testingOnly__setEndColumn(12);
+        assertEquals("abc\\u1234abc", literal.getEscapedStringLiteral());
+        assertEquals("abcሴabc", literal.getImage());
+    }
+
+    @Test
+    public void testCharacterUnicodeEscapesValid() {
+        ASTLiteral literal = new ASTLiteral(1);
+        literal.setCharLiteral();
+        literal.setImage("\u0030");
+        literal.testingOnly__setBeginColumn(1);
+        literal.testingOnly__setEndColumn(6);
+        assertEquals("\\u0030", literal.getEscapedStringLiteral());
+        assertEquals("0", literal.getImage());
+    }
+
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     "  String x = \"foo\";" + PMD.EOL +
@@ -88,8 +133,4 @@ public class ASTLiteralTest extends ParserTst {
     "public class Foo {" + PMD.EOL +
     "  char x = 'x';" + PMD.EOL +
     "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTLiteralTest.class);
-    }
 }
