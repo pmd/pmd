@@ -115,7 +115,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public boolean hasImageEqualTo(String image) {
-	return this.image != null && this.image.equals(image);
+	return this.getImage() != null && this.getImage().equals(image);
     }
 
     public int getBeginLine() {
