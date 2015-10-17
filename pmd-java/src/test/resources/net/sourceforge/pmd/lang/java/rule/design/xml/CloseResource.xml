@@ -444,7 +444,7 @@ public class Foo {
   ]]></code>
     </test-code>
     <test-code>
-        <description>bug #1131 CloseResource should complain if code betwen declaration of resource and try: Code betwen declaration and try, should fail</description>
+        <description>bug #1131 CloseResource should complain if code between declaration of resource and try: Code between declaration and try, should fail</description>
         <rule-property name="types">Connection</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -465,7 +465,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>bug #1131 CloseResource should complain if code betwen declaration of resource and try: Creation inside try, ok</description>
+        <description>bug #1131 CloseResource should complain if code between declaration of resource and try: Creation inside try, ok</description>
         <rule-property name="types">Connection</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -490,7 +490,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>bug #1131 CloseResource should complain if code betwen declaration of resource and try: No sentences between creation and try, ok</description>
+        <description>bug #1131 CloseResource should complain if code between declaration of resource and try: No sentences between creation and try, ok</description>
         <rule-property name="types">Connection</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -514,7 +514,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>#1259 CloseResource rule ignores conditionnals within finally blocks</description>
+        <description>#1259 CloseResource rule ignores conditionals within finally blocks</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Bar {

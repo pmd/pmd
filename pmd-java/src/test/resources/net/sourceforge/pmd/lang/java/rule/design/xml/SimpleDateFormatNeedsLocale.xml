@@ -13,7 +13,7 @@ class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-bad, using the single-arg contructor
+bad, using the single-arg constructor
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

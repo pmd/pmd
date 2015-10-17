@@ -153,7 +153,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-The rule should also detect parameter reassignement in constructors (at least to help young programmers still learning java basic)
+The rule should also detect parameter reassignment in constructors (at least to help young programmers still learning java basic)
      ]]></description>
         <expected-problems>3</expected-problems>
         <code><![CDATA[

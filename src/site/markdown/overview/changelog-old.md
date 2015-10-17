@@ -332,7 +332,7 @@ The binary package still contains all languages and can be used as usual. Have a
 * Fixed [bug 1125]: Missing Static Method In Non Instantiatable Class
 * Fixed [bug 1126]: False positive with FieldDeclarationsShouldBeAtStartOfClass for static enums
 * Fixed [bug 1130]: CloseResource doesn't recognize custom close method
-* Fixed [bug 1131]: CloseResource should complain if code betwen declaration of resource and try
+* Fixed [bug 1131]: CloseResource should complain if code between declaration of resource and try
 * Fixed [bug 1134]: UseStringBufferLength: false positives
 * Fixed [bug 1135]: CheckResultSet ignores results set declared outside of try/catch
 * Fixed [bug 1136]: ECMAScript: NullPointerException in getLeft() and getRight()

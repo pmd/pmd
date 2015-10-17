@@ -15,7 +15,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-failure case, assignement
+failure case, assignment
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

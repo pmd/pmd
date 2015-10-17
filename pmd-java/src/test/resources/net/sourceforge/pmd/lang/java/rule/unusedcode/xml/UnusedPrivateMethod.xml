@@ -481,7 +481,7 @@ public class Foo {
 
         //call private method.  Flagged method
         setInnateFilterFields(filter, request);
-        //perfrom logic
+        //perform logic
 
         //return
         return filter;
