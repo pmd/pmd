@@ -7,11 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
@@ -89,6 +92,29 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
 		// check if the field/method/nested class has a default access modifier
 		&& decl.isPackagePrivate()
 		// if is a default access modifier check if there is a comment in this line
-		&& !interestingLineNumberComments.contains(decl.getBeginLine());
+		&& !interestingLineNumberComments.contains(decl.getBeginLine())
+		// that it is not annotated with @VisibleForTesting
+		&& hasNoVisibleForTestingAnnotation(decl);
 	}
+
+    private boolean hasNoVisibleForTestingAnnotation(AbstractJavaAccessNode decl) {
+        boolean result = true;
+        ASTClassOrInterfaceBodyDeclaration parent = decl.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        if (parent != null) {
+            List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
+            for (ASTAnnotation annotation : annotations) {
+                List<ASTName> names = annotation.findDescendantsOfType(ASTName.class);
+                for (ASTName name : names) {
+                    if (name.hasImageEqualTo("VisibleForTesting")) {
+                        result = false;
+                        break;
+                    }
+                }
+                if (result == false) {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
 }

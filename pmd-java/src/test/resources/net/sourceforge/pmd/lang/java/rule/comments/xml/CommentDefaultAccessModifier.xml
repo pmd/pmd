@@ -148,4 +148,14 @@ public enum TestEnum {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1430 CommentDefaultAccessModifier triggers on field annotated with @VisibleForTesting</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>
