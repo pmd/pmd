@@ -10,6 +10,8 @@
 
 **Pull Requests:**
 
+*   [#25](https://github.com/adangel/pmd/pull/25): Added option to exclude C# using directives from CPD analysis
+    *   Note: This also contains the fix from [#23](https://github.com/adangel/pmd/pull/23)
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
 *   [#75](https://github.com/pmd/pmd/pull/75): RuleSetFactory Performance Enhancement
 
