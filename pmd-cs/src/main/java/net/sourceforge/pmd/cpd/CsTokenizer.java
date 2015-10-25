@@ -20,8 +20,6 @@ import org.apache.commons.lang3.RandomStringUtils;
  */
 public class CsTokenizer implements Tokenizer {
 
-    public static final String IGNORE_USINGS = "ignore_usings";
-
     private boolean ignoreUsings = false;
 
     public void setProperties(Properties properties) {

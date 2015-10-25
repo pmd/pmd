@@ -148,6 +148,12 @@ The options "minimum-tokens" and "files" are the two required options; there are
         <td>java</td>
     </tr>
     <tr>
+        <td>--ignore-usings</td>
+        <td>Ignore using directives in C# when comparing text</td>
+        <td>no</td>
+        <td>C#</td>
+    </tr>
+    <tr>
         <td>--no-skip-blocks</td>
         <td>Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif)</td>
         <td>no</td>

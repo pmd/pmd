@@ -6,6 +6,8 @@
 
 **Feature Request and Improvements:**
 
+*   CPD: New command line parameter `--ignore-usings`: Ignore using directives in C# when comparing text.
+
 **New/Modified/Deprecated Rules:**
 
 **Pull Requests:**
