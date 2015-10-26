@@ -6,6 +6,8 @@
 
 **Feature Request and Improvements:**
 
+*   CPD: New command line parameter `--ignore-usings`: Ignore using directives in C# when comparing text.
+
 **New/Modified/Deprecated Rules:**
 
 *   Java
@@ -14,6 +16,7 @@
 
 **Pull Requests:**
 
+*   [#25](https://github.com/adangel/pmd/pull/25): Added option to exclude C# using directives from CPD analysis
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
 *   [#73](https://github.com/pmd/pmd/pull/73): Add rule to look for invalid message format in slf4j loggers
 *   [#74](https://github.com/pmd/pmd/pull/74): Fix rendering CommentDefaultAccessModifier description as code

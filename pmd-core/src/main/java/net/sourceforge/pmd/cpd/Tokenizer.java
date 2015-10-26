@@ -9,6 +9,13 @@ public interface Tokenizer {
     String IGNORE_LITERALS = "ignore_literals";
     String IGNORE_IDENTIFIERS = "ignore_identifiers";
     String IGNORE_ANNOTATIONS = "ignore_annotations";
+
+    /**
+     * Ignore using directives in C#.
+     * The default value is <code>false</code>.
+     */
+    String IGNORE_USINGS = "ignore_usings";
+
     /**
      * Enables or disabled skipping of blocks like a pre-processor.
      * It is a boolean property.
