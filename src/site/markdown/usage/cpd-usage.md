@@ -155,6 +155,12 @@ The options "minimum-tokens" and "files" are the two required options; there are
         <td>java</td>
     </tr>
     <tr>
+        <td>--ignore-usings</td>
+        <td>Ignore using directives in C# when comparing text</td>
+        <td>no</td>
+        <td>C#</td>
+    </tr>
+    <tr>
         <td>--no-skip-blocks</td>
         <td>Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif)</td>
         <td>no</td>
@@ -337,6 +343,14 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
         same 5-6 lines of annotations. This causes false positives; defaults to `false`.
     </td>
     <td valign="top">java</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignoreUsings</td>
+    <td valign="top">
+        Ignore using directives in C#.
+    </td>
+    <td valign="top">C#</td>
     <td valign="top" align="center">No</td>
   </tr>
   <tr>

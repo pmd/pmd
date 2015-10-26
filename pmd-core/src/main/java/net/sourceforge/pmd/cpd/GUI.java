@@ -85,6 +85,7 @@ public class GUI implements CPDListener {
 		public boolean canIgnoreIdentifiers() { return false; }
 		public boolean canIgnoreLiterals() { return false; }
 		public boolean canIgnoreAnnotations() { return false; }
+		public boolean canIgnoreUsings() { return false; }
 		public abstract String[] extensions();
 	}
 
@@ -120,6 +121,10 @@ public class GUI implements CPDListener {
                 @Override
                 public boolean canIgnoreLiterals() {
                     return "java".equals(terseName);
+                }
+                @Override
+                public boolean canIgnoreUsings() {
+                    return "cs".equals(terseName);
                 }
             };
         }
@@ -277,6 +282,7 @@ public class GUI implements CPDListener {
     private JCheckBox ignoreIdentifiersCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreAnnotationsCheckbox = new JCheckBox("", false);
+    private JCheckBox ignoreUsingsCheckbox  = new JCheckBox("", false);
     private JComboBox languageBox			= new JComboBox();
     private JTextField extensionField		= new JTextField();
     private JLabel extensionLabel			= new JLabel("Extension:", SwingConstants.RIGHT);
@@ -362,6 +368,7 @@ public class GUI implements CPDListener {
          ignoreIdentifiersCheckbox.setEnabled(current.canIgnoreIdentifiers());
          ignoreLiteralsCheckbox.setEnabled(current.canIgnoreLiterals());
          ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
+         ignoreUsingsCheckbox.setEnabled(current.canIgnoreUsings());
          extensionField.setText(current.extensions()[0]);
          boolean enableExtension = current.extensions()[0].length() == 0;
          extensionField.setEnabled(enableExtension);
@@ -414,6 +421,13 @@ public class GUI implements CPDListener {
         helper.nextRow();
         helper.addLabel("Ignore annotations?");
         helper.add(ignoreAnnotationsCheckbox);
+        helper.addLabel("");
+        helper.addLabel("");
+        helper.nextRow();
+
+        helper.nextRow();
+        helper.addLabel("Ignore usings?");
+        helper.add(ignoreUsingsCheckbox);
         helper.add(goButton);
         helper.add(cxButton);
         helper.nextRow();
@@ -590,6 +604,7 @@ public class GUI implements CPDListener {
             config.setIgnoreIdentifiers(ignoreIdentifiersCheckbox.isSelected());
             config.setIgnoreLiterals(ignoreLiteralsCheckbox.isSelected());
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());
+            config.setIgnoreUsings(ignoreUsingsCheckbox.isSelected());
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
 
             LanguageConfig conf = languageConfigFor((String)languageBox.getSelectedItem());
