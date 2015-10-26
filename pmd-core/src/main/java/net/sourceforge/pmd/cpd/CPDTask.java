@@ -47,6 +47,7 @@ public class CPDTask extends Task {
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
     private boolean ignoreAnnotations;
+    private boolean ignoreUsings;
     private boolean skipLexicalErrors;
     private boolean skipDuplicateFiles;
     private boolean skipBlocks = true;
@@ -103,6 +104,9 @@ public class CPDTask extends Task {
         }
         if (ignoreAnnotations) {
             p.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
+        }
+        if (ignoreUsings) {
+            p.setProperty(Tokenizer.IGNORE_USINGS, "true");
         }
         p.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
         p.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipBlocksPattern);
@@ -186,6 +190,10 @@ public class CPDTask extends Task {
 
     public void setIgnoreAnnotations(boolean value) {
         this.ignoreAnnotations = value;
+    }
+
+    public void setIgnoreUsings(boolean value) {
+        this.ignoreUsings = value;
     }
 
     public void setSkipLexicalErrors(boolean skipLexicalErrors) {

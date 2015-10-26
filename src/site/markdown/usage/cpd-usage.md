@@ -332,6 +332,14 @@ Andy Glover wrote an Ant task for CPD; here's how to use it:
     <td valign="top" align="center">No</td>
   </tr>
   <tr>
+    <td valign="top">ignoreUsings</td>
+    <td valign="top">
+        Ignore using directives in C#.
+    </td>
+    <td valign="top">C#</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
     <td valign="top">skipDuplicateFiles</td>
     <td valign="top">
         Ignore multiple copies of files of the same name and length in comparison; defaults to `false`.
