@@ -41,7 +41,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         assertEquals(2, parentDfn.getLine());
         assertTrue(parentDfn.getNode() instanceof ASTProgramUnit);
         ASTProgramUnit exParent = (ASTProgramUnit) parentDfn.getNode();
-       //Validate the two-way link betwen Program Unit and Statement 
+       //Validate the two-way link between Program Unit and Statement
         assertEquals(ex, exParent.getDataFlowNode().getChildren().get(0).getNode());
         assertEquals(exParent, ex.getDataFlowNode().getParents().get(0).getNode());
     }
@@ -51,7 +51,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         ASTVariableOrConstantDeclarator vd = getOrderedNodes(ASTVariableOrConstantDeclarator.class, TEST2).get(0);
         //ASTMethodDeclaration vdParent = (ASTMethodDeclaration) ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getNode();
         ASTProgramUnit vdParent = (ASTProgramUnit) vd.getDataFlowNode().getParents().get(0).getNode();
-        //Validate the two-way link betwen Program Unit and Variable 
+        //Validate the two-way link between Program Unit and Variable
         assertEquals(vd, vdParent.getDataFlowNode().getChildren().get(0).getNode());
         assertEquals(vdParent, vd.getDataFlowNode().getParents().get(0).getNode());
     }
