@@ -22,6 +22,7 @@
 *   [#74](https://github.com/pmd/pmd/pull/74): Fix rendering CommentDefaultAccessModifier description as code
 *   [#75](https://github.com/pmd/pmd/pull/75): RuleSetFactory Performance Enhancement
 *   [#76](https://github.com/pmd/pmd/pull/76): fix formatting typos in an example of the DoNotCallGarbageCollectionExplicitly rule
+*   [#77](https://github.com/pmd/pmd/pull/77): Fix various typos
 
 **Bugfixes:**
 
