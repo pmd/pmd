@@ -843,6 +843,21 @@ A class that has private constructors and does not have any static methods or fi
                     ]
             ) > 0]
         ) = 0
+  and
+  count(//ClassOrInterfaceDeclaration
+            [@Nested='true']
+            [@Static='true']
+            [@Public='true']
+            [.//MethodDeclaration
+              [@Public='true']
+              [.//ReturnStatement//AllocationExpression
+                [ClassOrInterfaceType
+                    [@Image = //ClassOrInterfaceDeclaration/@Image]
+                ]
+                [./Arguments//PrimaryPrefix/@ThisModifier='true']
+              ]
+            ]
+       ) = 0
 ]
     ]]>
               </value>
