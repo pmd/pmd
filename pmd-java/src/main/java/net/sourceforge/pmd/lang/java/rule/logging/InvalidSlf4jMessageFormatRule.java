@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,8 +43,8 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 	@Override
 	public Object visit(final ASTName node, final Object data) {
 		final NameDeclaration nameDeclaration = node.getNameDeclaration();
-		// ignore imports
-		if (nameDeclaration == null) {
+		// ignore imports or methods
+		if (nameDeclaration == null || !(nameDeclaration instanceof VariableNameDeclaration)) {
 			return super.visit(node, data);
 		}
 

@@ -77,4 +77,20 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Class cast exception with Method calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodCallClassCastExceptionProblem {
+    public void foo() {
+        // a method call
+        otherMethod();
+    }
+
+    private void otherMethod() {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
