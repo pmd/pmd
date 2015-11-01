@@ -93,4 +93,19 @@ public class MethodCallClassCastExceptionProblem {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Null pointer with VariableNameDeclaration / VariableDeclaratorId</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NullPointerTypeProblem {
+    public void foo() {
+        java.util.StringTokenizer st = new java.util.StringTokenizer("a.b.c.d", ".");
+        while (st.hasMoreTokens()) {
+            System.out.println(st.nextToken());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

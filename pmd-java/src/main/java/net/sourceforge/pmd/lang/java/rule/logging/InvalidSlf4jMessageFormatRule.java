@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
 	private static final Set<String> LOGGER_LEVELS;
-	private static final String LOOGER_CLASS = "org.slf4j.Logger";
+	private static final String LOGGER_CLASS = "org.slf4j.Logger";
 	static {
 		LOGGER_LEVELS = Collections.unmodifiableSet(
 				new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error")));
@@ -49,7 +49,8 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 		}
 
 		// ignore non slf4j logger
-		if (!((ASTVariableDeclaratorId) nameDeclaration.getNode()).getType().getName().equals(LOOGER_CLASS)) {
+		Class<?> type = ((VariableNameDeclaration) nameDeclaration).getType();
+	    if (type == null || !type.getName().equals(LOGGER_CLASS)) {
 			return super.visit(node, data);
 		}
 

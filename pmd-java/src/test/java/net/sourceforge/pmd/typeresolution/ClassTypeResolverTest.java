@@ -5,12 +5,14 @@ package net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import org.jaxen.JaxenException;
-import org.junit.Test;
+import java.util.StringTokenizer;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -33,6 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
@@ -43,6 +46,11 @@ import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
+
+import org.apache.commons.io.IOUtils;
+import org.jaxen.JaxenException;
+import org.junit.Assert;
+import org.junit.Test;
 
 
 public class ClassTypeResolverTest {
@@ -494,15 +502,45 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ClassTypeResolverTest.class);
+    /**
+     * The type should be filled also on the ASTVariableDeclaratorId node,
+     * not only on the variable name declaration.
+     */
+    @Test
+    public void testFullyQualifiedType() {
+        String source = "public class Foo {\n" +
+                "    public void bar() {\n" +
+                "        java.util.StringTokenizer st = new StringTokenizer(\"a.b.c.d\", \".\");\n" +
+                "        while (st.hasMoreTokens()) {\n" + 
+                "            System.out.println(st.nextToken());\n" + 
+                "        }\n" +
+                "    }\n" +
+                "}";
+        ASTCompilationUnit acu = parseAndTypeResolveForString(source, "1.5");
+        List<ASTName> names = acu.findDescendantsOfType(ASTName.class);
+        ASTName theStringTokenizer = null;
+        for (ASTName name : names) {
+            if (name.hasImageEqualTo("st.hasMoreTokens")) {
+                theStringTokenizer = name;
+                break;
+            }
+        }
+        Assert.assertNotNull(theStringTokenizer);
+        VariableNameDeclaration declaration = (VariableNameDeclaration)theStringTokenizer.getNameDeclaration();
+        Assert.assertNotNull(declaration);
+        Assert.assertEquals("java.util.StringTokenizer", declaration.getTypeImage());
+        Assert.assertNotNull(declaration.getType());
+        Assert.assertSame(StringTokenizer.class, declaration.getType());
+        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId)declaration.getNode();
+        Assert.assertNotNull(id.getType());
+        Assert.assertSame(StringTokenizer.class, id.getType());
     }
 
     private ASTCompilationUnit parseAndTypeResolveForClass15(Class<?> clazz) {
         return parseAndTypeResolveForClass(clazz, "1.5");
     }
 
-    // Note: If you're using Eclipse or some other IDE to run this test, you _must_ have the regress folder in
+    // Note: If you're using Eclipse or some other IDE to run this test, you _must_ have the src/test/java folder in
     // the classpath.  Normally the IDE doesn't put source directories themselves directly in the classpath, only
     // the output directories are in the classpath.
     private ASTCompilationUnit parseAndTypeResolveForClass(Class<?> clazz, String version) {
@@ -511,8 +549,18 @@ public class ClassTypeResolverTest {
         if (is == null) {
             throw new IllegalArgumentException("Unable to find source file " + sourceFile + " for " + clazz);
         }
+        String source;
+        try {
+            source = IOUtils.toString(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return parseAndTypeResolveForString(source, version);
+    }
+
+    private ASTCompilationUnit parseAndTypeResolveForString(String source, String version) {
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version).getLanguageVersionHandler();
-        ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new InputStreamReader(is));
+        ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(source));
         languageVersionHandler.getSymbolFacade().start(acu);
         languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
         return acu;
