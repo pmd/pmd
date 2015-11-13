@@ -22,6 +22,8 @@
 *   java-comments/CommentDefaultAccessModifier
     *   [#1430](https://sourceforge.net/p/pmd/bugs/1430/): CommentDefaultAccessModifier triggers on field
         annotated with @VisibleForTesting
+*   java-finalizers/AvoidCallingFinalize
+    *   [#1440](https://sourceforge.net/p/pmd/bugs/1440/): NPE in AvoidCallingFinalize
 *   java-unusedcode/UnusedPrivateField
     *   [#1428](https://sourceforge.net/p/pmd/bugs/1428/): False positive in UnusedPrivateField when local variable
         hides member variable
