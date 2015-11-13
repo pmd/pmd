@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
@@ -27,14 +28,9 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
         if (name.getImage() == null || !name.getImage().endsWith("finalize")) {
             return ctx;
         }
-        MethodScope meth = name.getScope().getEnclosingScope(MethodScope.class);
-        if (meth.getName().equals("finalize")) {
+        if (!checkForViolation(name)) {
             return ctx;
         }
-        if (checked.contains(meth)) {
-            return ctx;
-        }
-        checked.add(meth);
         addViolation(ctx, name);
         return ctx;
     }
@@ -48,15 +44,24 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
         if (firstSuffix == null || firstSuffix.getImage() == null || !firstSuffix.getImage().endsWith("finalize")) {
             return super.visit(pp, ctx);
         }
-        MethodScope meth = pp.getScope().getEnclosingScope(MethodScope.class);
-        if (meth.getName().equals("finalize")) {
+        if (!checkForViolation(pp)) {
             return super.visit(pp, ctx);
         }
-        if (checked.contains(meth)) {
-            return super.visit(pp, ctx);
-        }
-        checked.add(meth);
         addViolation(ctx, pp);
         return super.visit(pp, ctx);
+    }
+
+    private boolean checkForViolation(ScopedNode node) {
+        MethodScope meth = node.getScope().getEnclosingScope(MethodScope.class);
+        if (meth != null && "finalize".equals(meth.getName())) {
+            return false;
+        }
+        if (meth != null && checked.contains(meth)) {
+            return false;
+        }
+        if (meth != null) {
+            checked.add(meth);
+        }
+        return true;
     }
 }

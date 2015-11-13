@@ -82,4 +82,16 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1440 NPE in AvoidCallingFinalize</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class InputFinalize {
+    {
+        super.finalize();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
