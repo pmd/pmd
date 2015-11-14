@@ -26,5 +26,6 @@
 *   General
     *   [#1429](https://sourceforge.net/p/pmd/bugs/1429/): Java - Parse Error: Cast in return expression
     *   [#1425](https://sourceforge.net/p/pmd/bugs/1425/): Invalid XML Characters in Output
+    *   [#1441](https://sourceforge.net/p/pmd/bugs/1441/): PMD: Update documentation how to compile after modularization
 
 **API Changes:**
