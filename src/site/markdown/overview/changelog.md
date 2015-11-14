@@ -23,6 +23,7 @@
 *   [#75](https://github.com/pmd/pmd/pull/75): RuleSetFactory Performance Enhancement
 *   [#76](https://github.com/pmd/pmd/pull/76): fix formatting typos in an example of the DoNotCallGarbageCollectionExplicitly rule
 *   [#77](https://github.com/pmd/pmd/pull/77): Fix various typos
+*   [#78](https://github.com/pmd/pmd/pull/78): Add Builder pattern check to the MissingStaticMethodInNonInstantiatableClass rule
 
 **Bugfixes:**
 
