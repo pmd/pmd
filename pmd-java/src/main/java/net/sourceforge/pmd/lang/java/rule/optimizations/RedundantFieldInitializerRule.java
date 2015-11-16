@@ -100,7 +100,7 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
                                     value = (int) literal.getImage().charAt(1);
                                 }
 
-                                if (value.longValue() == 0) {
+                                if (value.doubleValue() == 0) {
                                     addViolation(data, variableDeclarator);
                                 }
                             }

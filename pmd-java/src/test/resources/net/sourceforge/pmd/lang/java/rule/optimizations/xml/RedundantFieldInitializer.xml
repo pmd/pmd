@@ -1302,4 +1302,14 @@ public class SomeClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1443 RedundantFieldInitializer: False positive for small floats</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomeClass {
+    private float someNumber = 0.1f;
+}
+        ]]></code>
+    </test-code>
 </test-data>
