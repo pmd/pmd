@@ -21,6 +21,8 @@
 
 *   java-finalizers/AvoidCallingFinalize
     *   [#1440](https://sourceforge.net/p/pmd/bugs/1440/): NPE in AvoidCallingFinalize
+*   java-optimizations/RedundantFieldInitializer
+    *   [#1443](https://sourceforge.net/p/pmd/bugs/1443/): RedundantFieldInitializer: False positive for small floats
 *   java-unusedcode/UnusedPrivateField
     *   [#1428](https://sourceforge.net/p/pmd/bugs/1428/): False positive in UnusedPrivateField when local variable hides member variable
 *   General
