@@ -41,5 +41,6 @@
     *   [#1425](https://sourceforge.net/p/pmd/bugs/1425/): Invalid XML Characters in Output
     *   [#1429](https://sourceforge.net/p/pmd/bugs/1429/): Java - Parse Error: Cast in return expression
     *   [#1441](https://sourceforge.net/p/pmd/bugs/1441/): PMD: Update documentation how to compile after modularization
+    *   [#1442](https://sourceforge.net/p/pmd/bugs/1442/): Java 9 Jigsaw readiness
 
 **API Changes:**

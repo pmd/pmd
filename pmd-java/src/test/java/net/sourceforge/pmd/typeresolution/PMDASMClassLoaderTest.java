@@ -45,8 +45,8 @@ public class PMDASMClassLoaderTest {
         assertEquals("java.util.Set", imports.get("Set"));
         assertEquals("java.util.Map$Entry", imports.get("Entry"));
         assertEquals("java.util.Map$Entry", imports.get("Map$Entry"));
-        assertEquals("java.util.Map$Entry", imports.get("Map$Entry"));
         assertEquals("java.lang.Object", imports.get("Object"));
+        assertEquals("java.util.StringTokenizer", imports.get("StringTokenizer"));
         assertEquals("net.sourceforge.pmd.typeresolution.ClassWithImportInnerOnDemand", imports.get("ClassWithImportInnerOnDemand"));
     }
 

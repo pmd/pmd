@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -82,7 +83,7 @@ public final class PMDASMClassLoader extends ClassLoader {
         }
         try {
             ClassReader reader = new ClassReader(getResourceAsStream(name.replace('.', '/') + ".class"));
-            PMDASMVisitor asmVisitor = new PMDASMVisitor();
+            PMDASMVisitor asmVisitor = new PMDASMVisitor(name);
             reader.accept(asmVisitor, 0);
 
             List<String> inner = asmVisitor.getInnerClasses();
@@ -90,8 +91,11 @@ public final class PMDASMClassLoader extends ClassLoader {
                 inner = new ArrayList<String>(inner); // to avoid
                                                       // ConcurrentModificationException
                 for (String str : inner) {
-                    reader = new ClassReader(getResourceAsStream(str.replace('.', '/') + ".class"));
-                    reader.accept(asmVisitor, 0);
+                    InputStream i = getResourceAsStream(str.replace('.', '/') + ".class");
+                    if (i != null) {
+                        reader = new ClassReader(i);
+                        reader.accept(asmVisitor, 0);
+                    }
                 }
             }
             return asmVisitor.getPackages();

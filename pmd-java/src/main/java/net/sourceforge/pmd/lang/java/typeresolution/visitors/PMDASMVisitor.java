@@ -20,9 +20,12 @@ import org.objectweb.asm.signature.SignatureVisitor;
 
 public class PMDASMVisitor extends ClassVisitor {
 
-    public PMDASMVisitor() {
+    public PMDASMVisitor(String outerName) {
         super(Opcodes.ASM5);
+        this.outerName = outerName;
     }
+
+    private String outerName;
 
     private Map<String, String> packages = new HashMap<String, String>();
 
@@ -120,6 +123,11 @@ public class PMDASMVisitor extends ClassVisitor {
     }
 
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
+        if (!this.outerName.replace('.', '/').equals(outerName)) {
+            // do not consider the inner class if it is not a member of our outer class
+            return;
+        }
+
         if (innerClasses == null) {
             innerClasses = new ArrayList<String>();
         }

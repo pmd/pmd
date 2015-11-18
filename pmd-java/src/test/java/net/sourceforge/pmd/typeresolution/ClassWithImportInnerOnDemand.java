@@ -15,4 +15,9 @@ public class ClassWithImportInnerOnDemand {
         Map.Entry<String, String> e = m.entrySet().iterator().next();
         assert e != null;
     }
+
+    // StringTokenizer will only be considered if inner classes are visited
+    interface Inner {
+        public java.util.StringTokenizer createTokenizer();
+    }
 }
