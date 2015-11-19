@@ -79,4 +79,17 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1438 UseNotifyAllInsteadOfNotify gives false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FlasePositive {
+    public static void main(String[] args) {
+        boolean notify;
+        notify = true;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
