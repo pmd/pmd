@@ -326,6 +326,7 @@ intention to override the equals(Object) method.
     count(FormalParameters/*) = 2
     and ../ResultType/Type/PrimitiveType[@Image = 'boolean']
     and FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
+    and not(../../Annotation/MarkerAnnotation/Name[@Image='Override'])
     )
 ]
 | //MethodDeclarator[@Image = 'equal']

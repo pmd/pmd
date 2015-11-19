@@ -33,4 +33,17 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1431 SuspiciousEqualsMethodName false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Demo implements org.hibernate.usertype.UserType {
+    @Override
+    public boolean equals(Object x, Object y) throws HibernateException {
+      return x == null ? y == null : x.equals(y);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
