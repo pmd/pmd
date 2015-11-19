@@ -19,6 +19,8 @@
 
 **Bugfixes:**
 
+*   java-design/UseNotifyAllInsteadOfNotify
+    *   [#1438](https://sourceforge.net/p/pmd/bugs/1438/): UseNotifyAllInsteadOfNotify gives false positive
 *   java-finalizers/AvoidCallingFinalize
     *   [#1440](https://sourceforge.net/p/pmd/bugs/1440/): NPE in AvoidCallingFinalize
 *   java-optimizations/RedundantFieldInitializer
