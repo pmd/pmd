@@ -22,6 +22,8 @@
 *   java-comments/CommentDefaultAccessModifier
     *   [#1430](https://sourceforge.net/p/pmd/bugs/1430/): CommentDefaultAccessModifier triggers on field
         annotated with @VisibleForTesting
+*   java-design/UseNotifyAllInsteadOfNotify
+    *   [#1438](https://sourceforge.net/p/pmd/bugs/1438/): UseNotifyAllInsteadOfNotify gives false positive
 *   java-finalizers/AvoidCallingFinalize
     *   [#1440](https://sourceforge.net/p/pmd/bugs/1440/): NPE in AvoidCallingFinalize
 *   java-optimizations/RedundantFieldInitializer
