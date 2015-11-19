@@ -35,14 +35,14 @@ public class RuleSet {
 
     private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
 
-    private List<Rule> rules = new ArrayList<Rule>();
+    private List<Rule> rules = new ArrayList<>();
     private String fileName;
     private String name = "";
     private String description = "";
 
     // TODO should these not be Sets or is their order important?
-    private List<String> excludePatterns = new ArrayList<String>(0);
-    private List<String> includePatterns = new ArrayList<String>(0);
+    private List<String> excludePatterns = new ArrayList<>(0);
+    private List<String> includePatterns = new ArrayList<>(0);
 
     private Filter<File> filter;
 
@@ -251,7 +251,7 @@ public class RuleSet {
         RuleSetReference ruleSetReference = new RuleSetReference(ruleSet.getFileName());
         ruleSetReference.setAllRules(allRules);
         if (excludes != null) {
-            ruleSetReference.setExcludes(new HashSet<String>(Arrays.asList(excludes)));
+            ruleSetReference.setExcludes(new HashSet<>(Arrays.asList(excludes)));
         }
         for (Rule rule : ruleSet.getRules()) {
             RuleReference ruleReference = new RuleReference(rule, ruleSetReference);

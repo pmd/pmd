@@ -41,7 +41,7 @@ public class RuleReference extends AbstractDelegateRule {
     private RulePriority priority;
     private RuleSetReference ruleSetReference;
 
-    private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<PropertyDescriptor<?>>(0);
+    private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<>(0);
 
     public Language getOverriddenLanguage() {
         return language;
@@ -180,7 +180,7 @@ public class RuleReference extends AbstractDelegateRule {
         // Only override if different than current values.
         if (!contains(super.getExamples(), example)) {
             if (examples == null) {
-                examples = new ArrayList<String>(1);
+                examples = new ArrayList<>(1);
             }
             // TODO Fix later. To keep example overrides from being unbounded,
             // we're only going to keep track of the last one.
@@ -230,7 +230,7 @@ public class RuleReference extends AbstractDelegateRule {
         // to check if the property is already overridden at this level.
         super.definePropertyDescriptor(propertyDescriptor);
         if (propertyDescriptors == null) {
-            propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
+            propertyDescriptors = new ArrayList<>();
         }
         propertyDescriptors.add(propertyDescriptor);
     }
@@ -244,7 +244,7 @@ public class RuleReference extends AbstractDelegateRule {
         // Only override if different than current value.
         if (!isSame(super.getProperty(propertyDescriptor), value)) {
             if (propertyValues == null) {
-                propertyValues = new HashMap<PropertyDescriptor<?>, Object>();
+                propertyValues = new HashMap<>();
             }
             propertyValues.put(propertyDescriptor, value);
             super.setProperty(propertyDescriptor, value);

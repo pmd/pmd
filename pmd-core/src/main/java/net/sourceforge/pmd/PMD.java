@@ -67,7 +67,7 @@ public class PMD {
      * @see DBURI
      */
     public static List<DataSource> getURIDataSources(String uriString) throws PMDException {
-        List<DataSource> dataSources = new ArrayList<DataSource>();
+        List<DataSource> dataSources = new ArrayList<>();
 
         try {
             DBURI dbUri = new DBURI(uriString);
@@ -156,7 +156,7 @@ public class PMD {
      */
     private static Set<Rule> removeBrokenRules(RuleSets ruleSets) {
 
-        Set<Rule> brokenRules = new HashSet<Rule>();
+        Set<Rule> brokenRules = new HashSet<>();
         ruleSets.removeDysfunctionalRules(brokenRules);
 
         for (Rule rule : brokenRules) {
@@ -229,7 +229,7 @@ public class PMD {
         long reportStart = System.nanoTime();
         try {
             Renderer renderer = configuration.createRenderer();
-            List<Renderer> renderers = new LinkedList<Renderer>();
+            List<Renderer> renderers = new LinkedList<>();
             renderers.add(renderer);
 
             renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
@@ -389,7 +389,7 @@ public class PMD {
 
     private static List<DataSource> internalGetApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(languages);
-        List<DataSource> files = new ArrayList<DataSource>();
+        List<DataSource> files = new ArrayList<>();
 
         if (null != configuration.getInputPaths()) {
             files.addAll(FileUtil.collectFiles(configuration.getInputPaths(), fileSelector));
@@ -410,7 +410,7 @@ public class PMD {
     }
 
     private static Set<Language> getApplicableLanguages(PMDConfiguration configuration, RuleSets ruleSets) {
-        Set<Language> languages = new HashSet<Language>();
+        Set<Language> languages = new HashSet<>();
         LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
         for (Rule rule : ruleSets.getAllRules()) {

@@ -12,7 +12,7 @@ import java.util.Set;
 public class RuleSetReference {
 	private String ruleSetFileName;
 	private boolean allRules;
-	private Set<String> excludes = new LinkedHashSet<String>(0);
+	private Set<String> excludes = new LinkedHashSet<>(0);
 
 	public RuleSetReference() {	}
 	

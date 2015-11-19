@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
  */
 public class RuleChain {
     // Mapping from Language to RuleChainVisitor
-    private final Map<Language, RuleChainVisitor> languageToRuleChainVisitor = new HashMap<Language, RuleChainVisitor>();
+    private final Map<Language, RuleChainVisitor> languageToRuleChainVisitor = new HashMap<>();
 
     /**
      * Add all Rules from the given RuleSet which want to participate in the

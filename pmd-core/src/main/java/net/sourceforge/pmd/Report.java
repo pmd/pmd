@@ -201,16 +201,16 @@ public class Report implements Iterable<RuleViolation> {
 
     // Note that this and the above data structure are both being maintained for
     // a bit
-    private final List<RuleViolation> violations = new ArrayList<RuleViolation>();
-    private final Set<Metric> metrics = new HashSet<Metric>();
-    private final List<SynchronizedReportListener> listeners = new ArrayList<SynchronizedReportListener>();
+    private final List<RuleViolation> violations = new ArrayList<>();
+    private final Set<Metric> metrics = new HashSet<>();
+    private final List<SynchronizedReportListener> listeners = new ArrayList<>();
     private List<ProcessingError> errors;
     private List<RuleConfigurationError> configErrors;
-    private Map<Integer, String> linesToSuppress = new HashMap<Integer, String>();
+    private Map<Integer, String> linesToSuppress = new HashMap<>();
     private long start;
     private long end;
 
-    private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<SuppressedViolation>();
+    private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
 
     /**
      * Configure the lines, that are suppressed via a NOPMD comment.
@@ -232,7 +232,7 @@ public class Report implements Iterable<RuleViolation> {
      * @return violations per class name
      */
     public Map<String, Integer> getCountSummary() {
-        Map<String, Integer> summary = new HashMap<String, Integer>();
+        Map<String, Integer> summary = new HashMap<>();
         for (RuleViolation rv : violationTree) {
             String key = keyFor(rv);
             Integer o = summary.get(key);
@@ -252,7 +252,7 @@ public class Report implements Iterable<RuleViolation> {
      *         of violations)
      */
     public Map<String, Integer> getSummary() {
-        Map<String, Integer> summary = new HashMap<String, Integer>();
+        Map<String, Integer> summary = new HashMap<>();
         for (RuleViolation rv : violations) {
             String name = rv.getRule().getName();
             if (!summary.containsKey(name)) {
@@ -323,7 +323,7 @@ public class Report implements Iterable<RuleViolation> {
      */
     public void addConfigError(RuleConfigurationError error) {
         if (configErrors == null) {
-            configErrors = new ArrayList<RuleConfigurationError>();
+            configErrors = new ArrayList<>();
         }
         configErrors.add(error);
     }
@@ -335,7 +335,7 @@ public class Report implements Iterable<RuleViolation> {
      */
     public void addError(ProcessingError error) {
         if (errors == null) {
-            errors = new ArrayList<ProcessingError>();
+            errors = new ArrayList<>();
         }
         errors.add(error);
     }

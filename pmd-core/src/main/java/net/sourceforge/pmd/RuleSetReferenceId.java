@@ -288,13 +288,12 @@ public class RuleSetReferenceId {
     }
 
     private static boolean isHttpUrl(String name) {
-
-        if (name == null) {
+        String stripped = StringUtils.strip(name);
+        if (stripped == null) {
             return false;
         }
 
-        name = StringUtils.strip(name);
-        if (name.startsWith("http://") || name.startsWith("https://")) {
+        if (stripped.startsWith("http://") || stripped.startsWith("https://")) {
             return true;
         }
 
@@ -333,7 +332,7 @@ public class RuleSetReferenceId {
      * @return The corresponding List of RuleSetReferenceId instances.
      */
     public static List<RuleSetReferenceId> parse(String referenceString) {
-        List<RuleSetReferenceId> references = new ArrayList<RuleSetReferenceId>();
+        List<RuleSetReferenceId> references = new ArrayList<>();
         if (referenceString != null && referenceString.trim().length() > 0) {
 
             if (referenceString.indexOf(',') == -1) {
