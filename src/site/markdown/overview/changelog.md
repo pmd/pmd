@@ -30,6 +30,8 @@
     *   [#1431](https://sourceforge.net/p/pmd/bugs/1431/): SuspiciousEqualsMethodName false positive
 *   java-optimizations/RedundantFieldInitializer
     *   [#1443](https://sourceforge.net/p/pmd/bugs/1443/): RedundantFieldInitializer: False positive for small floats
+*   java-unnecessary/UselessQualifiedThis
+    *   [#1422](https://sourceforge.net/p/pmd/bugs/1422/): UselessQualifiedThis: False positive with Java 8 Function
 *   java-unusedcode/UnusedPrivateField
     *   [#1428](https://sourceforge.net/p/pmd/bugs/1428/): False positive in UnusedPrivateField when local variable
         hides member variable
