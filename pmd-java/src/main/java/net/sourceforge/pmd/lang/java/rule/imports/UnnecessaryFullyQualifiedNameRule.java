@@ -18,6 +18,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private List<ASTImportDeclaration> imports = new ArrayList<ASTImportDeclaration>();
     private List<ASTImportDeclaration> matches = new ArrayList<ASTImportDeclaration>();
+    private List<PotentialViolation> violations = new ArrayList<PotentialViolation>();
+    private List<PotentialViolation> enumViolations = new ArrayList<PotentialViolation>();
 
     public UnnecessaryFullyQualifiedNameRule() {
 	super.addRuleChainVisit(ASTCompilationUnit.class);
@@ -29,6 +31,13 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 	imports.clear();
+	violations.clear();
+	enumViolations.clear();
+
+	super.visit(node, data);
+
+	filterPotentialViolations();
+	reportViolations(data);
 	return data;
     }
 
@@ -118,9 +127,49 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 	    ASTImportDeclaration firstMatch = matches.get(0);
         String importStr = firstMatch.getImportedName() + (matches.get(0).isImportOnDemand() ? ".*" : "");
 	    String type = firstMatch.isStatic() ? "static " : "";
-	    addViolation(data, node, new Object[] { node.getImage(), importStr, type });
+
+	    PotentialViolation v = new PotentialViolation(node, importStr, type);
+	    violations.add(v);
+	    if (isEnum(firstMatch.getType())) {
+	        enumViolations.add(v);
+	    }
 	}
 
 	matches.clear();
+    }
+
+    private static class PotentialViolation {
+        private JavaNode node;
+        private String  importStr;
+        private String  importType;
+
+        public PotentialViolation(JavaNode node, String importStr, String importType) {
+            this.node = node;
+            this.importStr = importStr;
+            this.importType = importType;
+        }
+
+        public void addViolation(UnnecessaryFullyQualifiedNameRule rule, Object data) {
+            rule.addViolation(data, node, new Object[] { node.getImage(), importStr, importType });
+        }
+    }
+
+    private void filterPotentialViolations() {
+        if (enumViolations.size() > 1) {
+            violations.removeAll(enumViolations);
+        }
+    }
+
+    private void reportViolations(Object data) {
+        for (PotentialViolation v : violations) {
+            v.addViolation(this, data);
+        }
+    }
+
+    private boolean isEnum(Class<?> type) {
+        if (type != null && Enum.class.isAssignableFrom(type)) {
+            return true;
+        }
+        return false;
     }
 }

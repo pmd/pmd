@@ -318,4 +318,20 @@ public class InitialPageComponent extends BaseExecutionCourseComponent {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1436 UnnecessaryFullyQualifiedName false positive on clashing static imports with enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.ENUM1.*;
+import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.ENUM2.*;
+
+public class UnnecessaryFullyQualifiedName {
+    public static void main(String[] args) {
+        System.out.println(ENUM1.values());
+        System.out.println(ENUM2.values());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
