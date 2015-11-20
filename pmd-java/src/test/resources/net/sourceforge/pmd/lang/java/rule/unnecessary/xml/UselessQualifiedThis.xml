@@ -130,4 +130,23 @@ public class Foo {
         </code>
     </test-code>
 
+    <test-code>
+        <description>#1422 UselessQualifiedThis: False positive with Java 8 Function</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ApiExceptionCtrlAdvice {
+    public final List<ApiError> handleApiAggregateException(final ApiAggregateException e) {
+        return e.getCauses().stream().map(
+            ApiExceptionCtrlAdvice::toApiError
+        ).collect(Collectors.toList());
+    }
+    private static ApiError toApiError(final Throwable e) {
+        return new ApiError()
+                .withException(e.getClass().getName())
+                .withCause(Optional.ofNullable(e.getCause()).map(Throwable::getClass).map(Class::getName).orElse(EMPTY))
+                .withMessage(Optional.ofNullable(e.getMessage()).orElse(EMPTY));
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
