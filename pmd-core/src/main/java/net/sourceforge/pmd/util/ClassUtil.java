@@ -21,7 +21,7 @@ public final class ClassUtil {
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
 
     private ClassUtil() {
-    };
+    }
 
     @SuppressWarnings("PMD.AvoidUsingShortType")
     private static final TypeMap PRIMITIVE_TYPE_NAMES = new TypeMap(new Class[] { int.class, byte.class, long.class,
@@ -51,7 +51,7 @@ public final class ClassUtil {
      */
     private static Map<Class<?>, String> computeClassShortNames() {
         
-        Map<Class<?>, String> map = new HashMap<Class<?>, String>();
+        Map<Class<?>, String> map = new HashMap<>();
         map.putAll(PRIMITIVE_TYPE_NAMES.asInverseWithShortName());
         map.putAll(TYPES_BY_NAME.asInverseWithShortName());
         return map;
@@ -140,7 +140,7 @@ public final class ClassUtil {
      */
     public static Map<String, List<Method>> asMethodGroupsByTypeName(Method[] methods) {
         
-        Map<String, List<Method>> methodGroups = new HashMap<String, List<Method>>(methods.length);
+        Map<String, List<Method>> methodGroups = new HashMap<>(methods.length);
         
         for (int i=0; i<methods.length; i++) {
             String clsName = asShortestName(methods[i].getDeclaringClass());

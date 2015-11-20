@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.util.filter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,14 +19,11 @@ public abstract class AbstractCompoundFilter<T> implements Filter<T> {
 	protected List<Filter<T>> filters;
 
 	public AbstractCompoundFilter() {
-		filters = new ArrayList<Filter<T>>(2);
+		filters = new ArrayList<>(2);
 	}
 
 	public AbstractCompoundFilter(Filter<T>... filters) {
-		this.filters = new ArrayList<Filter<T>>(filters.length);
-		for (Filter<T> filter : filters) {
-			this.filters.add(filter);
-		}
+	    this.filters = Arrays.asList(filters);
 	}
 
 	public List<Filter<T>> getFilters() {

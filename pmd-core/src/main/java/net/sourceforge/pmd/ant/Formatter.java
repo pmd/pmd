@@ -27,7 +27,7 @@ public class Formatter {
     private String type;
     private boolean toConsole;
     private boolean showSuppressed;
-    private final List<Parameter> parameters = new ArrayList<Parameter>();
+    private final List<Parameter> parameters = new ArrayList<>();
 
     public void setShowSuppressed(boolean value) {
         this.showSuppressed = value;

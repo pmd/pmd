@@ -30,7 +30,7 @@ public class MatchesFunctionTest {
 	public String getClassName() {
 	    return className;
 	}
-    };
+    }
 
     @Test
     public void testMatch() throws FunctionCallException, NoSuchMethodException {
@@ -50,8 +50,8 @@ public class MatchesFunctionTest {
 
     private Object tryRegexp(MyNode myNode, String exp) throws FunctionCallException, NoSuchMethodException {
         MatchesFunction function = new MatchesFunction();
-        List<Object> list = new ArrayList<Object>();
-        List<Attribute> attrs = new ArrayList<Attribute>();
+        List<Object> list = new ArrayList<>();
+        List<Attribute> attrs = new ArrayList<>();
         attrs.add(new Attribute(myNode, "matches", myNode.getClass().getMethod("getClassName", new Class[0])));
         list.add(attrs);
         list.add(exp);

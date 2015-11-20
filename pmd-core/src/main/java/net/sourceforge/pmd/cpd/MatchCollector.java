@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class MatchCollector {
-    private List<Match> matchList = new ArrayList<Match>();
-    private Map<Integer, Map<Integer, Match>> matchTree = new TreeMap<Integer, Map<Integer, Match>>();
+    private List<Match> matchList = new ArrayList<>();
+    private Map<Integer, Map<Integer, Match>> matchTree = new TreeMap<>();
     private MatchAlgorithm ma;
 
     public MatchCollector(MatchAlgorithm ma) {
@@ -49,7 +49,7 @@ public class MatchCollector {
     private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
         Map<Integer, Match> matches = matchTree.get(dupes);
         if (matches == null) {            
-            matches = new TreeMap<Integer, Match>();
+            matches = new TreeMap<>();
             matchTree.put(dupes, matches);
             addNewMatch(mark1, mark2, dupes, matches);
         } else {

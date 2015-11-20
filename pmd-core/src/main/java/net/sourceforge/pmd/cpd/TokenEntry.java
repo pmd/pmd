@@ -22,7 +22,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private static final ThreadLocal<Map<String, Integer>> TOKENS = new ThreadLocal<Map<String, Integer>>(){
         @Override
         protected Map<String, Integer> initialValue() {
-            return new HashMap<String, Integer>();
+            return new HashMap<>();
         }
     };
     private static final ThreadLocal<AtomicInteger> TOKEN_COUNT = new ThreadLocal<AtomicInteger>(){
@@ -69,8 +69,8 @@ public class TokenEntry implements Comparable<TokenEntry> {
         private List<TokenEntry> entries;
         public State(List<TokenEntry> entries) {
             this.tokenCount = TokenEntry.TOKEN_COUNT.get().intValue();
-            this.tokens = new HashMap<String, Integer>(TokenEntry.TOKENS.get());
-            this.entries = new ArrayList<TokenEntry>(entries);
+            this.tokens = new HashMap<>(TokenEntry.TOKENS.get());
+            this.entries = new ArrayList<>(entries);
         }
         public List<TokenEntry> restore() {
             TokenEntry.TOKEN_COUNT.get().set(tokenCount);

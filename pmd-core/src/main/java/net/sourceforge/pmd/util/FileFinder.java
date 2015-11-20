@@ -18,7 +18,7 @@ public class FileFinder {
 
     public List<File> findFilesFrom(File dir, FilenameFilter filter, boolean recurse) {
         this.filter = filter;
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         scanDirectory(dir, files, recurse);
         return files;
     }

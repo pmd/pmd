@@ -49,8 +49,8 @@ public class PMDTaskImpl {
 
     private Path classpath;
     private Path auxClasspath;
-    private final List<Formatter> formatters = new ArrayList<Formatter>();
-    private final List<FileSet> filesets = new ArrayList<FileSet>();
+    private final List<Formatter> formatters = new ArrayList<>();
+    private final List<FileSet> filesets = new ArrayList<>();
     private final PMDConfiguration configuration = new PMDConfiguration();
     private boolean failOnError;
     private boolean failOnRuleViolation;
@@ -138,7 +138,7 @@ public class PMDTaskImpl {
         final String separator = System.getProperty("file.separator");
 
         for (FileSet fs : filesets) {
-            List<DataSource> files = new LinkedList<DataSource>();
+            List<DataSource> files = new LinkedList<>();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             String[] srcFiles = ds.getIncludedFiles();
             for (String srcFile : srcFiles) {
@@ -173,7 +173,7 @@ public class PMDTaskImpl {
                     return null;
                 } // not relevant
             };
-            List<Renderer> renderers = new LinkedList<Renderer>();
+            List<Renderer> renderers = new LinkedList<>();
             renderers.add(logRenderer);
             for (Formatter formatter : formatters) {
                 renderers.add(formatter.getRenderer());

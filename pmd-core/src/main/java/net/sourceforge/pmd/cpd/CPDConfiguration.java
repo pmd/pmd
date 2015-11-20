@@ -157,7 +157,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         return getRendererFromString(name, System.getProperty("file.encoding"));
     }
 
-    private static final Map<String, Class<? extends Renderer>> RENDERERS = new HashMap<String, Class<? extends Renderer>>();
+    private static final Map<String, Class<? extends Renderer>> RENDERERS = new HashMap<>();
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
         RENDERERS.put("xml", XMLRenderer.class);
@@ -289,7 +289,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
 
         final FilenameFilter languageFilter = language.getFileFilter();
-        final Set<String> exclusions = new HashSet<String>();
+        final Set<String> exclusions = new HashSet<>();
 
         if (excludes != null) {
             FileFinder finder = new FileFinder();

@@ -74,7 +74,7 @@ public final class FileUtil {
      * @return A list of DataSources, one for each file collected.
      */
     public static List<DataSource> collectFiles(String fileLocations, FilenameFilter filenameFilter) {
-	List<DataSource> dataSources = new ArrayList<DataSource>();
+	List<DataSource> dataSources = new ArrayList<>();
 	for (String fileLocation : fileLocations.split(",")) {
 	    collect(dataSources, fileLocation, filenameFilter);
 	}
@@ -108,7 +108,7 @@ public final class FileUtil {
 	} else {
 	    // Match files, or directories which are not excluded.
 	    // FUTURE Make the excluded directories be some configurable option
-	    Filter<File> filter = new OrFilter<File>(Filters.toFileFilter(filenameFilter), new AndFilter<File>(Filters
+	    Filter<File> filter = new OrFilter<>(Filters.toFileFilter(filenameFilter), new AndFilter<>(Filters
 		    .getDirectoryFilter(), Filters.toNormalizedFileFilter(Filters.buildRegexFilterExcludeOverInclude(
 		    null, Collections.singletonList("SCCS")))));
 	    FileFinder finder = new FileFinder();

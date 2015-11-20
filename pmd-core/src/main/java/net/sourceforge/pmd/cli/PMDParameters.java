@@ -64,7 +64,7 @@ public class PMDParameters {
 
     @Parameter(names = { "-property", "-P" }, description = "{name}={value}: Define a property for the report format.",
             converter = PropertyConverter.class)
-    private List<Properties> properties = new ArrayList<Properties>();
+    private List<Properties> properties = new ArrayList<>();
 
     @Parameter(names = { "-reportfile", "-r" }, description = "Sends report output to a file; default to System.out.")
     private String reportfile = null;

@@ -386,7 +386,8 @@ public class UsageGraphBuilder {
             return null;
         }
 
-        public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
+        public void visitTableSwitchInsn(int min, int max, Label dflt,
+                Label... labels) {
             if (TRACE) {
                 println("visitTableSwitchInsn:");
                 printlnIndent("min: " + min);
@@ -434,7 +435,7 @@ public class UsageGraphBuilder {
     private static List<Integer> asList(int[] array) {
         List<Integer> list = null;
         if (array != null) {
-            list = new ArrayList<Integer>(array.length);
+            list = new ArrayList<>(array.length);
             for (int i : array) {
                 list.add(i);
             }

@@ -23,9 +23,9 @@ public class SourceCodeTest {
     public void testSimple() throws Throwable {
         Tokenizer tokenizer = new AbstractTokenizer() {
             {
-                this.stringToken = new ArrayList<String>();
-                this.ignorableCharacter = new ArrayList<String>();
-                this.ignorableStmt = new ArrayList<String>();
+                this.stringToken = new ArrayList<>();
+                this.ignorableCharacter = new ArrayList<>();
+                this.ignorableStmt = new ArrayList<>();
             }
         };
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(SAMPLE_CODE, "Foo.java"));

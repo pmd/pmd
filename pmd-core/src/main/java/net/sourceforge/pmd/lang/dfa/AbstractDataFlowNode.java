@@ -19,10 +19,10 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
 
     protected Node node;
 
-    protected List<DataFlowNode> parents = new ArrayList<DataFlowNode>();
-    protected List<DataFlowNode> children = new ArrayList<DataFlowNode>();
+    protected List<DataFlowNode> parents = new ArrayList<>();
+    protected List<DataFlowNode> children = new ArrayList<>();
     protected BitSet type = new BitSet();
-    protected List<VariableAccess> variableAccess = new ArrayList<VariableAccess>();
+    protected List<VariableAccess> variableAccess = new ArrayList<>();
     protected List<DataFlowNode> dataFlow;
     protected int line;
 

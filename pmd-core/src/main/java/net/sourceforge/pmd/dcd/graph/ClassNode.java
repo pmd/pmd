@@ -52,7 +52,7 @@ public class ClassNode implements NodeVisitorAcceptor, Comparable<ClassNode> {
 
 	public FieldNode defineField(String name, String desc) {
 		if (fieldNodes == null) {
-			fieldNodes = new ArrayList<FieldNode>(1);
+			fieldNodes = new ArrayList<>(1);
 		}
 		for (FieldNode fieldNode : fieldNodes) {
 			if (fieldNode.equals(name, desc)) {
@@ -66,7 +66,7 @@ public class ClassNode implements NodeVisitorAcceptor, Comparable<ClassNode> {
 
 	public ConstructorNode defineConstructor(String name, String desc) {
 		if (constructorNodes == null) {
-			constructorNodes = new ArrayList<ConstructorNode>(1);
+			constructorNodes = new ArrayList<>(1);
 		}
 		for (ConstructorNode constructorNode : constructorNodes) {
 			if (constructorNode.equals(name, desc)) {
@@ -81,7 +81,7 @@ public class ClassNode implements NodeVisitorAcceptor, Comparable<ClassNode> {
 
 	public MethodNode defineMethod(String name, String desc) {
 		if (methodNodes == null) {
-			methodNodes = new ArrayList<MethodNode>(1);
+			methodNodes = new ArrayList<>(1);
 		}
 		for (MethodNode methodNode : methodNodes) {
 			if (methodNode.equals(name, desc)) {

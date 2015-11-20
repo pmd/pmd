@@ -28,12 +28,12 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
     /**
      * Accumulated processing errors.
      */
-    protected List<Report.ProcessingError> errors = new LinkedList<Report.ProcessingError>();
+    protected List<Report.ProcessingError> errors = new LinkedList<>();
 
     /**
      * Accumulated suppressed violations.
      */
-    protected List<Report.SuppressedViolation> suppressed = new LinkedList<Report.SuppressedViolation>();
+    protected List<Report.SuppressedViolation> suppressed = new LinkedList<>();
 
     public AbstractIncrementingRenderer(String name, String description) {
 	super(name, description);

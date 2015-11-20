@@ -142,7 +142,7 @@ public class Designer implements ClipboardOwner {
     }
 
 	private static LanguageVersion[] getSupportedLanguageVersions() {
-		List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
+		List<LanguageVersion> languageVersions = new ArrayList<>();
 		for (LanguageVersion languageVersion : LanguageRegistry.findAllVersions()) {
 			LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 			if (languageVersionHandler != null) {
@@ -360,7 +360,7 @@ public class Designer implements ClipboardOwner {
 		}
 
 		public List<String> getAttributes() {
-			List<String> result = new LinkedList<String>();
+			List<String> result = new LinkedList<>();
 			AttributeAxisIterator attributeAxisIterator = new AttributeAxisIterator(node);
 			while (attributeAxisIterator.hasNext()) {
 				Attribute attribute = attributeAxisIterator.next();
@@ -534,7 +534,7 @@ public class Designer implements ClipboardOwner {
 				RuleContext ruleContext = new RuleContext();
 				ruleContext.setLanguageVersion(getLanguageVersion());
 
-				List<Node> nodes = new ArrayList<Node>();
+				List<Node> nodes = new ArrayList<>();
 				nodes.add(c);
 				ruleSets.apply(nodes, ruleContext, xpathRule.getLanguage());
 
@@ -559,7 +559,7 @@ public class Designer implements ClipboardOwner {
 						+ astTreeNode.label());
 				symbolTableTreeNode.add(selectedAstTreeNode);
 
-				List<Scope> scopes = new ArrayList<Scope>();
+				List<Scope> scopes = new ArrayList<>();
 				Scope scope = astTreeNode.getScope();
 				while (scope != null) {
 					scopes.add(scope);

@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil
 import net.sourceforge.pmd.util.CollectionUtil;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Test;
 
 /**
@@ -85,7 +84,7 @@ public abstract class AbstractPropertyDescriptorTester {
     }
 
     private Map<String, String> getPropertyDescriptorValues() {
-        Map<String, String> valuesById = new HashMap<String, String>();
+        Map<String, String> valuesById = new HashMap<>();
         valuesById.put(PropertyDescriptorFields.NAME, "test");
         valuesById.put(PropertyDescriptorFields.DESCRIPTION, "desc");
         valuesById.put(PropertyDescriptorFields.MIN, "0");

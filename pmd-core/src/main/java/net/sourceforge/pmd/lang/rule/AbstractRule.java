@@ -34,12 +34,12 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	private String ruleSetName;
 	private String message;
 	private String description;
-	private List<String> examples = new ArrayList<String>();
+	private List<String> examples = new ArrayList<>();
 	private String externalInfoUrl;
 	private RulePriority priority = RulePriority.LOW;
 	private boolean usesDFA;
 	private boolean usesTypeResolution;
-	private List<String> ruleChainVisits = new ArrayList<String>();
+	private List<String> ruleChainVisits = new ArrayList<>();
 
 	public AbstractRule() {
 		definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
@@ -68,13 +68,13 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	}
 
 	private List<String> copyExamples() {
-		List<String> copy = new ArrayList<String>(examples.size());
+		List<String> copy = new ArrayList<>(examples.size());
 		copy.addAll(examples);
 		return copy;    	
 	}
 
 	private List<String> copyRuleChainVisits() {
-		List<String> copy = new ArrayList<String>(ruleChainVisits.size());
+		List<String> copy = new ArrayList<>(ruleChainVisits.size());
 		copy.addAll(ruleChainVisits);
 		return copy;
 	}

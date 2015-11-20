@@ -57,7 +57,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     public List<Node> evaluate(Node node, RuleContext data) {
         initializeXPathExpression();
 
-        List<Node> results = new ArrayList<Node>();
+        List<Node> results = new ArrayList<>();
         try {
             // Get the DocumentNode for the AST
             DocumentNode documentNode = getDocumentNode(node);
@@ -117,7 +117,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         return results;
     }
 
-    private static final Map<Node, DocumentNode> CACHE = new HashMap<Node, DocumentNode>();
+    private static final Map<Node, DocumentNode> CACHE = new HashMap<>();
 
     private DocumentNode getDocumentNode(Node node) {
         // Get the root AST node
@@ -162,7 +162,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             // Create XPathVariables for later use. It is a Saxon quirk that
             // XPathVariables must be defined on the static context, and
             // reused later to associate an actual value on the dynamic context.
-            xpathVariables = new ArrayList<XPathVariable>();
+            xpathVariables = new ArrayList<>();
             for (PropertyDescriptor<?> propertyDescriptor : super.properties.keySet()) {
                 String name = propertyDescriptor.name();
                 if (!"xpath".equals(name)) {

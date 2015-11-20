@@ -138,7 +138,7 @@ public class RuleSetFactoryTest {
 	public void testMultipleRules() throws RuleSetNotFoundException {
 		RuleSet rs = loadRuleSet(MULTIPLE_RULES);
 		assertEquals(2, rs.size());
-		Set<String> expected = new HashSet<String>();
+		Set<String> expected = new HashSet<>();
 		expected.add("MockRuleName1");
 		expected.add("MockRuleName2");
 		for (Rule rule : rs.getRules()) {

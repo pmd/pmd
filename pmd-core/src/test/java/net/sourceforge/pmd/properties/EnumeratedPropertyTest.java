@@ -71,9 +71,9 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
      */
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
-        return multiValue ? new EnumeratedMultiProperty<Object>("testEnumerations",
+        return multiValue ? new EnumeratedMultiProperty<>("testEnumerations",
                 "Test enumerations with complex types", keys, values, new int[] { 0, 1 }, 1.0f)
-                : new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys,
+                : new EnumeratedProperty<>("testEnumerations", "Test enumerations with complex types", keys,
                         values, 0, 1.0f);
     }
 
@@ -85,9 +85,9 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
      */
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
-        return multiValue ? new EnumeratedMultiProperty<Object>("testEnumerations",
+        return multiValue ? new EnumeratedMultiProperty<>("testEnumerations",
                 "Test enumerations with complex types", keys, new Object[0], new int[] { 99 }, 1.0f)
-                : new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types",
+                : new EnumeratedProperty<>("testEnumerations", "Test enumerations with complex types",
                         new String[0], values, -1, 1.0f);
     }
 

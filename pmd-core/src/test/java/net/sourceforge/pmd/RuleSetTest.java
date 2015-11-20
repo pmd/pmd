@@ -268,7 +268,7 @@ public class RuleSetTest {
 
     @Test
     public void testSetExcludePatterns() {
-	List<String> excludePatterns = new ArrayList<String>();
+	List<String> excludePatterns = new ArrayList<>();
 	excludePatterns.add("*");
 	excludePatterns.add(".*");
 	RuleSet ruleSet = new RuleSet();
@@ -309,7 +309,7 @@ public class RuleSetTest {
 
     @Test
     public void testSetIncludePatterns() {
-	List<String> includePatterns = new ArrayList<String>();
+	List<String> includePatterns = new ArrayList<>();
 	includePatterns.add("*");
 	includePatterns.add(".*");
 	RuleSet ruleSet = new RuleSet();
@@ -403,7 +403,7 @@ public class RuleSetTest {
     private void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {
 
 	RuleContext context = new RuleContext();
-	Set<RuleViolation> reportedValues = new HashSet<RuleViolation>();
+	Set<RuleViolation> reportedValues = new HashSet<>();
 	context.setReport(new Report());
 	IUT.apply(makeCompilationUnits(), context);
 
@@ -425,7 +425,7 @@ public class RuleSetTest {
     }
 
     private List<Node> makeCompilationUnits() {
-        List<Node> RC = new ArrayList<Node>();
+        List<Node> RC = new ArrayList<>();
         DummyNode node = new DummyNode(1);
         node.testingOnly__setBeginLine(1);
         node.testingOnly__setBeginColumn(1);

@@ -28,7 +28,7 @@ public abstract class BaseLanguageModule implements Language {
 
     protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault) {
         if(versions == null) {
-            versions = new HashMap<String, LanguageVersion>();
+            versions = new HashMap<>();
         }
         LanguageVersion languageVersion = new LanguageVersion(this, version, languageVersionHandler);
         versions.put(version, languageVersion);
@@ -69,7 +69,7 @@ public abstract class BaseLanguageModule implements Language {
 
     @Override
     public List<LanguageVersion> getVersions() {
-        return new ArrayList<LanguageVersion>(versions.values());
+        return new ArrayList<>(versions.values());
     }
 
     @Override
