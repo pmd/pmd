@@ -659,6 +659,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 				}
 			}
 		}
+		if (myType == null && qualifiedName != null && qualifiedName.contains(".")) {
+		    // try if the last part defines a inner class
+		    String qualifiedNameInner = qualifiedName.substring(0, qualifiedName.lastIndexOf('.'))
+		            + "$" + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
+		    try {
+		        myType = pmdClassLoader.loadClass(qualifiedNameInner);
+		    } catch (Exception e) {
+		        // ignored
+		    }
+		}
 		if (myType == null && qualifiedName != null && !qualifiedName.contains(".")) {
 		    // try again with java.lang....
 		    try {
