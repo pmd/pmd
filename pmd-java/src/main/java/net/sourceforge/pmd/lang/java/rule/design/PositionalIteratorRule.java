@@ -19,7 +19,7 @@ public class PositionalIteratorRule extends AbstractJavaRule {
             if (exprName.indexOf(".hasNext") != -1 && node.jjtGetNumChildren() > 1) {
 
         	Node loopBody = node.jjtGetChild(1);
-                List<String> names = new ArrayList<String>();
+                List<String> names = new ArrayList<>();
                 collectNames(getVariableName(exprName), names, loopBody);
                 int nextCount = 0;
                 for (String name: names) {

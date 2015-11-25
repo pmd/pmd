@@ -24,7 +24,7 @@ public class PMDASMVisitor extends ClassVisitor {
         super(Opcodes.ASM5);
     }
 
-    private Map<String, String> packages = new HashMap<String, String>();
+    private Map<String, String> packages = new HashMap<>();
 
     private AnnotationVisitor annotationVisitor = new PMDAnnotationVisitor(this);
 
@@ -121,7 +121,7 @@ public class PMDASMVisitor extends ClassVisitor {
 
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
         if (innerClasses == null) {
-            innerClasses = new ArrayList<String>();
+            innerClasses = new ArrayList<>();
         }
         if (!innerClasses.contains(name.replace('/', '.'))) {
             innerClasses.add(name.replace('/', '.'));
@@ -371,7 +371,7 @@ public class PMDASMVisitor extends ClassVisitor {
         public void visitIincInsn(int var, int increment) {
         }
 
-        public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
+        public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels) {
         }
 
         public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {

@@ -26,15 +26,15 @@ public final class CommentUtil {
         if (position >= text.length()) {
             return null;
         }
-
-        int end = ++position;
+        int newposition = position + 1;
+        int end = newposition;
         char ch = text.charAt(end);
 
         while (Character.isLetterOrDigit(ch) && end < text.length()) {
             ch = text.charAt(++end);
         }
 
-        return text.substring(position, end);
+        return text.substring(newposition, end);
     }
 
     public static String javadocContentAfter(String text, int position) {
@@ -63,14 +63,14 @@ public final class CommentUtil {
     }
 
     private static final Pattern JAVADOC_TAG = Pattern.compile("@[A-Za-z0-9]+");
-    private static final Map<String, String> JAVADOC_CACHE = new HashMap<String, String>();
+    private static final Map<String, String> JAVADOC_CACHE = new HashMap<>();
 
     public static Map<String, Integer> javadocTagsIn(String comment) {
         Matcher m = JAVADOC_TAG.matcher(comment);
         Map<String, Integer> tags = null;
         while (m.find()) {
             if (tags == null) {
-                tags = new HashMap<String, Integer>();
+                tags = new HashMap<>();
             }
             String match = comment.substring(m.start() + 1, m.end());
             String tag = JAVADOC_CACHE.get(match);
@@ -88,7 +88,7 @@ public final class CommentUtil {
     public static List<String> multiLinesIn(String comment) {
 
         String[] lines = comment.split(CR);
-        List<String> filteredLines = new ArrayList<String>(lines.length);
+        List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {
             String line = rawLine.trim();
@@ -153,7 +153,7 @@ public final class CommentUtil {
             }
         }
 
-        List<String> filtered = new ArrayList<String>();
+        List<String> filtered = new ArrayList<>();
         for (int i = firstNonEmpty; i < lastNonEmpty; i++) {
             filtered.add(lines.get(i));
         }

@@ -14,7 +14,7 @@ public class Search {
     private static final boolean TRACE = false;
 
     private NameOccurrence occ;
-    private Set<NameDeclaration> declarations = new HashSet<NameDeclaration>();
+    private Set<NameDeclaration> declarations = new HashSet<>();
 
     public Search(JavaNameOccurrence occ) {
         if (TRACE) {
@@ -59,6 +59,6 @@ public class Search {
             }
             return scope.addNameOccurrence(nameOccurrence);
         }
-        return new HashSet<NameDeclaration>();
+        return new HashSet<>();
     }
 }

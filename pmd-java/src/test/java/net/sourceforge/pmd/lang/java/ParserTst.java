@@ -59,7 +59,7 @@ public abstract class ParserTst {
     }
 
     public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String javaCode) throws Throwable {
-        Collector<E> coll = new Collector<E>(clazz);
+        Collector<E> coll = new Collector<>(clazz);
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	ASTCompilationUnit cu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
@@ -68,7 +68,7 @@ public abstract class ParserTst {
     }
 
     public <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) throws Throwable {
-        Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
+        Collector<E> coll = new Collector<>(clazz, new ArrayList<E>());
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         ASTCompilationUnit cu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
@@ -94,7 +94,7 @@ public abstract class ParserTst {
     public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
 	ASTCompilationUnit cu = (ASTCompilationUnit)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(javaCode));
-        JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector<ASTCompilationUnit>(ASTCompilationUnit.class));
+        JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector<>(ASTCompilationUnit.class));
         jpv.visit(cu, null);
         new SymbolFacade().initializeWith(cu);
         new DataFlowFacade().initializeWith(languageVersionHandler.getDataFlowHandler(), cu);

@@ -63,7 +63,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     private final static Set<Class<?>> BLOCK_PARENTS;
 
     static {
-        BLOCK_PARENTS = new HashSet<Class<?>>();
+        BLOCK_PARENTS = new HashSet<>();
         BLOCK_PARENTS.add(ASTForStatement.class);
         BLOCK_PARENTS.add(ASTWhileStatement.class);
         BLOCK_PARENTS.add(ASTDoStatement.class);
@@ -337,17 +337,18 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
      */
     private Node getSwitchParent(Node parentNode, Node lastNode) {
         int allChildren = parentNode.jjtGetNumChildren();
+        Node result = parentNode;
         ASTSwitchLabel label = null;
         for (int ix = 0; ix < allChildren; ix++) {
-            Node n = parentNode.jjtGetChild(ix);
+            Node n = result.jjtGetChild(ix);
             if (n instanceof ASTSwitchLabel) {
                 label = (ASTSwitchLabel) n;
             } else if (n.equals(lastNode)) {
-                parentNode = label;
+                result = label;
                 break;
             }
         }
-        return parentNode;
+        return result;
     }
 
     /**

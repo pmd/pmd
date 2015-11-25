@@ -115,7 +115,7 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occ) {
-        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
+        Set<NameDeclaration> result = new HashSet<>();
         ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
         Applier.apply(finder, getDeclarations().keySet().iterator());
         if (finder.getDecl() != null) {
@@ -134,7 +134,7 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     private Map<String, Node> getSubTypes(String qualifyingName, Scope subType) {
-        Map<String, Node> types = new HashMap<String, Node>();
+        Map<String, Node> types = new HashMap<>();
         for (ClassNameDeclaration c : subType.getDeclarations(ClassNameDeclaration.class).keySet()) {
             String typeName = c.getName();
             if (qualifyingName != null) {

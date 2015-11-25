@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
-    private Set<MethodScope> checked = new HashSet<MethodScope>();
+    private Set<MethodScope> checked = new HashSet<>();
 
     public Object visit(ASTCompilationUnit acu, Object ctx) {
         checked.clear();

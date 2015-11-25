@@ -49,7 +49,7 @@ public class CommentContentRule extends AbstractCommentRule {
 
     private static final Set<PropertyDescriptor<?>> NON_REGEX_PROPERTIES;
     static {
-        NON_REGEX_PROPERTIES = new HashSet<PropertyDescriptor<?>>(1);
+        NON_REGEX_PROPERTIES = new HashSet<>(1);
         NON_REGEX_PROPERTIES.add(CASE_SENSITIVE_DESCRIPTOR);
     }
 
@@ -105,7 +105,7 @@ public class CommentContentRule extends AbstractCommentRule {
             commentText = commentText.toUpperCase();
         }
 
-        List<String> foundWords = new ArrayList<String>();
+        List<String> foundWords = new ArrayList<>();
 
         for (int i = 0; i < currentBadWords.length; i++) {
             if (commentText.indexOf(currentBadWords[i]) >= 0) {

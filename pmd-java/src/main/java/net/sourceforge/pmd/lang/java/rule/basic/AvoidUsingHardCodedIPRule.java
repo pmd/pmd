@@ -17,7 +17,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     public static final String IPV6 = "IPv6";
     public static final String IPV4_MAPPED_IPV6 = "IPv4 mapped IPv6";
 
-    public static final EnumeratedMultiProperty<String> CHECK_ADDRESS_TYPES_DESCRIPTOR = new EnumeratedMultiProperty<String>(
+    public static final EnumeratedMultiProperty<String> CHECK_ADDRESS_TYPES_DESCRIPTOR = new EnumeratedMultiProperty<>(
             "checkAddressTypes", "Check for IP address types.", new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 },
             new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 }, new int[] { 0, 1, 2 }, 2.0f);
 

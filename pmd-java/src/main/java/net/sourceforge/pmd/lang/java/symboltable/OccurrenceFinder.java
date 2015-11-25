@@ -19,7 +19,7 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
 
         // Maybe do some sort of State pattern thingy for when NameDeclaration
         // is empty/not empty?
-        Set<NameDeclaration> declarations = new HashSet<NameDeclaration>();
+        Set<NameDeclaration> declarations = new HashSet<>();
 
         List<JavaNameOccurrence> names = nameFinder.getNames();
         for (JavaNameOccurrence occ : names) {
@@ -36,7 +36,7 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
                     break;
                 }
             } else {
-                Set<NameDeclaration> additionalDeclarations = new HashSet<NameDeclaration>();
+                Set<NameDeclaration> additionalDeclarations = new HashSet<>();
                 for (NameDeclaration decl : declarations) {
                     // now we've got a scope we're starting with, so work from there
                     Scope startingScope = decl.getScope();

@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 //TODO This is not referenced by any RuleSet?
 public class UnnecessaryCastRule extends AbstractJavaRule {
 
-    private static Set<String> implClassNames = new HashSet<String>();
+    private static Set<String> implClassNames = new HashSet<>();
 
     static {
         implClassNames.add("List");

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.util.UnaryFunction;
 
 public class VariableUsageFinderFunction implements UnaryFunction<NameDeclaration> {
     
-    private Map<NameDeclaration, List<NameOccurrence>> results = new HashMap<NameDeclaration, List<NameOccurrence>>();
+    private Map<NameDeclaration, List<NameOccurrence>> results = new HashMap<>();
 
     private Map<NameDeclaration, List<NameOccurrence>> decls;
 

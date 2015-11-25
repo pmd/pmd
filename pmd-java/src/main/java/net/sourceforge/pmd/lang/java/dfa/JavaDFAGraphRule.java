@@ -32,7 +32,7 @@ public class JavaDFAGraphRule extends AbstractJavaRule implements DFAGraphRule {
 
     @Override
     public Object visit(ASTCompilationUnit acu, Object data) {
-	methods = new ArrayList<DFAGraphMethod>();
+	methods = new ArrayList<>();
 	return super.visit(acu, data);
     }
 }

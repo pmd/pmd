@@ -19,8 +19,8 @@ public class DuplicateImportsRule extends AbstractJavaRule {
     private Set<ImportWrapper> importOnDemandImports;
 
     public Object visit(ASTCompilationUnit node, Object data) {
-        singleTypeImports = new HashSet<ImportWrapper>();
-        importOnDemandImports = new HashSet<ImportWrapper>();
+        singleTypeImports = new HashSet<>();
+        importOnDemandImports = new HashSet<>();
         super.visit(node, data);
 
         // this checks for things like:

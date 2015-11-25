@@ -370,7 +370,8 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
-    public List findChildNodesWithXPath(String xpathString) throws JaxenException {
+    @SuppressWarnings("unchecked")
+    public List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException {
         return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
     }
 

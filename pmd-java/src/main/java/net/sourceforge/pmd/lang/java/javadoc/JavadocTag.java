@@ -12,7 +12,7 @@ public final class JavadocTag {
 	public final String label;
 	public final String description;
 	
-	private static final Map<String, JavadocTag> TAGS_BY_ID = new HashMap<String, JavadocTag>();
+	private static final Map<String, JavadocTag> TAGS_BY_ID = new HashMap<>();
 	
 	public static final JavadocTag AUTHOR  		= new JavadocTag("author", 	"Authors of the source code, in chronological order");
 	public static final JavadocTag SINCE		= new JavadocTag("since", 	"Version of the source code that this item was introduced, can be a number or a date");

@@ -89,7 +89,7 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testChildAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getChildAxisIterator(rule.compilationUnit);
+        Iterator<Node> iter = nav.getChildAxisIterator(rule.compilationUnit);
         assertSame(rule.compilationUnit.jjtGetChild(0), iter.next());
         assertSame(rule.compilationUnit.jjtGetChild(1), iter.next());
         assertFalse(iter.hasNext());
@@ -98,7 +98,7 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testParentAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getParentAxisIterator(rule.importDeclaration);
+        Iterator<Node> iter = nav.getParentAxisIterator(rule.importDeclaration);
         assertSame(rule.importDeclaration.jjtGetParent(), iter.next());
         assertFalse(iter.hasNext());
     }
@@ -106,14 +106,14 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testParentAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getParentAxisIterator(rule.compilationUnit);
+        Iterator<Node> iter = nav.getParentAxisIterator(rule.compilationUnit);
         assertFalse(iter.hasNext());
     }
 
     @Test
     public void testDescendantAxisIterator() throws UnsupportedAxisException {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getDescendantAxisIterator(rule.statement);
+        Iterator<?> iter = nav.getDescendantAxisIterator(rule.statement);
         Node statementExpression = rule.statement.jjtGetChild(0);
         assertSame(statementExpression, iter.next());
         Node primaryExpression = statementExpression.jjtGetChild(0);
@@ -132,7 +132,7 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testDescendantAxisIterator2() throws UnsupportedAxisException {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getDescendantAxisIterator(rule.primaryPrefix);
+        Iterator<?> iter = nav.getDescendantAxisIterator(rule.primaryPrefix);
         Node name = rule.primaryPrefix.jjtGetChild(0);
         assertSame(name, iter.next());
         assertFalse(iter.hasNext());
@@ -141,7 +141,7 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testFollowingSiblingAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
+        Iterator<Node> iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
         assertSame(rule.primaryExpression.jjtGetChild(1), iter.next());
         assertFalse(iter.hasNext());
     }
@@ -149,14 +149,14 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testFollowingSiblingAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
+        Iterator<Node> iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
         assertFalse(iter.hasNext());
     }
 
     @Test
     public void testPrecedingSiblingAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
+        Iterator<Node> iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
         assertSame(rule.primaryExpression.jjtGetChild(0), iter.next());
         assertFalse(iter.hasNext());
     }
@@ -164,21 +164,21 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testPrecedingSiblingAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
+        Iterator<Node> iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
         assertFalse(iter.hasNext());
     }
 
     @Test
     public void testXPath() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
-        List matches = xPath.selectNodes(rule.statement);
+        List<?> matches = xPath.selectNodes(rule.statement);
         assertEquals(6, matches.size());
     }
 
     @Test
     public void testXPath2() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
-        List matches = xPath.selectNodes(rule.importDeclaration);
+        List<?> matches = xPath.selectNodes(rule.importDeclaration);
         assertEquals(1, matches.size());
     }
 

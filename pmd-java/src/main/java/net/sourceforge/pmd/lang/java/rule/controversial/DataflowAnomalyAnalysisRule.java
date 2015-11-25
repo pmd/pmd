@@ -69,7 +69,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
     public Object visit(ASTMethodDeclaration methodDeclaration, Object data) {
         rc = (RuleContext) data;
-        daaRuleViolations = new ArrayList<DaaRuleViolation>();
+        daaRuleViolations = new ArrayList<>();
 
         final DataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
 
@@ -86,7 +86,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
             return;
         }
 
-        Map<String, Usage> usagesByVarName = new HashMap<String, Usage>();
+        Map<String, Usage> usagesByVarName = new HashMap<>();
 
         Iterator<DataFlowNode> pathIterator = path.iterator();
         while (pathIterator.hasNext()) {

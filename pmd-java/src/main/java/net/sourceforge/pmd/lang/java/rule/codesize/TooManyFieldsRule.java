@@ -37,8 +37,8 @@ public class TooManyFieldsRule extends AbstractJavaRule {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
 
-        stats = new HashMap<String, Integer>(5);
-        nodes = new HashMap<String, ASTClassOrInterfaceDeclaration>(5);
+        stats = new HashMap<>(5);
+        nodes = new HashMap<>(5);
 
         List<ASTFieldDeclaration> l = node.findDescendantsOfType(ASTFieldDeclaration.class);
 

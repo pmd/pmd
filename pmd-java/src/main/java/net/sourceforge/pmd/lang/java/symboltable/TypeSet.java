@@ -183,7 +183,7 @@ public class TypeSet {
      * Resolver that resolves primitive types such as int or double.
      */
     public static class PrimitiveTypeResolver implements Resolver {
-        private Map<String, Class<?>> primitiveTypes = new HashMap<String, Class<?>>();
+        private Map<String, Class<?>> primitiveTypes = new HashMap<>();
         /**
          * Creates a new {@link PrimitiveTypeResolver}.
          */
@@ -242,8 +242,8 @@ public class TypeSet {
     }
 
     private String pkg;
-    private Set<String> imports = new HashSet<String>();
-    private List<Resolver> resolvers = new ArrayList<Resolver>();
+    private Set<String> imports = new HashSet<>();
+    private List<Resolver> resolvers = new ArrayList<>();
 
     public void setASTCompilationUnitPackage(String pkg) {
         this.pkg = pkg;

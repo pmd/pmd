@@ -36,7 +36,7 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     public static final StringMultiProperty GUARD_METHODS = new StringMultiProperty("guardsMethods",
             "method use to guard the log statement", new String[] {}, 2.0f, ',');
 
-    protected Map<String, String> guardStmtByLogLevel = new HashMap<String, String>(5);
+    protected Map<String, String> guardStmtByLogLevel = new HashMap<>(5);
 
     private static final String XPATH_EXPRESSION = "//PrimaryPrefix[ends-with(Name/@Image, 'LOG_LEVEL')]"
             + "[count(../descendant::AdditiveExpression) > 0]"
@@ -57,7 +57,7 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
 
     protected void findViolationForEachLogStatement(ASTCompilationUnit unit, Object data, String xpathExpression) {
         for (Entry<String, String> entry : guardStmtByLogLevel.entrySet()) {
-            List<Node> nodes = findViolations(unit, entry.getKey(), entry.getValue(), xpathExpression);
+            List<? extends Node> nodes = findViolations(unit, entry.getKey(), entry.getValue(), xpathExpression);
             for (Node node : nodes) {
                 super.addViolation(data, node);
             }
@@ -65,7 +65,7 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     }
 
     @SuppressWarnings("unchecked")
-    private List<Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard, String xpathExpression) {
+    private List<? extends Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard, String xpathExpression) {
         try {
             return unit.findChildNodesWithXPath(xpathExpression
                     .replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase()).replaceAll("LOG_LEVEL", logLevel)
@@ -94,8 +94,8 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     protected void extractProperties() {
         if (guardStmtByLogLevel.isEmpty()) {
 
-            List<String> logLevels = new ArrayList<String>(Arrays.asList(super.getProperty(LOG_LEVELS)));
-            List<String> guardMethods = new ArrayList<String>(Arrays.asList(super.getProperty(GUARD_METHODS)));
+            List<String> logLevels = new ArrayList<>(Arrays.asList(super.getProperty(LOG_LEVELS)));
+            List<String> guardMethods = new ArrayList<>(Arrays.asList(super.getProperty(GUARD_METHODS)));
 
             if (guardMethods.isEmpty() && !logLevels.isEmpty()) {
                 throw new IllegalArgumentException("Can't specify guardMethods without specifiying logLevels.");

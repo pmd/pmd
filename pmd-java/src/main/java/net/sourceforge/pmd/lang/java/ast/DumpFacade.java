@@ -83,7 +83,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 		}
 
 		// Extras
-		List<String> extras = new ArrayList<String>();
+		List<String> extras = new ArrayList<>();
 
 		collectModifiers(node, extras);
 

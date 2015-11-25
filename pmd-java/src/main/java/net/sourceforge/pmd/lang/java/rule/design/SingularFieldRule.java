@@ -143,7 +143,7 @@ public class SingularFieldRule extends AbstractJavaRule {
 	private boolean isInAssignment(Node potentialStatement) {
 		if (potentialStatement instanceof ASTStatementExpression) {
 			ASTStatementExpression statement = (ASTStatementExpression)potentialStatement;
-			List<ASTAssignmentOperator> assignments = new ArrayList<ASTAssignmentOperator>();
+			List<ASTAssignmentOperator> assignments = new ArrayList<>();
 			statement.findDescendantsOfType(ASTAssignmentOperator.class, assignments, false);
 			return !assignments.isEmpty() && "=".equals(assignments.get(0).getImage());
 		} else {

@@ -210,7 +210,7 @@ public class SimpleNodeTest extends ParserTst {
     @Test
     public void testContainsNoInner() throws Throwable {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
-        List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
+        List<ASTFieldDeclaration> res = new ArrayList<>();
         c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
 /*        String expectedXml = "<CompilationUnit BeginColumn=\"1\" BeginLine=\"5\" EndColumn=\"1\" EndLine=\"5\">" +
@@ -238,7 +238,7 @@ public class SimpleNodeTest extends ParserTst {
     @Test
     public void testContainsNoInnerWithAnonInner() throws Throwable {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
-        List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
+        List<ASTFieldDeclaration> res = new ArrayList<>();
         c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
     }
@@ -252,7 +252,7 @@ public class SimpleNodeTest extends ParserTst {
     @Test
     public void testXPathNodeSelect() throws Throwable {
         ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
-        List nodes = c.findChildNodesWithXPath("//FieldDeclaration");
+        List<Node> nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
         assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);
 

@@ -215,8 +215,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 if (lastNode.jjtGetNumChildren() == 1 && lastNode.jjtGetChild(0) instanceof ASTArguments) { //could be ASTExpression for instance 'a[4] = 5';
                     //start putting method together
                     //					System.out.println("Putting method together now");
-                    List<String> varNames = new ArrayList<String>();
-                    List<String> packagesAndClasses = new ArrayList<String>(); //look in JLS for better name here;
+                    List<String> varNames = new ArrayList<>();
+                    List<String> packagesAndClasses = new ArrayList<>(); //look in JLS for better name here;
                     String methodName = null;
                     ASTArguments args = (ASTArguments) lastNode.jjtGetChild(0);
                     int numOfArguments = args.getArgumentCount();
@@ -386,7 +386,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private ASTExplicitConstructorInvocation eci;
         private String name;
         private int count = 0;
-        private List<String> argumentTypes = new ArrayList<String>();
+        private List<String> argumentTypes = new ArrayList<>();
 
         public ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
             this.eci = eci;
@@ -527,10 +527,10 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
         public EvalPackage(String className) {
             this.className = className;
-            this.calledMethods = new ArrayList<MethodInvocation>();//meths called from constructor
-            this.allMethodsOfClass = new TreeMap<MethodHolder, List<MethodInvocation>>(new MethodHolderComparator());
-            this.calledConstructors = new ArrayList<ConstructorInvocation>();//all constructors called from constructor
-            this.allPrivateConstructorsOfClass = new TreeMap<ConstructorHolder, List<MethodInvocation>>(new ConstructorHolderComparator());
+            this.calledMethods = new ArrayList<>();//meths called from constructor
+            this.allMethodsOfClass = new TreeMap<>(new MethodHolderComparator());
+            this.calledConstructors = new ArrayList<>();//all constructors called from constructor
+            this.allPrivateConstructorsOfClass = new TreeMap<>(new ConstructorHolderComparator());
         }
 
         public String className;
@@ -557,7 +557,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     /**
      * 1 package per class.
      */
-    private final List<EvalPackage> evalPackages = new ArrayList<EvalPackage>();//could use java.util.Stack
+    private final List<EvalPackage> evalPackages = new ArrayList<>();//could use java.util.Stack
 
     private EvalPackage getCurrentEvalPackage() {
         return evalPackages.get(evalPackages.size() - 1);
@@ -797,7 +797,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
-            List<MethodInvocation> calledMethodsOfConstructor = new ArrayList<MethodInvocation>();
+            List<MethodInvocation> calledMethodsOfConstructor = new ArrayList<>();
             ConstructorHolder ch = new ConstructorHolder(node);
             addCalledMethodsOfNode(node, calledMethodsOfConstructor, getCurrentEvalPackage().className);
             if (!node.isPrivate()) {
@@ -834,8 +834,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 ASTMethodDeclaration decl = node.getFirstParentOfType(ASTMethodDeclaration.class);
                 h.setCalledMethod(decl.getMethodName());
             }
-            List<MethodInvocation> l = new ArrayList<MethodInvocation>();
-            addCalledMethodsOfNode((Node)parent, l, getCurrentEvalPackage().className);
+            List<MethodInvocation> l = new ArrayList<>();
+            addCalledMethodsOfNode(parent, l, getCurrentEvalPackage().className);
             getCurrentEvalPackage().allMethodsOfClass.put(h, l);
         }
         return super.visit(node, data);
@@ -846,7 +846,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * Adds all methods called on this instance from within this Node.
      */
     private static void addCalledMethodsOfNode(Node node, List<MethodInvocation> calledMethods, String className) {
-        List<ASTPrimaryExpression> expressions = new ArrayList<ASTPrimaryExpression>();
+        List<ASTPrimaryExpression> expressions = new ArrayList<>();
         node.findDescendantsOfType(ASTPrimaryExpression.class, expressions, !(node instanceof AccessNode));
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
@@ -917,7 +917,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     private static List<String> getMethodDeclaratorParameterTypes(Node methodOrConstructorDeclarator) {
         List<ASTFormalParameter> parameters = methodOrConstructorDeclarator.findDescendantsOfType(ASTFormalParameter.class);
-        List<String> parameterTypes = new ArrayList<String>();
+        List<String> parameterTypes = new ArrayList<>();
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {
                 ASTType type = p.getFirstChildOfType(ASTType.class);
@@ -934,7 +934,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static List<String> getArgumentTypes(ASTArguments args) {
-        List<String> argumentTypes = new ArrayList<String>();
+        List<String> argumentTypes = new ArrayList<>();
         ASTArgumentList argumentList = args.getFirstChildOfType(ASTArgumentList.class);
         if (argumentList != null) {
             for (int a = 0; a < argumentList.jjtGetNumChildren(); a++) {

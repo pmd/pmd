@@ -28,7 +28,7 @@ public class ImageFinderFunctionTest {
 
     @Test
     public void testSeveralImages() {
-        List<String> imgs = new ArrayList<String>();
+        List<String> imgs = new ArrayList<>();
         imgs.add("Foo.foo");
         imgs.add("foo");
         ImageFinderFunction f = new ImageFinderFunction(imgs);

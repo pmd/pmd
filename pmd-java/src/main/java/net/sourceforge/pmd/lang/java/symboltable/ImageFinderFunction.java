@@ -12,7 +12,7 @@ import net.sourceforge.pmd.util.UnaryFunction;
 
 public class ImageFinderFunction implements UnaryFunction<NameDeclaration> {
 
-    private Set<String> images = new HashSet<String>();
+    private Set<String> images = new HashSet<>();
     private NameDeclaration decl;
 
     public ImageFinderFunction(String img) {

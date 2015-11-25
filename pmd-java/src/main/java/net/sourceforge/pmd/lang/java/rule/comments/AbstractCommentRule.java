@@ -43,7 +43,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
             return Collections.emptyList();
         }
 
-        List<Integer> ints = new ArrayList<Integer>();
+        List<Integer> ints = new ArrayList<>();
         ints.add(atPos);
 
         atPos = comments.indexOf('@', atPos + 1);
@@ -97,7 +97,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
     private static String multiLinesIn(String comment) {
 
         String[] lines = comment.split("\n");
-        List<String> filteredLines = new ArrayList<String>(lines.length);
+        List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {
             String line = rawLine.trim();
@@ -127,7 +127,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
     private String formalLinesIn(String comment) {
 
         String[] lines = comment.split("\n");
-        List<String> filteredLines = new ArrayList<String>(lines.length);
+        List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String line : lines) {
             line = line.trim();
@@ -196,7 +196,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
 
     protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
 
-        SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<Integer, Node>();
+        SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<>();
 
         List<ASTClassOrInterfaceDeclaration> packageDecl = cUnit
                 .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
