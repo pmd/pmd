@@ -23,7 +23,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     @Deprecated
     // use PropertySource.getPropertyDescriptors() instead
-    protected Map<String, String> propertyDefinitions = new LinkedHashMap<String, String>();
+    protected Map<String, String> propertyDefinitions = new LinkedHashMap<>();
     protected boolean showSuppressedViolations = true;
     protected Writer writer;
 

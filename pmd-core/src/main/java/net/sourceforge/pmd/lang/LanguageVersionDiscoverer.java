@@ -14,7 +14,7 @@ import java.util.Map;
  * here.
  */
 public class LanguageVersionDiscoverer {
-    private Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<Language, LanguageVersion>();
+    private Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
 
     /**
      * Set the given LanguageVersion as the current default for it's Language.

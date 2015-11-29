@@ -276,7 +276,7 @@ private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
    */
   private Map<String, String> getParameterMap (URI dburi) throws UnsupportedEncodingException {
 
-    Map<String, String> map = new HashMap<String, String>();  
+    Map<String, String> map = new HashMap<>();
     String query = dburi.getRawQuery();
     LOGGER.log(Level.FINEST, "dburi,getQuery()={0}", query);
     if (null != query && !query.equals(""))
@@ -325,7 +325,7 @@ private final static Logger LOGGER = Logger.getLogger(CLASS_NAME);
     if (null != query && !query.equals(""))
     {
       String[] params = query.split("&");  
-      Map<String, String> map = new HashMap<String, String>();  
+      Map<String, String> map = new HashMap<>();
       for (String param : params)  
       {  
           String[] splits = param.split("=");  

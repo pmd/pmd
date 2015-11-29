@@ -88,7 +88,7 @@ public class GodClassRule extends AbstractJavaRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         wmcCounter = 0;
         atfdCounter = 0;
-        methodAttributeAccess = new HashMap<String, Set<String>>();
+        methodAttributeAccess = new HashMap<>();
 
         Object result = super.visit(node, data);
 
@@ -150,7 +150,7 @@ public class GodClassRule extends AbstractJavaRule {
      * @return
      */
     private int determineMethodPairs() {
-        List<String> methods = new ArrayList<String>(methodAttributeAccess.keySet());
+        List<String> methods = new ArrayList<>(methodAttributeAccess.keySet());
         int methodCount = methods.size();
         int pairs = 0;
 
@@ -161,7 +161,7 @@ public class GodClassRule extends AbstractJavaRule {
                     String secondMethodName = methods.get(j);
                     Set<String> accessesOfFirstMethod = methodAttributeAccess.get(firstMethodName);
                     Set<String> accessesOfSecondMethod = methodAttributeAccess.get(secondMethodName);
-                    Set<String> combinedAccesses = new HashSet<String>();
+                    Set<String> combinedAccesses = new HashSet<>();
 
                     combinedAccesses.addAll(accessesOfFirstMethod);
                     combinedAccesses.addAll(accessesOfSecondMethod);

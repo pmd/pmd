@@ -25,9 +25,9 @@ public class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
 	return node.getBody() != null;
     }
 
-    public EcmascriptNode getBody() {
+    public EcmascriptNode<?> getBody() {
 	if (hasBody()) {
-	    return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
+	    return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
 	} else {
 	    return null;
 	}

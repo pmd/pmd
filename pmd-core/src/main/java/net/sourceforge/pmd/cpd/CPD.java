@@ -29,7 +29,7 @@ public class CPD {
 
 	private CPDConfiguration configuration;
 
-	private Map<String, SourceCode> source = new TreeMap<String, SourceCode>();
+	private Map<String, SourceCode> source = new TreeMap<>();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
@@ -76,7 +76,7 @@ public class CPD {
         add(finder.findFilesFrom(dir, configuration.filenameFilter(), recurse));
     }
 
-    private Set<String> current = new HashSet<String>();
+    private Set<String> current = new HashSet<>();
 
     public void add(File file) throws IOException {
 
@@ -163,7 +163,7 @@ public class CPD {
      * @return names of sources to be processed 
      */
     public List<String> getSourcePaths() {
-        return new ArrayList<String>(source.keySet());  
+        return new ArrayList<>(source.keySet());  
     }
 
     /**
@@ -172,7 +172,7 @@ public class CPD {
      * @return all Sources to be processed 
      */
     public List<SourceCode> getSources() {
-        return new ArrayList<SourceCode>(source.values());  
+        return new ArrayList<>(source.values());  
     }
     
     

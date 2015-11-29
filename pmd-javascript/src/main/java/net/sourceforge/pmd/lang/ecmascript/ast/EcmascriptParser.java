@@ -56,13 +56,13 @@ public class EcmascriptParser {
 
     public EcmascriptNode<AstRoot> parse(final Reader reader) {
 	try {
-	    final List<ParseProblem> parseProblems = new ArrayList<ParseProblem>();
+	    final List<ParseProblem> parseProblems = new ArrayList<>();
 	    final String sourceCode = IOUtils.toString(reader);
 	    final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
 	    final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
 	    EcmascriptNode<AstRoot> tree = treeBuilder.build(astRoot);
 
-            suppressMap = new HashMap<Integer, String>();
+            suppressMap = new HashMap<>();
             if (astRoot.getComments() != null) {
                 for (Comment comment : astRoot.getComments()) {
                     int nopmd = comment.getValue().indexOf(suppressMarker);

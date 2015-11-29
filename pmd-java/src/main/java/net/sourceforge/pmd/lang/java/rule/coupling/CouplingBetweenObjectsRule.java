@@ -46,7 +46,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit cu, Object data) {
-        typesFoundSoFar = new HashSet<String>();
+        typesFoundSoFar = new HashSet<>();
         couplingCount = 0;
 
         Object returnObj = cu.childrenAccept(this, data);

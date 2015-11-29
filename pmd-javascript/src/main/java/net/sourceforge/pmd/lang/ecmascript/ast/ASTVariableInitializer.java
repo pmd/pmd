@@ -17,13 +17,13 @@ public class ASTVariableInitializer extends AbstractEcmascriptNode<VariableIniti
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getTarget() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getTarget() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
-    public EcmascriptNode getInitializer() {
+    public EcmascriptNode<?> getInitializer() {
 	if (jjtGetNumChildren() > 0) {
-	    return (EcmascriptNode) jjtGetChild(1);
+	    return (EcmascriptNode<?>) jjtGetChild(1);
 	} else {
 	    return null;
 	}

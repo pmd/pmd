@@ -22,9 +22,9 @@ public class Structure {
     private final static Logger LOGGER = Logger.getLogger(Structure.class.getName()); 
 
     private final DataFlowHandler dataFlowHandler;
-    private List<DataFlowNode> dataFlow = new ArrayList<DataFlowNode>();
-    private Stack<StackObject> braceStack = new Stack<StackObject>();
-    private Stack<StackObject> continueBreakReturnStack = new Stack<StackObject>();
+    private List<DataFlowNode> dataFlow = new ArrayList<>();
+    private Stack<StackObject> braceStack = new Stack<>();
+    private Stack<StackObject> continueBreakReturnStack = new Stack<>();
     
     public Structure(DataFlowHandler dataFlowHandler) {
 	this.dataFlowHandler = dataFlowHandler;

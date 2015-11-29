@@ -20,11 +20,11 @@ public final class PLSQLRuleViolationFactory extends AbstractRuleViolationFactor
 
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-    	return new ParametricRuleViolation<Node>(rule, ruleContext, node, message);
+    	return new ParametricRuleViolation<>(rule, ruleContext, node, message);
     }
     
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {
-        ParametricRuleViolation<Node> violation = new ParametricRuleViolation<Node>(rule, ruleContext, node, message);
+        ParametricRuleViolation<Node> violation = new ParametricRuleViolation<>(rule, ruleContext, node, message);
         violation.setLines(beginLine, endLine);
 		return violation;
 	}

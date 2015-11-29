@@ -21,9 +21,9 @@ import net.sourceforge.pmd.lang.vm.directive.Stop;
 
 public class DirectiveMapper {
 
-	private static final Map<String, Directive> DIRECTIVE_MAP = new HashMap<String, Directive>();
+	private static final Map<String, Directive> DIRECTIVE_MAP = new HashMap<>();
 	
-	private static final Set<String> DIRECTIVE_NAMES = new HashSet<String>();
+	private static final Set<String> DIRECTIVE_NAMES = new HashSet<>();
 	
 	static {
 		DIRECTIVE_MAP.put("foreach", new Foreach());

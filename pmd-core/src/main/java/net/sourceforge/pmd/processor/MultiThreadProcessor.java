@@ -42,7 +42,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 		PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
 		ExecutorService executor = Executors.newFixedThreadPool(
 				configuration.getThreads(), factory);
-		List<Future<Report>> tasks = new LinkedList<Future<Report>>();
+		List<Future<Report>> tasks = new LinkedList<>();
 
 		for (DataSource dataSource : files) {
 			String niceFileName = filenameFrom(dataSource);

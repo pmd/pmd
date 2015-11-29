@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class NameFinder {
 
-    private List<JavaNameOccurrence> names = new ArrayList<JavaNameOccurrence>();
+    private List<JavaNameOccurrence> names = new ArrayList<>();
 
     public NameFinder(ASTPrimaryExpression node) {
         ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);

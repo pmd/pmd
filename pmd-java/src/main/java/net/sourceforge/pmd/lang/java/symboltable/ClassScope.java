@@ -136,7 +136,7 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
-        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
+        Set<NameDeclaration> result = new HashSet<>();
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
         if (occurrence.isThisOrSuper() || occurrence.getImage() != null && occurrence.getImage().equals(className)) {
@@ -219,7 +219,7 @@ public class ClassScope extends AbstractJavaScope {
             return result;
         }
 
-        List<String> images = new ArrayList<String>();
+        List<String> images = new ArrayList<>();
         if (occurrence.getImage() != null) {
             images.add(occurrence.getImage());
             if (occurrence.getImage().startsWith(className)) {
@@ -297,7 +297,7 @@ public class ClassScope extends AbstractJavaScope {
      * @return List of types
      */
     private List<TypedNameDeclaration> determineParameterTypes(MethodNameDeclaration mnd) {
-        List<TypedNameDeclaration> parameterTypes = new ArrayList<TypedNameDeclaration>();
+        List<TypedNameDeclaration> parameterTypes = new ArrayList<>();
         List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode().findDescendantsOfType(
                 ASTFormalParameter.class);
         for (ASTFormalParameter p : parameters) {
@@ -322,7 +322,7 @@ public class ClassScope extends AbstractJavaScope {
             return null;
         }
 
-        Set<String> qualifiedNames = new LinkedHashSet<String>();
+        Set<String> qualifiedNames = new LinkedHashSet<>();
         qualifiedNames.addAll(this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().keySet());
         qualifiedNames.addAll(this.getEnclosingScope(SourceFileScope.class).getExplicitImports());
 
@@ -353,7 +353,7 @@ public class ClassScope extends AbstractJavaScope {
      */
     private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence,
             List<TypedNameDeclaration> parameterTypes) {
-        List<TypedNameDeclaration> argumentTypes = new ArrayList<TypedNameDeclaration>();
+        List<TypedNameDeclaration> argumentTypes = new ArrayList<>();
         Map<String, Node> qualifiedTypeNames = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames();
         ASTArgumentList arguments = null;
         Node nextSibling = null;
@@ -514,7 +514,7 @@ public class ClassScope extends AbstractJavaScope {
      * @return the resolved class or <code>null</code> if nothing was found.
      */
     private Class<?> resolveGenericType(Node argument, String typeImage) {
-        List<ASTTypeParameter> types = new ArrayList<ASTTypeParameter>();
+        List<ASTTypeParameter> types = new ArrayList<>();
         // first search only within the same method
         ASTClassOrInterfaceBodyDeclaration firstParentOfType =
                 argument.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);

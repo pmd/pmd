@@ -56,7 +56,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     public BasicPropertyDescriptorFactory(Class<?> theValueType, Map<String, Boolean> additionalFieldTypesByKey) {
 
         valueType = theValueType;
-        Map<String, Boolean> temp = new HashMap<String, Boolean>(CORE_FIELD_TYPES_BY_KEY.size()
+        Map<String, Boolean> temp = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size()
                 + additionalFieldTypesByKey.size());
         temp.putAll(CORE_FIELD_TYPES_BY_KEY);
         temp.putAll(additionalFieldTypesByKey);
@@ -143,7 +143,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 
     protected static Integer[] integersIn(String numberString, char delimiter) {
         String[] values = StringUtil.substringsOf(numberString, delimiter);
-        List<Integer> ints = new ArrayList<Integer>(values.length);
+        List<Integer> ints = new ArrayList<>(values.length);
         for (String value : values) {
             try {
                 Integer newInt = Integer.parseInt(value);
@@ -157,7 +157,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 
     protected static Long[] longsIn(String numberString, char delimiter) {
         String[] values = StringUtil.substringsOf(numberString, delimiter);
-        List<Long> longs = new ArrayList<Long>(values.length);
+        List<Long> longs = new ArrayList<>(values.length);
         for (String value : values) {
             try {
                 Long newLong = Long.parseLong(value);
@@ -171,7 +171,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 
     protected static Float[] floatsIn(String numberString, char delimiter) {
         String[] values = StringUtil.substringsOf(numberString, delimiter);
-        List<Float> floats = new ArrayList<Float>(values.length);
+        List<Float> floats = new ArrayList<>(values.length);
         for (String value : values) {
             try {
                 Float newFloat = Float.parseFloat(value);
@@ -185,7 +185,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 
     protected static Double[] doublesIn(String numberString, char delimiter) {
         String[] values = StringUtil.substringsOf(numberString, delimiter);
-        List<Double> doubles = new ArrayList<Double>(values.length);
+        List<Double> doubles = new ArrayList<>(values.length);
         for (String value : values) {
             try {
                 Double newDouble = Double.parseDouble(value);
@@ -246,7 +246,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     }
 
     public static Map<String, Boolean> expectedFieldTypesWith(String[] otherKeys, Boolean[] otherValues) {
-        Map<String, Boolean> largerMap = new HashMap<String, Boolean>(otherKeys.length + CORE_FIELD_TYPES_BY_KEY.size());
+        Map<String, Boolean> largerMap = new HashMap<>(otherKeys.length + CORE_FIELD_TYPES_BY_KEY.size());
         largerMap.putAll(CORE_FIELD_TYPES_BY_KEY);
         for (int i = 0; i < otherKeys.length; i++) {
             largerMap.put(otherKeys[i], otherValues[i]);

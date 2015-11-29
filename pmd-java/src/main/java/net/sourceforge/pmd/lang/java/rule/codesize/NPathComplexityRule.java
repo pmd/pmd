@@ -89,7 +89,7 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
         // next
 
 
-        List<JavaNode> statementChildren = new ArrayList<JavaNode>();
+        List<JavaNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
                 statementChildren.add((JavaNode) node.jjtGetChild(i));

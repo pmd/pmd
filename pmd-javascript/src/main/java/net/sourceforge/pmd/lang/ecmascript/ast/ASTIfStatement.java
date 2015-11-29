@@ -21,15 +21,15 @@ public class ASTIfStatement extends AbstractEcmascriptNode<IfStatement> {
 	return node.getElsePart() != null;
     }
 
-    public EcmascriptNode getCondition() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getCondition() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
-    public EcmascriptNode getThen() {
-	return (EcmascriptNode) jjtGetChild(1);
+    public EcmascriptNode<?> getThen() {
+	return (EcmascriptNode<?>) jjtGetChild(1);
     }
 
-    public EcmascriptNode getElse() {
-	return (EcmascriptNode) jjtGetChild(2);
+    public EcmascriptNode<?> getElse() {
+	return (EcmascriptNode<?>) jjtGetChild(2);
     }
 }

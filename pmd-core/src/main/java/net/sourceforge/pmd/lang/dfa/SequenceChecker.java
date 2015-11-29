@@ -28,7 +28,7 @@ public class SequenceChecker {
 
         public static final int ROOT = -1;
 
-        private List<Status> nextSteps = new ArrayList<Status>();
+        private List<Status> nextSteps = new ArrayList<>();
         // NodeType
         private int type;
         private boolean lastStep;

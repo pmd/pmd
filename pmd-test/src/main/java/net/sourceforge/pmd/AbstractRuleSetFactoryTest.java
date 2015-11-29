@@ -209,7 +209,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     // Gets all test PMD Ruleset XML files
     private List<String> getRuleSetFileNames() throws IOException, RuleSetNotFoundException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (Language language : LanguageRegistry.getLanguages()) {
             result.addAll(getRuleSetFileNames(language.getTerseName()));
@@ -219,7 +219,7 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     private List<String> getRuleSetFileNames(String language) throws IOException, RuleSetNotFoundException {
-        List<String> ruleSetFileNames = new ArrayList<String>();
+        List<String> ruleSetFileNames = new ArrayList<>();
         try {
             Properties properties = new Properties();
             properties.load(ResourceLoader.loadResourceAsStream("rulesets/" + language + "/rulesets.properties"));

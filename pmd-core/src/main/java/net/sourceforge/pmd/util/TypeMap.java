@@ -25,7 +25,7 @@ public class TypeMap {
      * @param initialSize int
      */
     public TypeMap(int initialSize) {
-        typesByName = new HashMap<String, Class<?>>(initialSize);
+        typesByName = new HashMap<>(initialSize);
     }
 
     /**
@@ -110,7 +110,7 @@ public class TypeMap {
      * @return Map
      */
     public Map<Class<?>, String> asInverseWithShortName() {
-        Map<Class<?>, String> inverseMap = new HashMap<Class<?>, String>(typesByName.size() / 2);
+        Map<Class<?>, String> inverseMap = new HashMap<>(typesByName.size() / 2);
 
         Iterator<Map.Entry<String,Class<?>>> iter = typesByName.entrySet().iterator();
         while (iter.hasNext()) {

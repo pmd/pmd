@@ -42,7 +42,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static enum InitializationStatus {
 	NONE, PARTIAL, FULL
-    };
+    }
 
     // Mapping from Node name to applicable XPath queries
     private InitializationStatus initializationStatus = InitializationStatus.NONE;
@@ -64,7 +64,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
     @Override
     @SuppressWarnings("unchecked")
     public List<Node> evaluate(Node node, RuleContext data) {
-	List<Node> results = new ArrayList<Node>();
+	List<Node> results = new ArrayList<>();
 	try {
 	    initializeXPathExpression(data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler()
 		    .getNavigator());
@@ -115,13 +115,13 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 	// parsed XPath AST using the Jaxen APIs to make this determination.
 	// If the query is not exactly what we are looking for, do not use the RuleChain.
 	//
-	nodeNameToXPaths = new HashMap<String, List<XPath>>();
+	nodeNameToXPaths = new HashMap<>();
 
 	BaseXPath originalXPath = createXPath(xpath, navigator);
 	indexXPath(originalXPath, AST_ROOT);
 
 	boolean useRuleChain = true;
-	Stack<Expr> pending = new Stack<Expr>();
+	Stack<Expr> pending = new Stack<>();
 	pending.push(originalXPath.getRootExpr());
 	while (!pending.isEmpty()) {
 	    Expr node = pending.pop();
@@ -204,7 +204,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
     private void indexXPath(XPath xpath, String nodeName) {
 	List<XPath> xpaths = nodeNameToXPaths.get(nodeName);
 	if (xpaths == null) {
-	    xpaths = new ArrayList<XPath>();
+	    xpaths = new ArrayList<>();
 	    nodeNameToXPaths.put(nodeName, xpaths);
 	}
 	xpaths.add(xpath);

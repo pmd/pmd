@@ -51,7 +51,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         protected void indexNodes(List<Node> nodes, RuleContext ctx) {
             for (Node n : nodes) {
                 indexNode(n);
-                List<Node> childs = new ArrayList<Node>();
+                List<Node> childs = new ArrayList<>();
                 for (int i = 0; i < n.jjtGetNumChildren(); i++) {
                     childs.add(n.jjtGetChild(i));
                 }

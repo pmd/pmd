@@ -78,7 +78,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     }
   }
 
-  private Stack<Entry> entryStack = new Stack<Entry>();
+  private Stack<Entry> entryStack = new Stack<>();
 
   public CyclomaticComplexityRule() {
       definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);

@@ -88,7 +88,7 @@ public class RuleSetFactory {
     public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
         String rulesetsProperties = null;
         try {
-            List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<RuleSetReferenceId>();
+            List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
             for (Language language : LanguageRegistry.findWithRuleSupport()) {
                 Properties props = new Properties();
                 rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
@@ -332,7 +332,7 @@ public class RuleSetFactory {
         ruleSetReference.setRuleSetFileName(ref);
         String priority = null;
         NodeList childNodes = ruleElement.getChildNodes();
-        Set<String> excludedRulesCheck = new HashSet<String>();
+        Set<String> excludedRulesCheck = new HashSet<>();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
             if (isElementNode(child, "exclude")) {
@@ -676,7 +676,6 @@ public class RuleSetFactory {
      * @param rule The Rule to which the property should be added. //@param
      *            propertyNode Must be a property element node.
      */
-    @SuppressWarnings("unchecked")
     // private static void parsePropertyNode(Rule rule, Node propertyNode) {
     // Element propertyElement = (Element) propertyNode;
     // String name = propertyElement.getAttribute("name");
@@ -715,12 +714,11 @@ public class RuleSetFactory {
     // rule.definePropertyDescriptor(propertyDescriptor);
     // }
     // }
-    private static void setValue(Rule rule, PropertyDescriptor desc, String strValue) {
-        Object realValue = desc.valueFrom(strValue);
+    private static <T> void setValue(Rule rule, PropertyDescriptor<T> desc, String strValue) {
+        T realValue = desc.valueFrom(strValue);
         rule.setProperty(desc, realValue);
     }
 
-    @SuppressWarnings("unchecked")
     private static void parsePropertyNodeBR(Rule rule, Node propertyNode) {
 
         Element propertyElement = (Element) propertyNode;
@@ -750,7 +748,7 @@ public class RuleSetFactory {
         }
 
         Map<String, Boolean> valueKeys = pdFactory.expectedFields();
-        Map<String, String> values = new HashMap<String, String>(valueKeys.size());
+        Map<String, String> values = new HashMap<>(valueKeys.size());
 
         // populate a map of values for an individual descriptor
         for (Map.Entry<String, Boolean> entry : valueKeys.entrySet()) {
@@ -764,7 +762,7 @@ public class RuleSetFactory {
         }
 
         PropertyDescriptor<?> desc = pdFactory.createWith(values);
-        PropertyDescriptorWrapper<?> wrapper = new PropertyDescriptorWrapper(desc);
+        PropertyDescriptorWrapper<?> wrapper = new PropertyDescriptorWrapper<>(desc);
 
         rule.definePropertyDescriptor(wrapper);
         setValue(rule, desc, strValue);

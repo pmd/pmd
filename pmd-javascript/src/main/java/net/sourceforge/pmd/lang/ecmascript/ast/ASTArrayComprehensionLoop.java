@@ -18,11 +18,11 @@ public class ASTArrayComprehensionLoop extends AbstractEcmascriptNode<ArrayCompr
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getIterator() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getIterator() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
-    public EcmascriptNode getIteratedObject() {
-	return (EcmascriptNode) jjtGetChild(1);
+    public EcmascriptNode<?> getIteratedObject() {
+	return (EcmascriptNode<?>) jjtGetChild(1);
     }
 }

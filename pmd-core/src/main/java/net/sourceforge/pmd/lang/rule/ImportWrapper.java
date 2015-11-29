@@ -15,7 +15,7 @@ public class ImportWrapper {
     private String name;
     private String fullname;
     private boolean isStaticDemand;
-    private Set<String> allDemands = new HashSet<String>();
+    private Set<String> allDemands = new HashSet<>();
 
     public ImportWrapper(String fullname, String name) {
         this(fullname, name, null);

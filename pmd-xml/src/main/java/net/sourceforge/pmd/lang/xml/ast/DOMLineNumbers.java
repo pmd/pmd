@@ -135,7 +135,7 @@ class DOMLineNumbers {
     }
     
     private void calculateLinesMap() {
-        lines = new TreeMap<Integer, Integer>();
+        lines = new TreeMap<>();
         int index = -1;
         int count = StringUtils.countMatches(xmlString, "\n");
         for (int line = 1; line <= count; line++) {

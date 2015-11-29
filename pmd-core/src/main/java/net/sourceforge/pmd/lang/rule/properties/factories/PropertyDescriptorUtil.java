@@ -46,7 +46,7 @@ public class PropertyDescriptorUtil {
 
     private static final Map<String, PropertyDescriptorFactory> DESCRIPTOR_FACTORIES_BY_TYPE;
     static {
-        Map<String, PropertyDescriptorFactory> temp = new HashMap<String, PropertyDescriptorFactory>(18);
+        Map<String, PropertyDescriptorFactory> temp = new HashMap<>(18);
 
         temp.put("Boolean", BooleanProperty.FACTORY);
         temp.put("Boolean[]", BooleanMultiProperty.FACTORY);

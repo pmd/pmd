@@ -219,7 +219,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
         int count = block.jjtGetNumChildren();
         int start = indexOf(block, node.jjtGetParent()) + 1;
 
-        List<ASTBlockStatement> nextBlocks = new ArrayList<ASTBlockStatement>(count);
+        List<ASTBlockStatement> nextBlocks = new ArrayList<>(count);
 
         for (int i = start; i < count; i++) {
             Node maybeBlock = block.jjtGetChild(i);

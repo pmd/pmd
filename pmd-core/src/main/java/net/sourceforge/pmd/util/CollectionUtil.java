@@ -33,7 +33,7 @@ public final class CollectionUtil {
 	    java.util.Hashtable.class});
 
     private CollectionUtil() {
-    };
+    }
 
 	/**
 	 * Add elements from the source to the target as long as they don't already exist there.
@@ -115,7 +115,7 @@ public final class CollectionUtil {
      */
     public static <T> Set<T> asSet(T[] items) {
 
-	   return new HashSet<T>(Arrays.asList(items));
+	   return new HashSet<>(Arrays.asList(items));
     }
 
     /**
@@ -130,7 +130,7 @@ public final class CollectionUtil {
 	   if (keys.length != values.length) {
 	     throw new RuntimeException("mapFrom keys and values arrays have different sizes");
 	   }
-	   Map<K, V> map = new HashMap<K, V>(keys.length);
+	   Map<K, V> map = new HashMap<>(keys.length);
 	   for (int i = 0; i < keys.length; i++) {
 	      map.put(keys[i], values[i]);
 	      }
@@ -144,7 +144,7 @@ public final class CollectionUtil {
      * @return Map
      */
     public static <K, V> Map<V, K> invertedMapFrom(Map<K, V> source) {
-	   Map<V, K> map = new HashMap<V, K>(source.size());
+	   Map<V, K> map = new HashMap<>(source.size());
 	   for (Map.Entry<K, V> entry : source.entrySet()) {
 	      map.put(entry.getValue(), entry.getKey());
 	   }
@@ -302,9 +302,9 @@ public final class CollectionUtil {
      */
     public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
 
-        Set<T> originals = new HashSet<T>(values.length);
+        Set<T> originals = new HashSet<>(values.length);
         for (T value : values) { originals.add(value); }
-        List<T> newOnes = new ArrayList<T>(newValues.length);
+        List<T> newOnes = new ArrayList<>(newValues.length);
         for (T value : newValues) {
             if (originals.contains(value)) { continue; }
             newOnes.add(value);

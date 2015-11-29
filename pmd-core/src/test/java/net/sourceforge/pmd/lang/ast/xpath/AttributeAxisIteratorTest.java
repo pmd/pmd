@@ -26,7 +26,7 @@ public class AttributeAxisIteratorTest {
         dummyNode.testingOnly__setBeginColumn(1);
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
-        Map<String, Attribute> atts = new HashMap<String, Attribute>();
+        Map<String, Attribute> atts = new HashMap<>();
         while (it.hasNext()) {
             Attribute attribute = it.next();
             atts.put(attribute.getName(), attribute);

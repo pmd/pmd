@@ -17,7 +17,7 @@ public class CSVRendererTest {
     @Test
     public void testLineCountPerFile() {
         Renderer renderer = new CSVRenderer(true);
-        List<Match> list = new ArrayList<Match>();
+        List<Match> list = new ArrayList<>();
         String codeFragment = "code\nfragment";
         Mark mark1 = createMark("public", "/var/Foo.java", 48, 10, codeFragment);
         Mark mark2 = createMark("stuff", "/var/Bar.java", 73, 20, codeFragment);

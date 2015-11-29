@@ -60,7 +60,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit compilationUnit, Object data) {
         if (this.volatileFields == null) {
-            this.volatileFields = new ArrayList<String>(0);
+            this.volatileFields = new ArrayList<>(0);
         } else {
             this.volatileFields.clear();
         }

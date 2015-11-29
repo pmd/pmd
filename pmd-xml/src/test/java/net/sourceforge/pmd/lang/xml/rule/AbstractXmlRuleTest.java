@@ -27,7 +27,7 @@ public class AbstractXmlRuleTest {
 	XmlParserOptions parserOptions = new XmlParserOptions();
 	Parser parser = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler().getParser(parserOptions);
 	XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
-	List<XmlNode> nodes = new ArrayList<XmlNode>();
+	List<XmlNode> nodes = new ArrayList<>();
 	nodes.add(xmlNode);
 
 	MyRule rule = new MyRule();
@@ -40,7 +40,7 @@ public class AbstractXmlRuleTest {
     }
 
     private static class MyRule extends AbstractXmlRule {
-	final List<XmlNode> visitedNodes = new ArrayList<XmlNode>();
+	final List<XmlNode> visitedNodes = new ArrayList<>();
 
 	public MyRule() {
 	}

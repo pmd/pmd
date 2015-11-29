@@ -34,7 +34,7 @@ public class TypeSetTest {
     @Test
     public void testFindClassImplicitImport() throws Throwable {
         TypeSet t = new TypeSet();
-        Class clazz = t.findClass("String");
+        Class<?> clazz = t.findClass("String");
         assertEquals(String.class, clazz);
     }
 
@@ -42,7 +42,7 @@ public class TypeSetTest {
     public void testFindClassSamePackage() throws Throwable {
         TypeSet t = new TypeSet();
         t.setASTCompilationUnitPackage("net.sourceforge.pmd");
-        Class clazz = t.findClass("PMD");
+        Class<?> clazz = t.findClass("PMD");
         assertEquals(PMD.class, clazz);
     }
 
@@ -50,7 +50,7 @@ public class TypeSetTest {
     public void testFindClassExplicitImport() throws Throwable {
         TypeSet t = new TypeSet();
         t.addImport("java.io.File");
-        Class clazz = t.findClass("File");
+        Class<?> clazz = t.findClass("File");
         assertEquals(File.class, clazz);
     }
 
@@ -58,7 +58,7 @@ public class TypeSetTest {
     public void testFindClassImportOnDemand() throws Throwable {
         TypeSet t = new TypeSet();
         t.addImport("java.io.*");
-        Class clazz = t.findClass("File");
+        Class<?> clazz = t.findClass("File");
         assertEquals(File.class, clazz);
     }
 
@@ -110,7 +110,7 @@ public class TypeSetTest {
 
     @Test
     public void testExplicitImportResolver() throws Throwable {
-        Set<String> imports = new HashSet<String>();
+        Set<String> imports = new HashSet<>();
         imports.add("java.io.File");
         TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(pmdClassLoader, imports);
         assertEquals(File.class, r.resolve("File"));
@@ -118,7 +118,7 @@ public class TypeSetTest {
 
     @Test(expected=ClassNotFoundException.class)
     public void testExplicitImportResolverWithNull() throws Throwable {
-        Set<String> imports = new HashSet<String>();
+        Set<String> imports = new HashSet<>();
         imports.add("java.io.File");
         TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(pmdClassLoader, imports);
         r.resolve(null);
@@ -186,7 +186,7 @@ public class TypeSetTest {
     }
 
     private TypeSet.Resolver getResolver() {
-        Set<String> imports = new HashSet<String>();
+        Set<String> imports = new HashSet<>();
         imports.add("java.io.*");
         imports.add("java.util.*");
         TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(pmdClassLoader, imports);

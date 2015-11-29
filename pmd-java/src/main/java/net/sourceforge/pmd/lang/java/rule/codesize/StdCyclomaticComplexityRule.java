@@ -74,7 +74,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     }
   }
 
-  protected Stack<Entry> entryStack = new Stack<Entry>();
+  protected Stack<Entry> entryStack = new Stack<>();
 
   public StdCyclomaticComplexityRule() {
       definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);

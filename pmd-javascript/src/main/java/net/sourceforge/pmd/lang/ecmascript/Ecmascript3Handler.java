@@ -51,7 +51,7 @@ public class Ecmascript3Handler extends AbstractLanguageVersionHandler {
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
-		new DumpFacade().initializeWith(writer, prefix, recurse, (EcmascriptNode) rootNode);
+		new DumpFacade().initializeWith(writer, prefix, recurse, (EcmascriptNode<?>) rootNode);
 	    }
 	};
     }

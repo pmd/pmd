@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class ASTModel implements TreeModel {
 	
     private Node root;
-    private List<TreeModelListener> listeners = new ArrayList<TreeModelListener>(1);
+    private List<TreeModelListener> listeners = new ArrayList<>(1);
 
     /**
      * creates the tree model

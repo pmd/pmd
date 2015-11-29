@@ -60,7 +60,7 @@ public class RuleSetWriter {
 		    documentBuilderFactory.setNamespaceAware(true);
 		    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		    document = documentBuilder.newDocument();
-		    ruleSetFileNames = new HashSet<String>();
+		    ruleSetFileNames = new HashSet<>();
 	
 		    Element ruleSetElement = createRuleSetElement(ruleSet);
 		    document.appendChild(ruleSetElement);

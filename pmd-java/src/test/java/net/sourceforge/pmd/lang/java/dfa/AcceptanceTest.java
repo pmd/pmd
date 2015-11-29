@@ -45,9 +45,9 @@ public class AcceptanceTest extends ParserTst {
             " }" + PMD.EOL +
             "}";
 
-    private boolean check(int[][] array, List methodNodes) {
+    private boolean check(int[][] array, List<ASTMethodDeclarator> methodNodes) {
         for (int i = 0; i < methodNodes.size(); i++) {
-            ASTMethodDeclarator decl = (ASTMethodDeclarator) methodNodes.get(i);
+            ASTMethodDeclarator decl = methodNodes.get(i);
             DataFlowNode inode = decl.getDataFlowNode();
             for (int j = 0; j < inode.getChildren().size(); j++) {
         	DataFlowNode child = inode.getChildren().get(j);

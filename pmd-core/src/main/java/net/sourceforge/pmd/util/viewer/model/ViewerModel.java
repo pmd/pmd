@@ -27,7 +27,7 @@ public class ViewerModel {
     private List<Node> evaluationResults;
 
     public ViewerModel() {
-	listeners = new ArrayList<ViewerModelListener>(5);
+        listeners = new ArrayList<>(5);
     }
 
     public Node getRootNode() {

@@ -12,9 +12,9 @@ public abstract class AbstractTokenManager {
 
     // Because the TokenMgrError class does not have access to the TokenManager instance, we
     // cannot store the file name as an instance field, but must use a static.
-    private static ThreadLocal<String> fileName = new ThreadLocal<String>();
+    private static ThreadLocal<String> fileName = new ThreadLocal<>();
 
-    protected Map<Integer, String> suppressMap = new HashMap<Integer, String>();
+    protected Map<Integer, String> suppressMap = new HashMap<>();
     protected String suppressMarker = PMD.SUPPRESS_MARKER;
 
     public static void setFileName(String fileName) {

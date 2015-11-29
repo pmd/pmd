@@ -82,7 +82,7 @@ public class TypeSet {
     }
 
     public static class PrimitiveTypeResolver implements Resolver {
-	private Map<String, Class<?>> primitiveTypes = new HashMap<String, Class<?>>();
+	private Map<String, Class<?>> primitiveTypes = new HashMap<>();
 
 	@SuppressWarnings("PMD.AvoidUsingShortType")
 	public PrimitiveTypeResolver() {
@@ -120,8 +120,8 @@ public class TypeSet {
     }
 
     private String pkg;
-    private Set<String> imports = new HashSet<String>();
-    private List<Resolver> resolvers = new ArrayList<Resolver>();
+    private Set<String> imports = new HashSet<>();
+    private List<Resolver> resolvers = new ArrayList<>();
 
     public void setASTinputPackage(String pkg) {
 	this.pkg = pkg;

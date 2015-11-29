@@ -84,7 +84,7 @@ public class DumpFacade extends PLSQLParserVisitorAdapter {
 		}
 
 		// Extras
-		List<String> extras = new ArrayList<String>();
+		List<String> extras = new ArrayList<>();
 
 		// Output image and extras
 		if (image != null || !extras.isEmpty()) {

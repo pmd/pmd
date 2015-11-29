@@ -39,7 +39,7 @@ public class RuleContext {
      * Default constructor.
      */
     public RuleContext() {
-	attributes = new ConcurrentHashMap<String, Object>();
+	attributes = new ConcurrentHashMap<>();
     }
 
     /**

@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class OpenTagRegister {
 
-	private List<ASTElement> tagList = new ArrayList<ASTElement>();
+	private List<ASTElement> tagList = new ArrayList<>();
 
 	public void openTag(ASTElement elm) {
 		if (elm == null || StringUtil.isEmpty(elm.getName())) {
@@ -49,7 +49,7 @@ public class OpenTagRegister {
 		 * name as element
 		 */
 		boolean matchingTagFound = false;
-		List<ASTElement> processedElmnts = new ArrayList<ASTElement>();
+		List<ASTElement> processedElmnts = new ArrayList<>();
 		for (int i = lastRegisteredTagIdx; i >= 0; i--) {
 			ASTElement parent = tagList.get(i);
 			String parentName = parent.getName();

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertFalse;
@@ -14,20 +17,20 @@ public class ASTAssignmentOperatorTest extends ParserTst {
 
     @Test
     public void testSimpleAssignmentRecognized() throws Throwable {
-        Set ops = super.getNodes(ASTAssignmentOperator.class, TEST1);
-        assertFalse(((ASTAssignmentOperator) (ops.iterator().next())).isCompound());
+        Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST1);
+        assertFalse((ops.iterator().next()).isCompound());
     }
 
     @Test
     public void testCompoundAssignmentPlusRecognized() throws Throwable {
-        Set ops = super.getNodes(ASTAssignmentOperator.class, TEST2);
-        assertTrue(((ASTAssignmentOperator) (ops.iterator().next())).isCompound());
+        Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST2);
+        assertTrue((ops.iterator().next()).isCompound());
     }
 
     @Test
     public void testCompoundAssignmentMultRecognized() throws Throwable {
-        Set ops = super.getNodes(ASTAssignmentOperator.class, TEST3);
-        assertTrue(((ASTAssignmentOperator) (ops.iterator().next())).isCompound());
+        Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST3);
+        assertTrue((ops.iterator().next()).isCompound());
     }
 
     private static final String TEST1 =

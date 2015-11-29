@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.rule.strings;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +45,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     private final static Set<Class<? extends Node>> BLOCK_PARENTS;
 
     static {
-        BLOCK_PARENTS = new HashSet<Class<? extends Node>>(2);
+        BLOCK_PARENTS = new HashSet<>(2);
         BLOCK_PARENTS.add(ASTIfStatement.class);
         BLOCK_PARENTS.add(ASTSwitchStatement.class);
     }
@@ -68,7 +67,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         anticipatedLength += getConstructorAppendsLength(node);
 
         List<NameOccurrence> usage = node.getUsages();
-        Map<Node, Map<Node, Integer>> blocks = new HashMap<Node, Map<Node, Integer>>();
+        Map<Node, Map<Node, Integer>> blocks = new HashMap<>();
         for (NameOccurrence no : usage) {
             JavaNameOccurrence jno = (JavaNameOccurrence)no;
             Node n = jno.getLocation();
@@ -140,7 +139,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         }
         Map<Node, Integer> thisBranch = blocks.get(statement);
         if (thisBranch == null) {
-            thisBranch = new HashMap<Node, Integer>();
+            thisBranch = new HashMap<>();
             blocks.put(statement, thisBranch);
         }
         Integer x = thisBranch.get(block);

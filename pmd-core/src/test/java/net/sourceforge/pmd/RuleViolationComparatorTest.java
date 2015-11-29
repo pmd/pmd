@@ -51,7 +51,7 @@ public class RuleViolationComparatorTest {
 	expectedOrder[index++] = createJavaRuleViolation(rule2, "file6", 10, "desc1", 0, 20, 80);
 
 	// Randomize
-	List<RuleViolation> ruleViolations = new ArrayList<RuleViolation>(Arrays.asList(expectedOrder));
+	List<RuleViolation> ruleViolations = new ArrayList<>(Arrays.asList(expectedOrder));
 	long seed = System.nanoTime();
 	Random random = new Random(seed);
 	Collections.shuffle(ruleViolations, random);

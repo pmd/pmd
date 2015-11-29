@@ -9,6 +9,8 @@ package net.sourceforge.pmd.lang.jsp.ast;
  */
 public class StartAndEndTagMismatchException extends SyntaxErrorException {
 
+    private static final long serialVersionUID = 5434485938487458692L;
+
     public static final String START_END_TAG_MISMATCH_RULE_NAME
             = "Start and End Tags of an XML Element must match.";
 

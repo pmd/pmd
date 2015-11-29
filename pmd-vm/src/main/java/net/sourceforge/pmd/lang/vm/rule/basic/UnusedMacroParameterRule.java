@@ -18,7 +18,7 @@ public class UnusedMacroParameterRule extends AbstractVmRule {
     @Override
     public Object visit(final ASTDirective node, final Object data) {
         if ("macro".equals(node.getDirectiveName())) {
-            final Set<String> paramNames = new HashSet<String>();
+            final Set<String> paramNames = new HashSet<>();
             final List<ASTReference> params = node.findChildrenOfType(ASTReference.class);
             for (final ASTReference param : params) {
                 paramNames.add(param.literal());
@@ -41,7 +41,7 @@ public class UnusedMacroParameterRule extends AbstractVmRule {
     }
 
     private void checkForParameter(final Set<String> paramNames, final String nameToSearch) {
-        final Set<String> paramsContained = new HashSet<String>();
+        final Set<String> paramsContained = new HashSet<>();
         for (final String param : paramNames) {
             if (containsAny(nameToSearch, formatNameVariations(param))) {
                 paramsContained.add(param);

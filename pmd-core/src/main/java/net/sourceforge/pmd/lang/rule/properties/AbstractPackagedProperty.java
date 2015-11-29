@@ -101,7 +101,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
         }
 
         String[] names = new String[items.length];
-        Set<String> nameSet = new HashSet<String>(items.length);
+        Set<String> nameSet = new HashSet<>(items.length);
         String name = null;
 
         for (int i = 0; i < items.length; i++) {

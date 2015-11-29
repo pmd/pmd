@@ -90,7 +90,7 @@ public class DCD {
 
 	public static void main(String[] args) throws Exception {
 		// 1) Directories
-		List<File> directories = new ArrayList<File>();
+		List<File> directories = new ArrayList<>();
 		directories.add(new File("C:/pmd/workspace/pmd-trunk/src"));
 
 		// Basic filter
@@ -106,13 +106,13 @@ public class DCD {
 		};
 
 		// 2) Filename filters
-		List<FilenameFilter> filters = new ArrayList<FilenameFilter>();
+		List<FilenameFilter> filters = new ArrayList<>();
 		filters.add(javaFilter);
 
 		assert directories.size() == filters.size();
 
 		// Find all files, convert to class names
-		List<String> classes = new ArrayList<String>();
+		List<String> classes = new ArrayList<>();
 		for (int i = 0; i < directories.size(); i++) {
 			File directory = directories.get(i);
 			FilenameFilter filter = filters.get(i);

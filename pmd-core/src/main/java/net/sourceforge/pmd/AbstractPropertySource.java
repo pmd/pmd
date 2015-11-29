@@ -22,9 +22,9 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public abstract class AbstractPropertySource implements PropertySource {
 
     /** The list of known properties that can be configured. */
-    protected List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
+    protected List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<>();
     /** The values for each property. */
-    protected Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<PropertyDescriptor<?>, Object>();
+    protected Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<>();
 
     /**
      * Creates a copied list of the property descriptors and returns it.
@@ -32,7 +32,7 @@ public abstract class AbstractPropertySource implements PropertySource {
      * @return a copy of the property descriptors.
      */
     protected List<PropertyDescriptor<?>> copyPropertyDescriptors() {
-        List<PropertyDescriptor<?>> copy = new ArrayList<PropertyDescriptor<?>>(propertyDescriptors.size());
+        List<PropertyDescriptor<?>> copy = new ArrayList<>(propertyDescriptors.size());
         copy.addAll(propertyDescriptors);
         return copy;
     }
@@ -43,7 +43,7 @@ public abstract class AbstractPropertySource implements PropertySource {
      * @return a copy of the values
      */
     protected Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
-        Map<PropertyDescriptor<?>, Object> copy = new HashMap<PropertyDescriptor<?>, Object>(
+        Map<PropertyDescriptor<?>, Object> copy = new HashMap<>(
                 propertyValuesByDescriptor.size());
         copy.putAll(propertyValuesByDescriptor);
         return copy;
@@ -152,7 +152,7 @@ public abstract class AbstractPropertySource implements PropertySource {
             return Collections.emptyMap();
         }
 
-        Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<PropertyDescriptor<?>, Object>(
+        Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<>(
                 propertyDescriptors.size());
         // Fill with existing explicitly values
         propertiesByPropertyDescriptor.putAll(this.propertyValuesByDescriptor);

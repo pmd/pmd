@@ -55,7 +55,7 @@ public final class PMDASMClassLoader extends ClassLoader {
     }
 
     /** Caches the names of the classes that we can't load or that don't exist. */
-    private final Set<String> dontBother = new HashSet<String>();
+    private final Set<String> dontBother = new HashSet<>();
 
     @Override
     public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
@@ -88,7 +88,7 @@ public final class PMDASMClassLoader extends ClassLoader {
 
             List<String> inner = asmVisitor.getInnerClasses();
             if (inner != null && !inner.isEmpty()) {
-                inner = new ArrayList<String>(inner); // to avoid
+                inner = new ArrayList<>(inner); // to avoid
                                                       // ConcurrentModificationException
                 for (String str : inner) {
                     InputStream i = getResourceAsStream(str.replace('.', '/') + ".class");

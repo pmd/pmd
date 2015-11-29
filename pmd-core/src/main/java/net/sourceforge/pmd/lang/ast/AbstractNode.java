@@ -214,7 +214,7 @@ public abstract class AbstractNode implements Node {
      * @return List of parentType instances found.
      */
     public <T> List<T> getParentsOfType(Class<T> parentType) {
-	List<T> parents = new ArrayList<T>();
+	List<T> parents = new ArrayList<>();
 	Node parentNode = jjtGetParent();
 	while (parentNode != null) {
 	    if (parentNode.getClass() == parentType) {
@@ -229,7 +229,7 @@ public abstract class AbstractNode implements Node {
      * {@inheritDoc}
      */
     public <T> List<T> findDescendantsOfType(Class<T> targetType) {
-	List<T> list = new ArrayList<T>();
+	List<T> list = new ArrayList<>();
 	findDescendantsOfType(this, targetType, list, true);
 	return list;
     }
@@ -263,7 +263,7 @@ public abstract class AbstractNode implements Node {
      * {@inheritDoc}
      */
     public <T> List<T> findChildrenOfType(Class<T> targetType) {
-	List<T> list = new ArrayList<T>();
+	List<T> list = new ArrayList<>();
 	int n = jjtGetNumChildren();
 	for (int i = 0; i < n; i++) {
 	    Node child = jjtGetChild(i);
@@ -370,7 +370,8 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
-    public List findChildNodesWithXPath(String xpathString) throws JaxenException {
+    @SuppressWarnings("unchecked")
+    public List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException {
         return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
     }
 

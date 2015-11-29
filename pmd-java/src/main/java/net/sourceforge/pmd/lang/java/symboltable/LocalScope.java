@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,7 @@ public class LocalScope extends AbstractJavaScope {
     }
 
     public Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
-        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
+        Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return result;
         }

@@ -66,7 +66,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
                 "       return 0;\n" + 
                 "   }\n" + 
                 "}";
-        final List<String> output = new ArrayList<String>();
+        final List<String> output = new ArrayList<>();
 
         class MyEcmascriptRule extends AbstractEcmascriptRule {
             public Object visit(ASTScope node, Object data) {
@@ -110,7 +110,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
                 "}");
 
         List<ASTFunctionCall> calls = rootNode.findDescendantsOfType(ASTFunctionCall.class);
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         for (ASTFunctionCall f : calls) {
             Node node = f.getTarget();
             results.add(getName(node));

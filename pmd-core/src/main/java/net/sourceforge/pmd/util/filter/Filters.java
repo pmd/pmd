@@ -23,7 +23,7 @@ public class Filters {
 	 * @return A List containing only those objects for which the Filter returned <code>true</code>.
 	 */
 	public static <T> List<T> filter(Filter<T> filter, Collection<T> collection) {
-		List<T> list = new ArrayList<T>();
+		List<T> list = new ArrayList<>();
 		for (T obj : collection) {
 			if (filter.filter(obj)) {
 				list.add(obj);
@@ -55,7 +55,7 @@ public class Filters {
 	 * @return A File Filter.
 	 */
 	public static Filter<File> getFileExtensionOrDirectoryFilter(String... extensions) {
-		return new OrFilter<File>(getFileExtensionFilter(extensions), getDirectoryFilter());
+		return new OrFilter<>(getFileExtensionFilter(extensions), getDirectoryFilter());
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class Filters {
 	 */
 	public static Filter<String> buildRegexFilterExcludeOverInclude(List<String> includeRegexes,
 			List<String> excludeRegexes) {
-		OrFilter<String> includeFilter = new OrFilter<String>();
+		OrFilter<String> includeFilter = new OrFilter<>();
 		if (includeRegexes == null || includeRegexes.isEmpty()) {
 			includeFilter.addFilter(new RegexStringFilter(".*"));
 		} else {
@@ -159,14 +159,14 @@ public class Filters {
 			}
 		}
 
-		OrFilter<String> excludeFilter = new OrFilter<String>();
+		OrFilter<String> excludeFilter = new OrFilter<>();
 		if (excludeRegexes != null) {
 			for (String excludeRegex : excludeRegexes) {
 				excludeFilter.addFilter(new RegexStringFilter(excludeRegex));
 			}
 		}
 
-		return new AndFilter<String>(includeFilter, new NotFilter<String>(excludeFilter));
+		return new AndFilter<>(includeFilter, new NotFilter<>(excludeFilter));
 	}
 
 	/**
@@ -184,20 +184,20 @@ public class Filters {
 	 */
 	public static Filter<String> buildRegexFilterIncludeOverExclude(List<String> includeRegexes,
 			List<String> excludeRegexes) {
-		OrFilter<String> includeFilter = new OrFilter<String>();
+		OrFilter<String> includeFilter = new OrFilter<>();
 		if (includeRegexes != null) {
 			for (String includeRegex : includeRegexes) {
 				includeFilter.addFilter(new RegexStringFilter(includeRegex));
 			}
 		}
 
-		OrFilter<String> excludeFilter = new OrFilter<String>();
+		OrFilter<String> excludeFilter = new OrFilter<>();
 		if (excludeRegexes != null) {
 			for (String excludeRegex : excludeRegexes) {
 				excludeFilter.addFilter(new RegexStringFilter(excludeRegex));
 			}
 		}
 
-		return new OrFilter<String>(includeFilter, new NotFilter<String>(excludeFilter));
+		return new OrFilter<>(includeFilter, new NotFilter<>(excludeFilter));
 	}
 }

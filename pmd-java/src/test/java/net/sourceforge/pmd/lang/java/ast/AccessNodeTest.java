@@ -27,8 +27,8 @@ public class AccessNodeTest extends ParserTst {
 
     @Test
     public void testModifiersOnClassDecl() throws Throwable {
-        Set ops = getNodes(ASTClassOrInterfaceDeclaration.class, TEST1);
-        assertTrue(((ASTClassOrInterfaceDeclaration) ops.iterator().next()).isPublic());
+        Set<ASTClassOrInterfaceDeclaration> ops = getNodes(ASTClassOrInterfaceDeclaration.class, TEST1);
+        assertTrue(ops.iterator().next().isPublic());
     }
 
     private static final String TEST1 =

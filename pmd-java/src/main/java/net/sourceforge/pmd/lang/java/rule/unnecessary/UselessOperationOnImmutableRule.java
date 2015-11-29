@@ -41,7 +41,7 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
     /**
      * These are the classes that the rule can apply to
      */
-    private static final Map<String, Set<String>> MAP_CLASSES = new HashMap<String, Set<String>>();
+    private static final Map<String, Set<String>> MAP_CLASSES = new HashMap<>();
     static {
         MAP_CLASSES.put("java.math.BigDecimal", BIG_DECIMAL_METHODS);
         MAP_CLASSES.put("BigDecimal", BIG_DECIMAL_METHODS);

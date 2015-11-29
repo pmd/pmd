@@ -37,7 +37,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         if (classpath == null) {
             throw new IllegalArgumentException("classpath argument cannot be null");
         }
-        final List<URL> urls = new ArrayList<URL>();
+        final List<URL> urls = new ArrayList<>();
         if (classpath.startsWith("file://")) {
             // Treat as file URL
             addFileURLs(urls, new URL(classpath));

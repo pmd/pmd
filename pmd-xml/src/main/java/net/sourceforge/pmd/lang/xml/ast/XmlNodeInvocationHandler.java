@@ -65,7 +65,7 @@ public class XmlNodeInvocationHandler implements InvocationHandler {
                     return null;
                 }
             } else if ("getAttributeIterator".equals(method.getName())) {
-                List<Iterator<Attribute>> iterators = new ArrayList<Iterator<Attribute>>();
+                List<Iterator<Attribute>> iterators = new ArrayList<>();
 
                 // Expose DOM Attributes
                 final NamedNodeMap attributes = node.getAttributes();

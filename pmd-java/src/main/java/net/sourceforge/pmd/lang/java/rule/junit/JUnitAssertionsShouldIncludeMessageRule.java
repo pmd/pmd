@@ -47,7 +47,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
         }
     }
 
-    private List<AssertionCall> checks = new ArrayList<AssertionCall>();
+    private List<AssertionCall> checks = new ArrayList<>();
 
     public JUnitAssertionsShouldIncludeMessageRule() {
         checks.add(new AssertionCall("assertArrayEquals", 2));

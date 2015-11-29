@@ -30,7 +30,7 @@ public class AbstractWsdlRuleTest {
                 LanguageRegistry.getLanguage(WsdlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler()
                         .getParser(parserOptions);
         XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
-        List<XmlNode> nodes = new ArrayList<XmlNode>();
+        List<XmlNode> nodes = new ArrayList<>();
         nodes.add(xmlNode);
 
         MyRule rule = new MyRule();
@@ -43,7 +43,7 @@ public class AbstractWsdlRuleTest {
     }
 
     private static class MyRule extends AbstractWsdlRule {
-        final List<XmlNode> visitedNodes = new ArrayList<XmlNode>();
+        final List<XmlNode> visitedNodes = new ArrayList<>();
 
         public MyRule() {
         }

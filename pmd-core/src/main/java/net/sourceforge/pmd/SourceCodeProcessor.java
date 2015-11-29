@@ -132,7 +132,7 @@ public class SourceCodeProcessor {
     
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
 		LanguageVersion languageVersion = ctx.getLanguageVersion();
-		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();		
+		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 		Parser parser = PMD.parserFor(languageVersion, configuration);
 		
 		Node rootNode = parse(ctx, sourceCode, parser);
@@ -141,9 +141,9 @@ public class SourceCodeProcessor {
 		usesDFA(languageVersion, rootNode, ruleSets, language);
 		usesTypeResolution(languageVersion, rootNode, ruleSets,language);
 		
-		List<Node> acus = new ArrayList<Node>();
+		List<Node> acus = new ArrayList<>();
 		acus.add(rootNode);
-		ruleSets.apply(acus, ctx, language);		
+		ruleSets.apply(acus, ctx, language);
 	}
 
 

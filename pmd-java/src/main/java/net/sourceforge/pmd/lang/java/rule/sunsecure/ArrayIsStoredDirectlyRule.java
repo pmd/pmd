@@ -149,7 +149,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
     private final ASTFormalParameter[] getArrays(ASTFormalParameters params) {
         final List<ASTFormalParameter> l = params.findChildrenOfType(ASTFormalParameter.class);
         if (l != null && !l.isEmpty()) {
-            List<ASTFormalParameter> l2 = new ArrayList<ASTFormalParameter>();
+            List<ASTFormalParameter> l2 = new ArrayList<>();
             for (ASTFormalParameter fp: l) {
                 if (fp.isArray()) {
 		    l2.add(fp);

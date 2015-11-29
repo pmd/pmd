@@ -59,7 +59,7 @@ public class DumpFacade extends JspParserVisitorAdapter {
 		String image = node.getImage();
 
 		// Extras
-		List<String> extras = new ArrayList<String>();
+		List<String> extras = new ArrayList<>();
 
 		// Other extras
 		if (node instanceof ASTAttribute) {

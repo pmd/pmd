@@ -60,7 +60,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         }
 
         public Set<String> parse(String s) {
-            Set<String> result = new HashSet<String>();
+            Set<String> result = new HashSet<>();
             StringBuilder currentToken = new StringBuilder();
             boolean inEscapeMode = false;
             for (int i = 0; i < s.length(); i++) {
@@ -87,8 +87,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         }
     }
 
-    private Map<String, List<ASTLiteral>> literals = new HashMap<String, List<ASTLiteral>>();
-    private Set<String> exceptions = new HashSet<String>();
+    private Map<String, List<ASTLiteral>> literals = new HashMap<>();
+    private Set<String> exceptions = new HashSet<>();
     private int minLength;
 
     public AvoidDuplicateLiteralsRule() {
@@ -112,7 +112,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             ExceptionParser p = new ExceptionParser(getProperty(SEPARATOR_DESCRIPTOR));
             exceptions = p.parse(getProperty(EXCEPTION_LIST_DESCRIPTOR));
         } else if (getProperty(EXCEPTION_FILE_DESCRIPTOR) != null) {
-            exceptions = new HashSet<String>();
+            exceptions = new HashSet<>();
             LineNumberReader reader = null;
             try {
                 reader = getLineReader();
@@ -179,7 +179,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             List<ASTLiteral> occurrences = literals.get(image);
             occurrences.add(node);
         } else {
-            List<ASTLiteral> occurrences = new ArrayList<ASTLiteral>();
+            List<ASTLiteral> occurrences = new ArrayList<>();
             occurrences.add(node);
             literals.put(image, occurrences);
         }

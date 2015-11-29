@@ -167,11 +167,11 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
 
     private Report createEmptyReportWithSuppression() {
         Report rep = new Report();
-        Map<Integer, String> suppressions = new HashMap<Integer, String>();
+        Map<Integer, String> suppressions = new HashMap<>();
         suppressions.put(1, "test");
         rep.suppress(suppressions);
         RuleContext ctx = new RuleContext();
-        ParametricRuleViolation<Node> violation = new ParametricRuleViolation<Node>(new FooRule(), ctx, null,
+        ParametricRuleViolation<Node> violation = new ParametricRuleViolation<>(new FooRule(), ctx, null,
                 "suppress test");
         violation.setLines(1, 1);
         rep.addRuleViolation(violation);

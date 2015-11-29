@@ -46,7 +46,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
     public UselessOverridingMethodRule() {
         definePropertyDescriptor(IGNORE_ANNOTATIONS_DESCRIPTOR);
 
-        exceptions = new ArrayList<String>(1);
+        exceptions = new ArrayList<>(1);
         exceptions.add("CloneNotSupportedException");
     }
 
@@ -229,7 +229,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
     }
 
     public <T> List<T> findFirstDegreeChildrenOfType(Node n, Class<T> targetType) {
-        List<T> l = new ArrayList<T>();
+        List<T> l = new ArrayList<>();
         lclFindChildrenOfType(n, targetType, l);
         return l;
     }

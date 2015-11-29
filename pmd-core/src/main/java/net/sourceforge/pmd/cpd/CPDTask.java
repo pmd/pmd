@@ -54,7 +54,7 @@ public class CPDTask extends Task {
     private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
     private File outputFile;
     private String encoding = System.getProperty("file.encoding");
-    private List<FileSet> filesets = new ArrayList<FileSet>();
+    private List<FileSet> filesets = new ArrayList<>();
 
     public void execute() throws BuildException {
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();

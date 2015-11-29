@@ -75,7 +75,7 @@ public class DBURITest {
         String query = dburi.getQuery();
         if (null != query && !query.equals("")) {
             String[] params = query.split("&");
-            Map<String, String> map = new HashMap<String, String>();
+            Map<String, String> map = new HashMap<>();
             for (String param : params) {
                 String[] splits = param.split("=");
                 String name = splits[0];
@@ -186,9 +186,9 @@ public class DBURITest {
     public void testGetSchemasList() throws URISyntaxException, Exception {
         System.out.println("getSchemasList");
         DBURI instance = new DBURI(C_ORACLE_OCI_2);
-        List expResult;
+        List<String> expResult;
         expResult = Arrays.asList("scott,hr,sh,system".split(","));
-        List result = instance.getSchemasList();
+        List<String> result = instance.getSchemasList();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.
@@ -216,8 +216,8 @@ public class DBURITest {
     public void testGetSourceCodeTypesList() throws URISyntaxException, Exception {
         System.out.println("getSourceCodeTypesList");
         DBURI instance = new DBURI(C_ORACLE_OCI_2);
-        List expResult = Arrays.asList("procedures,functions,triggers,package,types".split(","));
-        List result = instance.getSourceCodeTypesList();
+        List<String> expResult = Arrays.asList("procedures,functions,triggers,package,types".split(","));
+        List<String> result = instance.getSourceCodeTypesList();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.
@@ -245,8 +245,8 @@ public class DBURITest {
     public void testGetSourceCodeNamesList() throws URISyntaxException, Exception {
         System.out.println("getSourceCodeNamesList");
         DBURI instance = new DBURI(C_ORACLE_OCI_3);
-        List expResult = Arrays.asList("PKG_%%,PRC_%%".split(","));
-        List result = instance.getSourceCodeNamesList();
+        List<String> expResult = Arrays.asList("PKG_%%,PRC_%%".split(","));
+        List<String> result = instance.getSourceCodeNamesList();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.
@@ -274,8 +274,8 @@ public class DBURITest {
     public void testGetLanguagesList() throws URISyntaxException, Exception {
         System.out.println("getLanguagesList");
         DBURI instance = new DBURI(C_ORACLE_OCI_2);
-        List expResult = Arrays.asList("plsql,java".split(","));
-        List result = instance.getLanguagesList();
+        List<String> expResult = Arrays.asList("plsql,java".split(","));
+        List<String> result = instance.getLanguagesList();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.
@@ -471,11 +471,11 @@ public class DBURITest {
     public void testGetParameters() throws URISyntaxException, Exception {
         System.out.println("getParameters");
         DBURI instance = new DBURI(C_TEST_URI);
-        Map expResult = new HashMap<String, String>();
+        Map<String, String> expResult = new HashMap<>();
         expResult.put("param1", "x&1");
         expResult.put("param2", null);
         expResult.put("param3", null);
-        Map result = instance.getParameters();
+        Map<String, String> result = instance.getParameters();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.
@@ -488,7 +488,7 @@ public class DBURITest {
     @Test
     public void testSetParameters() throws URISyntaxException, Exception {
         System.out.println("setParameters");
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put("param1", "x%FFF");
         parameters.put("param2", "IAmParameter2");
         parameters.put("param3", "IAmParameter3");
