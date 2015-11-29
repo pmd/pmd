@@ -68,7 +68,7 @@ import org.mozilla.javascript.ast.XmlString;
 
 public final class EcmascriptTreeBuilder implements NodeVisitor {
 
-    private static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>>();
+    private static final Map<Class<? extends AstNode>, Constructor<? extends EcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
     static {
 	register(ArrayComprehension.class, ASTArrayComprehension.class);
 	register(ArrayComprehensionLoop.class, ASTArrayComprehensionLoop.class);
@@ -133,13 +133,13 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
     }
 
     private List<ParseProblem> parseProblems;
-    private Map<ParseProblem, TrailingCommaNode> parseProblemToNode = new HashMap<ParseProblem, TrailingCommaNode>();
+    private Map<ParseProblem, TrailingCommaNode> parseProblemToNode = new HashMap<>();
 
     // The nodes having children built.
-    private Stack<Node> nodes = new Stack<Node>();
+    private Stack<Node> nodes = new Stack<>();
 
     // The Rhino nodes with children to build.
-    private Stack<AstNode> parents = new Stack<AstNode>();
+    private Stack<AstNode> parents = new Stack<>();
 
     private final SourceCodePositioner sourceCodePositioner;
 
@@ -225,7 +225,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 		    if ("Trailing comma is not legal in an ECMA-262 object initializer".equals(parseProblem.getMessage())) {
 			// Report on the shortest code block containing the
 			// problem (i.e. inner most code in nested structures).
-			EcmascriptNode<? extends AstNode> currentNode = (EcmascriptNode<? extends AstNode>) parseProblemToNode.get(parseProblem);
+			EcmascriptNode<?> currentNode = (EcmascriptNode<?>) parseProblemToNode.get(parseProblem);
 			if (currentNode == null || node.getNode().getLength() < currentNode.getNode().getLength()) {
 			    parseProblemToNode.put(parseProblem, trailingCommaNode);
 			}
@@ -238,7 +238,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
     private void calculateLineNumbers(EcmascriptNode<?> node) {
 	EcmascriptParserVisitorAdapter visitor = new EcmascriptParserVisitorAdapter() {
 	    @Override
-	    public Object visit(EcmascriptNode node, Object data) {
+	    public Object visit(EcmascriptNode<?> node, Object data) {
 	        ((AbstractEcmascriptNode<?>)node).calculateLineNumbers(sourceCodePositioner);
 	        return super.visit(node, data); // also visit the children
 	    }

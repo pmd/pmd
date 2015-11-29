@@ -72,9 +72,9 @@ public class ASTMethod extends AbstractVmNode {
     public static class MethodCacheKey {
         private final String methodName;
 
-        private final Class[] params;
+        private final Class<?>[] params;
 
-        public MethodCacheKey(final String methodName, final Class[] params) {
+        public MethodCacheKey(final String methodName, final Class<?>[] params) {
             /**
              * Should never be initialized with nulls, but to be safe we refuse to accept them.
              */
@@ -120,7 +120,7 @@ public class ASTMethod extends AbstractVmNode {
              * note we skip the null test for methodName and params due to the earlier test in the constructor
              */
             for (int i = 0; i < params.length; ++i) {
-                final Class param = params[i];
+                final Class<?> param = params[i];
                 if (param != null) {
                     result = result * 37 + param.hashCode();
                 }

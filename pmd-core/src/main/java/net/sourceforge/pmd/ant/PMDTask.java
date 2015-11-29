@@ -20,8 +20,8 @@ public class PMDTask extends Task {
 
     private Path classpath;
     private Path auxClasspath;
-    private final List<Formatter> formatters = new ArrayList<Formatter>();
-    private final List<FileSet> filesets = new ArrayList<FileSet>();
+    private final List<Formatter> formatters = new ArrayList<>();
+    private final List<FileSet> filesets = new ArrayList<>();
     private boolean failOnError;
     private boolean failOnRuleViolation;
     private boolean shortFilenames;
@@ -33,7 +33,7 @@ public class PMDTask extends Task {
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
     private SourceLanguage sourceLanguage;
-    private final Collection<RuleSetWrapper> nestedRules = new ArrayList<RuleSetWrapper>();
+    private final Collection<RuleSetWrapper> nestedRules = new ArrayList<>();
 
     @Override
     public void execute() throws BuildException {

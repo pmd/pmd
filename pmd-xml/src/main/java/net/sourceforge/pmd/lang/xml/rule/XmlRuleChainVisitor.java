@@ -17,7 +17,7 @@ public class XmlRuleChainVisitor extends AbstractRuleChainVisitor {
 
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
 	// Visit Nodes in DFS order
-	Stack<Node> stack = new Stack<Node>();
+	Stack<Node> stack = new Stack<>();
 	stack.addAll(nodes);
 	Collections.reverse(stack);
 	while (!stack.isEmpty()) {

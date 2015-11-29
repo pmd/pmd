@@ -126,7 +126,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
          * @return a list of MethodCalls, might be empty.
          */
         public static List<MethodCall> createMethodCalls(ASTPrimaryExpression expression) {
-            List<MethodCall> result = new ArrayList<MethodCall>();
+            List<MethodCall> result = new ArrayList<>();
 
             if (isNotAConstructorCall(expression) && isNotLiteral(expression) && hasSuffixesWithArguments(expression)) {
                 ASTPrimaryPrefix prefixNode = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
@@ -164,7 +164,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
 
         private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {
-            List<ASTPrimarySuffix> result = new ArrayList<ASTPrimarySuffix>();
+            List<ASTPrimarySuffix> result = new ArrayList<>();
             if (hasRealPrefix(expr)) {
                 List<ASTPrimarySuffix> suffixes = expr.findDescendantsOfType(ASTPrimarySuffix.class);
                 for (ASTPrimarySuffix suffix : suffixes) {
@@ -306,7 +306,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
         
         private Assignment determineLastAssignment() {
-            List<Assignment> assignments = new ArrayList<Assignment>();
+            List<Assignment> assignments = new ArrayList<>();
             
             ASTBlock block = expression.getFirstParentOfType(ASTMethodDeclaration.class).getFirstChildOfType(ASTBlock.class);
             

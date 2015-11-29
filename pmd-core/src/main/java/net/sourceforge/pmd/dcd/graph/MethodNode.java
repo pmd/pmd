@@ -31,7 +31,7 @@ public class MethodNode extends MemberNode<MethodNode, Method> {
 			TypeSignatureVisitor visitor = new TypeSignatureVisitor();
 			signatureReader.accept(visitor);
 			method = ClassLoaderUtil.getMethod(super.getClassNode().getType(), name, visitor.getMethodParameterTypes());
-			methodReference = new WeakReference<Method>(method);
+			methodReference = new WeakReference<>(method);
 		}
 		return method;
 	}

@@ -15,7 +15,7 @@ public class CurrentPath {
     private final List<DataFlowNode> list;
 
     public CurrentPath() {
-        list = new ArrayList<DataFlowNode>();
+        list = new ArrayList<>();
     }
 
     public int getLength() {

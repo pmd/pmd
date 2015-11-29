@@ -83,10 +83,10 @@ public class NonRuleWithAllPropertyTypes extends AbstractRule {
     public static final MethodMultiProperty multiMethod = new MethodMultiProperty("multiMethod", "Multiple methods",
             new Method[] { stringLength, stringToLowerCase }, new String[] { "java.lang" }, 6.0f);
 
-    public static final EnumeratedProperty<Class> enumType = new EnumeratedProperty<Class>("enumType",
+    public static final EnumeratedProperty<Class> enumType = new EnumeratedProperty<>("enumType",
             "Enumerated choices", new String[] { "String", "Object" }, new Class[] { String.class, Object.class }, 1,
             5.0f);
-    public static final EnumeratedMultiProperty<Class> multiEnumType = new EnumeratedMultiProperty<Class>(
+    public static final EnumeratedMultiProperty<Class> multiEnumType = new EnumeratedMultiProperty<>(
             "multiEnumType", "Multiple enumerated choices", new String[] { "String", "Object" }, new Class[] {
                     String.class, Object.class }, new int[] { 0, 1 }, 5.0f);
 

@@ -339,7 +339,7 @@ public final class StringUtil {
             return new String[] { str };
         }
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         int currPos = 0;
         int len = separator.length();
         while (index != -1) {

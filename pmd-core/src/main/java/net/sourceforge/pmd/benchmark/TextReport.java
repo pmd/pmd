@@ -65,7 +65,7 @@ public class TextReport implements BenchmarkReport {
 	 */
 	public void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream out) {
 
-		List<BenchmarkResult> results = new ArrayList<BenchmarkResult>(benchmarksByName.values());
+		List<BenchmarkResult> results = new ArrayList<>(benchmarksByName.values());
 
 		long[] totalTime = new long[Benchmark.TotalPMD.index + 1];
 		long[] totalCount = new long[Benchmark.TotalPMD.index + 1];

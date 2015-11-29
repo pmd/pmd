@@ -113,7 +113,7 @@ public class AbstractRuleTest {
     public void testRuleSuppress() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
-        Map<Integer, String> m = new HashMap<Integer, String>();
+        Map<Integer, String> m = new HashMap<>();
         m.put(Integer.valueOf(5), "");
         ctx.setReport(new Report());
         ctx.getReport().suppress(m);

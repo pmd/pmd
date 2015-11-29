@@ -34,7 +34,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * Subclasses can manage RuleChain visits via this list.
      */
-    protected final List<String> ruleChainVisits = new ArrayList<String>();
+    protected final List<String> ruleChainVisits = new ArrayList<>();
 
     /**
      * {@inheritDoc}

@@ -47,7 +47,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
                 continue;
             }
 
-            int result = initializedInConstructor(entry.getValue(), new HashSet<ASTConstructorDeclaration>(constructors));
+            int result = initializedInConstructor(entry.getValue(), new HashSet<>(constructors));
             if (result == MUTABLE) {
                 continue;
             }
@@ -65,7 +65,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
     private int initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
         int result = MUTABLE;
         int methodInitCount = 0;
-        Set<Node> consSet = new HashSet<Node>();
+        Set<Node> consSet = new HashSet<>();
         for (NameOccurrence occ: usages) {
             JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
             if (jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) {
@@ -117,7 +117,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
     }
 
     private List<ASTConstructorDeclaration> findAllConstructors(ASTClassOrInterfaceDeclaration node) {
-        List<ASTConstructorDeclaration> cons = new ArrayList<ASTConstructorDeclaration>();
+        List<ASTConstructorDeclaration> cons = new ArrayList<>();
         node.getFirstChildOfType(ASTClassOrInterfaceBody.class)
             .findDescendantsOfType(ASTConstructorDeclaration.class, cons, false);
         return cons;

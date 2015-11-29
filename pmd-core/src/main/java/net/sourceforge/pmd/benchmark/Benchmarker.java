@@ -103,7 +103,7 @@ public class Benchmarker {
             if (debug) {
         		System.out.println("Checking directory " + srcDir);
             }
-            Set<RuleDuration> results = new TreeSet<RuleDuration>();
+            Set<RuleDuration> results = new TreeSet<>();
             RuleSetFactory factory = new RuleSetFactory();
             if (StringUtil.isNotEmpty(ruleset)) {
                 stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
@@ -185,7 +185,7 @@ public class Benchmarker {
         }
     }
 
-    private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<String, BenchmarkResult>();
+    private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
 
     /**
      * @param type Benchmark

@@ -20,7 +20,7 @@ public final class LanguageRegistry {
     private Map<String, Language> languages;
 
     private LanguageRegistry() {
-        languages = new HashMap<String, Language>();
+        languages = new HashMap<>();
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
         for (Language language : languageLoader) {
             languages.put(language.getName(), language);
@@ -52,11 +52,15 @@ public final class LanguageRegistry {
         return null;
     }
 
-    public static LanguageVersion findLanguageVersionByTerseName(String terseName) {
-        String version = null;
-        if (terseName.contains(" ")) {
-            version = terseName.substring(terseName.lastIndexOf(' ') + 1);
-            terseName = terseName.substring(0, terseName.lastIndexOf(' '));
+    public static LanguageVersion findLanguageVersionByTerseName(String terseNameAndVersion) {
+        String version;
+        String terseName;
+        if (terseNameAndVersion.contains(" ")) {
+            version = terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1);
+            terseName = terseNameAndVersion.substring(0, terseNameAndVersion.lastIndexOf(' '));
+        } else {
+            version = null;
+            terseName = terseNameAndVersion;
         }
         Language language = findLanguageByTerseName(terseName);
         if (language != null) {
@@ -70,7 +74,7 @@ public final class LanguageRegistry {
     }
 
     public static List<Language> findByExtension(String extension) {
-        List<Language> languages = new ArrayList<Language>();
+        List<Language> languages = new ArrayList<>();
         for (Language language : getInstance().languages.values()) {
             if (language.hasExtension(extension)) {
                 languages.add(language);
@@ -80,7 +84,7 @@ public final class LanguageRegistry {
     }
 
     public static List<LanguageVersion> findAllVersions() {
-        List<LanguageVersion> versions = new ArrayList<LanguageVersion>();
+        List<LanguageVersion> versions = new ArrayList<>();
         for (Language language : getLanguages()) {
             for (LanguageVersion languageVersion : language.getVersions()) {
                 versions.add(languageVersion);
@@ -95,7 +99,7 @@ public final class LanguageRegistry {
      * @return A List of Languages with Rule support.
      */
     public static List<Language> findWithRuleSupport() {
-        List<Language> languages = new ArrayList<Language>();
+        List<Language> languages = new ArrayList<>();
         for (Language language : getInstance().languages.values()) {
             if (language.getRuleChainVisitorClass() != null) {
                 languages.add(language);

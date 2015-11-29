@@ -306,13 +306,13 @@ public class DBMSMetadata
   {
 
     ResultSet sourceCodeObjects =  null ;
-    List<SourceObject> sourceObjectsList = new ArrayList<SourceObject>() ;
+    List<SourceObject> sourceObjectsList = new ArrayList<>();
                                                                   
     List<String> searchLanguages  =  languages ;
     List<String> searchSchemas  =  schemas ;
     List<String> searchSourceCodeTypes  =  sourceCodeTypes ;
     List<String> searchSourceCodeNames  =  sourceCodeNames ;
-    List<String> wildcardList  =  Arrays.asList(new String[] {"%"} );
+    List<String> wildcardList  =  Arrays.asList("%");
 
     /*
      * Assign each search list to the first 
@@ -324,7 +324,7 @@ public class DBMSMetadata
      */
     if( null == searchLanguages ) 
     {
-      List dbURIList = (null == dburi) ? null :  dburi.getLanguagesList() ;
+      List<String> dbURIList = (null == dburi) ? null :  dburi.getLanguagesList() ;
       if (null == dbURIList || dbURIList.isEmpty())
       {
         searchLanguages = wildcardList;
@@ -337,7 +337,7 @@ public class DBMSMetadata
 
     if( null == searchSchemas ) 
     {
-      List dbURIList = (null == dburi) ? null :  dburi.getSchemasList() ;
+      List<String> dbURIList = (null == dburi) ? null :  dburi.getSchemasList() ;
       if (null == dbURIList || dbURIList.isEmpty())
       {
         searchSchemas = wildcardList;
@@ -350,7 +350,7 @@ public class DBMSMetadata
 
     if( null == searchSourceCodeTypes ) 
     {
-      List dbURIList = (null == dburi) ? null :  dburi.getSourceCodeTypesList() ;
+      List<String> dbURIList = (null == dburi) ? null :  dburi.getSourceCodeTypesList() ;
       if (null == dbURIList || dbURIList.isEmpty())
       {
         searchSourceCodeTypes = wildcardList;
@@ -363,7 +363,7 @@ public class DBMSMetadata
 
     if( null == searchSourceCodeNames ) 
     {
-      List dbURIList = (null == dburi) ? null :  dburi.getSourceCodeNamesList() ;
+      List<String> dbURIList = (null == dburi) ? null :  dburi.getSourceCodeNamesList() ;
       if (null == dbURIList || dbURIList.isEmpty())
       {
         searchSourceCodeNames = wildcardList;

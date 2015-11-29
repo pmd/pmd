@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
  */
 public class AccessorClassGenerationRule extends AbstractJavaRule {
 
-    private List<ClassData> classDataList = new ArrayList<ClassData>();
+    private List<ClassData> classDataList = new ArrayList<>();
     private int classID = -1;
     private String packageName;
 
@@ -59,9 +59,9 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
 
         public ClassData(String className) {
             this.className = className;
-            this.privateConstructors = new ArrayList<ASTConstructorDeclaration>();
-            this.instantiations = new ArrayList<AllocData>();
-            this.classQualifyingNames = new ArrayList<String>();
+            this.privateConstructors = new ArrayList<>();
+            this.instantiations = new ArrayList<>();
+            this.classQualifyingNames = new ArrayList<>();
         }
 
         public void addInstantiation(AllocData ad) {

@@ -30,7 +30,7 @@ public class SourceCode {
             if (c != null) {
                 return c;
             }
-            this.code = new SoftReference<List<String>>(load());
+            this.code = new SoftReference<>(load());
             return code.get();
         }
 
@@ -42,7 +42,7 @@ public class SourceCode {
             LineNumberReader lnr = null;
             try {
                 lnr = new LineNumberReader(getReader());
-                List<String> lines = new ArrayList<String>();
+                List<String> lines = new ArrayList<>();
                 String currentLine;
                 while ((currentLine = lnr.readLine()) != null) {
                     lines.add(currentLine);

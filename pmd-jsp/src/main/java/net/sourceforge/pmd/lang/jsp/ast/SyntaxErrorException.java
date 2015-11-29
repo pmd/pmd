@@ -10,6 +10,8 @@ package net.sourceforge.pmd.lang.jsp.ast;
  * @since Created on 11-jan-2006
  */
 public abstract class SyntaxErrorException extends ParseException {
+    private static final long serialVersionUID = -6702683724078264059L;
+
     private int line;
     private String ruleName;
 

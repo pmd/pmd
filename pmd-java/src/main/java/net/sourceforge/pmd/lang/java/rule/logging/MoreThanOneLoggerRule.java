@@ -47,7 +47,7 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
 	SLF4J_LOGGER = c;
     }
 
-    private Stack<Integer> stack = new Stack<Integer>();
+    private Stack<Integer> stack = new Stack<>();
 
     private Integer count;
 

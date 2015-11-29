@@ -29,7 +29,7 @@ public class ApplierTest {
     @Test
     public void testSimple() {
         MyFunction f = new MyFunction();
-        List<Object> l = new ArrayList<Object>();
+        List<Object> l = new ArrayList<>();
         l.add(new Object());
         Applier.apply(f, l.iterator());
         assertTrue(f.gotCallback());

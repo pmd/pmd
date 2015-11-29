@@ -14,14 +14,14 @@ public class ASTSwitchLabelTest extends ParserTst {
 
     @Test
     public void testDefaultOff() throws Throwable {
-        Set ops = getNodes(ASTSwitchLabel.class, TEST1);
-        assertFalse(((ASTSwitchLabel) (ops.iterator().next())).isDefault());
+        Set<ASTSwitchLabel> ops = getNodes(ASTSwitchLabel.class, TEST1);
+        assertFalse(ops.iterator().next().isDefault());
     }
 
     @Test
     public void testDefaultSet() throws Throwable {
-        Set ops = getNodes(ASTSwitchLabel.class, TEST2);
-        assertTrue(((ASTSwitchLabel) (ops.iterator().next())).isDefault());
+        Set<ASTSwitchLabel> ops = getNodes(ASTSwitchLabel.class, TEST2);
+        assertTrue(ops.iterator().next().isDefault());
     }
 
 

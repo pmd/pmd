@@ -21,9 +21,9 @@ public class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
 	return node.isDefault();
     }
 
-    public EcmascriptNode getExpression() {
+    public EcmascriptNode<?> getExpression() {
 	if (!isDefault()) {
-	    return (EcmascriptNode) jjtGetChild(0);
+	    return (EcmascriptNode<?>) jjtGetChild(0);
 	} else {
 	    return null;
 	}
@@ -34,10 +34,11 @@ public class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
 	return node.getStatements() != null ? node.getStatements().size() : 0;
     }
 
-    public EcmascriptNode getStatement(int index) {
+    public EcmascriptNode<?> getStatement(int index) {
+        int statementIndex = index;
 	if (!isDefault()) {
-	    index++;
+	    statementIndex++;
 	}
-	return (EcmascriptNode) jjtGetChild(index);
+	return (EcmascriptNode<?>) jjtGetChild(statementIndex);
     }
 }

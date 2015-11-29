@@ -403,7 +403,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
      */
     public Map<String, String> attributeValuesById() {
 
-        Map<String, String> values = new HashMap<String, String>();
+        Map<String, String> values = new HashMap<>();
         addAttributesTo(values);
         return values;
     }

@@ -46,7 +46,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
      * StringBuffer declarations - check each usage - flag those that involve
      * variable.toString()
      */
-    private Set<NameDeclaration> alreadySeen = new HashSet<NameDeclaration>();
+    private Set<NameDeclaration> alreadySeen = new HashSet<>();
 
     @Override
     public Object visit(ASTMethodDeclaration acu, Object data) {

@@ -142,7 +142,7 @@ public class GUI implements CPDListener {
     }
 
 	private static final int		DEFAULT_CPD_MINIMUM_LENGTH = 75;
-	private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<String, LanguageConfig>(LANGUAGE_SETS.length);
+	private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<>(LANGUAGE_SETS.length);
 	private static final KeyStroke	COPY_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.CTRL_MASK,false);
 	private static final KeyStroke	DELETE_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 
@@ -158,10 +158,10 @@ public class GUI implements CPDListener {
 			width = aWidth;
 			sorter = aSorter;
 		}
-		public String label() { return label; };
-		public int alignment() { return alignment; };
-		public int width() { return width; };
-		public Comparator<Match> sorter() { return sorter; };
+		public String label() { return label; }
+		public int alignment() { return alignment; }
+		public int width() { return width; }
+		public Comparator<Match> sorter() { return sorter; }
 	}
 
 	private final ColumnSpec[] matchColumns = new ColumnSpec[] {
@@ -255,12 +255,12 @@ public class GUI implements CPDListener {
     }
 
 	private class AlignmentRenderer extends DefaultTableCellRenderer {
-
-		private int[] alignments;
+        private static final long serialVersionUID = -2190382865483285032L;
+        private int[] alignments;
 
 		public AlignmentRenderer(int[] theAlignments) {
 			alignments = theAlignments;
-		};
+		}
 
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -283,7 +283,7 @@ public class GUI implements CPDListener {
     private JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreAnnotationsCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreUsingsCheckbox  = new JCheckBox("", false);
-    private JComboBox languageBox			= new JComboBox();
+    private JComboBox<String> languageBox	= new JComboBox<>();
     private JTextField extensionField		= new JTextField();
     private JLabel extensionLabel			= new JLabel("Extension:", SwingConstants.RIGHT);
     private JTable resultsTable				= new JTable();
@@ -293,7 +293,7 @@ public class GUI implements CPDListener {
     private JFrame frame;
     private boolean trimLeadingWhitespace;
 
-    private List<Match> matches = new ArrayList<Match>();
+    private List<Match> matches = new ArrayList<>();
 
     private void addSaveOptionsTo(JMenu menu) {
 
@@ -387,7 +387,7 @@ public class GUI implements CPDListener {
         helper.add(minimumLengthField);
         helper.addLabel("Language:");
         for (int i=0; i<LANGUAGE_SETS.length; i++) {
-        	languageBox.addItem(LANGUAGE_SETS[i][0]);
+        	languageBox.addItem(String.valueOf(LANGUAGE_SETS[i][0]));
         }
         languageBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -474,7 +474,7 @@ public class GUI implements CPDListener {
     private void populateResultArea() {
     	int[] selectionIndices = resultsTable.getSelectedRows();
     	TableModel model = resultsTable.getModel();
-    	List<Match> selections = new ArrayList<Match>(selectionIndices.length);
+    	List<Match> selections = new ArrayList<>(selectionIndices.length);
     	for (int i=0; i<selectionIndices.length; i++) {
     		selections.add((Match)model.getValueAt(selectionIndices[i], 99));
     	}
@@ -561,7 +561,7 @@ public class GUI implements CPDListener {
 
     private String setLabelFor(Match match) {
 
-    	Set<String> sourceIDs = new HashSet<String>(match.getMarkCount());
+    	Set<String> sourceIDs = new HashSet<>(match.getMarkCount());
     	for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
              sourceIDs.add(occurrences.next().getFilename());
           }
@@ -631,14 +631,14 @@ public class GUI implements CPDListener {
             cpd.go();
             t.stop();
 
-        	matches = new ArrayList<Match>();
+        	matches = new ArrayList<>();
         	for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
         		Match match = i.next();
         		setLabelFor(match);
         		matches.add(match);
         	}
 
-            setListDataFrom(cpd.getMatches());
+            setListDataFrom(matches);
             String report = new SimpleRenderer().render(cpd.getMatches());
             if (report.length() == 0) {
                 JOptionPane.showMessageDialog(frame,
@@ -716,10 +716,10 @@ public class GUI implements CPDListener {
 			public String getColumnName(int i) {	return matchColumns[i].label();	}
 			public void addTableModelListener(TableModelListener l) { }
 			public void removeTableModelListener(TableModelListener l) { }
-			public int sortColumn() { return sortColumn; };
-			public void sortColumn(int column) { sortColumn = column; };
-			public boolean sortDescending() { return sortDescending; };
-			public void sortDescending(boolean flag) { sortDescending = flag; };
+			public int sortColumn() { return sortColumn; }
+			public void sortColumn(int column) { sortColumn = column; }
+			public boolean sortDescending() { return sortDescending; }
+			public void sortDescending(boolean flag) { sortDescending = flag; }
 			public void sort(Comparator<Match> comparator) {
 				Collections.sort(items, comparator);
 				if (sortDescending) {
@@ -744,7 +744,7 @@ public class GUI implements CPDListener {
     	resultsTable.repaint();
     }
 
-    private void setListDataFrom(Iterator iter) {
+    private void setListDataFrom(List<Match> matches) {
 
     	resultsTable.setModel(tableModelFrom(matches));
 

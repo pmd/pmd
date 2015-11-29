@@ -23,7 +23,7 @@ public class RuleSets {
     /**
      * Map of RuleLanguage on RuleSet.
      */
-    private Collection<RuleSet> ruleSets = new ArrayList<RuleSet>();
+    private Collection<RuleSet> ruleSets = new ArrayList<>();
 
     /**
      * RuleChain for efficient AST visitation.
@@ -77,7 +77,7 @@ public class RuleSets {
      * @return Set
      */
     public Set<Rule> getAllRules() {
-		Set<Rule> result = new HashSet<Rule>();
+		Set<Rule> result = new HashSet<>();
 		for (RuleSet r : ruleSets) {
 		    result.addAll(r.getRules());
 		}

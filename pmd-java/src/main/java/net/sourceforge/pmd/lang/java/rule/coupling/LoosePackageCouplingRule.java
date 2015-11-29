@@ -64,7 +64,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
         // Sort the restricted packages in reverse order. This will ensure the
         // child packages are in the list before their parent packages.
-        this.restrictedPackages = new ArrayList<String>(Arrays.asList(super.getProperty(PACKAGES_DESCRIPTOR)));
+        this.restrictedPackages = new ArrayList<>(Arrays.asList(super.getProperty(PACKAGES_DESCRIPTOR)));
         Collections.sort(restrictedPackages, Collections.reverseOrder());
 
         return data;

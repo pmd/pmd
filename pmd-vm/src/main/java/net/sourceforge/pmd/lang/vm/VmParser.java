@@ -39,6 +39,6 @@ public class VmParser extends AbstractParser {
     }
 
     public Map<Integer, String> getSuppressMap() {
-        return new HashMap<Integer, String>(); // FIXME
+        return new HashMap<>(); // FIXME
     }
 }

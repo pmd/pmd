@@ -21,7 +21,7 @@ public final class JspRuleViolationFactory extends AbstractRuleViolationFactory 
 
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-    	return new ParametricRuleViolation<JspNode>(rule, ruleContext, (JspNode) node, message);
+    	return new ParametricRuleViolation<>(rule, ruleContext, (JspNode) node, message);
     }
     
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {

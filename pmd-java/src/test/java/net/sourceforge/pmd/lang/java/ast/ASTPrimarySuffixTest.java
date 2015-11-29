@@ -13,14 +13,14 @@ public class ASTPrimarySuffixTest extends ParserTst {
 
     @Test
     public void testArrayDereference() throws Throwable {
-        Set ops = getNodes(ASTPrimarySuffix.class, TEST1);
-        assertTrue(((ASTPrimarySuffix) (ops.iterator().next())).isArrayDereference());
+        Set<ASTPrimarySuffix> ops = getNodes(ASTPrimarySuffix.class, TEST1);
+        assertTrue(ops.iterator().next().isArrayDereference());
     }
 
     @Test
     public void testArguments() throws Throwable {
-        Set ops = getNodes(ASTPrimarySuffix.class, TEST2);
-        assertTrue(((ASTPrimarySuffix) (ops.iterator().next())).isArguments());
+        Set<ASTPrimarySuffix> ops = getNodes(ASTPrimarySuffix.class, TEST2);
+        assertTrue(ops.iterator().next().isArguments());
     }
 
     private static final String TEST1 =

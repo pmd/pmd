@@ -40,7 +40,7 @@ public class EcmascriptParserOptions extends ParserOptions {
 	public int getVersion() {
 	    return version;
 	}
-    };
+    }
 
     private static final String[] VERSION_LABELS = new String[] { Version.VERSION_DEFAULT.getLabel(),
 	    Version.VERSION_1_0.getLabel(), Version.VERSION_1_1.getLabel(), Version.VERSION_1_2.getLabel(),
@@ -52,7 +52,7 @@ public class EcmascriptParserOptions extends ParserOptions {
 	    "Specifies that comments are produced in the AST.", Boolean.TRUE, 3.0f);
     public static final BooleanProperty RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = new BooleanProperty(
 	    "recordingLocalJsDocComments", "Specifies that JsDoc comments are produced in the AST.", Boolean.TRUE, 4.0f);
-    public static final EnumeratedProperty<Version> RHINO_LANGUAGE_VERSION = new EnumeratedProperty<Version>(
+    public static final EnumeratedProperty<Version> RHINO_LANGUAGE_VERSION = new EnumeratedProperty<>(
 	    "rhinoLanguageVersion",
 	    "Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.", VERSION_LABELS,
 	    Version.values(), 0, 5.0f);

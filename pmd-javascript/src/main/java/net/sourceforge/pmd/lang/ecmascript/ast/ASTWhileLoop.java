@@ -17,11 +17,11 @@ public class ASTWhileLoop extends AbstractEcmascriptNode<WhileLoop> {
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getCondition() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getCondition() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
-    public EcmascriptNode getBody() {
-	return (EcmascriptNode) jjtGetChild(1);
+    public EcmascriptNode<?> getBody() {
+	return (EcmascriptNode<?>) jjtGetChild(1);
     }
 }

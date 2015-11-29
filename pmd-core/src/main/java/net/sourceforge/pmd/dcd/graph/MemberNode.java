@@ -53,7 +53,7 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member> i
 
 	public void addUse(MemberNode use) {
 		if (uses == null) {
-			uses = new ArrayList<MemberNode>(1);
+			uses = new ArrayList<>(1);
 		}
 		if (!uses.contains(use)) {
 			uses.add(use);
@@ -66,7 +66,7 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member> i
 
 	public void addUser(MemberNode user) {
 		if (users == null) {
-			users = new ArrayList<MemberNode>(1);
+			users = new ArrayList<>(1);
 		}
 		if (!users.contains(user)) {
 			users.add(user);

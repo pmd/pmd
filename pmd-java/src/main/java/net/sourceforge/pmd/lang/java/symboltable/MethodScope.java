@@ -52,7 +52,7 @@ public class MethodScope extends AbstractJavaScope {
     }
 
     public Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
-        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
+        Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return result;
         }

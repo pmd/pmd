@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -46,7 +49,7 @@ public class XPathJspRuleTest extends RuleTst {
 
         assertEquals("One violation expected!", 1, report.size());
 
-        RuleViolation rv = (RuleViolation) report.iterator().next();
+        RuleViolation rv = report.iterator().next();
         assertEquals(1, rv.getBeginLine());
     }
 

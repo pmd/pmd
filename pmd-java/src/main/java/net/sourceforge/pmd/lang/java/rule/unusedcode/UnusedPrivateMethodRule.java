@@ -60,8 +60,8 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
         // some rather hideous hackery here
         // to work around the fact that PMD does not yet do full type analysis
         // when it does, delete this
-        Set<MethodNameDeclaration> unique = new HashSet<MethodNameDeclaration>();
-        Set<String> sigs = new HashSet<String>();
+        Set<MethodNameDeclaration> unique = new HashSet<>();
+        Set<String> sigs = new HashSet<>();
         for (MethodNameDeclaration mnd: methods.keySet()) {
             String sig = mnd.getImage() + mnd.getParameterCount() + mnd.isVarargs();
             if (!sigs.contains(sig)) {

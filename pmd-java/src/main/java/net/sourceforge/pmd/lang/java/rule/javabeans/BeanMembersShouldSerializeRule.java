@@ -59,7 +59,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
         Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
                 .getMethodDeclarations();
-        List<ASTMethodDeclarator> getSetMethList = new ArrayList<ASTMethodDeclarator>(methods.size());
+        List<ASTMethodDeclarator> getSetMethList = new ArrayList<>(methods.size());
         for (MethodNameDeclaration d : methods.keySet()) {
             ASTMethodDeclarator mnd = d.getMethodNameDeclaratorNode();
             if (isBeanAccessor(mnd)) {

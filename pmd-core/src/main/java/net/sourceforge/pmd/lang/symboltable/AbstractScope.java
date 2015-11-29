@@ -19,7 +19,7 @@ public abstract class AbstractScope implements Scope {
     private Scope parent;
     /** Stores the name declaration already sorted by class. */
     private Map<Class<? extends NameDeclaration>, Map<NameDeclaration, List<NameOccurrence>>> nameDeclarations =
-            new LinkedHashMap<Class<? extends NameDeclaration>, Map<NameDeclaration,List<NameOccurrence>>>();
+            new LinkedHashMap<>();
 
     @Override
     public Scope getParent() {
@@ -33,7 +33,7 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public Map<NameDeclaration, List<NameOccurrence>> getDeclarations() {
-        Map<NameDeclaration, List<NameOccurrence>> result = new LinkedHashMap<NameDeclaration, List<NameOccurrence>>();
+        Map<NameDeclaration, List<NameOccurrence>> result = new LinkedHashMap<>();
         for (Map<NameDeclaration, List<NameOccurrence>> e : nameDeclarations.values()) {
             result.putAll(e);
         }
@@ -45,7 +45,7 @@ public abstract class AbstractScope implements Scope {
         @SuppressWarnings("unchecked")
         Map<T, List<NameOccurrence>> result = (Map<T, List<NameOccurrence>>)nameDeclarations.get(clazz);
         if (result == null) {
-            result = new LinkedHashMap<T, List<NameOccurrence>>();
+            result = new LinkedHashMap<>();
         }
         return result;
     }
@@ -64,7 +64,7 @@ public abstract class AbstractScope implements Scope {
     public void addDeclaration(NameDeclaration declaration) {
         Map<NameDeclaration, List<NameOccurrence>> declarationsPerClass = nameDeclarations.get(declaration.getClass());
         if (declarationsPerClass == null) {
-            declarationsPerClass = new LinkedHashMap<NameDeclaration, List<NameOccurrence>>();
+            declarationsPerClass = new LinkedHashMap<>();
             nameDeclarations.put(declaration.getClass(), declarationsPerClass);
         }
         declarationsPerClass.put(declaration, new ArrayList<NameOccurrence>());

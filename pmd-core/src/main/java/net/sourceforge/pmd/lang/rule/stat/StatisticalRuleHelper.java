@@ -29,7 +29,7 @@ public class StatisticalRuleHelper {
     
     private AbstractRule rule;
 
-    private SortedSet<DataPoint> dataPoints = new TreeSet<DataPoint>();
+    private SortedSet<DataPoint> dataPoints = new TreeSet<>();
 
     private int count = 0;
     private double total = 0.0;
@@ -110,7 +110,7 @@ public class StatisticalRuleHelper {
     }
 
     private SortedSet<DataPoint> applyMinimumValue(SortedSet<DataPoint> pointSet, double minValue) {
-        SortedSet<DataPoint> rc = new TreeSet<DataPoint>();
+        SortedSet<DataPoint> rc = new TreeSet<>();
         double threshold = minValue - DELTA;
 
         for (DataPoint point: pointSet) {
@@ -122,7 +122,7 @@ public class StatisticalRuleHelper {
     }
 
     private SortedSet<DataPoint> applyTopScore(SortedSet<DataPoint> points, int topScore) {
-        SortedSet<DataPoint> s = new TreeSet<DataPoint>();
+        SortedSet<DataPoint> s = new TreeSet<>();
         DataPoint[] arr = points.toArray(new DataPoint[]{});
         for (int i = arr.length - 1; i >= (arr.length - topScore); i--) {
             s.add(arr[i]);

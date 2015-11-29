@@ -13,7 +13,7 @@ import java.util.TreeSet;
 public class Match implements Comparable<Match> {
 
     private int tokenCount;
-    private Set<Mark> markSet = new TreeSet<Mark>();    
+    private Set<Mark> markSet = new TreeSet<>();
     private String label;
     
     public static final Comparator<Match> MATCHES_COMPARATOR = new Comparator<Match>() {

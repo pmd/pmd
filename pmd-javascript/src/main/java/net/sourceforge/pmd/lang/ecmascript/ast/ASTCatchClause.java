@@ -26,8 +26,8 @@ public class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
 	return node.getCatchCondition() != null;
     }
 
-    public EcmascriptNode getCatchCondition() {
-	return (EcmascriptNode) jjtGetChild(1);
+    public EcmascriptNode<?> getCatchCondition() {
+	return (EcmascriptNode<?>) jjtGetChild(1);
     }
 
     public ASTBlock getBlock() {

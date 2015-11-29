@@ -17,19 +17,19 @@ public class ASTForLoop extends AbstractEcmascriptNode<ForLoop> {
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getInitializer() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getInitializer() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
-    public EcmascriptNode getCondition() {
-	return (EcmascriptNode) jjtGetChild(1);
+    public EcmascriptNode<?> getCondition() {
+	return (EcmascriptNode<?>) jjtGetChild(1);
     }
 
-    public EcmascriptNode getIncrement() {
-	return (EcmascriptNode) jjtGetChild(2);
+    public EcmascriptNode<?> getIncrement() {
+	return (EcmascriptNode<?>) jjtGetChild(2);
     }
 
-    public EcmascriptNode getBody() {
-	return (EcmascriptNode) jjtGetChild(3);
+    public EcmascriptNode<?> getBody() {
+	return (EcmascriptNode<?>) jjtGetChild(3);
     }
 }

@@ -34,7 +34,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
 
     private boolean lombokImported = false;
     private static final String LOMBOK_PACKAGE = "lombok";
-    private static final Set<String> LOMBOK_ANNOTATIONS = new HashSet<String>();
+    private static final Set<String> LOMBOK_ANNOTATIONS = new HashSet<>();
     static {
         LOMBOK_ANNOTATIONS.add("Data");
         LOMBOK_ANNOTATIONS.add("Getter");
@@ -136,7 +136,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
                 .findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
         List<ASTEnumConstant> enumConstants = body
                 .findChildrenOfType(ASTEnumConstant.class);
-        List<JavaNode> nodes = new ArrayList<JavaNode>();
+        List<JavaNode> nodes = new ArrayList<>();
         nodes.addAll(classOrInterfaceBodyDeclarations);
         nodes.addAll(enumConstants);
 

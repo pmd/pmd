@@ -61,7 +61,7 @@ public abstract class AbstractPLSQLParserTst {
     }
 
     public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String plsqlCode) throws Throwable {
-        Collector<E> coll = new Collector<E>(clazz);
+        Collector<E> coll = new Collector<>(clazz);
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 	ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
         PLSQLParserVisitor jpv = (PLSQLParserVisitor) Proxy.newProxyInstance(PLSQLParserVisitor.class.getClassLoader(), new Class[]{PLSQLParserVisitor.class}, coll);
@@ -70,7 +70,7 @@ public abstract class AbstractPLSQLParserTst {
     }
 
     public <E> List<E> getOrderedNodes(Class<E> clazz, String plsqlCode) throws Throwable {
-        Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
+        Collector<E> coll = new Collector<>(clazz, new ArrayList<E>());
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
         ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
         PLSQLParserVisitor jpv = (PLSQLParserVisitor) Proxy.newProxyInstance(PLSQLParserVisitor.class.getClassLoader(), new Class[]{PLSQLParserVisitor.class}, coll);
@@ -95,7 +95,7 @@ public abstract class AbstractPLSQLParserTst {
     public ASTInput buildDFA(String plsqlCode) throws Throwable {
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
 	ASTInput cu = (ASTInput)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(plsqlCode));
-        PLSQLParserVisitor jpv = (PLSQLParserVisitor) Proxy.newProxyInstance(PLSQLParserVisitor.class.getClassLoader(), new Class[]{PLSQLParserVisitor.class}, new Collector<ASTInput>(ASTInput.class));
+        PLSQLParserVisitor jpv = (PLSQLParserVisitor) Proxy.newProxyInstance(PLSQLParserVisitor.class.getClassLoader(), new Class[]{PLSQLParserVisitor.class}, new Collector<>(ASTInput.class));
         jpv.visit(cu, null);
         new SymbolFacade().initializeWith(cu);
         new DataFlowFacade().initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
@@ -113,6 +113,6 @@ public abstract class AbstractPLSQLParserTst {
     
     public Node parseLanguage(LanguageVersion languageVersion, String code) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-	return (Node)languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
+	return languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
     }
 }

@@ -78,7 +78,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	static {
 		// Note: Assumption here that primitives come from same parent ClassLoader regardless of what ClassLoader we are passed
-		Map<String, Class<?>> thePrimitiveTypes = new HashMap<String, Class<?>>();
+		Map<String, Class<?>> thePrimitiveTypes = new HashMap<>();
 		thePrimitiveTypes.put("void", Void.TYPE);
 		thePrimitiveTypes.put("boolean", Boolean.TYPE);
 		thePrimitiveTypes.put("byte", Byte.TYPE);
@@ -90,7 +90,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		thePrimitiveTypes.put("double", Double.TYPE);
 		PRIMITIVE_TYPES = Collections.unmodifiableMap(thePrimitiveTypes);
 
-		Map<String, String> theJavaLang = new HashMap<String, String>();
+		Map<String, String> theJavaLang = new HashMap<>();
 		theJavaLang.put("Boolean", "java.lang.Boolean");
 		theJavaLang.put("Byte", "java.lang.Byte");
 		theJavaLang.put("Character", "java.lang.Character");
@@ -146,8 +146,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	public Object visit(ASTCompilationUnit node, Object data) {
 		String className = null;
 		try {
-			importedOnDemand = new ArrayList<String>();
-			importedClasses = new HashMap<String, String>();
+			importedOnDemand = new ArrayList<>();
+			importedClasses = new HashMap<>();
 			className = getClassName(node);
 			if (className != null) {
 				populateClassName(node, className);
@@ -565,32 +565,28 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	// Roll up the type based on type of the first child node.
 	private void rollupTypeUnary(TypeNode typeNode) {
-		if (typeNode instanceof Node) {
-			Node node = (Node)typeNode;
-			if (node.jjtGetNumChildren() >= 1) {
-				Node child = node.jjtGetChild(0);
-				if (child instanceof TypeNode) {
-					typeNode.setType(((TypeNode)child).getType());
-				}
+		Node node = typeNode;
+		if (node.jjtGetNumChildren() >= 1) {
+			Node child = node.jjtGetChild(0);
+			if (child instanceof TypeNode) {
+				typeNode.setType(((TypeNode)child).getType());
 			}
 		}
 	}
 
 	// Roll up the type based on type of the first child node using Unary Numeric Promotion per JLS 5.6.1
 	private void rollupTypeUnaryNumericPromotion(TypeNode typeNode) {
-		if (typeNode instanceof Node) {
-			Node node = (Node)typeNode;
-			if (node.jjtGetNumChildren() >= 1) {
-				Node child = node.jjtGetChild(0);
-				if (child instanceof TypeNode) {
-					Class<?> type = ((TypeNode)child).getType();
-					if (type != null) {
-						if ("byte".equals(type.getName()) || "short".equals(type.getName())
-								|| "char".equals(type.getName())) {
-							populateType(typeNode, "int");
-						} else {
-							typeNode.setType(((TypeNode)child).getType());
-						}
+		Node node = typeNode;
+		if (node.jjtGetNumChildren() >= 1) {
+			Node child = node.jjtGetChild(0);
+			if (child instanceof TypeNode) {
+				Class<?> type = ((TypeNode)child).getType();
+				if (type != null) {
+					if ("byte".equals(type.getName()) || "short".equals(type.getName())
+							|| "char".equals(type.getName())) {
+						populateType(typeNode, "int");
+					} else {
+						typeNode.setType(((TypeNode)child).getType());
 					}
 				}
 			}
@@ -599,36 +595,34 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	// Roll up the type based on type of the first and second child nodes using Binary Numeric Promotion per JLS 5.6.2
 	private void rollupTypeBinaryNumericPromotion(TypeNode typeNode) {
-		if (typeNode instanceof Node) {
-			Node node = (Node)typeNode;
-			if (node.jjtGetNumChildren() >= 2) {
-				Node child1 = node.jjtGetChild(0);
-				Node child2 = node.jjtGetChild(1);
-				if (child1 instanceof TypeNode && child2 instanceof TypeNode) {
-					Class<?> type1 = ((TypeNode)child1).getType();
-					Class<?> type2 = ((TypeNode)child2).getType();
-					if (type1 != null && type2 != null) {
-						// Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
-						if ("java.lang.String".equals(type1.getName()) || "java.lang.String".equals(type2.getName())) {
-							populateType(typeNode, "java.lang.String");
-						} else if ("boolean".equals(type1.getName()) || "boolean".equals(type2.getName())) {
-							populateType(typeNode, "boolean");
-						} else if ("double".equals(type1.getName()) || "double".equals(type2.getName())) {
-							populateType(typeNode, "double");
-						} else if ("float".equals(type1.getName()) || "float".equals(type2.getName())) {
-							populateType(typeNode, "float");
-						} else if ("long".equals(type1.getName()) || "long".equals(type2.getName())) {
-							populateType(typeNode, "long");
-						} else {
-							populateType(typeNode, "int");
-						}
-					} else if (type1 != null || type2 != null) {
-						// If one side is known to be a String, then the result is a String
-						// Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
-						if (type1 != null && "java.lang.String".equals(type1.getName())
-								|| type2 != null && "java.lang.String".equals(type2.getName())) {
-							populateType(typeNode, "java.lang.String");
-						}
+		Node node = typeNode;
+		if (node.jjtGetNumChildren() >= 2) {
+			Node child1 = node.jjtGetChild(0);
+			Node child2 = node.jjtGetChild(1);
+			if (child1 instanceof TypeNode && child2 instanceof TypeNode) {
+				Class<?> type1 = ((TypeNode)child1).getType();
+				Class<?> type2 = ((TypeNode)child2).getType();
+				if (type1 != null && type2 != null) {
+					// Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
+					if ("java.lang.String".equals(type1.getName()) || "java.lang.String".equals(type2.getName())) {
+						populateType(typeNode, "java.lang.String");
+					} else if ("boolean".equals(type1.getName()) || "boolean".equals(type2.getName())) {
+						populateType(typeNode, "boolean");
+					} else if ("double".equals(type1.getName()) || "double".equals(type2.getName())) {
+						populateType(typeNode, "double");
+					} else if ("float".equals(type1.getName()) || "float".equals(type2.getName())) {
+						populateType(typeNode, "float");
+					} else if ("long".equals(type1.getName()) || "long".equals(type2.getName())) {
+						populateType(typeNode, "long");
+					} else {
+						populateType(typeNode, "int");
+					}
+				} else if (type1 != null || type2 != null) {
+					// If one side is known to be a String, then the result is a String
+					// Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
+					if (type1 != null && "java.lang.String".equals(type1.getName())
+							|| type2 != null && "java.lang.String".equals(type2.getName())) {
+						populateType(typeNode, "java.lang.String");
 					}
 				}
 			}

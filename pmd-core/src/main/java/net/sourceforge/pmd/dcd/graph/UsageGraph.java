@@ -46,7 +46,7 @@ import net.sourceforge.pmd.util.filter.Filter;
  */
 public class UsageGraph implements NodeVisitorAcceptor {
 
-	private final List<ClassNode> classNodes = new ArrayList<ClassNode>();
+	private final List<ClassNode> classNodes = new ArrayList<>();
 
 	protected final Filter<String> classFilter;
 

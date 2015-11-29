@@ -21,8 +21,8 @@ public class TestDescriptor {
     private Properties properties;
     private String description;
     private int numberOfProblemsExpected;
-    private List<String> expectedMessages = new ArrayList<String>();
-    private List<Integer> expectedLineNumbers = new ArrayList<Integer>();
+    private List<String> expectedMessages = new ArrayList<>();
+    private List<Integer> expectedLineNumbers = new ArrayList<>();
     private String code;
     private LanguageVersion languageVersion;
     private boolean reinitializeRule = true;   //default, avoids unintentional mixing of state between test cases

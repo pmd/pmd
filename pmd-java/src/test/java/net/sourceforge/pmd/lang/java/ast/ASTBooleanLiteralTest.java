@@ -14,15 +14,15 @@ public class ASTBooleanLiteralTest extends ParserTst {
 
     @Test
     public void testTrue() throws Throwable {
-        Set ops = getNodes(ASTBooleanLiteral.class, TEST1);
-        ASTBooleanLiteral b = (ASTBooleanLiteral) ops.iterator().next();
+        Set<ASTBooleanLiteral> ops = getNodes(ASTBooleanLiteral.class, TEST1);
+        ASTBooleanLiteral b = ops.iterator().next();
         assertTrue(b.isTrue());
     }
 
     @Test
     public void testFalse() throws Throwable {
-        Set ops = getNodes(ASTBooleanLiteral.class, TEST2);
-        ASTBooleanLiteral b = (ASTBooleanLiteral) ops.iterator().next();
+        Set<ASTBooleanLiteral> ops = getNodes(ASTBooleanLiteral.class, TEST2);
+        ASTBooleanLiteral b = ops.iterator().next();
         assertFalse(b.isTrue());
     }
 

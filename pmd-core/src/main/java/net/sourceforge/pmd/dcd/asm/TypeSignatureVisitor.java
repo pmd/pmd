@@ -38,7 +38,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
     private Class<?> returnType;
 
     // Completed Parameter Types are stored here
-    private List<Class<?>> parameterTypes = new ArrayList<Class<?>>(0);
+    private List<Class<?>> parameterTypes = new ArrayList<>(0);
 
     private final PrintVisitor p;
 

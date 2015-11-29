@@ -39,23 +39,23 @@ public class CommentRequiredRule extends AbstractCommentRule {
 		}
 	}
 
-	public static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
+	public static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<>(
 			"headerCommentRequirement", "Header comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 1.0f);
 
-	public static final EnumeratedProperty<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
+	public static final EnumeratedProperty<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<>(
 			"fieldCommentRequirement", "Field comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 2.0f);
 
-	public static final EnumeratedProperty<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
+	public static final EnumeratedProperty<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<>(
 			"publicMethodCommentRequirement", "Public method and constructor comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 3.0f);
 
-	public static final EnumeratedProperty<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
+	public static final EnumeratedProperty<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<>(
 			"protectedMethodCommentRequirement", "Protected method constructor comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 4.0f);
 
-	public static final EnumeratedProperty<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
+	public static final EnumeratedProperty<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<>(
 			"enumCommentRequirement", "Enum comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 5.0f);
 

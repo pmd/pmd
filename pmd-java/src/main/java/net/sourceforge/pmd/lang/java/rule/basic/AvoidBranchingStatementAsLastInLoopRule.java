@@ -25,13 +25,13 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
     private static final String[] ALL_LOOP_TYPES_VALUES = ALL_LOOP_TYPES_LABELS;
     private static final int[] ALL_LOOP_TYPES_DEFAULTS = new int[] { 0, 1, 2 };
 
-    public static final EnumeratedMultiProperty<String> CHECK_BREAK_LOOP_TYPES = new EnumeratedMultiProperty(
+    public static final EnumeratedMultiProperty<String> CHECK_BREAK_LOOP_TYPES = new EnumeratedMultiProperty<>(
 	    "checkBreakLoopTypes", "Check for break statements in loop types", ALL_LOOP_TYPES_LABELS,
 	    ALL_LOOP_TYPES_VALUES, ALL_LOOP_TYPES_DEFAULTS, 1);
-    public static final EnumeratedMultiProperty<String> CHECK_CONTINUE_LOOP_TYPES = new EnumeratedMultiProperty(
+    public static final EnumeratedMultiProperty<String> CHECK_CONTINUE_LOOP_TYPES = new EnumeratedMultiProperty<>(
 	    "checkContinueLoopTypes", "Check for continue statements in loop types", ALL_LOOP_TYPES_LABELS,
 	    ALL_LOOP_TYPES_VALUES, ALL_LOOP_TYPES_DEFAULTS, 2);
-    public static final EnumeratedMultiProperty<String> CHECK_RETURN_LOOP_TYPES = new EnumeratedMultiProperty(
+    public static final EnumeratedMultiProperty<String> CHECK_RETURN_LOOP_TYPES = new EnumeratedMultiProperty<>(
 	    "checkReturnLoopTypes", "Check for return statements in loop types", ALL_LOOP_TYPES_LABELS,
 	    ALL_LOOP_TYPES_VALUES, ALL_LOOP_TYPES_DEFAULTS, 3);
 

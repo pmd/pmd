@@ -98,7 +98,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 
 	private static class SourcePath {
 
-		private Set<String> paths = new HashSet<String>();
+		private Set<String> paths = new HashSet<>();
 
 		public SourcePath(String sourcePathString) {
 			for (StringTokenizer st = new StringTokenizer(sourcePathString,

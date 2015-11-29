@@ -56,7 +56,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         this.node = contextNode;
         if (!methodCache.containsKey(contextNode.getClass())) {
             Method[] preFilter = contextNode.getClass().getMethods();
-            List<MethodWrapper> postFilter = new ArrayList<MethodWrapper>();
+            List<MethodWrapper> postFilter = new ArrayList<>();
             for (Method element : preFilter) {
                 if (isAttributeAccessor(element)) {
                     postFilter.add(new MethodWrapper(element));

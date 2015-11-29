@@ -28,7 +28,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * These are all the rules participating in the RuleChain, grouped by RuleSet.
      */
-    protected Map<RuleSet, List<Rule>> ruleSetRules = new LinkedHashMap<RuleSet, List<Rule>>();
+    protected Map<RuleSet, List<Rule>> ruleSetRules = new LinkedHashMap<>();
 
     /**
      * This is a mapping from node names to nodes instances for the current AST.
@@ -127,7 +127,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         }
 
         // Determine all node types that need visiting
-        Set<String> visitedNodes = new HashSet<String>();
+        Set<String> visitedNodes = new HashSet<>();
         for (Iterator<Map.Entry<RuleSet, List<Rule>>> entryIterator = ruleSetRules.entrySet().iterator(); entryIterator.hasNext();) {
             Map.Entry<RuleSet, List<Rule>> entry = entryIterator.next();
             for (Iterator<Rule> ruleIterator = entry.getValue().iterator(); ruleIterator.hasNext();) {
@@ -149,9 +149,9 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         // Setup the data structure to manage mapping node names to node
         // instances.  We intend to reuse this data structure between
         // visits to different ASTs.
-        nodeNameToNodes = new HashMap<String, List<Node>>();
+        nodeNameToNodes = new HashMap<>();
         for (String s: visitedNodes) {
-            List<Node> nodes = new ArrayList<Node>(100);
+            List<Node> nodes = new ArrayList<>(100);
             nodeNameToNodes.put(s, nodes);
         }
     }

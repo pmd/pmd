@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Tokens {
 
-    private List<TokenEntry> tokens = new ArrayList<TokenEntry>();
+    private List<TokenEntry> tokens = new ArrayList<>();
 
     public void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ClassWithImportOnDemand {
 
-    public List foo() {
-        return new ArrayList();
+    public List<?> foo() {
+        return new ArrayList<>();
     }
 }

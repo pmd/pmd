@@ -31,7 +31,7 @@ public class XMLRendererTest {
     public void testWithNoDuplication() {
 
         Renderer renderer = new XMLRenderer();
-        List<Match> list = new ArrayList<Match>();
+        List<Match> list = new ArrayList<>();
         String report = renderer.render(list.iterator());
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
@@ -48,7 +48,7 @@ public class XMLRendererTest {
     @Test
     public void testWithOneDuplication() {
         Renderer renderer = new XMLRenderer();
-        List<Match> list = new ArrayList<Match>();
+        List<Match> list = new ArrayList<>();
         int lineCount = 6;
         String codeFragment = "code\nfragment";
         Mark mark1 = createMark("public", "/var/Foo.java", 48, lineCount, codeFragment);
@@ -85,7 +85,7 @@ public class XMLRendererTest {
     @Test
     public void testRenderWithMultipleMatch() {
         Renderer renderer = new XMLRenderer();
-        List<Match> list = new ArrayList<Match>();
+        List<Match> list = new ArrayList<>();
         int lineCount1 = 6;
         String codeFragment1 = "code fragment";
         Mark mark1 = createMark("public", "/var/Foo.java", 48, lineCount1, codeFragment1);
@@ -114,7 +114,7 @@ public class XMLRendererTest {
     @Test
     public void testRendererEncodedPath() {
         Renderer renderer = new XMLRenderer();
-        List<Match> list = new ArrayList<Match>();
+        List<Match> list = new ArrayList<>();
         final String espaceChar = "&lt;";
         Mark mark1 = createMark("public", "/var/F" + '<' + "oo.java", 48, 6, "code fragment");
         Mark mark2 = createMark("void", "/var/F<oo.java", 73, 6, "code fragment");

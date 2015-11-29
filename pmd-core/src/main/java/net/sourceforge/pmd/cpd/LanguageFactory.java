@@ -20,7 +20,7 @@ public final class LanguageFactory {
        supportedLanguages = instance.languages.keySet().toArray(new String[instance.languages.size()]);
     }
 
-   private Map<String, Language> languages = new HashMap<String, Language>();
+   private Map<String, Language> languages = new HashMap<>();
 
    private LanguageFactory() {
        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);

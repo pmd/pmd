@@ -29,7 +29,7 @@ public class DocumentNode extends AbstractNodeInfo implements DocumentInfo {
     /**
      * Mapping from AST Node to corresponding ElementNode.
      */
-    public final Map<Node, ElementNode> nodeToElementNode = new HashMap<Node, ElementNode>();
+    public final Map<Node, ElementNode> nodeToElementNode = new HashMap<>();
 
     /**
      * Construct a DocumentNode, with the given AST Node serving as the root

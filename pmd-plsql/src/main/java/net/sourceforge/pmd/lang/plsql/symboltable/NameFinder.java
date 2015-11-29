@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 
 public class NameFinder {
 
-    private List<PLSQLNameOccurrence> names = new ArrayList<PLSQLNameOccurrence>();
+    private List<PLSQLNameOccurrence> names = new ArrayList<>();
 
     public NameFinder(ASTPrimaryExpression node) {
     	Node simpleNode = node.jjtGetChild(0);

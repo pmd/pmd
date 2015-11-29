@@ -133,7 +133,7 @@ public class StatisticalRuleTest  {
                 IUT.addDataPoint(points[i]);
             }
         } else {
-            List<DataPoint> lPoints = new ArrayList<DataPoint>();
+            List<DataPoint> lPoints = new ArrayList<>();
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
@@ -849,7 +849,7 @@ public class StatisticalRuleTest  {
     }
 
     public Report makeReport(Rule IUT) {
-        List<Node> list = new ArrayList<Node>();
+        List<Node> list = new ArrayList<>();
         Report report = new Report();
 
         RuleContext ctx = new RuleContext();

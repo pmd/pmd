@@ -90,7 +90,7 @@ public class MatchAlgorithm {
 
     @SuppressWarnings("PMD.JumbledIncrementer")
     private Map<TokenEntry, Object> hash() {
-        Map<TokenEntry, Object> markGroups = new HashMap<TokenEntry, Object>(tokens.size());
+        Map<TokenEntry, Object> markGroups = new HashMap<>(tokens.size());
         for (int i = code.size() - 1; i >= 0; i--) {
             TokenEntry token = code.get(i);
             if (token != TokenEntry.EOF) {
@@ -104,7 +104,7 @@ public class MatchAlgorithm {
                 if (o == null) {
                     markGroups.put(token, token);
                 } else if (o instanceof TokenEntry) {
-                    List<TokenEntry> l = new ArrayList<TokenEntry>();
+                    List<TokenEntry> l = new ArrayList<>();
                     l.add((TokenEntry) o);
                     l.add(token);
                     markGroups.put(token, l);

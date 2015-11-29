@@ -44,7 +44,7 @@ public class AbstractDomXmlRuleTest {
 				.getLanguageVersionHandler().getParser(parserOptions);
 		XmlNode xmlNode = (XmlNode) parser
 				.parse(null, new StringReader(source));
-		List<XmlNode> nodes = new ArrayList<XmlNode>();
+		List<XmlNode> nodes = new ArrayList<>();
 		nodes.add(xmlNode);
 
 		MyRule rule = new MyRule();
@@ -111,7 +111,7 @@ public class AbstractDomXmlRuleTest {
 		// no exception should be thrown
 
 		MyRule rule = new MyRule();
-		List<XmlNode> nodes = new ArrayList<XmlNode>();
+		List<XmlNode> nodes = new ArrayList<>();
 		nodes.add(xmlNode);
 		rule.apply(nodes, null);
 				
@@ -135,7 +135,7 @@ public class AbstractDomXmlRuleTest {
 		// no exception should be thrown
 		// first element is still parsed
 		MyRule rule = new MyRule();
-		List<XmlNode> nodes = new ArrayList<XmlNode>();
+		List<XmlNode> nodes = new ArrayList<>();
 		nodes.add(xmlNode);
 		rule.apply(nodes, null);
 		
@@ -144,7 +144,7 @@ public class AbstractDomXmlRuleTest {
 	}
 
 	private static class MyRule extends AbstractDomXmlRule {
-		final Map<String, List<org.w3c.dom.Node>> visitedNodes = new HashMap<String, List<org.w3c.dom.Node>>();
+		final Map<String, List<org.w3c.dom.Node>> visitedNodes = new HashMap<>();
 
 		public MyRule() {
 			
@@ -153,7 +153,7 @@ public class AbstractDomXmlRuleTest {
 		private void visit(String key, org.w3c.dom.Node node) {
 			List<org.w3c.dom.Node> nodes = visitedNodes.get(key);
 			if (nodes == null) {
-				nodes = new ArrayList<org.w3c.dom.Node>();
+				nodes = new ArrayList<>();
 				visitedNodes.put(key, nodes);
 			}
 			nodes.add(node);

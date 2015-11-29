@@ -23,7 +23,7 @@ public class NoUnsanitizedJSPExpressionRule extends AbstractJspRule {
     }
 
     private boolean elOutsideTaglib(ASTElExpression node) {
-        ASTElement parentASTElement = (ASTElement) node.getFirstParentOfType(ASTElement.class);
+        ASTElement parentASTElement = node.getFirstParentOfType(ASTElement.class);
 
         boolean elInTaglib = parentASTElement != null && parentASTElement.getName() != null
                 && parentASTElement.getName().contains(":");

@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class UnusedImportsRule extends AbstractJavaRule {
 
-    protected Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
+    protected Set<ImportWrapper> imports = new HashSet<>();
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {

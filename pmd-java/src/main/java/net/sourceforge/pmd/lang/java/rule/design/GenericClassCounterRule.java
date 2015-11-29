@@ -62,10 +62,10 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 			"Defines how many occurences are legal",new String(),4.0f);
 
 
-	private List<Pattern> namesMatch = new ArrayList<Pattern>(0);
-	private List<Pattern> typesMatch = new ArrayList<Pattern>(0);
-	private List<Node> matches = new ArrayList<Node>(0);
-	private List<String> simpleClassname = new ArrayList<String>(0);
+	private List<Pattern> namesMatch = new ArrayList<>(0);
+	private List<Pattern> typesMatch = new ArrayList<>(0);
+	private List<Node> matches = new ArrayList<>(0);
+	private List<String> simpleClassname = new ArrayList<>(0);
 
 
 	@SuppressWarnings("PMD") // When the rule is finished, this field will be used.
@@ -83,7 +83,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 
 
 	private List<String> arrayAsList(String[] array) {
-		List<String> list = new ArrayList<String>(array.length);
+		List<String> list = new ArrayList<>(array.length);
 		int nbItem = 0;
 		while (nbItem < array.length ) {
 			list.add(array[nbItem++]);
@@ -101,7 +101,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		String thresholdAsString = getProperty(THRESHOLD_DESCRIPTOR);
 		this.threshold = Integer.valueOf(thresholdAsString);
 		// Initializing list of match
-		this.matches = new ArrayList<Node>();
+		this.matches = new ArrayList<>();
 
 	}
 
@@ -124,7 +124,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
     	 for (Pattern pattern : this.typesMatch) {
     		 if ( RegexHelper.isMatch(pattern,node.getImportedName())) {
     			 if ( simpleClassname == null ) {
-    				 simpleClassname = new ArrayList<String>(1);
+    				 simpleClassname = new ArrayList<>(1);
     			 }
     			 simpleClassname.add(node.getImportedName());
     		 }

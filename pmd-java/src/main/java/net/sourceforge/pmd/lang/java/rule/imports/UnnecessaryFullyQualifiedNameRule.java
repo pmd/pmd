@@ -16,10 +16,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
-    private List<ASTImportDeclaration> imports = new ArrayList<ASTImportDeclaration>();
-    private List<ASTImportDeclaration> matches = new ArrayList<ASTImportDeclaration>();
-    private List<PotentialViolation> violations = new ArrayList<PotentialViolation>();
-    private List<PotentialViolation> enumViolations = new ArrayList<PotentialViolation>();
+    private List<ASTImportDeclaration> imports = new ArrayList<>();
+    private List<ASTImportDeclaration> matches = new ArrayList<>();
+    private List<PotentialViolation> violations = new ArrayList<>();
+    private List<PotentialViolation> enumViolations = new ArrayList<>();
 
     public UnnecessaryFullyQualifiedNameRule() {
 	super.addRuleChainVisit(ASTCompilationUnit.class);
@@ -49,7 +49,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-	checkImports(node, data, false);
+	checkImports(node);
 	return data;
     }
 
@@ -57,12 +57,12 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     public Object visit(ASTName node, Object data) {
 	if (!(node.jjtGetParent() instanceof ASTImportDeclaration)
 	        && !(node.jjtGetParent() instanceof ASTPackageDeclaration)) {
-	    checkImports(node, data, true);
+	    checkImports(node);
 	}
 	return data;
     }
 
-    private void checkImports(JavaNode node, Object data, boolean checkStatic) {
+    private void checkImports(JavaNode node) {
 	String name = node.getImage();
 	matches.clear();
 

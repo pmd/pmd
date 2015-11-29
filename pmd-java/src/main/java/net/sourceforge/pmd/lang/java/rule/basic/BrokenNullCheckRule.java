@@ -97,10 +97,10 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
     }
 
     private boolean primaryExpressionsAreEqual(ASTPrimaryExpression nullCompareVariable, ASTPrimaryExpression expressionUsage) {
-        List<String> nullCompareNames = new ArrayList<String>();
+        List<String> nullCompareNames = new ArrayList<>();
         findExpressionNames(nullCompareVariable, nullCompareNames);
 
-        List<String> expressionUsageNames = new ArrayList<String>();
+        List<String> expressionUsageNames = new ArrayList<>();
         findExpressionNames(expressionUsage, expressionUsageNames);
 
         for (int i = 0; i < nullCompareNames.size(); i++) {

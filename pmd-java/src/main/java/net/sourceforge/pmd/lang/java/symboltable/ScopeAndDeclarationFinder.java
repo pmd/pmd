@@ -69,7 +69,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * A stack of scopes reflecting the scope hierarchy when a node is visited.
      * This is used to set the parents of the created scopes correctly.
      */
-    private Stack<Scope> scopes = new Stack<Scope>();
+    private Stack<Scope> scopes = new Stack<>();
 
     /**
      * Sets the scope of a node and adjusts the scope stack accordingly.

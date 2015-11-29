@@ -40,7 +40,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	 */
     @Test
 	public void testElementAttributeAndNamespace() throws Throwable {
-		Set<Object> nodes = getNodes(null, TEST_ELEMENT_AND_NAMESPACE);
+		Set<JspNode> nodes = getNodes(null, TEST_ELEMENT_AND_NAMESPACE);
 
 		Set<ASTElement> elementNodes = getNodesOfType(ASTElement.class, nodes);
 		assertEquals("One element node expected!", 1, elementNodes.size());
@@ -55,7 +55,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
 		Set<ASTAttribute> attributeNodes = getNodesOfType(ASTAttribute.class, nodes);
 		assertEquals("One attribute node expected!", 1, attributeNodes.size());
-		ASTAttribute attribute = (ASTAttribute) attributeNodes.iterator().next();
+		ASTAttribute attribute = attributeNodes.iterator().next();
 		assertEquals("Correct name expected!", "MyNsPrefix:MyAttr", attribute
 				.getName());
 		assertEquals("Has namespace prefix!", true, attribute.isHasNamespacePrefix());
@@ -74,12 +74,12 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     @Test
     public void testAttributeValueContainingHash()
 	{
-		Set<Object> nodes = getNodes(null, TEST_ATTRIBUTE_VALUE_CONTAINING_HASH);
+		Set<JspNode> nodes = getNodes(null, TEST_ATTRIBUTE_VALUE_CONTAINING_HASH);
 
 		Set<ASTAttribute> attributes = getNodesOfType(ASTAttribute.class, nodes);
 		assertEquals("Three attributes expected!", 3, attributes.size());
 
-		List<ASTAttribute> attrsList = new ArrayList<ASTAttribute>(attributes);
+		List<ASTAttribute> attrsList = new ArrayList<>(attributes);
 		Collections.sort(attrsList, new Comparator<ASTAttribute>() {
 			public int compare(ASTAttribute arg0, ASTAttribute arg1) {
 				return arg0.getName().compareTo(arg1.getName());
@@ -113,7 +113,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 		Set<ASTCData> cdataNodes = getNodes(ASTCData.class, TEST_CDATA);
 
 		assertEquals("One CDATA node expected!", 1, cdataNodes.size());
-		ASTCData cdata = (ASTCData) cdataNodes.iterator().next();
+		ASTCData cdata = cdataNodes.iterator().next();
 		assertEquals("Content incorrectly parsed!", " some <cdata> ]] ]> ", cdata
 				.getImage());
 	}
@@ -123,7 +123,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	 */
     @Test
     public void testDoctype() {
-		Set<Object> nodes = getNodes(null, TEST_DOCTYPE);
+		Set<JspNode> nodes = getNodes(null, TEST_DOCTYPE);
 
 		Set<ASTDoctypeDeclaration> docTypeDeclarations = getNodesOfType(ASTDoctypeDeclaration.class, nodes);
 		assertEquals("One doctype declaration expected!", 1, docTypeDeclarations
@@ -135,8 +135,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 		Set<ASTDoctypeExternalId> externalIds = getNodesOfType(ASTDoctypeExternalId.class, nodes);
 		assertEquals("One doctype external id expected!", 1, externalIds
 				.size());
-		ASTDoctypeExternalId externalId = (ASTDoctypeExternalId) externalIds
-				.iterator().next();
+		ASTDoctypeExternalId externalId = externalIds.iterator().next();
 		assertEquals("Correct external public id expected!", "-//W3C//DTD XHTML 1.1//EN",
 				externalId.getPublicId());
 		assertEquals("Correct external uri expected!", "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd",
@@ -152,7 +151,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void testComment() {
 		Set<ASTCommentTag> comments = getNodes(ASTCommentTag.class, TEST_COMMENT);
 		assertEquals("One comment expected!", 1, comments.size());
-		ASTCommentTag comment = (ASTCommentTag) comments.iterator().next();
+		ASTCommentTag comment = comments.iterator().next();
 		assertEquals("Correct comment content expected!", "comment", comment.getImage());
 	}
 
@@ -163,7 +162,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void testHtmlScript() {
 		Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT);
 		assertEquals("One script expected!", 1, scripts.size());
-		ASTHtmlScript script = (ASTHtmlScript) scripts.iterator().next();
+		ASTHtmlScript script = scripts.iterator().next();
 		assertEquals("Correct script content expected!", "Script!", script.getImage());
     }
     
@@ -175,7 +174,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void testImportHtmlScript() {
 		Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_IMPORT_JAVASCRIPT);
 		assertEquals("One script expected!", 1, scripts.size());
-		ASTHtmlScript script = (ASTHtmlScript) scripts.iterator().next();
+		ASTHtmlScript script = scripts.iterator().next();
 		List<ASTAttributeValue> value = script.findDescendantsOfType(ASTAttributeValue.class);
 		assertEquals("filename.js",value.get(0).getImage());
     }
@@ -187,7 +186,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void testHtmlScriptWithAttribute() {
 		Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT_WITH_ATTRIBUTE);
 		assertEquals("One script expected!", 1, scripts.size());
-		ASTHtmlScript script = (ASTHtmlScript) scripts.iterator().next();
+		ASTHtmlScript script = scripts.iterator().next();
 		assertEquals("Correct script content expected!", "Script!", script.getImage());
 		List<ASTAttributeValue> attrs = script.findDescendantsOfType(ASTAttributeValue.class);
 		assertTrue("text/javascript".equals(attrs.get(0).getImage()));
@@ -222,7 +221,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void testTextInTag() {
 		Set<ASTText> scripts = getNodes(ASTText.class, TEST_TEXT_IN_TAG);
 		assertEquals("One text chunk expected!", 1, scripts.size());
-		ASTText script = (ASTText) scripts.iterator().next();
+		ASTText script = scripts.iterator().next();
 		assertEquals("Correct content expected!", " some text ", script.getImage());
     }
     
@@ -236,9 +235,9 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 		assertEquals("Two tags expected!", 2, scripts.size());
 		List<ASTElement> elmts = sortNodesByName(scripts);
 		Iterator<ASTElement> iterator = elmts.iterator();
-		ASTElement script = (ASTElement) iterator.next();
+		ASTElement script = iterator.next();
 		assertEquals("Correct content expected!", "a", script.getName());
-		script = (ASTElement) iterator.next();
+		script = iterator.next();
 		assertEquals("Correct content expected!", "b", script.getName());
     }
     
@@ -250,7 +249,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void unclosedTagsWithDollar(){
     	Set<ASTText> scripts = getNodes(ASTText.class, TEST_TAGS_WITH_DOLLAR);
 		assertEquals("Two text chunks expected!", 2, scripts.size());
-		ASTText script = (ASTText) scripts.iterator().next();
+		ASTText script = scripts.iterator().next();
 		assertEquals("Correct content expected!", " $ ", script.getImage());
     }
     
@@ -264,9 +263,9 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 		assertEquals("Two EL expressions expected!", 2, scripts.size());
 		List<ASTElExpression> exprs = sortByImage(scripts);
 		Iterator<ASTElExpression> iterator = exprs.iterator();
-		ASTElExpression script = (ASTElExpression) iterator.next();
+		ASTElExpression script = iterator.next();
 		assertEquals("Correct content expected!", "expr1", script.getImage());
-		script = (ASTElExpression) iterator.next();
+		script = iterator.next();
 		assertEquals("Correct content expected!", "expr2", script.getImage());
     }
     
@@ -314,7 +313,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void unclosedTagsWithJspExpressionWithin(){
     	Set<ASTJspExpression> scripts = getNodes(ASTJspExpression.class, TEST_TAGS_WITH_EXPRESSION_WITHIN);
 		assertEquals("Two JSP expressions expected!", 2, scripts.size());
-		ASTJspExpression script = (ASTJspExpression) scripts.iterator().next();
+		ASTJspExpression script = scripts.iterator().next();
 		assertEquals("Correct content expected!", "expr", script.getImage());
     }
     
@@ -328,7 +327,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void textBetweenUnopenedTag(){
     	Set<ASTText> scripts = getNodes(ASTText.class, TEST_TEXT_WITH_UNOPENED_TAG);
     	assertEquals("Two text chunks expected!", 2, scripts.size());
-		ASTText script = (ASTText) scripts.iterator().next();
+		ASTText script = scripts.iterator().next();
 		assertEquals("Correct content expected!", "$", script.getImage());
     }
     
@@ -341,7 +340,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     public void textMultipleClosingTags(){
     	Set<ASTText> scripts = getNodes(ASTText.class, TEST_MULTIPLE_CLOSING_TAGS);
     	assertEquals("Four text chunks expected!", 4, scripts.size());
-		ASTText script = (ASTText) scripts.iterator().next();
+		ASTText script = scripts.iterator().next();
 		assertEquals("Correct content expected!", " some text ", script.getImage());
     }
     
@@ -856,7 +855,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
      * @return
      */
     private List<ASTElement> sortNodesByName(Set<ASTElement> elements){
-    	List<ASTElement> list = new ArrayList<ASTElement>();
+    	List<ASTElement> list = new ArrayList<>();
     	list.addAll(elements);
     	Collections.sort(list, new Comparator<ASTElement>() {
     		public int compare(ASTElement o1, ASTElement o2) {
@@ -881,7 +880,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
      * @return
      */
     private <T extends Node> List<T> sortByImage(Set<T> elements){
-    	List<T> list = new ArrayList<T>();
+    	List<T> list = new ArrayList<>();
     	list.addAll(elements);
     	Collections.sort(list, new Comparator<Node>() {
     		public int compare(Node o1, Node o2) {

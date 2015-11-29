@@ -58,7 +58,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     private List<VariableAccess> markUsages(DataFlowNode inode) {
 	// undefinitions was once a field... seems like it works fine as a local
-	List<VariableAccess> undefinitions = new ArrayList<VariableAccess>();
+	List<VariableAccess> undefinitions = new ArrayList<>();
 	Set<Map<VariableNameDeclaration, List<NameOccurrence>>> variableDeclarations = collectDeclarations(inode);
 	for (Map<VariableNameDeclaration, List<NameOccurrence>> declarations : variableDeclarations) {
 	    for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : declarations.entrySet()) {
@@ -83,7 +83,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     }
 
     private Set<Map<VariableNameDeclaration, List<NameOccurrence>>> collectDeclarations(DataFlowNode inode) {
-	Set<Map<VariableNameDeclaration, List<NameOccurrence>>> decls = new HashSet<Map<VariableNameDeclaration, List<NameOccurrence>>>();
+	Set<Map<VariableNameDeclaration, List<NameOccurrence>>> decls = new HashSet<>();
 	Map<VariableNameDeclaration, List<NameOccurrence>> varDecls;
 	for (int i = 0; i < inode.getFlow().size(); i++) {
 	    DataFlowNode n = inode.getFlow().get(i);
@@ -125,7 +125,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 	    List<? extends Node> children = inode.getNode().findDescendantsOfType(node.getClass());
 	    for (Node n : children) {
 		if (node.equals(n)) {
-		    List<VariableAccess> v = new ArrayList<VariableAccess>();
+		    List<VariableAccess> v = new ArrayList<>();
 		    v.add(va);
 		    inode.setVariableAccess(v);
 		    return;

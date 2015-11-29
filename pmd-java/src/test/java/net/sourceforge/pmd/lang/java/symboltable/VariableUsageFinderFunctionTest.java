@@ -24,13 +24,13 @@ public class VariableUsageFinderFunctionTest {
         ASTVariableDeclaratorId variableDeclarationIdNode = new ASTVariableDeclaratorId(1);
         variableDeclarationIdNode.setImage("x");
         VariableNameDeclaration nameDeclaration = new VariableNameDeclaration(variableDeclarationIdNode);
-        List<NameOccurrence> nameOccurrences = new ArrayList<NameOccurrence>();
+        List<NameOccurrence> nameOccurrences = new ArrayList<>();
         nameOccurrences.add(new JavaNameOccurrence(new DummyJavaNode(2), "x"));
 
-        Map<NameDeclaration, List<NameOccurrence>> declarations = new HashMap<NameDeclaration, List<NameOccurrence>>();
+        Map<NameDeclaration, List<NameOccurrence>> declarations = new HashMap<>();
         declarations.put(nameDeclaration, nameOccurrences);
 
-        List<NameDeclaration> vars = new ArrayList<NameDeclaration>();
+        List<NameDeclaration> vars = new ArrayList<>();
         vars.add(nameDeclaration);
 
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(declarations);

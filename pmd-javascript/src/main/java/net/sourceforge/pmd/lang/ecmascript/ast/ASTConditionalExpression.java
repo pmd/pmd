@@ -18,15 +18,15 @@ public class ASTConditionalExpression extends AbstractEcmascriptNode<Conditional
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getTestExpression() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getTestExpression() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
-    public EcmascriptNode getTrueExpression() {
-	return (EcmascriptNode) jjtGetChild(1);
+    public EcmascriptNode<?> getTrueExpression() {
+	return (EcmascriptNode<?>) jjtGetChild(1);
     }
 
-    public EcmascriptNode getFalseExpression() {
-	return (EcmascriptNode) jjtGetChild(2);
+    public EcmascriptNode<?> getFalseExpression() {
+	return (EcmascriptNode<?>) jjtGetChild(2);
     }
 }

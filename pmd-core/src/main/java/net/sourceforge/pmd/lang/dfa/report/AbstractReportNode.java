@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractReportNode {
-    private List<AbstractReportNode> childNodes = new ArrayList<AbstractReportNode>();
+    private List<AbstractReportNode> childNodes = new ArrayList<>();
     private AbstractReportNode parentNode = null;
 
     /*

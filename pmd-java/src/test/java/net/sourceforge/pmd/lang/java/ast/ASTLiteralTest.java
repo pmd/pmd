@@ -15,44 +15,44 @@ public class ASTLiteralTest extends ParserTst {
 
     @Test
     public void testIsStringLiteral() throws Throwable {
-        Set literals = getNodes(ASTLiteral.class, TEST1);
-        assertTrue(((ASTLiteral)(literals.iterator().next())).isStringLiteral());
+        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST1);
+        assertTrue((literals.iterator().next()).isStringLiteral());
     }
 
     @Test
     public void testIsNotStringLiteral() throws Throwable {
-        Set literals = getNodes(ASTLiteral.class, TEST2);
-        assertFalse(((ASTLiteral)(literals.iterator().next())).isStringLiteral());
+        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST2);
+        assertFalse((literals.iterator().next()).isStringLiteral());
     }
 
     @Test
     public void testIsIntIntLiteral() throws Throwable {
-        Set literals = getNodes(ASTLiteral.class, TEST3);
-        assertTrue(((ASTLiteral)(literals.iterator().next())).isIntLiteral());
+        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST3);
+        assertTrue((literals.iterator().next()).isIntLiteral());
     }
 
     @Test
     public void testIsIntLongLiteral() throws Throwable {
-        Set literals = getNodes(ASTLiteral.class, TEST4);
-        assertTrue(((ASTLiteral)(literals.iterator().next())).isLongLiteral());
+        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST4);
+        assertTrue((literals.iterator().next()).isLongLiteral());
     }
 
     @Test
     public void testIsFloatFloatLiteral() throws Throwable {
-        Set literals = getNodes(ASTLiteral.class, TEST5);
-        assertTrue(((ASTLiteral)(literals.iterator().next())).isFloatLiteral());
+        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST5);
+        assertTrue((literals.iterator().next()).isFloatLiteral());
     }
 
     @Test
     public void testIsFloatDoubleLiteral() throws Throwable {
-        Set literals = getNodes(ASTLiteral.class, TEST6);
-        assertTrue(((ASTLiteral)(literals.iterator().next())).isDoubleLiteral());
+        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST6);
+        assertTrue((literals.iterator().next()).isDoubleLiteral());
     }
 
     @Test
     public void testIsCharLiteral() throws Throwable {
-        Set literals = getNodes(ASTLiteral.class, TEST7);
-        assertTrue(((ASTLiteral)(literals.iterator().next())).isCharLiteral());
+        Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST7);
+        assertTrue((literals.iterator().next()).isCharLiteral());
     }
 
     @Test

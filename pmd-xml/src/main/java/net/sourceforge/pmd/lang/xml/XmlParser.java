@@ -36,6 +36,6 @@ public class XmlParser extends AbstractParser {
     }
 
     public Map<Integer, String> getSuppressMap() {
-	return new HashMap<Integer, String>(); // FIXME
+	return new HashMap<>(); // FIXME
     }
 }
