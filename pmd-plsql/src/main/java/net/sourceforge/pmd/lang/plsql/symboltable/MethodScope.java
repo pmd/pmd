@@ -56,7 +56,7 @@ public class MethodScope extends AbstractScope {
     }
 
     public Set<NameDeclaration> findVariableHere(PLSQLNameOccurrence occurrence) {
-        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
+        Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return result;
         }

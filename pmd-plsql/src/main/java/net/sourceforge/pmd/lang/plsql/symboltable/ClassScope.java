@@ -115,7 +115,7 @@ public class ClassScope extends AbstractScope {
     }
 
     protected Set<NameDeclaration> findVariableHere(PLSQLNameOccurrence occurrence) {
-        Set<NameDeclaration> result = new HashSet<NameDeclaration>();
+        Set<NameDeclaration> result = new HashSet<>();
         Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
@@ -161,7 +161,7 @@ public class ClassScope extends AbstractScope {
             return result;
         }
 
-        List<String> images = new ArrayList<String>();
+        List<String> images = new ArrayList<>();
         images.add(occurrence.getImage());
 
         if (null == occurrence.getImage()) {

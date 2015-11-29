@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class DuplicateJspImportsRule extends AbstractJspRule {
 
-    private Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
+    private Set<ImportWrapper> imports = new HashSet<>();
 
     @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {

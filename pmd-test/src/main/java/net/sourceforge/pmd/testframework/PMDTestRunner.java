@@ -41,7 +41,7 @@ import org.junit.runners.model.TestClass;
 public class PMDTestRunner extends Runner implements Filterable {
     private final Description desc;
     private final Class<? extends SimpleAggregatorTst> klass;
-    private final List<TestDescriptor> allTests = new ArrayList<TestDescriptor>();
+    private final List<TestDescriptor> allTests = new ArrayList<>();
     private BlockJUnit4ClassRunner chainedRunner;
 
     /**
@@ -63,7 +63,7 @@ public class PMDTestRunner extends Runner implements Filterable {
             SimpleAggregatorTst test = createTestClass();
             test.setUp();
 
-            List<Rule> rules = new ArrayList<Rule>(test.getRules());
+            List<Rule> rules = new ArrayList<>(test.getRules());
             Collections.sort(rules, new Comparator<Rule>() {
                 @Override
                 public int compare(Rule o1, Rule o2) {

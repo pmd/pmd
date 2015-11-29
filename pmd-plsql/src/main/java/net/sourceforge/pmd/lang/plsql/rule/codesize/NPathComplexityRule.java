@@ -175,7 +175,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
         int complexity = 0;
 
-        List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
+        List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class
                     || node.jjtGetChild(i).getClass() == ASTElsifClause.class
@@ -225,7 +225,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
         int complexity = 0;
 
-        List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
+        List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
                 statementChildren.add((PLSQLNode) node.jjtGetChild(i));
@@ -261,7 +261,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
         int complexity = 0;
 
-        List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
+        List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
                 statementChildren.add((PLSQLNode) node.jjtGetChild(i));

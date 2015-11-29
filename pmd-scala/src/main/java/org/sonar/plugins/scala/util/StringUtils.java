@@ -33,7 +33,7 @@ public final class StringUtils {
   }
 
   public static List<String> convertStringToListOfLines(String string) throws IOException {
-    final List<String> lines = new ArrayList<String>();
+    final List<String> lines = new ArrayList<>();
     BufferedReader reader = null;
     try {
       reader = new BufferedReader(new StringReader(string));

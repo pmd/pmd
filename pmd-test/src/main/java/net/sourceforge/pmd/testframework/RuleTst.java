@@ -53,8 +53,9 @@ public abstract class RuleTst {
             Rule rule = new RuleSetFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
+            } else {
+                rule.setRuleSetName(ruleSet);
             }
-            rule.setRuleSetName(ruleSet);
             return rule;
         } catch (RuleSetNotFoundException e) {
             e.printStackTrace();
@@ -109,9 +110,7 @@ public abstract class RuleTst {
             assertLineNumbers(report, test);
         } finally {
             //Restore old properties
-            // TODO Tried to use generics here, but there's a compiler bug doing so in a finally block.
-            // Neither 1.5.0_16-b02 or 1.6.0_07-b06 works, but 1.7.0-ea-b34 seems to work.   
-            for (Map.Entry entry: oldProperties.entrySet()) {
+            for (Map.Entry<PropertyDescriptor<?>, Object> entry: oldProperties.entrySet()) {
         	rule.setProperty((PropertyDescriptor)entry.getKey(), entry.getValue());
             }
         }
@@ -334,7 +333,7 @@ public abstract class RuleTst {
             }
 
             NodeList expectedMessagesNodes = testCode.getElementsByTagName("expected-messages");
-            List<String> messages = new ArrayList<String>();
+            List<String> messages = new ArrayList<>();
             if (expectedMessagesNodes != null && expectedMessagesNodes.getLength() > 0) {
                 Element item = (Element)expectedMessagesNodes.item(0);
                 NodeList messagesNodes = item.getElementsByTagName("message");
@@ -344,7 +343,7 @@ public abstract class RuleTst {
             }
 
             NodeList expectedLineNumbersNodes = testCode.getElementsByTagName("expected-linenumbers");
-            List<Integer> expectedLineNumbers = new ArrayList<Integer>();
+            List<Integer> expectedLineNumbers = new ArrayList<>();
             if (expectedLineNumbersNodes != null && expectedLineNumbersNodes.getLength() > 0) {
                 Element item = (Element)expectedLineNumbersNodes.item(0);
                 String numbers = item.getTextContent();

@@ -17,8 +17,8 @@ public class ASTXmlExpression extends AbstractEcmascriptNode<XmlExpression> {
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getExpression() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getExpression() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
     public boolean isXmlAttribute() {

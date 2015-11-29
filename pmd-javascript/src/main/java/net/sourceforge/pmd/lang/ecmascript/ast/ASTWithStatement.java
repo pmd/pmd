@@ -17,11 +17,11 @@ public class ASTWithStatement extends AbstractEcmascriptNode<WithStatement> {
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getExpression() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getExpression() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
-    public EcmascriptNode getStatement() {
-	return (EcmascriptNode) jjtGetChild(1);
+    public EcmascriptNode<?> getStatement() {
+	return (EcmascriptNode<?>) jjtGetChild(1);
     }
 }

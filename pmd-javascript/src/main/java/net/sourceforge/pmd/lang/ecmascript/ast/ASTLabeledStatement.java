@@ -25,7 +25,7 @@ public class ASTLabeledStatement extends AbstractEcmascriptNode<LabeledStatement
 	return (ASTLabel) jjtGetChild(index);
     }
 
-    public EcmascriptNode getStatement() {
-	return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
+    public EcmascriptNode<?> getStatement() {
+	return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
     }
 }

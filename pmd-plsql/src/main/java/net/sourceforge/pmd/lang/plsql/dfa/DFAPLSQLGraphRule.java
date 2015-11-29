@@ -56,7 +56,7 @@ public class DFAPLSQLGraphRule extends AbstractPLSQLRule implements DFAGraphRule
 
     @Override
     public Object visit(ASTInput acu, Object data) {
-        executables = new ArrayList<DFAGraphMethod>();
+        executables = new ArrayList<>();
         return super.visit(acu, data);
     }
 }

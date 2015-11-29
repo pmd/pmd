@@ -17,8 +17,8 @@ public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehen
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getResult() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getResult() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
     public int getNumArrayComprehensionLoops() {
@@ -33,7 +33,7 @@ public class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayComprehen
 	return node.getFilter() != null;
     }
 
-    public EcmascriptNode getFilter() {
-	return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
+    public EcmascriptNode<?> getFilter() {
+	return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
     }
 }

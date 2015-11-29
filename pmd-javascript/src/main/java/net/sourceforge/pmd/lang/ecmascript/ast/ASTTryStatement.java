@@ -17,8 +17,8 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
         return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getTryBlock() {
-        return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getTryBlock() {
+        return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
     @Deprecated // use hasCatch() instead
@@ -50,10 +50,10 @@ public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
         return node.getFinallyBlock() != null;
     }
 
-    public EcmascriptNode getFinallyBlock() {
+    public EcmascriptNode<?> getFinallyBlock() {
         if (!hasFinally()) {
             return null;
         }
-        return (EcmascriptNode) jjtGetChild(jjtGetNumChildren() - 1);
+        return (EcmascriptNode<?>) jjtGetChild(jjtGetNumChildren() - 1);
     }
 }

@@ -17,16 +17,16 @@ public class ASTNewExpression extends AbstractEcmascriptNode<NewExpression> {
 	return visitor.visit(this, data);
     }
 
-    public EcmascriptNode getTarget() {
-	return (EcmascriptNode) jjtGetChild(0);
+    public EcmascriptNode<?> getTarget() {
+	return (EcmascriptNode<?>) jjtGetChild(0);
     }
 
     public int getNumArguments() {
 	return node.getArguments().size();
     }
 
-    public EcmascriptNode getArgument(int index) {
-	return (EcmascriptNode) jjtGetChild(index + 1);
+    public EcmascriptNode<?> getArgument(int index) {
+	return (EcmascriptNode<?>) jjtGetChild(index + 1);
     }
 
     public boolean hasArguments() {

@@ -53,7 +53,7 @@ public abstract class SimpleAggregatorTst extends RuleTst {
         }
     }
 
-    private List<Rule> rules = new ArrayList<Rule>();
+    private List<Rule> rules = new ArrayList<>();
 
     /**
      * Add new XML tests associated with the rule to the test suite. This should

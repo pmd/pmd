@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 public interface EcmascriptParserVisitor {
-    Object visit(EcmascriptNode node, Object data);
+    Object visit(EcmascriptNode<?> node, Object data);
 
     Object visit(ASTArrayComprehension node, Object data);
 

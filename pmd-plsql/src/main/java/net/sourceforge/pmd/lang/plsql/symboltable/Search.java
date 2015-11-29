@@ -15,7 +15,7 @@ public class Search {
     private final static Logger LOGGER = Logger.getLogger(Search.class.getName()); 
 
     private PLSQLNameOccurrence occ;
-    private Set<NameDeclaration> declarations = new HashSet<NameDeclaration>();
+    private Set<NameDeclaration> declarations = new HashSet<>();
 
     public Search(PLSQLNameOccurrence occ) {
         if (LOGGER.isLoggable(Level.FINEST)) {
@@ -60,6 +60,6 @@ public class Search {
             }
             return scope.addNameOccurrence(nameOccurrence);
         }
-        return new HashSet<NameDeclaration>();
+        return new HashSet<>();
     }
 }

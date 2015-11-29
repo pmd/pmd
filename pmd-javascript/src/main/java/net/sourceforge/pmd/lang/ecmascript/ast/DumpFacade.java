@@ -64,7 +64,7 @@ public class DumpFacade {
 		image = StringUtil.escapeWhitespace(image);
 
 		// Extras
-		List<String> extras = new ArrayList<String>();
+		List<String> extras = new ArrayList<>();
 
 		// Standard DestructuringNode extras
 		if (node instanceof DestructuringNode) {

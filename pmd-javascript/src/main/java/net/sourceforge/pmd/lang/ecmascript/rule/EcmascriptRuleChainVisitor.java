@@ -19,7 +19,7 @@ public class EcmascriptRuleChainVisitor extends AbstractRuleChainVisitor {
 
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
 	// Visit Nodes in DFS order
-	Stack<Node> stack = new Stack<Node>();
+	Stack<Node> stack = new Stack<>();
 	stack.addAll(nodes);
 	Collections.reverse(stack);
 	while (!stack.isEmpty()) {
@@ -38,7 +38,7 @@ public class EcmascriptRuleChainVisitor extends AbstractRuleChainVisitor {
 	if (rule instanceof XPathRule) {
 	    ((XPathRule) rule).evaluate(node, ctx);
 	} else {
-	    ((EcmascriptNode) node).jjtAccept((EcmascriptParserVisitor) rule, ctx);
+	    ((EcmascriptNode<?>) node).jjtAccept((EcmascriptParserVisitor) rule, ctx);
 	}
     }
 }

@@ -22,7 +22,7 @@ public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
 
         // Maybe do some sort of State pattern thingy for when NameDeclaration
         // is empty/not empty
-        Set<NameDeclaration> declarations = new HashSet<NameDeclaration>();
+        Set<NameDeclaration> declarations = new HashSet<>();
 
         List<PLSQLNameOccurrence> names = nameFinder.getNames();
         for (PLSQLNameOccurrence occ: names) {
@@ -38,7 +38,7 @@ public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
                     break;
                 }
             } else {
-                Set<NameDeclaration> additionalDeclarations = new HashSet<NameDeclaration>();
+                Set<NameDeclaration> additionalDeclarations = new HashSet<>();
                 for (NameDeclaration decl : declarations) {
                     // now we've got a scope we're starting with, so work from there
                     Scope scope = decl.getScope();

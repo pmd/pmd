@@ -67,7 +67,7 @@ public class DumpFacade {
 		image = StringUtil.escapeWhitespace(image);
 
 		// Extras
-		List<String> extras = new ArrayList<String>();
+		List<String> extras = new ArrayList<>();
 		Iterator<Attribute> iterator = node.getAttributeIterator();
 		while (iterator.hasNext()) {
 			Attribute attribute = iterator.next();
