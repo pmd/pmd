@@ -25,6 +25,8 @@
     *   [#1440](https://sourceforge.net/p/pmd/bugs/1440/): NPE in AvoidCallingFinalize
 *   java-imports/UnnecessaryFullyQualifiedName
     *   [#1436](https://sourceforge.net/p/pmd/bugs/1436/): UnnecessaryFullyQualifiedName false positive on clashing static imports with enums
+*   java-migrating/JUnit4TestShouldUseBeforeAnnotation
+    *   [#1446](https://sourceforge.net/p/pmd/bugs/1446/): False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used
 *   java-naming/SuspiciousEqualsMethodName
     *   [#1431](https://sourceforge.net/p/pmd/bugs/1431/): SuspiciousEqualsMethodName false positive
 *   java-optimizations/RedundantFieldInitializer
