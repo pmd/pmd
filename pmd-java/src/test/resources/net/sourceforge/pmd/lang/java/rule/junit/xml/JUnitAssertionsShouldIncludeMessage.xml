@@ -380,4 +380,26 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1374 JUnitAssertionsShouldIncludeMessage does not work</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>10,11,12,13</expected-linenumbers>
+        <code><![CDATA[
+import static org.hamcrest.Matchers.containsString;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class TestClass extends Assert {
+
+    @Test
+    public void test() {
+        assertTrue(true);
+        assertEquals("", "");
+        assertNull(null);
+        assertThat("", containsString(""));
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
