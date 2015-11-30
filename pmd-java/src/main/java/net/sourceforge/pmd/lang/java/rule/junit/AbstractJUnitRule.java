@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
@@ -59,10 +60,20 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 	    isJUnit4Class = isJUnit4Class(node);
 	}
 
-	if (isJUnit3Class || isJUnit4Class) {
+	if (!isTestNgClass(node) && (isJUnit3Class || isJUnit4Class)) {
 	    return super.visit(node, data);
 	}
 	return data;
+    }
+
+    private boolean isTestNgClass(ASTCompilationUnit node) {
+        List<ASTImportDeclaration> imports = node.findDescendantsOfType(ASTImportDeclaration.class);
+        for (ASTImportDeclaration i : imports) {
+            if (i.getImportedName() != null && i.getImportedName().startsWith("org.testng")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isJUnitMethod(ASTMethodDeclaration method, Object data) {
