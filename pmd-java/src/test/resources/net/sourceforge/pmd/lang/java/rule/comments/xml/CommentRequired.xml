@@ -119,4 +119,38 @@ public class CommentRequired {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1434 CommentRequired raises violation on serialVersionUID field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/** The class comment */
+public class CommentRequired implements Serializable {
+    private static final long serialVersionUID = 42L;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>comment required on serialVersionUID of wrong type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+/** The class comment */
+public class CommentRequired implements Serializable {
+    private static final int serialVersionUID = 42L;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>serialVersionUID comment required</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <rule-property name="serialVersionUIDCommentRequired">Required</rule-property>
+        <code><![CDATA[
+/** The class comment */
+public class CommentRequired implements Serializable {
+    private static final long serialVersionUID = 42L;
+}
+        ]]></code>
+    </test-code>
 </test-data>

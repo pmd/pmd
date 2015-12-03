@@ -59,12 +59,17 @@ public class CommentRequiredRule extends AbstractCommentRule {
 			"enumCommentRequirement", "Enum comments. Possible values: " + Arrays.toString(CommentRequirement.values()),
 			CommentRequirement.labels(), CommentRequirement.values(), 0, 5.0f);
 
+	public static final EnumeratedProperty<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR = new EnumeratedProperty<CommentRequirement>(
+	        "serialVersionUIDCommentRequired", "serial version UID commts. Possible values: " + Arrays.toString(CommentRequirement.values()),
+	        CommentRequirement.labels(), CommentRequirement.values(), 1, 6.0f);
+
 	public CommentRequiredRule() {
 		definePropertyDescriptor(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
 		definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
 		definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
 		definePropertyDescriptor(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
 		definePropertyDescriptor(ENUM_CMT_REQUIREMENT_DESCRIPTOR);
+		definePropertyDescriptor(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR);
 	}
 
 	private CommentRequirement getCommentRequirement(String label) {
@@ -167,7 +172,11 @@ public class CommentRequiredRule extends AbstractCommentRule {
 		CommentRequirement fieldRequirement = getCommentRequirement(getProperty(
 				FIELD_CMT_REQUIREMENT_DESCRIPTOR).toString());
 
+
 		if (fieldRequirement != CommentRequirement.Ignored) {
+		    if (isSerialVersionUID(decl)) {
+		        checkSerialVersionUID(decl, data, fieldRequirement);
+		    } else
 			if (fieldRequirement == CommentRequirement.Required) {
 				if (decl.comment() == null) {
 					addViolationWithMessage(data, decl,
@@ -186,6 +195,36 @@ public class CommentRequiredRule extends AbstractCommentRule {
 		}
 
 		return super.visit(decl, data);
+	}
+
+    private void checkSerialVersionUID(ASTFieldDeclaration decl, Object data, CommentRequirement fieldRequirement) {
+	    CommentRequirement serialVersionUIDReq = getCommentRequirement(getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR).toString());
+	    if (serialVersionUIDReq != CommentRequirement.Ignored) {
+	        if (fieldRequirement == CommentRequirement.Required) {
+	            if (decl.comment() == null) {
+                    addViolationWithMessage(data, decl,
+                            SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR.name() + " "
+                                    + CommentRequirement.Required,
+                            decl.getBeginLine(), decl.getEndLine());
+	            }
+	        } else {
+	            if (decl.comment() != null) {
+                    addViolationWithMessage(data, decl,
+                            SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR.name() + " "
+                                    + CommentRequirement.Unwanted,
+                            decl.getBeginLine(), decl.getEndLine());
+	            }
+	        }
+	    }
+    }
+
+	private boolean isSerialVersionUID(ASTFieldDeclaration field) {
+	    if ("serialVersionUID".equals(field.getVariableName())
+	        && field.isStatic() && field.isFinal()
+	        && field.getType() == long.class) {
+	                return true;
+	    }
+	    return false;
 	}
 
 	@Override
@@ -227,7 +266,8 @@ public class CommentRequiredRule extends AbstractCommentRule {
 		return getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
 				&& getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
 				&& getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-				&& getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored;
+				&& getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+				&& getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored;
 	}
 
 	/**
