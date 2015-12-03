@@ -10,6 +10,9 @@
 
 **New/Modified/Deprecated Rules:**
 
+*   java-comments/CommentRequired: New property `serialVersionUIDCommentRequired` which controls the comment requirements
+    for *serialVersionUID* fields. By default, no comment is required for this field.
+
 **Pull Requests:**
 
 *   [#25](https://github.com/adangel/pmd/pull/25): Added option to exclude C# using directives from CPD analysis
@@ -19,6 +22,8 @@
 
 **Bugfixes:**
 
+*   java-comments/CommentRequired
+    *   [#1434](https://sourceforge.net/p/pmd/bugs/1434/): CommentRequired raises violation on serialVersionUID field
 *   java-design/UseNotifyAllInsteadOfNotify
     *   [#1438](https://sourceforge.net/p/pmd/bugs/1438/): UseNotifyAllInsteadOfNotify gives false positive
 *   java-finalizers/AvoidCallingFinalize
