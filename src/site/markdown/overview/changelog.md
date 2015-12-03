@@ -13,6 +13,8 @@
 *   Java
     *   Logging Java: **InvalidSlf4jMessageFormat** (rulesets/java/logging-java.xml/InvalidSlf4jMessageFormat)<br/>
         Check for invalid message format in slf4j loggers.
+*   java-comments/CommentRequired: New property `serialVersionUIDCommentRequired` which controls the comment requirements
+    for *serialVersionUID* fields. By default, no comment is required for this field.
 
 **Pull Requests:**
 
@@ -30,6 +32,8 @@
 *   java-comments/CommentDefaultAccessModifier
     *   [#1430](https://sourceforge.net/p/pmd/bugs/1430/): CommentDefaultAccessModifier triggers on field
         annotated with @VisibleForTesting
+*   java-comments/CommentRequired
+    *   [#1434](https://sourceforge.net/p/pmd/bugs/1434/): CommentRequired raises violation on serialVersionUID field
 *   java-design/UseNotifyAllInsteadOfNotify
     *   [#1438](https://sourceforge.net/p/pmd/bugs/1438/): UseNotifyAllInsteadOfNotify gives false positive
 *   java-finalizers/AvoidCallingFinalize
