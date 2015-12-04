@@ -1,14 +1,12 @@
 # Changelog
 
-## ????? - 5.3.6-SNAPSHOT
-
-**New Supported Languages:**
+## 04-December-2015 - 5.3.6
 
 **Feature Request and Improvements:**
 
 *   CPD: New command line parameter `--ignore-usings`: Ignore using directives in C# when comparing text.
 
-**New/Modified/Deprecated Rules:**
+**Modified Rules:**
 
 *   java-comments/CommentRequired: New property `serialVersionUIDCommentRequired` which controls the comment requirements
     for *serialVersionUID* fields. By default, no comment is required for this field.
@@ -44,5 +42,3 @@
     *   [#1429](https://sourceforge.net/p/pmd/bugs/1429/): Java - Parse Error: Cast in return expression
     *   [#1425](https://sourceforge.net/p/pmd/bugs/1425/): Invalid XML Characters in Output
     *   [#1441](https://sourceforge.net/p/pmd/bugs/1441/): PMD: Update documentation how to compile after modularization
-
-**API Changes:**
