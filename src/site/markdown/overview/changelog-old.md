@@ -4,6 +4,50 @@ Previous versions of PMD can be downloaded here:
 http://sourceforge.net/projects/pmd/files/pmd/
 
 
+## 04-December-2015 - 5.3.6
+
+**Feature Request and Improvements:**
+
+*   CPD: New command line parameter `--ignore-usings`: Ignore using directives in C# when comparing text.
+
+**Modified Rules:**
+
+*   java-comments/CommentRequired: New property `serialVersionUIDCommentRequired` which controls the comment requirements
+    for *serialVersionUID* fields. By default, no comment is required for this field.
+
+**Pull Requests:**
+
+*   [#25](https://github.com/adangel/pmd/pull/25): Added option to exclude C# using directives from CPD analysis
+    *   Note: This also contains the fix from [#23](https://github.com/adangel/pmd/pull/23)
+*   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
+*   [#75](https://github.com/pmd/pmd/pull/75): RuleSetFactory Performance Enhancement
+
+**Bugfixes:**
+
+*   java-comments/CommentRequired
+    *   [#1434](https://sourceforge.net/p/pmd/bugs/1434/): CommentRequired raises violation on serialVersionUID field
+*   java-design/UseNotifyAllInsteadOfNotify
+    *   [#1438](https://sourceforge.net/p/pmd/bugs/1438/): UseNotifyAllInsteadOfNotify gives false positive
+*   java-finalizers/AvoidCallingFinalize
+    *   [#1440](https://sourceforge.net/p/pmd/bugs/1440/): NPE in AvoidCallingFinalize
+*   java-imports/UnnecessaryFullyQualifiedName
+    *   [#1436](https://sourceforge.net/p/pmd/bugs/1436/): UnnecessaryFullyQualifiedName false positive on clashing static imports with enums
+*   java-junit/JUnitAssertionsShouldIncludeMessage
+    *   [#1373](https://sourceforge.net/p/pmd/bugs/1373/): JUnitAssertionsShouldIncludeMessage is no longer compatible with TestNG
+*   java-migrating/JUnit4TestShouldUseBeforeAnnotation
+    *   [#1446](https://sourceforge.net/p/pmd/bugs/1446/): False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used
+*   java-naming/SuspiciousEqualsMethodName
+    *   [#1431](https://sourceforge.net/p/pmd/bugs/1431/): SuspiciousEqualsMethodName false positive
+*   java-optimizations/RedundantFieldInitializer
+    *   [#1443](https://sourceforge.net/p/pmd/bugs/1443/): RedundantFieldInitializer: False positive for small floats
+*   java-unusedcode/UnusedPrivateField
+    *   [#1428](https://sourceforge.net/p/pmd/bugs/1428/): False positive in UnusedPrivateField when local variable hides member variable
+*   General
+    *   [#1429](https://sourceforge.net/p/pmd/bugs/1429/): Java - Parse Error: Cast in return expression
+    *   [#1425](https://sourceforge.net/p/pmd/bugs/1425/): Invalid XML Characters in Output
+    *   [#1441](https://sourceforge.net/p/pmd/bugs/1441/): PMD: Update documentation how to compile after modularization
+
+
 ## 04-October-2015 - 5.3.5
 
 **Modified Rules:**
