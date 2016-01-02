@@ -26,6 +26,7 @@ public class RendererFactory {
     public static final Map<String, Class<? extends Renderer>> REPORT_FORMAT_TO_RENDERER;
     static {
 	Map<String, Class<? extends Renderer>> map = new TreeMap<String, Class<? extends Renderer>>();
+	map.put(CodeClimateRenderer.NAME, CodeClimateRenderer.class);
 	map.put(XMLRenderer.NAME, XMLRenderer.class);
 	map.put(IDEAJRenderer.NAME, IDEAJRenderer.class);
 	map.put(TextColorRenderer.NAME, TextColorRenderer.class);
