@@ -25,6 +25,7 @@
 
 *   [#25](https://github.com/adangel/pmd/pull/25): Added option to exclude C# using directives from CPD analysis
 *   [#27](https://github.com/adangel/pmd/pull/27): Added support for Raw String Literals (C++11).
+*   [#29)(https://github.com/adangel/pmd/pull/29): Added support for files with UTF-8 BOM to JSP tokenizer.
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
 *   [#73](https://github.com/pmd/pmd/pull/73): Add rule to look for invalid message format in slf4j loggers
 *   [#74](https://github.com/pmd/pmd/pull/74): Fix rendering CommentDefaultAccessModifier description as code
