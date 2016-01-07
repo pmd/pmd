@@ -85,4 +85,38 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+method, do not varargs, allow @Override
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ @Override
+ protected void bar(String[] args) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method, do not varargs, allow public static void main(String[]) as not varargs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static void main(String[] args) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method, use varargs, deviation from exact main signature flagged
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static void main(int i, String[] args) { }
+}
+     ]]></code>
+    </test-code>
 </test-data>
