@@ -48,7 +48,7 @@ fi
 
 # verify the current directory
 if [ ! -f pom.xml -o ! -d ../pmd.github.io ]; then
-    echo "You seem to be in the work working directory or you don't have pmd.github.io checked out..."
+    echo "You seem to be in the wrong working directory or you don't have pmd.github.io checked out..."
     echo
     echo "Expected:"
     echo "*   You are currently in the pmd repository"
@@ -97,7 +97,7 @@ export CURRENT_BRANCH
 
 echo
 echo
-echo "*   Update version/release info in **src/site/markdown/changelog.md**."
+echo "*   Update version/release info in **src/site/markdown/overview/changelog.md**."
 echo
 echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
 echo
