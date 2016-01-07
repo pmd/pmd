@@ -124,6 +124,21 @@ public class CPPTokenizerTest {
         Tokens tokens = parse("szPath = m_sdcacheDir + _T(\"\\    oMedia\");" + PMD.EOL);
         assertEquals(10, tokens.size());
     }
+    
+    @Test
+    public void testRawStringLiteral() {
+        String code =
+                "const char* const KDefaultConfig = R\"(\n" +
+                "    [Sinks.1]\n" +
+                "    Destination=Console\n" +
+                "    AutoFlush=true\n" +
+                "    Format=\"[%TimeStamp%] %ThreadId% %QueryIdHigh% %QueryIdLow% %LoggerFile%:%Line% (%Severity%) - %Message%\"\n" +
+                "    Filter=\"%Severity% >= WRN\"\n" +
+                ")\";\n";
+        Tokens tokens = parse(code);
+        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertEquals(9, tokens.size());
+    }
 
     private Tokens parse(String snippet) {
         return parse(snippet, false);
