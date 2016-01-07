@@ -15,6 +15,7 @@
 
 **Pull Requests:**
 
+*   [#27](https://github.com/adangel/pmd/pull/27): Added support for Raw String Literals (C++11).
 *   [#79](https://github.com/pmd/pmd/pull/79): do not flag public static void main(String[]) as UseVarargs; ignore @Override for UseVarargs
 *   [#80](https://github.com/pmd/pmd/pull/80): Update mvn-plugin.md
 *   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer
