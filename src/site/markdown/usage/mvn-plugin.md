@@ -78,7 +78,7 @@ the report to html source files, and the file encoding:
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
         <configuration>
-            <linkXref>true</linkXref>
+            <linkXRef>true</linkXRef>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <minimumTokens>30</minimumTokens>
             <targetJdk>1.4</targetJdk>
