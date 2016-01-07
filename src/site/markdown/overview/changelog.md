@@ -14,6 +14,7 @@
 **Pull Requests:**
 
 *   [#79](https://github.com/pmd/pmd/pull/79): do not flag public static void main(String[]) as UseVarargs; ignore @Override for UseVarargs
+*   [#80](https://github.com/pmd/pmd/pull/80): Update mvn-plugin.md
 
 **Bugfixes:**
 
