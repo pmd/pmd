@@ -9,6 +9,7 @@
 **Feature Request and Improvements:**
 
 *   CPD: New command line parameter `--ignore-usings`: Ignore using directives in C# when comparing text.
+*   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
 
 **New/Modified/Deprecated Rules:**
 
@@ -33,6 +34,7 @@
 *   [#79](https://github.com/pmd/pmd/pull/79): do not flag public static void main(String[]) as UseVarargs; ignore @Override for UseVarargs
 *   [#80](https://github.com/pmd/pmd/pull/80): Update mvn-plugin.md
 *   [#82](https://github.com/pmd/pmd/pull/82): Add Perl support to CPD.
+*   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer
 
 **Bugfixes:**
 
