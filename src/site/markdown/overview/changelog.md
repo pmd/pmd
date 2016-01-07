@@ -15,6 +15,8 @@
         Check for invalid message format in slf4j loggers.
 *   java-comments/CommentRequired: New property `serialVersionUIDCommentRequired` which controls the comment requirements
     for *serialVersionUID* fields. By default, no comment is required for this field.
+*   java-design/UseVargs: public static void main method is ignored now and so are methods, that are annotated
+    with Override. See [PR#79](https://github.com/pmd/pmd/pull/79).
 
 **Pull Requests:**
 
@@ -26,6 +28,7 @@
 *   [#76](https://github.com/pmd/pmd/pull/76): fix formatting typos in an example of the DoNotCallGarbageCollectionExplicitly rule
 *   [#77](https://github.com/pmd/pmd/pull/77): Fix various typos
 *   [#78](https://github.com/pmd/pmd/pull/78): Add Builder pattern check to the MissingStaticMethodInNonInstantiatableClass rule
+*   [#79](https://github.com/pmd/pmd/pull/79): do not flag public static void main(String[]) as UseVarargs; ignore @Override for UseVarargs
 
 **Bugfixes:**
 
