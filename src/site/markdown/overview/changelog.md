@@ -4,6 +4,8 @@
 
 **New Supported Languages:**
 
+*   CPD now supports Perl. See [PR#82](https://github.com/pmd/pmd/pull/82).
+
 **Feature Request and Improvements:**
 
 *   CPD: New command line parameter `--ignore-usings`: Ignore using directives in C# when comparing text.
@@ -30,6 +32,7 @@
 *   [#78](https://github.com/pmd/pmd/pull/78): Add Builder pattern check to the MissingStaticMethodInNonInstantiatableClass rule
 *   [#79](https://github.com/pmd/pmd/pull/79): do not flag public static void main(String[]) as UseVarargs; ignore @Override for UseVarargs
 *   [#80](https://github.com/pmd/pmd/pull/80): Update mvn-plugin.md
+*   [#82](https://github.com/pmd/pmd/pull/82): Add Perl support to CPD.
 
 **Bugfixes:**
 
