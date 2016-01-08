@@ -162,6 +162,13 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
                 String interfaceName = node.getImage();
                 int formerID = getClassID();
                 setClassID(classDataList.size());
+                // TODO
+                // this is a hack to bail out here
+                // but I'm not sure why this is happening
+                // TODO
+                if (formerID == -1 || formerID >= classDataList.size()) {
+                    return null;
+                }
                 ClassData newClassData = new ClassData(interfaceName);
                 // store the names of any outer classes of this class in the
                 // classQualifyingName List
