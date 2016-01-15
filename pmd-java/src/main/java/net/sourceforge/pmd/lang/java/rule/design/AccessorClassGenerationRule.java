@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -216,6 +217,39 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         }
         Object o = super.visit(node, data);
         if (o != null && !node.isStatic()) { // See bug# 1807370
+            processRule(o);
+        } else {
+            processRule(data);
+        }
+        setClassID(-1);
+        return o;
+    }
+
+    @Override
+    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+        if (!(node.jjtGetParent().jjtGetParent() instanceof ASTCompilationUnit)) {
+            // not a toplevel annotation type
+            String interfaceName = node.getImage();
+            int formerID = getClassID();
+            setClassID(classDataList.size());
+            ClassData newClassData = new ClassData(interfaceName);
+            // store the names of any outer classes of this class in the
+            // classQualifyingName List
+            ClassData formerClassData = classDataList.get(formerID);
+            newClassData.addClassQualifyingName(formerClassData.getClassName());
+            classDataList.add(getClassID(), newClassData);
+            Object o = super.visit(node, data);
+            setClassID(formerID);
+            return o;
+        }
+
+        // top-level annotation type
+        String interfaceName = node.getImage();
+        classDataList.clear();
+        setClassID(0);
+        classDataList.add(getClassID(), new ClassData(interfaceName));
+        Object o = super.visit(node, data);
+        if (o != null) {
             processRule(o);
         } else {
             processRule(data);
