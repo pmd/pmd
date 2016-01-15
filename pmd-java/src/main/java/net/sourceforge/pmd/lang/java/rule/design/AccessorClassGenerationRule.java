@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -16,6 +17,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessTypeNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 
@@ -152,67 +155,46 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         }
     }
 
+    private boolean isToplevelType(JavaNode node) {
+        return node.jjtGetParent().jjtGetParent() instanceof ASTCompilationUnit;
+    }
+
     /**
      * Outer interface visitation
      */
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
-            if (!(node.jjtGetParent().jjtGetParent() instanceof ASTCompilationUnit)) {
-                // not a top level interface
-                String interfaceName = node.getImage();
-                int formerID = getClassID();
-                setClassID(classDataList.size());
-                ClassData newClassData = new ClassData(interfaceName);
-                // store the names of any outer classes of this class in the
-                // classQualifyingName List
-                ClassData formerClassData = classDataList.get(formerID);
-                newClassData.addClassQualifyingName(formerClassData.getClassName());
-                classDataList.add(getClassID(), newClassData);
-                Object o = super.visit(node, data);
-                setClassID(formerID);
-                return o;
-            } else {
-                String interfaceName = node.getImage();
-                classDataList.clear();
-                setClassID(0);
-                classDataList.add(getClassID(), new ClassData(interfaceName));
-                Object o = super.visit(node, data);
-                if (o != null) {
-                    processRule(o);
-                } else {
-                    processRule(data);
-                }
-                setClassID(-1);
-                return o;
-            }
-        } else if (!(node.jjtGetParent().jjtGetParent() instanceof ASTCompilationUnit)) {
-            // not a top level class
-            int formerID = getClassID();
-            setClassID(classDataList.size());
-            // TODO
-            // this is a hack to bail out here
-            // but I'm not sure why this is happening
-            // TODO
-            if (formerID == -1 || formerID >= classDataList.size()) {
-                return null;
-            }
-            // store the names of any outer classes of this class in the
-            // classQualifyingName List
-            ClassData formerClassData = classDataList.get(formerID);
-            String className = node.getImage();
-            ClassData newClassData = new ClassData(className);
-            newClassData.addClassQualifyingName(formerClassData.getClassName());
-            classDataList.add(getClassID(), newClassData);
-            Object o = super.visit(node, data);
-            setClassID(formerID);
-            return o;
+            return visitInterface(node, data);
         }
-        // outer classes
+
+        if (!isToplevelType(node)) {
+            return handleInnerType(node, data);
+        }
+        return handleToplevelType(node, data);
+    }
+
+    private Object visitInterface(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (!isToplevelType(node)) {
+            return handleInnerType(node, data);
+        }
+        return handleToplevelType(node, data);
+    }
+
+    @Override
+    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+        if (!isToplevelType(node)) {
+            return handleInnerType(node, data);
+        }
+        return handleToplevelType(node, data);
+    }
+
+    private Object handleToplevelType(AbstractJavaAccessTypeNode node, Object data) {
         if (!node.isStatic()) { // See bug# 1807370
-            String className = node.getImage();
+            String typeName = node.getImage();
             classDataList.clear();
             setClassID(0);// first class
-            classDataList.add(getClassID(), new ClassData(className));
+            classDataList.add(getClassID(), new ClassData(typeName));
         }
         Object o = super.visit(node, data);
         if (o != null && !node.isStatic()) { // See bug# 1807370
@@ -221,6 +203,21 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
             processRule(data);
         }
         setClassID(-1);
+        return o;
+    }
+
+    private Object handleInnerType(AbstractJavaAccessTypeNode node, Object data) {
+        String typeName = node.getImage();
+        int formerID = getClassID();
+        setClassID(classDataList.size());
+        ClassData newClassData = new ClassData(typeName);
+        // store the names of any outer classes of this class in the
+        // classQualifyingName List
+        ClassData formerClassData = classDataList.get(formerID);
+        newClassData.addClassQualifyingName(formerClassData.getClassName());
+        classDataList.add(getClassID(), newClassData);
+        Object o = super.visit(node, data);
+        setClassID(formerID);
         return o;
     }
 
