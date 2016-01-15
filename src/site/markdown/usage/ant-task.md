@@ -80,7 +80,7 @@ Runs a set of static code analysis rules on some Java source code files and gene
 <tr><th>Name</th><th>Values</th></tr>
 <tr>
    <td>type</td>
-   <td>xml,ideaj,textcolor,text,textpad,emacs,csv,html,xslt,yahtml,summaryhtml,vbhtml</td>
+   <td>xml,ideaj,textcolor,text,textpad,emacs,csv,html,xslt,yahtml,summaryhtml,vbhtml,codeclimate</td>
 </tr>
 <tr>
  <td>showSuppressed</td>

@@ -216,6 +216,8 @@ Available Report Formats / Renderers
 
 PMD comes with many different renderer types:
 
+*   **codeclimate**: Renderer for Code Climate JSON format.
+
 *   **csv**: Comma-separated values tabular format.
 
     Properties:
