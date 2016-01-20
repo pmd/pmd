@@ -26,6 +26,7 @@
 *   [#25](https://github.com/adangel/pmd/pull/25): Added option to exclude C# using directives from CPD analysis
 *   [#27](https://github.com/adangel/pmd/pull/27): Added support for Raw String Literals (C++11).
 *   [#29)(https://github.com/adangel/pmd/pull/29): Added support for files with UTF-8 BOM to JSP tokenizer.
+*   [#30](https://github.com/adangel/pmd/pull/30): Removed file filter for files that are explicitly specified on the CPD command line using the '--files' command line option.
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
 *   [#73](https://github.com/pmd/pmd/pull/73): Add rule to look for invalid message format in slf4j loggers
 *   [#74](https://github.com/pmd/pmd/pull/74): Fix rendering CommentDefaultAccessModifier description as code
@@ -73,3 +74,9 @@
     *   [#1442](https://sourceforge.net/p/pmd/bugs/1442/): Java 9 Jigsaw readiness
 
 **API Changes:**
+
+**CLI Changes:**
+
+*   CPD: If a complete filename is specified, the language dependent filename filter is not applied. This allows
+    to scan files, that are not using the standard file extension. If a directory is specified, the filename filter
+    is still applied and only those files with the correct file extension of the language are scanned.
