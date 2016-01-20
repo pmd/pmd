@@ -3,41 +3,19 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
 
-import org.junit.After;
+import net.sourceforge.pmd.cli.BaseCPDCLITest;
+
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Unit test for {@link CPDCommandLineInterface}.
  *
  */
-public class CPDCommandLineInterfaceTest {
-    private ByteArrayOutputStream bufferStdout;
-    private PrintStream originalStdout;
-    private PrintStream originalStderr;
-
-    @Before
-    public void setup() throws UnsupportedEncodingException {
-        originalStdout = System.out;
-        originalStderr = System.err;
-        bufferStdout = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(bufferStdout, false, "UTF-8"));
-        System.setErr(System.out);
-    }
-
-    @After
-    public void teardown() {
-        System.setOut(originalStdout);
-        System.setErr(originalStderr);
-    }
-
+public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
     /**
      * Test ignore identifiers argument.
      */
@@ -45,7 +23,7 @@ public class CPDCommandLineInterfaceTest {
     public void testIgnoreIdentifiers() throws Exception {
         runCPD("--minimum-tokens", "34", "--language", "java", "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers");
 
-        String out = bufferStdout.toString("UTF-8");
+        String out = getOutput();
         Assert.assertTrue(out.contains("Found a 7 line (36 tokens) duplication"));
         Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
@@ -76,7 +54,7 @@ public class CPDCommandLineInterfaceTest {
                 "--exclude", "src/test/resources/net/sourceforge/pmd/cpd/clitest/File2.java"
                 );
 
-        String out = bufferStdout.toString("UTF-8");
+        String out = getOutput();
         Assert.assertFalse(out.contains("Found a 7 line (34 tokens) duplication"));
         Assert.assertEquals(0, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
@@ -100,7 +78,7 @@ public class CPDCommandLineInterfaceTest {
         // reset default encoding
         System.setProperty("file.encoding", origEncoding);
 
-        String out = bufferStdout.toString("UTF-8");
+        String out = getOutput();
         Assert.assertTrue(out.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
         Assert.assertTrue(Pattern.compile("System\\.out\\.println\\([ij] \\+ \"ä\"\\);").matcher(out).find());
         Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
@@ -117,7 +95,7 @@ public class CPDCommandLineInterfaceTest {
                "--files", "src/test/resources/net/sourceforge/pmd/cpd/badandgood/",
                "--format", "text",
                "--skip-lexical-errors");
-        String out = bufferStdout.toString("UTF-8");
+        String out = getOutput();
         Assert.assertTrue(Pattern.compile("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file").matcher(out).find());
         Assert.assertTrue(out.contains("Found a 5 line (13 tokens) duplication"));
         Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
@@ -129,7 +107,7 @@ public class CPDCommandLineInterfaceTest {
                "--language", "java",
                "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
                "--format", "xml");
-        String out = bufferStdout.toString("UTF-8");
+        String out = getOutput();
         Assert.assertTrue(out.contains("<duplication lines=\"3\" tokens=\"10\">"));
         Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
@@ -140,13 +118,8 @@ public class CPDCommandLineInterfaceTest {
                "--files", "src/test/resources/net/sourceforge/pmd/cpd/badandgood/",
                "--language", "c",
                "--format", "csv");
-        String out = bufferStdout.toString("UTF-8");
+        String out = getOutput();
         Assert.assertFalse(out.contains("Couldn't instantiate renderer"));
         Assert.assertEquals(0, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
-    }
-
-    private void runCPD(String... args) {
-        System.setProperty(CPDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
-        CPD.main(args);
     }
 }

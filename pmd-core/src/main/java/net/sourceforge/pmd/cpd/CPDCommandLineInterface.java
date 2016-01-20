@@ -5,7 +5,6 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -78,7 +77,7 @@ public class CPDCommandLineInterface {
         try {
             // Add files
             if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
-                addSourcesFilesToCPD(arguments.getFiles(), arguments.filenameFilter(), cpd, !arguments.isNonRecursive());
+                addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
             }
 
             // Add Database URIS
@@ -103,7 +102,7 @@ public class CPDCommandLineInterface {
         }
     }
 
-	private static void addSourcesFilesToCPD(List<File> files, FilenameFilter filter, CPD cpd, boolean recursive) {
+	private static void addSourcesFilesToCPD(List<File> files, CPD cpd, boolean recursive) {
 		try {
 			for (File file : files) {
 				if (!file.exists()) {
@@ -115,13 +114,7 @@ public class CPDCommandLineInterface {
 						cpd.addAllInDirectory(file);
 					}
 				} else {
-					//Add a single file if it is accepted by the file filter
-					File directory = file.getAbsoluteFile().getParentFile();
-					String filename = file.getName();
-
-					if (filter.accept(directory, filename)) {
-						cpd.add(file);
-					}
+					cpd.add(file);
 				}
 			}
 		} catch (IOException e) {

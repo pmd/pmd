@@ -17,6 +17,7 @@
 
 *   [#27](https://github.com/adangel/pmd/pull/27): Added support for Raw String Literals (C++11).
 *   [#29](https://github.com/adangel/pmd/pull/29): Added support for files with UTF-8 BOM to JSP tokenizer.
+*   [#30](https://github.com/adangel/pmd/pull/30): Removed file filter for files that are explicitly specified on the CPD command line using the '--files' command line option.
 *   [#79](https://github.com/pmd/pmd/pull/79): do not flag public static void main(String[]) as UseVarargs; ignore @Override for UseVarargs
 *   [#80](https://github.com/pmd/pmd/pull/80): Update mvn-plugin.md
 *   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer
@@ -28,3 +29,8 @@
 
 **API Changes:**
 
+**CLI Changes:**
+
+*   CPD: If a complete filename is specified, the language dependent filename filter is not applied. This allows
+    to scan files, that are not using the standard file extension. If a directory is specified, the filename filter
+    is still applied and only those files with the correct file extension of the language are scanned.
