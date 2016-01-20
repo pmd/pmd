@@ -38,7 +38,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
                "--ignore-identifiers",
                "--failOnViolation", "false");
 
-        String out = bufferStdout.toString("UTF-8");
+        String out = getOutput();
         Assert.assertTrue(out.contains("Found a 7 line (36 tokens) duplication"));
         Assert.assertEquals(0, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
