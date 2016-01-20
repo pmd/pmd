@@ -105,13 +105,7 @@ public class CPDCommandLineInterface {
 						cpd.addAllInDirectory(file);
 					}
 				} else {
-					//Add a single file if it is accepted by the file filter
-					File directory = file.getAbsoluteFile().getParentFile();
-					String filename = file.getName();
-
-					if (filter.accept(directory, filename)) {
-						cpd.add(file);
-					}
+					cpd.add(file);
 				}
 			}
 		} catch (IOException e) {
