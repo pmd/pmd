@@ -15,7 +15,9 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMD;
 
+import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.BOMInputStream;
 
 public class SourceCode {
 
@@ -68,7 +70,18 @@ public class SourceCode {
 
         @Override
         public Reader getReader() throws Exception {
-            return new InputStreamReader(new FileInputStream(file), encoding);
+            BOMInputStream inputStream = 
+                new BOMInputStream(new FileInputStream(file),
+                        ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
+
+            if (inputStream.hasBOM()) {
+               encoding = inputStream.getBOMCharsetName();
+            }
+            return new InputStreamReader(inputStream, encoding);
+        }
+
+        public String getEncoding() {
+            return encoding;
         }
 
         @Override
