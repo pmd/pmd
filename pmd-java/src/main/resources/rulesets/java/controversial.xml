@@ -416,7 +416,7 @@ adverse impacts on performance.
             <property name="xpath">
                 <value>
                     <![CDATA[
-            //PrimitiveType[@Image = 'short']
+            //PrimitiveType[@Image = 'short'][name(../..) != 'CastExpression']
                     ]]>
                 </value>
             </property>
