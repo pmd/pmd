@@ -47,6 +47,8 @@
         annotated with @VisibleForTesting
 *   java-comments/CommentRequired
     *   [#1434](https://sourceforge.net/p/pmd/bugs/1434/): CommentRequired raises violation on serialVersionUID field
+*   java-controversial/AvoidUsingShortType:
+    *   [#1449](https://sourceforge.net/p/pmd/bugs/1449/): false positive when casting a variable to short
 *   java-design/AccessorClassGeneration:
     *   [#1452](https://sourceforge.net/p/pmd/bugs/1452/): ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule
 *   java-design/UseNotifyAllInsteadOfNotify
