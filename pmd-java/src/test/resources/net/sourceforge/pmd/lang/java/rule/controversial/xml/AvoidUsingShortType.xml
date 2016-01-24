@@ -66,4 +66,17 @@ Short as method return type
 		]]>
 		</code>
     </test-code>
+
+    <test-code>
+        <description>#1449 false positive when casting a variable to short</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class CastToShort {
+    public void testcase() {
+        ByteBuffer buffer = ByteBuffer.allocate(2);
+        buffer.putShort((short) "1111".getBytes().length);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
