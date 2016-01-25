@@ -13,6 +13,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ParserCornersTest extends ParserTst {
@@ -54,15 +55,25 @@ public class ParserCornersTest extends ParserTst {
     }
 
     @Test
-    public void testParsersCases() {
+    public void testParsersCases15() {
         String test15 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases.java");
         parseJava15(test15);
+    }
 
+    @Test
+    public void testParsersCases17() {
         String test17 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases17.java");
         parseJava17(test17);
+    }
 
+    @Test
+    public void testParsersCases18() throws Exception {
         String test18 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases18.java");
-        parseJava18(test18);
+        ASTCompilationUnit cu = parseJava18(test18);
+
+        Assert.assertEquals(13, cu.findChildNodesWithXPath("//FormalParameter").size());
+        Assert.assertEquals(4, cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='true']").size());
+        Assert.assertEquals(9, cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='false']").size());
     }
 
     /**
