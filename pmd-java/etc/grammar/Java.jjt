@@ -1,4 +1,9 @@
 /**
+ * Added support for explicit receiver parameters.
+ * Bug #1455
+ *
+ * Andreas Dangel 01/2016
+ *====================================================================
  * Added capability for Tracking Tokens.
  *
  * Amit Kumar Prasad 10/2015
@@ -246,6 +251,11 @@ public class JavaParser {
   private void checkForBadTypeAnnotations() {
     if (jdkVersion < 8) {
       throwParseException("Cannot use type annotations when running in JDK inferior to 1.8 mode!");
+    }
+  }
+  private void checkforBadExplicitReceiverParameter() {
+    if (jdkVersion < 8) {
+      throwParseException("Cannot use explicit receiver parameters when running in JDK inferior to 1.8 mode!");
     }
   }
 
@@ -1390,14 +1400,20 @@ void VariableDeclarator() :
 }
 
 void VariableDeclaratorId() :
-{Token t;}
 {
-  t=<IDENTIFIER>
+  Token t;
+  String image;
+}
+{
+  (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
+   | t=<THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image = t.image;}
+   | t=<IDENTIFIER> { image = t.image; }
+  )
   ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
   {
-    checkForBadAssertUsage(t.image, "a variable name");
-    checkForBadEnumUsage(t.image, "a variable name");
-    jjtThis.setImage( t.image );
+    checkForBadAssertUsage(image, "a variable name");
+    checkForBadEnumUsage(image, "a variable name");
+    jjtThis.setImage( image );
   }
 }
 
@@ -1778,7 +1794,7 @@ void PrimaryPrefix() :
 {Token t;}
 {
   Literal()
-| "this" {jjtThis.setUsesThisModifier();}
+| LOOKAHEAD(2) "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
 | LOOKAHEAD( "(" ")" "->" ) LambdaExpression()
 | LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
