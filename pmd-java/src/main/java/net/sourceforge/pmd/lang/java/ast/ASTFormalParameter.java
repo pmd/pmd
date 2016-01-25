@@ -19,7 +19,11 @@ public class ASTFormalParameter extends AbstractJavaAccessNode implements Dimens
     public boolean isVarargs() {
         return isVarargs;
     }
-    
+
+    public boolean isExplicitReceiverParameter() {
+        return getDecl().isExplicitReceiverParameter();
+    }
+
     public ASTFormalParameter(int id) {
         super(id);
     }
