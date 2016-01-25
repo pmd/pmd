@@ -153,6 +153,22 @@ public class ParserCornerCases18 {
             };
         }
     }
+
+    /**
+     * Explicit receiver Parameters
+     * see: http://blog.joda.org/2015/12/explicit-receiver-parameters.html
+     * and: https://sourceforge.net/p/pmd/bugs/1455/
+     */
+    public void methodWithReceiverParameter(ParserCornerCases18 this) { }
+    public void methodWithReceiverAndOtherParameters(ParserCornerCases18 this, String other) { }
+    public void methodWithReceiverParameterWithAnnotation(@AnnotatedUsage ParserCornerCases18 this, String other) { }
+
+    @Target(ElementType.TYPE_USE)
+    public @interface AnnotatedUsage {}
+
+    class Inner {
+        Inner(ParserCornerCases18 ParserCornerCases18.this) {}
+    }
 }
 
 interface DefaultIterator<E> {

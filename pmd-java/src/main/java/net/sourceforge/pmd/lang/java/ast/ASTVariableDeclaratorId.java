@@ -31,6 +31,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
     private int arrayDepth;
     private VariableNameDeclaration nameDeclaration;
+    private boolean explicitReceiverParameter = false;
 
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;
@@ -58,6 +59,13 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
     public boolean isExceptionBlockParameter() {
         return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
+    }
+
+    public void setExplicitReceiverParameter() {
+        explicitReceiverParameter = true;
+    }
+    public boolean isExplicitReceiverParameter() {
+        return explicitReceiverParameter;
     }
 
     public Node getTypeNameNode() {
