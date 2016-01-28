@@ -295,4 +295,16 @@ class ExampleClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>http://stackoverflow.com/questions/34911230/pmd-uselessparentheses-violation: false + with &amp; and &lt;&lt;</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    private int calculate() {
+        return (bytes[0] & 0xff) + ((bytes[1] & 0xff) << 8);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
