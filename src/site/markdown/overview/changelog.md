@@ -29,6 +29,8 @@
     *   [#1449](https://sourceforge.net/p/pmd/bugs/1449/): false positive when casting a variable to short
 *   java-design/AccessorClassGeneration:
     *   [#1452](https://sourceforge.net/p/pmd/bugs/1452/): ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule
+*   java-junit/TestClassWithoutTestCases:
+    *   [#1453](https://sourceforge.net/p/pmd/bugs/1453/): Test Class Without Test Cases gives false positive
 *   General
     *   [#1455](https://sourceforge.net/p/pmd/bugs/1455/): PMD doesn't handle Java 8 explicit receiver parameters
 
