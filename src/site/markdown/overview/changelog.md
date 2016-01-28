@@ -39,6 +39,7 @@
 *   [#80](https://github.com/pmd/pmd/pull/80): Update mvn-plugin.md
 *   [#82](https://github.com/pmd/pmd/pull/82): Add Perl support to CPD.
 *   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer
+*   [#84](https://github.com/pmd/pmd/pull/84): Change EmptyMethodInAbstractClassShouldBeAbstract rule's description.
 
 **Bugfixes:**
 
