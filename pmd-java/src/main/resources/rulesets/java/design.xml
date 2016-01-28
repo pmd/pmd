@@ -1598,8 +1598,8 @@ public class Foo {  //Should be final
           message="An empty method in an abstract class should be abstract instead"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#EmptyMethodInAbstractClassShouldBeAbstract">
         <description>
-Empty methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate 
-usage by developers who should be implementing their own versions in the concrete subclasses. 
+Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate 
+usage by developers who should be implementing their own versions in the concrete subclasses.
         </description>
         <priority>1</priority>
         <properties>
