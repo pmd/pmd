@@ -82,11 +82,13 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 	    return false; // skip various inapplicable method variations
 	}
 
+	boolean result = false;
 	if (isJUnit3Class) {
-	    return isJUnit3Method(method);
-	} else {
-	    return isJUnit4Method(method);
+	    result = isJUnit3Method(method);
 	}
+
+    result |= isJUnit4Method(method);
+	return result;
     }
 
     private boolean isJUnit4Method(ASTMethodDeclaration method) {

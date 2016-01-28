@@ -60,6 +60,8 @@
     *   [#1436](https://sourceforge.net/p/pmd/bugs/1436/): UnnecessaryFullyQualifiedName false positive on clashing static imports with enums
 *   java-junit/JUnitAssertionsShouldIncludeMessage
     *   [#1373](https://sourceforge.net/p/pmd/bugs/1373/): JUnitAssertionsShouldIncludeMessage is no longer compatible with TestNG
+*   java-junit/TestClassWithoutTestCases:
+    *   [#1453](https://sourceforge.net/p/pmd/bugs/1453/): Test Class Without Test Cases gives false positive
 *   java-migrating/JUnit4TestShouldUseBeforeAnnotation
     *   [#1446](https://sourceforge.net/p/pmd/bugs/1446/): False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used
 *   java-naming/SuspiciousEqualsMethodName
