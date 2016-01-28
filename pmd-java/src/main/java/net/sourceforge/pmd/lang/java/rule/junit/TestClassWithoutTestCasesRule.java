@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.rule.junit;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -21,17 +20,15 @@ public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
         boolean testsFound = false;
 
         if (m != null) {
-        	for (Iterator<ASTMethodDeclaration> it = m.iterator(); it.hasNext() && !testsFound;) {
-        		ASTMethodDeclaration md = it.next();
-        		if (!isInInnerClassOrInterface(md)
-        				&& isJUnitMethod(md, data)) {
-			    testsFound = true;
-			}
+            for (ASTMethodDeclaration md : m) {
+                if (!isInInnerClassOrInterface(md) && isJUnitMethod(md, data)) {
+                    testsFound = true;
+                }
             }
         }
 
         if (!testsFound) {
-        	addViolation(data, node);
+            addViolation(data, node);
         }
 
         return data;
