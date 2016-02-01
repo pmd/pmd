@@ -85,4 +85,16 @@ public class Foo {
             ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>#1424 False positive with ternary operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SimplifiedTernary {
+    private SomeValue doStuff(SomeValue someValue) {
+        return THE_VALUE.equals(rangeValue.to) ? new SomeValue(someValue.from, null, true) : someValue;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
