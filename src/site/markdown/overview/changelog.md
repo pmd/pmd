@@ -45,6 +45,8 @@
 
 *   java-basic/SimplifiedTernary:
     *   [#1424](https://sourceforge.net/p/pmd/bugs/1424/): False positive with ternary operator
+*   java-codesize/TooManyMethods:
+    *   [#1457](https://sourceforge.net/p/pmd/bugs/1457/): TooManyMethods counts inner class methods
 *   java-comments/CommentDefaultAccessModifier
     *   [#1430](https://sourceforge.net/p/pmd/bugs/1430/): CommentDefaultAccessModifier triggers on field
         annotated with @VisibleForTesting
