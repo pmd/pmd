@@ -280,4 +280,29 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1456 UnusedFormalParameter should ignore overriding methods</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="checkAll">true</rule-property>
+        <code><![CDATA[
+abstract class Base{
+  abstract public int badMethod(int arg1, String arg2);
+}
+
+class Imp1 extends Base {
+  @Override
+  public int badMethod(int arg1, String arg2) {
+    return arg2.length();
+  }
+}
+
+class Imp2 extends Base {
+  @Override
+  public int badMethod(int arg1, String arg2) {
+    return arg2.length() + arg1;
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>
