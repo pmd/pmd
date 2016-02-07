@@ -25,6 +25,8 @@
 
 **Bugfixes:**
 
+*   java-codesize/TooManyMethods:
+    *   [#1457](https://sourceforge.net/p/pmd/bugs/1457/): TooManyMethods counts inner class methods
 *   java-controversial/AvoidUsingShortType:
     *   [#1449](https://sourceforge.net/p/pmd/bugs/1449/): false positive when casting a variable to short
 *   java-design/AccessorClassGeneration:
