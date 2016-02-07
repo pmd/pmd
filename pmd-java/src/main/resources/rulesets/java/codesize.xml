@@ -495,7 +495,7 @@ have more fine grained objects.
                     <![CDATA[
  //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
      [
-      count(descendant::MethodDeclarator[
+      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration/MethodDeclarator[
          not (
                 starts-with(@Image,'get')
                 or
