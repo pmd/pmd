@@ -58,7 +58,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                             addViolation(data, assignmentOperator);
                         }
                     } else if(astName.getImage().equals(name.getImage())){
-                        ASTAssignmentOperator assignmentOperator = statement.getFirstDescendantOfType(ASTAssignmentOperator.class);            
+                        ASTAssignmentOperator assignmentOperator = statement.getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && !assignmentOperator.isCompound()) {
                             addViolation(data, astName);
                         }
