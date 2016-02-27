@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.optimizations;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -37,6 +39,16 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 // used in method call
                 continue;
             }
+            ASTEqualityExpression equality = name.getFirstParentOfType(ASTEqualityExpression.class);
+            if (equality != null && equality.getFirstParentOfType(ASTStatementExpression.class) == statement) {
+            	// used in condition
+            	continue;
+            }
+            ASTConditionalExpression conditional = name.getFirstParentOfType(ASTConditionalExpression.class);
+            if (conditional != null && name.jjtGetParent().jjtGetParent().jjtGetParent() == conditional && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
+            	// is used in ternary as only option (not appendend to other string)
+            	continue;
+            }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0) instanceof ASTPrimaryExpression) {
                 ASTName astName = statement.jjtGetChild(0).getFirstDescendantOfType(ASTName.class);
                 if(astName != null){
@@ -47,6 +59,9 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                         }
                     } else if(astName.getImage().equals(name.getImage())){
                         ASTAssignmentOperator assignmentOperator = statement.getFirstDescendantOfType(ASTAssignmentOperator.class);
+                        if (astName.jjtGetParent().jjtGetParent().jjtGetParent().getClass() == ASTEqualityExpression.class) {
+                        	continue;
+                        }                       
                         if (assignmentOperator != null && !assignmentOperator.isCompound()) {
                             addViolation(data, astName);
                         }
