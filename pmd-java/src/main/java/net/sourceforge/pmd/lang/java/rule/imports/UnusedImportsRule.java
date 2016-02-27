@@ -49,14 +49,15 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * @see  package.class#member(param, param)  label
      * {@linkplain  package.class#member(param, param)  label}
      * {@link  package.class#member(param, param)  label}
+     * {@link  package.class#field}
      * {@value  package.class#field}
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern.compile(
-            "@see\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*\\(([\\w\\s,]*)\\))?");
+            "@see\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([\\w\\s,]*)\\))?)?");
 
     private static final Pattern LINK_PATTERNS = Pattern.compile(
-            "\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*\\(([.\\w\\s,]*)\\))?[\\s\\}]");
+            "\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
 
     private static final Pattern VALUE_PATTERN = Pattern.compile(
             "\\{@value\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");

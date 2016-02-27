@@ -63,6 +63,8 @@
     *   [#1440](https://sourceforge.net/p/pmd/bugs/1440/): NPE in AvoidCallingFinalize
 *   java-imports/UnnecessaryFullyQualifiedName
     *   [#1436](https://sourceforge.net/p/pmd/bugs/1436/): UnnecessaryFullyQualifiedName false positive on clashing static imports with enums
+*   java-imports/UnusedImports:
+    *   [#1465](https://sourceforge.net/p/pmd/bugs/1465/): False Positve UnusedImports with javadoc @link
 *   java-junit/JUnitAssertionsShouldIncludeMessage
     *   [#1373](https://sourceforge.net/p/pmd/bugs/1373/): JUnitAssertionsShouldIncludeMessage is no longer compatible with TestNG
 *   java-junit/TestClassWithoutTestCases:
