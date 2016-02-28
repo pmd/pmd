@@ -41,6 +41,7 @@
 *   [#82](https://github.com/pmd/pmd/pull/82): Add Perl support to CPD.
 *   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer
 *   [#84](https://github.com/pmd/pmd/pull/84): Change EmptyMethodInAbstractClassShouldBeAbstract rule's description.
+*   [#85](https://github.com/pmd/pmd/pull/85): #1340 UseStringBufferForStringAppends False Positive with Ternary Operator
 
 **Bugfixes:**
 
@@ -75,6 +76,8 @@
     *   [#1431](https://sourceforge.net/p/pmd/bugs/1431/): SuspiciousEqualsMethodName false positive
 *   java-optimizations/RedundantFieldInitializer
     *   [#1443](https://sourceforge.net/p/pmd/bugs/1443/): RedundantFieldInitializer: False positive for small floats
+*   java-optimizations/UseStringBufferForStringAppends:
+    *   [#1340](https://sourceforge.net/p/pmd/bugs/1340/): UseStringBufferForStringAppends False Positive with ternary operator
 *   java-unnecessary/UselessQualifiedThis
     *   [#1422](https://sourceforge.net/p/pmd/bugs/1422/): UselessQualifiedThis: False positive with Java 8 Function
 *   java-unusedcode/UnusedFormalParameter:
