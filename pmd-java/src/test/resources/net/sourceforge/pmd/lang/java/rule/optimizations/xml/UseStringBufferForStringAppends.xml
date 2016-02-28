@@ -141,7 +141,7 @@ public class Foo {
 public class UseStringBuffer {
     public void foo() {
         String value = "";
-        country = (value != null) ? "1" : "0";
+        value = (value != null) ? "1" : "0";
     }
 }
         ]]></code>
@@ -156,6 +156,10 @@ public class UseStringBuffer {
         country = (country == null || "".equals(country))
                 ? ((String) getCountry())
                 : country;
+    }
+    public void foo2() {
+        String country = request.getParameter("country");
+        country = (country == null) ? "USA" : country;
     }
 }
         ]]></code>

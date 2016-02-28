@@ -23,6 +23,7 @@
 *   [#79](https://github.com/pmd/pmd/pull/79): do not flag public static void main(String[]) as UseVarargs; ignore @Override for UseVarargs
 *   [#80](https://github.com/pmd/pmd/pull/80): Update mvn-plugin.md
 *   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer
+*   [#85](https://github.com/pmd/pmd/pull/85): #1340 UseStringBufferForStringAppends False Positive with Ternary Operator
 
 **Bugfixes:**
 
@@ -36,6 +37,8 @@
     *   [#1465](https://sourceforge.net/p/pmd/bugs/1465/): False Positve UnusedImports with javadoc @link
 *   java-junit/TestClassWithoutTestCases:
     *   [#1453](https://sourceforge.net/p/pmd/bugs/1453/): Test Class Without Test Cases gives false positive
+*   java-optimizations/UseStringBufferForStringAppends:
+    *   [#1340](https://sourceforge.net/p/pmd/bugs/1340/): UseStringBufferForStringAppends False Positive with ternary operator
 *   java-unusedcode/UnusedFormalParameter:
     *   [#1456](https://sourceforge.net/p/pmd/bugs/1456/): UnusedFormalParameter should ignore overriding methods
 *   General
