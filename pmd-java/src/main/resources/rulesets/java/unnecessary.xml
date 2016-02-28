@@ -70,7 +70,9 @@ tagged as such.
               <value>
     <![CDATA[
 //ClassOrInterfaceDeclaration[@Final='true' and @Interface='false']
-/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        [count(./Annotation/MarkerAnnotation/Name[@Image='SafeVarargs' or @Image='java.lang.SafeVarargs']) = 0]
+    /MethodDeclaration[@Final='true']
     ]]>
               </value>
           </property>

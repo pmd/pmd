@@ -78,6 +78,8 @@
     *   [#1443](https://sourceforge.net/p/pmd/bugs/1443/): RedundantFieldInitializer: False positive for small floats
 *   java-optimizations/UseStringBufferForStringAppends:
     *   [#1340](https://sourceforge.net/p/pmd/bugs/1340/): UseStringBufferForStringAppends False Positive with ternary operator
+*   java-unnecessary/UnnecessaryFinalModifier:
+    *   [#1464](https://sourceforge.net/p/pmd/bugs/1464/): UnnecessaryFinalModifier false positive on a @SafeVarargs method
 *   java-unnecessary/UselessQualifiedThis
     *   [#1422](https://sourceforge.net/p/pmd/bugs/1422/): UselessQualifiedThis: False positive with Java 8 Function
 *   java-unusedcode/UnusedFormalParameter:
