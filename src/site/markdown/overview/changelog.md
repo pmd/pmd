@@ -41,6 +41,8 @@
     *   [#1453](https://sourceforge.net/p/pmd/bugs/1453/): Test Class Without Test Cases gives false positive
 *   java-optimizations/UseStringBufferForStringAppends:
     *   [#1340](https://sourceforge.net/p/pmd/bugs/1340/): UseStringBufferForStringAppends False Positive with ternary operator
+*   java-unnecessary/UnnecessaryFinalModifier:
+    *   [#1464](https://sourceforge.net/p/pmd/bugs/1464/): UnnecessaryFinalModifier false positive on a @SafeVarargs method
 *   java-unusedcode/UnusedFormalParameter:
     *   [#1456](https://sourceforge.net/p/pmd/bugs/1456/): UnusedFormalParameter should ignore overriding methods
 *   General
