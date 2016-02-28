@@ -135,14 +135,31 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator</description>
+        <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator (used in condition) </description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class UseStringBuffer {
     public void foo() {
-        String country = (country == null || "".equals(country))
+        String value = "";
+        value = (value != null) ? "1" : "0";
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1340 UseStringBufferForStringAppends False Positive with ternary operator (used both in condition and options)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseStringBuffer {
+    public void foo() {
+        String country = "";
+        country = (country == null || "".equals(country))
                 ? ((String) getCountry())
                 : country;
+    }
+    public void foo2() {
+        String country = request.getParameter("country");
+        country = (country == null) ? "USA" : country;
     }
 }
         ]]></code>
