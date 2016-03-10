@@ -60,8 +60,7 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 		PmdThread thread = (PmdThread) Thread.currentThread();
 
 		RuleContext ctx = thread.getRuleContext();
-		RuleSets rs = thread.getRuleSets(configuration.getRuleSets(), configuration.getPmdRuleSets());
-		configuration.setPmdRuleSets(rs);
+		RuleSets rs = thread.getRuleSets(configuration.getRuleSets());
 
 		Report report = setupReport(rs, ctx, fileName);
 		
@@ -110,10 +109,10 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 			return context;
 		}
 
-		public RuleSets getRuleSets(String rsList, RuleSets ruleSets) {
+		public RuleSets getRuleSets(String rsList) {
 			if (rulesets == null) {
 				try {
-					rulesets = ruleSetFactory.createRuleSets(rsList, ruleSets);
+					rulesets = ruleSetFactory.createRuleSets(rsList);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
