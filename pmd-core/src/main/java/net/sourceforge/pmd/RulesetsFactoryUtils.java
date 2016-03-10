@@ -20,16 +20,15 @@ public final class RulesetsFactoryUtils {
      * all referenced rulesets.
      * @param rulesets the string with the rulesets to load
      * @param factory the ruleset factory
-     * @param pmdRuleSets RuleSets initialized in PMDConfiguration
      * @return the rulesets
      * @throws IllegalArgumentException if rulesets is empty (means, no rules have been found) or if a
      * ruleset couldn't be found.
      */
-    public static RuleSets getRuleSets(String rulesets, RuleSets pmdRuleSets, RuleSetFactory factory) {
+    public static RuleSets getRuleSets(String rulesets, RuleSetFactory factory) {
         RuleSets ruleSets = null;
         try {
             factory.setWarnDeprecated(true);
-            ruleSets = factory.createRuleSets(rulesets, pmdRuleSets);
+            ruleSets = factory.createRuleSets(rulesets);
             factory.setWarnDeprecated(false);
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.ruleCount() == 0) {
@@ -53,15 +52,16 @@ public final class RulesetsFactoryUtils {
      * @throws IllegalArgumentException if rulesets is empty (means, no rules have been found) or if a
      * ruleset couldn't be found.
      */
-    public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSets pmdRuleSets, RuleSetFactory factory) {
+    public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
         long loadRuleStart = System.nanoTime();
+        RuleSets ruleSets = null;
         try {
-        	pmdRuleSets = getRuleSets(rulesets, pmdRuleSets, factory);
+            ruleSets = getRuleSets(rulesets, factory);
         } finally {
             long endLoadRules = System.nanoTime();
             Benchmarker.mark(Benchmark.LoadRules, endLoadRules - loadRuleStart, 0);
         }
-        return pmdRuleSets;
+        return ruleSets;
     }
 
 	public static RuleSetFactory getRulesetFactory(PMDConfiguration configuration) {

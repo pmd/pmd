@@ -217,8 +217,7 @@ public class PMD {
 
         // Load the RuleSets
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
-        RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), configuration.getPmdRuleSets(), ruleSetFactory);
-        configuration.setPmdRuleSets(ruleSets);
+        RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return 0;
         }

@@ -50,7 +50,7 @@ public abstract class RuleTst {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = new RuleSetFactory().createRuleSets(ruleSet, null).getRuleByName(ruleName);
+            Rule rule = new RuleSetFactory().createRuleSets(ruleSet).getRuleByName(ruleName);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             }
