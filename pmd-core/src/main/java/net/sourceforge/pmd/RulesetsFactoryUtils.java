@@ -20,19 +20,6 @@ public final class RulesetsFactoryUtils {
      * all referenced rulesets.
      * @param rulesets the string with the rulesets to load
      * @param factory the ruleset factory
-     * @return the rulesets
-     * @throws IllegalArgumentException if rulesets is empty (means, no rules have been found) or if a
-     * ruleset couldn't be found.
-     */
-    public static RuleSets getRuleSets(String rulesets, RuleSetFactory factory) {
-        return getRuleSets(rulesets, null, factory);
-    }
-
-    /**
-     * Creates a new rulesets with the given string. The resulting rulesets will contain
-     * all referenced rulesets.
-     * @param rulesets the string with the rulesets to load
-     * @param factory the ruleset factory
      * @param pmdRuleSets RuleSets initialized in PMDConfiguration
      * @return the rulesets
      * @throws IllegalArgumentException if rulesets is empty (means, no rules have been found) or if a
@@ -66,30 +53,15 @@ public final class RulesetsFactoryUtils {
      * @throws IllegalArgumentException if rulesets is empty (means, no rules have been found) or if a
      * ruleset couldn't be found.
      */
-    public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSetFactory factory) {
-        return getRuleSetsWithBenchmark(rulesets, null, factory);
-    }
-
-    /**
-     * See {@link #getRuleSets(String, RuleSetFactory)}. In addition, the loading of the rules
-     * is benchmarked.
-     * @param rulesets the string with the rulesets to load
-     * @param pmdRuleSets RuleSets initialized in PMDConfiguration
-     * @param factory the ruleset factory
-     * @return the rulesets
-     * @throws IllegalArgumentException if rulesets is empty (means, no rules have been found) or if a
-     * ruleset couldn't be found.
-     */
     public static RuleSets getRuleSetsWithBenchmark(String rulesets, RuleSets pmdRuleSets, RuleSetFactory factory) {
         long loadRuleStart = System.nanoTime();
-        RuleSets ruleSets = null;
         try {
-            ruleSets = getRuleSets(rulesets, pmdRuleSets, factory);
+        	pmdRuleSets = getRuleSets(rulesets, pmdRuleSets, factory);
         } finally {
             long endLoadRules = System.nanoTime();
             Benchmarker.mark(Benchmark.LoadRules, endLoadRules - loadRuleStart, 0);
         }
-        return ruleSets;
+        return pmdRuleSets;
     }
 
 	public static RuleSetFactory getRulesetFactory(PMDConfiguration configuration) {
