@@ -32,7 +32,7 @@ public class MultiThreadProcessorTest {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setRuleSets("rulesets/MultiThreadProcessorTest/basic.xml");
         configuration.setThreads(2);
-        List<DataSource> files = new ArrayList<>();
+        List<DataSource> files = new ArrayList<DataSource>();
         files.add(new StringDataSource("file1-violation.dummy", "ABC"));
         files.add(new StringDataSource("file2-foo.dummy", "DEF"));
 
