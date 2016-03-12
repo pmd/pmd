@@ -3,34 +3,25 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class ApexTokenizer implements Tokenizer {
-	
-	@Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        StringBuilder buffer = sourceCode.getCodeBuffer();
-        Reader reader = null;
-        try {
-            LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(PythonLanguageModule.NAME)
-                    .getDefaultVersion().getLanguageVersionHandler();
-            reader = new StringReader(buffer.toString());
-            reader = IOUtil.skipBOM(reader);
-            TokenManager tokenManager = languageVersionHandler.getParser(
-                    languageVersionHandler.getDefaultParserOptions()).getTokenManager(sourceCode.getFileName(), reader);
-            Token currentToken = (Token) tokenManager.getNextToken();
-            while (currentToken.image.length() > 0) {
-                tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));
-                currentToken = (Token) tokenManager.getNextToken();
-            }
-            tokenEntries.add(TokenEntry.getEOF());
-            System.err.println("Added " + sourceCode);
-        } catch (TokenMgrError err) {
-            err.printStackTrace();
-            System.err.println("Skipping " + sourceCode + " due to parse error");
-            tokenEntries.add(TokenEntry.getEOF());
-        } finally {
-            IOUtils.closeQuietly(reader);
-        }
+public class ApexTokenizer extends AbstractTokenizer {
+    public ApexTokenizer() {
+        // setting markers for "string" in apex
+        this.stringToken = new ArrayList<>();
+        this.stringToken.add( "\'" );
+        this.stringToken.add( "\"" );
+        
+        // setting markers for 'ignorable character' in apex
+        this.ignorableCharacter = new ArrayList<>();
+        this.ignorableCharacter.add( ";" );
+
+        // setting markers for 'ignorable string' in apex
+        this.ignorableStmt = new ArrayList<>();
+
+        // strings do indeed span multiple lines in apex
+        this.spanMultipleLinesString = true;
+        // the lines do to end with backslashes
+        this.spanMultipleLinesLineContinuationCharacter = '\\';
     }
 }

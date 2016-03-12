@@ -9,34 +9,34 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
+/**
+ * Adapter for the ApexParser.
+ */
 public class ApexParser extends AbstractParser {
+    private net.sourceforge.pmd.lang.apex.ast.ApexParser apexParser;
 
     public ApexParser(ParserOptions parserOptions) {
-        super(parserOptions);
+	super(parserOptions);
+	apexParser = new net.sourceforge.pmd.lang.apex.ast.ApexParser((ApexParserOptions)parserOptions);
     }
 
     @Override
     public TokenManager createTokenManager(Reader source) {
-        return new ApexTokenManager(source);
+	return null;
     }
 
-    @Override
     public boolean canParse() {
-        return false;
+	return true;
     }
 
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
-        AbstractTokenManager.setFileName(fileName);
-        throw new UnsupportedOperationException("parse(Reader) is not supported for Apex");
+    return apexParser.parse(source);
     }
 
-    @Override
     public Map<Integer, String> getSuppressMap() {
-        throw new UnsupportedOperationException("getSuppressMap() is not supported for Apex");
+        return apexParser.getSuppressMap();
     }
 }

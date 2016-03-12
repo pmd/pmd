@@ -3,20 +3,56 @@
  */
 package net.sourceforge.pmd.lang.apex;
 
+import java.io.Writer;
+
+import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.VisitorStarter;
+import net.sourceforge.pmd.lang.XPathHandler;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
+import net.sourceforge.pmd.lang.apex.rule.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
+/**
+ * Implementation of LanguageVersionHandler for the ECMAScript Version 3.
+ */
 public class ApexHandler extends AbstractLanguageVersionHandler {
 
-	@Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        throw new UnsupportedOperationException("getRuleViolationFactory() is not supported for Apex");
-    }
-	
     @Override
+    public XPathHandler getXPathHandler() {
+	return new AbstractASTXPathHandler() {
+	    public void initialize() {
+	    }
+
+	    public void initialize(IndependentContext context) {
+	    }
+	};
+    }
+
+    public RuleViolationFactory getRuleViolationFactory() {
+	return ApexRuleViolationFactory.INSTANCE;
+    }
+
+    @Override
+    public ParserOptions getDefaultParserOptions() {
+	return new ApexParserOptions();
+    }
+
     public Parser getParser(ParserOptions parserOptions) {
-        return new ApexParser(parserOptions);
+	return new ApexParser(parserOptions);
+    }
+
+    @Override
+    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
+	return new VisitorStarter() {
+	    public void start(Node rootNode) {
+		new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
+	    }
+	};
     }
 }
