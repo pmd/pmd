@@ -13,6 +13,12 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
  * This is the basic Rule interface for PMD rules.
+ *
+ * <p><strong>Thread safety:</strong>
+ * PMD will create one instance of a rule per thread. The instances are
+ * not shared across different threads. However, a single rule instance is
+ * reused for analyzing multiple files.
+ * </p>
  */
 // FUTURE Implement Cloneable and clone()
 public interface Rule extends PropertySource {
