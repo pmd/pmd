@@ -50,6 +50,15 @@ public abstract class AbstractPMDProcessor {
 			 );
 	}
 
+	/**
+	 * Create instances for each rule defined in the ruleset(s) in
+	 * the configuration.
+	 * Please note, that the returned instances <strong>must not</strong>
+	 * be used by different threads. Each thread must create its own
+	 * copy of the rules (see {@link PmdRunnable.PmdThread#getRuleSets(String)}).
+	 * @param factory
+	 * @return the rules within a rulesets
+	 */
 	protected RuleSets createRuleSets(RuleSetFactory factory) {
 		return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
 	}
