@@ -264,10 +264,10 @@ finds all private fields.  You can see the code that determines all the attribut
 
 Thanks to Miguel Griffa for writing a longer [XPath tutorial](xpathruletutorial.html).
 
-## I want to implement a rule that analyse more than the class!
+## I want to implement a rule that analyze more than the class!
 
 An obvious limitation of the previous mechanism is the "class-centric" focus of the rule. How can you implement a
-rule that checks stuff accross the all source code? Let's take a dummy example. Let's say you want to implement a
+rule that checks stuff across the all source code? Let's take a dummy example. Let's say you want to implement a
 rule that count how many Expression Node you have in your source code (told you, it was a dummy example :) ).
 
 You realize quite simply. You just have to add static field to the RulesContext, as an attribute, and uses
@@ -324,7 +324,7 @@ classname to the violation report.
 [sonar]: http://www.sonarsource.com/
 
 
-## I need somekind of Type Resolution for my rule!
+## I need some kind of Type Resolution for my rule!
 
 ### Inside an XPath query
 
@@ -366,6 +366,27 @@ you get the actual Class instance by calling getType().
 
 Otherwise, you'll have to string-compare the image, e.g.
 `"com.forbidden.class".equals(node.getImage())`
+
+## Thread safety, concurrency issues and reuse of rule instances
+
+When executing the rule, PMD will instantiate a new instance of your rule.
+If PMD is executed in multiple threads, then each thread is using its own
+instance of the rule. This means, that the rule implementation
+**does not need to care about threading issues**,
+as PMD makes sure, that a single instance is not used
+concurrently by multiple threads.
+
+However, for performance reasons, the rule instances are used for multiple files. This means,
+that the constructor of the rule is only executed once (per thread) and the rule instance is reused.
+If you rely on a proper initialization of instance properties, you can do the initialization
+e.g. in the visit-method of the `ASTCompilationUnit` AST node - which is visited as first node
+and only once per file. However, this solution would only work for rules written for the Java language.
+A language independent way is to override the method `apply` of the rule (and call super). The
+apply method is called exactly once per file.
+
+If you want to share data across multiple files, see the above section
+"I want to implement a rule that analyze more than the class".
+
 
 ## Bundle it up
 
