@@ -922,6 +922,7 @@
     </profiles>
 
     <modules>
+        <module>pmd-apex</module>
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
