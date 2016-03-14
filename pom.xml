@@ -903,6 +903,7 @@
             <modules>
                 <module>pmd-java8</module>
                 <module>pmd-ui</module>
+        		<module>pmd-apex</module>
             </modules>
         </profile>
 

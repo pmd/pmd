@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.lang.apex;
 
+import net.sourceforge.pmd.lang.apex.ast.CompilerService;
+
 /**
  * This simple example shows how to interface with the parser.
  * 

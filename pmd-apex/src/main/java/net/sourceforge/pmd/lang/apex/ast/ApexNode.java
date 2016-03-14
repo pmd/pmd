@@ -5,7 +5,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-import org.mozilla.apex.ast.AstNode;
+import apex.jorje.semantic.ast.AstNode;
 
 public interface ApexNode<T extends AstNode> extends Node {
 

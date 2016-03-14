@@ -5,33 +5,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 
-import org.mozilla.apex.ast.AstNode;
+import apex.jorje.semantic.ast.AstNode; 
 
-public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode
-		implements ApexNode<T> {
+public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode implements ApexNode<T> {
 
 	protected final T node;
 
 	public AbstractApexNode(T node) {
 		super(node.getType());
 		this.node = node;
-	}
-
-	/* package private */
-	void calculateLineNumbers(SourceCodePositioner positioner) {
-		int startOffset = node.getAbsolutePosition();
-		int endOffset = startOffset + node.getLength();
-
-		this.beginLine = positioner.lineNumberFromOffset(startOffset);
-		this.beginColumn = positioner.columnFromOffset(startOffset);
-		this.endLine = positioner.lineNumberFromOffset(endOffset);
-		this.endColumn = positioner.columnFromOffset(endOffset) - 1; // end
-																		// column
-																		// is
-																		// inclusive
-		if (this.endColumn < 0) {
-			this.endColumn = 0;
-		}
 	}
 
 	/**
