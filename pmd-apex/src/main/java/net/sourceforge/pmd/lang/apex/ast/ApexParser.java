@@ -5,13 +5,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
+import net.sourceforge.pmd.lang.ast.ParseException;
 
 import org.apache.commons.io.IOUtils;
 
@@ -32,8 +30,7 @@ public class ApexParser {
 	}
 
 	protected UserClass parseApex(final String sourceCode) throws ParseException {
-		final Parser parser = null;
-		UserClass astRoot = parser.parse(sourceCode);
+		UserClass astRoot = null; // TODO How to use Jorje to get AST root nodes?
 		return astRoot;
 	}
 
@@ -41,10 +38,10 @@ public class ApexParser {
 		try {
 			final String sourceCode = IOUtils.toString(reader);
 			final UserClass astRoot = parseApex(sourceCode);
-			final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode);
-			ApexNode<UserClass> tree = treeBuilder.build(astRoot);
-
+			final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
 			suppressMap = new HashMap<>();
+
+			ApexNode<UserClass> tree = treeBuilder.build(astRoot);
 			return tree;
 		} catch (IOException e) {
 			throw new ParseException(e);

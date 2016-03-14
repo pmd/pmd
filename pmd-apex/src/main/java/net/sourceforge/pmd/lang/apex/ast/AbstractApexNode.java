@@ -12,7 +12,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 	protected final T node;
 
 	public AbstractApexNode(T node) {
-		super(node.getType());
+		super(node.getDefiningType().hashCode());
 		this.node = node;
 	}
 
@@ -40,18 +40,5 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 
 	public T getNode() {
 		return node;
-	}
-
-	public String getJsDoc() {
-		return node.getJsDoc();
-	}
-
-	public boolean hasSideEffects() {
-		return node.hasSideEffects();
-	}
-
-	@Override
-	public String toString() {
-		return node.shortName();
 	}
 }

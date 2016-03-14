@@ -23,14 +23,4 @@ public interface ApexNode<T extends AstNode> extends Node {
      * Get the underlying Rhino AST node.
      */
     T getNode();
-    
-    /**
-     * Get the JsDoc associated with the given node.  If there is no JsDoc on
-     * this node, it may be associated with a parent node, on more representative
-     * of the entire expression containing this node.
-     * @return The JsDoc comment for the node, may be <code>null</code>.
-     */
-    String getJsDoc();
-
-    boolean hasSideEffects();
 }
