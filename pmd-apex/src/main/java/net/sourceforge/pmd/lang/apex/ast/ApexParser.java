@@ -14,41 +14,62 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import org.apache.commons.io.IOUtils;
 
 import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
+import apex.jorje.semantic.ast.visitor.AstVisitor;
 
 public class ApexParser {
-	protected final ApexParserOptions parserOptions;
+    protected final ApexParserOptions parserOptions;
 
-	private Map<Integer, String> suppressMap;
-	private String suppressMarker = "NOPMD"; // that's the default value
+    private Map<Integer, String> suppressMap;
+    private String suppressMarker = "NOPMD"; // that's the default value
 
-	public ApexParser(ApexParserOptions parserOptions) {
-		this.parserOptions = parserOptions;
-		
-		if (parserOptions.getSuppressMarker() != null) {
-			suppressMarker = parserOptions.getSuppressMarker();
-		}
-	}
+    public ApexParser(ApexParserOptions parserOptions) {
+        this.parserOptions = parserOptions;
 
-	protected UserClass parseApex(final String sourceCode) throws ParseException {
-		UserClass astRoot = null; // TODO How to use Jorje to get AST root nodes?
-		return astRoot;
-	}
+        if (parserOptions.getSuppressMarker() != null) {
+            suppressMarker = parserOptions.getSuppressMarker();
+        }
+    }
 
-	public ApexNode<UserClass> parse(final Reader reader) {
-		try {
-			final String sourceCode = IOUtils.toString(reader);
-			final UserClass astRoot = parseApex(sourceCode);
-			final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
-			suppressMap = new HashMap<>();
+    public UserClass parseApex(final String sourceCode)
+            throws ParseException {
+        
+        TopLevelVisitor visitor = new TopLevelVisitor();
+        CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
 
-			ApexNode<UserClass> tree = treeBuilder.build(astRoot);
-			return tree;
-		} catch (IOException e) {
-			throw new ParseException(e);
-		}
-	}
+        UserClass astRoot = visitor.getTopLevel();
+        return astRoot;
+    }
 
-	public Map<Integer, String> getSuppressMap() {
-		return suppressMap;
-	}
+    public ApexNode<UserClass> parse(final Reader reader) {
+        try {
+            final String sourceCode = IOUtils.toString(reader);
+            final UserClass astRoot = parseApex(sourceCode);
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
+            suppressMap = new HashMap<>();
+
+            ApexNode<UserClass> tree = treeBuilder.build(astRoot);
+            return tree;
+        } catch (IOException e) {
+            throw new ParseException(e);
+        }
+    }
+
+    public Map<Integer, String> getSuppressMap() {
+        return suppressMap;
+    }
+    
+
+    private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
+        UserClass topLevel;
+        
+        public UserClass getTopLevel() {
+            return topLevel;
+        }
+        
+        @Override
+        public void visitEnd(UserClass node, AdditionalPassScope scope) {
+            topLevel = node;
+        }
+    }
 }
