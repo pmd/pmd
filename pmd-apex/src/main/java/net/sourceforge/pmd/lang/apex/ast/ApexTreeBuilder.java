@@ -83,7 +83,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 		// Build the children...
 		nodes.push(node);
 		parents.push(astNode);
-		astNode.visit(this); // TODO
+		astNode.traverse(this, null);
 		nodes.pop();
 		parents.pop();
 
