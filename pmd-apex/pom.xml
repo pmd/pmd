@@ -13,6 +13,7 @@
 
 	<properties>
 		<config.basedir>${basedir}/../pmd-core</config.basedir>
+		<java.version>1.8</java.version>
 	</properties>
 
 	<build>
@@ -83,5 +84,39 @@
 	        <scope>system</scope>
 	        <systemPath>${basedir}/lib/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT.jar</systemPath>
 	    </dependency>
+	    
+		<dependency>
+	        <groupId>com.salesforce.ide.apex</groupId>
+	        <artifactId>apex-jorje-sematic-tests</artifactId>
+	        <version>1.0-sfdc-187-SNAPSHOT</version>
+	        <scope>system</scope>
+	        <systemPath>${basedir}/lib/apex-jorje-semantic-1.0-sfdc-187-SNAPSHOT-tests.jar</systemPath>
+	    </dependency>
+	    	    
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr-complete</artifactId>
+			<version>3.5.2</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>axis</groupId>
+			<artifactId>axis</artifactId>
+			<version>1.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.glassfish.main.javaee-api</groupId>
+			<artifactId>javax.xml.rpc</artifactId>
+			<version>3.1.2.2</version>
+		</dependency>
+
 	</dependencies>
+
 </project>
