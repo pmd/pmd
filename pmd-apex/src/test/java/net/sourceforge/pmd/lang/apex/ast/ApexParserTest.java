@@ -22,7 +22,7 @@ public class ApexParserTest {
 
     @Test
     public void testParse() {
-        ASTUserClass rootNode = parse("public class HelloWorld { public void foo() {} private static int bar() { return 1; }");
+        ASTUserClass rootNode = parse("public class HelloWorld { public void foo() {} private static int bar() { return 1; } }");
 
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
         assertEquals(2, methods.size());
