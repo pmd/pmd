@@ -32,7 +32,7 @@ public class ApexParserTest {
         dumpNode(rootNode);
 
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
-        assertEquals(2, methods.size());
+        assertEquals(5, methods.size());
     }
     
     private ASTUserClass parse(String code) {
