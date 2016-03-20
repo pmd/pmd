@@ -15,6 +15,7 @@ import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.member.Method;
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
+import apex.jorje.semantic.exception.Errors;
 
 public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
@@ -43,6 +44,9 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
 	// The Apex nodes with children to build.
 	private Stack<AstNode> parents = new Stack<>();
+
+	AdditionalPassScope scope = new AdditionalPassScope( new Errors() );
+
 
 	static <T extends AstNode> ApexNode<T> createNodeAdapter(T node) {
 		try {
@@ -83,7 +87,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 		// Build the children...
 		nodes.push(node);
 		parents.push(astNode);
-		astNode.traverse(this, null);
+		astNode.traverse(this, scope);
 		nodes.pop();
 		parents.pop();
 
