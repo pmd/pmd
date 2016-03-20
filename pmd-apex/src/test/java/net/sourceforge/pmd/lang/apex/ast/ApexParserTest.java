@@ -20,9 +20,16 @@ import org.junit.Test;
 
 public class ApexParserTest {
 
+    private String code1 = "public class HelloWorld { public void foo() {} private static int bar() { return 1; } }";
+    private String code2 = "public class SimpleClass {\n" +
+                    "    public void methodWithManyParams(String a, String b, String c, String d, String e, String f, String g) {\n" +
+                    "        \n" +
+                    "    }\n" +
+                    "}";
+
     @Test
     public void testParse() {
-        ASTUserClass rootNode = parse("public class HelloWorld { public void foo() {} private static int bar() { return 1; } }");
+        ASTUserClass rootNode = parse(code1);
 
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
         assertEquals(2, methods.size());
