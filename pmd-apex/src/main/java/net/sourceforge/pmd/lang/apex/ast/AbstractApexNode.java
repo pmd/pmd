@@ -41,4 +41,9 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 	public T getNode() {
 		return node;
 	}
+
+    @Override
+    public String toString() {
+        return "pmd-apex:" + this.getClass().getSimpleName();
+    }
 }

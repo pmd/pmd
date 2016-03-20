@@ -97,6 +97,13 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 	static {
 		register(Method.class, ASTMethod.class);
 		register(UserClass.class, ASTUserClass.class);
+		register(ModifierNode.class, ASTModifierNode.class);
+		register(Parameter.class, ASTParameter.class);
+		register(BlockStatement.class, ASTBlockStatement.class);
+		register(UserClassMethods.class, ASTUserClassMethods.class);
+		register(BridgeMethodCreator.class, ASTBridgeMethodCreator.class);
+		register(ReturnStatement.class, ASTReturnStatement.class);
+		register(LiteralExpression.class, ASTLiteralExpression.class);
 	}
 
 	private static <T extends AstNode> void register(Class<T> nodeType,
