@@ -119,4 +119,33 @@
 
 	</dependencies>
 
+    <profiles>
+        <profile>
+            <id>designer</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.4.0</version>
+                        <configuration>
+                            <mainClass>net.sourceforge.pmd.util.designer.Designer</mainClass>
+                            <additionalClasspathElements>
+                                <additionalClasspathElement>${basedir}/lib/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT.jar</additionalClasspathElement>
+                                <additionalClasspathElement>${basedir}/lib/apex-jorje-semantic-1.0-sfdc-187-SNAPSHOT-tests.jar</additionalClasspathElement>
+                            </additionalClasspathElements>
+                            <includePluginDependencies>true</includePluginDependencies>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sourceforge.pmd</groupId>
+                                <artifactId>pmd-java</artifactId>
+                                <version>${project.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -901,5 +901,6 @@
         <module>pmd-core</module>
         <module>pmd-dist</module>
         <module>pmd-test</module>
+        <module>pmd-java</module>
     </modules>
 </project>
