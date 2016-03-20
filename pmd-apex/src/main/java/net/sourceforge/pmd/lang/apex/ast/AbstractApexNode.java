@@ -44,6 +44,6 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 
     @Override
     public String toString() {
-        return "pmd-apex:" + this.getClass().getSimpleName();
+        return this.getClass().getSimpleName().replaceFirst("^AST", "");
     }
 }
