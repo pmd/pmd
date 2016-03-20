@@ -11,17 +11,8 @@ public class ASTMethod extends AbstractApexNode<Method> {
         super(method);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-    @Override
-    public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getImage() {
+        return node.getMethodInfo().getIdentifier().value;
     }
 }

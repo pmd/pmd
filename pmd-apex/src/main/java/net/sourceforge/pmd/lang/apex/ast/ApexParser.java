@@ -48,6 +48,10 @@ public class ApexParser {
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
             suppressMap = new HashMap<>();
 
+            if (astRoot == null) {
+                throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
+            }
+
             ApexNode<UserClass> tree = treeBuilder.build(astRoot);
             return tree;
         } catch (IOException e) {

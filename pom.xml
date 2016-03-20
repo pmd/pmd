@@ -894,54 +894,13 @@
                 </site>
             </distributionManagement>
         </profile>
-
-        <profile>
-            <id>jdk8-modules</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <modules>
-                <module>pmd-java8</module>
-                <module>pmd-ui</module>
-        		<module>pmd-apex</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>jdk9-disabled</id>
-            <activation>
-                <jdk>!1.9</jdk>
-            </activation>
-            <modules>
-                <!--
-                    https://issues.scala-lang.org/browse/SI-9103
-                    https://sourceforge.net/p/pmd/bugs/1314/
-                 -->
-                <module>pmd-scala</module>
-            </modules>
-        </profile>
     </profiles>
 
     <modules>
         <module>pmd-apex</module>
         <module>pmd-core</module>
-        <module>pmd-cpp</module>
-        <module>pmd-cs</module>
         <module>pmd-dist</module>
-        <module>pmd-fortran</module>
-        <module>pmd-go</module>
-        <module>pmd-java</module>
-        <module>pmd-javascript</module>
-        <module>pmd-jsp</module>
-        <module>pmd-matlab</module>
-        <module>pmd-objectivec</module>
-        <module>pmd-perl</module>
-        <module>pmd-php</module>
-        <module>pmd-plsql</module>
-        <module>pmd-python</module>
-        <module>pmd-ruby</module>
         <module>pmd-test</module>
-        <module>pmd-vm</module>
-        <module>pmd-xml</module>
+        <module>pmd-java</module>
     </modules>
 </project>

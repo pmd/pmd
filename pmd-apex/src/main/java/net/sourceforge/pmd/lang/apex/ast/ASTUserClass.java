@@ -3,24 +3,27 @@
  */
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.UserClass;
+import java.lang.reflect.Field;
 
-public class ASTUserClass extends AbstractApexNode<UserClass> {
+import apex.jorje.data.ast.Identifier;
+import apex.jorje.semantic.ast.compilation.UserClass;
+import net.sourceforge.pmd.lang.ast.RootNode;
+
+public class ASTUserClass extends AbstractApexNode<UserClass> implements RootNode {
     public ASTUserClass(UserClass userClass) {
         super(userClass);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-    @Override
-    public String toString() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getImage() {
+        try {
+            Field field = node.getClass().getDeclaredField("name");
+            field.setAccessible(true);
+            Identifier name = (Identifier)field.get(node);
+            return name.value;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return super.getImage();
     }
 }
