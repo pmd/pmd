@@ -2,96 +2,98 @@
 <test-data>
 	<test-code>
 		<description><![CDATA[
-Ok, global scope
+Ok, no return
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-for (var p in obj) {
-  obj[p] = obj[p];
+public class ConsistentReturn {		
+	public Boolean foo() {
+	}
 }
      ]]></code>
 		<source-type>apex</source-type>
 	</test-code>
 	<test-code>
 		<description><![CDATA[
-Ok, function scope
+Ok, 1 return w/ result
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-function foo() {
-   for (var p in obj) {
-      obj[p] = obj[p];
-   }
+public class ConsistentReturn {		
+	public Boolean foo() {
+	   return true;
+	}
 }
      ]]></code>
 		<source-type>apex</source-type>
 	</test-code>
 	<test-code>
 		<description><![CDATA[
-Ok, nested function
+Ok, 1 return w/o result
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-// Ok
-function foo() {
-   var p = 'clean';
-   function() {
-	   var obj = { dirty: 'dirty' };
-	   for (var p in obj) { // Use 'var' here.
-	     obj[p] = obj[p];
+public class ConsistentReturn {		
+	public Boolean foo() {
+	   return;
+	}
+}
+     ]]></code>
+		<source-type>apex</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+Ok, nested function with different return result
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class ConsistentReturn {		
+	public Boolean foo() {
+	   var x = function() {
+	      return true;
+	   };
+	   return;
+	}
+}
+     ]]></code>
+		<source-type>apex</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+Bad, mixed result
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class ConsistentReturn {		
+	public Boolean foo() {
+	   if (true) {
+	      return false;
 	   }
-	   return x;
-   }();
-
-   // 'p' still has value of 'clean'.
+	   return;
+	}
 }
      ]]></code>
 		<source-type>apex</source-type>
 	</test-code>
 	<test-code>
 		<description><![CDATA[
-Bad, global scope
+Bad, mixed result with nested function
      ]]></description>
-		<expected-problems>1</expected-problems>
+		<expected-problems>2</expected-problems>
 		<code><![CDATA[
-for (p in obj) {
-  obj[p] = obj[p];
-}
-     ]]></code>
-		<source-type>apex</source-type>
-	</test-code>
-	<test-code>
-		<description><![CDATA[
-Bad, function scope
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-function() {
-   for (p in obj) {
-      obj[p] = obj[p];
-   }
-};
-     ]]></code>
-		<source-type>apex</source-type>
-	</test-code>
-	<test-code>
-		<description><![CDATA[
-Bad, nested function
-     ]]></description>
-		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-// Bad
-function bar() {
-   var p = 'clean';
-   function() {
-	   var obj = { dirty: 'dirty' };
-	   for (p in obj) { // Oh no, missing 'var' here!
-	     obj[p] = obj[p];
+public class ConsistentReturn {		
+	public Boolean foo() {
+	   var x = function() {
+	      if (true) {
+	          return false;
+	      }
+	      return;
+	   };
+	   if (true) {
+	      return false;
 	   }
-	   return x;
-   }();
-
-   // 'p' is trashed and has value of 'dirty'! 
+	   return;
+	}
 }
      ]]></code>
 		<source-type>apex</source-type>
