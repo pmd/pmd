@@ -7,11 +7,14 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
@@ -19,20 +22,39 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 public class ApexParserTest {
 
-    private String code1 = "public class HelloWorld { public void foo() {} private static int bar() { return 1; } }";
-    private String code2 = "public class SimpleClass {\n" +
-                    "    public void methodWithManyParams(String a, String b, String c, String d, String e, String f, String g) {\n" +
-                    "        \n" +
-                    "    }\n" +
-                    "}";
-
     @Test
-    public void testParse() {
-        ASTUserClass rootNode = parse(code1);
+    public void understandsSimpleFile() {
+    	
+    	// Setup
+    	String code = "public class SimpleClass {\n" +
+		                "    public void methodWithManyParams(String a, String b, String c, String d, String e, String f, String g) {\n" +
+		                "        \n" +
+		                "    }\n" +
+		                "}";
+    	
+    	// Exercise
+        ASTUserClass rootNode = parse(code);
         dumpNode(rootNode);
 
+        // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
         assertEquals(5, methods.size());
+    }
+    
+    
+    @Test
+    public void parsesRealWorldClasses() {
+		try {
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("MetadataService.cls").getFile());
+			String sourceCode = FileUtils.readFileToString(file);
+			ASTUserClass rootNode = parse(sourceCode);
+	        dumpNode(rootNode);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+        
     }
     
     // TEST HELPER
