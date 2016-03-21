@@ -38,7 +38,7 @@ public class ApexParserTest {
 
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
-        assertEquals(5, methods.size());
+        assertEquals(4, methods.size());
     }
     
     
