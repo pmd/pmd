@@ -35,6 +35,8 @@ public class ApexParserTest {
         assertEquals(5, methods.size());
     }
     
+    // TEST HELPER
+    
     private ASTUserClass parse(String code) {
         ApexParser parser = new ApexParser(new ApexParserOptions());
         Reader reader = new StringReader(code);

@@ -18,62 +18,62 @@ import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 
 public class ApexParser {
-    protected final ApexParserOptions parserOptions;
+	protected final ApexParserOptions parserOptions;
 
-    private Map<Integer, String> suppressMap;
-    private String suppressMarker = "NOPMD"; // that's the default value
+	private Map<Integer, String> suppressMap;
+	private String suppressMarker = "NOPMD"; // that's the default value
 
-    public ApexParser(ApexParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
+	public ApexParser(ApexParserOptions parserOptions) {
+		this.parserOptions = parserOptions;
 
-        if (parserOptions.getSuppressMarker() != null) {
-            suppressMarker = parserOptions.getSuppressMarker();
-        }
-    }
+		if (parserOptions.getSuppressMarker() != null) {
+			suppressMarker = parserOptions.getSuppressMarker();
+		}
+	}
 
-    public UserClass parseApex(final String sourceCode)
-            throws ParseException {
-        
-        TopLevelVisitor visitor = new TopLevelVisitor();
-        CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
+	public UserClass parseApex(final String sourceCode) throws ParseException {
 
-        UserClass astRoot = visitor.getTopLevel();
-        return astRoot;
-    }
+		TopLevelVisitor visitor = new TopLevelVisitor();
+		CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
 
-    public ApexNode<UserClass> parse(final Reader reader) {
-        try {
-            final String sourceCode = IOUtils.toString(reader);
-            final UserClass astRoot = parseApex(sourceCode);
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
-            suppressMap = new HashMap<>();
+		UserClass astRoot = visitor.getTopLevel();
+		return astRoot;
+	}
 
-            if (astRoot == null) {
-                throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
-            }
+	public ApexNode<UserClass> parse(final Reader reader) {
+		try {
+			final String sourceCode = IOUtils.toString(reader);
+			final UserClass astRoot = parseApex(sourceCode);
+			final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
+			suppressMap = new HashMap<>();
 
-            ApexNode<UserClass> tree = treeBuilder.build(astRoot);
-            return tree;
-        } catch (IOException e) {
-            throw new ParseException(e);
-        }
-    }
+			if (astRoot == null) {
+				throw new ParseException(
+						"Couldn't parse the source - there is not root node - Syntax Error??");
+			}
 
-    public Map<Integer, String> getSuppressMap() {
-        return suppressMap;
-    }
-    
+			ApexNode<UserClass> tree = treeBuilder.build(astRoot);
+			return tree;
+		}
+		catch (IOException e) {
+			throw new ParseException(e);
+		}
+	}
 
-    private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
-        UserClass topLevel;
-        
-        public UserClass getTopLevel() {
-            return topLevel;
-        }
-        
-        @Override
-        public void visitEnd(UserClass node, AdditionalPassScope scope) {
-            topLevel = node;
-        }
-    }
+	public Map<Integer, String> getSuppressMap() {
+		return suppressMap;
+	}
+
+	private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
+		UserClass topLevel;
+
+		public UserClass getTopLevel() {
+			return topLevel;
+		}
+
+		@Override
+		public void visitEnd(UserClass node, AdditionalPassScope scope) {
+			topLevel = node;
+		}
+	}
 }

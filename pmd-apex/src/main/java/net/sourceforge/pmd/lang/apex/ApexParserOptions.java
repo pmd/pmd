@@ -14,8 +14,7 @@ public class ApexParserOptions extends ParserOptions {
 		int result = super.hashCode();
 		result = prime * result + (1237);
 		result = prime * result + (1237);
-		result = prime
-				* result;
+		result = prime * result;
 		return result;
 	}
 

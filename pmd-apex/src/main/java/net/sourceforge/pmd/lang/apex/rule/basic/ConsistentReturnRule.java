@@ -17,20 +17,23 @@ public class ConsistentReturnRule extends AbstractApexRule {
 
 	@Override
 	public Object visit(ASTMethod methodNode, Object data) {
-		List<ASTReturnStatement> returnStatements = methodNode.findDescendantsOfType(ASTReturnStatement.class);
-		
+		List<ASTReturnStatement> returnStatements = methodNode
+				.findDescendantsOfType(ASTReturnStatement.class);
+
 		Boolean hasResult = null;
-		
+
 		for (ASTReturnStatement returnStatement : returnStatements) {
 			// Return for this function?
 			if (methodNode == returnStatement
 					.getFirstParentOfType(ASTMethod.class)) {
 				if (hasResult == null) {
-					hasResult = Boolean.valueOf(returnStatement.getNode().isReturnable());
+					hasResult = Boolean
+							.valueOf(returnStatement.getNode().isReturnable());
 				}
 				else {
 					// Return has different result from previous return?
-					if (hasResult.booleanValue() != returnStatement.getNode().isReturnable()) {
+					if (hasResult.booleanValue() != returnStatement.getNode()
+							.isReturnable()) {
 						addViolation(data, methodNode);
 						break;
 					}

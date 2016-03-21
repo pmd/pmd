@@ -86,18 +86,20 @@ public class CompilerService {
 	}
 
 	public ApexCompiler visitAstsFromStrings(List<String> sources,
-			AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
+			AstVisitor<AdditionalPassScope> visitor,
+			CompilerStage compilerStage) {
 		List<SourceFile> sourceFiles = sources
-				.stream()
-				.map(s -> SourceFile.builder().setBody(canonicalizeString(s))
-						.build()).collect(Collectors.toList());
+				.stream().map(s -> SourceFile.builder()
+						.setBody(canonicalizeString(s)).build())
+				.collect(Collectors.toList());
 		CompilationInput compilationUnit = createCompilationInput(sourceFiles,
 				visitor);
 		return compile(compilationUnit, visitor, compilerStage);
 	}
 
 	private ApexCompiler compile(CompilationInput compilationInput,
-			AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
+			AstVisitor<AdditionalPassScope> visitor,
+			CompilerStage compilerStage) {
 		ApexCompiler compiler = ApexCompiler.builder()
 				.setInput(compilationInput).build();
 		compiler.compile(compilerStage);
@@ -137,7 +139,8 @@ public class CompilerService {
 						.invoke(CompilerStage.ADDITIONAL_VALIDATE);
 				operation.invoke(compilerContext, unit);
 			}
-		} catch (IllegalAccessException | InvocationTargetException
+		}
+		catch (IllegalAccessException | InvocationTargetException
 				| NoSuchMethodException e) {
 		}
 	}

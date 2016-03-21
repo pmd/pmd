@@ -1,48 +1,42 @@
 <?xml version="1.0"?>
 
 <ruleset name="Basic Apex" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
-	<description>Rules concerning basic ECMAScript guidelines.</description>
+	<description>Rules concerning basic Apex guidelines.</description>
 
-	<rule name="UnreachableCode" language="apex" since="5.0"
-		message="A ''return'', ''break'', ''continue'', or ''throw'' statement should be the last in a block."
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#UnreachableCode">
+	<rule name="ConsistentReturn" since="5.0"
+		  message="A method should not mix 'return' statements with and without a result."
+		  class="net.sourceforge.pmd.lang.apex.rule.basic.ConsistentReturnRule"
+		  externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#ConsistentReturn">
+		
 		<description>
-A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
-will never execute.  This is a bug, or extremely poor style.
-      </description>
-		<priority>1</priority>
-		<properties>
-			<property name="xpath">
-				<value>
- <![CDATA[
-	//ReturnStatement[following-sibling::node()]
-|
-	//ContinueStatement[following-sibling::node()]
-|
-	//BreakStatement[following-sibling::node()]
-|
-	//ThrowStatement[following-sibling::node()]
-]]>
-                </value>
-			</property>
-		</properties>
+			Apex (as Java on which it is based) does provide four return types on methods, and therefore there is no solid rule as to their usage.
+			However, when a method does use returns they should all have a value, or all with no value.  Mixed return
+			usage is likely a bug, or at best poor style.
+	    </description>
+		<priority>2</priority>
 		<example>
-  <![CDATA[
-// Ok
-public Integer foo() {
-   return 1;
-}
-// Bad
-public Integer bar() {
-   Integer x = 1;
-   return x;
-   x = 2;
-}
-]]>
+	  <![CDATA[
+	// Ok
+	Boolean foo() {
+	   if(condition) {
+	      return true;
+	   }
+	   
+	   return false;
+	}
+	
+	// Bad
+	Boolean bar() {
+	   if(condition) {
+	      return;
+	   }
+	   
+	   return false;
+	}
+	]]>
       </example>
 	</rule>
 

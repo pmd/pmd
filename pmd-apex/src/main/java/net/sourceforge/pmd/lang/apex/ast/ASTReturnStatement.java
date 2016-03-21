@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.ReturnStatement;
 
 public class ASTReturnStatement extends AbstractApexNode<ReturnStatement> {
 
-    public ASTReturnStatement(ReturnStatement returnStatement) {
-        super(returnStatement);
-    }
+	public ASTReturnStatement(ReturnStatement returnStatement) {
+		super(returnStatement);
+	}
 }

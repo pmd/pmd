@@ -12,7 +12,8 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 public class ApexXPathRule extends XPathRule {
 
 	public ApexXPathRule() {
-		super.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
+		super.setLanguage(
+				LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
 	}
 
 	@Override

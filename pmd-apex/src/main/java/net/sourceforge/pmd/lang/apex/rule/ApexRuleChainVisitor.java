@@ -37,7 +37,8 @@ public class ApexRuleChainVisitor extends AbstractRuleChainVisitor {
 		// Rule better either be a ApexParserVisitor, or a XPathRule
 		if (rule instanceof XPathRule) {
 			((XPathRule) rule).evaluate(node, ctx);
-		} else {
+		}
+		else {
 			((ApexNode<?>) node).jjtAccept((ApexParserVisitor) rule, ctx);
 		}
 	}

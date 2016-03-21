@@ -47,12 +47,14 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
 		return new ApexParser(parserOptions);
 	}
 
-    @Override
-    public VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse) {
-        return new VisitorStarter() {
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
-            }
-        };
-    }
+	@Override
+	public VisitorStarter getDumpFacade(Writer writer, String prefix,
+			boolean recurse) {
+		return new VisitorStarter() {
+			public void start(Node rootNode) {
+				new DumpFacade().initializeWith(writer, prefix, recurse,
+						(ApexNode<?>) rootNode);
+			}
+		};
+	}
 }
