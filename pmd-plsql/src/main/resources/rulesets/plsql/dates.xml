@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<ruleset name="PLSQL DATETIME"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+The Dates ruleset deals with PLSQL DATETIME usages.
+  </description>
+
+<rule name="TO_DATEWithoutDateFormat"
+      language="plsql"
+      since="5.1"
+      message="TO_DATE without date format"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/dates.html#TO_DATEWithoutDateFormat">
+  <description>
+  TO_DATE without date format- use TO_DATE(expression, date-format)
+  </description>
+  <priority>3</priority>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_DATE'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ] 
+]]>
+    </value>
+    </property>
+  </properties>
+  <example>
+<![CDATA[
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+ 
+-- Take single parameter, relyimg on current default NLS date format 
+FUNCTION to_date_single_parameter (p_date_string IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   RETURN TO_DATE(p_date_string); 
+END to_date_single_parameter ;
+
+-- Take 2 parameters, using an explicit date format string  
+FUNCTION to_date_two_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   TO_DATE(p_date_string, p_date_format); 
+END to_date_two_parameters ;
+
+-- Take 3 parameters, using an explicit date format string and an explicit language    
+FUNCTION to_date_three_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2, p_nls_language VARCHAR2 ) RETURN DATE
+IS
+BEGIN
+   TO_DATE(p_date_string, p_format_mask, p_nls_language); 
+END to_date_three_parameters ;
+
+END date_utilities ;
+/
+]]>
+  </example>
+</rule>
+
+<rule name="TO_DATE_TO_CHAR"
+      language="plsql"
+      since="5.1"
+      message="TO_DATE(TO_CHAR(variable)) instead of TRUNC(variable)"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/dates.html#TO_DATE_TO_CHAR">
+  <description>
+  TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
+  </description>
+  <priority>3</priority>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_DATE' 
+                             and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 
+                                                         and .//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_CHAR'  
+                                                                                  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 
+                                                                                 ] 
+                   ] 
+]]>
+    </value>
+    </property>
+  </properties>
+  <example>
+<![CDATA[
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+ 
+-- Take single parameter, relyimg on current default NLS date format 
+FUNCTION strip_time (p_date IN DATE) RETURN DATE
+IS
+BEGIN
+   RETURN TO_DATE(TO_CHAR(p_date)); 
+END strip_time ;
+
+
+END date_utilities ;
+/
+]]>
+  </example>
+</rule>
+
+<rule name="TO_TIMESTAMPWithoutDateFormat"
+      language="plsql"
+      message="TO_TIMESTAMP without date format"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      since="5.1"
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/dates.html#TO_TIMESTAMPWithoutDateFormat">
+  <description>
+  TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
+  </description>
+  <priority>3</priority>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_TIMESTAMP'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ] 
+]]>
+    </value>
+    </property>
+  </properties>
+  <example>
+<![CDATA[
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+ 
+-- Take single parameter, relyimg on current default NLS date format 
+FUNCTION to_timestamp_single_parameter (p_date_string IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   RETURN TO_TIMESTAMP(p_date_string); 
+END to_timestamp_single_parameter ;
+
+-- Take 2 parameters, using an explicit date format string  
+FUNCTION to_timestamp_two_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   TO_TIMESTAMP(p_date_string, p_date_format); 
+END to_timestamp_two_parameters ;
+
+-- Take 3 parameters, using an explicit date format string and an explicit language    
+FUNCTION to_timestamp_three_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2, p_nls_language VARCHAR2 ) RETURN DATE
+IS
+BEGIN
+   TO_TIMESTAMP(p_date_string, p_format_mask, p_nls_language); 
+END to_timestamp_three_parameters ;
+
+END date_utilities ;
+/
+]]>
+  </example>
+</rule>
+</ruleset>
+

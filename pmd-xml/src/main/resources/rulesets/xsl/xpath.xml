@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+
+<ruleset name="XPath in XSL"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+This ruleset regroups a collection of good practices regarding XPath querying and functions inside an XSL.
+  </description>
+
+	<rule name="UseConcatOnce"
+              language="xsl"
+    	      since="5.0"
+              message="The xpath concat() function accepts as many arguments as required, you may be able to factorize this expression"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/rules/xsl/xpath.html#UseConcatOnce">
+     <description>
+The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
+     </description>
+     <priority>3</priority>
+     <properties>
+         <property name="xpath">
+             <value>
+ <![CDATA[
+//node()[contains(substring-after(@select,'concat'),'concat')]
+]]>
+<!-- the use of node() allow to target any node with an select attribute
+     but also workaround the ambiguity of having the xsl namespace in the
+     node name.-->
+             </value>
+         </property>
+     </properties>
+     <example>
+ <![CDATA[
+ <xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
+ <xsl:variable name="var" select="concat("Welcome","to you ",$name))">
+ ]]>
+     </example>
+     </rule>
+     <rule name="AvoidAxisNavigation"
+           language="xsl"
+           since="5.0"
+           message="Axis navigation has the largest impact when writing an XPath query."
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
+           externalInfoUrl="${pmd.website.baseurl}/rules/xsl/xpath.html#AvoidAxisNavigation">
+     <description>
+Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut through 100% of the document in the worst case.  Also, try to avoid using 'descendant' or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means cutting through 100% of the document. 
+     </description>
+     <priority>3</priority>
+     <properties>
+         <property name="xpath">
+             <value>
+ <![CDATA[
+//node()[
+  contains(@select,'preceeding::')
+  or
+  contains(@select,'following::')
+  or
+  contains(@select,'descendant::')
+  or 
+  contains(@select,'descendant-self::')
+  or (
+    ($checkSelfDescendantAbreviation = 'true' )
+    and
+    contains(@select,'//')
+    )
+]
+]]>
+<!-- the use of node() allow to target any node with an select attribute
+     but also workaround the ambiguity of having the xsl namespace in the
+     node name.-->
+             </value>
+         </property>
+	 <property name="checkSelfDescendantAbreviation" type="Boolean" description="descendant::self abreviation, '//', will also trigger this rule." value="false"/>
+     </properties>
+     <example>
+ <![CDATA[
+ <xsl:variable name="var" select="//item/descendant::child"/>
+ ]]>
+     </example>
+   </rule>
+</ruleset>

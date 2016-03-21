@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+	<test-code>
+		<description>No CDATASection</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<root>
+   <child>
+   </child>
+</root>
+     ]]></code>
+		<source-type>xml</source-type>
+	</test-code>
+	<test-code>
+		<description>Valid CDATASection</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<root>
+   <child>
+      <![CDATA[
+         some text data
+      ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
+   </child>
+</root>
+     ]]></code>
+		<source-type>xml</source-type>
+	</test-code>
+	<test-code>
+		<description>CDATASection with [ and ] in it, but not at the ends</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<root>
+   <child>
+      <![CDATA[
+         some [text] data
+      ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
+   </child>
+</root>
+     ]]></code>
+		<source-type>xml</source-type>
+	</test-code>
+	<test-code>
+		<description>CDATASection with [ at the beginning</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<root>
+   <child>
+      <![CDATA[[
+         some text data
+      ]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
+   </child>
+</root>
+     ]]></code>
+		<source-type>xml</source-type>
+	</test-code>
+	<test-code>
+		<description>CDATASection with ] at the end</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<root>
+   <child>
+      <![CDATA[
+         some text data
+      ]]]><![CDATA[]]]]><![CDATA[>]]><![CDATA[
+   </child>
+</root>
+     ]]></code>
+		<source-type>xml</source-type>
+	</test-code>
+</test-data>

@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<ruleset name="Tom Kyte's Despair"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+<description>
+    Rules based on Thomas Kyte's recommendations on http://asktom.oracle.com/ and http://tkyte.blogspot.com/.
+</description>
+
+<rule  language="plsql" name="TomKytesDespair"
+  since="5.1"
+  message="WHEN OTHERS THEN NULL - when you do this, Tom Kyte cries"
+  class="net.sourceforge.pmd.lang.rule.XPathRule"
+  externalInfoUrl="${pmd.website.baseurl}/rules/plsql/TomKytesDespair.html#TomKytesDespair">
+  <description>
+  "WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR 
+  </description>
+  <priority>3</priority>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//ExceptionHandler[QualifiedName/@Image='OTHERS' and upper-case(Statement/UnlabelledStatement/Expression/@Image)='NULL']
+
+]]>
+    </value>
+    </property>
+  </properties>
+  <example>
+<![CDATA[
+CREATE OR REPLACE PACKAGE BODY update_planned_hrs
+IS
+ 
+PROCEDURE set_new_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER, p_hours IN NUMBER)
+IS
+BEGIN
+   UPDATE employee_on_activity ea
+   SET ea.ea_planned_hours = p_hours
+   WHERE
+            ea.ea_emp_id = p_emp_id            
+            AND ea.ea_proj_id = p_project_id;
+ 
+EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+           RAISE_APPLICATION_ERROR (-20100, 'No such employee or project');
+ 
+END set_new_planned;
+ 
+FUNCTION existing_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER) RETURN NUMBER
+ 
+IS
+ 
+existing_hours NUMBER(4);
+ 
+BEGIN
+   SELECT ea.ea_planned_hours INTO existing_hours 
+   FROM employee_on_activity ea
+   WHERE
+            ea.ea_emp_id = p_emp_id     
+            AND ea.ea_proj_id = p_project_id; 
+ 
+   RETURN (existing_hours);
+ 
+   EXCEPTION
+          WHEN OTHERS THEN NULL;
+ 
+   END existing_planned;
+ 
+END update_planned_hrs;
+/
+]]>
+  </example>
+</rule>
+</ruleset>
+

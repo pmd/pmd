@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic XML"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+The Basic XML Ruleset contains a collection of good practices which everyone should follow.
+  </description>
+
+	<rule name="MistypedCDATASection"
+    		language="xml"
+    		since="5.0"
+         message="Potentialy mistyped CDATA section with extra [ at beginning or ] at the end."
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+         externalInfoUrl="${pmd.website.baseurl}/rules/xml/basic.html#MistypedCDATASection">
+     <description>
+An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has only two ]. 
+     </description>
+     <priority>3</priority>
+     <properties>
+         <property name="xpath">
+             <value>
+ <![CDATA[
+//cdata-section[starts-with(@Image,'[') or ends-with(@Image,']')]
+]]>
+             </value>
+         </property>
+     </properties>
+     <example>
+ <![CDATA[
+An extra [ looks like &lt;!CDATA[[]]&gt;, and an extra ] looks like &lt;!CDATA[]]]&gt;.
+ ]]>
+     </example>
+     </rule>
+</ruleset>

@@ -1,0 +1,553 @@
+<?xml version="1.0"?>
+<ruleset name="Code Size"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+The Code Size ruleset contains rules that find problems related to code size or complexity.
+  </description>
+
+<rule name="NPathComplexity"
+      language="plsql"
+      since="5.1"
+      message="The method {0}() has an NPath complexity of {1}"
+      class="net.sourceforge.pmd.lang.plsql.rule.codesize.NPathComplexityRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#NPathComplexity">
+   <description>
+The NPath complexity of a method is the number of acyclic execution paths through that method.
+A threshold of 200 is generally considered the point where measures should be taken to reduce 
+complexity and increase readability.
+   </description>
+     <priority>3</priority>
+    <example>
+ <![CDATA[
+CREATE OR REPLACE
+PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,
+	if (y) THEN	-- it should be broken down into smaller methods or functions
+		for j IN 0 .. j-1 LOOP
+			if (j > r) THEN
+				doSomething;
+				while (f < 5 ) LOOP
+					anotherThing;
+					f := f - 27;
+					END LOOP;
+			else
+					tryThis();
+			END IF;
+		END LOOP;
+	END IF;
+	if ( r - n > 45) THEN
+		while (doMagic) LOOP
+			findRabbits;
+		END LOOP;
+	END IF;
+	BEGIN
+		doSomethingDangerous();
+	EXCEPTION WHEN FooException THEN
+		makeAmends;
+		BEGIN
+			dontDoItAgain;
+		EXCEPTION
+		WHEN OTHERS THEN
+				log_problem;
+		END;
+	END;
+END;
+
+ ]]>
+    </example>
+</rule>
+
+ <rule name="ExcessiveMethodLength"
+      language="plsql"
+ 		 since="5.1"
+		 message="Avoid really long methods ({0} lines found)."
+       class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveMethodLengthRule"
+       externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessiveMethodLength">
+   <description>
+When methods are excessively long this usually indicates that the method is doing more than its
+name/signature might suggest. They also become challenging for others to digest since excessive 
+scrolling causes readers to lose focus.
+Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+   </description>
+     <priority>3</priority>
+   <example>
+<![CDATA[
+CREATE OR REPLACE
+PROCEDURE doSomething BEGIN
+	DBMS_OUTPUT.PUT_LINE("Hello world!");
+	DBMS_OUTPUT.PUT_LINE("Hello world!");
+		-- 98 copies omitted for brevity.
+END;
+
+]]>
+   </example>
+
+ </rule>
+
+
+ <rule name="ExcessiveParameterList"
+      language="plsql"
+ 		 since="5.1"
+       message="Avoid long parameter lists."
+       class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveParameterListRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessiveParameterList">
+   <description>
+Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+   </description>
+     <priority>3</priority>
+   <example>
+<![CDATA[
+CREATE OR REPLACE
+PROCEDURE addPerson(		-- too many arguments liable to be mixed up
+	birthYear pls_integer, birthMonth pls_integer, birthDate pls_integer, height pls_integer, weight pls_integer, ssn pls_integer) {
+
+	. . . .
+END ADDPERSON;
+ 
+CREATE OR REPLACE
+PROCEDURE addPerson(		-- preferred approach
+	birthdate DATE, measurements BodyMeasurements , ssn INTEGER) BEGIN
+
+	. . . .
+END;
+]]>
+   </example>
+
+ </rule>
+
+ <rule name="ExcessiveObjectLength"
+      language="plsql"
+ 		 since="5.1"
+       message="Avoid really long Oracle object specifications and bodies ({0} lines found)."
+       class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveObjectLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessiveObjectLength">
+   <description>
+Excessive object line lengths are usually indications that the object may be burdened with excessive 
+responsibilities that could be provided by other objects. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </description>
+     <priority>3</priority>
+   <example>
+<![CDATA[
+CREATE OR REPLACE
+PACKAGE BODY Foo AS
+	PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+    PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+    PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+]]>
+   </example>
+ </rule>
+
+
+ <rule name="ExcessiveTypeLength"
+      language="plsql"
+ 		 since="5.1"
+       message="Avoid really long Object Type specifications ({0} lines found)."
+       class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessiveTypeLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessiveTypeLength">
+   <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </description>
+     <priority>3</priority>
+   <example>
+<![CDATA[
+CREATE OR REPLACE
+TYPE BODY Foo AS
+	 MEMBER PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	 MEMBER PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+     MEMBER PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+     MEMBER PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+]]>
+   </example>
+ </rule>
+
+ <rule name="ExcessivePackageBodyLength"
+      language="plsql"
+ 		 since="5.1"
+       message="Avoid really long Object Type and Package bodies ({0} lines found)."
+       class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageBodyLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessivePackageBodyLength">
+   <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </description>
+     <priority>3</priority>
+   <example>
+<![CDATA[
+CREATE OR REPLACE
+PACKAGE BODY Foo AS
+	PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+    PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+    PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+]]>
+   </example>
+ </rule>
+
+
+ <rule name="ExcessivePackageSpecificationLength"
+      language="plsql"
+ 		 since="5.1"
+		 message="Avoid really long Package Specifications ({0} lines found)."
+       class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePackageSpecificationLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessivePackageSpecificationLength">
+   <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </description>
+     <priority>3</priority>
+   <example>
+<![CDATA[
+]]>
+CREATE OR REPLACE
+PACKAGE Foo AS
+	PROCEDURE bar1 ;
+	PROCEDURE bar2 ;
+        PROCEDURE bar3 ;
+	
+    ..
+	
+        PROCEDURE barN ;
+END;
+   </example>
+ </rule>
+
+    <rule 	name="CyclomaticComplexity"
+      language="plsql"
+    			since="5.1"
+      		message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
+	      	class="net.sourceforge.pmd.lang.plsql.rule.codesize.CyclomaticComplexityRule"
+	      	externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#CyclomaticComplexity">
+   <description>
+   		<![CDATA[
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+		]]>
+   </description>
+   <priority>3</priority>
+   <example>
+<![CDATA[
+-- Cyclomatic Complexity of 25 
+CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS 
+1 PROCEDURE ty_logger  IS BEGIN
+2        IF true
+         THEN
+              DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+3		 IF true
+		 THEN
+		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+4			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+5			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+6		 ELSIF false
+		 THEN
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+7			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+8			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+		 ELSE
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+9			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+10			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+		 END IF;
+11         ELSIF false
+         THEN
+		DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+12		 IF true
+		 THEN
+		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+13			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+14			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+15		 ELSIF false
+		 THEN
+16			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+17			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+		 ELSE
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+		 END IF;
+	 ELSE
+		DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+18		 IF true
+		 THEN
+		      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+19			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+20			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+21		 ELSIF false
+		 THEN
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+22			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+23			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+		 ELSE
+			DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+24			 IF true
+			 THEN
+			      DBMS_OUTPUT.PUT_LINE('IF/THEN l_Integer='||l_integer);         
+25			 ELSIF false
+			 THEN
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 ELSE
+				DBMS_OUTPUT.PUT_LINE('ELSIF l_Integer='||l_integer);             
+			 END IF;
+		 END IF;
+	 END IF;
+END;								
+						
+END;
+]]>
+   </example>
+</rule>
+
+
+<!--
+    <rule name="ExcessivePublicCount"
+      language="plsql"
+    since="5.1"
+    message="This class has a bunch of public methods and attributes"
+    class="net.sourceforge.pmd.lang.plsql.rule.codesize.ExcessivePublicCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#ExcessivePublicCount">
+    <description>
+Classes with large numbers of public methods and attributes require disproportionate testing efforts
+since combinational side effects grow rapidly and increase risk. Refactoring these classes into
+smaller ones not only increases testability and reliability but also allows new variations to be
+developed easily.
+    </description>
+    <priority>3</priority>
+    <example>
+    <![CDATA[
+public class Foo {
+	public String value;
+	public Bar something;
+	public Variable var;
+ // [... more more public attributes ...]
+ 
+	public void doWork() {}
+	public void doMoreWork() {}
+	public void doWorkAgain() {}
+ // [... more more public methods ...]
+}
+    ]]>
+    </example>
+    </rule>
+-->
+
+    <rule name="TooManyFields"
+      language="plsql"
+    		 since="5.1"
+		 message="Too many fields"
+          class="net.sourceforge.pmd.lang.plsql.rule.codesize.TooManyFieldsRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#TooManyFields">
+      <description>
+Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
+possibly through grouping related fields in new objects.  For example, a class with individual 
+city/state/zip fields could park them within a single Address field.
+      </description>
+        <priority>3</priority>
+      <example>
+   <![CDATA[
+CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
+    C_CHAR_A CONSTANT CHAR(1 CHAR) := 'A';
+    C_CHAR_B CONSTANT CHAR(1 CHAR) := 'B';
+    ...
+    C_CHAR_Z CONSTANT CHAR(1 CHAR) := 'Z';
+END pkg_too_many_fields;
+
+   ]]>
+      </example>
+    </rule>
+
+
+<rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
+      language="plsql"
+   since="5.1"
+   class="net.sourceforge.pmd.lang.plsql.rule.codesize.NcssMethodCountRule"
+   externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#NcssMethodCount">
+    <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+    <priority>3</priority>
+   <example>
+<![CDATA[
+CREATE OR REPLACE PACKAGE BODY AS
+ FUNCTION methd RETURN INTEGER IS
+ BEGIN
+   RETURN 1;;
+ END;
+END;
+]]>
+   </example>
+</rule>
+
+<rule name="NcssObjectCount" message="The Oracle object has an NCSS line count of {0}"
+      language="plsql"
+   since="5.1"
+   class="net.sourceforge.pmd.lang.plsql.rule.codesize.NcssObjectCountRule"
+   externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#NcssObjectCount">
+    <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given Oracle object. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+    <priority>3</priority>
+   <example>
+<![CDATA[
+CREATE OR REPLACE PACKAGE pkg_
+ PROCEDURE Foo IS
+ BEGIN
+ --this class only has 6 NCSS lines
+     super();
+     super();
+ END;
+}
+]]>
+   </example></rule>
+
+    <rule
+      language="plsql"
+        name="TooManyMethods"
+        since="5.1"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="This object has too many methods, consider refactoring it."
+        externalInfoUrl="${pmd.website.baseurl}/rules/plsql/codesize.html#TooManyMethods">
+        <description>
+            <![CDATA[
+A package or type with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
+have more fine grained objects.
+            ]]>
+        </description>
+        <priority>3</priority>
+        <properties>
+                <property name="maxmethods" type="Integer" description="The method count reporting threshold" min="1" max="1000" value="1"/>
+                <property name="xpath">
+                <value>
+                    <![CDATA[
+//node()
+     [ (
+        local-name(.) = 'PackageSpecification'
+        or
+        local-name(.) = 'TypeSpecification'
+       )
+       and 
+      (
+      count(/descendant::ProgramUnit[
+                                         not (
+                                                starts-with(@Image,'get')
+                                                or
+                                                starts-with(@Image,'set')
+                                                or
+                                                starts-with(@Image,'is')
+                                            )
+                                       ]
+           )
+      +
+      count(/descendant::TypeMethod[
+                                         not (
+                                                starts-with(@Image,'get')
+                                                or
+                                                starts-with(@Image,'set')
+                                                or
+                                                starts-with(@Image,'is')
+                                            )
+                                       ]
+           )
+      ) > $maxmethods
+     ]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+</ruleset>
