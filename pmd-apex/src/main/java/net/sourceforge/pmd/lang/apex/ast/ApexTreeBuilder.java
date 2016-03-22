@@ -26,6 +26,7 @@ import apex.jorje.semantic.ast.expression.BindExpressions;
 import apex.jorje.semantic.ast.expression.BooleanExpression;
 import apex.jorje.semantic.ast.expression.ClassRefExpression;
 import apex.jorje.semantic.ast.expression.DottedExpression;
+import apex.jorje.semantic.ast.expression.Expression;
 import apex.jorje.semantic.ast.expression.InstanceOfExpression;
 import apex.jorje.semantic.ast.expression.JavaMethodCallExpression;
 import apex.jorje.semantic.ast.expression.JavaVariableExpression;
@@ -61,6 +62,7 @@ import apex.jorje.semantic.ast.member.bridge.BridgeMethodCreator;
 import apex.jorje.semantic.ast.modifier.Annotation;
 import apex.jorje.semantic.ast.modifier.AnnotationParameter;
 import apex.jorje.semantic.ast.modifier.ModifierNode;
+import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
 import apex.jorje.semantic.ast.statement.BlockStatement;
 import apex.jorje.semantic.ast.statement.BreakStatement;
 import apex.jorje.semantic.ast.statement.CatchBlockStatement;
@@ -81,6 +83,7 @@ import apex.jorje.semantic.ast.statement.IfBlockStatement;
 import apex.jorje.semantic.ast.statement.IfElseBlockStatement;
 import apex.jorje.semantic.ast.statement.ReturnStatement;
 import apex.jorje.semantic.ast.statement.RunAsBlockStatement;
+import apex.jorje.semantic.ast.statement.Statement;
 import apex.jorje.semantic.ast.statement.ThrowStatement;
 import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
@@ -89,6 +92,7 @@ import apex.jorje.semantic.ast.statement.WhileLoopStatement;
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.exception.Errors;
+import apex.jorje.semantic.tester.TestNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
@@ -96,6 +100,16 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 	private static final Map<Class<? extends AstNode>, Constructor<? extends ApexNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 	static {
 		register(Method.class, ASTMethod.class);
+		register(Expression.class, ASTExpression.class);
+		register(ExpressionStatement.class, ASTExpressionStatement.class);
+		register(MethodCallExpression.class, ASTMethodCallExpression.class);
+		register(Field.class, ASTField.class);
+		register(MapEntryNode.class, ASTMapEntryNode.class);
+		register(ModifierOrAnnotation.class, ASTModifierOrAnnotation.class);
+		register(Property.class, ASTProperty.class);
+		register(Statement.class, ASTStatement.class);
+		register(TestNode.class, ASTTestNode.class);
+		register(UserInterface.class, ASTUserInterface.class);
 		register(UserClass.class, ASTUserClass.class);
 		register(ModifierNode.class, ASTModifierNode.class);
 		register(Parameter.class, ASTParameter.class);

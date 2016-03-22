@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
@@ -34,7 +35,7 @@ public class ApexParserTest {
     	
     	// Exercise
         ASTUserClass rootNode = parse(code);
-        dumpNode(rootNode);
+        //dumpNode(rootNode);
 
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
@@ -46,13 +47,13 @@ public class ApexParserTest {
     public void parsesRealWorldClasses() {
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
-			File file = new File(classLoader.getResource("MetadataService.cls").getFile());
+			File file = new File(classLoader.getResource("fflib_SObjectDomain.cls").getFile());
 			String sourceCode = FileUtils.readFileToString(file);
 			ASTUserClass rootNode = parse(sourceCode);
-	        dumpNode(rootNode);
+	        //dumpNode(rootNode);
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			Assert.fail();
 		}
         
     }
