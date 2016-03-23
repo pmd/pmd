@@ -35,7 +35,7 @@ public class ApexParserTest {
     	
     	// Exercise
         ASTUserClass rootNode = parse(code);
-        //dumpNode(rootNode);
+        dumpNode(rootNode);
 
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
@@ -50,7 +50,7 @@ public class ApexParserTest {
 			File file = new File(classLoader.getResource("fflib_SObjectDomain.cls").getFile());
 			String sourceCode = FileUtils.readFileToString(file);
 			ASTUserClass rootNode = parse(sourceCode);
-	        //dumpNode(rootNode);
+	        dumpNode(rootNode);
 		}
 		catch (IOException e) {
 			Assert.fail();

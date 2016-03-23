@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+
+<ruleset name="Code Size" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+	<description>
+The Code Size ruleset contains rules that find problems related to code size or complexity.
+  </description>
+
+
+
+	<rule name="ExcessiveParameterList" since="0.9"
+		message="Avoid long parameter lists."
+		class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveParameterListRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessiveParameterList">
+		<description>
+Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+   </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public void addPerson(		// too many arguments liable to be mixed up
+	Integer birthYear, Integer birthMonth, Integer birthDate, Integer height, Integer weight, Integer ssn) {
+
+	. . . .
+}
+ 
+public void addPerson(		// preferred approach
+	Date birthdate, BodyMeasurements measurements, Integer ssn) {
+
+	. . . .
+}
+]]>
+   </example>
+
+	</rule>
+
+
+	<rule name="ExcessiveClassLength" since="0.6"
+		message="Avoid really long classes."
+		class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessiveClassLength">
+		<description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public class Foo {
+	public void bar1() {
+    // 1000 lines of code
+	}
+	public void bar2() {
+    // 1000 lines of code
+	}
+    public void bar3() {
+    // 1000 lines of code
+	}
+	
+	
+    public void barN() {
+    // 1000 lines of code
+	}
+}
+]]>
+   </example>
+	</rule>
+
+	<rule name="ExcessivePublicCount" since="1.04"
+		message="This class has a bunch of public methods and attributes"
+		class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessivePublicCountRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessivePublicCount">
+		<description>
+Classes with large numbers of public methods and attributes require disproportionate testing efforts
+since combinational side effects grow rapidly and increase risk. Refactoring these classes into
+smaller ones not only increases testability and reliability but also allows new variations to be
+developed easily.
+    </description>
+		<priority>3</priority>
+		<example>
+    <![CDATA[
+public class Foo {
+	public String value;
+	public Bar something;
+	public Variable var;
+ // [... more more public attributes ...]
+ 
+	public void doWork() {}
+	public void doMoreWork() {}
+	public void doWorkAgain() {}
+ // [... more more public methods ...]
+}
+    ]]>
+    </example>
+	</rule>
+
+	<rule name="TooManyFields" since="3.0" message="Too many fields"
+		class="net.sourceforge.pmd.lang.java.rule.codesize.TooManyFieldsRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#TooManyFields">
+		<description>
+Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
+possibly through grouping related fields in new objects.  For example, a class with individual 
+city/state/zip fields could park them within a single Address field.
+      </description>
+		<priority>3</priority>
+		<example>
+   <![CDATA[
+public class Person {	// too many separate fields
+   Integer birthYear;
+   Integer birthMonth;
+   Integer birthDate;
+   Decimal height;
+   Decimal weight;
+}
+
+public class Person {	// this is more manageable
+   Date birthDate;
+   BodyMeasurements measurements;
+}
+   ]]>
+      </example>
+	</rule>
+
+	<rule name="TooManyMethods" language="java" since="4.2"
+		class="net.sourceforge.pmd.lang.rule.XPathRule" message="This class has too many methods, consider refactoring it."
+		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#TooManyMethods">
+		<description>
+            <![CDATA[
+A class with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
+have more fine grained objects.
+            ]]>
+        </description>
+		<priority>3</priority>
+		<properties>
+			<property name="maxmethods" type="Integer"
+				description="The method count reporting threshold" min="1" max="1000"
+				value="10" />
+			<property name="xpath">
+				<value>
+                    <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
+                                something like this:
+                                    not (
+                                            (
+                                                starts-with(@Image,'get')
+                                                or
+                                                starts-with(@Image,'set')
+                                                or
+                                                starts-with(@Image,'is')
+                                            )
+                                            and (
+                                                    (
+                                                        (../Block/attribute::endLine)
+                                                         -
+                                                        (../Block/attribute::beginLine)
+                                                    ) <= 3
+                                            )
+                                        )
+                                This will avoid discarding 'real' method...
+                     -->
+                    <![CDATA[
+ //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+     [
+      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration/MethodDeclarator[
+         not (
+                starts-with(@Image,'get')
+                or
+                starts-with(@Image,'set')
+                or
+                starts-with(@Image,'is')
+            )
+      ]) > $maxmethods
+   ]
+                    ]]>
+                </value>
+			</property>
+		</properties>
+	</rule>
+
+</ruleset>

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.codesize;
 import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.AccessNode;
 import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveNodeCountRule;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -35,7 +34,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
      * Method counts ONLY public methods.
      */
     public Object visit(ASTMethod node, Object data) {
-        return this.getTallyOnAccessType((AccessNode) node.jjtGetParent());
+        return this.getTallyOnAccessType(node.jjtGetParent());
     }
 
     /**
@@ -55,7 +54,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
      * @param node The access node.
      * @return Integer 1 if node is public 0 otherwise
      */
-    private Integer getTallyOnAccessType(AccessNode node) {
+    private Integer getTallyOnAccessType(ASTCompilation node) {
         if (node.isPublic()) {
             return NumericConstants.ONE;
         }

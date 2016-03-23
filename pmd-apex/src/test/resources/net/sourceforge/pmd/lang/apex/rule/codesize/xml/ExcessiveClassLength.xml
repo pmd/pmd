@@ -9,7 +9,7 @@ short
         <code><![CDATA[
 public class Foo {
     public void foo() {
-	  int x;
+	  Integer x;
     }
 }
      ]]></code>

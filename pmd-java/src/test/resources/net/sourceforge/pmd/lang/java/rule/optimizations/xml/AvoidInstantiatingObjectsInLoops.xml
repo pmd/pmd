@@ -117,7 +117,7 @@ import java.util.ArrayList;
 import java.io.File;
 
 public class TestInstantiationInLoop {
-    public static void main(String args[]) {
+    public void foo() {
         for (String test : new ArrayList<String>()) { // facetious but simple example
             System.out.println(test);
         }

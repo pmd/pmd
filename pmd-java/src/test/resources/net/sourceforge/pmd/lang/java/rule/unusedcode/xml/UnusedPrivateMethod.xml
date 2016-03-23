@@ -602,7 +602,7 @@ import java.util.Locale;
 
 public class Test {
 
-    public static void main(String args[]) {
+    public void foo() {
         Test t = new Test();
         t.baz();
     }

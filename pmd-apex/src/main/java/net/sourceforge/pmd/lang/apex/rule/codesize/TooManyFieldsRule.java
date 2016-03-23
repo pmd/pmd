@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
-import apex.jorje.semantic.symbol.type.ModifierOrAnnotationTypeInfo;
-import net.sourceforge.pmd.lang.ast.Node;
+import apex.jorje.semantic.ast.compilation.UserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -46,7 +46,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
                 continue;
             }
             ASTCompilation clazz = fd.getFirstParentOfType(ASTCompilation.class);
-            if (clazz != null && !clazz.isInterface()) {
+            if (clazz != null && !(clazz.getNode() instanceof UserInterface)) {
                 bumpCounterFor(clazz);
             }
         }
