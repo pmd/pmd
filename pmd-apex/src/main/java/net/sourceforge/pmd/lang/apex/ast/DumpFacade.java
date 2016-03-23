@@ -12,6 +12,7 @@ import java.util.List;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class DumpFacade {
+	
 	private PrintWriter writer;
 	private boolean recurse;
 

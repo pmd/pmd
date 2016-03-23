@@ -35,7 +35,7 @@ public class ApexParserTest {
     	
     	// Exercise
         ASTUserClass rootNode = parse(code);
-        dumpNode(rootNode);
+        //dumpNode(rootNode);
 
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
@@ -46,11 +46,15 @@ public class ApexParserTest {
     @Test
     public void parsesRealWorldClasses() {
 		try {
-			ClassLoader classLoader = getClass().getClassLoader();
-			File file = new File(classLoader.getResource("fflib_SObjectDomain.cls").getFile());
-			String sourceCode = FileUtils.readFileToString(file);
-			ASTUserClass rootNode = parse(sourceCode);
-	        dumpNode(rootNode);
+			File directory = new File("src/test/resources");
+		    File[] fList = directory.listFiles();
+		    
+		    for (File file : fList) {
+		        if (file.isFile()) {
+		        	String sourceCode = FileUtils.readFileToString(file);
+		        	ASTUserClass rootNode = parse(sourceCode);
+		        }
+		    }
 		}
 		catch (IOException e) {
 			Assert.fail();

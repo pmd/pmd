@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import apex.jorje.semantic.ast.expression.LiteralExpression;
 
 public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
+	
 	public ASTLiteralExpression(LiteralExpression literalExpression) {
 		super(literalExpression);
 	}

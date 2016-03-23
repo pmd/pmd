@@ -3,13 +3,13 @@
  */
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.compilation.UserEnum;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTUserClass extends AbstractApexNode<UserClass> implements RootNode {
+public class ASTUserEnum extends AbstractApexNode<UserEnum> implements RootNode {
 	
-	public ASTUserClass(UserClass userClass) {
-		super(userClass);
+	public ASTUserEnum(UserEnum userEnum) {
+		super(userEnum);
 	}
 
 	@Override

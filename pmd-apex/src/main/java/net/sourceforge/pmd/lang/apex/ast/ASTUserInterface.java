@@ -7,6 +7,7 @@ import apex.jorje.semantic.ast.compilation.UserInterface;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public class ASTUserInterface extends AbstractApexNode<UserInterface> implements RootNode {
+	
 	public ASTUserInterface(UserInterface userInterface) {
 		super(userInterface);
 	}
