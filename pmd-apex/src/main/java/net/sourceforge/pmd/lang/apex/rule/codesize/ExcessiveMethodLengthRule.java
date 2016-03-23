@@ -7,9 +7,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveLengthRule;
 
 /**
- * This rule detects when a method exceeds a certain
- * threshold.  i.e. if a method has more than x lines
- * of code.
+ * This rule detects when a method exceeds a certain threshold. i.e. if a method
+ * has more than x lines of code.
  */
 public class ExcessiveMethodLengthRule extends ExcessiveLengthRule {
     public ExcessiveMethodLengthRule() {

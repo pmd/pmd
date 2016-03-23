@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.compilation.UserClassMethods;
 
 public class ASTUserClassMethods extends AbstractApexNode<UserClassMethods> {
 
-	public ASTUserClassMethods(UserClassMethods userClassMethods) {
-		super(userClassMethods);
-	}
+    public ASTUserClassMethods(UserClassMethods userClassMethods) {
+        super(userClassMethods);
+    }
 }

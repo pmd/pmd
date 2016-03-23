@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
 
 public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<TryCatchFinallyBlockStatement> {
 
-	public ASTTryCatchFinallyBlockStatement(TryCatchFinallyBlockStatement tryCatchFinallyBlockStatement) {
-		super(tryCatchFinallyBlockStatement);
-	}
+    public ASTTryCatchFinallyBlockStatement(TryCatchFinallyBlockStatement tryCatchFinallyBlockStatement) {
+        super(tryCatchFinallyBlockStatement);
+    }
 }

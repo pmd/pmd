@@ -7,13 +7,13 @@ import apex.jorje.semantic.ast.compilation.AnonymousClass;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public class ASTAnonymousClass extends AbstractApexNode<AnonymousClass> implements RootNode {
-	
-	public ASTAnonymousClass(AnonymousClass anonymousClass) {
-		super(anonymousClass);
-	}
 
-	@Override
-	public String getImage() {
-		return node.getClass().getName();
-	}
+    public ASTAnonymousClass(AnonymousClass anonymousClass) {
+        super(anonymousClass);
+    }
+
+    @Override
+    public String getImage() {
+        return node.getClass().getName();
+    }
 }

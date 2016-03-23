@@ -18,14 +18,16 @@ import net.sourceforge.pmd.util.NumericConstants;
  *         <p/>
  *         Class Name: ExcessivePublicCount
  *         <p/>
- *         Rule attempts to count all public methods and public attributes defined in a class.
+ *         Rule attempts to count all public methods and public attributes
+ *         defined in a class.
  *         <p/>
- *         If a class has a high number of public operations, it might be wise to consider whether
- *         it would be appropriate to divide it into subclasses.
+ *         If a class has a high number of public operations, it might be wise
+ *         to consider whether it would be appropriate to divide it into
+ *         subclasses.
  *         <p/>
- *         A large proportion of public members and operations means the class has high potential to be
- *         affected by external classes. Futhermore, increased effort will be required to
- *         thoroughly test the class.
+ *         A large proportion of public members and operations means the class
+ *         has high potential to be affected by external classes. Futhermore,
+ *         increased effort will be required to thoroughly test the class.
  */
 public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
 
@@ -38,7 +40,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
      * Method counts ONLY public methods.
      */
     public Object visit(ASTMethod node, Object data) {
-    	return this.getTallyOnAccessType((AccessNode) node.jjtGetParent());
+        return this.getTallyOnAccessType((AccessNode) node.jjtGetParent());
     }
 
     /**
@@ -48,18 +50,19 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
     public Object visit(ASTField node, Object data) {
         if (node.getNode().getModifierInfo().all(PUBLIC, STATIC)) {
             return NumericConstants.ZERO;
-        } 
+        }
         return this.getTallyOnAccessType((AccessNode) node);
     }
 
     /**
      * Method counts a node if it is public
      *
-     * @param node The access node.
+     * @param node
+     *            The access node.
      * @return Integer 1 if node is public 0 otherwise
      */
     private Integer getTallyOnAccessType(AccessNode node) {
-        if(node.isPublic()) {
+        if (node.isPublic()) {
             return NumericConstants.ONE;
         }
         return NumericConstants.ZERO;

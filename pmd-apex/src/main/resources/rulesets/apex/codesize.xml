@@ -8,30 +8,75 @@
 The Code Size ruleset contains rules that find problems related to code size or complexity.
   </description>
 
-	<rule name="ExcessiveMethodLength"
-	 		 since="0.6"
-	       message="Avoid really long methods."
-	       class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveMethodLengthRule"
-	       externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveMethodLength">
-	   <description>
-	When methods are excessively long this usually indicates that the method is doing more than its
-	name/signature might suggest. They also become challenging for others to digest since excessive 
-	scrolling causes readers to lose focus.
-	Try to reduce the method length by creating helper methods and removing any copy/pasted code.
-	   </description>
-	     <priority>3</priority>
-	   <example>
-	<![CDATA[
-	public void doSomething() {
-		System.out.println("Hello world!");
-		System.out.println("Hello world!");
-			// 98 copies omitted for brevity.
+	<rule name="NPathComplexity" since="3.9"
+		message="The method {0}() has an NPath complexity of {1}"
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.NPathComplexityRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NPathComplexity">
+		<description>
+The NPath complexity of a method is the number of acyclic execution paths through that method.
+A threshold of 200 is generally considered the point where measures should be taken to reduce 
+complexity and increase readability.
+   </description>
+		<priority>3</priority>
+		<example>
+ <![CDATA[
+void bar() {	// this is something more complex than it needs to be,
+	if (y) {	// it should be broken down into smaller methods or functions
+		for (j = 0; j < m; j++) {
+			if (j > r) {
+				doSomething();
+				while (f < 5 ) {
+					anotherThing();
+					f -= 27;
+					}
+				} else {
+					tryThis();
+				}
+			}
+		}
+		if ( r - n > 45) {
+		   while (doMagic()) {
+		      findRabbits();
+		   }
+		}
+		try {
+			doSomethingDangerous();
+		} catch (Exception ex) {
+			makeAmends();
+			} finally {
+				dontDoItAgain();
+				}
 	}
-	
-	]]>
-	   </example>
-	
+}
+
+ ]]>
+    </example>
 	</rule>
+
+	<rule name="ExcessiveMethodLength" since="0.6"
+		message="Avoid really long methods."
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveMethodLengthRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveMethodLength">
+		<description>
+When methods are excessively long this usually indicates that the method is doing more than its
+name/signature might suggest. They also become challenging for others to digest since excessive 
+scrolling causes readers to lose focus.
+Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+   </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public void doSomething() {
+	System.out.println("Hello world!");
+	System.out.println("Hello world!");
+		// 98 copies omitted for brevity.
+}
+
+]]>
+   </example>
+
+	</rule>
+
 
 	<rule name="ExcessiveParameterList" since="0.9"
 		message="Avoid long parameter lists."
@@ -45,13 +90,13 @@ same datatype. These situations usually denote the need for new objects to wrap 
 		<example>
 <![CDATA[
 public void addPerson(		// too many arguments liable to be mixed up
-	Integer birthYear, Integer birthMonth, Integer birthDate, Integer height, Integer weight, Integer ssn) {
+	int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
 
 	. . . .
 }
  
 public void addPerson(		// preferred approach
-	Date birthdate, BodyMeasurements measurements, Integer ssn) {
+	Date birthdate, BodyMeasurements measurements, int ssn) {
 
 	. . . .
 }
@@ -88,6 +133,173 @@ public class Foo {
     public void barN() {
     // 1000 lines of code
 	}
+}
+]]>
+   </example>
+	</rule>
+
+
+	<rule name="CyclomaticComplexity" since="1.03"
+		message="The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.CyclomaticComplexityRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#CyclomaticComplexity">
+		<description>
+   		<![CDATA[
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+		]]>
+   </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public class Foo {		// This has a Cyclomatic Complexity = 12
+1   public void example()  {
+2       if (a == b)  {
+3           if (a1 == b1) {
+                fiddle();
+4           } else if a2 == b2) {
+                fiddle();
+            }  else {
+                fiddle();
+            }
+5       } else if (c == d) {
+6           while (c == d) {
+                fiddle();
+            }
+7        } else if (e == f) {
+8           for (int n = 0; n < h; n++) {
+                fiddle();
+            }
+        } else{
+            switch (z) {
+9               case 1:
+                    fiddle();
+                    break;
+10              case 2:
+                    fiddle();
+                    break;
+11              case 3:
+                    fiddle();
+                    break;
+12              default:
+                    fiddle();
+                    break;
+            }
+        }
+    }
+}
+]]>
+   </example>
+	</rule>
+
+	<rule name="StdCyclomaticComplexity" since="5.1.2"
+		message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.StdCyclomaticComplexityRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#StdCyclomaticComplexity">
+		<description>
+      <![CDATA[
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+    ]]>
+   </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public class Foo {    // This has a Cyclomatic Complexity = 12
+1   public void example()  {
+2       if (a == b || (c == d && e == f))  { // Only one
+3           if (a1 == b1) {
+                fiddle();
+4           } else if a2 == b2) {
+                fiddle();
+            }  else {
+                fiddle();
+            }
+5       } else if (c == d) {
+6           while (c == d) {
+                fiddle();
+            }
+7        } else if (e == f) {
+8           for (int n = 0; n < h; n++) {
+                fiddle();
+            }
+        } else{
+            switch (z) {
+9               case 1:
+                    fiddle();
+                    break;
+10              case 2:
+                    fiddle();
+                    break;
+11              case 3:
+                    fiddle();
+                    break;
+12              default:
+                    fiddle();
+                    break;
+            }
+        }
+    }
+}
+]]>
+   </example>
+	</rule>
+
+	<rule name="ModifiedCyclomaticComplexity" since="5.1.2"
+		message="The {0} ''{1}'' has a Modified Cyclomatic Complexity of {2}."
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.ModifiedCyclomaticComplexityRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ModifiedCyclomaticComplexity">
+		<description>
+      <![CDATA[
+Complexity directly affects maintenance costs is determined by the number of decision points in a method 
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
+decision point.
+    ]]>
+   </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public class Foo {    // This has a Cyclomatic Complexity = 9
+1   public void example()  {
+2       if (a == b)  {
+3           if (a1 == b1) {
+                fiddle();
+4           } else if a2 == b2) {
+                fiddle();
+            }  else {
+                fiddle();
+            }
+5       } else if (c == d) {
+6           while (c == d) {
+                fiddle();
+            }
+7        } else if (e == f) {
+8           for (int n = 0; n < h; n++) {
+                fiddle();
+            }
+        } else{
+9           switch (z) {
+                case 1:
+                    fiddle();
+                    break;
+                case 2:
+                    fiddle();
+                    break;
+                case 3:
+                    fiddle();
+                    break;
+                default:
+                    fiddle();
+                    break;
+            }
+        }
+    }
 }
 ]]>
    </example>
@@ -133,11 +345,11 @@ city/state/zip fields could park them within a single Address field.
 		<example>
    <![CDATA[
 public class Person {	// too many separate fields
-   Integer birthYear;
-   Integer birthMonth;
-   Integer birthDate;
-   Decimal height;
-   Decimal weight;
+   int birthYear;
+   int birthMonth;
+   int birthDate;
+   float height;
+   float weight;
 }
 
 public class Person {	// this is more manageable
@@ -146,6 +358,90 @@ public class Person {	// this is more manageable
 }
    ]]>
       </example>
+	</rule>
+
+	<rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
+		since="3.9"
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssMethodCountRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssMethodCount">
+		<description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public class Foo extends Bar {
+ public int methd() {
+     super.methd();
+
+
+
+
+
+ //this method only has 1 NCSS lines
+      return 1;
+ }
+}
+]]>
+   </example>
+	</rule>
+
+	<rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
+		since="3.9" class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssTypeCountRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssTypeCount">
+		<description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public class Foo extends Bar {
+ public Foo() {
+ //this class only has 6 NCSS lines
+     super();
+
+
+
+
+
+      super.foo();
+ }
+}
+]]>
+   </example>
+	</rule>
+
+	<rule name="NcssConstructorCount"
+		message="The constructor with {0} parameters has an NCSS line count of {1}"
+		since="3.9"
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssConstructorCountRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssConstructorCount">
+		<description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+		<priority>3</priority>
+		<example>
+<![CDATA[
+public class Foo extends Bar {
+ public Foo() {
+     super();
+
+
+
+
+
+ //this constructor only has 1 NCSS lines
+      super.foo();
+ }
+}
+]]>
+   </example>
 	</rule>
 
 	<rule name="TooManyMethods" language="apex" since="4.2"

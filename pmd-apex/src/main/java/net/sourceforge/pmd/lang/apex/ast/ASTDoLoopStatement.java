@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.DoLoopStatement;
 
 public class ASTDoLoopStatement extends AbstractApexNode<DoLoopStatement> {
 
-	public ASTDoLoopStatement(DoLoopStatement doLoopStatement) {
-		super(doLoopStatement);
-	}
+    public ASTDoLoopStatement(DoLoopStatement doLoopStatement) {
+        super(doLoopStatement);
+    }
 }

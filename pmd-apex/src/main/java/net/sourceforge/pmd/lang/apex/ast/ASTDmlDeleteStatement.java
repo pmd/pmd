@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.DmlDeleteStatement;
 
 public class ASTDmlDeleteStatement extends AbstractApexNode<DmlDeleteStatement> {
 
-	public ASTDmlDeleteStatement(DmlDeleteStatement dmlDeleteStatement) {
-		super(dmlDeleteStatement);
-	}
+    public ASTDmlDeleteStatement(DmlDeleteStatement dmlDeleteStatement) {
+        super(dmlDeleteStatement);
+    }
 }

@@ -18,62 +18,60 @@ import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 
 public class ApexParser {
-	protected final ApexParserOptions parserOptions;
+    protected final ApexParserOptions parserOptions;
 
-	private Map<Integer, String> suppressMap;
-	private String suppressMarker = "NOPMD"; // that's the default value
+    private Map<Integer, String> suppressMap;
+    private String suppressMarker = "NOPMD"; // that's the default value
 
-	public ApexParser(ApexParserOptions parserOptions) {
-		this.parserOptions = parserOptions;
+    public ApexParser(ApexParserOptions parserOptions) {
+        this.parserOptions = parserOptions;
 
-		if (parserOptions.getSuppressMarker() != null) {
-			suppressMarker = parserOptions.getSuppressMarker();
-		}
-	}
+        if (parserOptions.getSuppressMarker() != null) {
+            suppressMarker = parserOptions.getSuppressMarker();
+        }
+    }
 
-	public UserClass parseApex(final String sourceCode) throws ParseException {
+    public UserClass parseApex(final String sourceCode) throws ParseException {
 
-		TopLevelVisitor visitor = new TopLevelVisitor();
-		CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
+        TopLevelVisitor visitor = new TopLevelVisitor();
+        CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
 
-		UserClass astRoot = visitor.getTopLevel();
-		return astRoot;
-	}
+        UserClass astRoot = visitor.getTopLevel();
+        return astRoot;
+    }
 
-	public ApexNode<UserClass> parse(final Reader reader) {
-		try {
-			final String sourceCode = IOUtils.toString(reader);
-			final UserClass astRoot = parseApex(sourceCode);
-			final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
-			suppressMap = new HashMap<>();
+    public ApexNode<UserClass> parse(final Reader reader) {
+        try {
+            final String sourceCode = IOUtils.toString(reader);
+            final UserClass astRoot = parseApex(sourceCode);
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
+            suppressMap = new HashMap<>();
 
-			if (astRoot == null) {
-				throw new ParseException(
-						"Couldn't parse the source - there is not root node - Syntax Error??");
-			}
+            if (astRoot == null) {
+                throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
+            }
 
-			ApexNode<UserClass> tree = treeBuilder.build(astRoot);
-			return tree;
-		}
-		catch (IOException e) {
-			throw new ParseException(e);
-		}
-	}
+            ApexNode<UserClass> tree = treeBuilder.build(astRoot);
+            return tree;
+        } catch (IOException e) {
+            throw new ParseException(e);
+        }
+    }
 
-	public Map<Integer, String> getSuppressMap() {
-		return suppressMap;
-	}
+    public Map<Integer, String> getSuppressMap() {
+        return suppressMap;
+    }
 
-	private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
-		UserClass topLevel;
+    private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
+        UserClass topLevel;
 
-		public UserClass getTopLevel() {
-			return topLevel;
-		}
+        public UserClass getTopLevel() {
+            return topLevel;
+        }
 
-		@Override
-		public void visitEnd(UserClass node, AdditionalPassScope scope) {
-			topLevel = node;
-		}
-	}
+        @Override
+        public void visitEnd(UserClass node, AdditionalPassScope scope) {
+            topLevel = node;
+        }
+    }
 }

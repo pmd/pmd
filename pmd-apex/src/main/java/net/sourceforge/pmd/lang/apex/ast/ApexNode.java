@@ -9,18 +9,18 @@ import apex.jorje.semantic.ast.AstNode;
 
 public interface ApexNode<T extends AstNode> extends Node {
 
-	/**
-	 * Accept the visitor. *
-	 */
-	Object jjtAccept(ApexParserVisitor visitor, Object data);
+    /**
+     * Accept the visitor. *
+     */
+    Object jjtAccept(ApexParserVisitor visitor, Object data);
 
-	/**
-	 * Accept the visitor. *
-	 */
-	Object childrenAccept(ApexParserVisitor visitor, Object data);
+    /**
+     * Accept the visitor. *
+     */
+    Object childrenAccept(ApexParserVisitor visitor, Object data);
 
-	/**
-	 * Get the underlying Rhino AST node.
-	 */
-	T getNode();
+    /**
+     * Get the underlying Rhino AST node.
+     */
+    T getNode();
 }

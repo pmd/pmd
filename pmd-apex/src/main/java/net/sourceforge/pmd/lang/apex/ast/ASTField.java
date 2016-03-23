@@ -4,12 +4,12 @@ import apex.jorje.semantic.ast.member.Field;
 
 public class ASTField extends AbstractApexNode<Field> {
 
-	public ASTField(Field field) {
-		super(field);
-	}
+    public ASTField(Field field) {
+        super(field);
+    }
 
-	@Override
-	public String getImage() {
-		return node.getFieldInfo().getName();
-	}
+    @Override
+    public String getImage() {
+        return node.getFieldInfo().getName();
+    }
 }

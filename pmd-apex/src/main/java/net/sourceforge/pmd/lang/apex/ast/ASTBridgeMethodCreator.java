@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.member.bridge.BridgeMethodCreator;
 
 public class ASTBridgeMethodCreator extends AbstractApexNode<BridgeMethodCreator> {
 
-	public ASTBridgeMethodCreator(BridgeMethodCreator bridgeMethodCreator) {
-		super(bridgeMethodCreator);
-	}
+    public ASTBridgeMethodCreator(BridgeMethodCreator bridgeMethodCreator) {
+        super(bridgeMethodCreator);
+    }
 }

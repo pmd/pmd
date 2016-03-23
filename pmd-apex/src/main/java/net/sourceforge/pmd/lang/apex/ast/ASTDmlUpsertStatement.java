@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.DmlUpsertStatement;
 
 public class ASTDmlUpsertStatement extends AbstractApexNode<DmlUpsertStatement> {
 
-	public ASTDmlUpsertStatement(DmlUpsertStatement dmlUpsertStatement) {
-		super(dmlUpsertStatement);
-	}
+    public ASTDmlUpsertStatement(DmlUpsertStatement dmlUpsertStatement) {
+        super(dmlUpsertStatement);
+    }
 }

@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.DmlUpdateStatement;
 
 public class ASTDmlUpdateStatement extends AbstractApexNode<DmlUpdateStatement> {
 
-	public ASTDmlUpdateStatement(DmlUpdateStatement dmlUpdateStatement) {
-		super(dmlUpdateStatement);
-	}
+    public ASTDmlUpdateStatement(DmlUpdateStatement dmlUpdateStatement) {
+        super(dmlUpdateStatement);
+    }
 }

@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.ContinueStatement;
 
 public class ASTContinueStatement extends AbstractApexNode<ContinueStatement> {
 
-	public ASTContinueStatement(ContinueStatement continueStatement) {
-		super(continueStatement);
-	}
+    public ASTContinueStatement(ContinueStatement continueStatement) {
+        super(continueStatement);
+    }
 }
