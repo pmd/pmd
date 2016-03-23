@@ -8,12 +8,35 @@
 The Code Size ruleset contains rules that find problems related to code size or complexity.
   </description>
 
-
+	<rule name="ExcessiveMethodLength"
+	 		 since="0.6"
+	       message="Avoid really long methods."
+	       class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveMethodLengthRule"
+	       externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveMethodLength">
+	   <description>
+	When methods are excessively long this usually indicates that the method is doing more than its
+	name/signature might suggest. They also become challenging for others to digest since excessive 
+	scrolling causes readers to lose focus.
+	Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+	   </description>
+	     <priority>3</priority>
+	   <example>
+	<![CDATA[
+	public void doSomething() {
+		System.out.println("Hello world!");
+		System.out.println("Hello world!");
+			// 98 copies omitted for brevity.
+	}
+	
+	]]>
+	   </example>
+	
+	</rule>
 
 	<rule name="ExcessiveParameterList" since="0.9"
 		message="Avoid long parameter lists."
-		class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveParameterListRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessiveParameterList">
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveParameterListRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveParameterList">
 		<description>
 Methods with numerous parameters are a challenge to maintain, especially if most of them share the
 same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
@@ -40,8 +63,8 @@ public void addPerson(		// preferred approach
 
 	<rule name="ExcessiveClassLength" since="0.6"
 		message="Avoid really long classes."
-		class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessiveClassLength">
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveClassLengthRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveClassLength">
 		<description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
 responsibilities that could be provided by external classes or functions. In breaking these methods
@@ -72,8 +95,8 @@ public class Foo {
 
 	<rule name="ExcessivePublicCount" since="1.04"
 		message="This class has a bunch of public methods and attributes"
-		class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessivePublicCountRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessivePublicCount">
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessivePublicCountRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessivePublicCount">
 		<description>
 Classes with large numbers of public methods and attributes require disproportionate testing efforts
 since combinational side effects grow rapidly and increase risk. Refactoring these classes into
@@ -99,8 +122,8 @@ public class Foo {
 	</rule>
 
 	<rule name="TooManyFields" since="3.0" message="Too many fields"
-		class="net.sourceforge.pmd.lang.java.rule.codesize.TooManyFieldsRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#TooManyFields">
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.TooManyFieldsRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#TooManyFields">
 		<description>
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
 possibly through grouping related fields in new objects.  For example, a class with individual 
@@ -125,9 +148,9 @@ public class Person {	// this is more manageable
       </example>
 	</rule>
 
-	<rule name="TooManyMethods" language="java" since="4.2"
+	<rule name="TooManyMethods" language="apex" since="4.2"
 		class="net.sourceforge.pmd.lang.rule.XPathRule" message="This class has too many methods, consider refactoring it."
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#TooManyMethods">
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#TooManyMethods">
 		<description>
             <![CDATA[
 A class with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to

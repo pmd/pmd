@@ -3,9 +3,13 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.codesize;
 
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.PUBLIC;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.AccessNode;
 import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveNodeCountRule;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -34,7 +38,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
      * Method counts ONLY public methods.
      */
     public Object visit(ASTMethod node, Object data) {
-        return this.getTallyOnAccessType(node.jjtGetParent());
+    	return this.getTallyOnAccessType((AccessNode) node.jjtGetParent());
     }
 
     /**
@@ -42,10 +46,10 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
      * static- these usually represent constants....
      */
     public Object visit(ASTField node, Object data) {
-        if (node.isFinal() && node.isStatic()) {
+        if (node.getNode().getModifierInfo().all(PUBLIC, STATIC)) {
             return NumericConstants.ZERO;
         } 
-        return this.getTallyOnAccessType(node);
+        return this.getTallyOnAccessType((AccessNode) node);
     }
 
     /**
@@ -54,8 +58,8 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
      * @param node The access node.
      * @return Integer 1 if node is public 0 otherwise
      */
-    private Integer getTallyOnAccessType(ASTCompilation node) {
-        if (node.isPublic()) {
+    private Integer getTallyOnAccessType(AccessNode node) {
+        if(node.isPublic()) {
             return NumericConstants.ONE;
         }
         return NumericConstants.ZERO;

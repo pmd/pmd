@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.codesize;
 
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +14,6 @@ import apex.jorje.semantic.ast.compilation.UserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -42,7 +44,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
         List<ASTField> l = node.findDescendantsOfType(ASTField.class);
 
         for (ASTField fd: l) {
-            if (fd.isFinal() && fd.isStatic()) {
+            if (fd.getNode().getModifierInfo().all(FINAL, STATIC)) {
                 continue;
             }
             ASTCompilation clazz = fd.getFirstParentOfType(ASTCompilation.class);
