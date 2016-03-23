@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalJavaRule;
+import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalApexRule;
 import net.sourceforge.pmd.stat.DataPoint;
 
 /**
@@ -15,7 +15,7 @@ import net.sourceforge.pmd.stat.DataPoint;
  * To implement an ExcessiveLength rule, you pass in the Class of node you want
  * to check, and this does the rest for you.
  */
-public class ExcessiveLengthRule extends AbstractStatisticalJavaRule {
+public class ExcessiveLengthRule extends AbstractStatisticalApexRule {
 	private Class<?> nodeClass;
 
 	public ExcessiveLengthRule(Class<?> nodeClass) {

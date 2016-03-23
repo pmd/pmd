@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalJavaRule;
+import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalApexRule;
 import net.sourceforge.pmd.stat.DataPoint;
 
 /**
@@ -20,7 +20,7 @@ import net.sourceforge.pmd.stat.DataPoint;
  * All others will return 0 (or the sum of counted nodes underneath.)
  */
 
-public class ExcessiveNodeCountRule extends AbstractStatisticalJavaRule {
+public class ExcessiveNodeCountRule extends AbstractStatisticalApexRule {
 	private Class<?> nodeClass;
 
 	public ExcessiveNodeCountRule(Class<?> nodeClass) {
