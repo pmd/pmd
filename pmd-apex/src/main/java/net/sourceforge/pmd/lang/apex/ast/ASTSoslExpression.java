@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.SoslExpression;
 
 public class ASTSoslExpression extends AbstractApexNode<SoslExpression> {
 
-    public ASTSoslExpression(SoslExpression soslExpression) {
-        super(soslExpression);
-    }
+	public ASTSoslExpression(SoslExpression soslExpression) {
+		super(soslExpression);
+	}
 }

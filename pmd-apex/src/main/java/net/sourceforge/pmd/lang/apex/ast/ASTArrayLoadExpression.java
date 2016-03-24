@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.ArrayLoadExpression;
 
 public class ASTArrayLoadExpression extends AbstractApexNode<ArrayLoadExpression> {
 
-    public ASTArrayLoadExpression(ArrayLoadExpression arrayLoadExpression) {
-        super(arrayLoadExpression);
-    }
+	public ASTArrayLoadExpression(ArrayLoadExpression arrayLoadExpression) {
+		super(arrayLoadExpression);
+	}
 }

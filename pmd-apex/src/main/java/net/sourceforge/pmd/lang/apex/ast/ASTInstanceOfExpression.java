@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.InstanceOfExpression;
 
 public class ASTInstanceOfExpression extends AbstractApexNode<InstanceOfExpression> {
 
-    public ASTInstanceOfExpression(InstanceOfExpression instanceOfExpression) {
-        super(instanceOfExpression);
-    }
+	public ASTInstanceOfExpression(InstanceOfExpression instanceOfExpression) {
+		super(instanceOfExpression);
+	}
 }

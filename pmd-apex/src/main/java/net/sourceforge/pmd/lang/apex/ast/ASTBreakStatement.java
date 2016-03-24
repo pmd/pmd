@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.BreakStatement;
 
 public class ASTBreakStatement extends AbstractApexNode<BreakStatement> {
 
-    public ASTBreakStatement(BreakStatement breakStatement) {
-        super(breakStatement);
-    }
+	public ASTBreakStatement(BreakStatement breakStatement) {
+		super(breakStatement);
+	}
 }

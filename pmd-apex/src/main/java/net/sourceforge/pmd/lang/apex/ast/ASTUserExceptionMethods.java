@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.compilation.UserExceptionMethods;
 
 public class ASTUserExceptionMethods extends AbstractApexNode<UserExceptionMethods> {
 
-    public ASTUserExceptionMethods(UserExceptionMethods userExceptionMethods) {
-        super(userExceptionMethods);
-    }
+	public ASTUserExceptionMethods(UserExceptionMethods userExceptionMethods) {
+		super(userExceptionMethods);
+	}
 }

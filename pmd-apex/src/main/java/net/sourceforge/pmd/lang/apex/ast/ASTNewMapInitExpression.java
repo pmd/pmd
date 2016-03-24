@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.NewMapInitExpression;
 
 public class ASTNewMapInitExpression extends AbstractApexNode<NewMapInitExpression> {
 
-    public ASTNewMapInitExpression(NewMapInitExpression newMapInitExpression) {
-        super(newMapInitExpression);
-    }
+	public ASTNewMapInitExpression(NewMapInitExpression newMapInitExpression) {
+		super(newMapInitExpression);
+	}
 }

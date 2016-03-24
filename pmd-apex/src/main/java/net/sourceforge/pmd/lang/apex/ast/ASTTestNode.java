@@ -4,7 +4,7 @@ import apex.jorje.semantic.tester.TestNode;
 
 public class ASTTestNode extends AbstractApexNode<TestNode> {
 
-    public ASTTestNode(TestNode testNode) {
-        super(testNode);
-    }
+	public ASTTestNode(TestNode testNode) {
+		super(testNode);
+	}
 }

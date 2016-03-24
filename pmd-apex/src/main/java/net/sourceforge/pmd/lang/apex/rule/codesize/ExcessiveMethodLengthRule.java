@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveLengthRule;
  * has more than x lines of code.
  */
 public class ExcessiveMethodLengthRule extends ExcessiveLengthRule {
-    public ExcessiveMethodLengthRule() {
-        super(ASTMethod.class);
-        setProperty(MINIMUM_DESCRIPTOR, 100d);
-    }
+	public ExcessiveMethodLengthRule() {
+		super(ASTMethod.class);
+		setProperty(MINIMUM_DESCRIPTOR, 100d);
+	}
 }

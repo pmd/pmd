@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.statement.IfElseBlockStatement;
 
 public class ASTIfElseBlockStatement extends AbstractApexNode<IfElseBlockStatement> {
 
-    public ASTIfElseBlockStatement(IfElseBlockStatement ifElseBlockStatement) {
-        super(ifElseBlockStatement);
-    }
+	public ASTIfElseBlockStatement(IfElseBlockStatement ifElseBlockStatement) {
+		super(ifElseBlockStatement);
+	}
 }

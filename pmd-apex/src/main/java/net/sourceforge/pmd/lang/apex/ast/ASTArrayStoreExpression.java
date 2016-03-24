@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.ArrayStoreExpression;
 
 public class ASTArrayStoreExpression extends AbstractApexNode<ArrayStoreExpression> {
 
-    public ASTArrayStoreExpression(ArrayStoreExpression arrayStoreExpression) {
-        super(arrayStoreExpression);
-    }
+	public ASTArrayStoreExpression(ArrayStoreExpression arrayStoreExpression) {
+		super(arrayStoreExpression);
+	}
 }

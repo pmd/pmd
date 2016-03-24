@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.NewListInitExpression;
 
 public class ASTNewListInitExpression extends AbstractApexNode<NewListInitExpression> {
 
-    public ASTNewListInitExpression(NewListInitExpression newListInitExpression) {
-        super(newListInitExpression);
-    }
+	public ASTNewListInitExpression(NewListInitExpression newListInitExpression) {
+		super(newListInitExpression);
+	}
 }

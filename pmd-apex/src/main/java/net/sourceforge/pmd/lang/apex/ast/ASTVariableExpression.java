@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.VariableExpression;
 
 public class ASTVariableExpression extends AbstractApexNode<VariableExpression> {
 
-    public ASTVariableExpression(VariableExpression variableExpression) {
-        super(variableExpression);
-    }
+	public ASTVariableExpression(VariableExpression variableExpression) {
+		super(variableExpression);
+	}
 }

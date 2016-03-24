@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.MapEntryNode;
 
 public class ASTMapEntryNode extends AbstractApexNode<MapEntryNode> {
 
-    public ASTMapEntryNode(MapEntryNode mapEntryNode) {
-        super(mapEntryNode);
-    }
+	public ASTMapEntryNode(MapEntryNode mapEntryNode) {
+		super(mapEntryNode);
+	}
 }

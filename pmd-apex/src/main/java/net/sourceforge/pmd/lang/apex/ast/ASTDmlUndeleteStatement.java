@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.DmlUndeleteStatement;
 
 public class ASTDmlUndeleteStatement extends AbstractApexNode<DmlUndeleteStatement> {
 
-    public ASTDmlUndeleteStatement(DmlUndeleteStatement dmlUndeleteStatement) {
-        super(dmlUndeleteStatement);
-    }
+	public ASTDmlUndeleteStatement(DmlUndeleteStatement dmlUndeleteStatement) {
+		super(dmlUndeleteStatement);
+	}
 }

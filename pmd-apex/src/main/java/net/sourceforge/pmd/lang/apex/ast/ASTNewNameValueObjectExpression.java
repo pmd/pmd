@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.NewNameValueObjectExpression;
 
 public class ASTNewNameValueObjectExpression extends AbstractApexNode<NewNameValueObjectExpression> {
 
-    public ASTNewNameValueObjectExpression(NewNameValueObjectExpression newNameValueObjectExpression) {
-        super(newNameValueObjectExpression);
-    }
+	public ASTNewNameValueObjectExpression(NewNameValueObjectExpression newNameValueObjectExpression) {
+		super(newNameValueObjectExpression);
+	}
 }

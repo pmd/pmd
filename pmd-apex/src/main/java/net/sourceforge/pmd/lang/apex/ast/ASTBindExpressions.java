@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.BindExpressions;
 
 public class ASTBindExpressions extends AbstractApexNode<BindExpressions> {
 
-    public ASTBindExpressions(BindExpressions bindExpressions) {
-        super(bindExpressions);
-    }
+	public ASTBindExpressions(BindExpressions bindExpressions) {
+		super(bindExpressions);
+	}
 }

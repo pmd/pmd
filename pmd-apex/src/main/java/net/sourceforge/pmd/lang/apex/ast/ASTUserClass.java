@@ -8,12 +8,12 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 
 public class ASTUserClass extends AbstractApexNode<UserClass> implements RootNode {
 
-    public ASTUserClass(UserClass userClass) {
-        super(userClass);
-    }
+	public ASTUserClass(UserClass userClass) {
+		super(userClass);
+	}
 
-    @Override
-    public String getImage() {
-        return node.getClass().getName();
-    }
+	@Override
+	public String getImage() {
+		return node.getClass().getName();
+	}
 }

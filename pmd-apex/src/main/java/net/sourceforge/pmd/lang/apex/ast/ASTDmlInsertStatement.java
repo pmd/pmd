@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.DmlInsertStatement;
 
 public class ASTDmlInsertStatement extends AbstractApexNode<DmlInsertStatement> {
 
-    public ASTDmlInsertStatement(DmlInsertStatement dmlInsertStatement) {
-        super(dmlInsertStatement);
-    }
+	public ASTDmlInsertStatement(DmlInsertStatement dmlInsertStatement) {
+		super(dmlInsertStatement);
+	}
 }

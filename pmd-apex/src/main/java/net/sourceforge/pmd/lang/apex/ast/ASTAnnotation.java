@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.modifier.Annotation;
 
 public class ASTAnnotation extends AbstractApexNode<Annotation> {
 
-    public ASTAnnotation(Annotation annotation) {
-        super(annotation);
-    }
+	public ASTAnnotation(Annotation annotation) {
+		super(annotation);
+	}
 }
