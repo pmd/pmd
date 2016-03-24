@@ -80,16 +80,13 @@ public class CompilerService {
 		return visitAstsFromStrings(sources, visitor, CompilerStage.POST_TYPE_RESOLVE);
 	}
 
-	public ApexCompiler visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor,
-			CompilerStage compilerStage) {
-		List<SourceFile> sourceFiles = sources.stream()
-				.map(s -> SourceFile.builder().setBody(canonicalizeString(s)).build()).collect(Collectors.toList());
+	public ApexCompiler visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
+		List<SourceFile> sourceFiles = sources.stream().map(s -> SourceFile.builder().setBody(canonicalizeString(s)).build()).collect(Collectors.toList());
 		CompilationInput compilationUnit = createCompilationInput(sourceFiles, visitor);
 		return compile(compilationUnit, visitor, compilerStage);
 	}
 
-	private ApexCompiler compile(CompilationInput compilationInput, AstVisitor<AdditionalPassScope> visitor,
-			CompilerStage compilerStage) {
+	private ApexCompiler compile(CompilationInput compilationInput, AstVisitor<AdditionalPassScope> visitor, CompilerStage compilerStage) {
 		ApexCompiler compiler = ApexCompiler.builder().setInput(compilationInput).build();
 		compiler.compile(compilerStage);
 		callAdditionalPassVisitor(compiler);

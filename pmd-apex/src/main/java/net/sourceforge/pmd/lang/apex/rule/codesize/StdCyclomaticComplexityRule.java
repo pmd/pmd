@@ -19,6 +19,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -119,6 +121,20 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
 	@Override
 	public Object visit(ASTWhileLoopStatement node, Object data) {
+		entryStack.peek().bumpDecisionPoints();
+		super.visit(node, data);
+		return data;
+	}
+	
+	@Override
+	public Object visit(ASTDoLoopStatement node, Object data) {
+		entryStack.peek().bumpDecisionPoints();
+		super.visit(node, data);
+		return data;
+	}
+	
+	@Override
+	public Object visit(ASTTernaryExpression node, Object data) {
 		entryStack.peek().bumpDecisionPoints();
 		super.visit(node, data);
 		return data;

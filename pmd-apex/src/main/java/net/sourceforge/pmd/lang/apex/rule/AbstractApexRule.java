@@ -33,6 +33,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClassMethods;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -164,6 +166,16 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
 	@Override
 	public Object visit(ASTForEachStatement node, Object data) {
+		return visit((ApexNode<?>) node, data);
+	}
+	
+	@Override
+	public Object visit(ASTDoLoopStatement node, Object data) {
+		return visit((ApexNode<?>) node, data);
+	}
+	
+	@Override
+	public Object visit(ASTTernaryExpression node, Object data) {
 		return visit((ApexNode<?>) node, data);
 	}
 

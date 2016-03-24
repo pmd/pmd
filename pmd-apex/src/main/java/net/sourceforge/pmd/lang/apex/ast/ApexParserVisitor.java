@@ -43,6 +43,10 @@ public interface ApexParserVisitor {
 	Object visit(ASTIfBlockStatement node, Object data);
 
 	Object visit(ASTForEachStatement node, Object data);
+	
+	Object visit(ASTDoLoopStatement node, Object data);
+	
+	Object visit(ASTTernaryExpression node, Object data);
 
 	Object visit(ASTCompilation node, Object data);
 

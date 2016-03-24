@@ -125,4 +125,14 @@ public class ApexParserVisitorAdapter implements ApexParserVisitor {
 	public Object visit(ASTThrowStatement node, Object data) {
 		return visit((ApexNode<?>) node, data);
 	}
+
+	@Override
+	public Object visit(ASTDoLoopStatement node, Object data) {
+		return visit((ApexNode<?>) node, data);
+	}
+
+	@Override
+	public Object visit(ASTTernaryExpression node, Object data) {
+		return visit((ApexNode<?>) node, data);
+	}
 }
