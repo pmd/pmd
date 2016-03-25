@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+The Basic ruleset contains a collection of good practices which should be followed.
+  </description>
+
+  <rule name="AvoidSoqlInLoops"
+  		  since="2.2"
+        message="Avoid Soql queries inside loops"
+        class="net.sourceforge.pmd.lang.apex.rule.basic.AvoidSoqlInLoopsRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#AvoidSoqlInLoops">
+    <description>
+New objects created within loops should be checked to see if they can created outside them and reused.
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+public class Something {
+	public static void main( String as[] ) {  
+		for (Integer i = 0; i < 10; i++) {
+		    List<Account> accounts = [SELECT Id FROM Account];
+		}
+	}
+}
+]]>
+    </example>
+  </rule>
+
+</ruleset>
