@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.statement.ConstructorPreambleStatement;
 
 public class ASTConstructorPreambleStatement extends AbstractApexNode<ConstructorPreambleStatement> {
 
-    public ASTConstructorPreambleStatement(ConstructorPreambleStatement constructorPreambleStatement) {
-        super(constructorPreambleStatement);
-    }
+	public ASTConstructorPreambleStatement(ConstructorPreambleStatement constructorPreambleStatement) {
+		super(constructorPreambleStatement);
+	}
 }

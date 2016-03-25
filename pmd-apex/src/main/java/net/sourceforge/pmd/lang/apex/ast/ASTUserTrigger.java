@@ -8,12 +8,12 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 
 public class ASTUserTrigger extends AbstractApexNode<UserTrigger> implements RootNode {
 
-    public ASTUserTrigger(UserTrigger userTrigger) {
-        super(userTrigger);
-    }
+	public ASTUserTrigger(UserTrigger userTrigger) {
+		super(userTrigger);
+	}
 
-    @Override
-    public String getImage() {
-        return node.getClass().getName();
-    }
+	@Override
+	public String getImage() {
+		return node.getClass().getName();
+	}
 }

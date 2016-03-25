@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.statement.FieldDeclarationStatements;
 
 public class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclarationStatements> {
 
-    public ASTFieldDeclarationStatements(FieldDeclarationStatements fieldDeclarationStatements) {
-        super(fieldDeclarationStatements);
-    }
+	public ASTFieldDeclarationStatements(FieldDeclarationStatements fieldDeclarationStatements) {
+		super(fieldDeclarationStatements);
+	}
 }

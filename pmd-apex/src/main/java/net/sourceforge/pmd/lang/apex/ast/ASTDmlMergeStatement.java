@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.DmlMergeStatement;
 
 public class ASTDmlMergeStatement extends AbstractApexNode<DmlMergeStatement> {
 
-    public ASTDmlMergeStatement(DmlMergeStatement dmlMergeStatement) {
-        super(dmlMergeStatement);
-    }
+	public ASTDmlMergeStatement(DmlMergeStatement dmlMergeStatement) {
+		super(dmlMergeStatement);
+	}
 }

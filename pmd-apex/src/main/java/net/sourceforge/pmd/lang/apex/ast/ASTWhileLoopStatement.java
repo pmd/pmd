@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.WhileLoopStatement;
 
 public class ASTWhileLoopStatement extends AbstractApexNode<WhileLoopStatement> {
 
-    public ASTWhileLoopStatement(WhileLoopStatement whileLoopStatement) {
-        super(whileLoopStatement);
-    }
+	public ASTWhileLoopStatement(WhileLoopStatement whileLoopStatement) {
+		super(whileLoopStatement);
+	}
 }

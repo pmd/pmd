@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.AssignmentExpression;
 
 public class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpression> {
 
-    public ASTAssignmentExpression(AssignmentExpression assignmentExpression) {
-        super(assignmentExpression);
-    }
+	public ASTAssignmentExpression(AssignmentExpression assignmentExpression) {
+		super(assignmentExpression);
+	}
 }

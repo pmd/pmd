@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.RunAsBlockStatement;
 
 public class ASTRunAsBlockStatement extends AbstractApexNode<RunAsBlockStatement> {
 
-    public ASTRunAsBlockStatement(RunAsBlockStatement runAsBlockStatement) {
-        super(runAsBlockStatement);
-    }
+	public ASTRunAsBlockStatement(RunAsBlockStatement runAsBlockStatement) {
+		super(runAsBlockStatement);
+	}
 }

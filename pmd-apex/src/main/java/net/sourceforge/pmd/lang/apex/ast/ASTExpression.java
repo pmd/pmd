@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.Expression;
 
 public class ASTExpression extends AbstractApexNode<Expression> {
 
-    public ASTExpression(Expression expression) {
-        super(expression);
-    }
+	public ASTExpression(Expression expression) {
+		super(expression);
+	}
 }

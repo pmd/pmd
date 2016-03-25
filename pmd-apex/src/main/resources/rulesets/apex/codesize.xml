@@ -249,62 +249,6 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
    </example>
 	</rule>
 
-	<rule name="ModifiedCyclomaticComplexity" since="5.1.2"
-		message="The {0} ''{1}'' has a Modified Cyclomatic Complexity of {2}."
-		class="net.sourceforge.pmd.lang.apex.rule.codesize.ModifiedCyclomaticComplexityRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ModifiedCyclomaticComplexity">
-		<description>
-      <![CDATA[
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
-Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
-high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
-decision point.
-    ]]>
-   </description>
-		<priority>3</priority>
-		<example>
-<![CDATA[
-public class Foo {    // This has a Cyclomatic Complexity = 9
-1   public void example()  {
-2       if (a == b)  {
-3           if (a1 == b1) {
-                fiddle();
-4           } else if a2 == b2) {
-                fiddle();
-            }  else {
-                fiddle();
-            }
-5       } else if (c == d) {
-6           while (c == d) {
-                fiddle();
-            }
-7        } else if (e == f) {
-8           for (int n = 0; n < h; n++) {
-                fiddle();
-            }
-        } else{
-9           switch (z) {
-                case 1:
-                    fiddle();
-                    break;
-                case 2:
-                    fiddle();
-                    break;
-                case 3:
-                    fiddle();
-                    break;
-                default:
-                    fiddle();
-                    break;
-            }
-        }
-    }
-}
-]]>
-   </example>
-	</rule>
-
 	<rule name="ExcessivePublicCount" since="1.04"
 		message="This class has a bunch of public methods and attributes"
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessivePublicCountRule"
@@ -408,35 +352,6 @@ public class Foo extends Bar {
 
 
 
-      super.foo();
- }
-}
-]]>
-   </example>
-	</rule>
-
-	<rule name="NcssConstructorCount"
-		message="The constructor with {0} parameters has an NCSS line count of {1}"
-		since="3.9"
-		class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssConstructorCountRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssConstructorCount">
-		<description>
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-    </description>
-		<priority>3</priority>
-		<example>
-<![CDATA[
-public class Foo extends Bar {
- public Foo() {
-     super();
-
-
-
-
-
- //this constructor only has 1 NCSS lines
       super.foo();
  }
 }

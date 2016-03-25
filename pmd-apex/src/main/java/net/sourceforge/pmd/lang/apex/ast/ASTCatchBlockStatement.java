@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.statement.CatchBlockStatement;
 
 public class ASTCatchBlockStatement extends AbstractApexNode<CatchBlockStatement> {
 
-    public ASTCatchBlockStatement(CatchBlockStatement catchBlockStatement) {
-        super(catchBlockStatement);
-    }
+	public ASTCatchBlockStatement(CatchBlockStatement catchBlockStatement) {
+		super(catchBlockStatement);
+	}
 }

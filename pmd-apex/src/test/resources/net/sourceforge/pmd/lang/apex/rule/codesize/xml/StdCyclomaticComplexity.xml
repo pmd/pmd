@@ -4,19 +4,19 @@
     <![CDATA[
 public class Foo {
  public void example() {
-  int x = 0;
-  int a = 0;
-  int b = 0;
-  int c = 0;
-  int d = 0;
-  int a1 = 0;
-  int a2 = 0;
-  int b1 = 0;
-  int b2 = 0;
-  int z = 0;
-  int h = 0;
-  int e = 0;
-  int f = 0;
+  Integer x = 0;
+  Integer a = 0;
+  Integer b = 0;
+  Integer c = 0;
+  Integer d = 0;
+  Integer a1 = 0;
+  Integer a2 = 0;
+  Integer b1 = 0;
+  Integer b2 = 0;
+  Integer z = 0;
+  Integer h = 0;
+  Integer e = 0;
+  Integer f = 0;
 
   if (a == b) {
       if (a1 == b1) {
@@ -31,27 +31,11 @@ public class Foo {
    x = 2;
       }
   } else if (e == f) {
-      for (int n = 0; n < h; n++) {
+      for (Integer n = 0; n < h; n++) {
    x = 2;
       }
   } else {
-      switch (z) {
-      case 1:
-   x = 2;
-   break;
-
-      case 2:
-   x = 2;
-   break;
-
-      case 3:
-   x = 2;
-   break;
-
-      default:
-   x = 2;
-   break;
-      }
+      // taken out switch with 4 cases
   }
  }
 }

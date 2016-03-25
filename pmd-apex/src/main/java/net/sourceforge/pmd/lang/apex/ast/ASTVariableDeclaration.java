@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> {
 
-    public ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
-        super(variableDeclaration);
-    }
+	public ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
+		super(variableDeclaration);
+	}
 }

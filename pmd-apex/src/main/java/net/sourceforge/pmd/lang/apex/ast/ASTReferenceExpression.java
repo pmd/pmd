@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.expression.ReferenceExpression;
 
 public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression> {
 
-    public ASTReferenceExpression(ReferenceExpression referenceExpression) {
-        super(referenceExpression);
-    }
+	public ASTReferenceExpression(ReferenceExpression referenceExpression) {
+		super(referenceExpression);
+	}
 }

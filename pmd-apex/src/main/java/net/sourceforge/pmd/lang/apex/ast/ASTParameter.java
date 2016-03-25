@@ -7,7 +7,7 @@ import apex.jorje.semantic.ast.member.Parameter;
 
 public class ASTParameter extends AbstractApexNode<Parameter> {
 
-    public ASTParameter(Parameter parameter) {
-        super(parameter);
-    }
+	public ASTParameter(Parameter parameter) {
+		super(parameter);
+	}
 }

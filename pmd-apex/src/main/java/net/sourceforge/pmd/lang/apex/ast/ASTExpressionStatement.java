@@ -4,7 +4,7 @@ import apex.jorje.semantic.ast.statement.ExpressionStatement;
 
 public class ASTExpressionStatement extends AbstractApexNode<ExpressionStatement> {
 
-    public ASTExpressionStatement(ExpressionStatement expressionStatement) {
-        super(expressionStatement);
-    }
+	public ASTExpressionStatement(ExpressionStatement expressionStatement) {
+		super(expressionStatement);
+	}
 }
