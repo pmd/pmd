@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -197,5 +198,10 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 	@Override
 	public Object visit(ASTField node, Object data) {
 		return visit((ApexNode<?>) node, data);
+	}
+
+	@Override
+	public Object visit(ASTSoqlExpression node, Object data) {
+	    return visit((ApexNode<?>) node, data);
 	}
 }

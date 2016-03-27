@@ -135,4 +135,9 @@ public class ApexParserVisitorAdapter implements ApexParserVisitor {
 	public Object visit(ASTTernaryExpression node, Object data) {
 		return visit((ApexNode<?>) node, data);
 	}
+
+	@Override
+	public Object visit(ASTSoqlExpression node, Object data) {
+	    return visit((ApexNode<?>) node, data);
+	}
 }

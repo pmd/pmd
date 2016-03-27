@@ -55,4 +55,6 @@ public interface ApexParserVisitor {
 	Object visit(ASTBreakStatement node, Object data);
 
 	Object visit(ASTThrowStatement node, Object data);
+
+	Object visit(ASTSoqlExpression node, Object data);
 }
