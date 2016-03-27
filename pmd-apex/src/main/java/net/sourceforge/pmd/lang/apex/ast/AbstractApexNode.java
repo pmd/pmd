@@ -21,13 +21,6 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 	/**
 	 * Accept the visitor. *
 	 */
-	public Object jjtAccept(ApexParserVisitor visitor, Object data) {
-		return visitor.visit(this, data);
-	}
-
-	/**
-	 * Accept the visitor. *
-	 */
 	public Object childrenAccept(ApexParserVisitor visitor, Object data) {
 		if (children != null) {
 			for (int i = 0; i < children.length; ++i) {
