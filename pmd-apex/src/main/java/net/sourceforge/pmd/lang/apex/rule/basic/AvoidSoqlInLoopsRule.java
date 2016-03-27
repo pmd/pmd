@@ -17,7 +17,7 @@ public class AvoidSoqlInLoopsRule extends AbstractOptimizationRule {
 
     @Override
     public Object visit(ASTSoqlExpression node, Object data) {
-        if (insideLoop(node) && fourthParentNotThrow(node) && fourthParentNotReturn(node)) {
+        if (insideLoop(node) && fourthParentNotThrow(node) && parentNotReturn(node)) {
             addViolation(data, node);
         }
         return data;
@@ -27,8 +27,8 @@ public class AvoidSoqlInLoopsRule extends AbstractOptimizationRule {
         return !(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTThrowStatement);
     }
 
-    private boolean fourthParentNotReturn(ASTSoqlExpression node) {
-        return !(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTReturnStatement);
+    private boolean parentNotReturn(ASTSoqlExpression node) {
+        return !(node.jjtGetParent() instanceof ASTReturnStatement);
     }
 
     private boolean insideLoop(ASTSoqlExpression node) {
@@ -39,10 +39,6 @@ public class AvoidSoqlInLoopsRule extends AbstractOptimizationRule {
                     || n instanceof ASTForLoopStatement || n instanceof ASTForEachStatement) {
                 return true;
             } 
-            else if (n.jjtGetParent() instanceof ASTForLoopStatement || n.jjtGetParent() instanceof ASTForEachStatement) {
-                n = n.jjtGetParent();
-            }
-            
             n = n.jjtGetParent();
         }
         return false;
