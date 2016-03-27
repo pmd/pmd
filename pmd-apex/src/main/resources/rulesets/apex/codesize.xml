@@ -8,7 +8,7 @@
 The Code Size ruleset contains rules that find problems related to code size or complexity.
   </description>
 
-	<rule name="NPathComplexity" since="3.9"
+	<rule name="NPathComplexity" 
 		message="The method {0}() has an NPath complexity of {1}"
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.NPathComplexityRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NPathComplexity">
@@ -53,7 +53,7 @@ void bar() {	// this is something more complex than it needs to be,
     </example>
 	</rule>
 
-	<rule name="ExcessiveMethodLength" since="0.6"
+	<rule name="ExcessiveMethodLength" 
 		message="Avoid really long methods."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveMethodLengthRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveMethodLength">
@@ -78,7 +78,7 @@ public void doSomething() {
 	</rule>
 
 
-	<rule name="ExcessiveParameterList" since="0.9"
+	<rule name="ExcessiveParameterList"
 		message="Avoid long parameter lists."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveParameterListRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveParameterList">
@@ -106,7 +106,7 @@ public void addPerson(		// preferred approach
 	</rule>
 
 
-	<rule name="ExcessiveClassLength" since="0.6"
+	<rule name="ExcessiveClassLength"
 		message="Avoid really long classes."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveClassLengthRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveClassLength">
@@ -139,7 +139,7 @@ public class Foo {
 	</rule>
 
 
-	<rule name="CyclomaticComplexity" since="1.03"
+	<rule name="CyclomaticComplexity" 
 		message="The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.CyclomaticComplexityRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#CyclomaticComplexity">
@@ -194,7 +194,7 @@ public class Foo {		// This has a Cyclomatic Complexity = 12
    </example>
 	</rule>
 
-	<rule name="StdCyclomaticComplexity" since="5.1.2"
+	<rule name="StdCyclomaticComplexity" 
 		message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.StdCyclomaticComplexityRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#StdCyclomaticComplexity">
@@ -249,7 +249,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
    </example>
 	</rule>
 
-	<rule name="ExcessivePublicCount" since="1.04"
+	<rule name="ExcessivePublicCount" 
 		message="This class has a bunch of public methods and attributes"
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessivePublicCountRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessivePublicCount">
@@ -277,7 +277,7 @@ public class Foo {
     </example>
 	</rule>
 
-	<rule name="TooManyFields" since="3.0" message="Too many fields"
+	<rule name="TooManyFields" message="Too many fields"
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.TooManyFieldsRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#TooManyFields">
 		<description>
@@ -305,7 +305,6 @@ public class Person {	// this is more manageable
 	</rule>
 
 	<rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
-		since="3.9"
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssMethodCountRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssMethodCount">
 		<description>
@@ -333,7 +332,7 @@ public class Foo extends Bar {
 	</rule>
 
 	<rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
-		since="3.9" class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssTypeCountRule"
+		class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssTypeCountRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssTypeCount">
 		<description>
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
@@ -359,7 +358,7 @@ public class Foo extends Bar {
    </example>
 	</rule>
 
-	<rule name="TooManyMethods" language="apex" since="4.2"
+	<rule name="TooManyMethods" language="apex" 
 		class="net.sourceforge.pmd.lang.rule.XPathRule" message="This class has too many methods, consider refactoring it."
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#TooManyMethods">
 		<description>

@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveLengthRule;
  */
 public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
 
-	public ExcessiveClassLengthRule() {
-		super(ASTCompilation.class);
-		setProperty(MINIMUM_DESCRIPTOR, 1000d);
-	}
+    public ExcessiveClassLengthRule() {
+        super(ASTCompilation.class);
+        setProperty(MINIMUM_DESCRIPTOR, 1000d);
+    }
 }

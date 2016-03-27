@@ -4,16 +4,10 @@ import apex.jorje.semantic.ast.modifier.AnnotationParameter;
 
 public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter> {
 
-	public ASTAnnotationParameter(AnnotationParameter annotationParameter) {
-		super(annotationParameter);
-	}
+    public ASTAnnotationParameter(AnnotationParameter annotationParameter) {
+        super(annotationParameter);
+    }
 
-    /**
-     * Accept the visitor.
-     * Note: This needs to be in each concrete node class, as otherwise
-     * the visitor won't work - as java resolves the type "this" at compile
-     * time.
-     */
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -6,7 +6,7 @@
         <code><![CDATA[
 public class Foo {
  public static void bar() {
-  if (true) {List buz = new ArrayList();}
+  if (true) {List<String> buz = new List<String>();}
  }
 }
      ]]></code>
@@ -21,7 +21,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
  public static void bar() {
-  if (true) {List buz = new ArrayList();}
+  if (true) {List<String> buz = new List<String>();}
  }
 }
      ]]></code>
@@ -33,16 +33,16 @@ failure case
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public static int bar() {
+ public static Integer bar() {
   try{
-  if (true) {List buz = new ArrayList();}
-  for(int i = 0; i < 19; i++) {List buz = new ArrayList();}
-  int j = 0;
+  if (true) {List<String> buz = new List<String>();}
+  for(Integer i = 0; i < 19; i++) {List<String> buz = new List<String>();}
+  Integer j = 0;
   if (true) {j = 10;}
-  while (j++ < 20) {List buz = new ArrayList();}
+  while (j++ < 20) {List<String> buz = new List<String>();}
   if (true) {j = 21;}
   if(false) {j = 0;}
-  do {List buz = new ArrayList();} while (j++ < 30); 
+  do {List<String> buz = new List<String>();} while (j++ < 30); 
   } catch(Exception e){
   if (true) {e.printStackTrace();}
  }
@@ -63,7 +63,7 @@ class Bar
         );
     }
 
-    public int y(boolean x, boolean y)
+    public Integer y(boolean x, boolean y)
     {
         return z(
             (x ? 1 : 2),
@@ -71,7 +71,7 @@ class Bar
         );
     }
 
-    public int z(int x, int y)
+    public Integer z(Integer x, Integer y)
     {
         return x + y;
     }

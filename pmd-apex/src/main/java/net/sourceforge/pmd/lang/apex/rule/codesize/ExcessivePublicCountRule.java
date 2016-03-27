@@ -31,42 +31,42 @@ import net.sourceforge.pmd.util.NumericConstants;
  */
 public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
 
-	public ExcessivePublicCountRule() {
-		super(ASTCompilation.class);
-		setProperty(MINIMUM_DESCRIPTOR, 45d);
-	}
+    public ExcessivePublicCountRule() {
+        super(ASTCompilation.class);
+        setProperty(MINIMUM_DESCRIPTOR, 45d);
+    }
 
-	/**
-	 * Method counts ONLY public methods.
-	 */
-	@Override
-	public Object visit(ASTMethod node, Object data) {
-		return this.getTallyOnAccessType((AccessNode) node.jjtGetParent());
-	}
+    /**
+     * Method counts ONLY public methods.
+     */
+    @Override
+    public Object visit(ASTMethod node, Object data) {
+        return this.getTallyOnAccessType((AccessNode) node.jjtGetParent());
+    }
 
-	/**
-	 * Method counts ONLY public class attributes which are not PUBLIC and
-	 * static- these usually represent constants....
-	 */
-	@Override
-	public Object visit(ASTField node, Object data) {
-		if (node.getNode().getModifierInfo().all(PUBLIC, STATIC)) {
-			return NumericConstants.ZERO;
-		}
-		return this.getTallyOnAccessType((AccessNode) node);
-	}
+    /**
+     * Method counts ONLY public class attributes which are not PUBLIC and
+     * static- these usually represent constants....
+     */
+    @Override
+    public Object visit(ASTField node, Object data) {
+        if (node.getNode().getModifierInfo().all(PUBLIC, STATIC)) {
+            return NumericConstants.ZERO;
+        }
+        return this.getTallyOnAccessType((AccessNode) node);
+    }
 
-	/**
-	 * Method counts a node if it is public
-	 *
-	 * @param node
-	 *            The access node.
-	 * @return Integer 1 if node is public 0 otherwise
-	 */
-	private Integer getTallyOnAccessType(AccessNode node) {
-		if (node.isPublic()) {
-			return NumericConstants.ONE;
-		}
-		return NumericConstants.ZERO;
-	}
+    /**
+     * Method counts a node if it is public
+     *
+     * @param node
+     *            The access node.
+     * @return Integer 1 if node is public 0 otherwise
+     */
+    private Integer getTallyOnAccessType(AccessNode node) {
+        if (node.isPublic()) {
+            return NumericConstants.ONE;
+        }
+        return NumericConstants.ZERO;
+    }
 }

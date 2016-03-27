@@ -96,26 +96,6 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-interface with 10 fields
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public interface Foo {
- int a1; 
- int a2; 
- int a3; 
- int a4; 
- int a5; 
- int a6; 
- int a7; 
- int a8; 
- int a9; 
- int a10; 
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
 2 inner classes, each with > 10 fields
      ]]></description>
         <expected-problems>2</expected-problems>

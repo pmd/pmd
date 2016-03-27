@@ -78,21 +78,6 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-throw new is OK
-     ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public void test1() {
-   for(;;) {
-       throw new Exception();
-   }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
 return new in loop is OK
      ]]></description>
         <expected-problems>0</expected-problems>

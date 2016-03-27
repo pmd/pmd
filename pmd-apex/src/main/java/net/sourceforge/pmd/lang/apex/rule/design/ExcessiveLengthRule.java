@@ -16,22 +16,22 @@ import net.sourceforge.pmd.stat.DataPoint;
  * to check, and this does the rest for you.
  */
 public class ExcessiveLengthRule extends AbstractStatisticalApexRule {
-	private Class<?> nodeClass;
+    private Class<?> nodeClass;
 
-	public ExcessiveLengthRule(Class<?> nodeClass) {
-		this.nodeClass = nodeClass;
-	}
+    public ExcessiveLengthRule(Class<?> nodeClass) {
+        this.nodeClass = nodeClass;
+    }
 
-	@Override
-	public Object visit(ApexNode node, Object data) {
-		if (nodeClass.isInstance(node)) {
-			DataPoint point = new DataPoint();
-			point.setNode(node);
-			point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
-			point.setMessage(getMessage());
-			addDataPoint(point);
-		}
+    @Override
+    public Object visit(ApexNode node, Object data) {
+        if (nodeClass.isInstance(node)) {
+            DataPoint point = new DataPoint();
+            point.setNode(node);
+            point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
+            point.setMessage(getMessage());
+            addDataPoint(point);
+        }
 
-		return node.childrenAccept(this, data);
-	}
+        return node.childrenAccept(this, data);
+    }
 }

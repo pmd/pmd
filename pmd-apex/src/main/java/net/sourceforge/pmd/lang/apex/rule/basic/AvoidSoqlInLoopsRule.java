@@ -9,22 +9,17 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.AbstractOptimizationRule;
+import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-public class AvoidSoqlInLoopsRule extends AbstractOptimizationRule {
+public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTSoqlExpression node, Object data) {
-        if (insideLoop(node) && fourthParentNotThrow(node) && parentNotReturn(node)) {
+        if (insideLoop(node) && parentNotReturn(node)) {
             addViolation(data, node);
         }
         return data;
-    }
-
-    private boolean fourthParentNotThrow(ASTSoqlExpression node) {
-        return !(node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTThrowStatement);
     }
 
     private boolean parentNotReturn(ASTSoqlExpression node) {
@@ -33,12 +28,12 @@ public class AvoidSoqlInLoopsRule extends AbstractOptimizationRule {
 
     private boolean insideLoop(ASTSoqlExpression node) {
         Node n = node.jjtGetParent();
-        
+
         while (n != null) {
             if (n instanceof ASTDoLoopStatement || n instanceof ASTWhileLoopStatement
                     || n instanceof ASTForLoopStatement || n instanceof ASTForEachStatement) {
                 return true;
-            } 
+            }
             n = n.jjtGetParent();
         }
         return false;

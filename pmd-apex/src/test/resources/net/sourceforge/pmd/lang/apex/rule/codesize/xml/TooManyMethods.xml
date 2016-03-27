@@ -72,12 +72,12 @@ public class Foo
      public void getMethod9(){}
      public void getMethod10(){}
      
-     public boolean isMethod11(){}
-     public boolean isMethod12(){}
-     public boolean isMethod13(){}
-     public boolean isMethod14(){}
-     public boolean isMethod15(){}
-     public boolean isMethod16(){}
+     public Boolean isMethod11(){}
+     public Boolean isMethod12(){}
+     public Boolean isMethod13(){}
+     public Boolean isMethod14(){}
+     public Boolean isMethod15(){}
+     public Boolean isMethod16(){}
      
      public void method17(){}
      public void method18(){}
@@ -95,29 +95,22 @@ public class Foo
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class OuterClass {
-    public void method1() {}
-    public void method2() {}
-    public void method3() {}
-    public void method4() {}
-    public void method5() {}
-    public void method6() {}
-    public void method7() {}
+    public virtual void method1() {}
+    public virtual void method2() {}
+    public virtual void method3() {}
+    public virtual void method4() {}
+    public virtual void method5() {}
+    public virtual void method6() {}
+    public virtual void method7() {}
 
-    public static class InnerClass extends OuterClass {
-        @Override
-        public void method1() {}
-        @Override
-        public void method2() {}
-        @Override
-        public void method3() {}
-        @Override
-        public void method4() {}
-        @Override
-        public void method5() {}
-        @Override
-        public void method6() {}
-        @Override
-        public void method7() {}
+    public class InnerClass extends OuterClass {
+        public override void method1() {}
+        public override void method2() {}
+        public override void method3() {}
+        public override void method4() {}
+        public override void method5() {}
+        public override void method6() {}
+        public override void method7() {}
     }
 }
         ]]></code>

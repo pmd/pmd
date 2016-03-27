@@ -23,36 +23,36 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  */
 public class ApexHandler extends AbstractLanguageVersionHandler {
 
-	@Override
-	public XPathHandler getXPathHandler() {
-		return new AbstractASTXPathHandler() {
-			public void initialize() {
-			}
+    @Override
+    public XPathHandler getXPathHandler() {
+        return new AbstractASTXPathHandler() {
+            public void initialize() {
+            }
 
-			public void initialize(IndependentContext context) {
-			}
-		};
-	}
+            public void initialize(IndependentContext context) {
+            }
+        };
+    }
 
-	public RuleViolationFactory getRuleViolationFactory() {
-		return ApexRuleViolationFactory.INSTANCE;
-	}
+    public RuleViolationFactory getRuleViolationFactory() {
+        return ApexRuleViolationFactory.INSTANCE;
+    }
 
-	@Override
-	public ParserOptions getDefaultParserOptions() {
-		return new ApexParserOptions();
-	}
+    @Override
+    public ParserOptions getDefaultParserOptions() {
+        return new ApexParserOptions();
+    }
 
-	public Parser getParser(ParserOptions parserOptions) {
-		return new ApexParser(parserOptions);
-	}
+    public Parser getParser(ParserOptions parserOptions) {
+        return new ApexParser(parserOptions);
+    }
 
-	@Override
-	public VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse) {
-		return new VisitorStarter() {
-			public void start(Node rootNode) {
-				new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
-			}
-		};
-	}
+    @Override
+    public VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse) {
+        return new VisitorStarter() {
+            public void start(Node rootNode) {
+                new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
+            }
+        };
+    }
 }

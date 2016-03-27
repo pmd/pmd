@@ -9,7 +9,6 @@ The Basic ruleset contains a collection of good practices which should be follow
   </description>
 
   <rule name="AvoidSoqlInLoops"
-  		  since="2.2"
         message="Avoid Soql queries inside loops"
         class="net.sourceforge.pmd.lang.apex.rule.basic.AvoidSoqlInLoopsRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#AvoidSoqlInLoops">
