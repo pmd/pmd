@@ -18,8 +18,6 @@ public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
         setProperty(MINIMUM_DESCRIPTOR, 10d);
     }
 
-    // Count these nodes, but no others.
-    @Override
     public Object visit(ASTParameter node, Object data) {
         return NumericConstants.ONE;
     }

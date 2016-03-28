@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import apex.jorje.semantic.ast.compilation.UserInterface;
-import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -24,7 +22,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
     private static final int DEFAULT_MAXFIELDS = 15;
 
     private Map<String, Integer> stats;
-    private Map<String, ASTCompilation> nodes;
+    private Map<String, ASTUserClass> nodes;
 
     private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty("maxfields",
             "Max allowable fields", 1, 300, DEFAULT_MAXFIELDS, 1.0f);
@@ -47,8 +45,8 @@ public class TooManyFieldsRule extends AbstractApexRule {
             if (fd.getNode().getModifierInfo().all(FINAL, STATIC)) {
                 continue;
             }
-            ASTCompilation clazz = fd.getFirstParentOfType(ASTCompilation.class);
-            if (clazz != null && !(clazz.getNode() instanceof UserInterface)) {
+            ASTUserClass clazz = fd.getFirstParentOfType(ASTUserClass.class);
+            if (clazz != null) {
                 bumpCounterFor(clazz);
             }
         }
@@ -62,7 +60,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
         return data;
     }
 
-    private void bumpCounterFor(ASTCompilation clazz) {
+    private void bumpCounterFor(ASTUserClass clazz) {
         String key = clazz.getImage();
         if (!stats.containsKey(key)) {
             stats.put(key, NumericConstants.ZERO);

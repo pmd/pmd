@@ -2,9 +2,9 @@
 <test-data>
     <code-fragment id="3 fields"><![CDATA[
 public class Foo {
- int a1; 
- int a2; 
- int a3; 
+ Integer a1; 
+ Integer a2; 
+ Integer a3; 
 }
  ]]></code-fragment>
     <test-code>
@@ -29,22 +29,22 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- int a1; 
- int a2; 
- int a3; 
- int a4; 
- int a5; 
- int a6; 
- int a7; 
- int a8; 
- int a9; 
- int a10; 
- int a11; 
- int a12; 
- int a13; 
- int a14; 
- int a15; 
- int a16; 
+ Integer a1; 
+ Integer a2; 
+ Integer a3; 
+ Integer a4; 
+ Integer a5; 
+ Integer a6; 
+ Integer a7; 
+ Integer a8; 
+ Integer a9; 
+ Integer a10; 
+ Integer a11; 
+ Integer a12; 
+ Integer a13; 
+ Integer a14; 
+ Integer a15; 
+ Integer a16; 
 }
      ]]></code>
     </test-code>
@@ -55,19 +55,19 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- int a1; 
- int a2; 
- int a3; 
- int a4; 
- int a5; 
- int a6; 
+ Integer a1; 
+ Integer a2; 
+ Integer a3; 
+ Integer a4; 
+ Integer a5; 
+ Integer a6; 
  public class Bar {
-  int a7; 
-  int a8; 
-  int a9; 
-  int a10; 
-  int a11; 
-  int a12; 
+  Integer a7; 
+  Integer a8; 
+  Integer a9; 
+  Integer a10; 
+  Integer a11; 
+  Integer a12; 
  }
 }
      ]]></code>
@@ -79,17 +79,17 @@ outer class, inner interface, both OK
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- int a1; 
- int a2; 
- int a3; 
- int a4; 
- int a5; 
+ Integer a1; 
+ Integer a2; 
+ Integer a3; 
+ Integer a4; 
+ Integer a5; 
  interface Bar {
-  int a6; 
-  int a7; 
-  int a8; 
-  int a9; 
-  int a10; 
+  Integer a6; 
+  Integer a7; 
+  Integer a8; 
+  Integer a9; 
+  Integer a10; 
  }
 }
      ]]></code>
@@ -102,40 +102,40 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
  public class Bar1 {
-  int b1; 
-  int b2; 
-  int b3; 
-  int b4; 
-  int b5; 
-  int b6; 
-  int b7; 
-  int b8; 
-  int b9; 
-  int b10; 
-  int b11; 
-  int b12; 
-  int b13; 
-  int b14; 
-  int b15; 
-  int b16; 
+  Integer b1; 
+  Integer b2; 
+  Integer b3; 
+  Integer b4; 
+  Integer b5; 
+  Integer b6; 
+  Integer b7; 
+  Integer b8; 
+  Integer b9; 
+  Integer b10; 
+  Integer b11; 
+  Integer b12; 
+  Integer b13; 
+  Integer b14; 
+  Integer b15; 
+  Integer b16; 
  }
  public class Bar2 {
-  int b1; 
-  int b2; 
-  int b3; 
-  int b4; 
-  int b5; 
-  int b6; 
-  int b7; 
-  int b8; 
-  int b9; 
-  int b10; 
-  int b11; 
-  int b12; 
-  int b13; 
-  int b14; 
-  int b15; 
-  int b16; 
+  Integer b1; 
+  Integer b2; 
+  Integer b3; 
+  Integer b4; 
+  Integer b5; 
+  Integer b6; 
+  Integer b7; 
+  Integer b8; 
+  Integer b9; 
+  Integer b10; 
+  Integer b11; 
+  Integer b12; 
+  Integer b13; 
+  Integer b14; 
+  Integer b15; 
+  Integer b16; 
  }
 }
      ]]></code>
@@ -148,7 +148,7 @@ anonymous class with a field
         <code><![CDATA[
 public class Foo {
  public class Bar1 {
-  Object foo = new Object() {public int x;}; 
+  Object foo = new Object() {public Integer x;}; 
  }
 }
      ]]></code>
@@ -160,23 +160,23 @@ lots of static finals, those are ok
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public static final int a1 = 2 ; 
- public static final int a2 = 2 ; 
- public static final int a3 = 2 ; 
- public static final int a4 = 2 ; 
- public static final int a5 = 2 ; 
- public static final int a6 = 2 ; 
- public static final int a7 = 2 ; 
- public static final int a8 = 2 ; 
- public static final int a9 = 2 ; 
- public static final int a10 = 2 ; 
- public static final int a11 = 2 ; 
- public static final int a12 = 2 ; 
- public static final int a13 = 2 ; 
- public static final int a14 = 2 ; 
- public static final int a15 = 2 ; 
- public static final int a16 = 2 ; 
- public static final int a17 = 2 ; 
+ public static final Integer a1 = 2 ; 
+ public static final Integer a2 = 2 ; 
+ public static final Integer a3 = 2 ; 
+ public static final Integer a4 = 2 ; 
+ public static final Integer a5 = 2 ; 
+ public static final Integer a6 = 2 ; 
+ public static final Integer a7 = 2 ; 
+ public static final Integer a8 = 2 ; 
+ public static final Integer a9 = 2 ; 
+ public static final Integer a10 = 2 ; 
+ public static final Integer a11 = 2 ; 
+ public static final Integer a12 = 2 ; 
+ public static final Integer a13 = 2 ; 
+ public static final Integer a14 = 2 ; 
+ public static final Integer a15 = 2 ; 
+ public static final Integer a16 = 2 ; 
+ public static final Integer a17 = 2 ; 
 }
      ]]></code>
     </test-code>

@@ -39,6 +39,12 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 
     @Override
     public int getBeginLine() {
+        // TODO: figure out the correct line
+        return 1;
+    }
+
+    @Override
+    public int getEndLine() {
         try {
             Loc loc = node.getLoc();
             if (loc instanceof RealLoc) {
@@ -49,13 +55,8 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
             // really existing in source code
         }
 
-        // TODO: figure out the correct line
         return 1;
-    }
 
-    @Override
-    public int getEndLine() {
-        return getBeginLine();
     }
 
     @Override
@@ -89,7 +90,6 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
         return super.getEndColumn();
     }
 
-    @Override
     public String toString() {
         return this.getClass().getSimpleName().replaceFirst("^AST", "");
     }

@@ -8,8 +8,7 @@
 The Code Size ruleset contains rules that find problems related to code size or complexity.
   </description>
 
-	<rule name="NPathComplexity" 
-		message="The method {0}() has an NPath complexity of {1}"
+	<rule name="NPathComplexity" message="The method {0}() has an NPath complexity of {1}"
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.NPathComplexityRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NPathComplexity">
 		<description>
@@ -53,8 +52,7 @@ void bar() {	// this is something more complex than it needs to be,
     </example>
 	</rule>
 
-	<rule name="ExcessiveMethodLength" 
-		message="Avoid really long methods."
+	<rule name="ExcessiveMethodLength" message="Avoid really long methods."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveMethodLengthRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveMethodLength">
 		<description>
@@ -78,8 +76,7 @@ public void doSomething() {
 	</rule>
 
 
-	<rule name="ExcessiveParameterList"
-		message="Avoid long parameter lists."
+	<rule name="ExcessiveParameterList" message="Avoid long parameter lists."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveParameterListRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveParameterList">
 		<description>
@@ -106,8 +103,7 @@ public void addPerson(		// preferred approach
 	</rule>
 
 
-	<rule name="ExcessiveClassLength"
-		message="Avoid really long classes."
+	<rule name="ExcessiveClassLength" message="Avoid really long classes."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveClassLengthRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveClassLength">
 		<description>
@@ -139,62 +135,7 @@ public class Foo {
 	</rule>
 
 
-	<rule name="CyclomaticComplexity" 
-		message="The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
-		class="net.sourceforge.pmd.lang.apex.rule.codesize.CyclomaticComplexityRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#CyclomaticComplexity">
-		<description>
-   		<![CDATA[
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
-Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
-high complexity, and 11+ is very high complexity.
-		]]>
-   </description>
-		<priority>3</priority>
-		<example>
-<![CDATA[
-public class Foo {		// This has a Cyclomatic Complexity = 12
-1   public void example()  {
-2       if (a == b)  {
-3           if (a1 == b1) {
-                fiddle();
-4           } else if a2 == b2) {
-                fiddle();
-            }  else {
-                fiddle();
-            }
-5       } else if (c == d) {
-6           while (c == d) {
-                fiddle();
-            }
-7        } else if (e == f) {
-8           for (int n = 0; n < h; n++) {
-                fiddle();
-            }
-        } else{
-            switch (z) {
-9               case 1:
-                    fiddle();
-                    break;
-10              case 2:
-                    fiddle();
-                    break;
-11              case 3:
-                    fiddle();
-                    break;
-12              default:
-                    fiddle();
-                    break;
-            }
-        }
-    }
-}
-]]>
-   </example>
-	</rule>
-
-	<rule name="StdCyclomaticComplexity" 
+	<rule name="StdCyclomaticComplexity"
 		message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.StdCyclomaticComplexityRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#StdCyclomaticComplexity">
@@ -247,34 +188,6 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
 }
 ]]>
    </example>
-	</rule>
-
-	<rule name="ExcessivePublicCount" 
-		message="This class has a bunch of public methods and attributes"
-		class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessivePublicCountRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessivePublicCount">
-		<description>
-Classes with large numbers of public methods and attributes require disproportionate testing efforts
-since combinational side effects grow rapidly and increase risk. Refactoring these classes into
-smaller ones not only increases testability and reliability but also allows new variations to be
-developed easily.
-    </description>
-		<priority>3</priority>
-		<example>
-    <![CDATA[
-public class Foo {
-	public String value;
-	public Bar something;
-	public Variable var;
- // [... more more public attributes ...]
- 
-	public void doWork() {}
-	public void doMoreWork() {}
-	public void doWorkAgain() {}
- // [... more more public methods ...]
-}
-    ]]>
-    </example>
 	</rule>
 
 	<rule name="TooManyFields" message="Too many fields"
@@ -341,24 +254,24 @@ lines of code that are split are counted as one.
     </description>
 		<priority>3</priority>
 		<example>
-<![CDATA[
-public class Foo extends Bar {
- public Foo() {
- //this class only has 6 NCSS lines
-     super();
-
-
-
-
-
-      super.foo();
- }
-}
-]]>
+			<![CDATA[
+			public class Foo extends Bar {
+			 public Foo() {
+			 //this class only has 6 NCSS lines
+			     super();
+			
+			
+			
+			
+			
+			      super.foo();
+			 }
+			}
+			]]>
    </example>
 	</rule>
 
-	<rule name="TooManyMethods" language="apex" 
+	<rule name="TooManyMethods" language="apex"
 		class="net.sourceforge.pmd.lang.rule.XPathRule" message="This class has too many methods, consider refactoring it."
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#TooManyMethods">
 		<description>
@@ -374,39 +287,19 @@ have more fine grained objects.
 				value="10" />
 			<property name="xpath">
 				<value>
-                    <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
-                                something like this:
-                                    not (
-                                            (
-                                                starts-with(@Image,'get')
-                                                or
-                                                starts-with(@Image,'set')
-                                                or
-                                                starts-with(@Image,'is')
-                                            )
-                                            and (
-                                                    (
-                                                        (../Block/attribute::endLine)
-                                                         -
-                                                        (../Block/attribute::beginLine)
-                                                    ) <= 3
-                                            )
-                                        )
-                                This will avoid discarding 'real' method...
-                     -->
                     <![CDATA[
- //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
-     [
-      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration/MethodDeclarator[
-         not (
-                starts-with(@Image,'get')
-                or
-                starts-with(@Image,'set')
-                or
-                starts-with(@Image,'is')
-            )
-      ]) > $maxmethods
-   ]
+					 //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+					     [
+					      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration/MethodDeclarator[
+					         not (
+					                starts-with(@Image,'get')
+					                or
+					                starts-with(@Image,'set')
+					                or
+					                starts-with(@Image,'is')
+					            )
+					      ]) > $maxmethods
+					   ]
                     ]]>
                 </value>
 			</property>

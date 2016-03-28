@@ -5,31 +5,30 @@ package net.sourceforge.pmd.lang.apex.rule.codesize;
 
 import java.util.Stack;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
-import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTConstructorPreambleStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
+import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
  * Implements the standard cyclomatic complexity rule
  * <p>
- * Standard rules: +1 for each decision point, including case statements but not
- * including boolean operators unlike CyclomaticComplexityRule.
+ * Standard rules: +1 for each decision point, but not including boolean
+ * operators unlike CyclomaticComplexityRule.
  * 
  * @author ported on Java version of Alan Hohn, based on work by Donald A.
  *         Leckie
@@ -137,6 +136,11 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
     public Object visit(ASTTernaryExpression node, Object data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTBooleanExpression node, Object data) {
         return data;
     }
 

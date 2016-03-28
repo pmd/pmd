@@ -20,8 +20,8 @@ long
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo(int p01, int p02, int p03, int p04, int p05, int p06, int p07, int p08, int p09, int p10 ) { }
-    public void bar(int p01, int p02, int p03, int p04, int p05 ) { }
+    public void foo(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05, Integer p06, Integer p07, Integer p08, Integer p09, Integer p10 ) { }
+    public void bar(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05 ) { }
 }
      ]]></code>
     </test-code>

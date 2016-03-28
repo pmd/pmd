@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-TEST0
+Problematic Soql in for each
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -17,7 +17,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-TEST1
+Problematic Soql in for loop
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -32,7 +32,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-TEST2
+Problematic Soql in While loop
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -47,7 +47,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-TEST3
+Problematic Soql in do loop
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -62,7 +62,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-TEST4
+Multiple problematic Soql expressions
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
@@ -78,7 +78,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-return new in loop is OK
+Return Soql is even ok in loop
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

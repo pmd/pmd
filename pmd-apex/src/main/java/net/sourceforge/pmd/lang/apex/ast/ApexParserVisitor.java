@@ -57,4 +57,6 @@ public interface ApexParserVisitor {
     Object visit(ASTThrowStatement node, Object data);
 
     Object visit(ASTSoqlExpression node, Object data);
+
+    Object visit(ASTBooleanExpression node, Object data);
 }

@@ -35,26 +35,26 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
         setProperty(MINIMUM_DESCRIPTOR, 200d);
     }
 
-    private int complexityMultipleOf(ApexNode node, int npathStart, Object data) {
+    private int complexityMultipleOf(ApexNode<?> node, int npathStart, Object data) {
 
         int npath = npathStart;
-        ApexNode n;
+        ApexNode<?> n;
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            n = (ApexNode) node.jjtGetChild(i);
+            n = (ApexNode<?>) node.jjtGetChild(i);
             npath *= (Integer) n.jjtAccept(this, data);
         }
 
         return npath;
     }
 
-    private int complexitySumOf(ApexNode node, int npathStart, Object data) {
+    private int complexitySumOf(ApexNode<?> node, int npathStart, Object data) {
 
         int npath = npathStart;
-        ApexNode n;
+        ApexNode<?> n;
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            n = (ApexNode) node.jjtGetChild(i);
+            n = (ApexNode<?>) node.jjtGetChild(i);
             npath += (Integer) n.jjtAccept(this, data);
         }
 
@@ -75,7 +75,7 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
     }
 
     @Override
-    public Object visit(ApexNode node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         int npath = complexityMultipleOf(node, 1, data);
         return Integer.valueOf(npath);
     }
@@ -88,7 +88,7 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
         List<ApexNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((ApexNode) node.jjtGetChild(i));
+                statementChildren.add((ApexNode<?>) node.jjtGetChild(i));
             }
         }
 
@@ -100,7 +100,7 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
         // add path for not taking if
         int complexity = 1;
 
-        for (ApexNode element : statementChildren) {
+        for (ApexNode<?> element : statementChildren) {
             complexity += (Integer) element.jjtAccept(this, data);
         }
 
@@ -116,7 +116,7 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
         List<ApexNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((ApexNode) node.jjtGetChild(i));
+                statementChildren.add((ApexNode<?>) node.jjtGetChild(i));
             }
         }
 
@@ -127,7 +127,7 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
         // add path for not taking if
         int complexity = 0;
 
-        for (ApexNode element : statementChildren) {
+        for (ApexNode<?> element : statementChildren) {
             complexity += (Integer) element.jjtAccept(this, data);
         }
 
@@ -141,7 +141,7 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
 
         int boolCompWhile = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
-        Integer nPathWhile = (Integer) ((ApexNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+        Integer nPathWhile = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
         return Integer.valueOf(boolCompWhile + nPathWhile + 1);
     }
@@ -152,7 +152,7 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
 
         int boolCompFor = sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
 
-        Integer nPathFor = (Integer) ((ApexNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+        Integer nPathFor = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
         return Integer.valueOf(boolCompFor + nPathFor + 1);
     }
@@ -162,7 +162,7 @@ public class NPathComplexityRule extends AbstractStatisticalApexRule {
 
         int boolCompFor = sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
 
-        Integer nPathFor = (Integer) ((ApexNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
+        Integer nPathFor = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
         return Integer.valueOf(boolCompFor + nPathFor + 1);
     }

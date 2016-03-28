@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTBridgeMethodCreator;
 import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
@@ -202,6 +203,11 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
     @Override
     public Object visit(ASTSoqlExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTBooleanExpression node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
 }

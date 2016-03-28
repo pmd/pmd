@@ -23,7 +23,7 @@ public class ExcessiveLengthRule extends AbstractStatisticalApexRule {
     }
 
     @Override
-    public Object visit(ApexNode node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         if (nodeClass.isInstance(node)) {
             DataPoint point = new DataPoint();
             point.setNode(node);
