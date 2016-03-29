@@ -5,6 +5,7 @@
 **New Supported Languages:**
 
 *   CPD now supports Perl. See [PR#82](https://github.com/pmd/pmd/pull/82).
+*   CPD now supports Swift. See [PR#33](https://github.com/adangel/pmd/pull/33).
 
 **Feature Request and Improvements:**
 
@@ -29,6 +30,7 @@
 *   [#30](https://github.com/adangel/pmd/pull/30): Removed file filter for files that are explicitly specified on the CPD command line using the '--files' command line option.
 *   [#31](https://github.com/adangel/pmd/pull/31): Added file encoding detection to CPD.
 *   [#32](https://github.com/adangel/pmd/pull/32): Extended Objective-C grammar to accept UTF-8 escapes (\uXXXX) in string literals.
+*   [#33](https://github.com/adangel/pmd/pull/33): Added support for Swift to CPD.
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
 *   [#73](https://github.com/pmd/pmd/pull/73): Add rule to look for invalid message format in slf4j loggers
 *   [#74](https://github.com/pmd/pmd/pull/74): Fix rendering CommentDefaultAccessModifier description as code

@@ -266,6 +266,7 @@
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <ant.version>1.9.6</ant.version>
         <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
+        <antlr.version>4.5.2-1</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot/${project.artifactId}</pmd.website.baseurl>
@@ -288,6 +289,22 @@
         </extensions>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>antlr4-maven-plugin</artifactId>
+                    <version>${antlr.version}</version>
+                    <configuration>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>antlr</id>
+                            <goals>
+                                <goal>antlr4</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
@@ -665,6 +682,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime</artifactId>
+                <version>${antlr.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
                 <version>${ant.version}</version>
@@ -938,6 +960,7 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
+        <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
