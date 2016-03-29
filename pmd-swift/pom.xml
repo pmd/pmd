@@ -11,7 +11,6 @@
     </parent>
 
     <properties>
-        <antlr.version>4.5.2-1</antlr.version>
         <config.basedir>${basedir}/../pmd-core</config.basedir>
     </properties>
 
@@ -20,18 +19,6 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>${antlr.version}</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>antlr</id>
-                        <goals>
-                            <goal>antlr4</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -50,7 +37,6 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>${antlr.version}</version>
         </dependency>
 
         <dependency>
