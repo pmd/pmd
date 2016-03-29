@@ -17,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import apex.jorje.semantic.ast.compilation.Compilation;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -31,8 +32,8 @@ public class ApexParserTest {
                 + "        \n" + "    }\n" + "}";
 
         // Exercise
-        ASTUserClass rootNode = parse(code);
-        // dumpNode(rootNode);
+        ApexNode<Compilation> rootNode = parse(code);
+        dumpNode(rootNode);
 
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
@@ -46,9 +47,10 @@ public class ApexParserTest {
             File[] fList = directory.listFiles();
 
             for (File file : fList) {
-                if (file.isFile()) {
+                if (file.isFile() && file.getName().endsWith(".cls")) {
                     String sourceCode = FileUtils.readFileToString(file);
-                    ASTUserClass rootNode = parse(sourceCode);
+                    ApexNode<Compilation> rootNode = parse(sourceCode);
+                    dumpNode(rootNode);
                 }
             }
         } catch (IOException e) {
@@ -59,10 +61,10 @@ public class ApexParserTest {
 
     // TEST HELPER
 
-    private ASTUserClass parse(String code) {
+    private ApexNode<Compilation> parse(String code) {
         ApexParser parser = new ApexParser(new ApexParserOptions());
         Reader reader = new StringReader(code);
-        return (ASTUserClass) parser.parse(reader);
+        return parser.parse(reader);
     }
 
     private void dumpNode(Node node) {

@@ -13,7 +13,10 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 
 import org.apache.commons.io.IOUtils;
 
+import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
+import apex.jorje.semantic.ast.compilation.UserEnum;
+import apex.jorje.semantic.ast.compilation.UserInterface;
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 
@@ -31,19 +34,19 @@ public class ApexParser {
         }
     }
 
-    public UserClass parseApex(final String sourceCode) throws ParseException {
+    public Compilation parseApex(final String sourceCode) throws ParseException {
 
         TopLevelVisitor visitor = new TopLevelVisitor();
         CompilerService.INSTANCE.visitAstFromString(sourceCode, visitor);
 
-        UserClass astRoot = visitor.getTopLevel();
+        Compilation astRoot = visitor.getTopLevel();
         return astRoot;
     }
 
-    public ApexNode<UserClass> parse(final Reader reader) {
+    public ApexNode<Compilation> parse(final Reader reader) {
         try {
             final String sourceCode = IOUtils.toString(reader);
-            final UserClass astRoot = parseApex(sourceCode);
+            final Compilation astRoot = parseApex(sourceCode);
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
             suppressMap = new HashMap<>();
 
@@ -51,7 +54,7 @@ public class ApexParser {
                 throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
             }
 
-            ApexNode<UserClass> tree = treeBuilder.build(astRoot);
+            ApexNode<Compilation> tree = treeBuilder.build(astRoot);
             return tree;
         } catch (IOException e) {
             throw new ParseException(e);
@@ -63,15 +66,25 @@ public class ApexParser {
     }
 
     private class TopLevelVisitor extends AstVisitor<AdditionalPassScope> {
-        UserClass topLevel;
+        Compilation topLevel;
 
-        public UserClass getTopLevel() {
+        public Compilation getTopLevel() {
             return topLevel;
         }
 
         @Override
         public void visitEnd(UserClass node, AdditionalPassScope scope) {
             topLevel = node;
+        }
+        
+        @Override
+        public void visitEnd(UserEnum node, AdditionalPassScope scope) {
+        	topLevel = node;
+        }
+        
+        @Override
+        public void visitEnd(UserInterface node, AdditionalPassScope scope) {
+        	topLevel = node;
         }
     }
 }
