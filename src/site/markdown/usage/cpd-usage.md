@@ -31,7 +31,10 @@ CPD has been through three major incarnations:
 Each rewrite made it much faster, and now it can process the JDK 1.4 java.* packages in about 4 seconds
 (on my workstation, at least).
 
-Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code. Your own language is missing?
+Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and some more languages. For the
+full list, see below [Supported Languages](#Supported_Languages).
+
+Your own language is missing?
 See how to add it [here](../customizing/cpd-parser-howto.html).
 
 CPD is included with PMD, which you can download [here](http://sourceforge.net/projects/pmd/files/pmd/).
@@ -250,6 +253,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * python
 * ruby
 * scala
+* swift
 
 
 ### Available formats
