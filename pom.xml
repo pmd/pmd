@@ -893,6 +893,7 @@
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
+        <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
