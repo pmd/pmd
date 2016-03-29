@@ -3,11 +3,10 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.naming;
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
 
 public class MethodNamingConventionsRule extends AbstractApexRule {
 
@@ -32,15 +31,6 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
     }
 
     private boolean isOverriddenMethod(ASTMethod node) {
-        ASTClassOrInterfaceBodyDeclaration declaration = node
-                .getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        List<ASTMarkerAnnotation> annotations = declaration.findDescendantsOfType(ASTMarkerAnnotation.class);
-        for (ASTMarkerAnnotation ann : annotations) {
-            ASTName name = ann.getFirstChildOfType(ASTName.class);
-            if (name != null && name.hasImageEqualTo("Override")) {
-                return true;
-            }
-        }
-        return false;
+    	return node.getNode().getModifiers().has(OVERRIDE);
     }
 }
