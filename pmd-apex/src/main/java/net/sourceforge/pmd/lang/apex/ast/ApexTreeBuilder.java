@@ -107,8 +107,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(BinaryExpression.class, ASTBinaryExpression.class);
         register(BindExpressions.class, ASTBindExpressions.class);
         register(BlockStatement.class, ASTBlockStatement.class);
-        register(BreakStatement.class, ASTBreakStatement.class);
         register(BooleanExpression.class, ASTBooleanExpression.class);
+        register(BreakStatement.class, ASTBreakStatement.class);
         register(BridgeMethodCreator.class, ASTBridgeMethodCreator.class);
         register(CatchBlockStatement.class, ASTCatchBlockStatement.class);
         register(ClassRefExpression.class, ASTClassRefExpression.class);
