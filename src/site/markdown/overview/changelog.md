@@ -4,6 +4,8 @@
 
 **New Supported Languages:**
 
+*   CPD supports now Swift (see [PR#33](https://github.com/adangel/pmd/pull/33)).
+
 **Feature Request and Improvements:**
 
 *   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
@@ -20,6 +22,7 @@
 *   [#30](https://github.com/adangel/pmd/pull/30): Removed file filter for files that are explicitly specified on the CPD command line using the '--files' command line option.
 *   [#31](https://github.com/adangel/pmd/pull/31): Added file encoding detection to CPD.
 *   [#32](https://github.com/adangel/pmd/pull/32): Extended Objective-C grammar to accept UTF-8 escapes (\uXXXX) in string literals.
+*   [#33](https://github.com/adangel/pmd/pull/33): Added support for Swift to CPD.
 *   [#79](https://github.com/pmd/pmd/pull/79): do not flag public static void main(String[]) as UseVarargs; ignore @Override for UseVarargs
 *   [#80](https://github.com/pmd/pmd/pull/80): Update mvn-plugin.md
 *   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer

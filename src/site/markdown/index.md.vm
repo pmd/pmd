@@ -5,7 +5,7 @@
 Welcome to PMD
 ==============
 
-PMD scans Java source code and looks for potential problems like:
+PMD scans source code in Java and other languages and looks for potential problems like:
 
 *   Possible bugs - empty try/catch/finally/switch statements
 *   Dead code - unused local variables, parameters and private methods
