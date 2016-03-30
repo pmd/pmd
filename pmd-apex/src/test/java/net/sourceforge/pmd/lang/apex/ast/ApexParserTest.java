@@ -27,8 +27,8 @@ public class ApexParserTest {
     public void understandsSimpleFile() {
 
         // Setup
-        String code = "public class SimpleClass {\n"
-                + "    public void methodWithManyParams(String a, String b, String c, String d, String e, String f, String g) {\n"
+        String code = "@isTest\n public class SimpleClass {\n"
+                + "    @isTest\n public static void testAnything() {\n"
                 + "        \n" + "    }\n" + "}";
 
         // Exercise

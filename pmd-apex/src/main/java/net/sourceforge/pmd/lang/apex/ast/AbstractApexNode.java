@@ -14,7 +14,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
     protected final T node;
 
     public AbstractApexNode(T node) {
-        super(node.getDefiningType().hashCode());
+        super(node.getClass().hashCode());
         this.node = node;
     }
 

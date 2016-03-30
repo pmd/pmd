@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import apex.jorje.semantic.ast.AstNode;
-import apex.jorje.semantic.ast.compilation.AnonymousClass;
 import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserClassMethods;
@@ -100,8 +99,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends ApexNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
     static {
-        register(Annotation.class, ASTAnnotation.class);
-        register(AnonymousClass.class, ASTAnonymousClass.class);
+    	register(Annotation.class, ASTAnnotation.class);
+    	register(AnnotationParameter.class, ASTAnnotationParameter.class);
         register(ArrayLoadExpression.class, ASTArrayLoadExpression.class);
         register(ArrayStoreExpression.class, ASTArrayStoreExpression.class);
         register(AssignmentExpression.class, ASTAssignmentExpression.class);
@@ -249,11 +248,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
             build(node);
             return false;
         }
-    }
-
-    @Override
-    public boolean visit(AnonymousClass node, AdditionalPassScope scope) {
-        return visit(node);
     }
 
     @Override
