@@ -113,12 +113,17 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
+<<<<<<< HEAD
         	if(element instanceof ASTUserClass) {
         		visit((ASTUserClass) element, ctx);
         	}
         	else if(element instanceof ASTUserInterface) {
         		visit((ASTUserInterface) element, ctx);
         	}
+=======
+        	ASTUserClass node = (ASTUserClass) element;
+            visit(node, ctx);
+>>>>>>> branch 'master' of https://github.com/Up2Go/pmd.git
         }
     }
 
@@ -265,8 +270,7 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
 	@Override
 	public Object visit(ASTAnnotation node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+		return visit((ApexNode<?>) node, data);
 	}
 
 	@Override

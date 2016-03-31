@@ -39,13 +39,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 
     @Override
     public int getBeginLine() {
-        // TODO: figure out the correct line
-        return 1;
-    }
-
-    @Override
-    public int getEndLine() {
-        try {
+    	try {
             Loc loc = node.getLoc();
             if (loc instanceof RealLoc) {
                 return ((RealLoc) loc).line;
@@ -55,10 +49,16 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
             // really existing in source code
         }
 
-        return 1;
-
+    	return 1;
+    }
+    
+// TODO: figure out the correct line
+    @Override
+    public int getEndLine() {
+        return getBeginLine();
     }
 
+// TODO: figure out the correct column
     @Override
     public int getBeginColumn() {
         try {
@@ -71,10 +71,10 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
             // really existing in source code
         }
 
-        // TODO: figure out the correct column
         return 1;
     }
 
+// TODO: figure out the correct column
     @Override
     public int getEndColumn() {
         try {
