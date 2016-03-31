@@ -5,20 +5,26 @@ package net.sourceforge.pmd.lang.apex.rule.naming;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
 
     @Override
-    public Object visit(ASTCompilation node, Object data) {
-        List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
+    public Object visit(ASTUserClass node, Object data) {
+        String className = node.getImage();
+        
+    	List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
+        
         for (ASTMethod m : methods) {
-            if (m.hasImageEqualTo(node.getImage())) {
+        	String methodName = m.getImage();
+        	
+            if (!m.getNode().getMethodInfo().isConstructor() && methodName.equalsIgnoreCase(className)) {
                 addViolation(data, m);
             }
         }
+        
         return super.visit(node, data);
     }
 }

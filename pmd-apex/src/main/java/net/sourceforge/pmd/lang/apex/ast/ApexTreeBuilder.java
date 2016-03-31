@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import apex.jorje.semantic.ast.AstNode;
-import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserClassMethods;
 import apex.jorje.semantic.ast.compilation.UserEnum;
@@ -112,7 +111,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(BridgeMethodCreator.class, ASTBridgeMethodCreator.class);
         register(CatchBlockStatement.class, ASTCatchBlockStatement.class);
         register(ClassRefExpression.class, ASTClassRefExpression.class);
-        register(Compilation.class, ASTCompilation.class);
         register(ContinueStatement.class, ASTContinueStatement.class);
         register(DmlDeleteStatement.class, ASTDmlDeleteStatement.class);
         register(DmlInsertStatement.class, ASTDmlInsertStatement.class);

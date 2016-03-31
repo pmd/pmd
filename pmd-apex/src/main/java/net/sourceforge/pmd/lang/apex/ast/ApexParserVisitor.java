@@ -32,8 +32,6 @@ public interface ApexParserVisitor {
 
 	Object visit(ASTClassRefExpression node, Object data);
 
-	Object visit(ASTCompilation node, Object data);
-
 	Object visit(ASTConstructorPreambleStatement node, Object data);
 
 	Object visit(ASTContinueStatement node, Object data);

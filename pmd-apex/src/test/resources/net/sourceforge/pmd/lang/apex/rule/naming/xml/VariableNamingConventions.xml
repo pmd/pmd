@@ -42,7 +42,7 @@ method level, non-finals shouldn't have underscores
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- private void foo(Boolean foo, String bar, String foo_bar, Integer bar_foo) {
+ private void foo(boolean foo, String bar, String foo_bar, Integer bar_foo) {
  }
 }
      ]]></code>
@@ -54,7 +54,7 @@ constructor level, non-finals shouldn't have underscores
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
- private Foo(Boolean foo, String bar, String foo_bar, Integer bar_foo) {
+ private Foo(boolean foo, String bar, String foo_bar, Integer bar_foo) {
  }
 }
      ]]></code>

@@ -7,10 +7,9 @@ import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -41,9 +40,6 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
     private static final BooleanProperty CHECK_PARAMETERS_DESCRIPTOR = new BooleanProperty("checkParameters",
             "Check constructor and method parameter variables", true, 3.0f);
 
-    private static final BooleanProperty CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR = new BooleanProperty(
-            "checkNativeMethodParameters", "Check method parameter of native methods", true, 3.5f);
-
     private static final StringMultiProperty STATIC_PREFIXES_DESCRIPTOR = new StringMultiProperty("staticPrefix",
             "Static variable prefixes", new String[] { "" }, 4.0f, ',');
 
@@ -72,7 +68,6 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         definePropertyDescriptor(CHECK_MEMBERS_DESCRIPTOR);
         definePropertyDescriptor(CHECK_LOCALS_DESCRIPTOR);
         definePropertyDescriptor(CHECK_PARAMETERS_DESCRIPTOR);
-        definePropertyDescriptor(CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR);
         definePropertyDescriptor(STATIC_PREFIXES_DESCRIPTOR);
         definePropertyDescriptor(STATIC_SUFFIXES_DESCRIPTOR);
         definePropertyDescriptor(MEMBER_PREFIXES_DESCRIPTOR);
@@ -83,7 +78,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         definePropertyDescriptor(PARAMETER_SUFFIXES_DESCRIPTOR);
     }
 
-    public Object visit(ASTCompilation node, Object data) {
+    public Object visit(ASTUserClass node, Object data) {
         init();
         return super.visit(node, data);
     }
@@ -109,12 +104,6 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         boolean isStatic = node.getNode().getModifierInfo().has(STATIC);
         boolean isFinal = node.getNode().getModifierInfo().has(FINAL);
 
-        Node type = node.jjtGetParent().jjtGetParent().jjtGetParent();
-        // Anything from an interface is necessarily static and final
-        if (type instanceof ASTUserInterface) {
-            isStatic = true;
-            isFinal = true;
-        }
         return checkVariableDeclarators(isStatic ? staticPrefixes : memberPrefixes,
                 isStatic ? staticSuffixes : memberSuffixes, node, isStatic, isFinal, data);
     }

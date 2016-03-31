@@ -11,19 +11,9 @@ public class NamingRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-        addRule(RULESET, "AbstractNaming");
-        addRule(RULESET, "AvoidFieldNameMatchingMethodName");
-        addRule(RULESET, "AvoidFieldNameMatchingTypeName");
-        addRule(RULESET, "BooleanGetMethodName");
-        addRule(RULESET, "ClassNamingConventions");
-        addRule(RULESET, "LongVariable");
-        addRule(RULESET, "MethodNamingConventions");
-        addRule(RULESET, "MethodWithSameNameAsEnclosingClass");
-        addRule(RULESET, "MisleadingVariableName");
-        addRule(RULESET, "ShortMethodName");
-        addRule(RULESET, "ShortClassName");
-        addRule(RULESET, "ShortVariable");
-        addRule(RULESET, "SuspiciousConstantFieldName");
-        addRule(RULESET, "VariableNamingConventions");
+//		  addRule(RULESET, "ClassNamingConventions");
+//		  addRule(RULESET, "MethodNamingConventions");
+//		  addRule(RULESET, "VariableNamingConventions");
+		  addRule(RULESET, "MethodWithSameNameAsEnclosingClass");
     }
 }

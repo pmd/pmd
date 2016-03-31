@@ -7,7 +7,7 @@ bad
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- int Foo(double x) {}
+ Integer Foo(double x) {}
 }
      ]]></code>
     </test-code>

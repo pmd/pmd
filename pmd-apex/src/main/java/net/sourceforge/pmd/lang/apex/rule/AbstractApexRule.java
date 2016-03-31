@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTBridgeMethodCreator;
 import net.sourceforge.pmd.lang.apex.ast.ASTCatchBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTClassRefExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
 import net.sourceforge.pmd.lang.apex.ast.ASTConstructorPreambleStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -32,6 +31,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
@@ -70,6 +73,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTSuperMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSuperVariableExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTTestNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTThisMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTThisVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTriggerVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
@@ -83,14 +90,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTExpressionStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTTestNode;
-import net.sourceforge.pmd.lang.apex.ast.ASTThisMethodCallExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTThisVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -114,8 +113,12 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            ASTUserClass node = (ASTUserClass) element;
-            visit(node, ctx);
+        	if(element instanceof ASTUserClass) {
+        		visit((ASTUserClass) element, ctx);
+        	}
+        	else if(element instanceof ASTUserInterface) {
+        		visit((ASTUserInterface) element, ctx);
+        	}
         }
     }
 
@@ -222,11 +225,6 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
     @Override
     public Object visit(ASTForEachStatement node, Object data) {
-        return visit((ApexNode<?>) node, data);
-    }
-
-    @Override
-    public Object visit(ASTCompilation node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
 
