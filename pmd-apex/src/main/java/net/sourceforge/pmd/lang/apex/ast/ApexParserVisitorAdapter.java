@@ -147,8 +147,7 @@ public class ApexParserVisitorAdapter implements ApexParserVisitor {
 
 	@Override
 	public Object visit(ASTAnnotation node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+		return visit((ApexNode<?>) node, data);
 	}
 
 	@Override

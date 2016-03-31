@@ -114,7 +114,7 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            ASTUserClass node = (ASTUserClass) element;
+        	ASTUserClass node = (ASTUserClass) element;
             visit(node, ctx);
         }
     }
@@ -267,8 +267,7 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
 	@Override
 	public Object visit(ASTAnnotation node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
+		return visit((ApexNode<?>) node, data);
 	}
 
 	@Override
