@@ -18,9 +18,5 @@ public class CodesizeRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ExcessiveMethodLength");
 
         addRule(RULESET, "StdCyclomaticComplexity");
-
-        addRule(RULESET, "NcssMethodCount");
-        addRule(RULESET, "NcssTypeCount");
-        addRule(RULESET, "NPathComplexity");
     }
 }
