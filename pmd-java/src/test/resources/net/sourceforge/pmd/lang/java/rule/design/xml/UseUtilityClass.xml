@@ -212,4 +212,27 @@ public class MyException extends RuntimeException {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1467 UseUtilityClass can't correctly check functions with multiple annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AccountFragment extends Fragment {
+
+  public static AccountFragment newInstance() {
+    AccountFragment instance = new AccountFragment();
+    //OTHER STUFF
+    return instance;
+  }
+
+  @Nullable
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.mylayout, container, false);
+  }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>
