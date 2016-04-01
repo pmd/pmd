@@ -168,5 +168,34 @@ public class Person {	// this is more manageable
    ]]>
       </example>
 	</rule>
+	
+	<rule name="ExcessivePublicCount"
+    since="1.04"
+    message="This class has a bunch of public methods and attributes"
+    class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessivePublicCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessivePublicCount">
+    <description>
+Classes with large numbers of public methods and attributes require disproportionate testing efforts
+since combinational side effects grow rapidly and increase risk. Refactoring these classes into
+smaller ones not only increases testability and reliability but also allows new variations to be
+developed easily.
+    </description>
+    <priority>3</priority>
+    <example>
+    <![CDATA[
+public class Foo {
+	public String value;
+	public Bar something;
+	public Variable var;
+ // [... more more public attributes ...]
+ 
+	public void doWork() {}
+	public void doMoreWork() {}
+	public void doWorkAgain() {}
+ // [... more more public methods ...]
+}
+    ]]>
+    </example>
+    </rule>
 
 </ruleset>

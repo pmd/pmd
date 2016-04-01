@@ -16,6 +16,7 @@ public class CodesizeRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ExcessiveClassLength");
         addRule(RULESET, "ExcessiveParameterList");
         addRule(RULESET, "ExcessiveMethodLength");
+        addRule(RULESET, "ExcessivePublicCount");
 
         addRule(RULESET, "StdCyclomaticComplexity");
     }
