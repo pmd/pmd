@@ -32,10 +32,7 @@ public class UseUtilityClassRule extends AbstractJavaRule {
                 if (p.jjtGetNumChildren() == 0) {
                     continue;
                 }
-                Node n = p.jjtGetChild(0);
-                if (n instanceof ASTAnnotation) {
-                    n = p.jjtGetChild(1);
-                }
+                Node n = skipAnnotations(p);
                 if (n instanceof ASTFieldDeclaration) {
                     if (!((ASTFieldDeclaration) n).isStatic()) {
                         isOK = true;
@@ -73,6 +70,15 @@ public class UseUtilityClassRule extends AbstractJavaRule {
             }
         }
         return super.visit(decl, data);
+    }
+
+    private Node skipAnnotations(Node p) {
+        int index = 0;
+        Node n = p.jjtGetChild(index++);
+        while (n instanceof ASTAnnotation && index < p.jjtGetNumChildren()) {
+            n = p.jjtGetChild(index++);
+        }
+        return n;
     }
 
     private boolean isExceptionType(ASTClassOrInterfaceDeclaration parent) {

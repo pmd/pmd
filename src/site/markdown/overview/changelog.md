@@ -62,6 +62,8 @@
     *   [#1452](https://sourceforge.net/p/pmd/bugs/1452/): ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule
 *   java-design/UseNotifyAllInsteadOfNotify
     *   [#1438](https://sourceforge.net/p/pmd/bugs/1438/): UseNotifyAllInsteadOfNotify gives false positive
+*   java-design/UseUtilityClass:
+    *   [#1467](https://sourceforge.net/p/pmd/bugs/1467/): UseUtilityClass can't correctly check functions with multiple annotations
 *   java-finalizers/AvoidCallingFinalize
     *   [#1440](https://sourceforge.net/p/pmd/bugs/1440/): NPE in AvoidCallingFinalize
 *   java-imports/UnnecessaryFullyQualifiedName
