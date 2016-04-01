@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.codesize;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
-import net.sourceforge.pmd.lang.apex.ast.ASTConstructorPreambleStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
@@ -80,13 +78,68 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
         definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
     }
-
+    
     @Override
-    public Object visit(ASTCompilation node, Object data) {
-        reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
+    public Object visit(ASTUserClass node, Object data) {
+    	reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
         showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
         showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
+    	entryStack.push(new Entry(node));
         super.visit(node, data);
+        if (showClassesComplexity) {
+            Entry classEntry = entryStack.pop();
+            if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
+                addViolation(data, node, new String[] { 
+                		"class", 
+                		node.getImage(),
+                        classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
+            }
+        }
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTUserInterface node, Object data) {
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTUserEnum node, Object data) {
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry classEntry = entryStack.pop();
+        if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
+            addViolation(data, node, new String[] { 
+            		"class", 
+            		node.getImage(),
+                    classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')' });
+        }
+        return data;
+    }
+    
+    @Override
+    public Object visit(ASTMethod node, Object data) {
+        if(!node.getImage().matches("<clinit>|<init>|clone")) {
+	    	entryStack.push(new Entry(node));
+	        super.visit(node, data);
+	        Entry methodEntry = entryStack.pop();
+	        int methodDecisionPoints = methodEntry.decisionPoints;
+	        Entry classEntry = entryStack.peek();
+	        classEntry.methodCount++;
+	        classEntry.bumpDecisionPoints(methodDecisionPoints);
+	
+	        if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+	            classEntry.highestDecisionPoints = methodDecisionPoints;
+	        }
+	
+	        if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
+	            String methodType = (node.getNode().getMethodInfo().isConstructor()) ? "constructor" : "method";
+	        	addViolation(data, node, new String[] { 
+	            		methodType, 
+	            		node.getImage(), 
+	            		String.valueOf(methodEntry.decisionPoints) });
+	        }
+        }
         return data;
     }
 
@@ -141,75 +194,6 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTBooleanExpression node, Object data) {
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTUserInterface node, Object data) {
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTUserClass node, Object data) {
-        entryStack.push(new Entry(node));
-        super.visit(node, data);
-        if (showClassesComplexity) {
-            Entry classEntry = entryStack.pop();
-            if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                addViolation(data, node, new String[] { "class", node.getImage(),
-                        classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
-            }
-        }
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTMethod node, Object data) {
-        entryStack.push(new Entry(node));
-        super.visit(node, data);
-        Entry methodEntry = entryStack.pop();
-        int methodDecisionPoints = methodEntry.decisionPoints;
-        Entry classEntry = entryStack.peek();
-        classEntry.methodCount++;
-        classEntry.bumpDecisionPoints(methodDecisionPoints);
-
-        if (methodDecisionPoints > classEntry.highestDecisionPoints) {
-            classEntry.highestDecisionPoints = methodDecisionPoints;
-        }
-
-        if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
-            addViolation(data, node, new String[] { "method", "", String.valueOf(methodEntry.decisionPoints) });
-        }
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTUserEnum node, Object data) {
-        entryStack.push(new Entry(node));
-        super.visit(node, data);
-        Entry classEntry = entryStack.pop();
-        if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-            addViolation(data, node, new String[] { "class", node.getImage(),
-                    classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')' });
-        }
-        return data;
-    }
-
-    public Object visit(ASTConstructorPreambleStatement node, Object data) {
-        entryStack.push(new Entry(node));
-        super.visit(node, data);
-        Entry constructorEntry = entryStack.pop();
-        int constructorDecisionPointCount = constructorEntry.decisionPoints;
-        Entry classEntry = entryStack.peek();
-        classEntry.methodCount++;
-        classEntry.decisionPoints += constructorDecisionPointCount;
-        if (constructorDecisionPointCount > classEntry.highestDecisionPoints) {
-            classEntry.highestDecisionPoints = constructorDecisionPointCount;
-        }
-        if (showMethodsComplexity && constructorEntry.decisionPoints >= reportLevel) {
-            addViolation(data, node, new String[] { "constructor", classEntry.node.getImage(),
-                    String.valueOf(constructorDecisionPointCount) });
-        }
         return data;
     }
 }

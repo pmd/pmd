@@ -58,25 +58,37 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-    
+	
 	<test-code>
-		<description>Another Simple method</description>
-		<rule-property name="reportLevel">10</rule-property>
+		<description>Simple enum</description>
+		<rule-property name="reportLevel">1</rule-property>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-public class Foo {
-	public void foo() {}
+public enum Day {
+    SUNDAY, MONDAY, TUESDAY, WEDNESDAY,
+    THURSDAY, FRIDAY, SATURDAY 
 }
 		]]></code>
 	</test-code>
 	
 	<test-code>
+		<description>Simple interface</description>
+		<rule-property name="reportLevel">1</rule-property>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public interface Foo {
+	void fuu();
+}
+		]]></code>
+	</test-code>
+    
+	<test-code>
 		<description>Complicated method</description>
-		<rule-property name="reportLevel">10</rule-property>
+		<rule-property name="reportLevel">1</rule-property>
 		<expected-problems>2</expected-problems>
 		<expected-messages>
-		    <message>The class 'Foo' has a Standard Cyclomatic Complexity of 12 (Highest = 11).</message>
-		    <message>The method 'example' has a Standard Cyclomatic Complexity of 11.</message>
+		    <message>The class 'Foo' has a Standard Cyclomatic Complexity of 9 (Highest = 8).</message>
+		    <message>The method 'example' has a Standard Cyclomatic Complexity of 8.</message>
 		</expected-messages>
 		<code-ref id="basic-violation"/>
 	</test-code>
@@ -97,7 +109,8 @@ public class Foo {
 	</test-code>
     
 	<test-code>
-		<description>Testing new parameter showClassMethods</description>
+		<description>Testing new parameter showClassesComplexity</description>
+		<rule-property name="reportLevel">1</rule-property>
 		<rule-property name="showClassesComplexity">false</rule-property>
 		<expected-problems>1</expected-problems>
 		<code-ref id="basic-violation"/>
@@ -105,6 +118,7 @@ public class Foo {
 	  
 	<test-code>
 		<description>Testing new parameter showMethodsMethods</description>
+		<rule-property name="reportLevel">1</rule-property>
 		<rule-property name="showMethodsComplexity">false</rule-property>
 		<expected-problems>1</expected-problems>
 		<code-ref id="basic-violation"/>
@@ -112,6 +126,7 @@ public class Foo {
 	  
 	<test-code>
 		<description>Testing default value of showClassMethods and showClassesComplexity</description>
+		<rule-property name="reportLevel">1</rule-property>
 		<expected-problems>2</expected-problems>
 		<code-ref id="basic-violation"/>
 	</test-code>
@@ -146,26 +161,6 @@ public class Test {
 		<rule-property name="reportLevel">1</rule-property>
 		<expected-problems>0</expected-problems>
 		<code-ref id="constructor-violation"/>
-	</test-code>
-    
-	<test-code reinitializeRule="true">
-		<description>#985 Suppressed methods shouldn't affect avg CyclomaticComplexity</description>
-		<rule-property name="reportLevel">2</rule-property>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Test {
-	@SuppressWarnings("PMD.StdCyclomaticComplexity")
-	public Test() {
-		if (a == 1) {
-			if (b == 2) {
-				System.out.println("b");
-			} else if (b == 1) {
-			}
-		} else {
-		}
-	}
-}
-		]]></code>
 	</test-code>
     
 </test-data>

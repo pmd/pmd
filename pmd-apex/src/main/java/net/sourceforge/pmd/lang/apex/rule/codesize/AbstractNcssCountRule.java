@@ -39,11 +39,11 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     }
 
     @Override
-    public Object visit(ApexNode node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         int numNodes = 0;
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            ApexNode n = (ApexNode) node.jjtGetChild(i);
+        	ApexNode<?> n = (ApexNode<?>) node.jjtGetChild(i);
             Integer treeSize = (Integer) n.jjtAccept(this, data);
             numNodes += treeSize.intValue();
         }
@@ -75,7 +75,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
         Integer nodeCount = null;
         int lineCount = 0;
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            nodeCount = (Integer) ((ApexNode) node.jjtGetChild(i)).jjtAccept(this, data);
+            nodeCount = (Integer) ((ApexNode<?>) node.jjtGetChild(i)).jjtAccept(this, data);
             lineCount += nodeCount.intValue();
         }
         return ++lineCount;
