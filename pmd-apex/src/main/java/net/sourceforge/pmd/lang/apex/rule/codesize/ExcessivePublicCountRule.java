@@ -11,7 +11,6 @@ import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.AccessNode;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
@@ -36,14 +35,13 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
     }
 
     public Object visit(ASTMethod node, Object data) {
-        if (node.getNode().getModifiers().has(PUBLIC)) {
+        if (node.getNode().getModifiers().has(PUBLIC) && !node.getImage().matches("<clinit>|<init>|clone")) {
             return NumericConstants.ONE;
         }
         return NumericConstants.ZERO;
     }
 
     public Object visit(ASTFieldDeclarationStatements node, Object data) {
-    	System.out.println(node.getNode().getModifiers());
         if (node.getNode().getModifiers().has(PUBLIC) && !node.getNode().getModifiers().has(STATIC)) {
         	return NumericConstants.ONE;
         } 

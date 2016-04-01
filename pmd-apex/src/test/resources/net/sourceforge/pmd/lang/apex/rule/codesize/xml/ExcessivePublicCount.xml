@@ -8,7 +8,7 @@
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
-	public int foo;
+	public Integer foo;
 }
 		]]></code>
 	</test-code>
@@ -19,10 +19,10 @@ public class Foo {
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
-	public int foo;
-	public int bif;
-	public int baz;
-	public int bof;
+	public Integer foo;
+	public Integer bif;
+	public Integer baz;
+	public Integer bof;
 }
 		]]></code>
 	</test-code>
@@ -33,19 +33,19 @@ public class Foo {
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
-	public static final int foo;
-	public static final int foo1;
-	public static final int foo2;
-	public static final int foo3;
+	public static final Integer foo;
+	public static final Integer foo1;
+	public static final Integer foo2;
+	public static final Integer foo3;
 }
 		]]></code>
 	</test-code>
 	
 	<code-fragment id="3 public methods"><![CDATA[
 public class Foo {
-	public int foo1() {return 1;}
-	public int foo2() {return 1;}
-	public int foo3() {return 1;}
+	public Integer foo1() {return 1;}
+	public Integer foo2() {return 1;}
+	public Integer foo3() {return 1;}
 }
 	]]></code-fragment>
 	
@@ -69,10 +69,10 @@ public class Foo {
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
-	private static final int foo;
-	private static final int foo1;
-	private static final int foo2;
-	private static final int foo3;
+	private static final Integer foo;
+	private static final Integer foo1;
+	private static final Integer foo2;
+	private static final Integer foo3;
 }
 		]]></code>
 	</test-code>
@@ -83,9 +83,9 @@ public class Foo {
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
-	private int foo1() {return 1;}
-	private int foo2() {return 1;}
-	private int foo3() {return 1;}
+	private Integer foo1() {return 1;}
+	private Integer foo2() {return 1;}
+	private Integer foo3() {return 1;}
 }
 		]]></code>
 	</test-code>

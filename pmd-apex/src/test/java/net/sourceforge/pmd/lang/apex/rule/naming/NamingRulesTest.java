@@ -11,9 +11,9 @@ public class NamingRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-//		  addRule(RULESET, "ClassNamingConventions");
-//		  addRule(RULESET, "MethodNamingConventions");
-//		  addRule(RULESET, "VariableNamingConventions");
+		  addRule(RULESET, "ClassNamingConventions");
+		  addRule(RULESET, "MethodNamingConventions");
+		  addRule(RULESET, "VariableNamingConventions");
 		  addRule(RULESET, "MethodWithSameNameAsEnclosingClass");
     }
 }

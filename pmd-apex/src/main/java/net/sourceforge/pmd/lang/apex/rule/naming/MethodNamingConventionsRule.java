@@ -3,14 +3,14 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.naming;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
 
 public class MethodNamingConventionsRule extends AbstractApexRule {
 
-    public Object visit(ASTCompilation node, Object data) {
+    public Object visit(ASTUserClass node, Object data) {
         return super.visit(node, data);
     }
 

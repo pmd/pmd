@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.codesize;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTCompilation;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveLengthRule;
 
 /**
@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveLengthRule;
 public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
 
     public ExcessiveClassLengthRule() {
-        super(ASTCompilation.class);
+        super(ASTUserClass.class);
         setProperty(MINIMUM_DESCRIPTOR, 1000d);
     }
 }
