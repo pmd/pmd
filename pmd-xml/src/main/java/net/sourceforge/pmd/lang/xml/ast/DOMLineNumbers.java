@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.lang.xml.ast;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,8 +21,8 @@ import org.w3c.dom.ProcessingInstruction;
  */
 class DOMLineNumbers {
     private final Document document;
-    private final String xmlString;
-    private Map<Integer, Integer> lines;
+    private String xmlString;
+    private List<Integer> lines;
 
     public DOMLineNumbers(Document document, String xmlString) {
         this.document = document;
@@ -123,47 +123,62 @@ class DOMLineNumbers {
     }
     private void setBeginLocation(Node n, int index) {
         if (n != null) {
-            n.setUserData(XmlNode.BEGIN_LINE, toLine(index), null);
-            n.setUserData(XmlNode.BEGIN_COLUMN, toColumn(index), null);
+            int line = toLine(index);
+            n.setUserData(XmlNode.BEGIN_LINE, line, null);
+            n.setUserData(XmlNode.BEGIN_COLUMN, toColumn(line, index), null);
         }
     }
     private void setEndLocation(Node n, int index) {
         if (n != null) {
-            n.setUserData(XmlNode.END_LINE, toLine(index), null);
-            n.setUserData(XmlNode.END_COLUMN, toColumn(index), null);
+            int line = toLine(index);
+            n.setUserData(XmlNode.END_LINE, line, null);
+            n.setUserData(XmlNode.END_COLUMN, toColumn(line, index), null);
         }
     }
     
+    /**
+     * Calculates a list with the file offsets for each line.
+     */
     private void calculateLinesMap() {
-        lines = new TreeMap<>();
+        lines = new ArrayList<>();
+
         int index = -1;
         int count = StringUtils.countMatches(xmlString, "\n");
         for (int line = 1; line <= count; line++) {
-            lines.put(line, index + 1);
-            index = xmlString.indexOf("\n", index + 1);
+            lines.add(index + 1);
+            index = xmlString.indexOf("\n", index + 1); // fast forward till end of current line
         }
-        lines.put(count + 1, index + 1);
+        lines.add(index + 1);
     }
-    
+
     private int toLine(int index) {
-        int line = 1;
-        for (Map.Entry<Integer, Integer> e : lines.entrySet()) {
-            line = e.getKey();
-            if (e.getValue() > index) {
-                line--;
-                break;
+        int low = 0;
+        int high = lines.size() - 1;
+
+        // binary search the best match
+        while (low <= high) {
+            int middle = (low + high) / 2;
+            int middleStart = lines.get(middle);
+            if (middleStart == index) {
+                return middle + 1; // found
+            }
+
+            if (middleStart > index) {
+                high = middle - 1;
+            } else {
+                low = middle + 1;
             }
         }
-        return line;
+
+        return low; // not found or last checked line, which is the best match;
     }
-    private int toColumn(int index) {
-        int line = toLine(index);
-        Integer lineStart = lines.get(line);
+
+    private int toColumn(int line, int index) {
+        Integer lineStart = lines.get(line - 1);
         if (lineStart == null) {
             lineStart = lines.get(lines.size() - 1);
         }
         int column = index - lineStart;
         return column + 1;
     }
-
 }
