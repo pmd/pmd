@@ -78,21 +78,18 @@
 		</dependency>
 		
 		 <dependency>
-	        <groupId>com.salesforce.ide.apex</groupId>
+	        <groupId>apex</groupId>
 	        <artifactId>apex-jorje-ide</artifactId>
 	        <version>1.0-sfdc-187-SNAPSHOT</version>
-	        <scope>system</scope>
-	        <systemPath>${basedir}/lib/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT.jar</systemPath>
 	    </dependency>
 	    
 		<dependency>
-	        <groupId>com.salesforce.ide.apex</groupId>
-	        <artifactId>apex-jorje-sematic-tests</artifactId>
+	        <groupId>apex</groupId>
+	        <artifactId>apex-jorje-semantic</artifactId>
 	        <version>1.0-sfdc-187-SNAPSHOT</version>
-	        <scope>system</scope>
-	        <systemPath>${basedir}/lib/apex-jorje-semantic-1.0-sfdc-187-SNAPSHOT-tests.jar</systemPath>
+            <classifier>tests</classifier>
 	    </dependency>
-	    	    
+
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>antlr-complete</artifactId>
@@ -119,6 +116,13 @@
 
 	</dependencies>
 
+    <repositories>
+        <repository>
+            <id>local-apex-repo</id>
+            <url>file://${basedir}/repo</url>
+            </repository>
+    </repositories>
+
     <profiles>
         <profile>
             <id>designer</id>
@@ -130,10 +134,6 @@
                         <version>1.4.0</version>
                         <configuration>
                             <mainClass>net.sourceforge.pmd.util.designer.Designer</mainClass>
-                            <additionalClasspathElements>
-                                <additionalClasspathElement>${basedir}/lib/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT.jar</additionalClasspathElement>
-                                <additionalClasspathElement>${basedir}/lib/apex-jorje-semantic-1.0-sfdc-187-SNAPSHOT-tests.jar</additionalClasspathElement>
-                            </additionalClasspathElements>
                             <includePluginDependencies>true</includePluginDependencies>
                         </configuration>
                         <dependencies>
