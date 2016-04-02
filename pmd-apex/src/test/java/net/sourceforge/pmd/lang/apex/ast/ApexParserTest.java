@@ -41,6 +41,45 @@ public class ApexParserTest {
     }
 
     @Test
+    public void verifyLineColumNumbers() {
+        String code = "public class SimpleClass {\n" // line 1
+                    + "    public void method1() {\n" // line 2
+                    + "        System.out.println(\"abc\");\n" // line 3
+                    + "        // this is a comment\n" // line 4
+                    + "    }\n" // line 5
+                    + "}\n"; // line 6
+
+        ApexNode<Compilation> rootNode = parse(code);
+        dumpNode(rootNode);
+
+        assertPosition(rootNode, 1, 1, 6, 2); // whole source code
+        // Modifier of the class - doesn't work. This node just sees the identifier ("SimpleClass")
+        //assertPosition(rootNode.jjtGetChild(0), 1, 1, 1, 6); // "public"
+
+        // "method1" - starts with identifier until end of source because there
+        // is no next sibling
+        Node method1 = rootNode.jjtGetChild(1);
+        assertPosition(method1, 2, 17, 6, 2);
+        // Modifier of method1 - doesn't work. This node just sees the identifier ("method1")
+        //assertPosition(method1.jjtGetChild(0), 2, 17, 2, 20); // "public" for method1
+
+        // BlockStatement - the whole method body
+        Node blockStatement = method1.jjtGetChild(1);
+        assertPosition(blockStatement, 2, 27, 6, 2);
+
+        // the expression ("System.out...") - goes until end of file (no next sibling)
+        Node expressionStatement = blockStatement.jjtGetChild(0);
+        assertPosition(expressionStatement, 3, 9, 6, 2);
+    }
+
+    private static void assertPosition(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
+        assertEquals("Wrong begin line", beginLine, node.getBeginLine());
+        assertEquals("Wrong begin column", beginColumn, node.getBeginColumn());
+        assertEquals("Wrong end line", endLine, node.getEndLine());
+        assertEquals("Wrong end column", endColumn, node.getEndColumn());
+    }
+
+    @Test
     public void parsesRealWorldClasses() {
         try {
             File directory = new File("src/test/resources");

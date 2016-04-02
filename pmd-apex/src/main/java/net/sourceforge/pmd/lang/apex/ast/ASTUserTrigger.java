@@ -4,9 +4,8 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.compilation.UserTrigger;
-import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTUserTrigger extends AbstractApexNode<UserTrigger> implements RootNode {
+public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
 
     public ASTUserTrigger(UserTrigger userTrigger) {
         super(userTrigger);

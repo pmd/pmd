@@ -4,9 +4,8 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.compilation.AnonymousClass;
-import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTAnonymousClass extends AbstractApexNode<AnonymousClass> implements RootNode {
+public class ASTAnonymousClass extends ApexRootNode<AnonymousClass> {
 
     public ASTAnonymousClass(AnonymousClass anonymousClass) {
         super(anonymousClass);

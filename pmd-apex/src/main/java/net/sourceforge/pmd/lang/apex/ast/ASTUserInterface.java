@@ -1,12 +1,14 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Field;
 
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserInterface;
-import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTUserInterface extends AbstractApexNode<UserInterface> implements RootNode {
+public class ASTUserInterface extends ApexRootNode<UserInterface> {
 
     public ASTUserInterface(UserInterface userInterface) {
         super(userInterface);

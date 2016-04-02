@@ -7,9 +7,8 @@ import java.lang.reflect.Field;
 
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserClass;
-import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTUserClass extends AbstractApexNode<UserClass> implements RootNode {
+public class ASTUserClass extends ApexRootNode<UserClass> {
 
     public ASTUserClass(UserClass userClass) {
         super(userClass);

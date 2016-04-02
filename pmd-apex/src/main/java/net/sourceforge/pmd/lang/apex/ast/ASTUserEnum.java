@@ -4,9 +4,8 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.compilation.UserEnum;
-import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class ASTUserEnum extends AbstractApexNode<UserEnum> implements RootNode {
+public class ASTUserEnum extends ApexRootNode<UserEnum> {
 
     public ASTUserEnum(UserEnum userEnum) {
         super(userEnum);
