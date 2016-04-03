@@ -16,4 +16,9 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    @Override
+    public String getImage() {
+        return node.getLocalInfo().getName();
+    }
 }

@@ -145,17 +145,6 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-interface fields are tested
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public interface Foo {
-  Integer foo = 42;
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
 final non-statics need not be all caps
      ]]></description>
         <expected-problems>0</expected-problems>

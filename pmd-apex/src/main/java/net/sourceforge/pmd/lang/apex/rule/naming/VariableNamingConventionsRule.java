@@ -10,9 +10,10 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -83,6 +84,11 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         return super.visit(node, data);
     }
 
+    public Object visit(ASTUserInterface node, Object data) {
+        init();
+        return super.visit(node, data);
+    }
+
     protected void init() {
         checkMembers = getProperty(CHECK_MEMBERS_DESCRIPTOR);
         checkLocals = getProperty(CHECK_LOCALS_DESCRIPTOR);
@@ -101,56 +107,36 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         if (!checkMembers) {
             return data;
         }
-        boolean isStatic = node.getNode().getModifierInfo().has(STATIC);
-        boolean isFinal = node.getNode().getModifierInfo().has(FINAL);
+        boolean isStatic = node.getNode().getFieldInfo().getModifiers().has(STATIC);
+        boolean isFinal = node.getNode().getFieldInfo().getModifiers().has(FINAL);
 
-        return checkVariableDeclarators(isStatic ? staticPrefixes : memberPrefixes,
-                isStatic ? staticSuffixes : memberSuffixes, node, isStatic, isFinal, data);
+        return checkName(isStatic ? staticPrefixes : memberPrefixes, isStatic ? staticSuffixes : memberSuffixes, node,
+                isStatic, isFinal, data);
     }
 
     public Object visit(ASTVariableDeclaration node, Object data) {
 
-        boolean isFinal = node.getNode().getLocalInfo().getModifiers().has(FINAL);
         if (!checkLocals) {
             return data;
         }
-        return checkVariableDeclarators(localPrefixes, localSuffixes, node, false, isFinal, data);
+
+        boolean isFinal = node.getNode().getLocalInfo().getModifiers().has(FINAL);
+        return checkName(localPrefixes, localSuffixes, node, false, isFinal, data);
     }
 
     public Object visit(ASTParameter node, Object data) {
-
         if (!checkParameters) {
             return data;
         }
 
-        for (ASTParameter formalParameter : node.findChildrenOfType(ASTParameter.class)) {
-
-            boolean isFinal = formalParameter.getNode().getModifierInfo().has(FINAL);
-            for (ASTVariableDeclaration variableDeclaratorId : formalParameter
-                    .findChildrenOfType(ASTVariableDeclaration.class)) {
-                checkVariableDeclaratorId(parameterPrefixes, parameterSuffixes, node, false, isFinal,
-                        variableDeclaratorId, data);
-            }
-        }
-        return data;
+        boolean isFinal = node.getNode().getModifierInfo().has(FINAL);
+        return checkName(parameterPrefixes, parameterSuffixes, node, false, isFinal, data);
     }
 
-    private Object checkVariableDeclarators(String[] prefixes, String[] suffixes, Node root, boolean isStatic,
-            boolean isFinal, Object data) {
-        for (ASTVariableDeclaration variableDeclarator : root.findChildrenOfType(ASTVariableDeclaration.class)) {
-            for (ASTVariableDeclaration variableDeclaratorId : variableDeclarator
-                    .findChildrenOfType(ASTVariableDeclaration.class)) {
-                checkVariableDeclaratorId(prefixes, suffixes, root, isStatic, isFinal, variableDeclaratorId, data);
-            }
-        }
-        return data;
-    }
+    private Object checkName(String[] prefixes, String[] suffixes, ApexNode<?> node, boolean isStatic, boolean isFinal,
+            Object data) {
 
-    private Object checkVariableDeclaratorId(String[] prefixes, String[] suffixes, Node root, boolean isStatic,
-            boolean isFinal, ASTVariableDeclaration variableDeclaratorId, Object data) {
-
-        // Get the variable name
-        String varName = variableDeclaratorId.getImage();
+        String varName = node.getImage();
 
         // Skip serialVersionUID
         if (varName.equals("serialVersionUID")) {
@@ -160,7 +146,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         // Static finals should be uppercase
         if (isStatic && isFinal) {
             if (!varName.equals(varName.toUpperCase())) {
-                addViolationWithMessage(data, variableDeclaratorId,
+                addViolationWithMessage(data, node,
                         "Variables that are final and static should be all capitals, ''{0}'' is not all capitals.",
                         new Object[] { varName });
             }
@@ -169,12 +155,12 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
             String normalizedVarName = normalizeVariableName(varName, prefixes, suffixes);
 
             if (normalizedVarName.indexOf('_') >= 0) {
-                addViolationWithMessage(data, variableDeclaratorId,
+                addViolationWithMessage(data, node,
                         "Only variables that are final should contain underscores (except for underscores in standard prefix/suffix), ''{0}'' is not final.",
                         new Object[] { varName });
             }
             if (Character.isUpperCase(varName.charAt(0))) {
-                addViolationWithMessage(data, variableDeclaratorId,
+                addViolationWithMessage(data, node,
                         "Variables should start with a lowercase character, ''{0}'' starts with uppercase character.",
                         new Object[] { varName });
             }
