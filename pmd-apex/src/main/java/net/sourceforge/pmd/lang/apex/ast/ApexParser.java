@@ -76,15 +76,15 @@ public class ApexParser {
         public void visitEnd(UserClass node, AdditionalPassScope scope) {
             topLevel = node;
         }
-        
+
         @Override
         public void visitEnd(UserEnum node, AdditionalPassScope scope) {
-        	topLevel = node;
+            topLevel = node;
         }
-        
+
         @Override
         public void visitEnd(UserInterface node, AdditionalPassScope scope) {
-        	topLevel = node;
+            topLevel = node;
         }
     }
 }

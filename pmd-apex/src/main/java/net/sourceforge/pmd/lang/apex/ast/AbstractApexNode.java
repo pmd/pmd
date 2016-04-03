@@ -49,7 +49,8 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 
     @Override
     public int getEndLine() {
-        // Takes the begin line of the next sibling or the end line of the parent node
+        // Takes the begin line of the next sibling or the end line of the
+        // parent node
 
         Node nextSibling = getNextSiblingWithRealLoc();
         if (nextSibling != null) {
@@ -59,11 +60,12 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
         }
     }
 
-    @SuppressWarnings("unchecked") // all nodes are subclasses of AbstractApexNode
+    @SuppressWarnings("unchecked") // all nodes are subclasses of
+                                   // AbstractApexNode
     private Node getNextSiblingWithRealLoc() {
-        AbstractApexNode<? extends AstNode> nextSibling = (AbstractApexNode<? extends AstNode>)getNextSibling();
+        AbstractApexNode<? extends AstNode> nextSibling = (AbstractApexNode<? extends AstNode>) getNextSibling();
         while (nextSibling != null && !nextSibling.hasRealLoc()) {
-            nextSibling = (AbstractApexNode<? extends AstNode>)nextSibling.getNextSibling();
+            nextSibling = (AbstractApexNode<? extends AstNode>) nextSibling.getNextSibling();
         }
         return nextSibling;
     }
@@ -106,7 +108,8 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 
     @Override
     public int getEndColumn() {
-        // take the begin column of the next sibling or the end column of the parent
+        // take the begin column of the next sibling or the end column of the
+        // parent
 
         Node nextSibling = getNextSiblingWithRealLoc();
         if (nextSibling != null) {

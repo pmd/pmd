@@ -13,19 +13,14 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
 
     private int depth;
     private int depthLimit;
-    
-    private static final IntegerProperty PROBLEM_DEPTH_DESCRIPTOR = new IntegerProperty(
-    		"problemDepth", 
-    		"The if statement depth reporting threshold",
-    		1, 25,
-    		3,
-    		1.0f
-    		);
-    
+
+    private static final IntegerProperty PROBLEM_DEPTH_DESCRIPTOR = new IntegerProperty("problemDepth",
+            "The if statement depth reporting threshold", 1, 25, 3, 1.0f);
+
     public AvoidDeeplyNestedIfStmtsRule() {
-    	definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);
+        definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);
     }
-  
+
     public Object visit(ASTUserClass node, Object data) {
         depth = 0;
         depthLimit = getProperty(PROBLEM_DEPTH_DESCRIPTOR);
@@ -34,7 +29,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
 
     public Object visit(ASTIfBlockStatement node, Object data) {
         super.visit(node, data);
-        
+
         if (depth == depthLimit) {
             addViolation(data, node);
         }
@@ -44,7 +39,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
 
     public Object visit(ASTIfElseBlockStatement node, Object data) {
         depth++;
-        
+
         super.visit(node, data);
         if (depth == depthLimit) {
             addViolation(data, node);

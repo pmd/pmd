@@ -19,10 +19,12 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
     public int getBeginLine() {
         return 1;
     }
+
     @Override
     public int getBeginColumn() {
         return 1;
     }
+
     @Override
     public int getEndLine() {
         String code = node.getDefiningType().getCodeUnitDetails().getSource().getBody();
@@ -32,6 +34,7 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
         }
         return lineCount;
     }
+
     @Override
     public int getEndColumn() {
         String code = node.getDefiningType().getCodeUnitDetails().getSource().getBody();

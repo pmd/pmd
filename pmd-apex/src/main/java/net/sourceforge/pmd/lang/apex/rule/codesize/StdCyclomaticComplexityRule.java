@@ -49,13 +49,11 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
     private boolean showMethodsComplexity = true;
 
     protected static class Entry {
-        private Node node;
         private int decisionPoints = 1;
         public int highestDecisionPoints;
         public int methodCount;
 
         private Entry(Node node) {
-            this.node = node;
         }
 
         public void bumpDecisionPoints() {
@@ -78,20 +76,18 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
         definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
     }
-    
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
-    	reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
+        reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
         showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
         showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
-    	entryStack.push(new Entry(node));
+        entryStack.push(new Entry(node));
         super.visit(node, data);
         if (showClassesComplexity) {
             Entry classEntry = entryStack.pop();
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                addViolation(data, node, new String[] { 
-                		"class", 
-                		node.getImage(),
+                addViolation(data, node, new String[] { "class", node.getImage(),
                         classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
             }
         }
@@ -109,36 +105,32 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         super.visit(node, data);
         Entry classEntry = entryStack.pop();
         if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-            addViolation(data, node, new String[] { 
-            		"class", 
-            		node.getImage(),
+            addViolation(data, node, new String[] { "class", node.getImage(),
                     classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')' });
         }
         return data;
     }
-    
+
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if(!node.getImage().matches("<clinit>|<init>|clone")) {
-	    	entryStack.push(new Entry(node));
-	        super.visit(node, data);
-	        Entry methodEntry = entryStack.pop();
-	        int methodDecisionPoints = methodEntry.decisionPoints;
-	        Entry classEntry = entryStack.peek();
-	        classEntry.methodCount++;
-	        classEntry.bumpDecisionPoints(methodDecisionPoints);
-	
-	        if (methodDecisionPoints > classEntry.highestDecisionPoints) {
-	            classEntry.highestDecisionPoints = methodDecisionPoints;
-	        }
-	
-	        if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
-	            String methodType = (node.getNode().getMethodInfo().isConstructor()) ? "constructor" : "method";
-	        	addViolation(data, node, new String[] { 
-	            		methodType, 
-	            		node.getImage(), 
-	            		String.valueOf(methodEntry.decisionPoints) });
-	        }
+        if (!node.getImage().matches("<clinit>|<init>|clone")) {
+            entryStack.push(new Entry(node));
+            super.visit(node, data);
+            Entry methodEntry = entryStack.pop();
+            int methodDecisionPoints = methodEntry.decisionPoints;
+            Entry classEntry = entryStack.peek();
+            classEntry.methodCount++;
+            classEntry.bumpDecisionPoints(methodDecisionPoints);
+
+            if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+                classEntry.highestDecisionPoints = methodDecisionPoints;
+            }
+
+            if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
+                String methodType = (node.getNode().getMethodInfo().isConstructor()) ? "constructor" : "method";
+                addViolation(data, node,
+                        new String[] { methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints) });
+            }
         }
         return data;
     }

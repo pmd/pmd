@@ -16,7 +16,7 @@ public class ApexTokenizer extends AbstractTokenizer {
 
         // setting markers for 'ignorable string' in apex
         this.ignorableStmt = new ArrayList<>();
-        this.ignorableCharacter.add( ";" );
+        this.ignorableCharacter.add(";");
 
         // strings do indeed span multiple lines in apex
         this.spanMultipleLinesString = false;

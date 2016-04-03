@@ -14,17 +14,17 @@ public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
     @Override
     public Object visit(ASTUserClass node, Object data) {
         String className = node.getImage();
-        
-    	List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
-        
+
+        List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
+
         for (ASTMethod m : methods) {
-        	String methodName = m.getImage();
-        	
+            String methodName = m.getImage();
+
             if (!m.getNode().getMethodInfo().isConstructor() && methodName.equalsIgnoreCase(className)) {
                 addViolation(data, m);
             }
         }
-        
+
         return super.visit(node, data);
     }
 }

@@ -98,8 +98,8 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private static final Map<Class<? extends AstNode>, Constructor<? extends ApexNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
     static {
-    	register(Annotation.class, ASTAnnotation.class);
-    	register(AnnotationParameter.class, ASTAnnotationParameter.class);
+        register(Annotation.class, ASTAnnotation.class);
+        register(AnnotationParameter.class, ASTAnnotationParameter.class);
         register(ArrayLoadExpression.class, ASTArrayLoadExpression.class);
         register(ArrayStoreExpression.class, ASTArrayStoreExpression.class);
         register(AssignmentExpression.class, ASTAssignmentExpression.class);

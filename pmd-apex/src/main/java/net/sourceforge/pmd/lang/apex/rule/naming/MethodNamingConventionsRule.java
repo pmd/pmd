@@ -31,6 +31,6 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
     }
 
     private boolean isOverriddenMethod(ASTMethod node) {
-    	return node.getNode().getModifiers().has(OVERRIDE);
+        return node.getNode().getModifiers().has(OVERRIDE);
     }
 }
