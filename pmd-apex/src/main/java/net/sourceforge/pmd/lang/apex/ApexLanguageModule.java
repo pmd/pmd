@@ -13,6 +13,6 @@ public class ApexLanguageModule extends BaseLanguageModule {
 
     public ApexLanguageModule() {
         super(NAME, null, TERSE_NAME, ApexRuleChainVisitor.class, "cls");
-        addVersion("", new ApexHandler(), true);
+        addVersion("35", new ApexHandler(), true);
     }
 }
