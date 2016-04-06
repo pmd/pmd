@@ -16,7 +16,7 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
 	}
 
 	public Object visit(ASTMethod node, Object data) {
-		if (isOverriddenMethod(node) || isPropertyAccessor(node)) {
+		if (isOverriddenMethod(node) || isPropertyAccessor(node) || isConstructor(node)) {
 			return data;
 		}
 
@@ -37,5 +37,9 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
 
 	private boolean isPropertyAccessor(ASTMethod node) {
 		return (node.getParentsOfType(ASTProperty.class).size() > 0);
+	}
+
+	private boolean isConstructor(ASTMethod node) {
+		return (node.getNode().getMethodInfo().isConstructor());
 	}
 }
