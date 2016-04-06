@@ -15,5 +15,5 @@
   <rule ref="rulesets/apex/codesize.xml"/>
   <rule ref="rulesets/apex/design.xml"/>
   <rule ref="rulesets/apex/naming.xml"/>
-
+  
 </ruleset>

@@ -13,6 +13,8 @@ public class CodesizeRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "TooManyFields");
         addRule(RULESET, "ExcessiveParameterList");
+        addRule(RULESET, "ExcessiveClassLength");
+        addRule(RULESET, "ExcessiveMethodLength");
         addRule(RULESET, "ExcessivePublicCount");
         addRule(RULESET, "StdCyclomaticComplexity");
     }

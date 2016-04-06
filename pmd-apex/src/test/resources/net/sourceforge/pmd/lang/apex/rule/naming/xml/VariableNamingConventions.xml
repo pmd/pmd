@@ -308,4 +308,30 @@ public @interface Relation {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Inner exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class SObjectDataLoader 
+{
+    
+    public class SerializerException extends Exception
+    {
+        
+    }
+    
+}
+        ]]></code>
+    </test-code>
+     <test-code>
+        <description>Exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SerializerException extends Exception
+{
+    
+}
+        ]]></code>
+    </test-code>   
+    
 </test-data>

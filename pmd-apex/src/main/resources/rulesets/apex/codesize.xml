@@ -34,7 +34,62 @@ public void addPerson(		// preferred approach
    </example>
 	</rule>
 
-
+	 <rule name="ExcessiveMethodLength"
+	       message="Avoid really long methods."
+	       class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveMethodLengthRule"
+	       externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveMethodLength">
+	   <description>
+	When methods are excessively long this usually indicates that the method is doing more than its
+	name/signature might suggest. They also become challenging for others to digest since excessive 
+	scrolling causes readers to lose focus.
+	Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+	   </description>
+	     <priority>3</priority>
+	   <example>
+	<![CDATA[
+	public void doSomething() {
+		System.debug('Hello world!');
+		System.debug('Hello world!');
+			// 98 copies omitted for brevity.
+	}
+	
+	]]>
+	   </example>
+	
+	 </rule>
+	 
+	 <rule name="ExcessiveClassLength"
+       message="Avoid really long classes."
+       class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveClassLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveClassLength">
+   <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </description>
+     <priority>3</priority>
+   <example>
+<![CDATA[
+public class Foo {
+	public void bar1() {
+    // 1000 lines of code
+	}
+	public void bar2() {
+    // 1000 lines of code
+	}
+    public void bar3() {
+    // 1000 lines of code
+	}
+	
+	
+    public void barN() {
+    // 1000 lines of code
+	}
+}
+]]>
+   </example>
+ </rule>
+ 
 	<rule name="StdCyclomaticComplexity"
 		message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
 		class="net.sourceforge.pmd.lang.apex.rule.codesize.StdCyclomaticComplexityRule"
