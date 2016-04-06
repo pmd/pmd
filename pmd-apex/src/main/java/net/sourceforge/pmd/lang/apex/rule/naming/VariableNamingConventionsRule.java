@@ -138,8 +138,8 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 
         String varName = node.getImage();
 
-        // Skip serialVersionUID
-        if (varName.equals("serialVersionUID")) {
+        // Skip on null (with exception classes) and serialVersionUID 
+        if (varName == null || varName.equals("serialVersionUID")) {
             return data;
         }
 
