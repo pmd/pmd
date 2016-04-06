@@ -33,7 +33,6 @@ public class ApexParserTest {
 
         // Exercise
         ApexNode<Compilation> rootNode = parse(code);
-        dumpNode(rootNode);
 
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
@@ -50,7 +49,6 @@ public class ApexParserTest {
                     + "}\n"; // line 6
 
         ApexNode<Compilation> rootNode = parse(code);
-        dumpNode(rootNode);
 
         assertPosition(rootNode, 1, 1, 6, 2); // whole source code
         // Modifier of the class - doesn't work. This node just sees the identifier ("SimpleClass")
@@ -89,7 +87,6 @@ public class ApexParserTest {
                 if (file.isFile() && file.getName().endsWith(".cls")) {
                     String sourceCode = FileUtils.readFileToString(file);
                     ApexNode<Compilation> rootNode = parse(sourceCode);
-                    dumpNode(rootNode);
                 }
             }
         } catch (IOException e) {
