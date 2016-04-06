@@ -31,22 +31,22 @@ import net.sourceforge.pmd.util.NumericConstants;
  */
 public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
 
-    public ExcessivePublicCountRule() {
-        super(ASTUserClass.class);
-        setProperty(MINIMUM_DESCRIPTOR, 45d);
-    }
+	public ExcessivePublicCountRule() {
+		super(ASTUserClass.class);
+		setProperty(MINIMUM_DESCRIPTOR, 45d);
+	}
 
-    public Object visit(ASTMethod node, Object data) {
-        if (node.getNode().getModifiers().has(PUBLIC) && !node.getImage().matches("<clinit>|<init>|clone")) {
-            return NumericConstants.ONE;
-        }
-        return NumericConstants.ZERO;
-    }
+	public Object visit(ASTMethod node, Object data) {
+		if (node.getNode().getModifiers().has(PUBLIC) && !node.getImage().matches("<clinit>|<init>|clone")) {
+			return NumericConstants.ONE;
+		}
+		return NumericConstants.ZERO;
+	}
 
-    public Object visit(ASTFieldDeclarationStatements node, Object data) {
-        if (node.getNode().getModifiers().has(PUBLIC) && !node.getNode().getModifiers().has(STATIC)) {
-            return NumericConstants.ONE;
-        }
-        return NumericConstants.ZERO;
-    }
+	public Object visit(ASTFieldDeclarationStatements node, Object data) {
+		if (node.getNode().getModifiers().has(PUBLIC) && !node.getNode().getModifiers().has(STATIC)) {
+			return NumericConstants.ONE;
+		}
+		return NumericConstants.ZERO;
+	}
 }

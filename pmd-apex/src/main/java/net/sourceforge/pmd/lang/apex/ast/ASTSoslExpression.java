@@ -4,16 +4,16 @@ import apex.jorje.semantic.ast.expression.SoslExpression;
 
 public class ASTSoslExpression extends AbstractApexNode<SoslExpression> {
 
-    public ASTSoslExpression(SoslExpression soslExpression) {
-        super(soslExpression);
-    }
+	public ASTSoslExpression(SoslExpression soslExpression) {
+		super(soslExpression);
+	}
 
-    /**
-     * Accept the visitor. Note: This needs to be in each concrete node class,
-     * as otherwise the visitor won't work - as java resolves the type "this" at
-     * compile time.
-     */
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
+	/**
+	 * Accept the visitor. Note: This needs to be in each concrete node class,
+	 * as otherwise the visitor won't work - as java resolves the type "this" at
+	 * compile time.
+	 */
+	public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
 }

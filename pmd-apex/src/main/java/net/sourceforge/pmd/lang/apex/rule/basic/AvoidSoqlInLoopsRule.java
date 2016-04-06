@@ -14,28 +14,28 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 
-    @Override
-    public Object visit(ASTSoqlExpression node, Object data) {
-        if (insideLoop(node) && parentNotReturn(node)) {
-            addViolation(data, node);
-        }
-        return data;
-    }
+	@Override
+	public Object visit(ASTSoqlExpression node, Object data) {
+		if (insideLoop(node) && parentNotReturn(node)) {
+			addViolation(data, node);
+		}
+		return data;
+	}
 
-    private boolean parentNotReturn(ASTSoqlExpression node) {
-        return !(node.jjtGetParent() instanceof ASTReturnStatement);
-    }
+	private boolean parentNotReturn(ASTSoqlExpression node) {
+		return !(node.jjtGetParent() instanceof ASTReturnStatement);
+	}
 
-    private boolean insideLoop(ASTSoqlExpression node) {
-        Node n = node.jjtGetParent();
+	private boolean insideLoop(ASTSoqlExpression node) {
+		Node n = node.jjtGetParent();
 
-        while (n != null) {
-            if (n instanceof ASTDoLoopStatement || n instanceof ASTWhileLoopStatement
-                    || n instanceof ASTForLoopStatement || n instanceof ASTForEachStatement) {
-                return true;
-            }
-            n = n.jjtGetParent();
-        }
-        return false;
-    }
+		while (n != null) {
+			if (n instanceof ASTDoLoopStatement || n instanceof ASTWhileLoopStatement
+					|| n instanceof ASTForLoopStatement || n instanceof ASTForEachStatement) {
+				return true;
+			}
+			n = n.jjtGetParent();
+		}
+		return false;
+	}
 }

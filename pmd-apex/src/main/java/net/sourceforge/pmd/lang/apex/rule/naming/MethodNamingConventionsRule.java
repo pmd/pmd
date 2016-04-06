@@ -10,27 +10,27 @@ import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
 
 public class MethodNamingConventionsRule extends AbstractApexRule {
 
-    public Object visit(ASTUserClass node, Object data) {
-        return super.visit(node, data);
-    }
+	public Object visit(ASTUserClass node, Object data) {
+		return super.visit(node, data);
+	}
 
-    public Object visit(ASTMethod node, Object data) {
-        if (isOverriddenMethod(node)) {
-            return data;
-        }
+	public Object visit(ASTMethod node, Object data) {
+		if (isOverriddenMethod(node)) {
+			return data;
+		}
 
-        String methodName = node.getImage();
+		String methodName = node.getImage();
 
-        if (Character.isUpperCase(methodName.charAt(0))) {
-            addViolationWithMessage(data, node, "Method names should not start with capital letters");
-        }
-        if (methodName.indexOf('_') >= 0) {
-            addViolationWithMessage(data, node, "Method names should not contain underscores");
-        }
-        return data;
-    }
+		if (Character.isUpperCase(methodName.charAt(0))) {
+			addViolationWithMessage(data, node, "Method names should not start with capital letters");
+		}
+		if (methodName.indexOf('_') >= 0) {
+			addViolationWithMessage(data, node, "Method names should not contain underscores");
+		}
+		return data;
+	}
 
-    private boolean isOverriddenMethod(ASTMethod node) {
-        return node.getNode().getModifiers().has(OVERRIDE);
-    }
+	private boolean isOverriddenMethod(ASTMethod node) {
+		return node.getNode().getModifiers().has(OVERRIDE);
+	}
 }

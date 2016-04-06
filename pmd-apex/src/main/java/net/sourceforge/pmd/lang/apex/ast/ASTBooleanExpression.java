@@ -4,11 +4,11 @@ import apex.jorje.semantic.ast.expression.BooleanExpression;
 
 public class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
 
-    public ASTBooleanExpression(BooleanExpression booleanExpression) {
-        super(booleanExpression);
-    }
+	public ASTBooleanExpression(BooleanExpression booleanExpression) {
+		super(booleanExpression);
+	}
 
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
+	public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
 }

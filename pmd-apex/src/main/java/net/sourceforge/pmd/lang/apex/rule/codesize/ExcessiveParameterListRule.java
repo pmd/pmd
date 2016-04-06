@@ -14,12 +14,12 @@ import net.sourceforge.pmd.util.NumericConstants;
  * topcount and sigma should work.)
  */
 public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
-    public ExcessiveParameterListRule() {
-        super(ASTUserClass.class);
-        setProperty(MINIMUM_DESCRIPTOR, 10d);
-    }
+	public ExcessiveParameterListRule() {
+		super(ASTUserClass.class);
+		setProperty(MINIMUM_DESCRIPTOR, 10d);
+	}
 
-    public Object visit(ASTParameter node, Object data) {
-        return NumericConstants.ONE;
-    }
+	public Object visit(ASTParameter node, Object data) {
+		return NumericConstants.ONE;
+	}
 }

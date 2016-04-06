@@ -7,16 +7,16 @@ import apex.jorje.semantic.ast.member.Method;
 
 public class ASTMethod extends AbstractApexNode<Method> {
 
-    public ASTMethod(Method method) {
-        super(method);
-    }
+	public ASTMethod(Method method) {
+		super(method);
+	}
 
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
+	public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
 
-    @Override
-    public String getImage() {
-        return node.getMethodInfo().getIdentifier().value;
-    }
+	@Override
+	public String getImage() {
+		return node.getMethodInfo().getIdentifier().value;
+	}
 }

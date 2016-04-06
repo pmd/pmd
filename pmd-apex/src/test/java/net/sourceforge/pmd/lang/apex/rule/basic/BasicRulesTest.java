@@ -10,10 +10,10 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  */
 public class BasicRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "apex-basic";
+	private static final String RULESET = "apex-basic";
 
-    @Override
-    public void setUp() {
-        addRule(RULESET, "AvoidSoqlInLoops");
-    }
+	@Override
+	public void setUp() {
+		addRule(RULESET, "AvoidSoqlInLoops");
+	}
 }

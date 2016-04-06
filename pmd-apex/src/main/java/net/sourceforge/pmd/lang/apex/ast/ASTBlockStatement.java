@@ -7,11 +7,11 @@ import apex.jorje.semantic.ast.statement.BlockStatement;
 
 public class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
 
-    public ASTBlockStatement(BlockStatement blockStatement) {
-        super(blockStatement);
-    }
+	public ASTBlockStatement(BlockStatement blockStatement) {
+		super(blockStatement);
+	}
 
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
+	public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
 }

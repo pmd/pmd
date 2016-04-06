@@ -11,20 +11,20 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
 
-    @Override
-    public Object visit(ASTUserClass node, Object data) {
-        String className = node.getImage();
+	@Override
+	public Object visit(ASTUserClass node, Object data) {
+		String className = node.getImage();
 
-        List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
+		List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
 
-        for (ASTMethod m : methods) {
-            String methodName = m.getImage();
+		for (ASTMethod m : methods) {
+			String methodName = m.getImage();
 
-            if (!m.getNode().getMethodInfo().isConstructor() && methodName.equalsIgnoreCase(className)) {
-                addViolation(data, m);
-            }
-        }
+			if (!m.getNode().getMethodInfo().isConstructor() && methodName.equalsIgnoreCase(className)) {
+				addViolation(data, m);
+			}
+		}
 
-        return super.visit(node, data);
-    }
+		return super.visit(node, data);
+	}
 }

@@ -7,13 +7,12 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveLengthRule;
 
 /**
- * This rule detects when a class exceeds a certain
- * threshold.  i.e. if a class has more than 1000 lines
- * of code.
+ * This rule detects when a class exceeds a certain threshold. i.e. if a class
+ * has more than 1000 lines of code.
  */
 public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
-    public ExcessiveClassLengthRule() {
-        super(ASTUserClass.class);
-        setProperty(MINIMUM_DESCRIPTOR, 1000d);
-    }
+	public ExcessiveClassLengthRule() {
+		super(ASTUserClass.class);
+		setProperty(MINIMUM_DESCRIPTOR, 1000d);
+	}
 }

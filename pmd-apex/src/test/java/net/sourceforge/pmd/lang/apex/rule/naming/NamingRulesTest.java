@@ -7,13 +7,13 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class NamingRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "apex-naming";
+	private static final String RULESET = "apex-naming";
 
-    @Override
-    public void setUp() {
-//		  addRule(RULESET, "ClassNamingConventions");
-//		  addRule(RULESET, "MethodNamingConventions");
-		  addRule(RULESET, "VariableNamingConventions");
-//		  addRule(RULESET, "MethodWithSameNameAsEnclosingClass");
-    }
+	@Override
+	public void setUp() {
+		// addRule(RULESET, "ClassNamingConventions");
+		// addRule(RULESET, "MethodNamingConventions");
+		addRule(RULESET, "VariableNamingConventions");
+		// addRule(RULESET, "MethodWithSameNameAsEnclosingClass");
+	}
 }

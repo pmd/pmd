@@ -8,11 +8,11 @@ import net.sourceforge.pmd.lang.apex.rule.ApexRuleChainVisitor;
 
 public class ApexLanguageModule extends BaseLanguageModule {
 
-    public static final String NAME = "Apex";
-    public static final String TERSE_NAME = "apex";
+	public static final String NAME = "Apex";
+	public static final String TERSE_NAME = "apex";
 
-    public ApexLanguageModule() {
-        super(NAME, null, TERSE_NAME, ApexRuleChainVisitor.class, "cls");
-        addVersion("35", new ApexHandler(), true);
-    }
+	public ApexLanguageModule() {
+		super(NAME, null, TERSE_NAME, ApexRuleChainVisitor.class, "cls");
+		addVersion("35", new ApexHandler(), true);
+	}
 }

@@ -10,10 +10,10 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  */
 public class DesignRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "apex-design";
+	private static final String RULESET = "apex-design";
 
-    @Override
-    public void setUp() {
-        addRule(RULESET, "AvoidDeeplyNestedIfStmts");
-    }
+	@Override
+	public void setUp() {
+		addRule(RULESET, "AvoidDeeplyNestedIfStmts");
+	}
 }

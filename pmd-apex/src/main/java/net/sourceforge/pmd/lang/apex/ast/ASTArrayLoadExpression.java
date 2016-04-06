@@ -4,11 +4,11 @@ import apex.jorje.semantic.ast.expression.ArrayLoadExpression;
 
 public class ASTArrayLoadExpression extends AbstractApexNode<ArrayLoadExpression> {
 
-    public ASTArrayLoadExpression(ArrayLoadExpression arrayLoadExpression) {
-        super(arrayLoadExpression);
-    }
+	public ASTArrayLoadExpression(ArrayLoadExpression arrayLoadExpression) {
+		super(arrayLoadExpression);
+	}
 
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
+	public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
 }
