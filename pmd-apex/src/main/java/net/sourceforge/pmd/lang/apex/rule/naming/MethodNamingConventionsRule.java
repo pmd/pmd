@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.apex.rule.naming;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
 
@@ -15,7 +16,7 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
 	}
 
 	public Object visit(ASTMethod node, Object data) {
-		if (isOverriddenMethod(node)) {
+		if (isOverriddenMethod(node) || isPropertyAccessor(node)) {
 			return data;
 		}
 
@@ -32,5 +33,9 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
 
 	private boolean isOverriddenMethod(ASTMethod node) {
 		return node.getNode().getModifiers().has(OVERRIDE);
+	}
+
+	private boolean isPropertyAccessor(ASTMethod node) {
+		return (node.getParentsOfType(ASTProperty.class).size() > 0);
 	}
 }

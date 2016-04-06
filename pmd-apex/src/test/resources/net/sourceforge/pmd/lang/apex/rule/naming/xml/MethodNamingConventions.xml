@@ -44,4 +44,13 @@ public class MethodNamingConventions implements SomeInterface {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#25 Method rules should ignore Property Getter/Setter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Integer property { get; private set; }
+}
+        ]]></code>
+    </test-code>
 </test-data>
