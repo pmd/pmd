@@ -11,17 +11,9 @@
   </description>
 
   <!-- We'll use the entire 'strings' ruleset -->
+  <rule ref="rulesets/apex/basic.xml"/>
+  <rule ref="rulesets/apex/codesize.xml"/>
+  <rule ref="rulesets/apex/design.xml"/>
   <rule ref="rulesets/apex/naming.xml"/>
 
-  <!-- Here's some rules we'll specify one at a time -->
-  <rule ref="rulesets/apex/unusedcode.xml/UnusedLocalVariable"/>
-  <rule ref="rulesets/apex/unusedcode.xml/UnusedPrivateField"/>
-  <rule ref="rulesets/apex/basic.xml/AvoidSoqlInLoops"/>
-
-  <!-- Now we'll customize a rule's property value -->
-  <rule ref="rulesets/apex/codesize.xml/TooManyFields">
-    <properties>
-        <property name="maxfields" value="20"/>
-    </properties>
-  </rule>
 </ruleset>
