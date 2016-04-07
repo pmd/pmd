@@ -88,7 +88,7 @@ public class Foo {
     </test-code>
     
     <test-code>
-        <description>SOQL For Loops best practice: for loop iterate over Soql should be ignored</description>
+        <description>#29 SOQL For Loops should not throw an Avoid Soql queries inside loops issue</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
