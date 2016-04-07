@@ -34,61 +34,85 @@ public void addPerson(		// preferred approach
    </example>
 	</rule>
 
-	 <rule name="ExcessiveMethodLength"
-	       message="Avoid really long methods."
-	       class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveMethodLengthRule"
-	       externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveMethodLength">
-	   <description>
-	When methods are excessively long this usually indicates that the method is doing more than its
-	name/signature might suggest. They also become challenging for others to digest since excessive 
-	scrolling causes readers to lose focus.
-	Try to reduce the method length by creating helper methods and removing any copy/pasted code.
-	   </description>
-	     <priority>3</priority>
-	   <example>
-	<![CDATA[
-	public void doSomething() {
-		System.debug('Hello world!');
-		System.debug('Hello world!');
-			// 98 copies omitted for brevity.
-	}
-	
-	]]>
-	   </example>
-	
-	 </rule>
-	 
-	 <rule name="ExcessiveClassLength"
-       message="Avoid really long classes."
-       class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveClassLengthRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveClassLength">
-   <description>
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
-responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
-   </description>
-     <priority>3</priority>
+<rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
+   class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssMethodCountRule"
+   externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssMethodCount">
+    <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+    <priority>3</priority>
    <example>
 <![CDATA[
-public class Foo {
-	public void bar1() {
-    // 1000 lines of code
-	}
-	public void bar2() {
-    // 1000 lines of code
-	}
-    public void bar3() {
-    // 1000 lines of code
-	}
-	
-	
-    public void barN() {
-    // 1000 lines of code
-	}
+public class Foo extends Bar {
+ public Integer methd() {
+     super.methd();
+
+
+
+
+
+ //this method only has 1 NCSS lines
+      return 1;
+ }
 }
 ]]>
    </example>
- </rule>
+   </rule>
+
+<rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
+   class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssTypeCountRule"
+   externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssTypeCount">
+    <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+    <priority>3</priority>
+   <example>
+<![CDATA[
+public class Foo extends Bar {
+ public Foo() {
+ //this class only has 6 NCSS lines
+     super();
+
+
+
+
+
+      super.foo();
+ }
+}
+]]>
+   </example></rule>
+
+<rule name="NcssConstructorCount" message="The constructor with {0} parameters has an NCSS line count of {1}"
+   class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssConstructorCountRule"
+   externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#NcssConstructorCount">
+    <description>
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+    </description>
+    <priority>3</priority>
+   <example>
+<![CDATA[
+public class Foo extends Bar {
+ public Foo() {
+     super();
+
+
+
+
+
+ //this constructor only has 1 NCSS lines
+      super.foo();
+ }
+}
+]]>
+   </example>
+</rule>
  
 	<rule name="StdCyclomaticComplexity"
 		message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
