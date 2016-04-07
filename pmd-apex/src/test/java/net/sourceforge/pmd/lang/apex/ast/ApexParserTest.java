@@ -73,6 +73,27 @@ public class ApexParserTest {
 		assertPosition(expressionStatement, 3, 9, 6, 2);
 	}
 
+	@Test
+	public void verifyEndLine() {
+		
+		String code = "public class SimpleClass {\n" // line 1
+				+ "    public void method1() {\n" // line 2
+				+ "    }\n" // line 3
+			    + "    public void method2() {\n" // line 4
+				+ "    }\n" // line 5
+				+ "}\n"; // line 6
+
+		ApexNode<Compilation> rootNode = parse(code);
+		
+		Node method1 = rootNode.jjtGetChild(1);
+		assertEquals("Wrong begin line", 2, method1.getBeginLine());
+		assertEquals("Wrong end line", 3, method1.getEndLine());
+		
+		Node method2 = rootNode.jjtGetChild(2);
+		assertEquals("Wrong begin line", 4, method2.getBeginLine());
+		assertEquals("Wrong end line", 5, method2.getEndLine());
+	}
+
 	private static void assertPosition(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
 		assertEquals("Wrong begin line", beginLine, node.getBeginLine());
 		assertEquals("Wrong begin column", beginColumn, node.getBeginColumn());
@@ -90,6 +111,7 @@ public class ApexParserTest {
 				if (file.isFile() && file.getName().endsWith(".cls")) {
 					String sourceCode = FileUtils.readFileToString(file);
 					ApexNode<Compilation> rootNode = parse(sourceCode);
+					dumpNode(rootNode);
 				}
 			}
 		}
