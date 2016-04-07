@@ -62,17 +62,18 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 		}
 	}
 
-	@SuppressWarnings("unchecked") // all nodes are subclasses of
-									// AbstractApexNode
-	private Node getNextSiblingWithRealLoc() {
+	@SuppressWarnings("unchecked") // all nodes are subclasses of AbstractApexNode
+	protected Node getNextSiblingWithRealLoc() {
 		AbstractApexNode<? extends AstNode> nextSibling = (AbstractApexNode<? extends AstNode>) getNextSibling();
+		
 		while (nextSibling != null && !nextSibling.hasRealLoc()) {
 			nextSibling = (AbstractApexNode<? extends AstNode>) nextSibling.getNextSibling();
 		}
+		
 		return nextSibling;
 	}
 
-	private boolean hasRealLoc() {
+	protected boolean hasRealLoc() {
 		try {
 			Loc loc = node.getLoc();
 			return loc instanceof RealLoc;

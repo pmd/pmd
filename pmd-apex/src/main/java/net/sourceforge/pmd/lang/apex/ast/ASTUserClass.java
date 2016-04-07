@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Field;
 
+import apex.jorje.data.Loc.RealLoc;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserClass;
 
@@ -30,5 +31,16 @@ public class ASTUserClass extends ApexRootNode<UserClass> {
 			e.printStackTrace();
 		}
 		return super.getImage();
+	}
+	
+	@Override
+	public int getBeginLine() {
+		if (hasRealLoc()) {
+			ASTModifierNode classModifier = this.getFirstChildOfType(ASTModifierNode.class);
+			return ((RealLoc) classModifier.getNode().getLoc()).line;
+		}
+		else {
+			return parent.getBeginLine();
+		}
 	}
 }
