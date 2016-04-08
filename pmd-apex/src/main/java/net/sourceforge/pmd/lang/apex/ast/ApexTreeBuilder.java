@@ -168,11 +168,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 		register(TriggerVariableExpression.class, ASTTriggerVariableExpression.class);
 		register(TryCatchFinallyBlockStatement.class, ASTTryCatchFinallyBlockStatement.class);
 		register(UserClass.class, ASTUserClass.class);
+		register(UserTrigger.class, ASTUserTrigger.class);
 		register(UserClassMethods.class, ASTUserClassMethods.class);
 		register(UserEnum.class, ASTUserEnum.class);
 		register(UserExceptionMethods.class, ASTUserExceptionMethods.class);
 		register(UserInterface.class, ASTUserInterface.class);
-		register(UserTrigger.class, ASTUserTrigger.class);
 		register(VariableDeclaration.class, ASTVariableDeclaration.class);
 		register(VariableDeclarationStatements.class, ASTVariableDeclarationStatements.class);
 		register(VariableExpression.class, ASTVariableExpression.class);

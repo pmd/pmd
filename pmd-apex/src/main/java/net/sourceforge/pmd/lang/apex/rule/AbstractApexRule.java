@@ -119,6 +119,9 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 			else if (element instanceof ASTUserInterface) {
 				visit((ASTUserInterface) element, ctx);
 			}
+			else if (element instanceof ASTUserTrigger) {
+				visit((ASTUserTrigger) element, ctx);
+			}
 		}
 	}
 

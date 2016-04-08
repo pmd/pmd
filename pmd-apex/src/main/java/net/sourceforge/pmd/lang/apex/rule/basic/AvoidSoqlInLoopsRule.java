@@ -25,7 +25,7 @@ public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 	private boolean parentNotReturn(ASTSoqlExpression node) {
 		return !(node.jjtGetParent() instanceof ASTReturnStatement);
 	}
-	
+
 	private boolean parentNotForEach(ASTSoqlExpression node) {
 		return !(node.jjtGetParent() instanceof ASTForEachStatement);
 	}
@@ -40,6 +40,7 @@ public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 			}
 			n = n.jjtGetParent();
 		}
+		
 		return false;
 	}
 }

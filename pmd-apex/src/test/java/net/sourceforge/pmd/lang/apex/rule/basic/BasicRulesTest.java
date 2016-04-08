@@ -15,5 +15,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 	@Override
 	public void setUp() {
 		addRule(RULESET, "AvoidSoqlInLoops");
+		addRule(RULESET, "AvoidGlobalModifier");
+		addRule(RULESET, "AvoidLogicInTrigger");
 	}
 }

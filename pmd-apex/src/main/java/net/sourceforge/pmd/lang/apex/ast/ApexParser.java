@@ -17,6 +17,7 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 import apex.jorje.semantic.ast.compilation.UserClass;
 import apex.jorje.semantic.ast.compilation.UserEnum;
 import apex.jorje.semantic.ast.compilation.UserInterface;
+import apex.jorje.semantic.ast.compilation.UserTrigger;
 import apex.jorje.semantic.ast.visitor.AdditionalPassScope;
 import apex.jorje.semantic.ast.visitor.AstVisitor;
 
@@ -85,6 +86,11 @@ public class ApexParser {
 
 		@Override
 		public void visitEnd(UserInterface node, AdditionalPassScope scope) {
+			topLevel = node;
+		}
+
+		@Override
+		public void visitEnd(UserTrigger node, AdditionalPassScope scope) {
 			topLevel = node;
 		}
 	}
