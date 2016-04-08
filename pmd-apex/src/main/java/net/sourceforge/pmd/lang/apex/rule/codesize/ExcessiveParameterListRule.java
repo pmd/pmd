@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.codesize;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.design.ExcessiveNodeCountRule;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  */
 public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
 	public ExcessiveParameterListRule() {
-		super(ASTUserClass.class);
+		super(ASTMethod.class);
 		setProperty(MINIMUM_DESCRIPTOR, 10d);
 	}
 
