@@ -8,14 +8,12 @@ import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalApexRule;
@@ -42,11 +40,11 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     }
 
     @Override
-    public Object visit(ApexNode node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         int numNodes = 0;
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            ApexNode n = (ApexNode) node.jjtGetChild(i);
+            ApexNode<?> n = (ApexNode<?>) node.jjtGetChild(i);
             Integer treeSize = (Integer) n.jjtAccept(this, data);
             numNodes += treeSize.intValue();
         }
@@ -76,7 +74,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
         Integer nodeCount = null;
         int lineCount = 0;
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            nodeCount = (Integer) ((ApexNode) node.jjtGetChild(i)).jjtAccept(this, data);
+            nodeCount = (Integer) ((ApexNode<?>) node.jjtGetChild(i)).jjtAccept(this, data);
             lineCount += nodeCount.intValue();
         }
         return ++lineCount;
