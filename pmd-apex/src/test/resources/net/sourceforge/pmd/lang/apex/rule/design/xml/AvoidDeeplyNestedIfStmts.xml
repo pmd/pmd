@@ -42,4 +42,32 @@ public class Foo {
 		]]></code>
     </test-code>
     
+    <test-code>
+        <description>Bad, many deep ifs</description>
+        <rule-property name="problemDepth">3</rule-property>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void bar() { 
+		if (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+			if(true) {
+				if(true) {
+					if(true) {
+					}
+				}
+				if(true) {
+				}
+				if(true) {
+				}
+			}
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
 </test-data>
