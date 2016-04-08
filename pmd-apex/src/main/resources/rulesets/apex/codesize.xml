@@ -33,6 +33,38 @@ public void addPerson(		// preferred approach
 ]]>
    </example>
 	</rule>
+	
+	<rule name="ExcessiveClassLength"
+       message="Avoid really long classes."
+       class="net.sourceforge.pmd.lang.apex.rule.codesize.ExcessiveClassLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#ExcessiveClassLength">
+   <description>
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+   </description>
+     <priority>3</priority>
+   <example>
+<![CDATA[
+public class Foo {
+	public void bar1() {
+    // 1000 lines of code
+	}
+	public void bar2() {
+    // 1000 lines of code
+	}
+    public void bar3() {
+    // 1000 lines of code
+	}
+	
+	
+    public void barN() {
+    // 1000 lines of code
+	}
+}
+]]>
+   </example>
+ </rule>
 
 <rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
    class="net.sourceforge.pmd.lang.apex.rule.codesize.NcssMethodCountRule"

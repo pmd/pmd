@@ -3,39 +3,33 @@
 <test-data>
 
     <test-code>
-        <description><![CDATA[
-method names should start with lowercase character
-     ]]></description>
+        <description>method names should start with lowercase character</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void Bar() {}
+	void Bar() {}
 }
-     ]]></code>
+		]]></code>
     </test-code>
     
     <test-code>
-        <description><![CDATA[
-method names should not contain underscores
-     ]]></description>
+        <description>method names should not contain underscores</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- void bar_foo() {}
+	void bar_foo() {}
 }
-     ]]></code>
+		]]></code>
     </test-code>
     
     <test-code>
-        <description><![CDATA[
-all is well
-     ]]></description>
+        <description>all is well</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- void foo() {}
+	void foo() {}
 }
-     ]]></code>
+		]]></code>
     </test-code>
     
     <test-code>
@@ -44,8 +38,7 @@ public class Foo {
         <code><![CDATA[
 public class MethodNamingConventions implements SomeInterface {
     @Override
-    public void _foo() {
-    }
+    public void _foo() {}
 }
         ]]></code>
     </test-code>
