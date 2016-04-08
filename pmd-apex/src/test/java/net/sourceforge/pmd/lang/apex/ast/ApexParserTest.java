@@ -94,13 +94,6 @@ public class ApexParserTest {
 		assertEquals("Wrong end line", 5, method2.getEndLine());
 	}
 
-	private static void assertPosition(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
-		assertEquals("Wrong begin line", beginLine, node.getBeginLine());
-		assertEquals("Wrong begin column", beginColumn, node.getBeginColumn());
-		assertEquals("Wrong end line", endLine, node.getEndLine());
-		assertEquals("Wrong end column", endColumn, node.getEndColumn());
-	}
-
 	@Test
 	public void parsesRealWorldClasses() {
 		try {
@@ -111,7 +104,6 @@ public class ApexParserTest {
 				if (file.isFile() && file.getName().endsWith(".cls")) {
 					String sourceCode = FileUtils.readFileToString(file);
 					ApexNode<Compilation> rootNode = parse(sourceCode);
-					dumpNode(rootNode);
 				}
 			}
 		}
@@ -121,7 +113,15 @@ public class ApexParserTest {
 
 	}
 
+	
 	// TEST HELPER
+
+	private static void assertPosition(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
+		assertEquals("Wrong begin line", beginLine, node.getBeginLine());
+		assertEquals("Wrong begin column", beginColumn, node.getBeginColumn());
+		assertEquals("Wrong end line", endLine, node.getEndLine());
+		assertEquals("Wrong end column", endColumn, node.getEndColumn());
+	}
 
 	private ApexNode<Compilation> parse(String code) {
 		ApexParser parser = new ApexParser(new ApexParserOptions());
