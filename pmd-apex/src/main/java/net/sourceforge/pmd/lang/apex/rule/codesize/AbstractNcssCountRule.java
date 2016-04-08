@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
@@ -42,11 +43,11 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     }
 
     @Override
-    public Object visit(ApexNode node, Object data) {
+    public Object visit(ApexNode<?> node, Object data) {
         int numNodes = 0;
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            ApexNode n = (ApexNode) node.jjtGetChild(i);
+            ApexNode<?> n = (ApexNode<?>) node.jjtGetChild(i);
             Integer treeSize = (Integer) n.jjtAccept(this, data);
             numNodes += treeSize.intValue();
         }
@@ -76,7 +77,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
         Integer nodeCount = null;
         int lineCount = 0;
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            nodeCount = (Integer) ((ApexNode) node.jjtGetChild(i)).jjtAccept(this, data);
+            nodeCount = (Integer) ((ApexNode<?>) node.jjtGetChild(i)).jjtAccept(this, data);
             lineCount += nodeCount.intValue();
         }
         return ++lineCount;
@@ -84,6 +85,11 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
 
     @Override
     public Object visit(ASTForLoopStatement node, Object data) {
+        return countNodeChildren(node, data);
+    }
+
+    @Override
+    public Object visit(ASTForEachStatement node, Object data) {
         return countNodeChildren(node, data);
     }
 
@@ -135,6 +141,11 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     }
 
     @Override
+    public Object visit(ASTThrowStatement node, Object data) {
+        return countNodeChildren(node, data);
+    }
+
+    @Override
     public Object visit(ASTStatement node, Object data) {
         return NumericConstants.ONE;
     }
@@ -144,4 +155,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
         return countNodeChildren(node, data);
     }
 
+    @Override
+    public Object visit(ASTMethodCallExpression node, Object data) {
+        return countNodeChildren(node, data);
+    }
 }

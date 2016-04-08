@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.apex.rule.codesize;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for methods.
@@ -13,22 +14,26 @@ import net.sourceforge.pmd.stat.DataPoint;
  */
 public class NcssMethodCountRule extends AbstractNcssCountRule {
 
-    /**
-     * Count the size of all non-constructor methods.
-     */
-    public NcssMethodCountRule() {
-        super(ASTMethod.class);
-        setProperty(MINIMUM_DESCRIPTOR, 100d);
-    }
+	/**
+	 * Count the size of all non-constructor methods.
+	 */
+	public NcssMethodCountRule() {
+		super(ASTMethod.class);
+		setProperty(MINIMUM_DESCRIPTOR, 100d);
+	}
 
-    @Override
-    public Object visit(ASTMethod node, Object data) {
-        return super.visit(node, data);
-    }
+	@Override
+	public Object visit(ASTMethod node, Object data) {
+		if (!node.getNode().getMethodInfo().isConstructor()) {
+			return super.visit(node, data);
+		}
 
-    @Override
-    public Object[] getViolationParameters(DataPoint point) {
-        return new String[] { ((ASTMethod) point.getNode()).getNode().getMethodInfo().getName(),
-                String.valueOf((int) point.getScore()) };
-    }
+		return NumericConstants.ZERO;
+	}
+
+	@Override
+	public Object[] getViolationParameters(DataPoint point) {
+		return new String[] { ((ASTMethod) point.getNode()).getNode().getMethodInfo().getName(),
+				String.valueOf((int) point.getScore()) };
+	}
 }
