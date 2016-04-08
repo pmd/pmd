@@ -30,7 +30,7 @@ public class Something {
   </rule>
 
   <rule name="AvoidLogicInTrigger"
-        message="Avoid Soql queries inside loops"
+        message="Avoid logic in triggers"
         class="net.sourceforge.pmd.lang.apex.rule.basic.AvoidLogicInTriggerRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#AvoidLogicInTrigger">
     <description>
@@ -58,7 +58,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
   </rule>
 
   <rule name="AvoidGlobalModifier"
-        message="Avoid Soql queries inside loops"
+        message="Avoid using global modifier"
         class="net.sourceforge.pmd.lang.apex.rule.basic.AvoidGlobalModifierRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#AvoidGlobalModifier">
     <description>
