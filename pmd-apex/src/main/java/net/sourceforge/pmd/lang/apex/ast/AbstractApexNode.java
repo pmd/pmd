@@ -9,6 +9,7 @@ import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode implements ApexNode<T> {
 
@@ -18,6 +19,69 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 		super(node.getClass().hashCode());
 		this.node = node;
 	}
+
+    void calculateLineNumbers(SourceCodePositioner positioner) {
+        if (!hasRealLoc()) {
+            return;
+        }
+
+        RealLoc loc = (RealLoc)node.getLoc();
+        int startOffset = loc.startIndex;
+        int endOffset = loc.endIndex;
+
+        this.beginLine = positioner.lineNumberFromOffset(startOffset);
+        this.beginColumn = positioner.columnFromOffset(this.beginLine, startOffset);
+        this.endLine = positioner.lineNumberFromOffset(endOffset);
+        this.endColumn = positioner.columnFromOffset(this.endLine, endOffset) - 1; // end column is inclusive
+        if (this.endColumn < 0) {
+            this.endColumn = 0;
+        }
+    }
+
+    @Override
+    public int getBeginLine() {
+        if (this.beginLine > 0) {
+            return this.beginLine;
+        }
+        Node parent = jjtGetParent();
+        if (parent != null) {
+            return parent.getBeginLine();
+        }
+        throw new RuntimeException("Unable to determine beginning line of Node.");
+    }
+    @Override
+    public int getBeginColumn() {
+        if (this.beginColumn > 0) {
+            return this.beginColumn;
+        }
+        Node parent = jjtGetParent();
+        if (parent != null) {
+            return parent.getBeginColumn();
+        }
+        throw new RuntimeException("Unable to determine beginning column of Node.");
+    }
+    @Override
+    public int getEndLine() {
+        if (this.endLine > 0) {
+            return this.endLine;
+        }
+        Node parent = jjtGetParent();
+        if (parent != null) {
+            return parent.getEndLine();
+        }
+        throw new RuntimeException("Unable to determine ending line of Node.");
+    }
+    @Override
+    public int getEndColumn() {
+        if (this.endColumn > 0) {
+            return this.endColumn;
+        }
+        Node parent = jjtGetParent();
+        if (parent != null) {
+            return parent.getEndColumn();
+        }
+        throw new RuntimeException("Unable to determine ending column of Node.");
+    }
 
 	/**
 	 * Accept the visitor. *
@@ -38,41 +102,6 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 		return node;
 	}
 
-	@Override
-	public int getBeginLine() {
-		if (hasRealLoc()) {
-			return ((RealLoc) node.getLoc()).line;
-		}
-		else {
-			return parent.getBeginLine();
-		}
-	}
-
-	@Override
-	public int getEndLine() {
-		// Takes the begin line of the next sibling or the end line of the
-		// parent node
-
-		Node nextSibling = getNextSiblingWithRealLoc();
-		if (nextSibling != null) {
-			return nextSibling.getBeginLine();
-		}
-		else {
-			return parent.getEndLine();
-		}
-	}
-
-	@SuppressWarnings("unchecked") // all nodes are subclasses of AbstractApexNode
-	protected Node getNextSiblingWithRealLoc() {
-		AbstractApexNode<? extends AstNode> nextSibling = (AbstractApexNode<? extends AstNode>) getNextSibling();
-		
-		while (nextSibling != null && !nextSibling.hasRealLoc()) {
-			nextSibling = (AbstractApexNode<? extends AstNode>) nextSibling.getNextSibling();
-		}
-		
-		return nextSibling;
-	}
-
 	protected boolean hasRealLoc() {
 		try {
 			Loc loc = node.getLoc();
@@ -85,49 +114,22 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 			// bug in apex-jorje? happens on some ReferenceExpression nodes
 			return false;
 		}
-	}
-
-	private Node getNextSibling() {
-		int thisChildIndex = 0;
-		for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
-			if (this == parent.jjtGetChild(i)) {
-				thisChildIndex = i;
-				break;
-			}
-		}
-		int nextSiblingIndex = thisChildIndex + 1;
-		if (parent.jjtGetNumChildren() > nextSiblingIndex) {
-			return parent.jjtGetChild(nextSiblingIndex);
-		}
-		return null;
-	}
-
-	@Override
-	public int getBeginColumn() {
-		if (hasRealLoc()) {
-			return ((RealLoc) node.getLoc()).column;
-		}
-		else {
-			return parent.getBeginColumn();
-		}
-	}
-
-	@Override
-	public int getEndColumn() {
-		// take the begin column of the next sibling or the end column of the
-		// parent
-
-		Node nextSibling = getNextSiblingWithRealLoc();
-		if (nextSibling != null) {
-			return nextSibling.getBeginColumn();
-		}
-		else {
-			return jjtGetParent().getEndColumn();
+		catch (NullPointerException e) {
+		    // bug in apex-jorje?
+		    return false;
 		}
 	}
 
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName().replaceFirst("^AST", "");
+	}
+
+	public String getLocation() {
+	    if (hasRealLoc()) {
+	        return String.valueOf(node.getLoc());
+	    } else {
+	        return "no location";
+	    }
 	}
 }

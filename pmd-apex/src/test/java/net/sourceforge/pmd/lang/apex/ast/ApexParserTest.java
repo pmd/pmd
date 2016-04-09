@@ -49,15 +49,14 @@ public class ApexParserTest {
 
 		ApexNode<Compilation> rootNode = parse(code);
 
-		assertPosition(rootNode, 1, 1, 6, 2); // whole source code
+		assertPosition(rootNode, 1, 14, 6, 2); // whole source code, well from the beginning of the class name
 		// Modifier of the class - doesn't work. This node just sees the
 		// identifier ("SimpleClass")
-		// assertPosition(rootNode.jjtGetChild(0), 1, 1, 1, 6); // "public"
+		//assertPosition(rootNode.jjtGetChild(0), 1, 1, 1, 6); // "public"
 
-		// "method1" - starts with identifier until end of source because there
-		// is no next sibling
+		// "method1" - starts with identifier until end of its block statement
 		Node method1 = rootNode.jjtGetChild(1);
-		assertPosition(method1, 2, 17, 6, 2);
+		assertPosition(method1, 2, 17, 5, 5);
 		// Modifier of method1 - doesn't work. This node just sees the
 		// identifier ("method1")
 		// assertPosition(method1.jjtGetChild(0), 2, 17, 2, 20); // "public" for
@@ -65,12 +64,11 @@ public class ApexParserTest {
 
 		// BlockStatement - the whole method body
 		Node blockStatement = method1.jjtGetChild(1);
-		assertPosition(blockStatement, 2, 27, 6, 2);
+		assertPosition(blockStatement, 2, 27, 5, 5);
 
-		// the expression ("System.out...") - goes until end of file (no next
-		// sibling)
+		// the expression ("System.out...")
 		Node expressionStatement = blockStatement.jjtGetChild(0);
-		assertPosition(expressionStatement, 3, 9, 6, 2);
+		assertPosition(expressionStatement, 3, 9, 3, 34);
 	}
 
 	@Test

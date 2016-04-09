@@ -48,7 +48,7 @@ public class ApexParser {
 		try {
 			final String sourceCode = IOUtils.toString(reader);
 			final Compilation astRoot = parseApex(sourceCode);
-			final ApexTreeBuilder treeBuilder = new ApexTreeBuilder();
+			final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode);
 			suppressMap = new HashMap<>();
 
 			if (astRoot == null) {

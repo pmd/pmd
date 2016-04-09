@@ -93,6 +93,7 @@ import apex.jorje.semantic.ast.visitor.AstVisitor;
 import apex.jorje.semantic.exception.Errors;
 import apex.jorje.semantic.tester.TestNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
@@ -197,6 +198,12 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 	// The Apex nodes with children to build.
 	private Stack<AstNode> parents = new Stack<>();
 
+	private SourceCodePositioner sourceCodePositioner;
+
+	public ApexTreeBuilder(String sourceCode) {
+	    sourceCodePositioner = new SourceCodePositioner(sourceCode);
+	}
+
 	AdditionalPassScope scope = new AdditionalPassScope(new Errors());
 
 	static <T extends AstNode> ApexNode<T> createNodeAdapter(T node) {
@@ -226,6 +233,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 	public <T extends AstNode> ApexNode<T> build(T astNode) {
 		// Create a Node
 		ApexNode<T> node = createNodeAdapter(astNode);
+		calculateLineNumbers(node);
 
 		// Append to parent
 		Node parent = nodes.isEmpty() ? null : nodes.peek();
@@ -242,6 +250,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 		parents.pop();
 
 		return node;
+	}
+
+	private void calculateLineNumbers(ApexNode<?> node) {
+	    AbstractApexNode<?> apexNode = (AbstractApexNode<?>)node;
+	    apexNode.calculateLineNumbers(sourceCodePositioner);
 	}
 
 	private boolean visit(AstNode node) {

@@ -19,4 +19,24 @@ public class ASTMethod extends AbstractApexNode<Method> {
 	public String getImage() {
 		return node.getMethodInfo().getIdentifier().value;
 	}
+
+	@Override
+	public int getEndLine() {
+	    ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
+	    if (block != null) {
+	        return block.getEndLine();
+	    }
+
+	    return super.getEndLine();
+	}
+
+	@Override
+	public int getEndColumn() {
+        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
+        if (block != null) {
+            return block.getEndColumn();
+        }
+
+        return super.getEndColumn();
+	}
 }
