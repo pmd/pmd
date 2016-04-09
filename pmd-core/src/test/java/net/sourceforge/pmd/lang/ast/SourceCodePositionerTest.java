@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.ecmascript.ast;
+package net.sourceforge.pmd.lang.ast;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,18 +25,18 @@ public class SourceCodePositionerTest {
 
 	offset = SOURCE_CODE.indexOf('a');
 	assertEquals(1, positioner.lineNumberFromOffset(offset));
-	assertEquals(1, positioner.columnFromOffset(offset));
+	assertEquals(1, positioner.columnFromOffset(1, offset));
 
 	offset = SOURCE_CODE.indexOf('b');
 	assertEquals(1, positioner.lineNumberFromOffset(offset));
-	assertEquals(2, positioner.columnFromOffset(offset));
+	assertEquals(2, positioner.columnFromOffset(1, offset));
 
 	offset = SOURCE_CODE.indexOf('e');
 	assertEquals(2, positioner.lineNumberFromOffset(offset));
-	assertEquals(2, positioner.columnFromOffset(offset));
+	assertEquals(2, positioner.columnFromOffset(2, offset));
 
 	offset = SOURCE_CODE.indexOf('q');
 	assertEquals(5, positioner.lineNumberFromOffset(offset));
-	assertEquals(3, positioner.columnFromOffset(offset));
+	assertEquals(3, positioner.columnFromOffset(5, offset));
     }
 }

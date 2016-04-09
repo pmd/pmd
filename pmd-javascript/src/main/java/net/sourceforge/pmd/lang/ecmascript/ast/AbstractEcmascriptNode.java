@@ -3,9 +3,10 @@
  */
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-
 import org.mozilla.javascript.ast.AstNode;
+
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 public abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode implements EcmascriptNode<T> {
 
@@ -22,9 +23,9 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
 	int endOffset = startOffset + node.getLength();
 
 	this.beginLine = positioner.lineNumberFromOffset(startOffset);
-	this.beginColumn = positioner.columnFromOffset(startOffset);
+	this.beginColumn = positioner.columnFromOffset(this.beginLine, startOffset);
 	this.endLine = positioner.lineNumberFromOffset(endOffset);
-	this.endColumn = positioner.columnFromOffset(endOffset) - 1; // end column is inclusive
+	this.endColumn = positioner.columnFromOffset(this.endLine, endOffset) - 1; // end column is inclusive
 	if (this.endColumn < 0) {
 	    this.endColumn = 0;
 	}

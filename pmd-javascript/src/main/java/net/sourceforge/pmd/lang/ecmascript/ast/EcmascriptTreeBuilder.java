@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 import org.mozilla.javascript.ast.ArrayComprehension;
 import org.mozilla.javascript.ast.ArrayComprehensionLoop;
 import org.mozilla.javascript.ast.ArrayLiteral;
@@ -65,6 +63,9 @@ import org.mozilla.javascript.ast.XmlDotQuery;
 import org.mozilla.javascript.ast.XmlExpression;
 import org.mozilla.javascript.ast.XmlMemberGet;
 import org.mozilla.javascript.ast.XmlString;
+
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 public final class EcmascriptTreeBuilder implements NodeVisitor {
 
