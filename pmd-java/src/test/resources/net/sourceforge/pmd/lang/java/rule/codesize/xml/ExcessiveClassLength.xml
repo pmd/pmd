@@ -8,7 +8,7 @@ short
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo() {
+    public static void main(String args[]) {
 	  int x;
     }
 }

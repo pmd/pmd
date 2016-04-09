@@ -9,7 +9,7 @@ should be utility class since all static, public constructor
 public class Foo {
  public Foo() { }
  public static void doSomething() {}
- public void foo() {
+ public static void main(String args[]) {
   doSomething();
  }
 }
@@ -24,7 +24,7 @@ ok, uses non-static
 public class Foo {
     public Foo() { }
     public void doSomething() { }
-    public void foo() { }
+    public static void main(String args[]) { }
 }
      ]]></code>
     </test-code>
@@ -175,7 +175,7 @@ NPE in incorrect implementation...
 public class Foo {
     public Foo() { }
     public void doSomething() { }
-    public void foo() { }
+    public static void main(String args[]) { }
     ;
 }
      ]]></code>
@@ -190,7 +190,7 @@ public class Foo {
     public Foo() { }
     @Override
     public void doSomething() { }
-    public void foo() { }
+    public static void main(String args[]) { }
 }
      ]]></code>
     </test-code>

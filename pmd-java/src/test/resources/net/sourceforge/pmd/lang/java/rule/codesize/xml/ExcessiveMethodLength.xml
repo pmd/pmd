@@ -8,7 +8,7 @@ short
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo() {
+    public static void main(String args[]) {
 	  bar();
     }
 }
@@ -16,7 +16,7 @@ public class Foo {
     </test-code>
     <code-fragment id="long"><![CDATA[
 public class Foo {
-    public void foo() {
+    public static void main(String args[]) {
 	  bar();
 	  bar();
 	  bar();
@@ -55,7 +55,7 @@ not quite long
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo() {
+    public static void main(String args[]) {
 	  bar();
 	  bar();
 	  bar();
@@ -76,7 +76,7 @@ long
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo() {
+    public static void main(String args[]) {
 	  bar();
 	  bar();
 	  bar();

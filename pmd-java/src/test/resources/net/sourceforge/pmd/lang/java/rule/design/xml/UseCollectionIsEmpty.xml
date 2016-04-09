@@ -169,7 +169,7 @@ public class Foo {
 import java.util.ArrayList;
 
 public class TestIsEmpty {
-    public void foo() {
+    public static void main(String args[]) {
         ArrayList<String> testObject = new ArrayList<String>();
 
         // These ones are flagged
@@ -228,7 +228,7 @@ public class TestIsEmpty {
 import java.util.ArrayList;
 
 public class IsEmptyTest {
-    public void foo() {
+    public static void main(String args[]) {
         ArrayList<String> testObject = new ArrayList<String>();
 
         // these should be flagged (as they are equivalent to == 0) and are

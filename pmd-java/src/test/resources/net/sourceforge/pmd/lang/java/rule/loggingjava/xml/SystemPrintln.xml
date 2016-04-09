@@ -62,7 +62,7 @@ public class Foo {
         </expected-messages>
         <code><![CDATA[
 public class TestPrintLn {
-    public void foo() {
+    public static void main(String args[]) {
         System.out.print("Print out");
         System.out.println("Print out line");
         System.err.print("Print err");

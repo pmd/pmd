@@ -71,7 +71,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseCollectionIsEmpty");
         addRule(RULESET, "UseLocaleWithCaseConversions");
         addRule(RULESET, "UseNotifyAllInsteadOfNotify");
-        //addRule(RULESET, "UseUtilityClass");
+        addRule(RULESET, "UseUtilityClass");
         addRule(RULESET, "UseVarargs");
     }
 }

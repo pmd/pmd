@@ -8,7 +8,7 @@ short
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo() {
+    public static void main(String args[]) {
      bar();
     }
 }
@@ -22,7 +22,7 @@ lots of comments
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void foo() {
+    public static void main(String args[]) {
      //nothing to see here
      //nothing to see here
      //nothing to see here
@@ -39,7 +39,7 @@ public class Foo {
     </test-code>
     <code-fragment id="long method"><![CDATA[
 public class Foo {
-    public void foo() {
+    public static void main(String args[]) {
      //nothing to see here
      //nothing to see here
      //nothing to see here
