@@ -3,6 +3,9 @@
 You can download the needed libraries from:
 <https://github.com/forcedotcom/idecore/tree/master/com.salesforce.ide.apex.core/lib>
 
+Apex Reference:
+<https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_reference.htm>
+
 In order to add a the jar files to the local repo, use the following commands:
 
     mvn install:install-file -Dfile=path/to/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT.jar \
