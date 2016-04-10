@@ -4,6 +4,7 @@
 
 **New Supported Languages:**
 
+*   Salesforce.com Apex is now supported by PMD and CPD. See [PR#86](https://github.com/pmd/pmd/pull/86).
 *   CPD now supports Perl. See [PR#82](https://github.com/pmd/pmd/pull/82).
 *   CPD now supports Swift. See [PR#33](https://github.com/adangel/pmd/pull/33).
 
@@ -44,6 +45,7 @@
 *   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer
 *   [#84](https://github.com/pmd/pmd/pull/84): Change EmptyMethodInAbstractClassShouldBeAbstract rule's description.
 *   [#85](https://github.com/pmd/pmd/pull/85): #1340 UseStringBufferForStringAppends False Positive with Ternary Operator
+*   [#86](https://github.com/pmd/pmd/pull/86): Added language module for Salesforce.com Apex incl. rules ported from Java and new ones.
 
 **Bugfixes:**
 

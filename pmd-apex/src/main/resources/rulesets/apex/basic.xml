@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+The Basic ruleset contains a collection of good practices which should be followed.
+  </description>
+
+  <rule name="AvoidSoqlInLoops"
+        message="Avoid Soql queries inside loops"
+        class="net.sourceforge.pmd.lang.apex.rule.basic.AvoidSoqlInLoopsRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#AvoidSoqlInLoops">
+    <description>
+New objects created within loops should be checked to see if they can created outside them and reused.
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+public class Something {
+	public static void main( String as[] ) {  
+		for (Integer i = 0; i < 10; i++) {
+		    List<Account> accounts = [SELECT Id FROM Account];
+		}
+	}
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="AvoidLogicInTrigger"
+        message="Avoid logic in triggers"
+        class="net.sourceforge.pmd.lang.apex.rule.basic.AvoidLogicInTriggerRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#AvoidLogicInTrigger">
+    <description>
+As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.
+Therefore delegate the triggers work to a regular class (often called Trigger handler class).
+
+See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+	for(Account acc : Trigger.new){           
+        if(Trigger.isInsert) {
+        	...
+        }
+		...
+        if(Trigger.isDelete){
+			...
+        }           
+    }           
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="AvoidGlobalModifier"
+        message="Avoid using global modifier"
+        class="net.sourceforge.pmd.lang.apex.rule.basic.AvoidGlobalModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/basic.html#AvoidGlobalModifier">
+    <description>
+Global classes should be avoided (especially in managed packages) as they can never be deleted or changed in signature. Always check twice if something needs to be global.
+Many interfaces (e.g. Batch) required global modifiers in the past but don't require this anymore. Don't look yourself in.
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+global class Unchangeable {
+	global UndeletableType unchangable(UndeletableType param) {  
+		// ..
+	}
+}
+]]>
+    </example>
+  </rule>
+
+</ruleset>

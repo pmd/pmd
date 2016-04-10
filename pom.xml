@@ -946,6 +946,7 @@
                 <jdk>1.8</jdk>
             </activation>
             <modules>
+                <module>pmd-apex</module>
                 <module>pmd-java8</module>
                 <module>pmd-ui</module>
             </modules>

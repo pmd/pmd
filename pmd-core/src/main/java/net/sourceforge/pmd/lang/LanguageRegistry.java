@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -22,8 +23,16 @@ public final class LanguageRegistry {
     private LanguageRegistry() {
         languages = new HashMap<>();
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
-        for (Language language : languageLoader) {
-            languages.put(language.getName(), language);
+        Iterator<Language> iterator = languageLoader.iterator();
+        while (iterator.hasNext()) {
+            try {
+                Language language = iterator.next();
+                languages.put(language.getName(), language);
+            } catch (UnsupportedClassVersionError e) {
+                // Some languages require java8 and are therefore only available
+                // if java8 or later is used as runtime.
+                System.err.println("Ignoring language for PMD: " + e.toString());
+            }
         }
     }
 
