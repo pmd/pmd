@@ -389,6 +389,25 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-toolchains-plugin</artifactId>
+                    <version>1.1</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>toolchain</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <toolchains>
+                            <jdk>
+                                <version>${java.version}</version>
+                            </jdk>
+                        </toolchains>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>1.9.1</version>
@@ -562,6 +581,10 @@
                     <configLocation>${checkstyle.configLocation}</configLocation>
                     <suppressionsLocation>${checkstyle.suppressionsFile}</suppressionsLocation>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
@@ -940,6 +963,31 @@
                  -->
                 <module>pmd-scala</module>
             </modules>
+        </profile>
+
+        <profile>
+          <id>travis</id>
+          <activation>
+            <!-- https://github.com/travis-ci/travis-ci/issues/2727 -->
+            <!-- http://docs.travis-ci.com/user/ci-environment/#Environment-variables -->
+            <!-- from: https://github.com/marschall/jdeps-maven-plugin/blob/master/pom.xml -->
+            <property>
+              <name>env.TRAVIS</name>
+              <value>true</value>
+            </property>
+          </activation>
+          <build>
+            <plugins>
+              <plugin>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <phase>none</phase>
+                  </execution>
+                </executions>
+              </plugin>
+            </plugins>
+          </build>
         </profile>
     </profiles>
 

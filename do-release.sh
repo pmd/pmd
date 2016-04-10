@@ -69,15 +69,6 @@ echo "Releasing PMD"
 echo "-------------------------------------------"
 
 
-MVN_VERSION=$(mvn --version | grep "Java version: 1.7")
-if [ $? -ne 0 ]; then
-    echo "Wrong java version!"
-    echo "Expected 1.7, but was:"
-    mvn --version
-    exit 1
-fi
-
-
 if [ "" = "$RELEASE_VERSION" ]; then
     echo -n "What is the release version of PMD? (e.g. 5.4.0) "
     read RELEASE_VERSION
@@ -87,7 +78,7 @@ if [ "" = "$DEVELOPMENT_VERSION" ]; then
     read DEVELOPMENT_VERSION
 fi
 if [ "" = "$CURRENT_BRANCH" ]; then
-    echo -n "What is the branch you want to release from? (e.g. master or pmd/5.3.x) "
+    echo -n "What is the branch you want to release from? (e.g. master or pmd/5.4.x or pmd/5.3.x) "
     read CURRENT_BRANCH
 fi
 

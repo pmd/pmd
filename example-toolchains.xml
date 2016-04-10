@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF8"?>
+<toolchains>
+  <!-- place this file in ${user.home}/.m2/toolchains.xml -->
+
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.6</version>
+    </provides>
+    <configuration>
+      <jdkHome>/path/to/jdk/1.6</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.7</version>
+    </provides>
+    <configuration>
+      <jdkHome>/path/to/jdk/1.7</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.8</version>
+    </provides>
+    <configuration>
+      <jdkHome>/path/to/jdk/1.8</jdkHome>
+    </configuration>
+  </toolchain>
+</toolchains>
