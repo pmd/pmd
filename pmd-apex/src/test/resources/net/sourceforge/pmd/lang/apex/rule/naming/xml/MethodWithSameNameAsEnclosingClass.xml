@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data>
+
+    <test-code>
+        <description>bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	Integer Foo(double x) {}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public Foo() {}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>doesn't crash on interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+	void voo();
+}
+		]]></code>
+    </test-code>
+    
+</test-data>

@@ -159,6 +159,11 @@
             <dependencies>
                 <dependency>
                     <groupId>net.sourceforge.pmd</groupId>
+                    <artifactId>pmd-apex</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-ui</artifactId>
                     <version>${project.version}</version>
                 </dependency>
