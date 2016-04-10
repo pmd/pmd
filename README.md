@@ -15,7 +15,11 @@ Our latest source of PMD can be found on [GitHub]. Fork us!
 
 ### How to build PMD?
 
-Simply use maven in the top-level directory:
+You'll need to have a `~/.m2/toolchains.xml` file setup with jdk 1.6 (for pmd 5.3.x), jdk 1.7 (for pmd 5.4.x and pmd 5.5.x)
+and jdk 1.8 (for some features in pmd 5.5.x). See [maven toolchains](https://maven.apache.org/guides/mini/guide-using-toolchains.html).
+A example file can be found here: [example-toolchains.xml](https://github.com/pmd/pmd/blob/master/example-toolchains.xml).
+
+Use maven in the top-level directory:
 
     mvn clean package
 
