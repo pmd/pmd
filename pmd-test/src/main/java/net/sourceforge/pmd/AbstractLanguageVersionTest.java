@@ -4,10 +4,17 @@
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.ResourceLoader;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,5 +89,28 @@ public class AbstractLanguageVersionTest {
         }
 
         assertEquals(expected, languageVersion);
+    }
+
+    /**
+     * Makes sure, that for each language a "rulesets.properties" file exists.
+     * @throws Exception any error
+     */
+    @Test
+    public void testRegisteredRulesets() throws Exception {
+        // only check for languages, that support rules
+        if (expected.getLanguage().getRuleChainVisitorClass() == null)
+            return;
+
+        Properties props = new Properties();
+        String rulesetsProperties = "rulesets/" + terseName + "/rulesets.properties";
+        props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
+        String rulesetFilenames = props.getProperty("rulesets.filenames");
+        assertNotNull(rulesetFilenames);
+
+        String[] rulesets = rulesetFilenames.split(",");
+        for (String r : rulesets) {
+            InputStream stream = ResourceLoader.loadResourceAsStream(r);
+            assertNotNull(stream);
+        }
     }
 }
