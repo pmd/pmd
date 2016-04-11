@@ -601,6 +601,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${javadoc.plugin.version}</version>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -989,6 +992,17 @@
               </plugin>
             </plugins>
           </build>
+        </profile>
+
+        <profile>
+            <id>site</id>
+            <!--
+                In order to build the site and build the aggregate javadoc report
+                javadoc needs to use java8 in order to be able to parse the java8 modules (apex, ui, ...)
+             -->
+            <properties>
+                <java.version>1.8</java.version>
+            </properties>
         </profile>
     </profiles>
 
