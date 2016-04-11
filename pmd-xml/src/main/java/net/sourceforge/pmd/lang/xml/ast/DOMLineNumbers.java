@@ -3,12 +3,9 @@
  */
 package net.sourceforge.pmd.lang.xml.ast;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
@@ -16,21 +13,23 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+
 /**
  *
  */
 class DOMLineNumbers {
     private final Document document;
     private String xmlString;
-    private List<Integer> lines;
+    private SourceCodePositioner sourceCodePositioner;
 
     public DOMLineNumbers(Document document, String xmlString) {
         this.document = document;
         this.xmlString = xmlString;
+        this.sourceCodePositioner = new SourceCodePositioner(xmlString);
     }
     
     public void determine() {
-        calculateLinesMap();
         determineLocation(document, 0);
     }
     private int determineLocation(Node n, int index) {
@@ -123,62 +122,18 @@ class DOMLineNumbers {
     }
     private void setBeginLocation(Node n, int index) {
         if (n != null) {
-            int line = toLine(index);
+            int line = sourceCodePositioner.lineNumberFromOffset(index);
+            int column = sourceCodePositioner.columnFromOffset(line, index);
             n.setUserData(XmlNode.BEGIN_LINE, line, null);
-            n.setUserData(XmlNode.BEGIN_COLUMN, toColumn(line, index), null);
+            n.setUserData(XmlNode.BEGIN_COLUMN, column, null);
         }
     }
     private void setEndLocation(Node n, int index) {
         if (n != null) {
-            int line = toLine(index);
+            int line = sourceCodePositioner.lineNumberFromOffset(index);
+            int column = sourceCodePositioner.columnFromOffset(line, index);
             n.setUserData(XmlNode.END_LINE, line, null);
-            n.setUserData(XmlNode.END_COLUMN, toColumn(line, index), null);
+            n.setUserData(XmlNode.END_COLUMN, column, null);
         }
-    }
-    
-    /**
-     * Calculates a list with the file offsets for each line.
-     */
-    private void calculateLinesMap() {
-        lines = new ArrayList<>();
-
-        int index = -1;
-        int count = StringUtils.countMatches(xmlString, "\n");
-        for (int line = 1; line <= count; line++) {
-            lines.add(index + 1);
-            index = xmlString.indexOf("\n", index + 1); // fast forward till end of current line
-        }
-        lines.add(index + 1);
-    }
-
-    private int toLine(int index) {
-        int low = 0;
-        int high = lines.size() - 1;
-
-        // binary search the best match
-        while (low <= high) {
-            int middle = (low + high) / 2;
-            int middleStart = lines.get(middle);
-            if (middleStart == index) {
-                return middle + 1; // found
-            }
-
-            if (middleStart > index) {
-                high = middle - 1;
-            } else {
-                low = middle + 1;
-            }
-        }
-
-        return low; // not found or last checked line, which is the best match;
-    }
-
-    private int toColumn(int line, int index) {
-        Integer lineStart = lines.get(line - 1);
-        if (lineStart == null) {
-            lineStart = lines.get(lines.size() - 1);
-        }
-        int column = index - lineStart;
-        return column + 1;
     }
 }
