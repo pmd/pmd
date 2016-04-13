@@ -44,6 +44,7 @@ public class AbstractLanguageVersionTest {
 
     private String name;
     private String version;
+    private String simpleTerseName;
     private String terseName;
     private LanguageVersion expected;
 
@@ -57,6 +58,7 @@ public class AbstractLanguageVersionTest {
     public AbstractLanguageVersionTest(String name, String terseName, String version, LanguageVersion expected) {
         this.name = name;
         this.version = version;
+        this.simpleTerseName = terseName;
         this.terseName = terseName;
         if (version != null && !version.isEmpty()) {
             this.terseName += " " + version;
@@ -98,11 +100,11 @@ public class AbstractLanguageVersionTest {
     @Test
     public void testRegisteredRulesets() throws Exception {
         // only check for languages, that support rules
-        if (expected.getLanguage().getRuleChainVisitorClass() == null)
+        if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null)
             return;
 
         Properties props = new Properties();
-        String rulesetsProperties = "rulesets/" + terseName + "/rulesets.properties";
+        String rulesetsProperties = "rulesets/" + simpleTerseName + "/rulesets.properties";
         props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
