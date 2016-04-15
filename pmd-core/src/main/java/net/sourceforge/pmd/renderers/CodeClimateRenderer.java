@@ -48,9 +48,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         CodeClimateIssue issue = new CodeClimateIssue();
         Rule rule = rv.getRule();
         issue.check_name = rule.getName();
-// TODO set category with something like rule.getRuleSetName();
         issue.description = rv.getDescription();
         issue.content = new CodeClimateIssue.Content(rule.getDescription());
+        issue.categories = new String[] { rule.getRuleSetName() };
         issue.location = new CodeClimateIssue.Location(rv.getFilename(), rv.getBeginLine(), rv.getEndLine());
         switch(rule.getPriority()) {
             case HIGH:
