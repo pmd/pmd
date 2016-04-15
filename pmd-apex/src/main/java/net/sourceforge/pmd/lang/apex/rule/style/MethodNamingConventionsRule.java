@@ -10,6 +10,11 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
 
 public class MethodNamingConventionsRule extends AbstractApexRule {
+	
+	public MethodNamingConventionsRule() {
+		// Note: x10 as Apex has not automatic refactoring
+		setProperty(REMEDIATION_MULTIPLIER, 10);
+	}
 
 	public Object visit(ASTUserClass node, Object data) {
 		return super.visit(node, data);

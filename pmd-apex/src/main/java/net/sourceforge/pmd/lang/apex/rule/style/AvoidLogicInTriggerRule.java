@@ -10,6 +10,10 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public class AvoidLogicInTriggerRule extends AbstractApexRule {
+	
+	public AvoidLogicInTriggerRule() {
+		setProperty(REMEDIATION_MULTIPLIER, 100);
+	}
 
 	@Override
 	public Object visit(ASTBlockStatement node, Object data) {

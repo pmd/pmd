@@ -41,6 +41,9 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
 	 */
 	protected AbstractNcssCountRule(Class<?> nodeClass) {
 		this.nodeClass = nodeClass;
+
+		setProperty(MINIMUM_DESCRIPTOR, 1000d);
+		setProperty(REMEDIATION_MULTIPLIER, 100);
 	}
 
 	@Override

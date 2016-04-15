@@ -77,6 +77,9 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 		definePropertyDescriptor(LOCAL_SUFFIXES_DESCRIPTOR);
 		definePropertyDescriptor(PARAMETER_PREFIXES_DESCRIPTOR);
 		definePropertyDescriptor(PARAMETER_SUFFIXES_DESCRIPTOR);
+
+		// Note: x10 as Apex has not automatic refactoring
+		setProperty(REMEDIATION_MULTIPLIER, 10);
 	}
 
 	public Object visit(ASTUserClass node, Object data) {

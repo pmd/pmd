@@ -14,6 +14,11 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 
+	public AvoidSoqlInLoopsRule() {
+		// Note: Often more complicated as just moving the SOQL a few lines. Involves Maps...
+		setProperty(REMEDIATION_MULTIPLIER, 100);
+	}
+
 	@Override
 	public Object visit(ASTSoqlExpression node, Object data) {
 		if (insideLoop(node) && parentNotReturn(node) && parentNotForEach(node)) {

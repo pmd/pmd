@@ -8,6 +8,11 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class ClassNamingConventionsRule extends AbstractApexRule {
+	
+	public ClassNamingConventionsRule() {
+		// Note: x10 as Apex has not automatic refactoring
+		setProperty(REMEDIATION_MULTIPLIER, 10);
+	}
 
 	public Object visit(ASTUserClass node, Object data) {
 		if (Character.isLowerCase(node.getImage().charAt(0))) {

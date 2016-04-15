@@ -15,6 +15,7 @@ public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
 	public ExcessiveClassLengthRule() {
 		super(ASTUserClass.class);
 		setProperty(MINIMUM_DESCRIPTOR, 1000d);
+		setProperty(REMEDIATION_MULTIPLIER, 1000);
 	}
 
 	@Override

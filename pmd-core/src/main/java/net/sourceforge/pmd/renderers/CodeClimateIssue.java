@@ -17,6 +17,7 @@ public class CodeClimateIssue {
     public String[] categories;
     public Location location;
     public String severity;
+    public int remediation_points;
 
     /**
      * Location structure

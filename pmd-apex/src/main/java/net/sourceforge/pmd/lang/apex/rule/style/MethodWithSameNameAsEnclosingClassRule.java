@@ -10,6 +10,11 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
+	
+	public MethodWithSameNameAsEnclosingClassRule() {
+		// Note: x10 as Apex has not automatic refactoring
+		setProperty(REMEDIATION_MULTIPLIER, 10);
+	}
 
 	@Override
 	public Object visit(ASTUserClass node, Object data) {
