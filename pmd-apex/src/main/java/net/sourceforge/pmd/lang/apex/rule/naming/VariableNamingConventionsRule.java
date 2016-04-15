@@ -151,8 +151,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 						new Object[] { varName });
 			}
 			return data;
-		}
-		else if (!isFinal) {
+		} else if (!isFinal) {
 			String normalizedVarName = normalizeVariableName(varName, prefixes, suffixes);
 
 			if (normalizedVarName.indexOf('_') >= 0) {

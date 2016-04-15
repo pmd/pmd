@@ -10,7 +10,7 @@ public class ApexLanguageModule extends BaseLanguageModule {
 
 	public static final String NAME = "Apex";
 	public static final String TERSE_NAME = "apex";
-	public static final String[] EXTENSIONS = {"cls", "trigger"}; 
+	public static final String[] EXTENSIONS = { "cls", "trigger" };
 
 	public ApexLanguageModule() {
 		super(NAME, null, TERSE_NAME, ApexRuleChainVisitor.class, EXTENSIONS);

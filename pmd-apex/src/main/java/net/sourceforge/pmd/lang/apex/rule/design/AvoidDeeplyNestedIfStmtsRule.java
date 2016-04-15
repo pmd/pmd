@@ -23,7 +23,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
 	public Object visit(ASTUserClass node, Object data) {
 		depth = 0;
 		depthLimit = getProperty(PROBLEM_DEPTH_DESCRIPTOR);
-		
+
 		return super.visit(node, data);
 	}
 
@@ -35,7 +35,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
 			addViolation(data, node);
 		}
 		depth--;
-		
+
 		return data;
 	}
 }

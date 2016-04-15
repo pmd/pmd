@@ -29,7 +29,7 @@ public class AvoidLogicInTriggerRule extends AbstractApexRule {
 			}
 			n = n.jjtGetParent();
 		}
-		
+
 		return false;
 	}
 }

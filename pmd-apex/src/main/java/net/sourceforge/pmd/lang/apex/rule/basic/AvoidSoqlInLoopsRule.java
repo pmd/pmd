@@ -40,7 +40,7 @@ public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 			}
 			n = n.jjtGetParent();
 		}
-		
+
 		return false;
 	}
 }

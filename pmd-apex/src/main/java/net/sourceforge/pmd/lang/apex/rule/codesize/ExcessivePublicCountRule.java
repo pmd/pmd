@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
- * @author aglover
+ * @author ported from Java original of aglover
  *         <p/>
  *         Class Name: ExcessivePublicCount
  *         <p/>

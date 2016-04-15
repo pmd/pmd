@@ -19,10 +19,10 @@ public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
 
 	@Override
 	public Object visit(ASTUserClass node, Object data) {
-		if(node.getNode().getModifiers().getModifiers().not(IS_TEST)) {
+		if (node.getNode().getModifiers().getModifiers().not(IS_TEST)) {
 			return super.visit(node, data);
 		}
-		
+
 		return data;
 	}
 }

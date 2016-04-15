@@ -115,21 +115,14 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 		for (Object element : nodes) {
 			if (element instanceof ASTUserClass) {
 				visit((ASTUserClass) element, ctx);
-			}
-			else if (element instanceof ASTUserInterface) {
+			} else if (element instanceof ASTUserInterface) {
 				visit((ASTUserInterface) element, ctx);
-			}
-			else if (element instanceof ASTUserTrigger) {
+			} else if (element instanceof ASTUserTrigger) {
 				visit((ASTUserTrigger) element, ctx);
 			}
 		}
 	}
 
-	//
-	// The following APIs are identical to those in ApexParserVisitorAdapter.
-	// Due to Java single inheritance, it preferred to extend from the more
-	// complex Rule base class instead of from relatively simple Visitor.
-	//
 	@Override
 	public Object visit(ApexNode<?> node, Object data) {
 		node.childrenAccept(this, data);
