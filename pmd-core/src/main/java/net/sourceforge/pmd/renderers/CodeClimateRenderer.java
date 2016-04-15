@@ -19,6 +19,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "codeclimate";
 
     protected static final String EOL = System.getProperty("line.separator", "\n");
+    // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
+    protected static final String NULL_CHARACTER = "\u0000";
 
     public CodeClimateRenderer() {
         super(NAME, "Code Climate integration.");
@@ -33,7 +35,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         Gson gson = new Gson();
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
-            writer.write(gson.toJson(makeIssue(rv)) + EOL);
+            writer.write(gson.toJson(makeIssue(rv)) + NULL_CHARACTER + EOL);
         }
     }
 
@@ -46,6 +48,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         CodeClimateIssue issue = new CodeClimateIssue();
         Rule rule = rv.getRule();
         issue.check_name = rule.getName();
+// TODO set category with something like rule.getRuleSetName();
         issue.description = rv.getDescription();
         issue.content = new CodeClimateIssue.Content(rule.getDescription());
         issue.location = new CodeClimateIssue.Location(rv.getFilename(), rv.getBeginLine(), rv.getEndLine());

@@ -9,20 +9,7 @@
 		Default ruleset used by the Code Climate Engine for Salesforce.com Apex
 	</description>
 
-	<rule ref="rulesets/apex/basic.xml/AvoidSoqlInLoops"
-		  message="Avoid Soql queries inside loops">
-		<priority>3</priority>
-	</rule>
-	<rule ref="rulesets/apex/basic.xml/AvoidLogicInTrigger"
-		  message="Avoid logic in triggers">
-		<priority>3</priority>
-	</rule>
-	<rule ref="rulesets/apex/basic.xml/AvoidGlobalModifier"
-		  message="Avoid using global modifier">
-		<priority>3</priority>
-	</rule>
-	
-	<rule ref="rulesets/apex/codesize.xml/ExcessiveClassLength"
+	<rule ref="rulesets/apex/complexity.xml/ExcessiveClassLength"
 		  message="Avoid really long classes (lines of code)">
 		<priority>3</priority>
 		<properties>
@@ -30,7 +17,7 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/codesize.xml/ExcessiveParameterList"
+	<rule ref="rulesets/apex/complexity.xml/ExcessiveParameterList"
 		  message="Avoid long parameter lists">
 		<priority>3</priority>
 		<properties>
@@ -38,7 +25,7 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/codesize.xml/ExcessivePublicCount"
+	<rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount"
 		  message="This class has too many public methods and attributes">
 		<priority>3</priority>
 		<properties>
@@ -46,7 +33,7 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/codesize.xml/NcssConstructorCount"
+	<rule ref="rulesets/apex/complexity.xml/NcssConstructorCount"
 		  message="The constructor has an NCSS line count of {0}">
 		<priority>3</priority>
 		<properties>
@@ -54,7 +41,7 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/codesize.xml/NcssMethodCount"
+	<rule ref="rulesets/apex/complexity.xml/NcssMethodCount"
 		  message="The method {0}() has an NCSS line count of {1}">
 		<priority>3</priority>
 		<properties>
@@ -62,7 +49,7 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/codesize.xml/NcssTypeCount"
+	<rule ref="rulesets/apex/complexity.xml/NcssTypeCount"
 		  message="The type has an NCSS line count of {0}">
 		<priority>3</priority>
 		<properties>
@@ -70,7 +57,7 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/codesize.xml/StdCyclomaticComplexity"
+	<rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity"
 		  message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}.">
 		<priority>3</priority>
 		<properties>
@@ -78,7 +65,7 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/codesize.xml/TooManyFields"
+	<rule ref="rulesets/apex/complexity.xml/TooManyFields"
 		  message="Too many fields">
 		<priority>3</priority>
 		<properties>
@@ -86,7 +73,7 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/design.xml/AvoidDeeplyNestedIfStmts"
+	<rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts"
 		  message="Deeply nested if..then statements are hard to read">
 		<priority>3</priority>
 		<properties>
@@ -94,22 +81,37 @@
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/naming.xml/ClassNamingConventions"
+	<rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops"
+		  message="Avoid Soql queries inside loops">
+		<priority>3</priority>
+	</rule>
+	
+	<rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger"
+		  message="Avoid logic in triggers">
+		<priority>3</priority>
+	</rule>
+	
+	<rule ref="rulesets/apex/style.xml/AvoidGlobalModifier"
+		  message="Avoid using global modifier">
+		<priority>3</priority>
+	</rule>
+	
+	<rule ref="rulesets/apex/style.xml/ClassNamingConventions"
 		  message="Class names should begin with an uppercase character">
 		<priority>3</priority>
 	</rule>
 	
-	<rule ref="rulesets/apex/naming.xml/MethodNamingConventions"
+	<rule ref="rulesets/apex/style.xml/MethodNamingConventions"
 		  message="Method name does not begin with a lower case character.">
 		<priority>3</priority>
 	</rule>
 	
-	<rule ref="rulesets/apex/naming.xml/MethodWithSameNameAsEnclosingClass"
+	<rule ref="rulesets/apex/style.xml/MethodWithSameNameAsEnclosingClass"
 		  message="Classes should not have non-constructor methods with the same name as the class">
 		<priority>3</priority>
 	</rule>
 	
-	<rule ref="rulesets/apex/naming.xml/VariableNamingConventions"
+	<rule ref="rulesets/apex/style.xml/VariableNamingConventions"
 		  message="{0} variable {1} should begin with {2}">
 		<priority>3</priority>
 	</rule>
