@@ -12,11 +12,11 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
 		super(node);
 	}
 
-    // For top level classes, the end is the end of file.
-    @Override
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        super.calculateLineNumbers(positioner);
-        this.endLine = positioner.getLastLine();
-        this.endColumn = positioner.getLastLineColumn();
-    }
+	// For top level classes, the end is the end of file.
+	@Override
+	void calculateLineNumbers(SourceCodePositioner positioner) {
+		super.calculateLineNumbers(positioner);
+		this.endLine = positioner.getLastLine();
+		this.endColumn = positioner.getLastLineColumn();
+	}
 }

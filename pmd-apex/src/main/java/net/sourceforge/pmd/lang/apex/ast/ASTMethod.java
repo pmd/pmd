@@ -22,21 +22,21 @@ public class ASTMethod extends AbstractApexNode<Method> {
 
 	@Override
 	public int getEndLine() {
-	    ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-	    if (block != null) {
-	        return block.getEndLine();
-	    }
+		ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
+		if (block != null) {
+			return block.getEndLine();
+		}
 
-	    return super.getEndLine();
+		return super.getEndLine();
 	}
 
 	@Override
 	public int getEndColumn() {
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndColumn();
-        }
+		ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
+		if (block != null) {
+			return block.getEndColumn();
+		}
 
-        return super.getEndColumn();
+		return super.getEndColumn();
 	}
 }
