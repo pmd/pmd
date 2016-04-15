@@ -30,7 +30,6 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
 	@Override
 	public Object[] getViolationParameters(DataPoint point) {
 		// TODO need to put class name or constructor ID in string
-		return new String[] { String.valueOf(((ASTMethod) point.getNode()).getNode().getMethodInfo().getName()),
-				String.valueOf((int) point.getScore()) };
+		return new String[] { String.valueOf((int) point.getScore()) };
 	}
 }
