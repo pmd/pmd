@@ -13,7 +13,7 @@ public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
 	
 	public MethodWithSameNameAsEnclosingClassRule() {
 		// Note: x10 as Apex has not automatic refactoring
-		setProperty(REMEDIATION_MULTIPLIER, 10);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 10);
 	}
 
 	@Override

@@ -18,9 +18,10 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
 
 	public AvoidDeeplyNestedIfStmtsRule() {
 		definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);
-		
+
+		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
 		// Note: Remedy needs better OO design and therefore high effort
-		setProperty(REMEDIATION_MULTIPLIER, 100);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 	}
 
 	public Object visit(ASTUserClass node, Object data) {

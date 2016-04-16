@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class AvoidGlobalModifierRule extends AbstractApexRule {
 	
 	public AvoidGlobalModifierRule() {
-		setProperty(REMEDIATION_MULTIPLIER, 10);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 10);
 	}
 
 	@Override

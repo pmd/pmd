@@ -13,7 +13,7 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
 	
 	public MethodNamingConventionsRule() {
 		// Note: x10 as Apex has not automatic refactoring
-		setProperty(REMEDIATION_MULTIPLIER, 10);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 10);
 	}
 
 	public Object visit(ASTUserClass node, Object data) {

@@ -15,8 +15,9 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 
 	public AvoidSoqlInLoopsRule() {
+		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Performance" });
 		// Note: Often more complicated as just moving the SOQL a few lines. Involves Maps...
-		setProperty(REMEDIATION_MULTIPLIER, 100);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 	}
 
 	@Override

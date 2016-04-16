@@ -8,7 +8,8 @@ import com.google.gson.Gson;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
-import static net.sourceforge.pmd.renderers.CodeClimateRule.REMEDIATION_MULTIPLIER;
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -55,7 +56,6 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         issue.check_name = rule.getName();
         issue.description = rv.getDescription();
         issue.content = new CodeClimateIssue.Content(rule.getDescription());
-        issue.categories = new String[] { rule.getRuleSetName() };
         issue.location = new CodeClimateIssue.Location(rv.getFilename(), rv.getBeginLine(), rv.getEndLine());
         
         switch(rule.getPriority()) {
@@ -72,10 +72,14 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 break;
         }
         
-        if(rule.hasDescriptor(REMEDIATION_MULTIPLIER)) {
-        	issue.remediation_points = rule.getProperty(REMEDIATION_MULTIPLIER) * REMEDIATION_POINTS_DEFAULT;
+        if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
+        	issue.remediation_points = rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER) * REMEDIATION_POINTS_DEFAULT;
         }
         
+        if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
+        	issue.categories = rule.getProperty(CODECLIMATE_CATEGORIES);
+	    }
+    
         return issue;
     }
 

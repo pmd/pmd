@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AvoidLogicInTriggerRule extends AbstractApexRule {
 	
 	public AvoidLogicInTriggerRule() {
-		setProperty(REMEDIATION_MULTIPLIER, 100);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 	}
 
 	@Override

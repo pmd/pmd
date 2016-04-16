@@ -101,7 +101,8 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 
 	public AbstractApexRule() {
 		super.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
-		definePropertyDescriptor(REMEDIATION_MULTIPLIER);
+		definePropertyDescriptor(CODECLIMATE_CATEGORIES);
+		definePropertyDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER);
 	}
 
 	@Override

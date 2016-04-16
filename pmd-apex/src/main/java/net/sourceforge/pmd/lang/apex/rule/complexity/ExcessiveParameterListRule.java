@@ -16,7 +16,8 @@ public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
 	public ExcessiveParameterListRule() {
 		super(ASTMethod.class);
 		setProperty(MINIMUM_DESCRIPTOR, 10d);
-		setProperty(REMEDIATION_MULTIPLIER, 100);
+		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 	}
 
 	public Object visit(ASTParameter node, Object data) {

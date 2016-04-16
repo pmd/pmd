@@ -33,7 +33,8 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
 	public ExcessivePublicCountRule() {
 		super(ASTUserClass.class);
 		setProperty(MINIMUM_DESCRIPTOR, 45d);
-		setProperty(REMEDIATION_MULTIPLIER, 100);
+		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 	}
 
 	public Object visit(ASTMethod node, Object data) {
