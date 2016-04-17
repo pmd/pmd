@@ -25,7 +25,7 @@ import java.util.List;
  * @see LanguageVersion
  * @see LanguageVersionDiscoverer
  */
-public interface Language {
+public interface Language extends Comparable<Language> {
 
     String LANGUAGE_MODULES_CLASS_NAMES_PROPERTY = "languageModulesClassNames";
 

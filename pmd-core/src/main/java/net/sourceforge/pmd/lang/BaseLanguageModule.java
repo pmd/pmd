@@ -3,7 +3,12 @@
  */
 package net.sourceforge.pmd.lang;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by christoferdutz on 21.09.14.
@@ -55,7 +60,7 @@ public abstract class BaseLanguageModule implements Language {
     @Override
     public Class<?> getRuleChainVisitorClass() {
         return ruleChainVisitorClass;
-    }
+   }
 
     @Override
     public List<String> getExtensions() {
@@ -92,5 +97,23 @@ public abstract class BaseLanguageModule implements Language {
     @Override
     public String toString() {
         return "LanguageModule:" + name + "(" + this.getClass().getSimpleName() + ")";
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof BaseLanguageModule)) return false;
+        BaseLanguageModule other = (BaseLanguageModule)obj;
+        return name.equals(other.name);
+    }
+
+    @Override
+    public int compareTo(Language o) {
+        return getName().compareTo(o.getName());
     }
 }
