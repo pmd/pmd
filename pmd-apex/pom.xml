@@ -92,26 +92,8 @@
 
 		<dependency>
 			<groupId>org.antlr</groupId>
-			<artifactId>antlr-complete</artifactId>
+			<artifactId>antlr-runtime</artifactId>
 			<version>3.5.2</version>
-		</dependency>
-	
-		<dependency>
-			<groupId>axis</groupId>
-			<artifactId>axis</artifactId>
-			<version>1.4</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.3.2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.glassfish.main.javaee-api</groupId>
-			<artifactId>javax.xml.rpc</artifactId>
-			<version>3.1.2.2</version>
 		</dependency>
 
 	</dependencies>
