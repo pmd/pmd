@@ -72,13 +72,17 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 break;
         }
         
+        issue.remediation_points = REMEDIATION_POINTS_DEFAULT;
         if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
-        	issue.remediation_points = rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER) * REMEDIATION_POINTS_DEFAULT;
+        	issue.remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
         }
         
         if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
         	issue.categories = rule.getProperty(CODECLIMATE_CATEGORIES);
 	    }
+        else {
+        	issue.categories = new String[]{ "Style" };
+        }
     
         return issue;
     }
