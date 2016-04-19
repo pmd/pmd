@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.lang.apex.rule.complexity;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -25,8 +24,13 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
 		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 	}
 
-	public Object visit(ASTMethodCallExpression node, Object data) {
-		return NumericConstants.ONE;
+	@Override
+	public Object visit(ASTMethod node, Object data) {
+		if (node.getNode().getMethodInfo().isConstructor()) {
+			return super.visit(node, data);
+		}
+
+		return NumericConstants.ZERO;
 	}
 
 	@Override

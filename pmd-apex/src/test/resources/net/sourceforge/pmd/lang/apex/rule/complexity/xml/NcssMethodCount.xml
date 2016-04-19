@@ -79,4 +79,29 @@ public class Foo {
         <code-ref id="long method"/>
     </test-code>
     
+    <test-code>
+        <description>ignores constructor</description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+    }
+}
+		]]></code>
+    </test-code>
+    
 </test-data>

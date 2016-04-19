@@ -37,7 +37,7 @@ public class Foo {
 		]]></code>
     </test-code>
     
-    <code-fragment id="long method"><![CDATA[
+    <code-fragment id="long constructor"><![CDATA[
 public class Foo {
     public Foo() {
      //nothing to see here
@@ -65,10 +65,10 @@ public class Foo {
      ]]></code-fragment>
      
     <test-code>
-        <description>long method</description>
+        <description>long constructor</description>
         <rule-property name="minimum">13</rule-property>
         <expected-problems>1</expected-problems>
-        <code-ref id="long method"/>
+        <code-ref id="long constructor"/>
     </test-code>
     
     <test-code>
@@ -76,7 +76,35 @@ public class Foo {
         <!-- obtained this value by using NCSS directly -->
         <rule-property name="minimum">14</rule-property>
         <expected-problems>0</expected-problems>
-        <code-ref id="long method"/>
+        <code-ref id="long constructor"/>
+    </test-code>
+    
+    <test-code>
+        <description>ignore non-constructor methods</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="minimum">10</rule-property>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+		bar();
+    }
+}
+		]]></code>
     </test-code>
     
 </test-data>

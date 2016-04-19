@@ -143,7 +143,7 @@ public class Foo extends Bar {
 ]]>
    </example></rule>
 
-<rule name="NcssConstructorCount" message="The constructor with {0} parameters has an NCSS line count of {1}"
+<rule name="NcssConstructorCount" message="The constructor has an NCSS line count of {0}"
    class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssConstructorCountRule"
    externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#NcssConstructorCount">
     <description>
