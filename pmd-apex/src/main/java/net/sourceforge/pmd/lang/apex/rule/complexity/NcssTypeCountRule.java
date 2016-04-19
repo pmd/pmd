@@ -25,7 +25,7 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
 	 */
 	public NcssTypeCountRule() {
 		super(ASTUserClass.class);
-		setProperty(MINIMUM_DESCRIPTOR, 1500d);
+		setProperty(MINIMUM_DESCRIPTOR, 500d);
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
 		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1000);
 	}

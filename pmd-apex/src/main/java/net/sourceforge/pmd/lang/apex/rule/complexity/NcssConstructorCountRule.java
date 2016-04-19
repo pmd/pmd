@@ -20,7 +20,7 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
 	 */
 	public NcssConstructorCountRule() {
 		super(ASTMethod.class);
-		setProperty(MINIMUM_DESCRIPTOR, 100d);
+		setProperty(MINIMUM_DESCRIPTOR, 20d);
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
 		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 	}

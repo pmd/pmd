@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
 	public ExcessiveParameterListRule() {
 		super(ASTMethod.class);
-		setProperty(MINIMUM_DESCRIPTOR, 10d);
+		setProperty(MINIMUM_DESCRIPTOR, 4d);
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
 		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 	}
