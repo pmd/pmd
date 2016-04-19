@@ -9,111 +9,176 @@
 		Default ruleset used by the Code Climate Engine for Salesforce.com Apex
 	</description>
 
-	<rule ref="rulesets/apex/complexity.xml/ExcessiveClassLength"
-		  message="Avoid really long classes (lines of code)">
+	<rule ref="rulesets/apex/complexity.xml/ExcessiveClassLength" message="Avoid really long classes (lines of code)">
 		<priority>3</priority>
+		
 		<properties>
         	<property name="minimum" value="1000"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="1000"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/ExcessiveParameterList"
-		  message="Avoid long parameter lists">
+	<rule ref="rulesets/apex/complexity.xml/ExcessiveParameterList" message="Avoid long parameter lists">
 		<priority>3</priority>
+		
 		<properties>
         	<property name="minimum" value="4"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="100"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount"
-		  message="This class has too many public methods and attributes">
+	<rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount" message="This class has too many public methods and attributes">
 		<priority>3</priority>
+		
 		<properties>
         	<property name="minimum" value="20"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="100"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/NcssConstructorCount"
-		  message="The constructor has an NCSS line count of {0}">
+	<rule ref="rulesets/apex/complexity.xml/NcssConstructorCount" message="The constructor has an NCSS line count of {0}">
 		<priority>3</priority>
+		
 		<properties>
         	<property name="minimum" value="20"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="100"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/NcssMethodCount"
-		  message="The method {0}() has an NCSS line count of {1}">
+	<rule ref="rulesets/apex/complexity.xml/NcssMethodCount" message="The method {0}() has an NCSS line count of {1}">
 		<priority>3</priority>
+		
 		<properties>
         	<property name="minimum" value="40"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="100"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/NcssTypeCount"
-		  message="The type has an NCSS line count of {0}">
+	<rule ref="rulesets/apex/complexity.xml/NcssTypeCount" message="The type has an NCSS line count of {0}">
 		<priority>3</priority>
+		
 		<properties>
         	<property name="minimum" value="500"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="1000"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity"
-		  message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}.">
+	<rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity" message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}.">
 		<priority>3</priority>
+		
 		<properties>
         	<property name="reportLevel" value="10"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="5000"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/TooManyFields"
-		  message="Too many fields">
+	<rule ref="rulesets/apex/complexity.xml/TooManyFields" message="Too many fields">
 		<priority>3</priority>
+		
 		<properties>
         	<property name="maxfields" value="15"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="1000"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts"
-		  message="Deeply nested if..then statements are hard to read">
+	<rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts" message="Deeply nested if..then statements are hard to read">
 		<priority>3</priority>
 		<properties>
         	<property name="problemDepth" value="3"/>
+        	
+        	<!-- relevant for Code Climate output only -->
+        	<property name="cc_categories" value="Complexity"/>
+        	<property name="cc_remediation_points_multiplier" value="1000"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops"
-		  message="Avoid Soql queries inside loops">
+	<rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" message="Avoid Soql queries inside loops">
+		<priority>3</priority>
+        
+        <properties>	
+	       	<!-- relevant for Code Climate output only -->
+	       	<property name="cc_categories" value="Performance"/>
+	       	<property name="cc_remediation_points_multiplier" value="100"/>
+       	</properties>
+	</rule>
+	
+	<rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger" message="Avoid logic in triggers">
+		<priority>3</priority>
+        
+        <properties>	
+	       	<!-- relevant for Code Climate output only -->
+	       	<property name="cc_categories" value="Style"/>
+	       	<property name="cc_remediation_points_multiplier" value="100"/>
+       	</properties>
+	</rule>
+	
+	<rule ref="rulesets/apex/style.xml/AvoidGlobalModifier" message="Avoid using global modifier">
 		<priority>3</priority>
 	</rule>
 	
-	<rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger"
-		  message="Avoid logic in triggers">
+	<rule ref="rulesets/apex/style.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
 		<priority>3</priority>
-	</rule>
-	
-	<rule ref="rulesets/apex/style.xml/AvoidGlobalModifier"
-		  message="Avoid using global modifier">
-		<priority>3</priority>
-	</rule>
-	
-	<rule ref="rulesets/apex/style.xml/ClassNamingConventions"
-		  message="Class names should begin with an uppercase character">
-		<priority>3</priority>
+        
+        <properties>	
+	       	<!-- relevant for Code Climate output only -->
+	       	<property name="cc_categories" value="Style"/>
+	       	<property name="cc_remediation_points_multiplier" value="10"/>
+       	</properties>
 	</rule>
 	
 	<rule ref="rulesets/apex/style.xml/MethodNamingConventions"
 		  message="Method name does not begin with a lower case character.">
 		<priority>3</priority>
+        
+        <properties>	
+	       	<!-- relevant for Code Climate output only -->
+	       	<property name="cc_categories" value="Style"/>
+	       	<property name="cc_remediation_points_multiplier" value="10"/>
+       	</properties>
 	</rule>
 	
-	<rule ref="rulesets/apex/style.xml/MethodWithSameNameAsEnclosingClass"
-		  message="Classes should not have non-constructor methods with the same name as the class">
+	<rule ref="rulesets/apex/style.xml/MethodWithSameNameAsEnclosingClass" message="Classes should not have non-constructor methods with the same name as the class">
 		<priority>3</priority>
+        
+        <properties>	
+	       	<!-- relevant for Code Climate output only -->
+	       	<property name="cc_categories" value="Style"/>
+	       	<property name="cc_remediation_points_multiplier" value="10"/>
+       	</properties>
 	</rule>
 	
-	<rule ref="rulesets/apex/style.xml/VariableNamingConventions"
-		  message="{0} variable {1} should begin with {2}">
+	<rule ref="rulesets/apex/style.xml/VariableNamingConventions" message="{0} variable {1} should begin with {2}">
 		<priority>3</priority>
+        
+        <properties>	
+	       	<!-- relevant for Code Climate output only -->
+	       	<property name="cc_categories" value="STYLE"/>
+	       	<property name="cc_remediation_points_multiplier" value="10"/>
+       	</properties>
 	</rule>
 	
 </ruleset>

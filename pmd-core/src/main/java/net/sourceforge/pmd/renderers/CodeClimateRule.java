@@ -13,16 +13,17 @@ import static net.sourceforge.pmd.renderers.CodeClimateRenderer.REMEDIATION_POIN
  * This interface tags a Rule specifying properties required for the Code Climate output format
  */
 public interface CodeClimateRule extends Rule {
-	StringMultiProperty CODECLIMATE_CATEGORIES = new StringMultiProperty("categories",
-            												 "Issue categories", 
-            												 new String[] { "Style" }, 
-            												 1.0f, 
-            												 ',');
+	StringMultiProperty CODECLIMATE_CATEGORIES = new StringMultiProperty("cc_categories",
+			            												 "Code Climate Categories", 
+			            												 new String[] { "Style" }, 
+			            												 1.0f, 
+			            												 ',');
 
 	// Note: We use a multiplier to the Code Climate default of 50000 for the simplest possible remediation 
-	IntegerProperty CODECLIMATE_REMEDIATION_MULTIPLIER = new IntegerProperty("remediation_points_multiplier", "Remediation points multiplier", 
-																		Integer.MIN_VALUE, 
-																		Integer.MAX_VALUE / REMEDIATION_POINTS_DEFAULT, 
-																		1, 
-																		1.0f);
+	IntegerProperty CODECLIMATE_REMEDIATION_MULTIPLIER = new IntegerProperty("cc_remediation_points_multiplier", 
+																			"Code Climate Remediation Points multiplier", 
+																			Integer.MIN_VALUE, 
+																			Integer.MAX_VALUE / REMEDIATION_POINTS_DEFAULT, 
+																			1, 
+																			1.0f);
 }
