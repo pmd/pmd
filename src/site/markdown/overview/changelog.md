@@ -46,6 +46,7 @@
 *   [#84](https://github.com/pmd/pmd/pull/84): Change EmptyMethodInAbstractClassShouldBeAbstract rule's description.
 *   [#85](https://github.com/pmd/pmd/pull/85): #1340 UseStringBufferForStringAppends False Positive with Ternary Operator
 *   [#86](https://github.com/pmd/pmd/pull/86): Added language module for Salesforce.com Apex incl. rules ported from Java and new ones.
+*   [#87](https://github.com/pmd/pmd/pull/87): Customize Code Climate Json "categories" + "remediation_points" as PMD rule properties
 
 **Bugfixes:**
 
