@@ -123,5 +123,27 @@ Object bar() {
 }
      ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>#1471 False positives for DoubleCheckedLocking</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static volatile Foo instance;
+
+    public static Foo getInstance() {
+        Foo result = instance;
+        if (result == null) {
+            synchronized (Foo.class) {
+                result = instance;
+                if (result == null) {
+                    result = instance = new Foo();
+                }
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
