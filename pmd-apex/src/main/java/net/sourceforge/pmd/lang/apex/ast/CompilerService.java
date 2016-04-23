@@ -128,8 +128,7 @@ public class CompilerService {
 						.invoke(CompilerStage.ADDITIONAL_VALIDATE);
 				operation.invoke(compilerContext, unit);
 			}
-		}
-		catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 		}
 	}
 

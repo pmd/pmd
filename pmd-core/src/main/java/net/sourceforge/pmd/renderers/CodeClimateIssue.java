@@ -14,9 +14,10 @@ public class CodeClimateIssue {
     public String check_name;
     public String description;
     public Content content;
-    public final String[] categories = { "Style" };
+    public String[] categories;
     public Location location;
     public String severity;
+    public int remediation_points;
 
     /**
      * Location structure

@@ -22,8 +22,7 @@ public class DumpFacade {
 		this.dump(node, prefix);
 		try {
 			writer.flush();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Problem flushing PrintWriter.", e);
 		}
 	}
@@ -35,8 +34,7 @@ public class DumpFacade {
 				visit((ApexNode<?>) node.jjtGetChild(i), data + " ");
 			}
 			return data;
-		}
-		else {
+		} else {
 			return data;
 		}
 	}

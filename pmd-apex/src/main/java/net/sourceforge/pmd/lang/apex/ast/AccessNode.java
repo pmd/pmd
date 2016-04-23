@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * This interface captures Java access modifiers.
+ * This interface captures access modifiers.
  */
 public interface AccessNode extends Node {
 

@@ -48,10 +48,12 @@ public class ApexParserTest {
 
 		ApexNode<Compilation> rootNode = parse(code);
 
-		assertPosition(rootNode, 1, 14, 6, 2); // whole source code, well from the beginning of the class name
+		assertPosition(rootNode, 1, 14, 6, 2); // whole source code, well from
+												// the beginning of the class
+												// name
 		// Modifier of the class - doesn't work. This node just sees the
 		// identifier ("SimpleClass")
-		//assertPosition(rootNode.jjtGetChild(0), 1, 1, 1, 6); // "public"
+		// assertPosition(rootNode.jjtGetChild(0), 1, 1, 1, 6); // "public"
 
 		// "method1" - starts with identifier until end of its block statement
 		Node method1 = rootNode.jjtGetChild(1);
@@ -72,20 +74,20 @@ public class ApexParserTest {
 
 	@Test
 	public void verifyEndLine() {
-		
+
 		String code = "public class SimpleClass {\n" // line 1
 				+ "    public void method1() {\n" // line 2
 				+ "    }\n" // line 3
-			    + "    public void method2() {\n" // line 4
+				+ "    public void method2() {\n" // line 4
 				+ "    }\n" // line 5
 				+ "}\n"; // line 6
 
 		ApexNode<Compilation> rootNode = parse(code);
-		
+
 		Node method1 = rootNode.jjtGetChild(1);
 		assertEquals("Wrong begin line", 2, method1.getBeginLine());
 		assertEquals("Wrong end line", 3, method1.getEndLine());
-		
+
 		Node method2 = rootNode.jjtGetChild(2);
 		assertEquals("Wrong begin line", 4, method2.getBeginLine());
 		assertEquals("Wrong end line", 5, method2.getEndLine());
@@ -103,14 +105,12 @@ public class ApexParserTest {
 					ApexNode<Compilation> rootNode = parse(sourceCode);
 				}
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			Assert.fail();
 		}
 
 	}
 
-	
 	// TEST HELPER
 
 	private static void assertPosition(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {

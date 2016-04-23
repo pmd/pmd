@@ -20,7 +20,7 @@ public interface ApexNode<T extends AstNode> extends Node {
 	Object childrenAccept(ApexParserVisitor visitor, Object data);
 
 	/**
-	 * Get the underlying Rhino AST node.
+	 * Get the underlying AST node.
 	 */
 	T getNode();
 }

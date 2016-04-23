@@ -25,8 +25,7 @@ public class ASTUserClass extends ApexRootNode<UserClass> {
 			field.setAccessible(true);
 			Identifier name = (Identifier) field.get(node);
 			return name.value;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return super.getImage();

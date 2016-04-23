@@ -18,9 +18,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
-/**
- * Implementation of LanguageVersionHandler for the ECMAScript Version 3.
- */
 public class ApexHandler extends AbstractLanguageVersionHandler {
 
 	@Override
