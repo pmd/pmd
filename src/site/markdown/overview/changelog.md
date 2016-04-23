@@ -30,6 +30,8 @@
 
 **Bugfixes:**
 
+*   java-basic/DoubleCheckedLocking:
+    *   [#1471](https://sourceforge.net/p/pmd/bugs/1471/): False positives for DoubleCheckedLocking
 *   java-codesize/TooManyMethods:
     *   [#1457](https://sourceforge.net/p/pmd/bugs/1457/): TooManyMethods counts inner class methods
 *   java-controversial/AvoidUsingShortType:
