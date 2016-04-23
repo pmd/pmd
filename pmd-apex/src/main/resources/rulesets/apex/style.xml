@@ -9,6 +9,7 @@ The Style Ruleset contains rules regarding preferred usage of names and identifi
   </description>
 
     <rule name="VariableNamingConventions"
+    since="5.5.0"
     message="{0} variable {1} should begin with {2}"
     class="net.sourceforge.pmd.lang.apex.rule.style.VariableNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#VariableNamingConventions">
@@ -30,8 +31,9 @@ public class Foo {
     </rule>
 
     <rule name="MethodNamingConventions"
-              message="Method name does not begin with a lower case character."
-              class="net.sourceforge.pmd.lang.apex.rule.style.MethodNamingConventionsRule"
+          since="5.5.0"
+          message="Method name does not begin with a lower case character."
+          class="net.sourceforge.pmd.lang.apex.rule.style.MethodNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#MethodNamingConventions">
           <description>
 Method names should always begin with a lower case character, and should not contain underscores.
@@ -48,6 +50,7 @@ public class Foo {
         </rule>
 
     <rule name="ClassNamingConventions"
+          since="5.5.0"
           message="Class names should begin with an uppercase character"
           class="net.sourceforge.pmd.lang.apex.rule.style.ClassNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#ClassNamingConventions">
@@ -63,6 +66,7 @@ public class Foo {}
     </rule>
 
     <rule name="MethodWithSameNameAsEnclosingClass"
+          since="5.5.0"
           message="Classes should not have non-constructor methods with the same name as the class"
           class="net.sourceforge.pmd.lang.apex.rule.style.MethodWithSameNameAsEnclosingClassRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#MethodWithSameNameAsEnclosingClass">
@@ -83,6 +87,7 @@ public class MyClass {
      </rule>
      
      <rule name="AvoidLogicInTrigger"
+        since="5.5.0"
         message="Avoid logic in triggers"
         class="net.sourceforge.pmd.lang.apex.rule.style.AvoidLogicInTriggerRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#AvoidLogicInTrigger">
@@ -111,6 +116,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
   </rule>
 
   <rule name="AvoidGlobalModifier"
+        since="5.5.0"
         message="Avoid using global modifier"
         class="net.sourceforge.pmd.lang.apex.rule.style.AvoidGlobalModifierRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#AvoidGlobalModifier">

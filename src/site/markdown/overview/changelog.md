@@ -29,6 +29,14 @@ you'll need a java8 runtime environment.
 *   java-design/UseVargs: public static void main method is ignored now and so are methods, that are annotated
     with Override. See [PR#79](https://github.com/pmd/pmd/pull/79).
 
+*   New rules for Salesforce.com Apex:
+    *   apex-complexity: AvoidDeeplyNestedIfStmts, ExcessiveParameterList, ExcessiveClassLength,
+        NcssMethodCount, NcssTypeCount, NcssConstructorCount, StdCyclomaticComplexity,
+        TooManyFields, ExcessivePublicCount
+    *   apex-performance: AvoidSoqlInLoops
+    *   apex-style: VariableNamingConventions, MethodNamingConventions, ClassNamingConventions,
+        MethodWithSameNameAsEnclosingClass, AvoidLogicInTrigger, AvoidGlobalModifier
+
 **Pull Requests:**
 
 *   [#25](https://github.com/adangel/pmd/pull/25): Added option to exclude C# using directives from CPD analysis

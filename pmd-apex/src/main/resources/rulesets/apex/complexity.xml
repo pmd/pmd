@@ -8,7 +8,8 @@
 The Complexity ruleset contains rules that find problems related to code size or complexity.
   </description>
 
-	<rule name="AvoidDeeplyNestedIfStmts" 
+	<rule name="AvoidDeeplyNestedIfStmts"
+        since="5.5.0"
 		message="Deeply nested if..then statements are hard to read"
 		class="net.sourceforge.pmd.lang.apex.rule.complexity.AvoidDeeplyNestedIfStmtsRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#AvoidDeeplyNestedIfStmts">
@@ -33,7 +34,9 @@ public class Foo {
     </example>
 	</rule>
 
-	<rule name="ExcessiveParameterList" message="Avoid long parameter lists."
+	<rule name="ExcessiveParameterList"
+        since="5.5.0"
+        message="Avoid long parameter lists."
 		class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessiveParameterListRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#ExcessiveParameterList">
 		<description>
@@ -59,6 +62,7 @@ public void addPerson(		// preferred approach
 	</rule>
 	
 	<rule name="ExcessiveClassLength"
+       since="5.5.0"
        message="Avoid really long classes."
        class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#ExcessiveClassLength">
@@ -90,7 +94,9 @@ public class Foo {
    </example>
  </rule>
 
-<rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
+<rule name="NcssMethodCount"
+   since="5.5.0"
+   message="The method {0}() has an NCSS line count of {1}"
    class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssMethodCountRule"
    externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#NcssMethodCount">
     <description>
@@ -117,7 +123,9 @@ public class Foo extends Bar {
    </example>
    </rule>
 
-<rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
+<rule name="NcssTypeCount"
+   since="5.5.0"
+   message="The type has an NCSS line count of {0}"
    class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssTypeCountRule"
    externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#NcssTypeCount">
     <description>
@@ -143,7 +151,9 @@ public class Foo extends Bar {
 ]]>
    </example></rule>
 
-<rule name="NcssConstructorCount" message="The constructor has an NCSS line count of {0}"
+<rule name="NcssConstructorCount"
+   since="5.5.0"
+   message="The constructor has an NCSS line count of {0}"
    class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssConstructorCountRule"
    externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#NcssConstructorCount">
     <description>
@@ -171,6 +181,7 @@ public class Foo extends Bar {
 </rule>
  
 	<rule name="StdCyclomaticComplexity"
+        since="5.5.0"
 		message="The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
 		class="net.sourceforge.pmd.lang.apex.rule.complexity.StdCyclomaticComplexityRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#StdCyclomaticComplexity">
@@ -225,7 +236,9 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
    </example>
 	</rule>
 
-	<rule name="TooManyFields" message="Too many fields"
+	<rule name="TooManyFields"
+        since="5.5.0"
+        message="Too many fields"
 		class="net.sourceforge.pmd.lang.apex.rule.complexity.TooManyFieldsRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#TooManyFields">
 		<description>
@@ -253,7 +266,7 @@ public class Person {	// this is more manageable
 	</rule>
 	
 	<rule name="ExcessivePublicCount"
-    since="1.04"
+    since="5.5.0"
     message="This class has a bunch of public methods and attributes"
     class="net.sourceforge.pmd.lang.apex.rule.complexity.ExcessivePublicCountRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#ExcessivePublicCount">

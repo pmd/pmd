@@ -9,6 +9,7 @@ The Performance ruleset contains a collection of good practices which should be 
   </description>
 
   <rule name="AvoidSoqlInLoops"
+        since="5.5.0"
         message="Avoid Soql queries inside loops"
         class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoqlInLoopsRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/performance.html#AvoidSoqlInLoops">
