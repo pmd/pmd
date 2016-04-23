@@ -78,12 +78,16 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         }
         
         if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
-        	issue.categories = rule.getProperty(CODECLIMATE_CATEGORIES);
-	    }
-        else {
-        	issue.categories = new String[]{ "Style" };
+            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
+            issue.categories = new String[categories.length];
+            for (int i = 0; i < categories.length; i++) {
+                issue.categories[i] = String.valueOf(categories[i]);
+            }
         }
-    
+        else {
+            issue.categories = new String[]{ "Style" };
+        }
+
         return issue;
     }
 
