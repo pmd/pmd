@@ -30,6 +30,8 @@
 
 **Bugfixes:**
 
+*   java-basic/DoubleCheckedLocking:
+    *   [#1471](https://sourceforge.net/p/pmd/bugs/1471/): False positives for DoubleCheckedLocking
 *   java-basic/SimplifiedTernary:
     *   [#1424](https://sourceforge.net/p/pmd/bugs/1424/): False positive with ternary operator
 *   java-codesize/TooManyMethods:
