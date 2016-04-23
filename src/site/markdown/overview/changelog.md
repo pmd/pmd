@@ -2,6 +2,12 @@
 
 ## ????? - 5.5.0-SNAPSHOT
 
+**System requirements:**
+
+PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.com Apex source code,
+you'll need a java8 runtime environment.
+
+
 **New Supported Languages:**
 
 *   Salesforce.com Apex is now supported by PMD and CPD. See [PR#86](https://github.com/pmd/pmd/pull/86).
