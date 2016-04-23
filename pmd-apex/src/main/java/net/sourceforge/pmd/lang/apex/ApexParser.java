@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
- * Adapter for the ApexParser.
+ * Adapter for the Apex jorje parser
  */
 public class ApexParser extends AbstractParser {
 	private net.sourceforge.pmd.lang.apex.ast.ApexParser apexParser;

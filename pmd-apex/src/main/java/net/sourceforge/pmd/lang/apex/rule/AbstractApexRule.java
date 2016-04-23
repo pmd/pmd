@@ -95,11 +95,14 @@ import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
+import net.sourceforge.pmd.renderers.CodeClimateRule;
 
-public abstract class AbstractApexRule extends AbstractRule implements ApexParserVisitor, ImmutableLanguage {
+public abstract class AbstractApexRule extends AbstractRule implements ApexParserVisitor, ImmutableLanguage, CodeClimateRule {
 
 	public AbstractApexRule() {
 		super.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
+		definePropertyDescriptor(CODECLIMATE_CATEGORIES);
+		definePropertyDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER);
 	}
 
 	@Override
@@ -115,21 +118,14 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexParse
 		for (Object element : nodes) {
 			if (element instanceof ASTUserClass) {
 				visit((ASTUserClass) element, ctx);
-			}
-			else if (element instanceof ASTUserInterface) {
+			} else if (element instanceof ASTUserInterface) {
 				visit((ASTUserInterface) element, ctx);
-			}
-			else if (element instanceof ASTUserTrigger) {
+			} else if (element instanceof ASTUserTrigger) {
 				visit((ASTUserTrigger) element, ctx);
 			}
 		}
 	}
 
-	//
-	// The following APIs are identical to those in ApexParserVisitorAdapter.
-	// Due to Java single inheritance, it preferred to extend from the more
-	// complex Rule base class instead of from relatively simple Visitor.
-	//
 	@Override
 	public Object visit(ApexNode<?> node, Object data) {
 		node.childrenAccept(this, data);

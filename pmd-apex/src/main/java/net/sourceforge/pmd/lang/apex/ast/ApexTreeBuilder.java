@@ -183,11 +183,9 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 	private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends ApexNode<T>> nodeAdapterType) {
 		try {
 			NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
-		}
-		catch (SecurityException e) {
+		} catch (SecurityException e) {
 			throw new RuntimeException(e);
-		}
-		catch (NoSuchMethodException e) {
+		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -201,7 +199,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 	private SourceCodePositioner sourceCodePositioner;
 
 	public ApexTreeBuilder(String sourceCode) {
-	    sourceCodePositioner = new SourceCodePositioner(sourceCode);
+		sourceCodePositioner = new SourceCodePositioner(sourceCode);
 	}
 
 	AdditionalPassScope scope = new AdditionalPassScope(new Errors());
@@ -218,14 +216,11 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 						"There is no Node adapter class registered for the Node class: " + node.getClass());
 			}
 			return constructor.newInstance(node);
-		}
-		catch (InstantiationException e) {
+		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
-		}
-		catch (IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
-		}
-		catch (InvocationTargetException e) {
+		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e.getTargetException());
 		}
 	}
@@ -253,15 +248,14 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 	}
 
 	private void calculateLineNumbers(ApexNode<?> node) {
-	    AbstractApexNode<?> apexNode = (AbstractApexNode<?>)node;
-	    apexNode.calculateLineNumbers(sourceCodePositioner);
+		AbstractApexNode<?> apexNode = (AbstractApexNode<?>) node;
+		apexNode.calculateLineNumbers(sourceCodePositioner);
 	}
 
 	private boolean visit(AstNode node) {
 		if (parents.peek() == node) {
 			return true;
-		}
-		else {
+		} else {
 			build(node);
 			return false;
 		}
@@ -606,13 +600,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 	public boolean visit(AnnotationParameter node, AdditionalPassScope scope) {
 		return visit(node);
 	}
-
-	/*
-	 * ModifierGroup is not an AstNode...
-	 * 
-	 * @Override public boolean visit(ModifierGroup node, AdditionalPassScope
-	 * scope) { return visit(node); }
-	 */
 
 	@Override
 	public boolean visit(ModifierNode node, AdditionalPassScope scope) {

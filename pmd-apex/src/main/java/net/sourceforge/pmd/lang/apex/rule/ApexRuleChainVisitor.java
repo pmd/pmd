@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 public class ApexRuleChainVisitor extends AbstractRuleChainVisitor {
 
 	protected void indexNodes(List<Node> nodes, RuleContext ctx) {
-		// Visit Nodes in DFS order
 		Stack<Node> stack = new Stack<>();
 		stack.addAll(nodes);
 		Collections.reverse(stack);
@@ -34,11 +33,9 @@ public class ApexRuleChainVisitor extends AbstractRuleChainVisitor {
 	}
 
 	protected void visit(Rule rule, Node node, RuleContext ctx) {
-		// Rule better either be a ApexParserVisitor, or a XPathRule
 		if (rule instanceof XPathRule) {
 			((XPathRule) rule).evaluate(node, ctx);
-		}
-		else {
+		} else {
 			((ApexNode<?>) node).jjtAccept((ApexParserVisitor) rule, ctx);
 		}
 	}

@@ -25,7 +25,7 @@ public class ApexParser {
 	protected final ApexParserOptions parserOptions;
 
 	private Map<Integer, String> suppressMap;
-	private String suppressMarker = "NOPMD"; // that's the default value
+	private String suppressMarker = "NOPMD";
 
 	public ApexParser(ApexParserOptions parserOptions) {
 		this.parserOptions = parserOptions;
@@ -57,8 +57,7 @@ public class ApexParser {
 
 			ApexNode<Compilation> tree = treeBuilder.build(astRoot);
 			return tree;
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new ParseException(e);
 		}
 	}
