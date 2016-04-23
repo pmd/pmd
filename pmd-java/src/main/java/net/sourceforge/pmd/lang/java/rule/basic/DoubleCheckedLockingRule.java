@@ -10,9 +10,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
@@ -24,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -106,6 +110,10 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         if (returnVariableName == null || this.volatileFields.contains(returnVariableName)) {
             return super.visit(node, data);
         }
+        // if the return variable is local and only written with the volatile field, then it's ok, too
+        if (checkLocalVariableUsage(node, returnVariableName)) {
+            return super.visit(node, data);
+        }
         List<ASTIfStatement> isl = node.findDescendantsOfType(ASTIfStatement.class);
         if (isl.size() == 2) {
             ASTIfStatement is = isl.get(0);
@@ -140,6 +148,53 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             }
         }
         return super.visit(node, data);
+    }
+
+    private boolean checkLocalVariableUsage(ASTMethodDeclaration node, String returnVariableName) {
+        List<ASTLocalVariableDeclaration> locals = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        ASTVariableInitializer initializer = null;
+        for (ASTLocalVariableDeclaration l : locals) {
+            ASTVariableDeclaratorId id = l.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+            if (id.hasImageEqualTo(returnVariableName)) {
+                initializer = l.getFirstDescendantOfType(ASTVariableInitializer.class);
+                break;
+            }
+        }
+        // the return variable name doesn't seem to be a local variable
+        if (initializer == null) return false;
+
+        // verify the value with which the local variable is initialized
+        if (initializer.jjtGetChild(0) instanceof ASTExpression
+                && initializer.jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimaryExpression
+                && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimaryPrefix
+                && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
+            ASTName name = (ASTName)initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+            if (!volatileFields.contains(name.getImage())) {
+                return false;
+            }
+        } else {
+            // not a simple assignment
+            return false;
+        }
+
+        // now check every usage/assignment of the variable
+        List<ASTName> names = node.findDescendantsOfType(ASTName.class);
+        for (ASTName n : names) {
+            if (!n.hasImageEqualTo(returnVariableName)) continue;
+
+            Node expression = n.getNthParent(3);
+            if (expression instanceof ASTEqualityExpression) continue;
+            if (expression instanceof ASTStatementExpression) {
+                if (expression.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+                    ASTName value = expression.jjtGetChild(2).getFirstDescendantOfType(ASTName.class);
+                    if (value == null || !volatileFields.contains(value.getImage())) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     private boolean ifVerify(ASTIfStatement is, String varname) {
