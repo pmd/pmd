@@ -30,6 +30,15 @@ This will create the zip files in the directory `pmd-dist/target`:
 
 That's all !
 
+### How to build the documentation (maven site)?
+
+Building the maven site is done with the following commands:
+
+    mvn clean install -DskipTests=true
+    mvn install site site:stage -Psite
+
+You'll find the built site in the directory `target/staging/`.
+
 ### Bug Reports
 
 We are using Sourceforge for bug tracking. Please file your bugs at <https://sourceforge.net/p/pmd/bugs/>.
