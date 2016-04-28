@@ -32,7 +32,13 @@ public class CodeClimateIssue {
         }
 
         public Location(String path, int beginLine, int endLine) {
-            this.path = path;
+            // Note: required by CodeClimate - Cut off the "/Code/" working directory of CodeClimate engines in order to get the relative path.
+        	if(path.startsWith("/code/")) {
+        		this.path = path.substring(6);
+        	} else {
+        		this.path = path;
+        	}
+        	
             this.lines = new Lines();
             lines.begin = beginLine;
             lines.end = endLine;
