@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.*;
-import org.apache.commons.lang.StringUtils;
+import net.sourceforge.pmd.PMD;
 
 /**
  * Structure for the Code Climate Issue spec (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)

@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import com.google.gson.Gson;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
-
 import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
 import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
 
@@ -15,7 +11,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.gson.Gson;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleViolation;
 
 /**
  * Renderer for Code Climate JSON format
