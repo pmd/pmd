@@ -109,10 +109,14 @@ public class AbstractLanguageVersionTest {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 
+        RuleSetFactory factory = new RuleSetFactory();
+
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
             InputStream stream = ResourceLoader.loadResourceAsStream(r);
             assertNotNull(stream);
+            RuleSet ruleset = factory.createRuleSet(r);
+            assertNotNull(ruleset);
         }
     }
 }
