@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.*;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Structure for the Code Climate Issue spec (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)
@@ -32,7 +33,7 @@ public class CodeClimateIssue {
         }
 
         public Location(String path, int beginLine, int endLine) {
-            this.path = path;
+        	this.path = path;
             this.lines = new Lines();
             lines.begin = beginLine;
             lines.end = endLine;

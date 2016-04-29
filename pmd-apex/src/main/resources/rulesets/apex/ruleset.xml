@@ -176,7 +176,7 @@
         
         <properties>	
 	       	<!-- relevant for Code Climate output only -->
-	       	<property name="cc_categories" value="STYLE"/>
+	       	<property name="cc_categories" value="Style"/>
 	       	<property name="cc_remediation_points_multiplier" value="10"/>
        	</properties>
 	</rule>
