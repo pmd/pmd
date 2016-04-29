@@ -111,6 +111,8 @@ public class AbstractLanguageVersionTest {
 
         RuleSetFactory factory = new RuleSetFactory();
 
+        if (rulesetFilenames.trim().isEmpty()) return;
+
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
             InputStream stream = ResourceLoader.loadResourceAsStream(r);
