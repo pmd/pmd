@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import com.google.gson.Gson;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
-
 import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
 import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
 
@@ -15,12 +11,20 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.gson.Gson;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleViolation;
+
 /**
  * Renderer for Code Climate JSON format
  */
 public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "codeclimate";
     public static final int REMEDIATION_POINTS_DEFAULT = 50000;
+    public static final String[] CODECLIMATE_DEFAULT_CATEGORIES = new String[]{ "Style" };
 
     protected static final String EOL = System.getProperty("line.separator", "\n");
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
@@ -56,7 +60,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         issue.check_name = rule.getName();
         issue.description = rv.getDescription();
         issue.content = new CodeClimateIssue.Content(rule.getDescription());
-        issue.location = new CodeClimateIssue.Location(rv.getFilename(), rv.getBeginLine(), rv.getEndLine());
+        issue.location = getLocation(rv);
         
         switch(rule.getPriority()) {
             case HIGH:
@@ -85,7 +89,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
             }
         }
         else {
-            issue.categories = new String[]{ "Style" };
+        	issue.categories = CODECLIMATE_DEFAULT_CATEGORIES;
         }
 
         return issue;
@@ -94,5 +98,13 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     @Override
     public String defaultFileExtension() {
         return "json";
+    }
+    
+    private CodeClimateIssue.Location getLocation(RuleViolation rv) {
+    	String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(rv.getFilename(), "/code/");
+    	CodeClimateIssue.Location result = new CodeClimateIssue.Location(pathWithoutCcRoot, 
+    																	 rv.getBeginLine(), 
+    																	 rv.getEndLine());
+    	return result;
     }
 }
