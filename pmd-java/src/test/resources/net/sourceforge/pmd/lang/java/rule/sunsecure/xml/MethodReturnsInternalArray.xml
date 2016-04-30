@@ -187,4 +187,34 @@ public class A {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1475 False positive of MethodReturnsInternalArray</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodReturnsInternalArrayCase {
+    private static final byte[] DATA = {};
+
+    protected final byte[] getData()
+    {
+        return DATA;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1475 False positive of MethodReturnsInternalArray - ArrayAllocation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodReturnsInternalArrayCase {
+    private static final byte[] DATA = new byte[0];
+
+    protected final byte[] getData()
+    {
+        return DATA;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
