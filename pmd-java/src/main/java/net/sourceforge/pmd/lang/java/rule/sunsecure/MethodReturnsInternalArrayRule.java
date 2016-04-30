@@ -5,8 +5,14 @@ package net.sourceforge.pmd.lang.java.rule.sunsecure;
 
 import java.util.List;
 
+import org.jaxen.JaxenException;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -14,6 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 
 /**
  * Implementation note: this rule currently ignores return types of y.x.z,
@@ -56,6 +64,9 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
             if (hasClone(ret, vn)) {
                 continue;
             }
+            if (isEmptyArray(vn, td)) {
+                continue;
+            }
             if (!isLocalVariable(vn, method)) {
                 addViolation(data, ret, vn);
             } else {
@@ -96,6 +107,34 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
                     && e.jjtGetChild(0).jjtGetNumChildren() == 1 && e.jjtGetChild(0).jjtGetChild(0) instanceof ASTName
                     && e.jjtGetChild(0).jjtGetChild(0).getImage().endsWith("Arrays.copyOf")) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isEmptyArray(String varName, ASTTypeDeclaration typeDeclaration) {
+        final List<ASTFieldDeclaration> fds = typeDeclaration.findDescendantsOfType(ASTFieldDeclaration.class);
+        if (fds != null) {
+            for (ASTFieldDeclaration fd : fds) {
+                final ASTVariableDeclaratorId vid = fd.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+                if (vid != null && vid.hasImageEqualTo(varName)) {
+                    ASTVariableInitializer initializer = fd.getFirstDescendantOfType(ASTVariableInitializer.class);
+                    if (initializer != null && initializer.jjtGetNumChildren() == 1) {
+                        Node child = initializer.jjtGetChild(0);
+                        if (child instanceof ASTArrayInitializer && child.jjtGetNumChildren() == 0) {
+                            return true;
+                        } else if (child instanceof ASTExpression) {
+                            try {
+                                List<? extends Node> arrayAllocation = child.findChildNodesWithXPath("./PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@IntLiteral=\"true\"][@Image=\"0\"]");
+                                if (arrayAllocation != null && arrayAllocation.size() == 1) {
+                                    return true;
+                                }
+                            } catch (JaxenException e) {
+                                return false;
+                            }
+                        }
+                    }
+                }
             }
         }
         return false;
