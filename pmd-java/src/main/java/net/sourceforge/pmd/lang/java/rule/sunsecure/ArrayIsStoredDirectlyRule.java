@@ -98,12 +98,12 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                 if (se == null || !(se.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
                     continue;
                 }
-                ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
-                String assignedVar = getExpressionVarName(pe);
+                String assignedVar = getExpressionVarName(se);
                 if (assignedVar == null) {
                     continue;
                 }
 
+                ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
                 Node n = pe.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (n == null) {
 					n = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
