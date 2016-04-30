@@ -117,8 +117,17 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
     }
 
     /**
-     * Gets the image of the first ASTName node found by
+     * Gets the image of the ASTName node found by
      * {@link Node#getFirstDescendantOfType(Class)}
+     * if it is the greatgrandchild of the given node.
+     *
+     * E.g.
+     * <pre>
+     * n = Expression || StatementExpression
+     *       PrimaryExpression
+     *         PrimaryPrefix
+     *           Name
+     * </pre>
      *
      * @param n
      *            the node to search
@@ -126,7 +135,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
      */
     protected String getFirstNameImage(Node n) {
         ASTName name = n.getFirstDescendantOfType(ASTName.class);
-        if (name != null) {
+        if (name != null && name.getNthParent(3) == n) {
             return name.getImage();
         }
         return null;

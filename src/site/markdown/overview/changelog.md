@@ -48,6 +48,8 @@
     *   [#1453](https://sourceforge.net/p/pmd/bugs/1453/): Test Class Without Test Cases gives false positive
 *   java-optimizations/UseStringBufferForStringAppends:
     *   [#1340](https://sourceforge.net/p/pmd/bugs/1340/): UseStringBufferForStringAppends False Positive with ternary operator
+*   java-sunsecure/ArrayIsStoredDirectly:
+    *   [#1476](https://sourceforge.net/p/pmd/bugs/1476/): False positive of ArrayIsStoredDirectly
 *   java-unnecessary/UnnecessaryFinalModifier:
     *   [#1464](https://sourceforge.net/p/pmd/bugs/1464/): UnnecessaryFinalModifier false positive on a @SafeVarargs method
 *   java-unusedcode/UnusedFormalParameter:
