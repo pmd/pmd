@@ -15,9 +15,8 @@ import java.util.List;
  */
 public final class StringUtil {
 
-    public static final String[] EMPTY_STRINGS = new String[0];
-    private static final boolean SUPPORTS_UTF8 = System.getProperty("net.sourceforge.pmd.supportUTF8", "no").equals(
-            "yes");
+    private static final String[] EMPTY_STRINGS = new String[0];
+	private static final boolean SUPPORTS_UTF8 = "yes".equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
 
     private StringUtil() {
     }
@@ -509,9 +508,8 @@ public final class StringUtil {
      * @return <code>true</code> if the Strings are the same, <code>false</code>
      *         otherwise.
      */
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public static boolean isSame(String s1, String s2, boolean trim, boolean ignoreCase, boolean standardizeWhitespace) {
-        if (s1 == s2) {
+        if (s1 == null && s2 == null) {
             return true;
         } else if (s1 == null || s2 == null) {
             return false;
@@ -553,5 +551,13 @@ public final class StringUtil {
         }
 
         return sb.toString();
+    }
+    
+    /**
+     * Returns an empty array of string
+     * @return String
+     */
+    public static String[] getEmptyStrings() {
+        return EMPTY_STRINGS;
     }
 }

@@ -30,6 +30,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public String getSystemId() {
 	throw createUnsupportedOperationException("Source.getSystemId()");
     }
@@ -37,6 +38,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public void setSystemId(String systemId) {
 	throw createUnsupportedOperationException("Source.setSystemId(String)");
     }
@@ -44,6 +46,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public String getStringValue() {
 	throw createUnsupportedOperationException("ValueRepresentation.getStringValue()");
     }
@@ -51,6 +54,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public CharSequence getStringValueCS() {
 	throw createUnsupportedOperationException("ValueRepresentation.getStringValueCS()");
     }
@@ -58,6 +62,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public SequenceIterator getTypedValue() throws XPathException {
 	throw createUnsupportedOperationException("Item.getTypedValue()");
     }
@@ -65,6 +70,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public Object getUnderlyingNode() {
 	throw createUnsupportedOperationException("VirtualNode.getUnderlyingNode()");
     }
@@ -72,6 +78,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public int getSiblingPosition() {
 	throw createUnsupportedOperationException("SiblingCountingNode.getSiblingPosition()");
     }
@@ -79,6 +86,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public Value atomize() throws XPathException {
 	throw createUnsupportedOperationException("NodeInfo.atomize()");
     }
@@ -86,6 +94,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public int compareOrder(NodeInfo other) {
 	throw createUnsupportedOperationException("NodeInfo.compareOrder(NodeInfo)");
     }
@@ -93,6 +102,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+	@Override
     public void copy(Receiver receiver, int whichNamespaces, boolean copyAnnotations, int locationId)
 	    throws XPathException {
 	throw createUnsupportedOperationException("ValueRepresentation.copy(Receiver, int, boolean, int)");
@@ -118,6 +128,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void generateId(FastStringBuffer buffer) {
 	throw createUnsupportedOperationException("NodeInfo.generateId(FastStringBuffer)");
     }
@@ -125,6 +136,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getAttributeValue(int fingerprint) {
 	throw createUnsupportedOperationException("NodeInfo.getAttributeValue(int)");
     }
@@ -132,6 +144,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getBaseURI() {
 	throw createUnsupportedOperationException("NodeInfo.getBaseURI()");
     }
@@ -139,6 +152,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getColumnNumber() {
 	throw createUnsupportedOperationException("NodeInfo.getColumnNumber()");
     }
@@ -146,6 +160,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Configuration getConfiguration() {
 	throw createUnsupportedOperationException("NodeInfo.getConfiguration()");
     }
@@ -153,6 +168,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] getDeclaredNamespaces(int[] buffer) {
 	throw createUnsupportedOperationException("NodeInfo.getDeclaredNamespaces(int[])");
     }
@@ -160,6 +176,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDisplayName() {
 	throw createUnsupportedOperationException("NodeInfo.getDisplayName()");
     }
@@ -169,6 +186,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
      *
      * {@inheritDoc}
      */
+    @Override
     public int getDocumentNumber() {
 	return 0;
     }
@@ -176,6 +194,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DocumentInfo getDocumentRoot() {
 	throw createUnsupportedOperationException("NodeInfo.getDocumentRoot()");
     }
@@ -183,6 +202,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getFingerprint() {
 	throw createUnsupportedOperationException("NodeInfo.getFingerprint()");
     }
@@ -190,6 +210,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getLineNumber() {
 	throw createUnsupportedOperationException("NodeInfo.getLineNumber()");
     }
@@ -197,6 +218,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLocalPart() {
 	throw createUnsupportedOperationException("NodeInfo.getLocalPart()");
     }
@@ -204,6 +226,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNameCode() {
 	throw createUnsupportedOperationException("NodeInfo.getNameCode()");
     }
@@ -211,6 +234,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public NamePool getNamePool() {
 	throw createUnsupportedOperationException("NodeInfo.getNamePool()");
     }
@@ -218,6 +242,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getNodeKind() {
 	throw createUnsupportedOperationException("NodeInfo.getNodeKind()");
     }
@@ -225,6 +250,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public NodeInfo getParent() {
 	throw createUnsupportedOperationException("NodeInfo.getParent()");
     }
@@ -232,6 +258,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPrefix() {
 	throw createUnsupportedOperationException("NodeInfo.getPrefix()");
     }
@@ -239,6 +266,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public NodeInfo getRoot() {
 	throw createUnsupportedOperationException("NodeInfo.getRoot()");
     }
@@ -246,6 +274,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getTypeAnnotation() {
 	throw createUnsupportedOperationException("NodeInfo.getTypeAnnotation()");
     }
@@ -253,6 +282,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getURI() {
 	throw createUnsupportedOperationException("NodeInfo.getURI()");
     }
@@ -260,6 +290,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildNodes() {
 	throw createUnsupportedOperationException("NodeInfo.hasChildNodes()");
     }
@@ -267,6 +298,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isId() {
 	throw createUnsupportedOperationException("NodeInfo.isId()");
     }
@@ -274,6 +306,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isIdref() {
 	throw createUnsupportedOperationException("NodeInfo.isIdref()");
     }
@@ -281,6 +314,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isNilled() {
 	throw createUnsupportedOperationException("NodeInfo.isNilled()");
     }
@@ -291,6 +325,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
      *
      * {@inheritDoc}
      */
+    @Override
     public boolean isSameNodeInfo(NodeInfo other) {
 	return this.equals(other);
     }
@@ -298,6 +333,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
     /**
      * {@inheritDoc}
      */
+    @Override
     public AxisIterator iterateAxis(byte axisNumber) {
 	throw createUnsupportedOperationException("NodeInfo.iterateAxis(byte) for axis '" + Axis.axisName[axisNumber]
 		+ "'");
@@ -310,6 +346,7 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
      *
      * {@inheritDoc}
      */
+    @Override
     public AxisIterator iterateAxis(byte axisNumber, NodeTest nodeTest) {
 	AxisIterator axisIterator = iterateAxis(axisNumber);
 	if (nodeTest != null) {
