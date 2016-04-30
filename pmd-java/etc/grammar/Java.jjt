@@ -1,4 +1,9 @@
 /**
+ * Fix for Lambda expression with one variable
+ * Bug #1470
+ *
+ * Andreas Dangel 04/2016
+ *====================================================================
  * Added support for explicit receiver parameters.
  * Bug #1455
  *
@@ -1798,7 +1803,9 @@ void PrimaryPrefix() :
 | "super" {jjtThis.setUsesSuperModifier();}
 | LOOKAHEAD( "(" ")" "->" ) LambdaExpression()
 | LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
+| LOOKAHEAD( "(" VariableDeclaratorId() ")" "->" ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() "," VariableDeclaratorId() ["," VariableDeclaratorId()] ")" "->" ) LambdaExpression()
+| LOOKAHEAD( "(" FormalParameter() ")" "->" ) LambdaExpression()
 | LOOKAHEAD( "(" FormalParameter() "," FormalParameter() ["," FormalParameter() ] ")" "->" ) LambdaExpression()
 | LOOKAHEAD( LambdaExpression() ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
