@@ -161,7 +161,7 @@ read
 
 echo
 echo "Generating site..."
-mvn site site:stage
+mvn site site:stage -Psite
 echo
 echo "Press enter to continue..."
 read
