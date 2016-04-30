@@ -90,6 +90,12 @@ public class ParserCornersTest extends ParserTst {
                 + "    private void deleteDirectory(String path) {\n" + "        LOG.debug(path);\n" + "    }\n" + "}");
     }
 
+    @Test
+    public void testLambdaBug1470() throws Exception {
+        String code = IOUtils.toString(ParserCornersTest.class.getResourceAsStream("LambdaBug1470.java"), "UTF-8");
+        parseJava18(code);
+    }
+
     /**
      * Test for https://sourceforge.net/p/pmd/bugs/1355/
      */

@@ -59,6 +59,7 @@
     *   [#1455](https://sourceforge.net/p/pmd/bugs/1455/): PMD doesn't handle Java 8 explicit receiver parameters
     *   [#1458](https://sourceforge.net/p/pmd/bugs/1458/): Performance degradation scanning large XML files with XPath custom rules
     *   [#1461](https://sourceforge.net/p/pmd/bugs/1461/): Possible threading issue due to PR#75
+    *   [#1470](https://sourceforge.net/p/pmd/bugs/1470/): Error with type-bound lambda
 
 **API Changes:**
 
