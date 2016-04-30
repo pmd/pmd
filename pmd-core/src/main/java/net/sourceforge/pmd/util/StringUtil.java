@@ -16,7 +16,7 @@ import java.util.List;
 public final class StringUtil {
 
     private static final String[] EMPTY_STRINGS = new String[0];
-	private static final boolean SUPPORTS_UTF8 = "yes".equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
+    private static final boolean SUPPORTS_UTF8 = "yes".equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
 
     private StringUtil() {
     }
