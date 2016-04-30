@@ -153,4 +153,29 @@ public class TestClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1476 False positive of ArrayIsStoredDirectly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NotificationPacket {
+    public NotificationPacket(byte id, byte[] rawTypeData)
+    {
+        super(id);
+        if (rawTypeData == null)
+        {
+            throw new IllegalArgumentException("No type data is specified");
+        }
+        if (rawTypeData.length == 0)
+        {
+            this.message = EMPTY_MESSAGE;
+        }
+        else
+        {
+            this.message = new String(rawTypeData, StandardCharsets.UTF_8);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
