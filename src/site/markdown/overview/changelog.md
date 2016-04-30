@@ -102,6 +102,8 @@ you'll need a java8 runtime environment.
     *   [#1443](https://sourceforge.net/p/pmd/bugs/1443/): RedundantFieldInitializer: False positive for small floats
 *   java-optimizations/UseStringBufferForStringAppends:
     *   [#1340](https://sourceforge.net/p/pmd/bugs/1340/): UseStringBufferForStringAppends False Positive with ternary operator
+*   java-sunsecure/ArrayIsStoredDirectly:
+    *   [#1476](https://sourceforge.net/p/pmd/bugs/1476/): False positive of ArrayIsStoredDirectly
 *   java-unnecessary/UnnecessaryFinalModifier:
     *   [#1464](https://sourceforge.net/p/pmd/bugs/1464/): UnnecessaryFinalModifier false positive on a @SafeVarargs method
 *   java-unnecessary/UselessQualifiedThis
