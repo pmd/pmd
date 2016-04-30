@@ -47,6 +47,7 @@
 *   java-optimizations/UseStringBufferForStringAppends:
     *   [#1340](https://sourceforge.net/p/pmd/bugs/1340/): UseStringBufferForStringAppends False Positive with ternary operator
 *   java-sunsecure/ArrayIsStoredDirectly:
+    *   [#1475](https://sourceforge.net/p/pmd/bugs/1475/): False positive of MethodReturnsInternalArray
     *   [#1476](https://sourceforge.net/p/pmd/bugs/1476/): False positive of ArrayIsStoredDirectly
 *   java-unnecessary/UnnecessaryFinalModifier:
     *   [#1464](https://sourceforge.net/p/pmd/bugs/1464/): UnnecessaryFinalModifier false positive on a @SafeVarargs method
