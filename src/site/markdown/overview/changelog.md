@@ -62,6 +62,7 @@ you'll need a java8 runtime environment.
 *   [#86](https://github.com/pmd/pmd/pull/86): Added language module for Salesforce.com Apex incl. rules ported from Java and new ones.
 *   [#87](https://github.com/pmd/pmd/pull/87): Customize Code Climate Json "categories" + "remediation_points" as PMD rule properties
 *   [#88](https://github.com/pmd/pmd/pull/88): Fixed typo in ruleset.xml and problems with the CodeClimate renderer
+*   [#89](https://github.com/pmd/pmd/pull/89): Some code enhancements
 
 **Bugfixes:**
 
