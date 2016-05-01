@@ -9,8 +9,8 @@ matrix:
     script: mvn test
   - jdk: oraclejdk8
     script:
-      - '[ "${SHOULD_DEPLOY}" = "yes" ] && MAVEN_OPTS="-Xmx500m" mvn test deploy --settings .travis-settings.xml || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
-      - '[ "${SHOULD_DEPLOY}" = "yes" ] || MAVEN_OPTS="-Xmx500m" mvn test'
+      - '[ "${SHOULD_DEPLOY}" = "yes" ] && MAVEN_OPTS="-Xmx768m" mvn test deploy --settings .travis-settings.xml || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
+      - '[ "${SHOULD_DEPLOY}" = "yes" ] || MAVEN_OPTS="-Xmx768m" mvn test'
 branches:
   except:
     - /^pmd_releases\/\d/
