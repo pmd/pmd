@@ -107,7 +107,7 @@ public class DBMSMetadataTest {
         } catch (SQLException ex) {
             Logger.getLogger(DBMSMetadataTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.format("...\n]\n", description);
+        System.out.format("...\n]\n");
     }
 
     /**

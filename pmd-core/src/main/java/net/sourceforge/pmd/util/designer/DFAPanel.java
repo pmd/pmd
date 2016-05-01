@@ -76,9 +76,9 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 
 	private String[] deriveAccessLabels(List<DataFlowNode> flow) {
 
-	    if (flow == null || flow.isEmpty()) {
-		return StringUtil.EMPTY_STRINGS;
-	    }
+        if (flow == null || flow.isEmpty()) {
+            return StringUtil.getEmptyStrings();
+        }
 
 	    String[] labels = new String[flow.size()];
 
@@ -200,50 +200,44 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 	    }
 	}
 
-	private void drawMyLine(int index1, int index2, Graphics g) {
-	    int y1 = this.computeDrawPos(index1);
-	    int y2 = this.computeDrawPos(index2);
+        private void drawMyLine(int index1, int index2, Graphics g) {
+            int y1 = this.computeDrawPos(index1);
+            int y2 = this.computeDrawPos(index2);
 
-	    //int arrow = 6;
+            if (index1 < index2) {
+                if (index2 - index1 == 1) {
+                    x += NODE_RADIUS;
+                    g.drawLine(x, y1 + NODE_DIAMETER, x, y2);
+                    drawArrow(g, x, y2, SwingConstants.SOUTH);
+                    x -= NODE_RADIUS;
+                } else if (index2 - index1 > 1) {
+                    y1 = y1 + NODE_RADIUS;
+                    y2 = y2 + NODE_RADIUS;
+                    int n = (index2 - index1 - 2) * 10 + 10;
+                    g.drawLine(x, y1, x - n, y1);
+                    g.drawLine(x - n, y1, x - n, y2);
+                    g.drawLine(x - n, y2, x, y2);
+                    drawArrow(g, x, y2, SwingConstants.EAST);
+                }
 
-	    if (index1 < index2) {
-		if (index2 - index1 == 1) {
-		    x += NODE_RADIUS;
-		    g.drawLine(x, y1 + NODE_DIAMETER, x, y2);
-		    //  g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
-		    drawArrow(g, x, y2, SwingConstants.SOUTH);
-		    x -= NODE_RADIUS;
-		} else if (index2 - index1 > 1) {
-		    y1 = y1 + NODE_RADIUS;
-		    y2 = y2 + NODE_RADIUS;
-		    int n = (index2 - index1 - 2) * 10 + 10;
-		    g.drawLine(x, y1, x - n, y1);
-		    g.drawLine(x - n, y1, x - n, y2);
-		    g.drawLine(x - n, y2, x, y2);
-		    //   g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
-		    drawArrow(g, x, y2, SwingConstants.EAST);
-		}
-
-	    } else {
-		if (index1 - index2 > 1) {
-		    y1 = y1 + NODE_RADIUS;
-		    y2 = y2 + NODE_RADIUS;
-		    x = x + NODE_DIAMETER;
-		    int n = (index1 - index2 - 2) * 10 + 10;
-		    g.drawLine(x, y1, x + n, y1);
-		    g.drawLine(x + n, y1, x + n, y2);
-		    g.drawLine(x + n, y2, x, y2);
-		    //      g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
-		    drawArrow(g, x, y2, SwingConstants.WEST);
-		    x = x - NODE_DIAMETER;
-		} else if (index1 - index2 == 1) {
-		    y2 = y2 + NODE_DIAMETER;
-		    g.drawLine(x + NODE_RADIUS, y2, x + NODE_RADIUS, y1);
-		    //   g.fillRect(x + NODE_RADIUS - arrow, y2 - arrow, arrow * 2, arrow * 2);
-		    drawArrow(g, x + NODE_RADIUS, y2, SwingConstants.NORTH);
-		}
-	    }
-	}
+            } else {
+                if (index1 - index2 > 1) {
+                    y1 = y1 + NODE_RADIUS;
+                    y2 = y2 + NODE_RADIUS;
+                    x = x + NODE_DIAMETER;
+                    int n = (index1 - index2 - 2) * 10 + 10;
+                    g.drawLine(x, y1, x + n, y1);
+                    g.drawLine(x + n, y1, x + n, y2);
+                    g.drawLine(x + n, y2, x, y2);
+                    drawArrow(g, x, y2, SwingConstants.WEST);
+                    x = x - NODE_DIAMETER;
+                } else if (index1 - index2 == 1) {
+                    y2 = y2 + NODE_DIAMETER;
+                    g.drawLine(x + NODE_RADIUS, y2, x + NODE_RADIUS, y1);
+                    drawArrow(g, x + NODE_RADIUS, y2, SwingConstants.NORTH);
+                }
+            }
+        }
     }
 
     private static class ElementWrapper {
@@ -291,19 +285,20 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 	add(scrollPane, BorderLayout.CENTER);
     }
 
+    @Override
     public void valueChanged(ListSelectionEvent event) {
-	ElementWrapper wrapper = null;
-	if (nodes.size() == 1) {
-	    wrapper = (ElementWrapper) nodes.get(0);
-	} else if (nodes.isEmpty()) {
-	    return;
-	} else if (nodeList.getSelectedValue() == null) {
-	    wrapper = (ElementWrapper) nodes.get(0);
-	} else {
-	    wrapper = (ElementWrapper) nodeList.getSelectedValue();
-	}
-	dfaCanvas.setMethod(wrapper.getNode());
-	dfaCanvas.repaint();
+        ElementWrapper wrapper = null;
+        if (nodes.size() == 1) {
+            wrapper = (ElementWrapper) nodes.get(0);
+        } else if (nodes.isEmpty()) {
+            return;
+        } else if (nodeList.getSelectedValue() == null) {
+            wrapper = (ElementWrapper) nodes.get(0);
+        } else {
+            wrapper = (ElementWrapper) nodeList.getSelectedValue();
+        }
+        dfaCanvas.setMethod(wrapper.getNode());
+        dfaCanvas.repaint();
     }
 
     public void resetTo(List<DFAGraphMethod> newNodes, LineGetter lines) {
