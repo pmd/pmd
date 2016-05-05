@@ -7,9 +7,9 @@ import org.junit.Test;
 
 public class PMDTaskTest extends AbstractAntTestHelper {
 
-	public PMDTaskTest() {
-		super.antTestScriptFilename = "pmdtasktest.xml";
-	}
+    public PMDTaskTest() {
+        super.antTestScriptFilename = "pmdtasktest.xml";
+    }
 
     @Test
     public void testNoFormattersValidation() {
