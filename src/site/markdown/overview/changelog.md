@@ -63,6 +63,7 @@ you'll need a java8 runtime environment.
 *   [#87](https://github.com/pmd/pmd/pull/87): Customize Code Climate Json "categories" + "remediation_points" as PMD rule properties
 *   [#88](https://github.com/pmd/pmd/pull/88): Fixed typo in ruleset.xml and problems with the CodeClimate renderer
 *   [#89](https://github.com/pmd/pmd/pull/89): Some code enhancements
+*   [#90](https://github.com/pmd/pmd/pull/90): Refactored two test to stop using the deprecated ant class BuildFileTest
 
 **Bugfixes:**
 
