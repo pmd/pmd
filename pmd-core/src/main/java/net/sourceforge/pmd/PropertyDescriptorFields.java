@@ -36,4 +36,6 @@ public class PropertyDescriptorFields {
     public static final String MAX = "max";
     /** To limit the range of valid values, e.g. to Enums */
     public static final String LEGAL_PACKAGES = "legalPackages";
+
+    private PropertyDescriptorFields() {}
 }
