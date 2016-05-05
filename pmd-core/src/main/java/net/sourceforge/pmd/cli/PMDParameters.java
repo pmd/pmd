@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.validators.PositiveInteger;
+
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 public class PMDParameters {
 
@@ -205,7 +205,10 @@ public class PMDParameters {
     }
 
     public String getVersion() {
-        return version != null ? version : LanguageRegistry.getDefaultLanguage().getDefaultVersion().getVersion();
+        if (version != null) {
+            return version;
+        }
+        return LanguageRegistry.findLanguageByTerseName(getLanguage()).getDefaultVersion().getVersion();
     }
 
     public String getLanguage() {

@@ -5,8 +5,8 @@ package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -21,7 +21,7 @@ public final class LanguageRegistry {
     private Map<String, Language> languages;
 
     private LanguageRegistry() {
-        languages = new HashMap<>();
+        languages = new LinkedHashMap<>();
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
         Iterator<Language> iterator = languageLoader.iterator();
         while (iterator.hasNext()) {
@@ -49,7 +49,14 @@ public final class LanguageRegistry {
     }
 
     public static Language getDefaultLanguage() {
-        return getLanguage("Java");
+        Language defaultLanguage = getLanguage("Java");
+        if (defaultLanguage == null) {
+            Collection<Language> allLanguages = getInstance().languages.values();
+            if (!allLanguages.isEmpty()) {
+                defaultLanguage = allLanguages.iterator().next();
+            }
+        }
+        return defaultLanguage;
     }
 
     public static Language findLanguageByTerseName(String terseName) {
