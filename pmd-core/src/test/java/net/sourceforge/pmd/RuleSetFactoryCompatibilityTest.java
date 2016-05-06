@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RuleSetFactoryCompatibilityTest {
@@ -29,19 +30,33 @@ public class RuleSetFactoryCompatibilityTest {
         RuleSetFactory factory = new RuleSetFactory();
         factory.getCompatibilityFilter().addFilterRuleMoved("dummy", "notexisting", "basic", "DummyBasicMockRule");
 
-        RuleSet createdRuleSet = factory.createRuleSet(new RuleSetReferenceId(null) {
-            @Override
-            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
-                try {
-                    return new ByteArrayInputStream(ruleset.getBytes("UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuleSetNotFoundException(e.getMessage());
-                }
-            }
-        });
+        RuleSet createdRuleSet = createRulesetFromString(ruleset, factory);
         Assert.assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
     }
-    
+
+    @Ignore
+    @Test
+    public void testExclusion() throws Exception {
+        final String ruleset = "<?xml version=\"1.0\"?>\n" + 
+                "\n" + 
+                "<ruleset name=\"Test\"\n" + 
+                "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" + 
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+                "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
+                "  <description>Test</description>\n" + 
+                "\n" + 
+                " <rule ref=\"rulesets/dummy/basic.xml\">\n" +
+                "   <exclude name=\"AnotherOldNameOfBasicMockRule\"/>\n" +
+                " </rule>\n" +
+                "</ruleset>\n";
+
+        RuleSetFactory factory = new RuleSetFactory();
+        factory.getCompatibilityFilter().addFilterRuleRenamed("dummy", "basic", "AnotherOldNameOfBasicMockRule", "DummyBasicMockRule");
+
+        RuleSet createdRuleSet = createRulesetFromString(ruleset, factory);
+        Assert.assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
+    }
+
     @Test
     public void testFilter() throws Exception {
         RuleSetFactoryCompatibility rsfc = new RuleSetFactoryCompatibility();
@@ -74,6 +89,32 @@ public class RuleSetFactoryCompatibilityTest {
         Assert.assertTrue(out.contains("<rule ref=\"rulesets/dummy/basic.xml/NewNameOfBasicMockRule\" />"));
     }
 
+    @Ignore
+    @Test
+    public void testExclusionFilter() throws Exception {
+        RuleSetFactoryCompatibility rsfc = new RuleSetFactoryCompatibility();
+        rsfc.addFilterRuleRenamed("dummy", "basic", "AnotherOldNameOfBasicMockRule", "NewNameOfBasicMockRule");
+
+        String in = "<?xml version=\"1.0\"?>\n" + 
+                "\n" + 
+                "<ruleset name=\"Test\"\n" + 
+                "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" + 
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+                "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" + 
+                "  <description>Test</description>\n" + 
+                "\n" + 
+                " <rule ref=\"rulesets/dummy/basic.xml\">\n" +
+                "   <exclude name=\"AnotherOldNameOfBasicMockRule\"/>\n" +
+                " </rule>\n" +
+                "</ruleset>\n";
+        InputStream stream = new ByteArrayInputStream(in.getBytes(StandardCharsets.ISO_8859_1));
+        Reader filtered = rsfc.filterRuleSetFile(stream);
+        String out = IOUtils.toString(filtered);
+
+        Assert.assertFalse(out.contains("OldNameOfBasicMockRule"));
+        Assert.assertTrue(out.contains("<exclude name=\"NewNameOfBasicMockRule\" />"));
+    }
+
     @Test
     public void testEncoding() {
         RuleSetFactoryCompatibility rsfc = new RuleSetFactoryCompatibility();
@@ -84,5 +125,19 @@ public class RuleSetFactoryCompatibilityTest {
 
         testString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><x></x>";
         Assert.assertEquals("UTF-8", rsfc.determineEncoding(testString.getBytes(StandardCharsets.ISO_8859_1)));
+    }
+
+    private RuleSet createRulesetFromString(final String ruleset, RuleSetFactory factory)
+            throws RuleSetNotFoundException {
+        return factory.createRuleSet(new RuleSetReferenceId(null) {
+            @Override
+            public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
+                try {
+                    return new ByteArrayInputStream(ruleset.getBytes("UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuleSetNotFoundException(e.getMessage());
+                }
+            }
+        });
     }
 }
