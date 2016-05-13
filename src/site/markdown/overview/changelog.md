@@ -18,6 +18,7 @@ you'll need a java8 runtime environment.
 
 *   CPD: New command line parameter `--ignore-usings`: Ignore using directives in C# when comparing text.
 *   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
+*   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): Provide backwards compatibility for PMD configuration file
 
 **New/Modified/Deprecated Rules:**
 
