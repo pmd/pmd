@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,7 +26,7 @@ import org.apache.commons.io.IOUtils;
 public class RuleSetFactoryCompatibility {
     private static final Logger LOG = Logger.getLogger(RuleSetFactoryCompatibility.class.getName());
 
-    private List<RuleSetFilter> filters = new LinkedList<>();
+    private List<RuleSetFilter> filters = new LinkedList<RuleSetFilter>();
 
     /**
      * Creates a new instance of the compatibility filter with the built-in filters for the
@@ -107,9 +107,9 @@ public class RuleSetFactoryCompatibility {
      * @return the determined encoding, falls back to the default UTF-8 encoding
      */
     String determineEncoding(byte[] bytes) {
-        String firstBytes = new String(bytes, 0, bytes.length > 1024 ? 1024 : bytes.length, StandardCharsets.ISO_8859_1);
+        String firstBytes = new String(bytes, 0, bytes.length > 1024 ? 1024 : bytes.length, Charset.forName("ISO-8859-1"));
         Matcher matcher = ENCODING_PATTERN.matcher(firstBytes);
-        String encoding = StandardCharsets.UTF_8.name();
+        String encoding = Charset.forName("UTF-8").name();
         if (matcher.find()) {
             encoding = matcher.group(1);
         }
@@ -119,6 +119,8 @@ public class RuleSetFactoryCompatibility {
     private static class RuleSetFilter {
         private final Pattern refPattern;
         private final String replacement;
+        private Pattern exclusionPattern;
+        private String exclusionReplacement;
         private final String logMessage;
         private RuleSetFilter(String refPattern, String replacement, String logMessage) {
             this.logMessage = logMessage;
@@ -127,14 +129,25 @@ public class RuleSetFactoryCompatibility {
                 this.replacement = "ref=\"" + replacement + "\"";
             } else {
                 this.refPattern = Pattern.compile("<rule\\s+ref=\"" + Pattern.quote(refPattern) + "\"\\s*/>");
-                this.replacement = null;
+                this.replacement = "";
             }
         }
-        
+
+        private void setExclusionPattern(String oldName, String newName) {
+            exclusionPattern = Pattern.compile("<exclude\\s+name=[\"']" + Pattern.quote(oldName) + "[\"']\\s*/>");
+            if (newName != null) {
+                exclusionReplacement = "<exclude name=\"" + newName + "\" />";
+            } else {
+                exclusionReplacement = "";
+            }
+        }
+
         public static RuleSetFilter ruleRenamed(String language, String ruleset, String oldName, String newName) {
             String base = "rulesets/" + language + "/" + ruleset + ".xml/";
-            return new RuleSetFilter(base + oldName, base + newName,
+            RuleSetFilter filter = new RuleSetFilter(base + oldName, base + newName,
                     "The rule \"" + oldName + "\" has been renamed to \"" + newName + "\". Please change your ruleset!");
+            filter.setExclusionPattern(oldName, newName);
+            return filter;
         }
         public static RuleSetFilter ruleMoved(String language, String oldRuleset, String newRuleset, String ruleName) {
             String base = "rulesets/" + language + "/";
@@ -142,26 +155,36 @@ public class RuleSetFactoryCompatibility {
                     "The rule \"" + ruleName + "\" has been moved from ruleset \"" + oldRuleset + "\" to \"" + newRuleset + "\". Please change your ruleset!");
         }
         public static RuleSetFilter ruleRemoved(String language, String ruleset, String name) {
-            return new RuleSetFilter("rulesets/" + language + "/" + ruleset + ".xml/" + name, null,
+            RuleSetFilter filter = new RuleSetFilter("rulesets/" + language + "/" + ruleset + ".xml/" + name, null,
                     "The rule \"" + name + "\" in ruleset \"" + ruleset + "\" has been removed from PMD and no longer exists. Please change your ruleset!");
+            filter.setExclusionPattern(name, null);
+            return filter;
         }
 
         String apply(String in) {
+            String result = in;
             Matcher matcher = refPattern.matcher(in);
 
-            if (!matcher.find()) {
-                return in;
+            if (matcher.find()) {
+                result = matcher.replaceAll(replacement);
+
+                if (LOG.isLoggable(Level.WARNING)) {
+                    LOG.warning("Applying rule set filter: " + logMessage);
+                }
             }
 
-            if (LOG.isLoggable(Level.WARNING)) {
-                LOG.warning("Applying rule set filter: " + logMessage);
+            if (exclusionPattern == null) return result;
+
+            Matcher exclusions = exclusionPattern.matcher(result);
+            if (exclusions.find()) {
+                result = exclusions.replaceAll(exclusionReplacement);
+
+                if (LOG.isLoggable(Level.WARNING)) {
+                    LOG.warning("Applying rule set filter for exclusions: " + logMessage);
+                }
             }
 
-            if (replacement != null) {
-                return matcher.replaceAll(replacement);
-            } else {
-                return matcher.replaceAll("");
-            }
+            return result;
         }
     }
 }
