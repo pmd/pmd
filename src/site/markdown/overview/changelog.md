@@ -6,6 +6,8 @@
 
 **Feature Request and Improvements:**
 
+*   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): Provide backwards compatibility for PMD configuration file
+
 **New/Modified/Deprecated Rules:**
 
 **Pull Requests:**
