@@ -34,6 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -41,6 +42,7 @@ import org.xml.sax.SAXException;
  * content. By default Rules will be loaded using the ClassLoader for this
  * class, using the {@link RulePriority#LOW} priority, with Rule deprecation
  * warnings off.
+ * By default, the ruleset compatibility filter is active, too. See {@link RuleSetFactoryCompatibility}.
  */
 public class RuleSetFactory {
 
@@ -49,6 +51,7 @@ public class RuleSetFactory {
     private ClassLoader classLoader = RuleSetFactory.class.getClassLoader();
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = false;
+    private RuleSetFactoryCompatibility compatibilityFilter = new RuleSetFactoryCompatibility();
 
     /**
      * Set the ClassLoader to use when loading Rules.
@@ -77,6 +80,22 @@ public class RuleSetFactory {
      */
     public void setWarnDeprecated(boolean warnDeprecated) {
         this.warnDeprecated = warnDeprecated;
+    }
+
+    /**
+     * Disable the ruleset compatibility filter. Disabling this filter will cause
+     * exception when loading a ruleset, which uses references to old/not existing rules.
+     */
+    public void disableCompatibilityFilter() {
+        compatibilityFilter = null;
+    }
+
+    /**
+     * Gets the compatibility filter in order to adjust it, e.g. add additional filters.
+     * @return the {@link RuleSetFactoryCompatibility}
+     */
+    public RuleSetFactoryCompatibility getCompatibilityFilter() {
+        return compatibilityFilter;
     }
 
     /**
@@ -220,7 +239,13 @@ public class RuleSetFactory {
         }
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse(inputStream);
+            InputSource inputSource;
+            if (compatibilityFilter != null) {
+                inputSource = new InputSource(compatibilityFilter.filterRuleSetFile(inputStream));
+            } else {
+                inputSource = new InputSource(inputStream);
+            }
+            Document document = builder.parse(inputSource);
             Element ruleSetElement = document.getDocumentElement();
 
             RuleSet ruleSet = new RuleSet();

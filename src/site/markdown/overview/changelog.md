@@ -9,6 +9,7 @@
 **Feature Request and Improvements:**
 
 *   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
+*   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): Provide backwards compatibility for PMD configuration file
 
 **New/Modified/Deprecated Rules:**
 
