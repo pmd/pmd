@@ -29,11 +29,6 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     protected static final Map<String, Boolean> PACKAGED_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
             .expectedFieldTypesWith(new String[] { LEGAL_PACKAGES }, new Boolean[] { Boolean.FALSE });
 
-    protected static String[] packageNamesIn(Map<String, String> params) {
-        // TODO
-        return null;
-    }
-
     /**
      * 
      * @param theName
@@ -52,9 +47,15 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
         legalPackageNames = theLegalPackageNames;
     }
 
+    protected static String[] packageNamesIn(Map<String, String> params) {
+        // TODO
+        return null;
+    }
+
     /**
      * @param attributes Map<String,String>
      */
+    @Override
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);
 
@@ -130,13 +131,14 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
      * 
      * @return String
      */
-    abstract protected String itemTypeName();
+    protected abstract String itemTypeName();
 
     /**
      *
      * @param value Object
      * @return String
      */
+    @Override
     protected String valueErrorFor(Object value) {
 
         if (value == null) {
@@ -166,7 +168,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
      * @param item Object
      * @return String
      */
-    abstract protected String packageNameOf(Object item);
+    protected abstract String packageNameOf(Object item);
 
     /**
      *

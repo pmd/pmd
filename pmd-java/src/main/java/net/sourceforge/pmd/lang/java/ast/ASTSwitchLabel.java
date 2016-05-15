@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTSwitchLabel extends AbstractJavaNode {
+
+    private boolean isDefault;
+
     public ASTSwitchLabel(int id) {
         super(id);
     }
@@ -13,8 +16,6 @@ public class ASTSwitchLabel extends AbstractJavaNode {
     public ASTSwitchLabel(JavaParser p, int id) {
         super(p, id);
     }
-
-    private boolean isDefault;
 
     public void setDefault() {
         isDefault = true;
@@ -28,6 +29,7 @@ public class ASTSwitchLabel extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

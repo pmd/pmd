@@ -40,6 +40,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     // Mapping from Node name to applicable XPath queries
     private XPathExpression xpathExpression;
     private List<XPathVariable> xpathVariables;
+    private static final Map<Node, DocumentNode> CACHE = new HashMap<>();
 
     /**
      * {@inheritDoc}
@@ -116,8 +117,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         }
         return results;
     }
-
-    private static final Map<Node, DocumentNode> CACHE = new HashMap<>();
 
     private DocumentNode getDocumentNode(Node node) {
         // Get the root AST node

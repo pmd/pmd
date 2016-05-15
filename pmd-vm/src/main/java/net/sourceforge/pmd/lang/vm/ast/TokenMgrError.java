@@ -37,6 +37,23 @@ public class TokenMgrError extends RuntimeException {
      */
     int errorCode;
 
+    /*
+     * Constructors of various flavors follow.
+     */
+
+    public TokenMgrError() {
+    }
+
+    public TokenMgrError(final String message, final int reason) {
+        super(message);
+        errorCode = reason;
+    }
+
+    public TokenMgrError(final boolean EOFSeen, final int lexState, final int errorLine, final int errorColumn,
+            final String errorAfter, final char curChar, final int reason) {
+        this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
+    }
+
     /**
      * Replaces unprintable characters by their espaced (or unicode escaped) equivalents in the given string
      */
@@ -104,20 +121,4 @@ public class TokenMgrError extends RuntimeException {
                         + "), ") + "after : \"" + addEscapes(errorAfter) + "\"");
     }
 
-    /*
-     * Constructors of various flavors follow.
-     */
-
-    public TokenMgrError() {
-    }
-
-    public TokenMgrError(final String message, final int reason) {
-        super(message);
-        errorCode = reason;
-    }
-
-    public TokenMgrError(final boolean EOFSeen, final int lexState, final int errorLine, final int errorColumn,
-            final String errorAfter, final char curChar, final int reason) {
-        this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
-    }
 }

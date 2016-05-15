@@ -20,6 +20,9 @@ public class TypeSet {
 
     private final PMDASMClassLoader pmdClassLoader;
     private boolean hasAuxclasspath;
+    private String pkg;
+    private Set<String> imports = new HashSet<>();
+    private List<Resolver> resolvers = new ArrayList<>();
 
     /**
      * The {@link TypeSet} provides type resolution for the symbol facade.
@@ -70,7 +73,7 @@ public class TypeSet {
      * Base Resolver class that support a {@link PMDASMClassLoader} class
      * loader.
      */
-    public static abstract class AbstractResolver implements Resolver {
+    public abstract static class AbstractResolver implements Resolver {
         /** the class loader. */
         protected final PMDASMClassLoader pmdClassLoader;
         /**
@@ -240,10 +243,6 @@ public class TypeSet {
             return pmdClassLoader.loadClass(name);
         }
     }
-
-    private String pkg;
-    private Set<String> imports = new HashSet<>();
-    private List<Resolver> resolvers = new ArrayList<>();
 
     public void setASTCompilationUnitPackage(String pkg) {
         this.pkg = pkg;

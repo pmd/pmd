@@ -8,24 +8,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.plsql.ast.ASTExceptionHandler;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
-import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
-import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
+import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
+import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTExceptionHandler;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
+import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
-import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
@@ -38,8 +38,8 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  * @since January 14, 2003
  */
 public class CyclomaticComplexityRule extends AbstractPLSQLRule {
-    private final static Logger LOGGER = Logger.getLogger(CyclomaticComplexityRule.class.getName()); 
-    private final static String CLASS_NAME =CyclomaticComplexityRule.class.getName(); 
+    private static final Logger LOGGER = Logger.getLogger(CyclomaticComplexityRule.class.getName());
+    private static final String CLASS_NAME = CyclomaticComplexityRule.class.getName();
 
     public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty("reportLevel",
 	    "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);

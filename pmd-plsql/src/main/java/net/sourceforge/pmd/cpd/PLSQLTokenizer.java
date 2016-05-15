@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserTokenManager;
 import net.sourceforge.pmd.lang.plsql.ast.Token;
 
 public class PLSQLTokenizer implements Tokenizer{
-    private final static Logger LOGGER = Logger.getLogger(PLSQLTokenizer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PLSQLTokenizer.class.getName());
 
     public static final String IGNORE_COMMENTS = "ignore_comments";
     public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
@@ -52,7 +52,8 @@ public class PLSQLTokenizer implements Tokenizer{
          * a Reader).
          * @param tokenEntries  Derived based on PLSQL Abstract Syntax Tree (derived from PLDOc parser.) 
          */
-	public void tokenize (SourceCode sourceCode, Tokens tokenEntries )
+	@Override
+    public void tokenize (SourceCode sourceCode, Tokens tokenEntries )
 	{
         long encounteredTokens = 0;
         long addedTokens = 0;

@@ -44,9 +44,9 @@ import java.util.logging.Logger;
  */
 public class DBURI {
 
-private final static String CLASS_NAME = DBURI.class.getCanonicalName();
+    private static final String CLASS_NAME = DBURI.class.getCanonicalName();
 
-private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
 
   /**

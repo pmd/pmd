@@ -41,7 +41,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * entity that has a scope.
  */
 public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
-    private final static Logger LOGGER = Logger.getLogger(ScopeAndDeclarationFinder.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(ScopeAndDeclarationFinder.class.getName());
 
     /**
      * A stack of scopes reflecting the scope hierarchy when a node is visited.

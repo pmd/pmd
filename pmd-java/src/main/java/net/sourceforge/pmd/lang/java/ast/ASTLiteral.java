@@ -14,6 +14,12 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     private boolean isChar;
     private boolean isString;
 
+    /**
+     * Pattern used to detect a single escaped character or octal character in a String.
+     */
+    private static final Pattern SINGLE_CHAR_ESCAPE_PATTERN = Pattern
+            .compile("^\"\\\\(([ntbrf\\\\'\\\"])|([0-7][0-7]?)|([0-3][0-7][0-7]))\"");
+
     public ASTLiteral(int id) {
         super(id);
     }
@@ -151,11 +157,5 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         }
         return false;
     }
-
-    /**
-     * Pattern used to detect a single escaped character or octal character in a String.
-     */
-    private static final Pattern SINGLE_CHAR_ESCAPE_PATTERN = Pattern
-            .compile("^\"\\\\(([ntbrf\\\\'\\\"])|([0-7][0-7]?)|([0-3][0-7][0-7]))\"");
 
 }

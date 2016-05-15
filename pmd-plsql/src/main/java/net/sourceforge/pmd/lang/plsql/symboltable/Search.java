@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class Search {
-    private final static Logger LOGGER = Logger.getLogger(Search.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(Search.class.getName());
 
     private PLSQLNameOccurrence occ;
     private Set<NameDeclaration> declarations = new HashSet<>();

@@ -9,6 +9,7 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
 
     private boolean isImportOnDemand;
     private boolean isStatic;
+    private Package pkg;
 
     public ASTImportDeclaration(int id) {
         super(id);
@@ -58,11 +59,11 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
     
-    private Package pkg;
     public void setPackage(Package packge){
         this.pkg = packge;
     }

@@ -9,18 +9,18 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jaxen.BaseXPath;
+import org.jaxen.JaxenException;
+import org.jaxen.XPath;
+
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.XPath;
-
 public class ViewerModel {
-    private final static Logger LOGGER = Logger.getLogger(ViewerModel.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(ViewerModel.class.getName());
 
     private List<ViewerModelListener> listeners;
     private Node rootNode;

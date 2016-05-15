@@ -19,13 +19,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import net.sourceforge.pmd.AbstractConfiguration;
-import net.sourceforge.pmd.util.FileFinder;
-import net.sourceforge.pmd.util.FileUtil;
-
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.converters.FileConverter;
+
+import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.util.FileFinder;
+import net.sourceforge.pmd.util.FileUtil;
 
 /**
  *
@@ -34,9 +34,11 @@ import com.beust.jcommander.converters.FileConverter;
  */
 public class CPDConfiguration extends AbstractConfiguration {
 
-    public final static String DEFAULT_LANGUAGE = "java";
+    public static final String DEFAULT_LANGUAGE = "java";
 
-    public final static String DEFAULT_RENDERER = "text";
+    public static final String DEFAULT_RENDERER = "text";
+
+    private static final Map<String, Class<? extends Renderer>> RENDERERS = new HashMap<>();
 
     @Parameter(names = "--language", description = "Sources code language. Default value is " + DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
     private Language language;
@@ -101,6 +103,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     // this has to be a public static class, so that JCommander can use it!
     public static class LanguageConverter implements IStringConverter<Language> {
 
+        @Override
         public Language convert(String languageString) {
             if (languageString == null || "".equals(languageString)) {
                 languageString = DEFAULT_LANGUAGE;
@@ -157,7 +160,6 @@ public class CPDConfiguration extends AbstractConfiguration {
         return getRendererFromString(name, System.getProperty("file.encoding"));
     }
 
-    private static final Map<String, Class<? extends Renderer>> RENDERERS = new HashMap<>();
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
         RENDERERS.put("xml", XMLRenderer.class);
@@ -306,6 +308,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
 
         FilenameFilter filter = new FilenameFilter() {
+            @Override
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
                 if (exclusions.contains(FileUtil.normalizeFilename(f.getAbsolutePath()))) {

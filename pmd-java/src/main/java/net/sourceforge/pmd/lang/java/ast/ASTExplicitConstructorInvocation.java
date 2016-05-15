@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
+
+    private String thisOrSuper;
+
     public ASTExplicitConstructorInvocation(int id) {
         super(id);
     }
@@ -18,6 +21,7 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -30,8 +34,6 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
     	}
     }
 
-    private String thisOrSuper;
-
     public void setIsThis() {
         this.thisOrSuper = "this";
     }
@@ -41,10 +43,10 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
     }
 
     public boolean isThis() {
-        return thisOrSuper != null && thisOrSuper.equals("this");
+        return thisOrSuper != null && "this".equals(thisOrSuper);
     }
 
     public boolean isSuper() {
-        return thisOrSuper != null && thisOrSuper.equals("super");
+        return thisOrSuper != null && "super".equals(thisOrSuper);
     }
 }

@@ -7,8 +7,15 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTDeclaration extends AbstractJspNode {
 
-/* BEGIN CUSTOM CODE */
     private String name;
+
+    public ASTDeclaration(int id) {
+        super(id);
+    }
+
+    public ASTDeclaration(JspParser p, int id) {
+        super(p, id);
+    }
 
     /**
      * @return Returns the name.
@@ -23,21 +30,11 @@ public class ASTDeclaration extends AbstractJspNode {
     public void setName(String name) {
         this.name = name;
     }
-/* END CUSTOM CODE */
-
-
-    public ASTDeclaration(int id) {
-        super(id);
-    }
-
-    public ASTDeclaration(JspParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -42,7 +42,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
-    private final static Set<Class<? extends Node>> BLOCK_PARENTS;
+    private static final Set<Class<? extends Node>> BLOCK_PARENTS;
 
     static {
         BLOCK_PARENTS = new HashSet<>(2);

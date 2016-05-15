@@ -11,14 +11,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.database.DBURI;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.database.DBURI;
+
 public class CPDCommandLineInterface {
-    private final static Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
 	private static final int DUPLICATE_CODE_FOUND = 4;
 	private static final int ERROR_STATUS = 1;

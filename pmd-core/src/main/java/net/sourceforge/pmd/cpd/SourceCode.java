@@ -13,15 +13,15 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.PMD;
-
 import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BOMInputStream;
 
+import net.sourceforge.pmd.PMD;
+
 public class SourceCode {
 
-    public static abstract class CodeLoader {
+    public abstract static class CodeLoader {
         private SoftReference<List<String>> code;
 
         public List<String> getCode() {

@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
+
+    private boolean isInterface;
+
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
     }
@@ -22,6 +25,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -29,8 +33,6 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
     public boolean isNested() {
         return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration;
     }
-
-    private boolean isInterface;
 
     public boolean isInterface() {
         return this.isInterface;

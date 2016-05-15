@@ -34,12 +34,58 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<MethodProperty>(
             Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public MethodProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new MethodProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
                     legalPackageNamesIn(valuesById, delimiter), 0f);
         }
     };
+
+    /**
+     * Constructor for MethodProperty.
+     *
+     * @param theName String
+     * @param theDescription String
+     * @param theDefault Method
+     * @param legalPackageNames String[]
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
+            float theUIOrder) {
+        super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
+    }
+
+    /**
+     * Constructor for MethodProperty.
+     *
+     * @param theName String
+     * @param theDescription String
+     * @param defaultMethodStr String
+     * @param legalPackageNames String[]
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames,
+            float theUIOrder) {
+        super(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder);
+    }
+
+    /**
+     * Constructor for MethodProperty.
+     *
+     * @param theName String
+     * @param theDescription String
+     * @param defaultMethodStr String
+     * @param otherParams Map<String, String>
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public MethodProperty(String theName, String theDescription, String defaultMethodStr,
+            Map<String, String> otherParams, float theUIOrder) {
+        this(theName, theDescription, methodFrom(defaultMethodStr), packageNamesIn(otherParams), theUIOrder);
+    }
 
     /**
      * @param cls Class<?>
@@ -66,6 +112,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return asStringFor(defaultValue());
     }
@@ -224,51 +271,6 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Constructor for MethodProperty.
-     *
-     * @param theName String
-     * @param theDescription String
-     * @param theDefault Method
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
-     * @throws IllegalArgumentException
-     */
-    public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
-            float theUIOrder) {
-        super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
-    }
-
-    /**
-     * Constructor for MethodProperty.
-     *
-     * @param theName String
-     * @param theDescription String
-     * @param defaultMethodStr String
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
-     * @throws IllegalArgumentException
-     */
-    public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames,
-            float theUIOrder) {
-        super(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder);
-    }
-
-    /**
-     * Constructor for MethodProperty.
-     *
-     * @param theName String
-     * @param theDescription String
-     * @param defaultMethodStr String
-     * @param otherParams Map<String, String>
-     * @param theUIOrder float
-     * @throws IllegalArgumentException
-     */
-    public MethodProperty(String theName, String theDescription, String defaultMethodStr,
-            Map<String, String> otherParams, float theUIOrder) {
-        this(theName, theDescription, methodFrom(defaultMethodStr), packageNamesIn(otherParams), theUIOrder);
-    }
-
-    /**
      * Return the value as a string that can be easily recognized and parsed
      * when we see it again.
      *
@@ -303,6 +305,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Method> type() {
         return Method.class;
     }
@@ -313,6 +316,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Method valueFrom(String valueString) throws IllegalArgumentException {
         return methodFrom(valueString);
     }
