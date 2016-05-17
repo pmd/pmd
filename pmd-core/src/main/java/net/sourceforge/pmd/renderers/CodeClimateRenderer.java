@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIAT
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,8 +59,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         
     	CodeClimateIssue issue = new CodeClimateIssue();
         issue.check_name = rule.getName();
-        issue.description = getCleanedDescription(rv);
-        issue.content = new CodeClimateIssue.Content(rule.getDescription());
+        issue.description = cleaned(rv.getDescription());
+        issue.content = getContent(rv);
         issue.location = getLocation(rv);
         
         switch(rule.getPriority()) {
@@ -108,10 +109,28 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	return result;
     }
     
-    private String getCleanedDescription(RuleViolation rv) {
-    	String result = rv.getDescription().trim();
+    private String cleaned(String original) {
+    	String result = original.trim();
     	result = result.replaceAll("\\s+", " ");
     	result = result.replaceAll("\\s*[\\r\\n]+\\s*", "");
+    	result = result.replaceAll("'", "`");
     	return result;
+    }
+    
+    private CodeClimateIssue.Content getContent(RuleViolation rv) {
+    	String body = "### Description /n/n" + cleaned( rv.getRule().getDescription() );
+    	
+    	List<String> examples = rv.getRule().getExamples();
+    	
+    	if(!examples.isEmpty()) {
+    		body +=   "\n" + 
+						"### Example\n";
+    		
+    		for(String snippet : examples) {
+    			body += "\n" +"```" + snippet + "```";
+    		}
+    	}
+    	
+    	return new CodeClimateIssue.Content(body);
     }
 }
