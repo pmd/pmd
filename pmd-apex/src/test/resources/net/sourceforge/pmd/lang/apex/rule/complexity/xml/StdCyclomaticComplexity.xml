@@ -60,6 +60,17 @@ public class Foo {
 	</test-code>
 	
 	<test-code>
+		<description>Simple trigger</description>
+		<rule-property name="reportLevel">1</rule-property>
+		<expected-problems>2</expected-problems>
+		<code><![CDATA[
+trigger Accounts on Account (before insert, after insert, before update, after update, before delete, after delete) {
+	fflib_SObjectDomain.triggerHandler(Accounts.class);
+}
+		]]></code>
+	</test-code>
+	
+	<test-code>
 		<description>Simple enum</description>
 		<rule-property name="reportLevel">1</rule-property>
 		<expected-problems>0</expected-problems>
