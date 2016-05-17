@@ -58,7 +58,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         
     	CodeClimateIssue issue = new CodeClimateIssue();
         issue.check_name = rule.getName();
-        issue.description = rv.getDescription();
+        issue.description = getCleanedDescription(rv);
         issue.content = new CodeClimateIssue.Content(rule.getDescription());
         issue.location = getLocation(rv);
         
@@ -105,6 +105,13 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	CodeClimateIssue.Location result = new CodeClimateIssue.Location(pathWithoutCcRoot, 
     																	 rv.getBeginLine(), 
     																	 rv.getEndLine());
+    	return result;
+    }
+    
+    private String getCleanedDescription(RuleViolation rv) {
+    	String result = rv.getDescription().trim();
+    	result = result.replaceAll("\\s+", " ");
+    	result = result.replaceAll("\\s*[\\r\\n]+\\s*", "");
     	return result;
     }
 }
