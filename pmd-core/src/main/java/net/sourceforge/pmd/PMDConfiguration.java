@@ -54,6 +54,8 @@ import net.sourceforge.pmd.util.IOUtil;
  *  <li>A comma separated list of input paths to process for source files.
  *      This may include files, directories, archives (e.g. ZIP files), etc.
  *          {@link #getInputPaths()}</li>
+ *  <li>A flag which controls, whether {@link RuleSetFactoryCompatibility} filter
+ *      should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
  * <p>
  * <ul>
@@ -94,6 +96,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private RulePriority minimumPriority = RulePriority.LOW;
     private String inputPaths;
     private String inputUri;
+    private boolean ruleSetFactoryCompatibilityEnabled = true;
 
     // Reporting options
     private String reportFormat;
@@ -511,5 +514,27 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
+    }
+
+    /**
+     * Checks if the rule set factory compatibility feature is enabled.
+     *
+     * @return true, if the rule set factory compatibility feature is enabled
+     *
+     * @see RuleSetFactoryCompatibility
+     */
+    public boolean isRuleSetFactoryCompatibilityEnabled() {
+        return ruleSetFactoryCompatibilityEnabled;
+    }
+
+    /**
+     * Sets the rule set factory compatibility feature enabled/disabled.
+     *
+     * @param ruleSetFactoryCompatibilityEnabled <code>true</code> if the feature should be enabled
+     *
+     * @see RuleSetFactoryCompatibility
+     */
+    public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
+        this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;
     }
 }
