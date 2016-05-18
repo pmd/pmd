@@ -78,6 +78,9 @@ public class PMDParameters {
     @Parameter(names = "-auxclasspath", description = "Specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
     private String auxclasspath;
 
+    @Parameter(names = "-norulesetcompatibility", description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
+    private boolean noRuleSetCompatibility = false;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -130,6 +133,7 @@ public class PMDParameters {
         configuration.setReportProperties(params.getProperties());
         configuration.setReportShortNames(params.isShortnames());
         configuration.setRuleSets(params.getRulesets());
+        configuration.setRuleSetFactoryCompatibilityEnabled(!params.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(params.isShowsuppressed());
         configuration.setSourceEncoding(params.getEncoding());
         configuration.setStressTest(params.isStress());
