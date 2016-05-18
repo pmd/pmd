@@ -14,7 +14,7 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"### Description /n/ndesc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
+        return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"### Description"  + PMD.EOL +  "desc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
     }
 
     @Override
@@ -24,8 +24,8 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"### Description /n/ndesc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL +
-        	   "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"### Description /n/ndesc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
+        return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"### Description"  + PMD.EOL +  "desc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL +
+        	   "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"### Description"  + PMD.EOL +  "desc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {
