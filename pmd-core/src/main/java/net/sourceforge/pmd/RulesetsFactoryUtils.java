@@ -67,6 +67,9 @@ public final class RulesetsFactoryUtils {
 	public static RuleSetFactory getRulesetFactory(PMDConfiguration configuration) {
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
+		if (!configuration.isRuleSetFactoryCompatibilityEnabled()) {
+		    ruleSetFactory.disableCompatibilityFilter();
+		}
 		return ruleSetFactory;
 	}
 

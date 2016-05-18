@@ -135,3 +135,7 @@ you'll need a java8 runtime environment.
 *   CPD: If a complete filename is specified, the language dependent filename filter is not applied. This allows
     to scan files, that are not using the standard file extension. If a directory is specified, the filename filter
     is still applied and only those files with the correct file extension of the language are scanned.
+*   New command line parameter for PMD: `-norulesetcompatibility` - this disables the ruleset factory
+    compatibility filter and fails, if e.g. an old rule name is used in the ruleset.
+    See also [#1360](https://sourceforge.net/p/pmd/bugs/1360/).
+    This option is also available for the ant task: `<noRuleSetCompatibility>true</noRuleSetCompatibility>`.

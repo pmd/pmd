@@ -81,6 +81,9 @@ public class PMDParameters {
     @Parameter(names = {"-failOnViolation", "--failOnViolation"}, arity = 1, description = "By default PMD exits with status 4 if violations are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 
+    @Parameter(names = "-norulesetcompatibility", description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
+    private boolean noRuleSetCompatibility = false;
+
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -133,6 +136,7 @@ public class PMDParameters {
         configuration.setReportProperties(params.getProperties());
         configuration.setReportShortNames(params.isShortnames());
         configuration.setRuleSets(params.getRulesets());
+        configuration.setRuleSetFactoryCompatibilityEnabled(!params.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(params.isShowsuppressed());
         configuration.setSourceEncoding(params.getEncoding());
         configuration.setStressTest(params.isStress());
