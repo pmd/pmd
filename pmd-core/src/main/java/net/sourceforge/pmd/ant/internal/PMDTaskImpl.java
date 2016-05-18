@@ -68,6 +68,7 @@ public class PMDTaskImpl {
             this.failOnRuleViolation = true;
         }
         configuration.setRuleSets(task.getRulesetFiles());
+        configuration.setRuleSetFactoryCompatibilityEnabled(!task.isNoRuleSetCompatibility());
         if (task.getEncoding() != null) {
             configuration.setSourceEncoding(task.getEncoding());
         }
@@ -100,6 +101,9 @@ public class PMDTaskImpl {
         // Setup RuleSetFactory and validate RuleSets
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         ruleSetFactory.setClassLoader(configuration.getClassLoader());
+        if (!configuration.isRuleSetFactoryCompatibilityEnabled()) {
+            ruleSetFactory.disableCompatibilityFilter();
+        }
         try {
             // This is just used to validate and display rules. Each thread will
             // create its own ruleset

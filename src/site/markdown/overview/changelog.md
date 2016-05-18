@@ -15,3 +15,8 @@
 **Bugfixes:**
 
 **API Changes:**
+
+*   New command line parameter for PMD: `-norulesetcompatibility` - this disables the ruleset factory
+    compatibility filter and fails, if e.g. an old rule name is used in the ruleset.
+    See also [#1360](https://sourceforge.net/p/pmd/bugs/1360/).
+    This option is also available for the ant task: `<noRuleSetCompatibility>true</noRuleSetCompatibility>`.

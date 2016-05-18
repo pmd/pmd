@@ -27,6 +27,7 @@ public class PMDTask extends Task {
     private boolean shortFilenames;
     private String suppressMarker;
     private String rulesetFiles;
+    private boolean noRuleSetCompatibility;
     private String encoding;
     private int threads;
     private int minimumPriority;
@@ -236,4 +237,11 @@ public class PMDTask extends Task {
         return nestedRules;
     }
 
+    public boolean isNoRuleSetCompatibility() {
+        return noRuleSetCompatibility;
+    }
+
+    public void setNoRuleSetCompatibility(boolean noRuleSetCompatibility) {
+        this.noRuleSetCompatibility = noRuleSetCompatibility;
+    }
 }
