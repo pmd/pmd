@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIAT
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.Gson;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
@@ -79,22 +81,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 break;
         }
         
-        issue.remediation_points = REMEDIATION_POINTS_DEFAULT;
-        if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
-        	issue.remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
-        }
+        issue.remediation_points = getRemediationPoints(rule);
+        issue.categories = getCategories(rule);
         
-        if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
-            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
-            issue.categories = new String[categories.length];
-            for (int i = 0; i < categories.length; i++) {
-                issue.categories[i] = String.valueOf(categories[i]);
-            }
-        }
-        else {
-        	issue.categories = CODECLIMATE_DEFAULT_CATEGORIES;
-        }
-
         return issue;
     }
 
@@ -122,18 +111,57 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     private String getBody(RuleViolation rv) {
     	Rule rule = rv.getRule();
     	
-    	String result = "### Description" + PMD.EOL + 
-    			      cleaned( rule.getDescription() );
+    	String result = "## " + rule.getName() + PMD.EOL + PMD.EOL +
+				  		"Since: PMD " + rule.getSince() + PMD.EOL + PMD.EOL +
+				  		"Priority: " + rule.getPriority() + PMD.EOL + PMD.EOL +
+				  		"[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): " + Arrays.toString(getCategories(rule)).replaceAll("[\\[\\]]","") + PMD.EOL + PMD.EOL +
+				  		"[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): " + getRemediationPoints(rule) + PMD.EOL + PMD.EOL +
+				  		cleaned(rule.getDescription());
     	
     	if(!rule.getExamples().isEmpty()) {
-    		result += PMD.EOL + "### Example" + PMD.EOL;
+    		result += PMD.EOL + PMD.EOL + "Example(s):" + PMD.EOL + PMD.EOL;
     		
     		for(String snippet : rule.getExamples()) {
-    			result += "```java " + PMD.EOL +
-    					snippet + PMD.EOL +
-    					"```  ";
+    			result += "```java " + PMD.EOL + snippet + PMD.EOL + "```  ";
     		}
     	}
+    	
+    	if(!rule.getPropertyDescriptors().isEmpty()) {
+    		result += PMD.EOL + PMD.EOL + "This rule has the following properties:" + PMD.EOL + PMD.EOL;
+    		result += "Name | Default Value | Description" + PMD.EOL;
+    		result += "--- | --- | ---" + PMD.EOL;
+    		
+    		for(PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
+    			result += property.name() + " | " + property.defaultValue() + " | " + property.description() + PMD.EOL;
+    		}
+    	}
+    	
+    	return result;
+    }
+    
+    private int getRemediationPoints(Rule rule) {
+    	int remediation_points = REMEDIATION_POINTS_DEFAULT;
+        
+    	if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
+        	remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
+        }
+    	
+    	return remediation_points;
+    }
+    
+    private String[] getCategories(Rule rule) {
+    	String[] result;
+    	
+    	if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
+            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
+            result = new String[categories.length];
+            for (int i = 0; i < categories.length; i++) {
+                result[i] = String.valueOf(categories[i]);
+            }
+        }
+        else {
+        	result = CODECLIMATE_DEFAULT_CATEGORIES;
+        }
     	
     	return result;
     }
