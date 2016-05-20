@@ -15,6 +15,7 @@ import java.util.Iterator;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -43,12 +44,12 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
             String json = gson.toJson(asIssue(rv));
-            json = json.replaceAll(BODY_PLACEHOLDER, getBody(rv));
+            json = json.replace(BODY_PLACEHOLDER, getBody(rv));
             writer.write(json + NULL_CHARACTER + PMD.EOL);
         }
     }
@@ -111,28 +112,37 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     private String getBody(RuleViolation rv) {
     	Rule rule = rv.getRule();
     	
-    	String result = "## " + rule.getName() + PMD.EOL + PMD.EOL +
-				  		"Since: PMD " + rule.getSince() + PMD.EOL + PMD.EOL +
-				  		"Priority: " + rule.getPriority() + PMD.EOL + PMD.EOL +
-				  		"[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): " + Arrays.toString(getCategories(rule)).replaceAll("[\\[\\]]","") + PMD.EOL + PMD.EOL +
-				  		"[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): " + getRemediationPoints(rule) + PMD.EOL + PMD.EOL +
+    	String result = "## " + rule.getName() + "\\n\\n" +
+				  		"Since: PMD " + rule.getSince() + "\\n\\n" +
+				  		"Priority: " + rule.getPriority() + "\\n\\n" +
+				  		"[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): " + Arrays.toString(getCategories(rule)).replaceAll("[\\[\\]]","") + "\\n\\n" +
+				  		"[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): " + getRemediationPoints(rule) + "\\n\\n" +
 				  		cleaned(rule.getDescription());
     	
     	if(!rule.getExamples().isEmpty()) {
-    		result += PMD.EOL + PMD.EOL + "Example(s):" + PMD.EOL + PMD.EOL;
+    		result += "\\n\\n### Example:\\n\\n";
     		
     		for(String snippet : rule.getExamples()) {
-    			result += "```java " + PMD.EOL + snippet + PMD.EOL + "```  ";
+    			snippet = snippet.replaceAll("\\n", "\\\\n");
+    			snippet = snippet.replaceAll("\\t", "\\\\t");
+    			result += "```java\\n" + snippet + "\\n```  ";
     		}
     	}
     	
     	if(!rule.getPropertyDescriptors().isEmpty()) {
-    		result += PMD.EOL + PMD.EOL + "This rule has the following properties:" + PMD.EOL + PMD.EOL;
-    		result += "Name | Default Value | Description" + PMD.EOL;
-    		result += "--- | --- | ---" + PMD.EOL;
+    		result += "\\n\\n### [PMD properties](http://pmd.github.io/pmd-5.1.3/pmd-developer.html)\\n\\n";
+    		result += "Name | Default Value | Description\\n";
+    		result += "--- | --- | ---\\n";
     		
     		for(PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
-    			result += property.name() + " | " + property.defaultValue() + " | " + property.description() + PMD.EOL;
+    			String defaultValue;
+    			try {
+    				defaultValue = Arrays.toString((String[])property.defaultValue()).replaceAll("[\\[\\]]","");
+    			}
+    			catch(Exception ignore) {
+    				defaultValue = property.defaultValue().toString();
+    			}
+    			result += property.name() + " | " + defaultValue + " | " + property.description() + "\\n";
     		}
     	}
     	
