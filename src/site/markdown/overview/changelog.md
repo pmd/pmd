@@ -19,6 +19,7 @@ you'll need a java8 runtime environment.
 *   CPD: New command line parameter `--ignore-usings`: Ignore using directives in C# when comparing text.
 *   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
 *   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): Provide backwards compatibility for PMD configuration file
+*   [#1486](https://sourceforge.net/p/pmd/bugs/1486/): Add rule for no-else-return
 
 **New/Modified/Deprecated Rules:**
 
@@ -37,6 +38,11 @@ you'll need a java8 runtime environment.
     *   apex-performance: AvoidSoqlInLoops
     *   apex-style: VariableNamingConventions, MethodNamingConventions, ClassNamingConventions,
         MethodWithSameNameAsEnclosingClass, AvoidLogicInTrigger, AvoidGlobalModifier
+
+*   Javascript
+    *   New Rule: ecmascript-unnecessary/NoElseReturn: The else block in a if-else-construct is
+        unnecessary if the `if` block contains a return. Then the content of the else block can be
+        put outside.
 
 **Pull Requests:**
 

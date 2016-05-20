@@ -71,4 +71,37 @@ if (bar) {
     </example>
   </rule>
 
+  <rule name="NoElseReturn"
+        language="ecmascript"
+        since="5.5.0"
+        message="The else block is unnecessary"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/unnecessary.html#NoElseReturn">
+    <description>The else block in a if-else-construct is unnecessary if the `if` block contains a return.
+    Then the content of the else block can be put outside.
+    
+    See also: http://eslint.org/docs/rules/no-else-return
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath"><value><![CDATA[
+//IfStatement[@Else="true"][Scope[1]/ReturnStatement]
+        ]]></value></property>
+    </properties>
+    <example><![CDATA[
+// Bad:
+if (x) {
+  return y;
+} else {
+  return z;
+}
+
+// Good:
+if (x) {
+  return y;
+}
+return z;
+    ]]></example>
+  </rule>
+
 </ruleset>

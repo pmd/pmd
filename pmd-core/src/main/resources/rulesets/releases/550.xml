@@ -27,5 +27,6 @@ This ruleset contains links to rules that are new in PMD v5.5.0
     <rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger" />
     <rule ref="rulesets/apex/style.xml/AvoidGlobalModifier" />
 
+    <rule ref="rulesets/ecmascript/unnecessary.xml/NoElseReturn" />
 </ruleset>
 

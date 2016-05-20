@@ -13,5 +13,6 @@ public class UnnecessaryRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "UnnecessaryBlock");
         addRule(RULESET, "UnnecessaryParentheses");
+        addRule(RULESET, "NoElseReturn");
     }
 }
