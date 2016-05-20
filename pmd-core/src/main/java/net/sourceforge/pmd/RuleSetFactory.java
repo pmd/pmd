@@ -48,6 +48,13 @@ public class RuleSetFactory {
 
     private static final Logger LOG = Logger.getLogger(RuleSetFactory.class.getName());
 
+    private static final String DESCRIPTION = "description";
+    private static final String UNEXPECTED_ELEMENT = "Unexpected element <";
+    private static final String PRIORITY = "priority";
+    private static final String FOR_RULE = "' for Rule ";
+    private static final String MESSAGE = "message";
+    private static final String EXTERNAL_INFO_URL = "externalInfoUrl";
+
     private ClassLoader classLoader = RuleSetFactory.class.getClassLoader();
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = false;
@@ -257,7 +264,7 @@ public class RuleSetFactory {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     String nodeName = node.getNodeName();
-                    if ("description".equals(nodeName)) {
+                    if (DESCRIPTION.equals(nodeName)) {
                         ruleSet.setDescription(parseTextNode(node));
                     } else if ("include-pattern".equals(nodeName)) {
                         ruleSet.addIncludePattern(parseTextNode(node));
@@ -266,7 +273,7 @@ public class RuleSetFactory {
                     } else if ("rule".equals(nodeName)) {
                         parseRuleNode(ruleSetReferenceId, ruleSet, node, withDeprecatedRuleReferences);
                     } else {
-                        throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
+                        throw new IllegalArgumentException(UNEXPECTED_ELEMENT + node.getNodeName()
                                 + "> encountered as child of <ruleset> element.");
                     }
                 }
@@ -346,7 +353,7 @@ public class RuleSetFactory {
                 String excludedRuleName = excludeElement.getAttribute("name");
                 ruleSetReference.addExclude(excludedRuleName);
                 excludedRulesCheck.add(excludedRuleName);
-            } else if (isElementNode(child, "priority")) {
+            } else if (isElementNode(child, PRIORITY)) {
                 priority = parseTextNode(child).trim();
             }
         }
@@ -406,7 +413,7 @@ public class RuleSetFactory {
             String languageName = ruleElement.getAttribute("language");
             Language language = LanguageRegistry.findLanguageByTerseName(languageName);
             if (language == null) {
-                throw new IllegalArgumentException("Unknown Language '" + languageName + "' for Rule " + rule.getName()
+                throw new IllegalArgumentException("Unknown Language '" + languageName + FOR_RULE + rule.getName()
                         + ", supported Languages are "
                         + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport()));
             }
@@ -424,7 +431,7 @@ public class RuleSetFactory {
             LanguageVersion minimumLanguageVersion = language.getVersion(minimumLanguageVersionName);
             if (minimumLanguageVersion == null) {
                 throw new IllegalArgumentException("Unknown minimum Language Version '" + minimumLanguageVersionName
-                        + "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
+                        + "' for Language '" + language.getTerseName() + FOR_RULE + rule.getName()
                         + "; supported Language Versions are: "
                         + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
             }
@@ -436,7 +443,7 @@ public class RuleSetFactory {
             LanguageVersion maximumLanguageVersion = language.getVersion(maximumLanguageVersionName);
             if (maximumLanguageVersion == null) {
                 throw new IllegalArgumentException("Unknown maximum Language Version '" + maximumLanguageVersionName
-                        + "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
+                        + "' for Language '" + language.getTerseName() + FOR_RULE + rule.getName()
                         + "; supported Language Versions are: "
                         + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
             }
@@ -447,7 +454,7 @@ public class RuleSetFactory {
             throw new IllegalArgumentException("The minimum Language Version '"
                     + rule.getMinimumLanguageVersion().getTerseName()
                     + "' must be prior to the maximum Language Version '"
-                    + rule.getMaximumLanguageVersion().getTerseName() + "' for Rule " + rule.getName()
+                    + rule.getMaximumLanguageVersion().getTerseName() + FOR_RULE + rule.getName()
                     + "; perhaps swap them around?");
         }
 
@@ -455,9 +462,9 @@ public class RuleSetFactory {
         if (StringUtil.isNotEmpty(since)) {
             rule.setSince(since);
         }
-        rule.setMessage(ruleElement.getAttribute("message"));
+        rule.setMessage(ruleElement.getAttribute(MESSAGE));
         rule.setRuleSetName(ruleSet.getName());
-        rule.setExternalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
+        rule.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
 
         if (hasAttributeSetTrue(ruleElement, "dfa")) {
             rule.setUsesDFA();
@@ -474,16 +481,16 @@ public class RuleSetFactory {
                 continue;
             }
             String nodeName = node.getNodeName();
-            if (nodeName.equals("description")) {
+            if (nodeName.equals(DESCRIPTION)) {
                 rule.setDescription(parseTextNode(node));
             } else if (nodeName.equals("example")) {
                 rule.addExample(parseTextNode(node));
-            } else if (nodeName.equals("priority")) {
+            } else if (nodeName.equals(PRIORITY)) {
                 rule.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node).trim())));
             } else if (nodeName.equals("properties")) {
                 parsePropertiesNode(rule, node);
             } else {
-                throw new IllegalArgumentException("Unexpected element <" + nodeName
+                throw new IllegalArgumentException(UNEXPECTED_ELEMENT + nodeName
                         + "> encountered as child of <rule> element for Rule " + rule.getName());
             }
 
@@ -581,25 +588,25 @@ public class RuleSetFactory {
         if (ruleElement.hasAttribute("name")) {
             ruleReference.setName(ruleElement.getAttribute("name"));
         }
-        if (ruleElement.hasAttribute("message")) {
-            ruleReference.setMessage(ruleElement.getAttribute("message"));
+        if (ruleElement.hasAttribute(MESSAGE)) {
+            ruleReference.setMessage(ruleElement.getAttribute(MESSAGE));
         }
-        if (ruleElement.hasAttribute("externalInfoUrl")) {
-            ruleReference.setExternalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
+        if (ruleElement.hasAttribute(EXTERNAL_INFO_URL)) {
+            ruleReference.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
         }
         for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
             Node node = ruleElement.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                if (node.getNodeName().equals("description")) {
+                if (node.getNodeName().equals(DESCRIPTION)) {
                     ruleReference.setDescription(parseTextNode(node));
                 } else if (node.getNodeName().equals("example")) {
                     ruleReference.addExample(parseTextNode(node));
-                } else if (node.getNodeName().equals("priority")) {
+                } else if (node.getNodeName().equals(PRIORITY)) {
                     ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
                 } else if (node.getNodeName().equals("properties")) {
                     parsePropertiesNode(ruleReference, node);
                 } else {
-                    throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
+                    throw new IllegalArgumentException(UNEXPECTED_ELEMENT + node.getNodeName()
                             + "> encountered as child of <rule> element for Rule " + ruleReference.getName());
                 }
             }
@@ -630,11 +637,9 @@ public class RuleSetFactory {
             NodeList rules = ruleSetElement.getElementsByTagName("rule");
             for (int i = 0; i < rules.getLength(); i++) {
                 Element rule = (Element) rules.item(i);
-                if (rule.hasAttribute("name")) {
-                    if (rule.getAttribute("name").equals(ruleName)) {
-                        found = true;
-                        break;
-                    }
+                if (rule.hasAttribute("name") && rule.getAttribute("name").equals(ruleName)) {
+                    found = true;
+                    break;
                 }
             }
         } catch (Exception e) {

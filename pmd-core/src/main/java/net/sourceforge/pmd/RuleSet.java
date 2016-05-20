@@ -34,6 +34,7 @@ import net.sourceforge.pmd.util.filter.Filters;
 public class RuleSet {
 
     private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
+    private static final String MISSING_RULE = "Missing rule";
 
     private List<Rule> rules = new ArrayList<>();
     private String fileName;
@@ -80,7 +81,7 @@ public class RuleSet {
      */
     public void addRule(Rule rule) {
         if (rule == null) {
-            throw new IllegalArgumentException("Missing rule");
+            throw new IllegalArgumentException(MISSING_RULE);
         }
         rules.add(rule);
     }
@@ -96,7 +97,7 @@ public class RuleSet {
      */
     public boolean addRuleReplaceIfExists(Rule rule) {
         if (rule == null) {
-            throw new IllegalArgumentException("Missing rule");
+            throw new IllegalArgumentException(MISSING_RULE);
         }
 
         boolean replaced = false;
@@ -122,7 +123,7 @@ public class RuleSet {
      */
     public boolean addRuleIfNotExists(Rule rule) {
         if (rule == null) {
-            throw new IllegalArgumentException("Missing rule");
+            throw new IllegalArgumentException(MISSING_RULE);
         }
 
         boolean exists = false;
@@ -182,10 +183,8 @@ public class RuleSet {
      */
     public boolean usesDFA(Language language) {
         for (Rule r : rules) {
-            if (r.getLanguage().equals(language)) {
-                if (r.usesDFA()) {
-                    return true;
-                }
+            if (r.getLanguage().equals(language) && r.usesDFA()) {
+                return true;
             }
         }
         return false;
@@ -509,10 +508,8 @@ public class RuleSet {
      */
     public boolean usesTypeResolution(Language language) {
         for (Rule r : rules) {
-            if (r.getLanguage().equals(language)) {
-                if (r.usesTypeResolution()) {
-                    return true;
-                }
+            if (r.getLanguage().equals(language) && r.usesTypeResolution()) {
+                return true;
             }
         }
         return false;
