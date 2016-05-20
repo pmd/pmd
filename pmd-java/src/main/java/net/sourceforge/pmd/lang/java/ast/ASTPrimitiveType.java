@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensionable {
 
+    private int arrayDepth;
+
     public ASTPrimitiveType(int id) {
         super(id);
     }
@@ -16,26 +18,27 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensiona
     }
 
     public boolean isBoolean() {
-        return getImage().equals("boolean");
+        return "boolean".equals(getImage());
     }
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
-    private int arrayDepth;
 
     public void bumpArrayDepth() {
         arrayDepth++;
     }
 
+    @Override
     public int getArrayDepth() {
         return arrayDepth;
     }
 
+    @Override
     public boolean isArray() {
         return arrayDepth > 0;
     }

@@ -11,15 +11,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import net.sourceforge.pmd.lang.ast.GenericToken;
-
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 public abstract class AbstractNode implements Node {
 
@@ -35,6 +34,8 @@ public abstract class AbstractNode implements Node {
     protected int endColumn;
     private DataFlowNode dataFlowNode;
     private Object userData;
+    protected GenericToken firstToken;
+    protected GenericToken lastToken;
 
     public AbstractNode(int id) {
     	this.id = id;
@@ -53,22 +54,27 @@ public abstract class AbstractNode implements Node {
     	return beginLine == endLine;
     }
     
+    @Override
     public void jjtOpen() {
 	// to be overridden by subclasses
     }
 
+    @Override
     public void jjtClose() {
 	// to be overridden by subclasses
     }
 
+    @Override
     public void jjtSetParent(Node parent) {
     	this.parent = parent;
     }
 
+    @Override
     public Node jjtGetParent() {
     	return parent;
     }
 
+    @Override
     public void jjtAddChild(Node child, int index) {
 		if (children == null) {
 		    children = new Node[index + 1];
@@ -80,21 +86,26 @@ public abstract class AbstractNode implements Node {
 		children[index] = child;
 		child.jjtSetChildIndex(index);
     }
+    @Override
     public void jjtSetChildIndex(int index) {
         childIndex = index;
     }
+    @Override
     public int jjtGetChildIndex() {
         return childIndex;
     }
 
+    @Override
     public Node jjtGetChild(int index) {
     	return children[index];
     }
 
+    @Override
     public int jjtGetNumChildren() {
     	return children == null ? 0 : children.length;
     }
 
+    @Override
     public int jjtGetId() {
     	return id;
     }
@@ -106,18 +117,22 @@ public abstract class AbstractNode implements Node {
     @Override
     public abstract String toString();
 
+    @Override
     public String getImage() {
     	return image;
     }
 
+    @Override
     public void setImage(String image) {
 	this.image = image;
     }
 
+    @Override
     public boolean hasImageEqualTo(String image) {
 	return this.getImage() != null && this.getImage().equals(image);
     }
 
+    @Override
     public int getBeginLine() {
 	return beginLine;
     }
@@ -126,6 +141,7 @@ public abstract class AbstractNode implements Node {
 	this.beginLine = i;
     }
 
+    @Override
     public int getBeginColumn() {
 	if (beginColumn != -1) {
 	    return beginColumn;
@@ -142,6 +158,7 @@ public abstract class AbstractNode implements Node {
 	this.beginColumn = i;
     }
 
+    @Override
     public int getEndLine() {
 	return endLine;
     }
@@ -150,6 +167,7 @@ public abstract class AbstractNode implements Node {
 	this.endLine = i;
     }
 
+    @Override
     public int getEndColumn() {
 	return endColumn;
     }
@@ -158,6 +176,7 @@ public abstract class AbstractNode implements Node {
 	this.endColumn = i;
     }
 
+    @Override
     public DataFlowNode getDataFlowNode() {
 	if (this.dataFlowNode == null) {
 	    if (this.parent != null) {
@@ -168,6 +187,7 @@ public abstract class AbstractNode implements Node {
 	return dataFlowNode;
     }
 
+    @Override
     public void setDataFlowNode(DataFlowNode dataFlowNode) {
 	this.dataFlowNode = dataFlowNode;
     }
@@ -179,6 +199,7 @@ public abstract class AbstractNode implements Node {
      * @return the n-th parent or null.
      * @throws IllegalArgumentException if <code>n</code> is not positive.
      */
+    @Override
     public Node getNthParent(int n) {
         if (n <= 0) {
             throw new IllegalArgumentException();
@@ -199,6 +220,7 @@ public abstract class AbstractNode implements Node {
      * @param parentType class which you want to find.
      * @return Node of type parentType.  Returns null if none found.
      */
+    @Override
     public <T> T getFirstParentOfType(Class<T> parentType) {
 	Node parentNode = jjtGetParent();
 	while (parentNode != null && parentNode.getClass() != parentType) {
@@ -213,6 +235,7 @@ public abstract class AbstractNode implements Node {
      * @param parentType classes which you want to find.
      * @return List of parentType instances found.
      */
+    @Override
     public <T> List<T> getParentsOfType(Class<T> parentType) {
 	List<T> parents = new ArrayList<>();
 	Node parentNode = jjtGetParent();
@@ -228,6 +251,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public <T> List<T> findDescendantsOfType(Class<T> targetType) {
 	List<T> list = new ArrayList<>();
 	findDescendantsOfType(this, targetType, list, true);
@@ -237,6 +261,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossBoundaries) {
 	findDescendantsOfType(this, targetType, results, crossBoundaries);
     }
@@ -262,6 +287,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public <T> List<T> findChildrenOfType(Class<T> targetType) {
 	List<T> list = new ArrayList<>();
 	int n = jjtGetNumChildren();
@@ -274,10 +300,12 @@ public abstract class AbstractNode implements Node {
 	return list;
     }
 
+    @Override
     public boolean isFindBoundary() {
 	return false;
     }
 
+    @Override
     public Document getAsDocument() {
 	try {
 	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -313,6 +341,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public <T> T getFirstDescendantOfType(Class<T> descendantType) {
 	return getFirstDescendantOfType(descendantType, this);
     }
@@ -320,6 +349,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public <T> T getFirstChildOfType(Class<T> childType) {
 	int n = jjtGetNumChildren();
 	for (int i = 0; i < n; i++) {
@@ -349,6 +379,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public final <T> boolean hasDescendantOfType(Class<T> type) {
 	return getFirstDescendantOfType(type) != null;
     }
@@ -370,6 +401,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     @SuppressWarnings("unchecked")
     public List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException {
         return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
@@ -378,6 +410,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasDescendantMatchingXPath(String xpathString) {
         try {
             return !findChildNodesWithXPath(xpathString).isEmpty();
@@ -389,6 +422,7 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getUserData() {
         return userData;
     }
@@ -396,11 +430,11 @@ public abstract class AbstractNode implements Node {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setUserData(Object userData) {
         this.userData = userData;
     }
     
-    protected GenericToken firstToken, lastToken;
 
 	public GenericToken jjtGetFirstToken() {
 		return firstToken;

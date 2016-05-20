@@ -14,8 +14,12 @@ public class StartAndEndTagMismatchException extends SyntaxErrorException {
     public static final String START_END_TAG_MISMATCH_RULE_NAME
             = "Start and End Tags of an XML Element must match.";
 
-    private int startLine, endLine, startColumn, endColumn;
-    private String startTagName, endTagName;
+    private final int startLine;
+    private final int endLine;
+    private final int startColumn;
+    private final int endColumn;
+    private final String startTagName;
+    private final String endTagName;
 
     /**
      * Public constructor.
@@ -71,6 +75,7 @@ public class StartAndEndTagMismatchException extends SyntaxErrorException {
     /* (non-Javadoc)
      * @see java.lang.Throwable#getMessage()
      */
+    @Override
     public String getMessage() {
         return "The start-tag of element \"" + startTagName + "\" (line "
                 + startLine + ", column " + startColumn

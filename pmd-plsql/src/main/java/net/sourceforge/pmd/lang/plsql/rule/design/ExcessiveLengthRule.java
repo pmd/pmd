@@ -21,7 +21,7 @@ import net.sourceforge.pmd.stat.DataPoint;
  * does the rest for you.
  */
 public class ExcessiveLengthRule extends AbstractStatisticalPLSQLRule {
-    private final static Logger LOGGER = Logger.getLogger(ExcessiveLengthRule.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(ExcessiveLengthRule.class.getName());
     private Class<?> nodeClass;
 
     public ExcessiveLengthRule(Class<?> nodeClass) {
@@ -30,7 +30,6 @@ public class ExcessiveLengthRule extends AbstractStatisticalPLSQLRule {
 
     @Override
     public Object visit(PLSQLNode node, Object data) {
-        //LOGGER.entering(CLASS_PATH,"visit(SimpleNode)");
         if (LOGGER.isLoggable(Level.FINEST)) {
         LOGGER.finest("SimpleNode: line " + node.getBeginLine() +", column " + node.getBeginColumn()
                       + " - is node " + node.getClass().getCanonicalName()
@@ -55,7 +54,6 @@ public class ExcessiveLengthRule extends AbstractStatisticalPLSQLRule {
 	    }
 	}
 
-        //LOGGER.exiting(CLASS_PATH,"visit(SimpleNode)");
 	return node.childrenAccept(this, data);
     }
 

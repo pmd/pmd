@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -58,11 +57,6 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     private void init() {
         ignoreAnnotations = getProperty(IGNORE_ANNOTATIONS_DESCRIPTOR);
-    }
-
-    @Override
-    public Object visit(ASTImplementsList clz, Object data) {
-        return super.visit(clz, data);
     }
 
     @Override

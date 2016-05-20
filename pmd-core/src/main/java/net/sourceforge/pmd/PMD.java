@@ -65,6 +65,35 @@ public class PMD {
     /** The default suppress marker string. */
     public static final String SUPPRESS_MARKER = "NOPMD";
 
+    /** Contains the configuration with which this PMD instance has been created. */
+    protected final PMDConfiguration configuration;
+
+    private final SourceCodeProcessor rulesetsFileProcessor;
+
+    /**
+     * Constant that contains always the current version of PMD.
+     */
+    public static final String VERSION;
+
+    /**
+     * Create a PMD instance using a default Configuration. Changes to the
+     * configuration may be required.
+     */
+    public PMD() {
+        this(new PMDConfiguration());
+    }
+
+    /**
+     * Create a PMD instance using the specified Configuration.
+     * 
+     * @param configuration
+     *            The runtime Configuration of PMD to use.
+     */
+    public PMD(PMDConfiguration configuration) {
+        this.configuration = configuration;
+        this.rulesetsFileProcessor = new SourceCodeProcessor(configuration);
+    }
+
     /**
      * Parses the given string as a database uri and returns a list of datasources.
      * @param uriString the URI to parse
@@ -107,11 +136,6 @@ public class PMD {
         }
         return dataSources;
     }
-
-    /** Contains the configuration with which this PMD instance has been created. */
-    protected final PMDConfiguration configuration;
-
-    private final SourceCodeProcessor rulesetsFileProcessor;
 
     /**
      * Helper method to get a configured parser for the requested language. The parser is
@@ -173,25 +197,6 @@ public class PMD {
         }
 
         return brokenRules;
-    }
-
-    /**
-     * Create a PMD instance using a default Configuration. Changes to the
-     * configuration may be required.
-     */
-    public PMD() {
-        this(new PMDConfiguration());
-    }
-
-    /**
-     * Create a PMD instance using the specified Configuration.
-     * 
-     * @param configuration
-     *            The runtime Configuration of PMD to use.
-     */
-    public PMD(PMDConfiguration configuration) {
-        this.configuration = configuration;
-        this.rulesetsFileProcessor = new SourceCodeProcessor(configuration);
     }
 
     /**
@@ -369,6 +374,7 @@ public class PMD {
             final boolean useShortNames = configuration.isReportShortNames();
             final String inputPaths = configuration.getInputPaths();
             Collections.sort(files, new Comparator<DataSource>() {
+                @Override
                 public int compare(DataSource left, DataSource right) {
                     String leftString = left.getNiceFileName(useShortNames, inputPaths);
                     String rightString = right.getNiceFileName(useShortNames, inputPaths);
@@ -489,10 +495,6 @@ public class PMD {
         return status;
     }
 
-    /**
-     * Constant that contains always the current version of PMD.
-     */
-    public static final String VERSION;
     /**
      * Determines the version from maven's generated pom.properties file.
      */

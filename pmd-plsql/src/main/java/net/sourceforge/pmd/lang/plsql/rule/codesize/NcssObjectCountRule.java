@@ -20,8 +20,8 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author Stuart Turton
  */
 public class NcssObjectCountRule extends AbstractNcssCountRule {
-    private final static String CLASS_NAME =NcssObjectCountRule.class.getName(); 
-    private final static Logger LOGGER = Logger.getLogger(NcssObjectCountRule.class.getName()); 
+    private static final String CLASS_NAME = NcssObjectCountRule.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(NcssObjectCountRule.class.getName());
 
     /**
      * Count type declarations. This includes Oracle Objects. 
@@ -49,6 +49,7 @@ public class NcssObjectCountRule extends AbstractNcssCountRule {
     /** Override super.visit(PLSQLNode, Object) for ASTProgramUnit nodes,
      *only adding DataPoints for Schema-level Functions and Procedures 
      */
+    @Override
     public Object visit(ASTProgramUnit node, Object data) {
 	int numNodes = 0;
 

@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTBlock extends AbstractJavaNode {
+
+    private boolean containsComment;
+
     public ASTBlock(int id) {
         super(id);
     }
@@ -18,11 +21,10 @@ public class ASTBlock extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
-    private boolean containsComment;
 
     public boolean containsComment() {
         return this.containsComment;

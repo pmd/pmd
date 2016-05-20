@@ -15,8 +15,9 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class OccurrenceFinder extends PLSQLParserVisitorAdapter {
-    private final static Logger LOGGER = Logger.getLogger(OccurrenceFinder.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(OccurrenceFinder.class.getName());
 
+    @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
         NameFinder nameFinder = new NameFinder(node);
 

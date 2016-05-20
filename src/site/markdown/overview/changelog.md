@@ -65,6 +65,7 @@ you'll need a java8 runtime environment.
 *   [#88](https://github.com/pmd/pmd/pull/88): Fixed typo in ruleset.xml and problems with the CodeClimate renderer
 *   [#89](https://github.com/pmd/pmd/pull/89): Some code enhancements
 *   [#90](https://github.com/pmd/pmd/pull/90): Refactored two test to stop using the deprecated ant class BuildFileTest
+*   [#91](https://github.com/pmd/pmd/pull/91): Small code enhancements, basically reordering variable declarations, constructors and variable modifiers
 
 **Bugfixes:**
 

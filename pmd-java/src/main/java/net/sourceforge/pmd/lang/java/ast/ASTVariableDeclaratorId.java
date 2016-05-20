@@ -13,6 +13,10 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
+    private int arrayDepth;
+    private VariableNameDeclaration nameDeclaration;
+    private boolean explicitReceiverParameter = false;
+
     public ASTVariableDeclaratorId(int id) {
         super(id);
     }
@@ -28,10 +32,6 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
-    private int arrayDepth;
-    private VariableNameDeclaration nameDeclaration;
-    private boolean explicitReceiverParameter = false;
 
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;

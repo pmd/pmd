@@ -16,10 +16,12 @@ import net.sourceforge.pmd.util.StringUtil;
 
 public final class CommentUtil {
 
+    private static final String CR = "\n";
+    private static final Pattern JAVADOC_TAG = Pattern.compile("@[A-Za-z0-9]+");
+    private static final Map<String, String> JAVADOC_CACHE = new HashMap<>();
+
     private CommentUtil() {
     }
-
-    private static final String CR = "\n";
 
     public static String wordAfter(String text, int position) {
 
@@ -61,9 +63,6 @@ public final class CommentUtil {
 
         return null;
     }
-
-    private static final Pattern JAVADOC_TAG = Pattern.compile("@[A-Za-z0-9]+");
-    private static final Map<String, String> JAVADOC_CACHE = new HashMap<>();
 
     public static Map<String, Integer> javadocTagsIn(String comment) {
         Matcher m = JAVADOC_TAG.matcher(comment);

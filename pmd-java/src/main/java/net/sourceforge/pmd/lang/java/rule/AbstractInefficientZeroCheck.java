@@ -26,6 +26,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
 
+    private static Map<String, String> inverse = new HashMap<>();
+
     public abstract boolean appliesToClassName(String name);
 
     public abstract boolean isTargetMethod(JavaNameOccurrence occ);
@@ -44,7 +46,6 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
         return rules;
     }
 
-    private static Map<String, String> inverse = new HashMap<>();
     static {
         inverse.put("<", ">");
         inverse.put(">", "<");
@@ -54,6 +55,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
         inverse.put("!=", "!=");
     }
 
+    @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         Node nameNode = node.getTypeNameNode();
         if (nameNode == null || nameNode instanceof ASTPrimitiveType

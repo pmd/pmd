@@ -24,25 +24,6 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     protected Set<ImportWrapper> imports = new HashSet<>();
 
-    @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        imports.clear();
-        super.visit(node, data);
-        visitComments(node);
-
-        /* special handling for Bug 2606609 : False "UnusedImports" positive in package-info.java
-         * package annotations are processed before the import clauses so they need to be examined
-         * again later on.
-         */
-        if (node.jjtGetNumChildren()>0 && node.jjtGetChild(0) instanceof ASTPackageDeclaration) {
-            visit((ASTPackageDeclaration)node.jjtGetChild(0), data);
-        }
-        for (ImportWrapper wrapper : imports) {
-            addViolation(data, wrapper.getNode(), wrapper.getFullName());
-        }
-        return data;
-    }
-
     /*
      * Patterns to match the following constructs:
      *
@@ -66,6 +47,25 @@ public class UnusedImportsRule extends AbstractJavaRule {
             "@throws\\s+(\\p{Alpha}\\p{Alnum}*)");
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
+
+    @Override
+    public Object visit(ASTCompilationUnit node, Object data) {
+        imports.clear();
+        super.visit(node, data);
+        visitComments(node);
+
+        /* special handling for Bug 2606609 : False "UnusedImports" positive in package-info.java
+         * package annotations are processed before the import clauses so they need to be examined
+         * again later on.
+         */
+        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTPackageDeclaration) {
+            visit((ASTPackageDeclaration) node.jjtGetChild(0), data);
+        }
+        for (ImportWrapper wrapper : imports) {
+            addViolation(data, wrapper.getNode(), wrapper.getFullName());
+        }
+        return data;
+    }
 
     private void visitComments(ASTCompilationUnit node) {
         if (imports.isEmpty()) {

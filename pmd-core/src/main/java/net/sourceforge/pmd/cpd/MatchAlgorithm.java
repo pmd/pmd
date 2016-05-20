@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class MatchAlgorithm {
 
-    private final static int MOD = 37;
+    private static final int MOD = 37;
     private int lastHash;
     private int lastMod = 1;
 
@@ -71,7 +71,7 @@ public class MatchAlgorithm {
         }
         cpdListener.phaseUpdate(CPDListener.GROUPING);
         matches = matchCollector.getMatches();
-        matchCollector = null;
+
         for (Match match : matches) {
         	for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
                 Mark mark = occurrences.next();

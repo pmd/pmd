@@ -159,6 +159,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * <p/>
      * Evaluate right to left
      */
+
+    private static final NullEvalPackage NULL_EVAL_PACKAGE = new NullEvalPackage();
+
+    /**
+     * 1 package per class.
+     */
+    private final List<EvalPackage> evalPackages = new ArrayList<>();//could use java.util.Stack
+
     private static class MethodInvocation {
         private String name;
         private ASTPrimaryExpression ape;
@@ -507,12 +515,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static class MethodHolderComparator implements Comparator<MethodHolder> {
+        @Override
         public int compare(MethodHolder o1, MethodHolder o2) {
             return compareNodes(o1.getASTMethodDeclarator(), o2.getASTMethodDeclarator());
         }
     }
 
     private static class ConstructorHolderComparator implements Comparator<ConstructorHolder> {
+        @Override
         public int compare(ConstructorHolder o1, ConstructorHolder o2) {
             return compareNodes(o1.getASTConstructorDeclaration(), o2.getASTConstructorDeclaration());
         }
@@ -522,6 +532,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * 1 package per class. holds info for evaluating a single class.
      */
     private static class EvalPackage {
+
+        public String className;
+        public List<MethodInvocation> calledMethods;
+        public Map<MethodHolder, List<MethodInvocation>> allMethodsOfClass;
+
+        public List<ConstructorInvocation> calledConstructors;
+        public Map<ConstructorHolder, List<MethodInvocation>> allPrivateConstructorsOfClass;
+
         public EvalPackage() {
         }
 
@@ -533,12 +551,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             this.allPrivateConstructorsOfClass = new TreeMap<>(new ConstructorHolderComparator());
         }
 
-        public String className;
-        public List<MethodInvocation> calledMethods;
-        public Map<MethodHolder, List<MethodInvocation>> allMethodsOfClass;
-
-        public List<ConstructorInvocation> calledConstructors;
-        public Map<ConstructorHolder, List<MethodInvocation>> allPrivateConstructorsOfClass;
     }
 
     private static final class NullEvalPackage extends EvalPackage {
@@ -550,14 +562,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             allPrivateConstructorsOfClass = Collections.emptyMap();
         }
     }
-
-    private static final NullEvalPackage NULL_EVAL_PACKAGE = new NullEvalPackage();
-
-
-    /**
-     * 1 package per class.
-     */
-    private final List<EvalPackage> evalPackages = new ArrayList<>();//could use java.util.Stack
 
     private EvalPackage getCurrentEvalPackage() {
         return evalPackages.get(evalPackages.size() - 1);

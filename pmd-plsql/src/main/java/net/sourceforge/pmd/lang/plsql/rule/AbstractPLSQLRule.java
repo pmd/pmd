@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
 public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLParserVisitor, ImmutableLanguage
 {
-    private final static Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getName()); 
-    private final static String CLASS_NAME = AbstractPLSQLRule.class.getName(); 
+    private static final Logger LOGGER = Logger.getLogger(AbstractPLSQLRule.class.getName());
+    private static final String CLASS_NAME = AbstractPLSQLRule.class.getName();
 
   
     public AbstractPLSQLRule() {
@@ -26,6 +26,7 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 	super.setUsesTypeResolution();
     }
 
+    @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
 	visitAll(nodes, ctx);
     }

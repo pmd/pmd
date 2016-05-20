@@ -12,9 +12,23 @@ import java.util.Set;
  */
 public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
 
-    final private String typeImage;
-    final private Class<?> type;
+    private final String typeImage;
+    private final Class<?> type;
     private SimpleTypedNameDeclaration next;
+
+    private static Set<String> primitiveTypes = new HashSet<>();
+    static {
+        primitiveTypes.add("float");
+        primitiveTypes.add("double");
+        primitiveTypes.add("int");
+        primitiveTypes.add("integer");
+        primitiveTypes.add("long");
+        primitiveTypes.add("byte");
+        primitiveTypes.add("short");
+        primitiveTypes.add("boolean");
+        primitiveTypes.add("char");
+        primitiveTypes.add("character");
+    }
 
     /**
      * Creates a new {@link SimpleTypedNameDeclaration} with the given type
@@ -165,19 +179,5 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
             return false;
         }
         return true;
-    }
-
-    private static Set<String> primitiveTypes = new HashSet<>();
-    static {
-        primitiveTypes.add("float");
-        primitiveTypes.add("double");
-        primitiveTypes.add("int");
-        primitiveTypes.add("integer");
-        primitiveTypes.add("long");
-        primitiveTypes.add("byte");
-        primitiveTypes.add("short");
-        primitiveTypes.add("boolean");
-        primitiveTypes.add("char");
-        primitiveTypes.add("character");
     }
 }

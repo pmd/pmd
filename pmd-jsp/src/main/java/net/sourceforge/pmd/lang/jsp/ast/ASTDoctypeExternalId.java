@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTDoctypeExternalId extends AbstractJspNode {
 
-/* BEGIN CUSTOM CODE */
-
     /**
      * URI of the external entity. Cannot be null.
      */
@@ -18,6 +16,14 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
      * Public ID of the external entity. This is optional.
      */
     private String publicId;
+
+    public ASTDoctypeExternalId(int id) {
+        super(id);
+    }
+
+    public ASTDoctypeExternalId(JspParser p, int id) {
+        super(p, id);
+    }
 
     public boolean isHasPublicId() {
         return null != publicId;
@@ -51,21 +57,11 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
     public void setPublicId(String publicId) {
         this.publicId = publicId;
     }
-/* END CUSTOM CODE */
-
-
-    public ASTDoctypeExternalId(int id) {
-        super(id);
-    }
-
-    public ASTDoctypeExternalId(JspParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

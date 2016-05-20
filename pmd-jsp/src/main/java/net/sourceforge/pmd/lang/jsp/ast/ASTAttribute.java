@@ -6,9 +6,17 @@
 package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTAttribute extends AbstractJspNode {
-    /* BEGIN CUSTOM CODE */
+
     private String name;
 
+    public ASTAttribute(int id) {
+        super(id);
+    }
+
+    public ASTAttribute(JspParser p, int id) {
+        super(p, id);
+    }
+    
     /**
      * @return Returns the name.
      */
@@ -22,7 +30,6 @@ public class ASTAttribute extends AbstractJspNode {
     public void setName(String name) {
         this.name = name;
     }
-
 
     /**
      * @return boolean - true if the element has a namespace-prefix, false otherwise
@@ -52,21 +59,10 @@ public class ASTAttribute extends AbstractJspNode {
                 : name;
     }
 
-/* END CUSTOM CODE */
-
-
-    public ASTAttribute(int id) {
-        super(id);
-    }
-
-    public ASTAttribute(JspParser p, int id) {
-        super(p, id);
-    }
-
-
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

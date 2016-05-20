@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
@@ -27,11 +27,11 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public final class MonoThreadProcessor extends AbstractPMDProcessor {
 
+    private static final Logger LOG = Logger.getLogger(MonoThreadProcessor.class.getName());
+
 	public MonoThreadProcessor(PMDConfiguration configuration) {
 		super(configuration);
 	}
-
-	private static final Logger LOG = Logger.getLogger(MonoThreadProcessor.class.getName());
 
 	public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files,
 			RuleContext ctx, List<Renderer> renderers) {

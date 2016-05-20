@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
  * @version $Id$
  */
 public class NLS {
-    private final static ResourceBundle BUNDLE;
+    private static final ResourceBundle BUNDLE;
 
     static {
         BUNDLE = ResourceBundle.getBundle("net.sourceforge.pmd.util.viewer.resources.viewer_strings");

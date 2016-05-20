@@ -5,9 +5,9 @@ package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Stack;
 
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *         and 2 stacks to link the nodes to each other.
  */
 public class Structure {
-    private final static Logger LOGGER = Logger.getLogger(Structure.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(Structure.class.getName());
 
     private final DataFlowHandler dataFlowHandler;
     private List<DataFlowNode> dataFlow = new ArrayList<>();

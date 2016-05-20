@@ -28,6 +28,25 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class Report implements Iterable<RuleViolation> {
 
+    /*
+     * The idea is to store the violations in a tree instead of a list, to do
+     * better and faster sort and filter mechanism and to visualize the result
+     * as tree. (ide plugins).
+     */
+    private final ReportTree violationTree = new ReportTree();
+
+    // Note that this and the above data structure are both being maintained for
+    // a bit
+    private final List<RuleViolation> violations = new ArrayList<>();
+    private final Set<Metric> metrics = new HashSet<>();
+    private final List<SynchronizedReportListener> listeners = new ArrayList<>();
+    private List<ProcessingError> errors;
+    private List<RuleConfigurationError> configErrors;
+    private Map<Integer, String> linesToSuppress = new HashMap<>();
+    private long start;
+    private long end;
+    private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
+
     /**
      * Creates a new, initialized, empty report for the given file name.
      *
@@ -191,26 +210,6 @@ public class Report implements Iterable<RuleViolation> {
             return userMessage;
         }
     }
-
-    /*
-     * The idea is to store the violations in a tree instead of a list, to do
-     * better and faster sort and filter mechanism and to visualize the result
-     * as tree. (ide plugins).
-     */
-    private final ReportTree violationTree = new ReportTree();
-
-    // Note that this and the above data structure are both being maintained for
-    // a bit
-    private final List<RuleViolation> violations = new ArrayList<>();
-    private final Set<Metric> metrics = new HashSet<>();
-    private final List<SynchronizedReportListener> listeners = new ArrayList<>();
-    private List<ProcessingError> errors;
-    private List<RuleConfigurationError> configErrors;
-    private Map<Integer, String> linesToSuppress = new HashMap<>();
-    private long start;
-    private long end;
-
-    private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
 
     /**
      * Configure the lines, that are suppressed via a NOPMD comment.

@@ -60,7 +60,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
-    private final static Set<Class<?>> BLOCK_PARENTS;
+    private static final Set<Class<?>> BLOCK_PARENTS;
 
     static {
         BLOCK_PARENTS = new HashSet<>();
