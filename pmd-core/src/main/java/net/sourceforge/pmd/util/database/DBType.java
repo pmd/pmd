@@ -20,11 +20,11 @@ import java.util.logging.Logger;
  * @author sturton
  */
 public class DBType {
-    private final static String CLASS_NAME = DBType.class.getCanonicalName();
+    private static final String CLASS_NAME = DBType.class.getCanonicalName();
 
-    private final static Logger LOGGER = Logger.getLogger(DBType.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(DBType.class.getPackage().getName());
 
-    private final static String INTERNAL_SETTINGS = "[Internal Settings]";
+    private static final String INTERNAL_SETTINGS = "[Internal Settings]";
 
     /**
      * The names of the properties
@@ -414,6 +414,7 @@ public class DBType {
 
     }
 
+    @Override
     public String toString() {
         return CLASS_NAME + "@" + propertiesSource;
     }

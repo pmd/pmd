@@ -32,12 +32,12 @@ public class DBMSMetadata
   /**
    * Classname utility string for use in logging. 
    */
-  private final static String CLASS_NAME = DBMSMetadata.class.getCanonicalName();
+    private static final String CLASS_NAME = DBMSMetadata.class.getCanonicalName();
 
   /**
    * Local logger.
    */
-  private final static Logger LOGGER = Logger.getLogger(CLASS_NAME); 
+    private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
   /**
    * Optional DBType property specifying a query to fetch the Source Objects from the database.
@@ -45,7 +45,7 @@ public class DBMSMetadata
    * <p>If the DBType lacks this property, then the standard DatabaseMetaData.getProcedures method is used.
    * </p>
    */
-  private final static String GET_SOURCE_OBJECTS_STATEMENT = "getSourceObjectsStatement" ;
+    private static final String GET_SOURCE_OBJECTS_STATEMENT = "getSourceObjectsStatement";
 
   /**
    * Essential DBType property specifying a CallableStatement to retrieve the Source Object's code from the database.
@@ -53,7 +53,7 @@ public class DBMSMetadata
    * <p><b>If the DBType lacks this property, there is no DatabaseMetaData method to fallback to</b>.
    * </p>
    */
-  private final static String GET_SOURCE_CODE_STATEMENT = "getSourceCodeStatement" ;
+    private static final String GET_SOURCE_CODE_STATEMENT = "getSourceCodeStatement";
 
   /**
    * DBURI
@@ -86,15 +86,6 @@ public class DBMSMetadata
    * <b>Currently only java.sql.Types.String and java.sql.Types.Clob are supported</b>
    */
   protected int returnType = java.sql.Types.CLOB ;
-
-  /**
-   * Return JDBC Connection for direct JDBC access to the specified database.
-   * 
-   * @return I=JDBC Connection
-   * @throws SQLException 
-   */
-  public Connection getConnection() throws SQLException
-  { return connection; }
 
   /* constructors */
   /**
@@ -186,6 +177,16 @@ public class DBMSMetadata
 
     connection = DriverManager.getConnection(urlString, dbURIProperties);
   }
+
+    /**
+     * Return JDBC Connection for direct JDBC access to the specified database.
+     * 
+     * @return I=JDBC Connection
+     * @throws SQLException 
+     */
+    public Connection getConnection() throws SQLException {
+        return connection;
+    }
 
   private String init(DBURI dbURI) throws ClassNotFoundException {
       this.dburi = dbURI;

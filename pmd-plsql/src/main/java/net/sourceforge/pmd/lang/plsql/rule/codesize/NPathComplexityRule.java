@@ -39,8 +39,8 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author Jason Bennett
  */
 public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
-    private final static String CLASS_NAME = NPathComplexityRule.class.getCanonicalName();
-    private final static Logger LOGGER = Logger.getLogger(NPathComplexityRule.class.getName());
+    private static final String CLASS_NAME = NPathComplexityRule.class.getCanonicalName();
+    private static final Logger LOGGER = Logger.getLogger(NPathComplexityRule.class.getName());
 
     public NPathComplexityRule() {
         super();

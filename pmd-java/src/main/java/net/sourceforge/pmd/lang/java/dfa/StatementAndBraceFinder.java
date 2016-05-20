@@ -43,7 +43,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  *         link the nodes.
  */
 public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
-    private final static Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());
 
     private final DataFlowHandler dataFlowHandler;
     private Structure dataFlow;
@@ -77,6 +77,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         }
     }
 
+    @Override
     public Object visit(ASTStatementExpression node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -89,6 +90,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTVariableDeclarator node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -101,6 +103,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTExpression node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -143,6 +146,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTForInit node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -157,6 +161,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTLabeledStatement node, Object data) {
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.LABEL_STATEMENT, dataFlow.getLast());
@@ -166,6 +171,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTForUpdate node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -183,6 +189,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 // 	----------------------------------------------------------------------------
 //  BRANCH OUT
 
+    @Override
     public Object visit(ASTStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -242,6 +249,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTSwitchStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -255,6 +263,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTSwitchLabel node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -275,6 +284,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTBreakStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -289,6 +299,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     }
 
 
+    @Override
     public Object visit(ASTContinueStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -302,6 +313,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTReturnStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -315,6 +327,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTThrowStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;

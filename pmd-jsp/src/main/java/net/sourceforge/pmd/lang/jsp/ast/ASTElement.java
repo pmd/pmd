@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTElement extends AbstractJspNode {
 
-/* BEGIN CUSTOM CODE */
-
     /**
      * Name of the element-tag. Cannot be null.
      */
@@ -24,6 +22,14 @@ public class ASTElement extends AbstractJspNode {
      * or ending tag for this element
      */
     private boolean unclosed;
+
+    public ASTElement(int id) {
+        super(id);
+    }
+
+    public ASTElement(JspParser p, int id) {
+        super(p, id);
+    }
 
 	/**
      * @return boolean - true if the element has a namespace-prefix, false otherwise
@@ -88,22 +94,11 @@ public class ASTElement extends AbstractJspNode {
     public void setEmpty(boolean empty) {
         this.empty = empty;
     }
-/* END CUSTOM CODE */
-
-
-
-    public ASTElement(int id) {
-        super(id);
-    }
-
-    public ASTElement(JspParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

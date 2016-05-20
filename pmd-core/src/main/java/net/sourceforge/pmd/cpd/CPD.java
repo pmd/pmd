@@ -16,16 +16,16 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FilenameUtils;
+
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 
-import org.apache.commons.io.FilenameUtils;
-
 public class CPD {
-    private final static Logger LOGGER = Logger.getLogger(CPD.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(CPD.class.getName());
 
 	private CPDConfiguration configuration;
 
@@ -33,6 +33,7 @@ public class CPD {
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
+    private Set<String> current = new HashSet<>();
 
     public CPD(CPDConfiguration theConfiguration) {
     	configuration = theConfiguration;
@@ -75,8 +76,6 @@ public class CPD {
         // TODO - could use SourceFileSelector here
         add(finder.findFilesFrom(dir, configuration.filenameFilter(), recurse));
     }
-
-    private Set<String> current = new HashSet<>();
 
     public void add(File file) throws IOException {
 

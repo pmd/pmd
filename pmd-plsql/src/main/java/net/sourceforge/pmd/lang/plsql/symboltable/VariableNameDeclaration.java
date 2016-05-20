@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration {
-   private final static Logger LOGGER = Logger.getLogger(VariableNameDeclaration.class.getName()); 
+    private static final Logger LOGGER = Logger.getLogger(VariableNameDeclaration.class.getName());
 
     public VariableNameDeclaration(ASTVariableOrConstantDeclaratorId node) {
 	super(node);

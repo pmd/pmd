@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *         first inner nested scope.
  */
 public class SequenceChecker {
-    private final static Logger LOGGER = Logger.getLogger(SequenceChecker.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SequenceChecker.class.getName());
 
     /*
      * Element of logical structure of brace nodes.
@@ -69,6 +69,7 @@ public class SequenceChecker {
             return this.nextSteps.size() > 1;
         }
 
+        @Override
         public String toString() {
             return "NodeType=" + NodeType.stringFromType(type) + "(" + type + "), lastStep=" + lastStep;
         }

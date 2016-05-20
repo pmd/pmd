@@ -30,10 +30,6 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
     private JTextArea ruleXMLArea = new JTextArea(30, 30);
     private JTextArea xpathQueryArea = new JTextArea();
     private CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
-
-    private static void appendLn(StringBuilder sb, String text) {
-    	sb.append(text).append(PMD.EOL);
-    }
     
     public CreateXMLRulePanel(JTextArea xpathQueryArea, CodeEditorTextPane codeEditorPane){
     	super();
@@ -107,12 +103,17 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
         repaint();
     }
 
+    private static void appendLn(StringBuilder sb, String text) {
+        sb.append(text).append(PMD.EOL);
+    }
+
     /**
      * We let our class implement the ActionListener interface
      * and use it to generate the xml code when the user presses
      * the "Create rule XML" button.
      *
      */
+    @Override
     public void actionPerformed(ActionEvent exception) {
     	
     	boolean hasXPathQuery = StringUtil.isNotEmpty(xpathQueryArea.getText());

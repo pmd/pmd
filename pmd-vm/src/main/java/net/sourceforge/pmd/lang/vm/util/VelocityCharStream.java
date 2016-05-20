@@ -47,8 +47,8 @@ implements CharStream
     int tokenBegin;
 
     public int bufpos = -1;
-    private int bufline[];
-    private int bufcolumn[];
+    private int[] bufline;
+    private int[] bufcolumn;
 
     private int column = 0;
     private int line = 1;
@@ -62,11 +62,56 @@ implements CharStream
     private int maxNextCharInd = 0;
     private int inBuf = 0;
 
+    /**
+     * @param dstream
+     * @param startline
+     * @param startcolumn
+     * @param buffersize
+     */
+    public VelocityCharStream(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
+        this(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
+    }
+
+    /**
+     * @param dstream
+     * @param startline
+     * @param startcolumn
+     */
+    public VelocityCharStream(java.io.InputStream dstream, int startline, int startcolumn) {
+        this(dstream, startline, startcolumn, 4096);
+    }
+
+    /**
+     * @param dstream
+     * @param startline
+     * @param startcolumn
+     * @param buffersize
+     */
+    public VelocityCharStream(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
+        inputStream = dstream;
+        line = startline;
+        column = startcolumn - 1;
+
+        available = bufsize = nextBufExpand = buffersize;
+        buffer = new char[buffersize];
+        bufline = new int[buffersize];
+        bufcolumn = new int[buffersize];
+    }
+
+    /**
+     * @param dstream
+     * @param startline
+     * @param startcolumn
+     */
+    public VelocityCharStream(java.io.Reader dstream, int startline, int startcolumn) {
+        this(dstream, startline, startcolumn, 4096);
+    }
+
     private void ExpandBuff(boolean wrapAround)
     {
         char[] newbuffer = new char[bufsize + nextBufExpand];
-        int newbufline[] = new int[bufsize + nextBufExpand];
-        int newbufcolumn[] = new int[bufsize + nextBufExpand];
+        int[] newbufline = new int[bufsize + nextBufExpand];
+        int[] newbufcolumn = new int[bufsize + nextBufExpand];
 
         try
         {
@@ -177,6 +222,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#BeginToken()
      */
+    @Override
     public char BeginToken() throws java.io.IOException
     {
         tokenBegin = -1;
@@ -231,6 +277,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#readChar()
      */
+    @Override
     public char readChar() throws java.io.IOException
     {
         if (inBuf > 0)
@@ -262,6 +309,8 @@ implements CharStream
      * @see org.apache.velocity.runtime.parser.CharStream#getColumn()
      * @deprecated
      */
+    @Deprecated
+    @Override
     public int getColumn() 
     {
         return bufcolumn[bufpos];
@@ -271,6 +320,8 @@ implements CharStream
      * @see org.apache.velocity.runtime.parser.CharStream#getLine()
      * @deprecated
      */
+    @Deprecated
+    @Override
     public int getLine() 
     {
         return bufline[bufpos];
@@ -279,6 +330,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getEndColumn()
      */
+    @Override
     public int getEndColumn() 
     {
         return bufcolumn[bufpos];
@@ -287,6 +339,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getEndLine()
      */
+    @Override
     public int getEndLine() 
     {
         return bufline[bufpos];
@@ -295,6 +348,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getBeginColumn()
      */
+    @Override
     public int getBeginColumn() 
     {
         return bufcolumn[tokenBegin];
@@ -303,6 +357,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#getBeginLine()
      */
+    @Override
     public int getBeginLine() 
     {
         return bufline[tokenBegin];
@@ -311,6 +366,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#backup(int)
      */
+    @Override
     public void backup(int amount) 
     {
 
@@ -321,35 +377,6 @@ implements CharStream
         }
     }
 
-    /**
-     * @param dstream
-     * @param startline
-     * @param startcolumn
-     * @param buffersize
-     */
-    public VelocityCharStream(java.io.Reader dstream, int startline,
-            int startcolumn, int buffersize)
-    {
-        inputStream = dstream;
-        line = startline;
-        column = startcolumn - 1;
-
-        available = bufsize = nextBufExpand = buffersize;
-        buffer = new char[buffersize];
-        bufline = new int[buffersize];
-        bufcolumn = new int[buffersize];
-    }
-
-    /**
-     * @param dstream
-     * @param startline
-     * @param startcolumn
-     */
-    public VelocityCharStream(java.io.Reader dstream, int startline,
-            int startcolumn)
-    {
-        this(dstream, startline, startcolumn, 4096);
-    }
     /**
      * @param dstream
      * @param startline
@@ -385,28 +412,6 @@ implements CharStream
     {
         ReInit(dstream, startline, startcolumn, 4096);
     }
-    /**
-     * @param dstream
-     * @param startline
-     * @param startcolumn
-     * @param buffersize
-     */
-    public VelocityCharStream(java.io.InputStream dstream, int startline,
-            int startcolumn, int buffersize)
-    {
-        this(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
-    }
-
-    /**
-     * @param dstream
-     * @param startline
-     * @param startcolumn
-     */
-    public VelocityCharStream(java.io.InputStream dstream, int startline,
-            int startcolumn)
-    {
-        this(dstream, startline, startcolumn, 4096);
-    }
 
     /**
      * @param dstream
@@ -432,6 +437,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#GetImage()
      */
+    @Override
     public String GetImage()
     {
         if (bufpos >= tokenBegin)
@@ -448,6 +454,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#GetSuffix(int)
      */
+    @Override
     public char[] GetSuffix(int len)
     {
         char[] ret = new char[len];
@@ -469,6 +476,7 @@ implements CharStream
     /**
      * @see org.apache.velocity.runtime.parser.CharStream#Done()
      */
+    @Override
     public void Done()
     {
         buffer = null;

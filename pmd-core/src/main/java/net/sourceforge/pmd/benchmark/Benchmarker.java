@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
@@ -32,13 +34,13 @@ import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-import org.apache.commons.io.IOUtils;
-
 /**
  *
  *
  */
 public class Benchmarker {
+
+    private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
 
     /**
      * @param args String[]
@@ -185,7 +187,7 @@ public class Benchmarker {
         }
     }
 
-    private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
+
 
     /**
      * @param type Benchmark
@@ -203,7 +205,7 @@ public class Benchmarker {
      * @param time long
      * @param count long
      */
-    public synchronized static void mark(Benchmark type, String name, long time, long count) {
+    public static synchronized void mark(Benchmark type, String name, long time, long count) {
         String typeName = type.name;
         if (typeName != null && name != null) {
             throw new IllegalArgumentException("Name cannot be given for type: " + type);

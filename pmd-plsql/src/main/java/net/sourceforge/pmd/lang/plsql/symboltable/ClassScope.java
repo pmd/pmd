@@ -19,10 +19,11 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ClassScope extends AbstractScope {
-    private final static Logger LOGGER = Logger.getLogger(ClassScope.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ClassScope.class.getName());
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
+        @Override
         protected Integer initialValue() {
             return Integer.valueOf(1);
         }
@@ -182,6 +183,7 @@ public class ClassScope extends AbstractScope {
         return result;
     }
 
+    @Override
     public String toString() {
         String res = "ClassScope (" + className + "): ";
         Map<ClassNameDeclaration, List<NameOccurrence>> classNames = getClassDeclarations();

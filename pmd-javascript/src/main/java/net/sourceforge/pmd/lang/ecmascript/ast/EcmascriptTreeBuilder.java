@@ -123,16 +123,6 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 	register(XmlString.class, ASTXmlString.class);
     }
 
-    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends EcmascriptNode<T>> nodeAdapterType) {
-	try {
-	    NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
-	} catch (SecurityException e) {
-	    throw new RuntimeException(e);
-	} catch (NoSuchMethodException e) {
-	    throw new RuntimeException(e);
-	}
-    }
-
     private List<ParseProblem> parseProblems;
     private Map<ParseProblem, TrailingCommaNode> parseProblemToNode = new HashMap<>();
 
@@ -145,8 +135,18 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
     private final SourceCodePositioner sourceCodePositioner;
 
     public EcmascriptTreeBuilder(String sourceCode, List<ParseProblem> parseProblems) {
-	this.sourceCodePositioner = new SourceCodePositioner(sourceCode);
-	this.parseProblems = parseProblems;
+        this.sourceCodePositioner = new SourceCodePositioner(sourceCode);
+        this.parseProblems = parseProblems;
+    }
+
+    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends EcmascriptNode<T>> nodeAdapterType) {
+	try {
+	    NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
+	} catch (SecurityException e) {
+	    throw new RuntimeException(e);
+	} catch (NoSuchMethodException e) {
+	    throw new RuntimeException(e);
+	}
     }
 
     static <T extends AstNode> EcmascriptNode<T> createNodeAdapter(T node) {
@@ -204,6 +204,7 @@ public final class EcmascriptTreeBuilder implements NodeVisitor {
 	return node;
     }
 
+    @Override
     public boolean visit(AstNode node) {
 	if (parents.peek() == node) {
 	    return true;

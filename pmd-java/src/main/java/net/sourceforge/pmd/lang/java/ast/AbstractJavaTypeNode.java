@@ -11,6 +11,8 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
 
+    private Class<?> type;
+
     public AbstractJavaTypeNode(int i) {
 	super(i);
     }
@@ -19,12 +21,12 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
 	super(p, i);
     }
 
-    private Class<?> type;
-
+    @Override
     public Class<?> getType() {
 	return type;
     }
 
+    @Override
     public void setType(Class<?> type) {
 	this.type = type;
     }

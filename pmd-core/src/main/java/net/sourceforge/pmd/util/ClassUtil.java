@@ -20,9 +20,6 @@ public final class ClassUtil {
 
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
 
-    private ClassUtil() {
-    }
-
     @SuppressWarnings("PMD.AvoidUsingShortType")
     private static final TypeMap PRIMITIVE_TYPE_NAMES = new TypeMap(new Class[] { int.class, byte.class, long.class,
             short.class, float.class, double.class, char.class, boolean.class, });
@@ -33,6 +30,9 @@ public final class ClassUtil {
 
     private static final Map<Class<?>, String> SHORT_NAMES_BY_TYPE = computeClassShortNames();
     
+    private ClassUtil() {
+    }
+
     /**
      * Returns the type(class) for the name specified or null if not found.
      *

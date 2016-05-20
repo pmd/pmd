@@ -252,19 +252,23 @@ public final class CollectionUtil {
      */
     public static <T> boolean areSemanticEquals(T[] a, T[] b) {
 
-        if (a == null) { return isEmpty(b); }
-        if (b == null) { return isEmpty(a); }
-        
+        if (a == null) {
+            return isEmpty(b);
+        }
+        if (b == null) {
+            return isEmpty(a);
+        }
+
         if (a.length != b.length) {
             return false;
         }
-        
-        for (int i=0; i<a.length; i++) {
-        	if (!areEqual(a[i], b[i])) {
-        	    return false;
-        	}
+
+        for (int i = 0; i < a.length; i++) {
+            if (!areEqual(a[i], b[i])) {
+                return false;
+            }
         }
-        
+
         return true;
     }
 
@@ -303,16 +307,22 @@ public final class CollectionUtil {
     public static <T> T[] addWithoutDuplicates(T[] values, T[] newValues) {
 
         Set<T> originals = new HashSet<>(values.length);
-        for (T value : values) { originals.add(value); }
+        for (T value : values) {
+            originals.add(value);
+        }
         List<T> newOnes = new ArrayList<>(newValues.length);
         for (T value : newValues) {
-            if (originals.contains(value)) { continue; }
+            if (originals.contains(value)) {
+                continue;
+            }
             newOnes.add(value);
         }
 
-        T[] largerOne = (T[])Array.newInstance(values.getClass().getComponentType(), values.length + newOnes.size());
+        T[] largerOne = (T[]) Array.newInstance(values.getClass().getComponentType(), values.length + newOnes.size());
         System.arraycopy(values, 0, largerOne, 0, values.length);
-        for (int i=values.length; i<largerOne.length; i++) { largerOne[i] = newOnes.get(i-values.length); }
+        for (int i = values.length; i < largerOne.length; i++) {
+            largerOne[i] = newOnes.get(i - values.length);
+        }
         return largerOne;
     }
 }

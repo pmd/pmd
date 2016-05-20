@@ -90,6 +90,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleContext;
@@ -114,12 +119,69 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.util.StringUtil;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
-
 public class Designer implements ClipboardOwner {
+
+    private boolean exitOnClose = true;
+    private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
+    private final TreeWidget astTreeWidget = new TreeWidget(new Object[0]);
+    private DefaultListModel xpathResults = new DefaultListModel();
+    private final JList xpathResultList = new JList(xpathResults);
+    private final JTextArea xpathQueryArea = new JTextArea(15, 30);
+    private final ButtonGroup xpathVersionButtonGroup = new ButtonGroup();
+    private final TreeWidget symbolTableTreeWidget = new TreeWidget(new Object[0]);
+    private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMD.VERSION + ')');
+    private final DFAPanel dfaPanel = new DFAPanel();
+    private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[getSupportedLanguageVersions().length];
+    private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
+            + System.getProperty("file.separator") + ".pmd_designer.xml";
+
+    public Designer(String[] args) {
+        if (args.length > 0) {
+            exitOnClose = !args[0].equals("-noexitonclose");
+        }
+
+        Initializer.initialize();
+
+        xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
+        JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditorPanel(),
+                createXPathQueryPanel());
+
+        JSplitPane astAndSymbolTablePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, createASTPanel(),
+                createSymbolTableResultPanel());
+
+        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astAndSymbolTablePane,
+                createXPathResultPanel());
+
+        JTabbedPane tabbed = new JTabbedPane();
+        tabbed.addTab("Abstract Syntax Tree / XPath / Symbol Table", resultsSplitPane);
+        tabbed.addTab("Data Flow Analysis", dfaPanel);
+        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
+
+        JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlSplitPane, tabbed);
+        containerSplitPane.setContinuousLayout(true);
+
+        JMenuBar menuBar = createMenuBar();
+        frame.setJMenuBar(menuBar);
+        frame.getContentPane().add(containerSplitPane);
+        frame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+
+        frame.pack();
+        frame.setSize(screenWidth * 3 / 4, screenHeight * 3 / 4);
+        frame.setLocation((screenWidth - frame.getWidth()) / 2, (screenHeight - frame.getHeight()) / 2);
+        frame.setVisible(true);
+        int horozontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
+        controlSplitPane.setDividerLocation(horozontalMiddleLocation);
+        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
+        astAndSymbolTablePane.setDividerLocation(astAndSymbolTablePane.getMaximumDividerLocation() / 3);
+        resultsSplitPane.setDividerLocation(horozontalMiddleLocation);
+
+        loadSettings();
+    }
 
     private int getDefaultLanguageVersionSelectionIndex() {
         return Arrays.asList(getSupportedLanguageVersions())
@@ -211,23 +273,28 @@ public class Designer implements ClipboardOwner {
 			}
 		}
 
-		public int getChildCount() {
+		@Override
+        public int getChildCount() {
 			return kids == null ? 0 : kids.length;
 		}
 
-		public boolean getAllowsChildren() {
+		@Override
+        public boolean getAllowsChildren() {
 			return false;
 		}
 
-		public boolean isLeaf() {
+		@Override
+        public boolean isLeaf() {
 			return kids == null;
 		}
 
-		public TreeNode getParent() {
+		@Override
+        public TreeNode getParent() {
 			return null;
 		}
 
-		public TreeNode getChildAt(int childIndex) {
+		@Override
+        public TreeNode getChildAt(int childIndex) {
 			return kids[childIndex];
 		}
 
@@ -235,22 +302,26 @@ public class Designer implements ClipboardOwner {
 			return item.toString();
 		}
 
-		public Enumeration<TreeNode> children() {
+		@Override
+        public Enumeration<TreeNode> children() {
 			Enumeration<TreeNode> e = new Enumeration<TreeNode>() {
 				int i = 0;
 
-				public boolean hasMoreElements() {
+				@Override
+                public boolean hasMoreElements() {
 					return kids != null && i < kids.length;
 				}
 
-				public ExceptionNode nextElement() {
+				@Override
+                public ExceptionNode nextElement() {
 					return kids[i++];
 				}
 			};
 			return e;
 		}
 
-		public int getIndex(TreeNode node) {
+		@Override
+        public int getIndex(TreeNode node) {
 			for (int i = 0; i < kids.length; i++) {
 				if (kids[i] == node) {
 					return i;
@@ -282,19 +353,23 @@ public class Designer implements ClipboardOwner {
 			this.parent = parent;
 		}
 
-		public int getChildCount() {
+		@Override
+        public int getChildCount() {
 			return node.jjtGetNumChildren();
 		}
 
-		public boolean getAllowsChildren() {
+		@Override
+        public boolean getAllowsChildren() {
 			return false;
 		}
 
-		public boolean isLeaf() {
+		@Override
+        public boolean isLeaf() {
 			return node.jjtGetNumChildren() == 0;
 		}
 
-		public TreeNode getParent() {
+		@Override
+        public TreeNode getParent() {
 			return parent;
 		}
 
@@ -305,7 +380,8 @@ public class Designer implements ClipboardOwner {
 			return null;
 		}
 
-		public Enumeration<TreeNode> children() {
+		@Override
+        public Enumeration<TreeNode> children() {
 
 			if (getChildCount() > 0) {
 				getChildAt(0); // force it to build kids
@@ -314,18 +390,21 @@ public class Designer implements ClipboardOwner {
 			Enumeration<TreeNode> e = new Enumeration<TreeNode>() {
 				int i = 0;
 
-				public boolean hasMoreElements() {
+				@Override
+                public boolean hasMoreElements() {
 					return kids != null && i < kids.length;
 				}
 
-				public ASTTreeNode nextElement() {
+				@Override
+                public ASTTreeNode nextElement() {
 					return kids[i++];
 				}
 			};
 			return e;
 		}
 
-		public TreeNode getChildAt(int childIndex) {
+		@Override
+        public TreeNode getChildAt(int childIndex) {
 
 			if (kids == null) {
 				kids = new ASTTreeNode[node.jjtGetNumChildren()];
@@ -336,7 +415,8 @@ public class Designer implements ClipboardOwner {
 			return kids[childIndex];
 		}
 
-		public int getIndex(TreeNode node) {
+		@Override
+        public int getIndex(TreeNode node) {
 
 			for (int i = 0; i < kids.length; i++) {
 				if (kids[i] == node) {
@@ -457,7 +537,8 @@ public class Designer implements ClipboardOwner {
 	}
 
 	private class ShowListener implements ActionListener {
-		public void actionPerformed(ActionEvent ae) {
+		@Override
+        public void actionPerformed(ActionEvent ae) {
 			TreeNode tn;
 			try {
 				Node lastCompilationUnit = getCompilationUnit();
@@ -472,7 +553,8 @@ public class Designer implements ClipboardOwner {
 	}
 
 	private class DFAListener implements ActionListener {
-		public void actionPerformed(ActionEvent ae) {
+		@Override
+        public void actionPerformed(ActionEvent ae) {
 
 		    LanguageVersion languageVersion = getLanguageVersion();
 			DFAGraphRule dfaGraphRule = languageVersion.getLanguageVersionHandler().getDFAGraphRule();
@@ -505,7 +587,8 @@ public class Designer implements ClipboardOwner {
 	}
 
 	private class XPathListener implements ActionListener {
-		public void actionPerformed(ActionEvent ae) {
+		@Override
+        public void actionPerformed(ActionEvent ae) {
 			xpathResults.clear();
 			if (StringUtil.isEmpty(xpathQueryArea.getText())) {
 				xpathResults.addElement("XPath query field is empty.");
@@ -550,7 +633,8 @@ public class Designer implements ClipboardOwner {
 	}
 
 	private class SymbolTableListener implements TreeSelectionListener {
-		public void valueChanged(TreeSelectionEvent e) {
+		@Override
+        public void valueChanged(TreeSelectionEvent e) {
 			if (e.getNewLeadSelectionPath() != null) {
 				ASTTreeNode astTreeNode = (ASTTreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
 
@@ -596,7 +680,8 @@ public class Designer implements ClipboardOwner {
 	}
 
 	private class CodeHighlightListener implements TreeSelectionListener {
-		public void valueChanged(TreeSelectionEvent e) {
+		@Override
+        public void valueChanged(TreeSelectionEvent e) {
 			if (e.getNewLeadSelectionPath() != null) {
 				ASTTreeNode selected = (ASTTreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
 				if (selected != null) {
@@ -609,7 +694,8 @@ public class Designer implements ClipboardOwner {
 	private class ASTListCellRenderer extends JLabel implements ListCellRenderer {
 		private static final long serialVersionUID = 1L;
 
-		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+		@Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
 				boolean cellHasFocus) {
 
 			if (isSelected) {
@@ -640,7 +726,8 @@ public class Designer implements ClipboardOwner {
 	}
 
 	private class ASTSelectionListener implements ListSelectionListener {
-		public void valueChanged(ListSelectionEvent e) {
+		@Override
+        public void valueChanged(ListSelectionEvent e) {
 			ListSelectionModel lsm = (ListSelectionModel) e.getSource();
 			if (!lsm.isSelectionEmpty()) {
 				Object o = xpathResults.get(lsm.getMinSelectionIndex());
@@ -649,66 +736,6 @@ public class Designer implements ClipboardOwner {
 				}
 			}
 		}
-	}
-
-	private boolean exitOnClose = true;
-	private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
-	private final TreeWidget astTreeWidget = new TreeWidget(new Object[0]);
-	private DefaultListModel xpathResults = new DefaultListModel();
-	private final JList xpathResultList = new JList(xpathResults);
-	private final JTextArea xpathQueryArea = new JTextArea(15, 30);
-	private final ButtonGroup xpathVersionButtonGroup = new ButtonGroup();
-	private final TreeWidget symbolTableTreeWidget = new TreeWidget(new Object[0]);
-	private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMD.VERSION + ')');
-	private final DFAPanel dfaPanel = new DFAPanel();
-	private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[getSupportedLanguageVersions().length];
-
-	public Designer(String[] args) {
-		if (args.length > 0) {
-			exitOnClose = !args[0].equals("-noexitonclose");
-		}
-
-		Initializer.initialize();
-
-		xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
-		JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditorPanel(),
-				createXPathQueryPanel());
-
-		JSplitPane astAndSymbolTablePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, createASTPanel(),
-				createSymbolTableResultPanel());
-
-		JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astAndSymbolTablePane,
-				createXPathResultPanel());
-
-		JTabbedPane tabbed = new JTabbedPane();
-		tabbed.addTab("Abstract Syntax Tree / XPath / Symbol Table", resultsSplitPane);
-		tabbed.addTab("Data Flow Analysis", dfaPanel);
-		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
-		tabbed.setMnemonicAt(1, KeyEvent.VK_D);
-
-		JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlSplitPane, tabbed);
-		containerSplitPane.setContinuousLayout(true);
-
-		JMenuBar menuBar = createMenuBar();
-		frame.setJMenuBar(menuBar);
-		frame.getContentPane().add(containerSplitPane);
-		frame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
-
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int screenHeight = screenSize.height;
-		int screenWidth = screenSize.width;
-
-		frame.pack();
-		frame.setSize(screenWidth * 3 / 4, screenHeight * 3 / 4);
-		frame.setLocation((screenWidth - frame.getWidth()) / 2, (screenHeight - frame.getHeight()) / 2);
-		frame.setVisible(true);
-		int horozontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
-		controlSplitPane.setDividerLocation(horozontalMiddleLocation);
-		containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
-		astAndSymbolTablePane.setDividerLocation(astAndSymbolTablePane.getMaximumDividerLocation() / 3);
-		resultsSplitPane.setDividerLocation(horozontalMiddleLocation);
-
-		loadSettings();
 	}
 
 	private JMenuBar createMenuBar() {
@@ -730,14 +757,16 @@ public class Designer implements ClipboardOwner {
 		JMenu actionsMenu = new JMenu("Actions");
 		JMenuItem copyXMLItem = new JMenuItem("Copy xml to clipboard");
 		copyXMLItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+            public void actionPerformed(ActionEvent e) {
 				copyXmlToClipboard();
 			}
 		});
 		actionsMenu.add(copyXMLItem);
 		JMenuItem createRuleXMLItem = new JMenuItem("Create rule XML");
 		createRuleXMLItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+            public void actionPerformed(ActionEvent e) {
 				createRuleXML();
 			}
 		});
@@ -852,7 +881,8 @@ public class Designer implements ClipboardOwner {
 		b.addActionListener(new XPathListener());
 		b.addActionListener(new DFAListener());
 		b.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+            public void actionPerformed(ActionEvent e) {
 				saveSettings();
 			}
 		});
@@ -862,14 +892,16 @@ public class Designer implements ClipboardOwner {
 	private static void makeTextComponentUndoable(JTextComponent textConponent) {
 		final UndoManager undoManager = new UndoManager();
 		textConponent.getDocument().addUndoableEditListener(new UndoableEditListener() {
-			public void undoableEditHappened(UndoableEditEvent evt) {
+			@Override
+            public void undoableEditHappened(UndoableEditEvent evt) {
 				undoManager.addEdit(evt.getEdit());
 			}
 		});
 		ActionMap actionMap = textConponent.getActionMap();
 		InputMap inputMap = textConponent.getInputMap();
 		actionMap.put("Undo", new AbstractAction("Undo") {
-			public void actionPerformed(ActionEvent evt) {
+			@Override
+            public void actionPerformed(ActionEvent evt) {
 				try {
 					if (undoManager.canUndo()) {
 						undoManager.undo();
@@ -881,7 +913,8 @@ public class Designer implements ClipboardOwner {
 		inputMap.put(KeyStroke.getKeyStroke("control Z"), "Undo");
 
 		actionMap.put("Redo", new AbstractAction("Redo") {
-			public void actionPerformed(ActionEvent evt) {
+			@Override
+            public void actionPerformed(ActionEvent evt) {
 				try {
 					if (undoManager.canRedo()) {
 						undoManager.redo();
@@ -946,11 +979,9 @@ public class Designer implements ClipboardOwner {
 		return writer.toString();
 	}
 
-	public void lostOwnership(Clipboard clipboard, Transferable contents) {
+	@Override
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
 	}
-
-	private static final String SETTINGS_FILE_NAME = System.getProperty("user.home")
-	+ System.getProperty("file.separator") + ".pmd_designer.xml";
 
 	private void loadSettings() {
 		try {

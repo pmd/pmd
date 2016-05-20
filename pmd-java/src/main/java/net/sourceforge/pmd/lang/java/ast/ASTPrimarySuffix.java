@@ -6,6 +6,10 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTPrimarySuffix extends AbstractJavaNode {
+
+    private boolean isArguments;
+    private boolean isArrayDereference;
+
     public ASTPrimarySuffix(int id) {
         super(id);
     }
@@ -13,9 +17,6 @@ public class ASTPrimarySuffix extends AbstractJavaNode {
     public ASTPrimarySuffix(JavaParser p, int id) {
         super(p, id);
     }
-
-    private boolean isArguments;
-    private boolean isArrayDereference;
 
     public void setIsArrayDereference() {
         isArrayDereference = true;

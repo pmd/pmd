@@ -6,15 +6,17 @@ package net.sourceforge.pmd.testframework;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
-
 import org.junit.runner.RunWith;
+
+import net.sourceforge.pmd.Rule;
 
 /**
  * Standard methods for (simple) testcases.
  */
 @RunWith(PMDTestRunner.class)
 public abstract class SimpleAggregatorTst extends RuleTst {
+
+    private List<Rule> rules = new ArrayList<>();
 
     /**
      * Configure the rule tests to be executed. Implement this method in
@@ -52,8 +54,6 @@ public abstract class SimpleAggregatorTst extends RuleTst {
             runTest(tests[i]);
         }
     }
-
-    private List<Rule> rules = new ArrayList<>();
 
     /**
      * Add new XML tests associated with the rule to the test suite. This should

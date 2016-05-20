@@ -26,11 +26,11 @@ public class JavaNameOccurrence implements NameOccurrence {
     private boolean isMethodOrConstructorInvocation;
     private int argumentCount;
 
-    private final static String THIS = "this";
-    private final static String SUPER = "super";
+    private static final String THIS = "this";
+    private static final String SUPER = "super";
 
-    private final static String THIS_DOT = "this.";
-    private final static String SUPER_DOT = "super.";
+    private static final String THIS_DOT = "this.";
+    private static final String SUPER_DOT = "super.";
 
     public JavaNameOccurrence(JavaNode location, String image) {
         this.location = location;
@@ -68,6 +68,7 @@ public class JavaNameOccurrence implements NameOccurrence {
         return qualifiedName != null;
     }
 
+    @Override
     public JavaNode getLocation() {
         return location;
     }
@@ -224,6 +225,7 @@ public class JavaNameOccurrence implements NameOccurrence {
         return getImage().hashCode();
     }
 
+    @Override
     public String getImage() {
         return image;
     }

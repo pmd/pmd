@@ -12,8 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
@@ -56,7 +56,8 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 		executor.shutdownNow();
 	}
 	
-	public Report call() {
+	@Override
+    public Report call() {
 		PmdThread thread = (PmdThread) Thread.currentThread();
 
 		RuleContext ctx = thread.getRuleContext();
@@ -92,6 +93,11 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 	
 	private static class PmdThread extends Thread {
 
+        private final int id;
+        private RuleContext context;
+        private RuleSets rulesets;
+        private final RuleSetFactory ruleSetFactory;
+
 		public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory,
 				RuleContext ctx) {
 			super(r, "PmdThread " + id);
@@ -99,11 +105,6 @@ public class PmdRunnable extends PMD implements Callable<Report> {
 			context = new RuleContext(ctx);
 			this.ruleSetFactory = ruleSetFactory;
 		}
-
-		private final int id;
-		private RuleContext context;
-		private RuleSets rulesets;
-		private final RuleSetFactory ruleSetFactory;
 
 		public RuleContext getRuleContext() {
 			return context;

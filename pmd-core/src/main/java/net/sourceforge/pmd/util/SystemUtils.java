@@ -8,14 +8,15 @@ import java.util.concurrent.Executors;
 
 public final class SystemUtils {
 
-    private SystemUtils() {
-	// this is a utility class and cannot be instantiated
-    }
-
     /**
      * Do we have proper permissions to use multithreading?
      */
     public static final boolean MT_SUPPORTED;
+
+    private SystemUtils() {
+	// this is a utility class and cannot be instantiated
+    }
+
     static {
 	boolean error = false;
 	try {

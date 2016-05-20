@@ -6,96 +6,116 @@ package net.sourceforge.pmd.lang.ast.xpath;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
-
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
 import org.jaxen.util.SingleObjectIterator;
+
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * @author daniels
  */
 public class DocumentNavigator extends DefaultNavigator {
 
-    private final static Iterator<Node> EMPTY_ITERATOR = new ArrayList<Node>().iterator();
+    private static final Iterator<Node> EMPTY_ITERATOR = new ArrayList<Node>().iterator();
 
+    @Override
     public String getAttributeName(Object arg0) {
 	return ((Attribute) arg0).getName();
     }
 
+    @Override
     public String getAttributeNamespaceUri(Object arg0) {
 	return "";
     }
 
+    @Override
     public String getAttributeQName(Object arg0) {
 	return ((Attribute) arg0).getName();
     }
 
+    @Override
     public String getAttributeStringValue(Object arg0) {
 	return ((Attribute) arg0).getStringValue();
     }
 
+    @Override
     public String getCommentStringValue(Object arg0) {
 	return "";
     }
 
+    @Override
     public String getElementName(Object node) {
 	return node.toString();
     }
 
+    @Override
     public String getElementNamespaceUri(Object arg0) {
 	return "";
     }
 
+    @Override
     public String getElementQName(Object arg0) {
 	return getElementName(arg0);
     }
 
+    @Override
     public String getElementStringValue(Object arg0) {
 	return "";
     }
 
+    @Override
     public String getNamespacePrefix(Object arg0) {
 	return "";
     }
 
+    @Override
     public String getNamespaceStringValue(Object arg0) {
 	return "";
     }
 
+    @Override
     public String getTextStringValue(Object arg0) {
 	return "";
     }
 
+    @Override
     public boolean isAttribute(Object arg0) {
 	return arg0 instanceof Attribute;
     }
 
+    @Override
     public boolean isComment(Object arg0) {
 	return false;
     }
 
+    @Override
     public boolean isDocument(Object arg0) {
 	return arg0 instanceof RootNode;
     }
 
+    @Override
     public boolean isElement(Object arg0) {
 	return arg0 instanceof Node;
     }
 
+    @Override
     public boolean isNamespace(Object arg0) {
 	return false;
     }
 
+    @Override
     public boolean isProcessingInstruction(Object arg0) {
 	return false;
     }
 
+    @Override
     public boolean isText(Object arg0) {
 	return false;
     }
 
+    @Override
     public XPath parseXPath(String arg0) {
 	return null;
     }

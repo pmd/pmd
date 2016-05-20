@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
-
 import org.objectweb.asm.ClassReader;
+
+import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
 
 /*
  * I've refactored this class to not cache the results any more. This is a
@@ -34,6 +34,13 @@ public final class PMDASMClassLoader extends ClassLoader {
     private static PMDASMClassLoader cachedPMDASMClassLoader;
     private static ClassLoader cachedClassLoader;
 
+    /** Caches the names of the classes that we can't load or that don't exist. */
+    private final Set<String> dontBother = new HashSet<>();
+
+    private PMDASMClassLoader(ClassLoader parent) {
+        super(parent);
+    }
+
     /**
      * A new PMDASMClassLoader is created for each compilation unit, this method
      * allows to reuse the same PMDASMClassLoader across all the compilation
@@ -47,15 +54,6 @@ public final class PMDASMClassLoader extends ClassLoader {
         cachedPMDASMClassLoader = new PMDASMClassLoader(parent);
         return cachedPMDASMClassLoader;
     }
-
-    //
-
-    private PMDASMClassLoader(ClassLoader parent) {
-        super(parent);
-    }
-
-    /** Caches the names of the classes that we can't load or that don't exist. */
-    private final Set<String> dontBother = new HashSet<>();
 
     @Override
     public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {

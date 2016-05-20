@@ -43,16 +43,16 @@ public class RuleReference extends AbstractDelegateRule {
 
     private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<>(0);
 
-    public Language getOverriddenLanguage() {
-        return language;
-    }
-
     public RuleReference() {
     }
 
     public RuleReference(Rule theRule, RuleSetReference theRuleSetReference) {
         setRule(theRule);
         ruleSetReference = theRuleSetReference;
+    }
+
+    public Language getOverriddenLanguage() {
+        return language;
     }
 
     @Override
@@ -286,6 +286,7 @@ public class RuleReference extends AbstractDelegateRule {
         return false;
     }
 
+    @Override
     public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
         return propertyDescriptors != null && propertyDescriptors.contains(descriptor)
                 || super.hasDescriptor(descriptor);
@@ -295,6 +296,7 @@ public class RuleReference extends AbstractDelegateRule {
         return propertyValues != null && propertyValues.containsKey(descriptor);
     }
 
+    @Override
     public boolean usesDefaultValues() {
 
         List<PropertyDescriptor<?>> descriptors = getOverriddenPropertyDescriptors();
@@ -315,6 +317,7 @@ public class RuleReference extends AbstractDelegateRule {
         return true;
     }
 
+    @Override
     public void useDefaultValueFor(PropertyDescriptor<?> desc) {
 
         // not sure if we should go all the way through to the real thing?

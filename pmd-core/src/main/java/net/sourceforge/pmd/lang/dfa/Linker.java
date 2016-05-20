@@ -14,8 +14,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author raik Links data flow nodes to each other.
  */
 public class Linker {
-    private final static Logger LOGGER = Logger.getLogger(Linker.class.getName());
-    private final static String CLASS_NAME = Linker.class.getCanonicalName();
+    private static final Logger LOGGER = Logger.getLogger(Linker.class.getName());
+    private static final String CLASS_NAME = Linker.class.getCanonicalName();
 
     /** Maximum loops to prevent hanging of PMD. See https://sourceforge.net/p/pmd/bugs/1393/ */
     private static final int MAX_LOOPS = 100;

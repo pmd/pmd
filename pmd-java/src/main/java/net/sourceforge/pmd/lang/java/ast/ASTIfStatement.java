@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTIfStatement extends AbstractJavaNode {
+
+    private boolean hasElse;
+
     public ASTIfStatement(int id) {
         super(id);
     }
@@ -13,8 +16,6 @@ public class ASTIfStatement extends AbstractJavaNode {
     public ASTIfStatement(JavaParser p, int id) {
         super(p, id);
     }
-
-    private boolean hasElse;
 
     public void setHasElse() {
         this.hasElse = true;
@@ -27,6 +28,7 @@ public class ASTIfStatement extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

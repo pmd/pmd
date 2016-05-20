@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTBooleanLiteral extends AbstractJavaTypeNode {
+
+    private boolean isTrue;
+
     public ASTBooleanLiteral(int id) {
         super(id);
     }
@@ -13,8 +16,6 @@ public class ASTBooleanLiteral extends AbstractJavaTypeNode {
     public ASTBooleanLiteral(JavaParser p, int id) {
         super(p, id);
     }
-
-    private boolean isTrue;
 
     public void setTrue() {
         isTrue = true;
@@ -28,6 +29,7 @@ public class ASTBooleanLiteral extends AbstractJavaTypeNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

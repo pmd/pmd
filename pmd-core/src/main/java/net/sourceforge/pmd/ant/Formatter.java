@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.Parameter;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.types.Parameter;
 
 public class Formatter {
 
@@ -28,6 +28,8 @@ public class Formatter {
     private boolean toConsole;
     private boolean showSuppressed;
     private final List<Parameter> parameters = new ArrayList<>();
+    private Writer writer;
+    private Renderer renderer;
 
     public void setShowSuppressed(boolean value) {
         this.showSuppressed = value;
@@ -48,10 +50,6 @@ public class Formatter {
     public void addConfiguredParam(Parameter parameter) {
 	this.parameters.add(parameter);
     }
-
-    private Writer writer;
-
-    private Renderer renderer;
 
     public Renderer getRenderer() {
         return renderer;
