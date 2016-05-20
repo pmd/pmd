@@ -81,7 +81,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
 	 * @return count of the number of children of the node, plus one
 	 */
 	protected Integer countNodeChildren(Node node, Object data) {
-		Integer nodeCount = null;
+		Integer nodeCount;
 		int lineCount = 0;
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			nodeCount = (Integer) ((ApexNode<?>) node.jjtGetChild(i)).jjtAccept(this, data);
