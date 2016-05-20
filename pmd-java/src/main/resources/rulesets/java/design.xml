@@ -1949,4 +1949,50 @@ public final class Foo {
          </example>
        </rule>
     
+    <rule name="ConstantsInInterface"
+   		  language="java"
+          since="5.5"
+          message="Avoid constants in interfaces. Interfaces define types, constants are implementation details better placed in classes or enums. See Effective Java, item 19."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ConstantsInInterface">
+        <description>
+Avoid constants in interfaces. Interfaces should define types, constants are implementation details
+better placed in classes or enums. See Effective Java, item 19.
+        </description>
+        <priority>3</priority>
+        <properties>
+        <property name="ignoreIfHasMethods" type="Boolean" description="Whether to ignore constants in interfaces if the interface defines any methods" value="false"/>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ClassOrInterfaceDeclaration[@Interface='true'][$ignoreIfHasMethods='false' or not(.//MethodDeclaration)]//FieldDeclaration
+ ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public interface ConstantInterface {
+    public static final int CONST1 = 1; // violation, no fields allowed in interface!
+    static final int CONST2 = 1; // violation, no fields allowed in interface!
+    final int CONST3 = 1; // violation, no fields allowed in interface!
+    int CONST4 = 1; // violation, no fields allowed in interface!
+}
+
+// with ignoreIfHasMethods = false
+public interface AnotherConstantInterface {
+    public static final int CONST1 = 1; // violation, no fields allowed in interface!
+    
+    int anyMethod();
+}
+
+// with ignoreIfHasMethods = true
+public interface YetAnotherConstantInterface {
+    public static final int CONST1 = 1; // no violation
+    
+    int anyMethod();
+}
+ ]]>
+        </example>
+    </rule>
 </ruleset>

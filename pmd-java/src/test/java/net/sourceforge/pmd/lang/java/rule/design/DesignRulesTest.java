@@ -73,5 +73,6 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseNotifyAllInsteadOfNotify");
         addRule(RULESET, "UseUtilityClass");
         addRule(RULESET, "UseVarargs");
+        addRule(RULESET, "ConstantsInInterface");
     }
 }

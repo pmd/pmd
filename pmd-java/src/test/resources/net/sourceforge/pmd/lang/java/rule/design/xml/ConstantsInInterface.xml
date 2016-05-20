@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+constants in interface, no methods
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+  public static final int CONST1 = 1;
+  static final int CONST2 = 1;
+  final int CONST3 = 1;
+  int CONST4 = 1;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constants in interface, with methods, ignoreIfHasMethods is false
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface AnotherConstantInterface {
+  public static final int CONST1 = 1;
+  
+  int anyMethod();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constants in interface, with methods, ignoreIfHasMethods is true
+     ]]></description>
+        <rule-property name="ignoreIfHasMethods">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface AnotherConstantInterface {
+  public static final int CONST1 = 1;
+  
+  int anyMethod();
+}
+     ]]></code>
+    </test-code>
+</test-data>
