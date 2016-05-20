@@ -119,7 +119,7 @@ public class ApexParserTest {
 	    Assert.assertNotNull(rootNode);
 
 	    int count = visitPosition(rootNode, 0);
-	    System.out.println("Nodes visited: " + count);
+	    Assert.assertEquals(586, count);
 	}
 
 	private int visitPosition(Node node, int count) {
