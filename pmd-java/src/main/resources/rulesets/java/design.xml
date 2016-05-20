@@ -1961,7 +1961,7 @@ better placed in classes or enums. See Effective Java, item 19.
         </description>
         <priority>3</priority>
         <properties>
-        <property name="ignoreIfHasMethods" type="Boolean" description="Whether to ignore constants in interfaces if the interface defines any methods" value="false"/>
+        <property name="ignoreIfHasMethods" type="Boolean" description="Whether to ignore constants in interfaces if the interface defines any methods" value="true"/>
             <property name="xpath">
                 <value>
 <![CDATA[

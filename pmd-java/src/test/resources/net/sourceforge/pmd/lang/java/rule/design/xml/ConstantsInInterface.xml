@@ -18,6 +18,7 @@ public interface Foo {
         <description><![CDATA[
 constants in interface, with methods, ignoreIfHasMethods is false
      ]]></description>
+        <rule-property name="ignoreIfHasMethods">false</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public interface AnotherConstantInterface {
