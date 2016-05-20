@@ -47,6 +47,7 @@ you'll need a java8 runtime environment.
 *   [#31](https://github.com/adangel/pmd/pull/31): Added file encoding detection to CPD.
 *   [#32](https://github.com/adangel/pmd/pull/32): Extended Objective-C grammar to accept UTF-8 escapes (\uXXXX) in string literals.
 *   [#33](https://github.com/adangel/pmd/pull/33): Added support for Swift to CPD.
+*   [#34](https://github.com/adangel/pmd/pull/34): multiple code improvements: squid:S1192, squid:S1118, squid:S1066, squid:S1854, squid:S2864
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
 *   [#73](https://github.com/pmd/pmd/pull/73): Add rule to look for invalid message format in slf4j loggers
 *   [#74](https://github.com/pmd/pmd/pull/74): Fix rendering CommentDefaultAccessModifier description as code
