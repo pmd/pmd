@@ -13,6 +13,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -94,21 +95,43 @@ public class ApexParserTest {
 	}
 
 	@Test
-	public void parsesRealWorldClasses() {
-		try {
-			File directory = new File("src/test/resources");
-			File[] fList = directory.listFiles();
+	public void parsesRealWorldClasses() throws Exception {
+		File directory = new File("src/test/resources");
+		File[] fList = directory.listFiles();
 
-			for (File file : fList) {
-				if (file.isFile() && file.getName().endsWith(".cls")) {
-					String sourceCode = FileUtils.readFileToString(file);
-					ApexNode<Compilation> rootNode = parse(sourceCode);
-				}
+		for (File file : fList) {
+			if (file.isFile() && file.getName().endsWith(".cls")) {
+				String sourceCode = FileUtils.readFileToString(file);
+				ApexNode<Compilation> rootNode = parse(sourceCode);
+				Assert.assertNotNull(rootNode);
 			}
-		} catch (IOException e) {
-			Assert.fail();
 		}
+	}
 
+	/**
+	 * See bug #1485
+	 * @see <a href="https://sourceforge.net/p/pmd/bugs/1485/">#1485</a>
+	 */
+	@Test
+	public void stackOverflowDuringClassParsing() throws Exception {
+	    String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"));
+	    ApexNode<Compilation> rootNode = parse(source);
+	    Assert.assertNotNull(rootNode);
+
+	    int count = visitPosition(rootNode, 0);
+	    Assert.assertEquals(586, count);
+	}
+
+	private int visitPosition(Node node, int count) {
+	    int result = count + 1;
+	    Assert.assertTrue(node.getBeginLine() > 0);
+	    Assert.assertTrue(node.getBeginColumn() > 0);
+	    Assert.assertTrue(node.getEndLine() > 0);
+	    Assert.assertTrue(node.getEndColumn() > 0);
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            result = visitPosition(node.jjtGetChild(i), result);
+        }
+        return result;
 	}
 
 	// TEST HELPER
