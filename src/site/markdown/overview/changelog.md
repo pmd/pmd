@@ -23,13 +23,17 @@ you'll need a java8 runtime environment.
 
 **New/Modified/Deprecated Rules:**
 
-*   Java
-    *   Logging Java: **InvalidSlf4jMessageFormat** (rulesets/java/logging-java.xml/InvalidSlf4jMessageFormat)<br/>
-        Check for invalid message format in slf4j loggers.
-*   java-comments/CommentRequired: New property `serialVersionUIDCommentRequired` which controls the comment requirements
-    for *serialVersionUID* fields. By default, no comment is required for this field.
-*   java-design/UseVargs: public static void main method is ignored now and so are methods, that are annotated
-    with Override. See [PR#79](https://github.com/pmd/pmd/pull/79).
+*   New rules in Java:
+    *   java-logging-java/InvalidSlf4jMessageFormat: Check for invalid message format in slf4j loggers.
+    *   java-design/ConstantsInInterface: Avoid constants in interfaces.
+        Interfaces should define types, constants are implementation details
+        better placed in classes or enums. See Effective Java, item 19.
+
+*   Modified rules in Java:
+    *   java-comments/CommentRequired: New property `serialVersionUIDCommentRequired` which controls the comment requirements
+        for *serialVersionUID* fields. By default, no comment is required for this field.
+    *   java-design/UseVargs: public static void main method is ignored now and so are methods, that are annotated
+        with Override. See [PR#79](https://github.com/pmd/pmd/pull/79).
 
 *   New rules for Salesforce.com Apex:
     *   apex-complexity: AvoidDeeplyNestedIfStmts, ExcessiveParameterList, ExcessiveClassLength,
@@ -74,6 +78,7 @@ you'll need a java8 runtime environment.
 *   [#90](https://github.com/pmd/pmd/pull/90): Refactored two test to stop using the deprecated ant class BuildFileTest
 *   [#91](https://github.com/pmd/pmd/pull/91): Small code enhancements, basically reordering variable declarations, constructors and variable modifiers
 *   [#92](https://github.com/pmd/pmd/pull/92): Improved Code Climate Renderer Output and a Bugfix for Apex StdCyclomaticComplexityRule on triggers
+*   [#93](https://github.com/pmd/pmd/pull/93): Add ConstantsInInterface rule. Effective Java, 19
 
 **Bugfixes:**
 
