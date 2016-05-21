@@ -73,6 +73,7 @@ you'll need a java8 runtime environment.
 *   [#89](https://github.com/pmd/pmd/pull/89): Some code enhancements
 *   [#90](https://github.com/pmd/pmd/pull/90): Refactored two test to stop using the deprecated ant class BuildFileTest
 *   [#91](https://github.com/pmd/pmd/pull/91): Small code enhancements, basically reordering variable declarations, constructors and variable modifiers
+*   [#92](https://github.com/pmd/pmd/pull/92): Improved Code Climate Renderer Output and a Bugfix for Apex StdCyclomaticComplexityRule on triggers
 
 **Bugfixes:**
 
