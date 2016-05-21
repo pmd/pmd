@@ -9,12 +9,16 @@ import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIAT
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
@@ -23,10 +27,10 @@ import net.sourceforge.pmd.RuleViolation;
  */
 public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "codeclimate";
+    public static final String BODY_PLACEHOLDER = "REPLACE_THIS_WITH_MARKDOWN";
     public static final int REMEDIATION_POINTS_DEFAULT = 50000;
     public static final String[] CODECLIMATE_DEFAULT_CATEGORIES = new String[]{ "Style" };
 
-    protected static final String EOL = System.getProperty("line.separator", "\n");
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
 
@@ -40,11 +44,13 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
-            writer.write(gson.toJson(asIssue(rv)) + NULL_CHARACTER + EOL);
+            String json = gson.toJson(asIssue(rv));
+            json = json.replace(BODY_PLACEHOLDER, getBody(rv));
+            writer.write(json + NULL_CHARACTER + PMD.EOL);
         }
     }
 
@@ -58,8 +64,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         
     	CodeClimateIssue issue = new CodeClimateIssue();
         issue.check_name = rule.getName();
-        issue.description = rv.getDescription();
-        issue.content = new CodeClimateIssue.Content(rule.getDescription());
+        issue.description = cleaned(rv.getDescription());
+        issue.content = new CodeClimateIssue.Content(BODY_PLACEHOLDER);
         issue.location = getLocation(rv);
         
         switch(rule.getPriority()) {
@@ -76,22 +82,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 break;
         }
         
-        issue.remediation_points = REMEDIATION_POINTS_DEFAULT;
-        if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
-        	issue.remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
-        }
+        issue.remediation_points = getRemediationPoints(rule);
+        issue.categories = getCategories(rule);
         
-        if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
-            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
-            issue.categories = new String[categories.length];
-            for (int i = 0; i < categories.length; i++) {
-                issue.categories[i] = String.valueOf(categories[i]);
-            }
-        }
-        else {
-        	issue.categories = CODECLIMATE_DEFAULT_CATEGORIES;
-        }
-
         return issue;
     }
 
@@ -105,6 +98,81 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	CodeClimateIssue.Location result = new CodeClimateIssue.Location(pathWithoutCcRoot, 
     																	 rv.getBeginLine(), 
     																	 rv.getEndLine());
+    	return result;
+    }
+    
+    private String cleaned(String original) {
+    	String result = original.trim();
+    	result = result.replaceAll("\\s+", " ");
+    	result = result.replaceAll("\\s*[\\r\\n]+\\s*", "");
+    	result = result.replaceAll("'", "`");
+    	return result;
+    }
+    
+    private String getBody(RuleViolation rv) {
+    	Rule rule = rv.getRule();
+    	
+    	String result = "## " + rule.getName() + "\\n\\n" +
+				  		"Since: PMD " + rule.getSince() + "\\n\\n" +
+				  		"Priority: " + rule.getPriority() + "\\n\\n" +
+				  		"[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): " + Arrays.toString(getCategories(rule)).replaceAll("[\\[\\]]","") + "\\n\\n" +
+				  		"[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): " + getRemediationPoints(rule) + "\\n\\n" +
+				  		cleaned(rule.getDescription());
+    	
+    	if(!rule.getExamples().isEmpty()) {
+    		result += "\\n\\n### Example:\\n\\n";
+    		
+    		for(String snippet : rule.getExamples()) {
+    			snippet = snippet.replaceAll("\\n", "\\\\n");
+    			snippet = snippet.replaceAll("\\t", "\\\\t");
+    			result += "```java\\n" + snippet + "\\n```  ";
+    		}
+    	}
+    	
+    	if(!rule.getPropertyDescriptors().isEmpty()) {
+    		result += "\\n\\n### [PMD properties](http://pmd.github.io/pmd-5.1.3/pmd-developer.html)\\n\\n";
+    		result += "Name | Default Value | Description\\n";
+    		result += "--- | --- | ---\\n";
+    		
+    		for(PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
+    			String defaultValue;
+    			try {
+    				defaultValue = Arrays.toString((String[])property.defaultValue()).replaceAll("[\\[\\]]","");
+    			}
+    			catch(Exception ignore) {
+    				defaultValue = property.defaultValue().toString();
+    			}
+    			result += property.name() + " | " + defaultValue + " | " + property.description() + "\\n";
+    		}
+    	}
+    	
+    	return result;
+    }
+    
+    private int getRemediationPoints(Rule rule) {
+    	int remediation_points = REMEDIATION_POINTS_DEFAULT;
+        
+    	if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
+        	remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
+        }
+    	
+    	return remediation_points;
+    }
+    
+    private String[] getCategories(Rule rule) {
+    	String[] result;
+    	
+    	if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
+            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
+            result = new String[categories.length];
+            for (int i = 0; i < categories.length; i++) {
+                result[i] = String.valueOf(categories[i]);
+            }
+        }
+        else {
+        	result = CODECLIMATE_DEFAULT_CATEGORIES;
+        }
+    	
     	return result;
     }
 }

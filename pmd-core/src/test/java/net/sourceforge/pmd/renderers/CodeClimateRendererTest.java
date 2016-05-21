@@ -14,7 +14,7 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"desc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
+        return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\\n\\n[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\\n\\ndesc\\n\\n### [PMD properties](http://pmd.github.io/pmd-5.1.3/pmd-developer.html)\\n\\nName | Default Value | Description\\n--- | --- | ---\\nviolationSuppressRegex | null | Suppress violations with messages matching a regular expression\\nviolationSuppressXPath | null | Suppress violations on nodes which match a given relative XPath expression.\\n\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
     }
 
     @Override
@@ -24,8 +24,8 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"desc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL +
-        	   "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"desc\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
+        return "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\\n\\n[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\\n\\ndesc\\n\\n### [PMD properties](http://pmd.github.io/pmd-5.1.3/pmd-developer.html)\\n\\nName | Default Value | Description\\n--- | --- | ---\\nviolationSuppressRegex | null | Suppress violations with messages matching a regular expression\\nviolationSuppressXPath | null | Suppress violations on nodes which match a given relative XPath expression.\\n\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL +
+        	   "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\",\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): Style\\n\\n[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): 50000\\n\\ndesc\\n\\n### [PMD properties](http://pmd.github.io/pmd-5.1.3/pmd-developer.html)\\n\\nName | Default Value | Description\\n--- | --- | ---\\nviolationSuppressRegex | null | Suppress violations with messages matching a regular expression\\nviolationSuppressXPath | null | Suppress violations on nodes which match a given relative XPath expression.\\n\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

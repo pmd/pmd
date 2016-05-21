@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -82,6 +83,23 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
 	@Override
 	public Object visit(ASTUserClass node, Object data) {
+		reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
+		showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
+		showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
+		entryStack.push(new Entry(node));
+		super.visit(node, data);
+		if (showClassesComplexity) {
+			Entry classEntry = entryStack.pop();
+			if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
+				addViolation(data, node, new String[] { "class", node.getImage(),
+						classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
+			}
+		}
+		return data;
+	}
+	
+	@Override
+	public Object visit(ASTUserTrigger node, Object data) {
 		reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
 		showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
 		showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
