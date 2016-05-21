@@ -1,4 +1,10 @@
 /**
+ * Fix for an expression within an additive expression that was
+ * wrongly taken as a cast expression.
+ * Bug #1484
+ *
+ * Andreas Dangel 05/2016
+ *====================================================================
  * Fix for Lambda expression with one variable
  * Bug #1470
  *
@@ -1755,6 +1761,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {}
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
+| LOOKAHEAD("(" <IDENTIFIER> ")" "+") PostfixExpression()
 | LOOKAHEAD( CastExpression() ) CastExpression()
 | LOOKAHEAD("(" Type() ")" "(") CastExpression()
 | PostfixExpression()

@@ -14,6 +14,9 @@
 
 **Bugfixes:**
 
+*   java-unusedcode/UnusedLocalVariable
+    *   [#1484](https://sourceforge.net/p/pmd/bugs/1484/): UnusedLocalVariable - false positive - parenthesis
+
 **API Changes:**
 
 *   New command line parameter for PMD: `-norulesetcompatibility` - this disables the ruleset factory
