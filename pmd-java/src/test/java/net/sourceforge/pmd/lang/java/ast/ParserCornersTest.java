@@ -131,6 +131,21 @@ public class ParserCornersTest extends ParserTst {
         parseJava18(c);
     }
 
+    /**
+     * This triggered bug #1484 UnusedLocalVariable - false positive - parenthesis
+     * @throws Exception
+     */
+    @Test
+    public void stringConcatentationShouldNotBeCast() throws Exception {
+        String code = "public class Test {\n" + 
+                "    public static void main(String[] args) {\n" + 
+                "        System.out.println(\"X\" + (args) + \"Y\");\n" + 
+                "    }\n" + 
+                "}";
+        ASTCompilationUnit cu = parseJava18(code);
+        Assert.assertEquals(0, cu.findDescendantsOfType(ASTCastExpression.class).size());
+    }
+
     private String readAsString(String resource) {
         InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
         try {
