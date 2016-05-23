@@ -18,7 +18,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="1000"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -31,7 +31,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="100"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -44,7 +44,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="100"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -57,7 +57,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="100"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -70,7 +70,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="100"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -83,7 +83,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="1000"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -96,7 +96,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="5000"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -109,7 +109,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="1000"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -121,7 +121,7 @@
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
         	<property name="cc_remediation_points_multiplier" value="1000"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -132,7 +132,7 @@
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Performance"/>
 	       	<property name="cc_remediation_points_multiplier" value="100"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -143,7 +143,7 @@
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
 	       	<property name="cc_remediation_points_multiplier" value="100"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -158,7 +158,7 @@
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
 	       	<property name="cc_remediation_points_multiplier" value="10"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -170,7 +170,7 @@
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
 	       	<property name="cc_remediation_points_multiplier" value="10"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -181,7 +181,7 @@
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
 	       	<property name="cc_remediation_points_multiplier" value="10"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -192,7 +192,7 @@
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
 	       	<property name="cc_remediation_points_multiplier" value="10"/>
-        	<property name="cc_bock_highlighting" value="false"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
