@@ -34,6 +34,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
 
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
+    
+    private Rule rule;
 
     public CodeClimateRenderer() {
         super(NAME, "Code Climate integration.");
@@ -49,8 +51,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
+            rule = rv.getRule();
             String json = gson.toJson(asIssue(rv));
-            json = json.replace(BODY_PLACEHOLDER, getBody(rv));
+            json = json.replace(BODY_PLACEHOLDER, getBody());
             writer.write(json + NULL_CHARACTER + PMD.EOL);
         }
     }
@@ -61,15 +64,13 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
      * @return The generated issue.
      */
     private CodeClimateIssue asIssue(RuleViolation rv) {
-    	Rule rule = rv.getRule();
-        
     	CodeClimateIssue issue = new CodeClimateIssue();
         issue.check_name = rule.getName();
         issue.description = cleaned(rv.getDescription());
         issue.content = new CodeClimateIssue.Content(BODY_PLACEHOLDER);
         issue.location = getLocation(rv);
-        issue.remediation_points = getRemediationPoints(rule);
-        issue.categories = getCategories(rule);
+        issue.remediation_points = getRemediationPoints();
+        issue.categories = getCategories();
         
         switch(rule.getPriority()) {
             case HIGH:
@@ -98,17 +99,17 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	
     	String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(rv.getFilename(), "/code/");
     	
-    	if(rv.getRule().getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
-    		result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
+    	if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER) && !rule.getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
+    		result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getBeginLine());
     	}
     	else {
-    		result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getBeginLine());
+    		result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
     	}
     	
     	return result;
     }
     
-    private int getRemediationPoints(Rule rule) {
+    private int getRemediationPoints() {
     	int remediation_points = REMEDIATION_POINTS_DEFAULT;
         
     	if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
@@ -118,7 +119,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	return remediation_points;
     }
     
-    private String[] getCategories(Rule rule) {
+    private String[] getCategories() {
     	String[] result;
     	
     	if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
@@ -135,14 +136,12 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	return result;
     }
     
-    private String getBody(RuleViolation rv) {
-    	Rule rule = rv.getRule();
-    	
+    private String getBody() {
     	String result = "## " + rule.getName() + "\\n\\n" +
 				  		"Since: PMD " + rule.getSince() + "\\n\\n" +
 				  		"Priority: " + rule.getPriority() + "\\n\\n" +
-				  		"[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): " + Arrays.toString(getCategories(rule)).replaceAll("[\\[\\]]","") + "\\n\\n" +
-				  		"[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): " + getRemediationPoints(rule) + "\\n\\n" +
+				  		"[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): " + Arrays.toString(getCategories()).replaceAll("[\\[\\]]","") + "\\n\\n" +
+				  		"[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): " + getRemediationPoints() + "\\n\\n" +
 				  		cleaned(rule.getDescription());
     	
     	if(!rule.getExamples().isEmpty()) {
