@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.renderers.CodeClimateRenderer.REMEDIATION_POIN
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
  * This interface tags a Rule specifying properties required for the Code
@@ -40,4 +41,11 @@ public interface CodeClimateRule extends Rule {
     IntegerProperty CODECLIMATE_REMEDIATION_MULTIPLIER = new IntegerProperty("cc_remediation_points_multiplier",
             "Code Climate Remediation Points multiplier", Integer.MIN_VALUE,
             Integer.MAX_VALUE / REMEDIATION_POINTS_DEFAULT, 1, 1.0f);
+    
+    /**
+     * Defines if the hole related block or just the first line of the issue should be highlighted at the Code Climate Platform.
+     * By default the block highlighting is disabled for reasons of clarity.
+     */
+    BooleanProperty CODECLIMATE_BLOCK_HIGHLIGHTING = new BooleanProperty("cc_block_highlighting", 
+    		"Code Climate Block Highlighting", false, 1.0f);
 }

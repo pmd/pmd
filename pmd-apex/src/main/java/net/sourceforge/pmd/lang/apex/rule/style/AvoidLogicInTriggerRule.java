@@ -12,7 +12,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AvoidLogicInTriggerRule extends AbstractApexRule {
 	
 	public AvoidLogicInTriggerRule() {
+		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Style" });
 		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
+		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 	}
 
 	@Override

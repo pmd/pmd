@@ -6,6 +6,7 @@ package net.sourceforge.pmd.renderers;
 
 import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
 import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_BLOCK_HIGHLIGHTING;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -67,6 +68,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         issue.description = cleaned(rv.getDescription());
         issue.content = new CodeClimateIssue.Content(BODY_PLACEHOLDER);
         issue.location = getLocation(rv);
+        issue.remediation_points = getRemediationPoints(rule);
+        issue.categories = getCategories(rule);
         
         switch(rule.getPriority()) {
             case HIGH:
@@ -82,9 +85,6 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 break;
         }
         
-        issue.remediation_points = getRemediationPoints(rule);
-        issue.categories = getCategories(rule);
-        
         return issue;
     }
 
@@ -94,18 +94,44 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
     
     private CodeClimateIssue.Location getLocation(RuleViolation rv) {
+    	CodeClimateIssue.Location result;
+    	
     	String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(rv.getFilename(), "/code/");
-    	CodeClimateIssue.Location result = new CodeClimateIssue.Location(pathWithoutCcRoot, 
-    																	 rv.getBeginLine(), 
-    																	 rv.getEndLine());
+    	
+    	if(rv.getRule().getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
+    		result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
+    	}
+    	else {
+    		result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getBeginLine());
+    	}
+    	
     	return result;
     }
     
-    private String cleaned(String original) {
-    	String result = original.trim();
-    	result = result.replaceAll("\\s+", " ");
-    	result = result.replaceAll("\\s*[\\r\\n]+\\s*", "");
-    	result = result.replaceAll("'", "`");
+    private int getRemediationPoints(Rule rule) {
+    	int remediation_points = REMEDIATION_POINTS_DEFAULT;
+        
+    	if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
+        	remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
+        }
+    	
+    	return remediation_points;
+    }
+    
+    private String[] getCategories(Rule rule) {
+    	String[] result;
+    	
+    	if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
+            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
+            result = new String[categories.length];
+            for (int i = 0; i < categories.length; i++) {
+                result[i] = String.valueOf(categories[i]);
+            }
+        }
+        else {
+        	result = CODECLIMATE_DEFAULT_CATEGORIES;
+        }
+    	
     	return result;
     }
     
@@ -149,30 +175,11 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	return result;
     }
     
-    private int getRemediationPoints(Rule rule) {
-    	int remediation_points = REMEDIATION_POINTS_DEFAULT;
-        
-    	if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
-        	remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
-        }
-    	
-    	return remediation_points;
-    }
-    
-    private String[] getCategories(Rule rule) {
-    	String[] result;
-    	
-    	if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
-            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
-            result = new String[categories.length];
-            for (int i = 0; i < categories.length; i++) {
-                result[i] = String.valueOf(categories[i]);
-            }
-        }
-        else {
-        	result = CODECLIMATE_DEFAULT_CATEGORIES;
-        }
-    	
+    private String cleaned(String original) {
+    	String result = original.trim();
+    	result = result.replaceAll("\\s+", " ");
+    	result = result.replaceAll("\\s*[\\r\\n]+\\s*", "");
+    	result = result.replaceAll("'", "`");
     	return result;
     }
 }

@@ -78,8 +78,10 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 		definePropertyDescriptor(PARAMETER_PREFIXES_DESCRIPTOR);
 		definePropertyDescriptor(PARAMETER_SUFFIXES_DESCRIPTOR);
 
+		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Style" });
 		// Note: x10 as Apex has not automatic refactoring
 		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 10);
+		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 	}
 
 	public Object visit(ASTUserClass node, Object data) {

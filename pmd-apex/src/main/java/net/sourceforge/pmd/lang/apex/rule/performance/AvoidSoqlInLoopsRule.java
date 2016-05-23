@@ -18,6 +18,7 @@ public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Performance" });
 		// Note: Often more complicated as just moving the SOQL a few lines. Involves Maps...
 		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
+		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 	}
 
 	@Override
