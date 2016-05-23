@@ -96,7 +96,7 @@ public class Foo {
 
 <rule name="NcssMethodCount"
    since="5.5.0"
-   message="The method {0}() has an NCSS line count of {1}"
+   message="The method ''{0}()'' has an NCSS line count of {1}"
    class="net.sourceforge.pmd.lang.apex.rule.complexity.NcssMethodCountRule"
    externalInfoUrl="${pmd.website.baseurl}/rules/apex/complexity.html#NcssMethodCount">
     <description>
