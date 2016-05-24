@@ -15,7 +15,7 @@ public class AvoidGlobalModifierRule extends AbstractApexRule {
 	
 	public AvoidGlobalModifierRule() {
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Style" });
-		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 10);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 	}
 

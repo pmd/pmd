@@ -31,7 +31,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
 		definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
 		
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
-		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1000);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 	}
 

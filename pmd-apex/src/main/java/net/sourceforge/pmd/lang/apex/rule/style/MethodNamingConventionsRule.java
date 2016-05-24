@@ -14,7 +14,7 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
 	public MethodNamingConventionsRule() {
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Style" });
 		// Note: x10 as Apex has not automatic refactoring
-		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 10);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
 		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 	}
 

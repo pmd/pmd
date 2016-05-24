@@ -17,7 +17,7 @@ public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
 		setProperty(MINIMUM_DESCRIPTOR, 1000d);
 		
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
-		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1000);
+		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
 		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 	}
 
