@@ -20,11 +20,10 @@ that should not include underscores.
         </description>
         <priority>1</priority>
         <example>
-<![CDATA[
-public class Foo {
-   public static final Integer MY_NUM = 0;
-   public String myTest = '';
-   DataModule dmTest = new DataModule();
+<![CDATA[public class Foo {
+	public static final Integer MY_NUM = 0;
+	public String myTest = '';
+	DataModule dmTest = new DataModule();
 }
 ]]>
         </example>
@@ -40,8 +39,7 @@ Method names should always begin with a lower case character, and should not con
           </description>
           <priority>1</priority>
           <example>
-<![CDATA[
-public class Foo {
+<![CDATA[public class Foo {
 	public void fooStuff() {
 	}
 }
@@ -59,8 +57,7 @@ Class names should always begin with an upper case character.
       </description>
       <priority>1</priority>
       <example>
-<![CDATA[
-public class Foo {}
+<![CDATA[public class Foo {}
 ]]>
       </example>
     </rule>
@@ -75,14 +72,13 @@ Non-constructor methods should not have the same name as the enclosing class.
        </description>
         <priority>3</priority>
        <example>
-    <![CDATA[
-public class MyClass {
-
-	public MyClass() {}			// this is OK because it is a constructor
-	
-	public void MyClass() {}	// this is bad because it is a method
+<![CDATA[public class MyClass {
+	// this is OK because it is a constructor
+	public MyClass() {}
+	// this is bad because it is a method
+	public void MyClass() {}
 }
-    ]]>
+]]>
        </example>
      </rule>
      
@@ -99,17 +95,18 @@ See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex
     </description>
       <priority>3</priority>
     <example>
-<![CDATA[
-trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
-	for(Account acc : Trigger.new){           
-        if(Trigger.isInsert) {
-        	...
-        }
-		...
-        if(Trigger.isDelete){
+<![CDATA[trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+	for(Account acc : Trigger.new) {           
+		if(Trigger.isInsert) {
 			...
-        }           
-    }           
+		}
+		
+		...
+		
+		if(Trigger.isDelete) {
+			...
+		}
+	}
 }
 ]]>
     </example>
@@ -126,10 +123,9 @@ Many interfaces (e.g. Batch) required global modifiers in the past but don't req
     </description>
       <priority>3</priority>
     <example>
-<![CDATA[
-global class Unchangeable {
-	global UndeletableType unchangable(UndeletableType param) {  
-		// ..
+<![CDATA[global class Unchangeable {
+	global UndeletableType unchangable(UndeletableType param) {
+		// ...
 	}
 }
 ]]>

@@ -18,17 +18,16 @@ Avoid creating deeply nested if-then statements since they are harder to read an
     </description>
 		<priority>3</priority>
 		<example>
-<![CDATA[
-public class Foo {
-  public void bar(Integer x, Integer y, Integer z) {
-    if (x>y) {
-      if (y>z) {
-        if (z==x) {
-         // !! too deep
-        }
-      }
-    }
-  }
+<![CDATA[public class Foo {
+	public void bar(Integer x, Integer y, Integer z) {
+		if (x>y) {
+			if (y>z) {
+				if (z==x) {
+					// !! too deep
+				}
+			}
+		}
+	}
 }
 ]]>
     </example>
@@ -45,17 +44,13 @@ same datatype. These situations usually denote the need for new objects to wrap 
    </description>
 		<priority>3</priority>
 		<example>
-<![CDATA[
-public void addPerson(		// too many arguments liable to be mixed up
-	int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
-
-	. . . .
+<![CDATA[// too many arguments liable to be mixed up
+public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
+	...
 }
- 
-public void addPerson(		// preferred approach
-	Date birthdate, BodyMeasurements measurements, int ssn) {
-
-	. . . .
+// preferred approach 
+public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
+	...
 }
 ]]>
    </example>
@@ -73,21 +68,18 @@ apart the code becomes more managable and ripe for reuse.
    </description>
      <priority>3</priority>
    <example>
-<![CDATA[
-public class Foo {
+<![CDATA[public class Foo {
 	public void bar1() {
-    // 1000 lines of code
+		// 1000 lines of code
 	}
 	public void bar2() {
-    // 1000 lines of code
+		// 1000 lines of code
 	}
-    public void bar3() {
-    // 1000 lines of code
+	public void bar3() {
+		// 1000 lines of code
 	}
-	
-	
-    public void barN() {
-    // 1000 lines of code
+	public void barN() {
+		// 1000 lines of code
 	}
 }
 ]]>
@@ -106,18 +98,15 @@ lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
    <example>
-<![CDATA[
-public class Foo extends Bar {
- public Integer methd() {
-     super.methd();
-
-
-
-
-
- //this method only has 1 NCSS lines
-      return 1;
- }
+<![CDATA[public class Foo extends Bar {
+	//this method only has 1 NCSS lines
+	public Integer methd() {
+		super.methd();
+		
+		
+		
+		return 1;
+	}
 }
 ]]>
    </example>
@@ -135,18 +124,17 @@ lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
    <example>
-<![CDATA[
+<![CDATA[//this class only has 6 NCSS lines
 public class Foo extends Bar {
- public Foo() {
- //this class only has 6 NCSS lines
-     super();
-
-
-
-
-
-      super.foo();
- }
+	public Foo() {
+		super();
+		
+		
+		
+		
+		
+		super.foo();
+	}
 }
 ]]>
    </example></rule>
@@ -163,18 +151,16 @@ lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
    <example>
-<![CDATA[
-public class Foo extends Bar {
- public Foo() {
-     super();
-
-
-
-
-
- //this constructor only has 1 NCSS lines
-      super.foo();
- }
+<![CDATA[public class Foo extends Bar {
+	//this constructor only has 1 NCSS lines
+	public Foo() {
+		super();
+		
+		
+		
+		
+		super.foo();
+	}
 }
 ]]>
    </example>
@@ -195,43 +181,43 @@ high complexity, and 11+ is very high complexity.
    </description>
 		<priority>3</priority>
 		<example>
-<![CDATA[
-public class Foo {    // This has a Cyclomatic Complexity = 12
-1   public void example()  {
-2       if (a == b || (c == d && e == f))  { // Only one
-3           if (a1 == b1) {
-                fiddle();
-4           } else if a2 == b2) {
-                fiddle();
-            }  else {
-                fiddle();
-            }
-5       } else if (c == d) {
-6           while (c == d) {
-                fiddle();
-            }
-7        } else if (e == f) {
-8           for (int n = 0; n < h; n++) {
-                fiddle();
-            }
-        } else{
-            switch (z) {
-9               case 1:
-                    fiddle();
-                    break;
-10              case 2:
-                    fiddle();
-                    break;
-11              case 3:
-                    fiddle();
-                    break;
-12              default:
-                    fiddle();
-                    break;
-            }
-        }
-    }
-}
+<![CDATA[// This has a Cyclomatic Complexity = 12
+	public class Foo {
+1		public void example() {
+2			if (a == b || (c == d && e == f)) {
+3				if (a1 == b1) {
+					fiddle();
+4				} else if a2 == b2) {
+					fiddle();
+				}  else {
+					fiddle();
+				}
+5			} else if (c == d) {
+6				while (c == d) {
+					fiddle();
+				}
+7			} else if (e == f) {
+8				for (int n = 0; n < h; n++) {
+					fiddle();
+				}
+			} else {
+				switch (z) {
+9					case 1:
+						fiddle();
+						break;
+10					case 2:
+						fiddle();
+						break;
+11					case 3:
+						fiddle();
+						break;
+12					default:
+						fiddle();
+						break;
+				}
+			}
+		}
+	}
 ]]>
    </example>
 	</rule>
@@ -248,20 +234,21 @@ city/state/zip fields could park them within a single Address field.
       </description>
 		<priority>3</priority>
 		<example>
-   <![CDATA[
-public class Person {	// too many separate fields
-   int birthYear;
-   int birthMonth;
-   int birthDate;
-   float height;
-   float weight;
+<![CDATA[public class Person {
+	// too many separate fields
+	int birthYear;
+	int birthMonth;
+	int birthDate;
+	float height;
+	float weight;
 }
 
-public class Person {	// this is more manageable
-   Date birthDate;
-   BodyMeasurements measurements;
+public class Person {
+	// this is more manageable
+	Date birthDate;
+	BodyMeasurements measurements;
 }
-   ]]>
+]]>
       </example>
 	</rule>
 	
@@ -278,19 +265,18 @@ developed easily.
     </description>
     <priority>3</priority>
     <example>
-    <![CDATA[
-public class Foo {
+<![CDATA[public class Foo {
 	public String value;
 	public Bar something;
 	public Variable var;
- // [... more more public attributes ...]
- 
+	// [... more more public attributes ...]
+	
 	public void doWork() {}
 	public void doMoreWork() {}
 	public void doWorkAgain() {}
- // [... more more public methods ...]
+	// [... more more public methods ...]
 }
-    ]]>
+]]>
     </example>
     </rule>
 
