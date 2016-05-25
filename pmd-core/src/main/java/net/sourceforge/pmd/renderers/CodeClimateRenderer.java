@@ -156,18 +156,22 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	
     	if(!rule.getPropertyDescriptors().isEmpty()) {
     		result += "\\n\\n### [PMD properties](http://pmd.github.io/pmd-5.1.3/pmd-developer.html)\\n\\n";
-    		result += "Name | Default Value | Description\\n";
+    		result += "Name | Value | Description\\n";
     		result += "--- | --- | ---\\n";
     		
     		for(PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
-    			String defaultValue;
+    			String propertyValue;
     			try {
-    				defaultValue = Arrays.toString((String[])property.defaultValue()).replaceAll("[\\[\\]]","");
+    				propertyValue = Arrays.toString((String[])rule.getProperty(property)).replaceAll("[\\[\\]]","");
     			}
     			catch(Exception ignore) {
-    				defaultValue = property.defaultValue().toString();
+    				propertyValue = rule.getProperty(property).toString();
     			}
-    			result += property.name() + " | " + defaultValue + " | " + property.description() + "\\n";
+    			
+    			String porpertyName = property.name();
+    			porpertyName = porpertyName.replaceAll("\\_", "\\\\_");
+    			
+    			result += porpertyName + " | " + propertyValue + " | " + property.description() + "\\n";
     		}
     	}
     	

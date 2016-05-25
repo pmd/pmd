@@ -43,7 +43,7 @@ public interface CodeClimateRule extends Rule {
             Integer.MAX_VALUE / REMEDIATION_POINTS_DEFAULT, 1, 1.0f);
     
     /**
-     * Defines if the hole related block or just the first line of the issue should be highlighted at the Code Climate Platform.
+     * Defines if the whole related block or just the first line of the issue should be highlighted at the Code Climate Platform.
      * By default the block highlighting is disabled for reasons of clarity.
      */
     BooleanProperty CODECLIMATE_BLOCK_HIGHLIGHTING = new BooleanProperty("cc_block_highlighting", 
