@@ -16,6 +16,8 @@
 
 *   java-unusedcode/UnusedLocalVariable
     *   [#1484](https://sourceforge.net/p/pmd/bugs/1484/): UnusedLocalVariable - false positive - parenthesis
+*   General
+    *   [#1481](https://sourceforge.net/p/pmd/bugs/1481/): no problems found results in blank file instead of empty xml
 
 **API Changes:**
 
