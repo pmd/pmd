@@ -23,6 +23,6 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
         runCPD("--minimum-tokens", "5", "--language", "js", "--files", "src/test/resources/net/sourceforge/pmd/cpd/ts/");
 
         String out = getOutput();
-        Assert.assertTrue(out.isEmpty());
+        Assert.assertTrue(out.trim().isEmpty());
     }
 }
