@@ -130,6 +130,8 @@ you'll need a java8 runtime environment.
     *   [#1456](https://sourceforge.net/p/pmd/bugs/1456/): UnusedFormalParameter should ignore overriding methods
 *   java-unusedcode/UnusedLocalVariable
     *   [#1484](https://sourceforge.net/p/pmd/bugs/1484/): UnusedLocalVariable - false positive - parenthesis
+*   java-unusedcode/UnusedModifier
+    *   [#1480](https://sourceforge.net/p/pmd/bugs/1480/): false positive on public modifier used with inner interface in enum
 *   java-unusedcode/UnusedPrivateField
     *   [#1428](https://sourceforge.net/p/pmd/bugs/1428/): False positive in UnusedPrivateField when local variable
         hides member variable
