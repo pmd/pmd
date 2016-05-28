@@ -13,22 +13,36 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class UnusedModifierRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (!node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
-            ASTClassOrInterfaceDeclaration parentClassInterface = node
-                    .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if (parentClassInterface != null && parentClassInterface.isInterface()) {
-                addViolation(data, node, getMessage());
-            }
-        } else if (node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
-            ASTClassOrInterfaceDeclaration parentClassInterface = node
-                    .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            ASTEnumDeclaration parentEnum = node.getFirstParentOfType(ASTEnumDeclaration.class);
-            if (parentClassInterface != null
-                    && (parentClassInterface.isInterface() || !parentClassInterface.isInterface() && node.isStatic())
-                    || parentEnum != null) {
+        if (!node.isNested()) return super.visit(node, data);
+
+        ASTClassOrInterfaceDeclaration parentClassOrInterface = node
+                .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTEnumDeclaration parentEnum = node.getFirstParentOfType(ASTEnumDeclaration.class);
+
+        if (node.isInterface() && node.isPublic()) {
+            // a public interface
+            if (parentClassOrInterface != null && parentClassOrInterface.isInterface()) {
+                // within a interface
                 addViolation(data, node, getMessage());
             }
         }
+
+        if (node.isInterface() && node.isStatic()) {
+            // a static interface
+            if (parentClassOrInterface != null || parentEnum != null) {
+                // within a interface, class or enum
+                addViolation(data, node, getMessage());
+            }
+        }
+
+        if (!node.isInterface() && (node.isPublic() || node.isStatic())) {
+            // a public and/or static class
+            if (parentClassOrInterface != null && parentClassOrInterface.isInterface()) {
+                // within a interface
+                addViolation(data, node, getMessage());
+            }
+        }
+
         return super.visit(node, data);
     }
 
