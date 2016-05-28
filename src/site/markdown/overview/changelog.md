@@ -144,6 +144,7 @@ you'll need a java8 runtime environment.
     *   [#1470](https://sourceforge.net/p/pmd/bugs/1470/): Error with type-bound lambda
     *   [#1478](https://sourceforge.net/p/pmd/bugs/1478/): PMD CLI - Use first language as default if Java is not available
     *   [#1485](https://sourceforge.net/p/pmd/bugs/1485/): Analysis of some apex classes cause a stackoverflow error
+    *   [#1481](https://sourceforge.net/p/pmd/bugs/1481/): no problems found results in blank file instead of empty xml
 
 **API Changes:**
 
@@ -152,6 +153,7 @@ you'll need a java8 runtime environment.
 *   CPD: If a complete filename is specified, the language dependent filename filter is not applied. This allows
     to scan files, that are not using the standard file extension. If a directory is specified, the filename filter
     is still applied and only those files with the correct file extension of the language are scanned.
+*   CPD: If no problems found, an empty report will be output instead of nothing. See also [#1481](https://sourceforge.net/p/pmd/bugs/1481/)
 *   New command line parameter for PMD: `-norulesetcompatibility` - this disables the ruleset factory
     compatibility filter and fails, if e.g. an old rule name is used in the ruleset.
     See also [#1360](https://sourceforge.net/p/pmd/bugs/1360/).
