@@ -41,6 +41,8 @@
     *   [#1449](https://sourceforge.net/p/pmd/bugs/1449/): false positive when casting a variable to short
 *   java-design/AccessorClassGeneration:
     *   [#1452](https://sourceforge.net/p/pmd/bugs/1452/): ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule
+*   java-design/CloseResource
+    *   [#1479](https://sourceforge.net/p/pmd/bugs/1479/): CloseResource false positive on Statement
 *   java-design/UseUtilityClass:
     *   [#1467](https://sourceforge.net/p/pmd/bugs/1467/): UseUtilityClass can't correctly check functions with multiple annotations
 *   java-imports/UnusedImports:

@@ -8,11 +8,18 @@ import static org.junit.Assert.assertNull;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jaxen.JaxenException;
+import org.junit.Assert;
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -44,9 +51,6 @@ import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
-
-import org.jaxen.JaxenException;
-import org.junit.Test;
 
 
 public class ClassTypeResolverTest {
@@ -122,6 +126,27 @@ public class ClassTypeResolverTest {
         // Method parameter as inner class
         ASTFormalParameter formalParameter = typeDeclaration.getFirstDescendantOfType(ASTFormalParameter.class);
         assertEquals(theInnerClass, formalParameter.getTypeNode().getType());
+    }
+
+    /**
+     * If we don't have the auxclasspath, we might not find the inner class. In that case,
+     * we'll need to search by name for a match.
+     * @throws Exception
+     */
+    @Test
+    public void testInnerClassNotCompiled() throws Exception {
+        LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
+        LanguageVersionHandler languageHandler = language.getLanguageVersionHandler();
+        Parser parser = languageHandler.getParser(languageHandler.getDefaultParserOptions());
+        Node acu = parser.parse("test", new StringReader("public class TestInnerClass {\n" + 
+                "    public void foo() {\n" + 
+                "        Statement statement = new Statement();\n" + 
+                "    }\n" + 
+                "    static class Statement {\n" + 
+                "    }\n" + 
+                "}"));
+        ASTClassOrInterfaceType statement = acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        Assert.assertTrue(statement.isReferenceToClassSameCompilationUnit());
     }
 
     @Test
