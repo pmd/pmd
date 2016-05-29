@@ -1,6 +1,6 @@
 # Changelog
 
-## ????? - 5.4.2-SNAPSHOT
+## 29-May-2016 - 5.4.2
 
 **New Supported Languages:**
 
@@ -11,7 +11,7 @@
 *   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
 *   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): Provide backwards compatibility for PMD configuration file
 
-**New/Modified/Deprecated Rules:**
+**Modified Rules:**
 
 *   java-design/UseVargs: public static void main method is ignored now and so are methods, that are annotated
     with Override. See [PR#79](https://github.com/pmd/pmd/pull/79).
@@ -68,8 +68,6 @@
     *   [#1461](https://sourceforge.net/p/pmd/bugs/1461/): Possible threading issue due to PR#75
     *   [#1470](https://sourceforge.net/p/pmd/bugs/1470/): Error with type-bound lambda
     *   [#1481](https://sourceforge.net/p/pmd/bugs/1481/): no problems found results in blank file instead of empty xml
-
-**API Changes:**
 
 **CLI Changes:**
 
