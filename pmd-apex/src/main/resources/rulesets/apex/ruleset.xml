@@ -17,7 +17,8 @@
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="1000"/>
+        	<property name="cc_remediation_points_multiplier" value="150"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -29,7 +30,8 @@
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="100"/>
+        	<property name="cc_remediation_points_multiplier" value="50"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -37,11 +39,12 @@
 		<priority>3</priority>
 		
 		<properties>
-        	<property name="minimum" value="20"/>
+        	<property name="minimum" value="25"/>
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="100"/>
+        	<property name="cc_remediation_points_multiplier" value="150"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -53,7 +56,8 @@
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="100"/>
+        	<property name="cc_remediation_points_multiplier" value="50"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -61,11 +65,12 @@
 		<priority>3</priority>
 		
 		<properties>
-        	<property name="minimum" value="40"/>
+        	<property name="minimum" value="60"/>
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="100"/>
+        	<property name="cc_remediation_points_multiplier" value="50"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -73,11 +78,12 @@
 		<priority>3</priority>
 		
 		<properties>
-        	<property name="minimum" value="500"/>
+        	<property name="minimum" value="700"/>
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="1000"/>
+        	<property name="cc_remediation_points_multiplier" value="250"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -89,7 +95,8 @@
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="5000"/>
+        	<property name="cc_remediation_points_multiplier" value="250"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -97,22 +104,24 @@
 		<priority>3</priority>
 		
 		<properties>
-        	<property name="maxfields" value="15"/>
+        	<property name="maxfields" value="20"/>
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="1000"/>
+        	<property name="cc_remediation_points_multiplier" value="200"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
-	<rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts" message="Deeply nested if..then statements are hard to read">
+	<rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts" message="Deeply nested if..else statements are hard to read">
 		<priority>3</priority>
 		<properties>
-        	<property name="problemDepth" value="3"/>
+        	<property name="problemDepth" value="4"/>
         	
         	<!-- relevant for Code Climate output only -->
         	<property name="cc_categories" value="Complexity"/>
-        	<property name="cc_remediation_points_multiplier" value="1000"/>
+        	<property name="cc_remediation_points_multiplier" value="200"/>
+        	<property name="cc_block_highlighting" value="false"/>
     	</properties>	
 	</rule>
 	
@@ -122,7 +131,8 @@
         <properties>	
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Performance"/>
-	       	<property name="cc_remediation_points_multiplier" value="100"/>
+	       	<property name="cc_remediation_points_multiplier" value="150"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -132,12 +142,20 @@
         <properties>	
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
-	       	<property name="cc_remediation_points_multiplier" value="100"/>
+	       	<property name="cc_remediation_points_multiplier" value="200"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
 	<rule ref="rulesets/apex/style.xml/AvoidGlobalModifier" message="Avoid using global modifier">
 		<priority>3</priority>
+
+		<properties>	
+	       	<!-- relevant for Code Climate output only -->
+	       	<property name="cc_categories" value="Style"/>
+	       	<property name="cc_remediation_points_multiplier" value="100"/>
+        	<property name="cc_block_highlighting" value="false"/>
+       	</properties>
 	</rule>
 	
 	<rule ref="rulesets/apex/style.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
@@ -146,7 +164,8 @@
         <properties>	
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
-	       	<property name="cc_remediation_points_multiplier" value="10"/>
+	       	<property name="cc_remediation_points_multiplier" value="5"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -157,7 +176,8 @@
         <properties>	
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
-	       	<property name="cc_remediation_points_multiplier" value="10"/>
+	       	<property name="cc_remediation_points_multiplier" value="1"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -167,7 +187,8 @@
         <properties>	
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
-	       	<property name="cc_remediation_points_multiplier" value="10"/>
+	       	<property name="cc_remediation_points_multiplier" value="50"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	
@@ -177,7 +198,8 @@
         <properties>	
 	       	<!-- relevant for Code Climate output only -->
 	       	<property name="cc_categories" value="Style"/>
-	       	<property name="cc_remediation_points_multiplier" value="10"/>
+	       	<property name="cc_remediation_points_multiplier" value="5"/>
+        	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
 	

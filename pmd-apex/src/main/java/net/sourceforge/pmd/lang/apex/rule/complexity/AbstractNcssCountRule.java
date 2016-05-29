@@ -45,6 +45,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
 		setProperty(MINIMUM_DESCRIPTOR, 1000d);
 		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
 		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
+		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 	}
 
 	@Override
