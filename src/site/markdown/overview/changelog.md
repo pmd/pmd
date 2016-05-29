@@ -14,6 +14,8 @@
 
 **Bugfixes:**
 
+*   java-design/CloseResource
+    *   [#1479](https://sourceforge.net/p/pmd/bugs/1479/): CloseResource false positive on Statement
 *   java-unusedcode/UnusedLocalVariable
     *   [#1484](https://sourceforge.net/p/pmd/bugs/1484/): UnusedLocalVariable - false positive - parenthesis
 *   java-unusedcode/UnusedModifier
