@@ -655,4 +655,20 @@ public class CloseResource {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1479 CloseResource false positive on Statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+
+    public static void main(String[] args) {
+        Statement statement = new Statement();
+    }
+
+    static class Statement {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
