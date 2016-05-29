@@ -18,11 +18,10 @@ New objects created within loops should be checked to see if they can created ou
     </description>
       <priority>3</priority>
     <example>
-<![CDATA[
-public class Something {
+<![CDATA[public class Something {
 	public static void main( String as[] ) {  
 		for (Integer i = 0; i < 10; i++) {
-		    List<Account> accounts = [SELECT Id FROM Account];
+			List<Account> accounts = [SELECT Id FROM Account];
 		}
 	}
 }
