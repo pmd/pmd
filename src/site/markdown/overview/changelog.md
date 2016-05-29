@@ -79,6 +79,7 @@ you'll need a java8 runtime environment.
 *   [#91](https://github.com/pmd/pmd/pull/91): Small code enhancements, basically reordering variable declarations, constructors and variable modifiers
 *   [#92](https://github.com/pmd/pmd/pull/92): Improved Code Climate Renderer Output and a Bugfix for Apex StdCyclomaticComplexityRule on triggers
 *   [#93](https://github.com/pmd/pmd/pull/93): Add ConstantsInInterface rule. Effective Java, 19
+*   [#94](https://github.com/pmd/pmd/pull/94): Added property, fixed code climate renderer output and deleted unused rulessets (Apex)
 
 **Bugfixes:**
 
