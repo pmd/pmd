@@ -79,6 +79,7 @@ you'll need a java8 runtime environment.
 *   [#91](https://github.com/pmd/pmd/pull/91): Small code enhancements, basically reordering variable declarations, constructors and variable modifiers
 *   [#92](https://github.com/pmd/pmd/pull/92): Improved Code Climate Renderer Output and a Bugfix for Apex StdCyclomaticComplexityRule on triggers
 *   [#93](https://github.com/pmd/pmd/pull/93): Add ConstantsInInterface rule. Effective Java, 19
+*   [#94](https://github.com/pmd/pmd/pull/94): Added property, fixed code climate renderer output and deleted unused rulessets (Apex)
 
 **Bugfixes:**
 
@@ -97,6 +98,8 @@ you'll need a java8 runtime environment.
     *   [#1449](https://sourceforge.net/p/pmd/bugs/1449/): false positive when casting a variable to short
 *   java-design/AccessorClassGeneration:
     *   [#1452](https://sourceforge.net/p/pmd/bugs/1452/): ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule
+*   java-design/CloseResource
+    *   [#1479](https://sourceforge.net/p/pmd/bugs/1479/): CloseResource false positive on Statement
 *   java-design/UseNotifyAllInsteadOfNotify
     *   [#1438](https://sourceforge.net/p/pmd/bugs/1438/): UseNotifyAllInsteadOfNotify gives false positive
 *   java-design/UseUtilityClass:
@@ -130,6 +133,8 @@ you'll need a java8 runtime environment.
     *   [#1456](https://sourceforge.net/p/pmd/bugs/1456/): UnusedFormalParameter should ignore overriding methods
 *   java-unusedcode/UnusedLocalVariable
     *   [#1484](https://sourceforge.net/p/pmd/bugs/1484/): UnusedLocalVariable - false positive - parenthesis
+*   java-unusedcode/UnusedModifier
+    *   [#1480](https://sourceforge.net/p/pmd/bugs/1480/): false positive on public modifier used with inner interface in enum
 *   java-unusedcode/UnusedPrivateField
     *   [#1428](https://sourceforge.net/p/pmd/bugs/1428/): False positive in UnusedPrivateField when local variable
         hides member variable
@@ -144,6 +149,7 @@ you'll need a java8 runtime environment.
     *   [#1470](https://sourceforge.net/p/pmd/bugs/1470/): Error with type-bound lambda
     *   [#1478](https://sourceforge.net/p/pmd/bugs/1478/): PMD CLI - Use first language as default if Java is not available
     *   [#1485](https://sourceforge.net/p/pmd/bugs/1485/): Analysis of some apex classes cause a stackoverflow error
+    *   [#1481](https://sourceforge.net/p/pmd/bugs/1481/): no problems found results in blank file instead of empty xml
 
 **API Changes:**
 
@@ -152,6 +158,7 @@ you'll need a java8 runtime environment.
 *   CPD: If a complete filename is specified, the language dependent filename filter is not applied. This allows
     to scan files, that are not using the standard file extension. If a directory is specified, the filename filter
     is still applied and only those files with the correct file extension of the language are scanned.
+*   CPD: If no problems found, an empty report will be output instead of nothing. See also [#1481](https://sourceforge.net/p/pmd/bugs/1481/)
 *   New command line parameter for PMD: `-norulesetcompatibility` - this disables the ruleset factory
     compatibility filter and fails, if e.g. an old rule name is used in the ruleset.
     See also [#1360](https://sourceforge.net/p/pmd/bugs/1360/).

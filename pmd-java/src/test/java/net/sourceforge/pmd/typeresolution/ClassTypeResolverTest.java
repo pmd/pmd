@@ -13,6 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.io.IOUtils;
+
+import org.jaxen.JaxenException;
+import org.junit.Assert;
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -47,11 +53,6 @@ import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
-
-import org.apache.commons.io.IOUtils;
-import org.jaxen.JaxenException;
-import org.junit.Assert;
-import org.junit.Test;
 
 
 public class ClassTypeResolverTest {
@@ -127,6 +128,24 @@ public class ClassTypeResolverTest {
         // Method parameter as inner class
         ASTFormalParameter formalParameter = typeDeclaration.getFirstDescendantOfType(ASTFormalParameter.class);
         assertEquals(theInnerClass, formalParameter.getTypeNode().getType());
+    }
+
+    /**
+     * If we don't have the auxclasspath, we might not find the inner class. In that case,
+     * we'll need to search by name for a match.
+     * @throws Exception
+     */
+    @Test
+    public void testInnerClassNotCompiled() throws Exception {
+        Node acu =  parseAndTypeResolveForString("public class TestInnerClass {\n" + 
+                "    public void foo() {\n" + 
+                "        Statement statement = new Statement();\n" + 
+                "    }\n" + 
+                "    static class Statement {\n" + 
+                "    }\n" + 
+                "}", "1.8");
+        ASTClassOrInterfaceType statement = acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        Assert.assertTrue(statement.isReferenceToClassSameCompilationUnit());
     }
 
     @Test

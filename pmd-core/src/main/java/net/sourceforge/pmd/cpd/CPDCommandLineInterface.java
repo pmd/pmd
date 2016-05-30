@@ -86,8 +86,8 @@ public class CPDCommandLineInterface {
             }
 
             cpd.go();
+            System.out.println(arguments.getRenderer().render(cpd.getMatches()));
             if (cpd.getMatches().hasNext()) {
-                System.out.println(arguments.getRenderer().render(cpd.getMatches()));
                 if (arguments.isFailOnViolation()) {
                     setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
                 } else {

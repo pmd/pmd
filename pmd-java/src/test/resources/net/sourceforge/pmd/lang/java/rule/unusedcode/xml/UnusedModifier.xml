@@ -284,4 +284,16 @@ public enum MyEnum
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1480 false positive on public modifier used with inner interface in enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum TestEnum {
+    ;
+    public interface EnumInnerInterface {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
