@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -86,7 +85,7 @@ public class CompilerService {
 	public ApexCompiler visitAstsFromStrings(List<String> sources, AstVisitor<AdditionalPassScope> visitor,
 			CompilerStage compilerStage) {
 		List<SourceFile> sourceFiles = sources.stream()
-				.map(s -> SourceFile.builder().setBody(canonicalizeString(s)).build()).collect(Collectors.toList());
+				.map(s -> SourceFile.builder().setBody(s).build()).collect(Collectors.toList());
 		CompilationInput compilationUnit = createCompilationInput(sourceFiles, visitor);
 		return compile(compilationUnit, visitor, compilerStage);
 	}
@@ -130,10 +129,5 @@ public class CompilerService {
 			}
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 		}
-	}
-
-	public static String canonicalizeString(String inputString) {
-		String text = inputString.replaceAll("(\\r\\n|\\r)", Matcher.quoteReplacement("\n"));
-		return text;
 	}
 }

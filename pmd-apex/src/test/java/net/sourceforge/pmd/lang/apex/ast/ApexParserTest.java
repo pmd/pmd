@@ -38,18 +38,27 @@ public class ApexParserTest {
 		assertEquals(4, methods.size());
 	}
 
+	private String testCodeForLineNumbers = "public class SimpleClass {\n" // line 1
+	        + "    public void method1() {\n" // line 2
+	        + "        System.out.println(\"abc\");\n" // line 3
+	        + "        // this is a comment\n" // line 4
+	        + "    }\n" // line 5
+	        + "}\n"; // line 6
 	@Test
 	public void verifyLineColumNumbers() {
-		String code = "public class SimpleClass {\n" // line 1
-				+ "    public void method1() {\n" // line 2
-				+ "        System.out.println(\"abc\");\n" // line 3
-				+ "        // this is a comment\n" // line 4
-				+ "    }\n" // line 5
-				+ "}\n"; // line 6
+		ApexNode<Compilation> rootNode = parse(testCodeForLineNumbers);
+		assertLineNumbersForTestCode(rootNode);
+	}
 
-		ApexNode<Compilation> rootNode = parse(code);
+	@Test
+	public void verifyLineColumNumbersWithWindowsLineEndings() {
+        String windowsLineEndings = testCodeForLineNumbers.replaceAll(" \n", "\r\n");
+        ApexNode<Compilation> rootNode = parse(windowsLineEndings);
+        assertLineNumbersForTestCode(rootNode);
+	}
 
-		assertPosition(rootNode, 1, 14, 6, 2); // whole source code, well from
+    private void assertLineNumbersForTestCode(ApexNode<Compilation> rootNode) {
+        assertPosition(rootNode, 1, 14, 6, 2); // whole source code, well from
 												// the beginning of the class
 												// name
 		// Modifier of the class - doesn't work. This node just sees the
@@ -71,7 +80,7 @@ public class ApexParserTest {
 		// the expression ("System.out...")
 		Node expressionStatement = blockStatement.jjtGetChild(0);
 		assertPosition(expressionStatement, 3, 9, 3, 34);
-	}
+    }
 
 	@Test
 	public void verifyEndLine() {
