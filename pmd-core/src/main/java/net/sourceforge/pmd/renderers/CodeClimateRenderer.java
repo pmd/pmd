@@ -37,8 +37,11 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     
     private Rule rule;
 
+    private final String pmdDeveloperUrl;
+
     public CodeClimateRenderer() {
         super(NAME, "Code Climate integration.");
+        pmdDeveloperUrl = getPmdDeveloperURL();
     }
 
     /**
@@ -135,7 +138,15 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	
     	return result;
     }
-    
+
+    private static String getPmdDeveloperURL() {
+        String url = "http://pmd.github.io/pmd-" + PMD.VERSION + "/customizing/pmd-developer.html";
+        if (PMD.VERSION.contains("SNAPSHOT")) {
+            url = "http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html";
+        }
+        return url;
+    }
+
     private <T> String getBody() {
     	String result = "## " + rule.getName() + "\\n\\n" +
 				  		"Since: PMD " + rule.getSince() + "\\n\\n" +
@@ -155,7 +166,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	}
     	
     	if(!rule.getPropertyDescriptors().isEmpty()) {
-    		result += "\\n\\n### [PMD properties](http://pmd.github.io/pmd-5.1.3/pmd-developer.html)\\n\\n";
+    		result += "\\n\\n### [PMD properties](" + pmdDeveloperUrl + ")\\n\\n";
     		result += "Name | Value | Description\\n";
     		result += "--- | --- | ---\\n";
 
