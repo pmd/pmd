@@ -150,7 +150,8 @@ you'll need a java8 runtime environment.
     *   [#1478](https://sourceforge.net/p/pmd/bugs/1478/): PMD CLI - Use first language as default if Java is not available
     *   [#1481](https://sourceforge.net/p/pmd/bugs/1481/): no problems found results in blank file instead of empty xml
     *   [#1485](https://sourceforge.net/p/pmd/bugs/1485/): Analysis of some apex classes cause a stackoverflow error
-    *   [#1488](https://sourceforge.net/p/pmd/bugs/1488/):  [Apex module] Windows line endings falsify the location of issues
+    *   [#1488](https://sourceforge.net/p/pmd/bugs/1488/): [Apex module] Windows line endings falsify the location of issues
+    *   [#1491](https://sourceforge.net/p/pmd/bugs/1491/): Code Climate JSON - corrupt output with real line breaks
 
 **API Changes:**
 

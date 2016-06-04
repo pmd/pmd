@@ -136,7 +136,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     	return result;
     }
     
-    private String getBody() {
+    private <T> String getBody() {
     	String result = "## " + rule.getName() + "\\n\\n" +
 				  		"Since: PMD " + rule.getSince() + "\\n\\n" +
 				  		"Priority: " + rule.getPriority() + "\\n\\n" +
@@ -158,23 +158,21 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     		result += "\\n\\n### [PMD properties](http://pmd.github.io/pmd-5.1.3/pmd-developer.html)\\n\\n";
     		result += "Name | Value | Description\\n";
     		result += "--- | --- | ---\\n";
-    		
+
     		for(PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
-    			String propertyValue;
-    			try {
-    				propertyValue = Arrays.toString((String[])rule.getProperty(property)).replaceAll("[\\[\\]]","");
-    			}
-    			catch(Exception ignore) {
-    				propertyValue = rule.getProperty(property).toString();
-    			}
-    			
+    		    @SuppressWarnings("unchecked")
+                PropertyDescriptor<T> typed = (PropertyDescriptor<T>)property;
+    		    T value = rule.getProperty(typed);
+    		    String propertyValue = typed.asDelimitedString(value);
+    		    if (propertyValue == null) propertyValue = "";
+    		    propertyValue = propertyValue.replaceAll("(\n|\r\n|\r)", "\\\\n");
+
     			String porpertyName = property.name();
     			porpertyName = porpertyName.replaceAll("\\_", "\\\\_");
-    			
+
     			result += porpertyName + " | " + propertyValue + " | " + property.description() + "\\n";
     		}
     	}
-    	
     	return result;
     }
     

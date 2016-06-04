@@ -10,6 +10,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -22,6 +23,10 @@ public abstract class AbstractRendererTst {
     public abstract Renderer getRenderer();
 
     public abstract String getExpected();
+
+    public String getExpectedWithProperties() {
+        return getExpected();
+    }
 
     public abstract String getExpectedEmpty();
 
@@ -54,14 +59,32 @@ public abstract class AbstractRendererTst {
     }
 
     private static RuleViolation newRuleViolation(int endColumn) {
+        DummyNode node = createNode(endColumn);
+        RuleContext ctx = new RuleContext();
+        ctx.setSourceCodeFilename("n/a");
+        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
+    }
+
+    private static DummyNode createNode(int endColumn) {
         DummyNode node = new DummyNode(1);
         node.testingOnly__setBeginLine(1);
         node.testingOnly__setBeginColumn(1);
         node.testingOnly__setEndLine(1);
         node.testingOnly__setEndColumn(endColumn);
+        return node;
+    }
+
+    @Test
+    public void testRuleWithProperties() throws Exception {
+        DummyNode node = createNode(1);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("n/a");
-        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
+        Report report = new Report();
+        RuleWithProperties theRule = new RuleWithProperties();
+        theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR, "the string value\nsecond line");
+        report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, ctx, node, "blah"));
+        String rendered = ReportTest.render(getRenderer(), report);
+        assertEquals(filter(getExpectedWithProperties()), filter(rendered));
     }
 
     @Test
