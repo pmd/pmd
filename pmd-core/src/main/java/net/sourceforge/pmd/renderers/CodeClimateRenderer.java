@@ -141,7 +141,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
 
     private static String getPmdDeveloperURL() {
         String url = "http://pmd.github.io/pmd-" + PMD.VERSION + "/customizing/pmd-developer.html";
-        if (PMD.VERSION.contains("SNAPSHOT")) {
+        if (PMD.VERSION.contains("SNAPSHOT") || "unknown".equals(PMD.VERSION)) {
             url = "http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html";
         }
         return url;
