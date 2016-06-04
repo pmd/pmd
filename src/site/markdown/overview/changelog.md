@@ -152,6 +152,7 @@ you'll need a java8 runtime environment.
     *   [#1485](https://sourceforge.net/p/pmd/bugs/1485/): Analysis of some apex classes cause a stackoverflow error
     *   [#1488](https://sourceforge.net/p/pmd/bugs/1488/): [Apex module] Windows line endings falsify the location of issues
     *   [#1491](https://sourceforge.net/p/pmd/bugs/1491/): Code Climate JSON - corrupt output with real line breaks
+    *   [#1492](https://sourceforge.net/p/pmd/bugs/1492/): [CLI] IncompatibleClassChangeError when running PMD
 
 **API Changes:**
 
