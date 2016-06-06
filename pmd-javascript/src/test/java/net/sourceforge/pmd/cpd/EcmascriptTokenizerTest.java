@@ -21,7 +21,7 @@ public class EcmascriptTokenizerTest {
         SourceCode sourceCode = new SourceCode( new SourceCode.StringCodeLoader( getCode1() ) );
         Tokens tokens = new Tokens();
         tokenizer.tokenize( sourceCode, tokens );
-        assertEquals( 22, tokens.size() );
+        assertEquals( 40, tokens.size() );
     }
 
     @Test
@@ -30,7 +30,7 @@ public class EcmascriptTokenizerTest {
         SourceCode sourceCode = new SourceCode( new SourceCode.StringCodeLoader( getCode2() ) );
         Tokens tokens = new Tokens();
         t.tokenize( sourceCode, tokens );
-        assertEquals( 22, tokens.size() );
+        assertEquals( 45, tokens.size() );
     }
 
     /**
@@ -47,14 +47,50 @@ public class EcmascriptTokenizerTest {
                 + "continues2\";\n") );
         Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens);
+        assertEquals(11, tokens.size());
+        List<TokenEntry> list = tokens.getTokens();
+        assertEquals("var", list.get(0).getIdentifier(), list.get(5).getIdentifier());
+        assertEquals("s", list.get(1).getIdentifier(), list.get(6).getIdentifier());
+        assertEquals("=", list.get(2).getIdentifier(), list.get(7).getIdentifier());
+        assertEquals("\"a string continues\"", list.get(3).toString());
+        assertEquals("\"a string continues2\"", list.get(8).toString());
+        assertFalse(list.get(3).getIdentifier() == list.get(8).getIdentifier());
+    }
+
+    @Test
+    public void testIgnoreSingleLineComments() throws IOException {
+        Tokenizer t = new EcmascriptTokenizer();
+        SourceCode sourceCode = new SourceCode( new SourceCode.StringCodeLoader(
+                  "//This is a single line comment\n"
+                + "var i = 0;\n\n"
+                + "//This is another comment\n"
+                + "i++;") );
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
         assertEquals(9, tokens.size());
         List<TokenEntry> list = tokens.getTokens();
-        assertEquals("var", list.get(0).getIdentifier(), list.get(4).getIdentifier());
-        assertEquals("s", list.get(1).getIdentifier(), list.get(5).getIdentifier());
-        assertEquals("=", list.get(2).getIdentifier(), list.get(6).getIdentifier());
-        assertEquals("\"a string continues\"", list.get(3).toString());
-        assertEquals("\"a string continues2\"", list.get(7).toString());
-        assertFalse(list.get(3).getIdentifier() == list.get(7).getIdentifier());
+        assertEquals("var", list.get(0).toString());
+        assertEquals("++", list.get(6).toString());
+    }
+
+    @Test
+    public void testIgnoreMultiLineComments() throws IOException {
+        Tokenizer t = new EcmascriptTokenizer();
+        SourceCode sourceCode = new SourceCode( new SourceCode.StringCodeLoader(
+                  "/* This is a multi line comment\n"
+                + " *                             \n"
+                + " */                            \n"
+                + "var i = 0;\n\n"
+                + "/* This is another multi line comment\n"
+                + " * second line                       \n"
+                + " * third line                      */\n"
+                + "i++;") );
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        assertEquals(9, tokens.size());
+        List<TokenEntry> list = tokens.getTokens();
+        assertEquals("var", list.get(0).toString());
+        assertEquals("++", list.get(6).toString());
     }
 
     // no semi-colons
