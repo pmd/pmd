@@ -35,6 +35,20 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
+Should not match on methods annotated with @Override
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo implements Toggleable {
+    @Override
+    public boolean getEnabled() {
+        return true;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 Should match on multiple parameters when checkParameterizedMethods = true
      ]]></description>
         <expected-problems>1</expected-problems>
