@@ -22,8 +22,8 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
                 + "### [PMD properties](http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html)\\n\\n"
                 + "Name | Value | Description\\n"
                 + "--- | --- | ---\\n"
-                + "violationSuppressRegex |  | Suppress violations with messages matching a regular expression\\n"
-                + "violationSuppressXPath |  | Suppress violations on nodes which match a given relative XPath expression.\\n"
+                + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
+                + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
     }
 
@@ -37,10 +37,10 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
                 + "### [PMD properties](http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html)\\n\\n"
                 + "Name | Value | Description\\n"
                 + "--- | --- | ---\\n"
-                + "violationSuppressRegex |  | Suppress violations with messages matching a regular expression\\n"
-                + "violationSuppressXPath |  | Suppress violations on nodes which match a given relative XPath expression.\\n"
+                + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
+                + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "multiString | default1,default2 | multi string property\\n"
-                + "stringProperty | the string value\\nsecond line | simple string property\\n"
+                + "stringProperty | the string value\\nsecond line with 'quotes' | simple string property\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
     }
 
@@ -59,8 +59,8 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
                 + "### [PMD properties](http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html)\\n\\n"
                 + "Name | Value | Description\\n"
                 + "--- | --- | ---\\n"
-                + "violationSuppressRegex |  | Suppress violations with messages matching a regular expression\\n"
-                + "violationSuppressXPath |  | Suppress violations on nodes which match a given relative XPath expression.\\n"
+                + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
+                + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL +
                 "{\"type\":\"issue\",\"check_name\":\"Foo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Foo\\n\\nSince: PMD null\\n\\nPriority: Low\\n\\n"
@@ -70,8 +70,8 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
                 + "### [PMD properties](http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html)\\n\\n"
                 + "Name | Value | Description\\n"
                 + "--- | --- | ---\\n"
-                + "violationSuppressRegex |  | Suppress violations with messages matching a regular expression\\n"
-                + "violationSuppressXPath |  | Suppress violations on nodes which match a given relative XPath expression.\\n"
+                + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
+                + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"n/a\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}" + "\u0000" + PMD.EOL;
     }
 }

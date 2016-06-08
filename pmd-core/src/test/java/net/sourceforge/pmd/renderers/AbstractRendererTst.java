@@ -81,7 +81,7 @@ public abstract class AbstractRendererTst {
         ctx.setSourceCodeFilename("n/a");
         Report report = new Report();
         RuleWithProperties theRule = new RuleWithProperties();
-        theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR, "the string value\nsecond line");
+        theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR, "the string value\nsecond line with \"quotes\"");
         report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, ctx, node, "blah"));
         String rendered = ReportTest.render(getRenderer(), report);
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
