@@ -81,6 +81,7 @@ you'll need a java8 runtime environment.
 *   [#93](https://github.com/pmd/pmd/pull/93): Add ConstantsInInterface rule. Effective Java, 19
 *   [#94](https://github.com/pmd/pmd/pull/94): Added property, fixed code climate renderer output and deleted unused rulessets (Apex)
 *   [#95](https://github.com/pmd/pmd/pull/95): Apex - New apex rule AvoidDmlStatementsInLoops
+*   [#96](https://github.com/pmd/pmd/pull/96): Clean up Code Climate renderer
 
 **Bugfixes:**
 
