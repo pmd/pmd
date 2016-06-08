@@ -34,7 +34,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
 
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
-    
+
     private Rule rule;
 
     private final String pmdDeveloperUrl;
@@ -51,7 +51,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-        
+
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
             rule = rv.getRule();
@@ -74,7 +74,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         issue.location = getLocation(rv);
         issue.remediation_points = getRemediationPoints();
         issue.categories = getCategories();
-        
+
         switch(rule.getPriority()) {
             case HIGH:
                 issue.severity = "critical";
@@ -88,7 +88,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 issue.severity = "info";
                 break;
         }
-        
+
         return issue;
     }
 
@@ -96,35 +96,35 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     public String defaultFileExtension() {
         return "json";
     }
-    
+
     private CodeClimateIssue.Location getLocation(RuleViolation rv) {
     	CodeClimateIssue.Location result;
-    	
+
     	String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(rv.getFilename(), "/code/");
-    	
+
     	if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER) && !rule.getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
     		result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getBeginLine());
     	}
     	else {
     		result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
     	}
-    	
+
     	return result;
     }
-    
+
     private int getRemediationPoints() {
     	int remediation_points = REMEDIATION_POINTS_DEFAULT;
-        
+
     	if(rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
         	remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
         }
-    	
+
     	return remediation_points;
     }
-    
+
     private String[] getCategories() {
     	String[] result;
-    	
+
     	if(rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
             Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
             result = new String[categories.length];
@@ -135,7 +135,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         else {
         	result = CODECLIMATE_DEFAULT_CATEGORIES;
         }
-    	
+
     	return result;
     }
 
@@ -154,17 +154,17 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
 				  		"[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): " + Arrays.toString(getCategories()).replaceAll("[\\[\\]]","") + "\\n\\n" +
 				  		"[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): " + getRemediationPoints() + "\\n\\n" +
 				  		cleaned(rule.getDescription());
-    	
+
     	if(!rule.getExamples().isEmpty()) {
     		result += "\\n\\n### Example:\\n\\n";
-    		
+
     		for(String snippet : rule.getExamples()) {
-    			snippet = snippet.replaceAll("\\n", "\\\\n");
-    			snippet = snippet.replaceAll("\\t", "\\\\t");
+          		snippet = snippet.replaceAll("\\n", "\\\\n");
+          		snippet = snippet.replaceAll("\\t", "\\\\t");
     			result += "```java\\n" + snippet + "\\n```  ";
     		}
     	}
-    	
+
     	if(!rule.getPropertyDescriptors().isEmpty()) {
     		result += "\\n\\n### [PMD properties](" + pmdDeveloperUrl + ")\\n\\n";
     		result += "Name | Value | Description\\n";
@@ -184,14 +184,14 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     			result += porpertyName + " | " + propertyValue + " | " + property.description() + "\\n";
     		}
     	}
-    	return result;
+    	return cleaned(result);
     }
-    
+
     private String cleaned(String original) {
     	String result = original.trim();
     	result = result.replaceAll("\\s+", " ");
     	result = result.replaceAll("\\s*[\\r\\n]+\\s*", "");
-    	result = result.replaceAll("'", "`");
+      	result = result.replaceAll("\"","'");
     	return result;
     }
 }
