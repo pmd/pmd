@@ -39,7 +39,7 @@ you'll need a java8 runtime environment.
     *   apex-complexity: AvoidDeeplyNestedIfStmts, ExcessiveParameterList, ExcessiveClassLength,
         NcssMethodCount, NcssTypeCount, NcssConstructorCount, StdCyclomaticComplexity,
         TooManyFields, ExcessivePublicCount
-    *   apex-performance: AvoidSoqlInLoops
+    *   apex-performance: AvoidDmlStatementsInLoops, AvoidSoqlInLoops
     *   apex-style: VariableNamingConventions, MethodNamingConventions, ClassNamingConventions,
         MethodWithSameNameAsEnclosingClass, AvoidLogicInTrigger, AvoidGlobalModifier
 
@@ -80,6 +80,7 @@ you'll need a java8 runtime environment.
 *   [#92](https://github.com/pmd/pmd/pull/92): Improved Code Climate Renderer Output and a Bugfix for Apex StdCyclomaticComplexityRule on triggers
 *   [#93](https://github.com/pmd/pmd/pull/93): Add ConstantsInInterface rule. Effective Java, 19
 *   [#94](https://github.com/pmd/pmd/pull/94): Added property, fixed code climate renderer output and deleted unused rulessets (Apex)
+*   [#95](https://github.com/pmd/pmd/pull/95): Apex - New apex rule AvoidDmlStatementsInLoops
 
 **Bugfixes:**
 
