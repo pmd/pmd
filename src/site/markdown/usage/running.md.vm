@@ -107,6 +107,12 @@ The tool comes with a rather extensive help text, simply running with `-help`!
         <td>plsql</td>
     </tr>
     <tr>
+        <td>-filelist</td>
+        <td>Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `-dir`.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
         <td>-debug / -verbose / -D / -V</td>
         <td>Debug mode. Prints more log output.</td>
         <td>no</td>

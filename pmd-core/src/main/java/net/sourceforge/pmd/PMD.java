@@ -3,9 +3,7 @@
  */
 package net.sourceforge.pmd;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -50,6 +48,9 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This is the main class for interacting with PMD. The primary flow of all Rule
@@ -428,8 +429,9 @@ public class PMD {
                 LOG.log(Level.SEVERE, "Problem with Input File Path", inputFilePath);
                 throw new RuntimeException("Problem with Input File Path: " + inputFilePath);
               } else {
-                BufferedReader br = new BufferedReader(new FileReader(file));
-                String filePaths = br.readLine();
+                String filePaths = FileUtils.readFileToString(new File(inputFilePath));
+                filePaths = StringUtils.trimToEmpty(filePaths);
+
                 if (null == filePaths){
                   LOG.log(Level.SEVERE, "Problem with Input File Path", inputFilePath);
                   throw new RuntimeException("Problem with Input File Path: " + inputFilePath);
