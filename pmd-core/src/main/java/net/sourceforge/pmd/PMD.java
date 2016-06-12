@@ -431,11 +431,9 @@ public class PMD {
               } else {
                 String filePaths = FileUtils.readFileToString(new File(inputFilePath));
                 filePaths = StringUtils.trimToEmpty(filePaths);
+                filePaths = filePaths.replaceAll("\\r?\\n", ",");
+                filePaths = filePaths.replaceAll(",+", ",");
 
-                if (null == filePaths){
-                  LOG.log(Level.SEVERE, "Problem with Input File Path", inputFilePath);
-                  throw new RuntimeException("Problem with Input File Path: " + inputFilePath);
-                }
                 files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
               }
             } catch (IOException ex) {

@@ -314,6 +314,12 @@ public class PMDConfiguration extends AbstractConfiguration {
         return inputFilePath;
     }
 
+    /**
+     * The input file path points to a single file, which contains a
+     * comma-separated list of source file names to process.
+     *
+     * @param inputFilePath path to the file
+     */
     public void setInputFilePath(String inputFilePath) {
         this.inputFilePath = inputFilePath;
     }
