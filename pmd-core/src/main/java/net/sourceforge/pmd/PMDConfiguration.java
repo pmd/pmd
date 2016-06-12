@@ -96,6 +96,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private RulePriority minimumPriority = RulePriority.LOW;
     private String inputPaths;
     private String inputUri;
+    private String inputFilePath;
     private boolean ruleSetFactoryCompatibilityEnabled = true;
 
     // Reporting options
@@ -112,7 +113,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Get the suppress marker. This is the source level marker used to indicate a
      * RuleViolation should be suppressed.
-     * 
+     *
      * @return The suppress marker.
      */
     public String getSuppressMarker() {
@@ -121,7 +122,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the suppress marker.
-     * 
+     *
      * @param suppressMarker
      *            The suppress marker to use.
      */
@@ -131,7 +132,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get the number of threads to use when processing Rules.
-     * 
+     *
      * @return The number of threads.
      */
     public int getThreads() {
@@ -140,7 +141,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the number of threads to use when processing Rules.
-     * 
+     *
      * @param threads
      *            The number of threads.
      */
@@ -150,7 +151,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get the ClassLoader being used by PMD when processing Rules.
-     * 
+     *
      * @return The ClassLoader being used
      */
     public ClassLoader getClassLoader() {
@@ -160,7 +161,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Set the ClassLoader being used by PMD when processing Rules. Setting a
      * value of <code>null</code> will cause the default ClassLoader to be used.
-     * 
+     *
      * @param classLoader
      *            The ClassLoader to use
      */
@@ -181,7 +182,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * If the classpath String looks like a URL to a file (i.e. starts with
      * <code>file://</code>) the file will be read with each line representing
      * an entry on the classpath.
-     * 
+     *
      * @param classpath The prepended classpath.
      * @throws IOException if the given classpath is invalid (e.g. does not exist)
      * @see PMDConfiguration#setClassLoader(ClassLoader)
@@ -199,7 +200,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Get the LanguageVersionDiscoverer, used to determine the LanguageVersion
      * of a source file.
-     * 
+     *
      * @return The LanguageVersionDiscoverer.
      */
     public LanguageVersionDiscoverer getLanguageVersionDiscoverer() {
@@ -208,7 +209,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the given LanguageVersion as the current default for it's Language.
-     * 
+     *
      * @param languageVersion
      *            the LanguageVersion
      */
@@ -219,7 +220,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Set the given LanguageVersions as the current default for their
      * Languages.
-     * 
+     *
      * @param languageVersions
      *            The LanguageVersions.
      */
@@ -235,7 +236,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * <p/>
      * For compatibility with older code that does not always pass in a correct
      * filename, unrecognized files are assumed to be java files.
-     * 
+     *
      * @param fileName
      *            Name of the file, can be absolute, or simple.
      * @return the LanguageVersion
@@ -255,7 +256,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get the comma separated list of RuleSet URIs.
-     * 
+     *
      * @return The RuleSet URIs.
      */
     public String getRuleSets() {
@@ -264,7 +265,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the comma separated list of RuleSet URIs.
-     * 
+     *
      * @param ruleSets the rulesets to set
      */
     public void setRuleSets(String ruleSets) {
@@ -273,7 +274,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get the minimum priority threshold when loading Rules from RuleSets.
-     * 
+     *
      * @return The minimum priority threshold.
      */
     public RulePriority getMinimumPriority() {
@@ -282,7 +283,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the minimum priority threshold when loading Rules from RuleSets.
-     * 
+     *
      * @param minimumPriority
      *            The minimum priority.
      */
@@ -292,7 +293,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get the comma separated list of input paths to process for source files.
-     * 
+     *
      * @return A comma separated list.
      */
     public String getInputPaths() {
@@ -301,7 +302,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the comma separated list of input paths to process for source files.
-     * 
+     *
      * @param inputPaths
      *            The comma separated list.
      */
@@ -309,9 +310,17 @@ public class PMDConfiguration extends AbstractConfiguration {
         this.inputPaths = inputPaths;
     }
 
+    public String getInputFilePath() {
+        return inputFilePath;
+    }
+
+    public void setInputFilePath(String inputFilePath) {
+        this.inputFilePath = inputFilePath;
+    }
+
     /**
      * Get the input URI to process for source code objects.
-     * 
+     *
      * @return URI
      */
     public String getInputUri() {
@@ -320,7 +329,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the input URI to process for source code objects.
-     * 
+     *
      * @param inputUri
      *            a single URI
      */
@@ -330,7 +339,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get whether to use File short names in Reports.
-     * 
+     *
      * @return <code>true</code> when using short names in reports.
      */
     public boolean isReportShortNames() {
@@ -339,7 +348,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set whether to use File short names in Reports.
-     * 
+     *
      * @param reportShortNames
      *            <code>true</code> when using short names in reports.
      */
@@ -350,7 +359,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Create a Renderer instance based upon the configured reporting options.
      * No writer is created.
-     * 
+     *
      * @return renderer
      */
     public Renderer createRenderer() {
@@ -361,7 +370,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Create a Renderer instance based upon the configured reporting options.
      * If withReportWriter then we'll configure it with a writer for the
      * reportFile specified.
-     * 
+     *
      * @param withReportWriter whether to configure a writer or not
      * @return A Renderer instance.
      */
@@ -376,7 +385,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get the report format.
-     * 
+     *
      * @return The report format.
      */
     public String getReportFormat() {
@@ -385,10 +394,10 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the report format. This should be a name of a Renderer.
-     * 
+     *
      * @param reportFormat
      *            The report format.
-     * 
+     *
      * @see Renderer
      */
     public void setReportFormat(String reportFormat) {
@@ -397,7 +406,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get the file to which the report should render.
-     * 
+     *
      * @return The file to which to render.
      */
     public String getReportFile() {
@@ -406,7 +415,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the file to which the report should render.
-     * 
+     *
      * @param reportFile the file to set
      */
     public void setReportFile(String reportFile) {
@@ -415,7 +424,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get whether the report should show suppressed violations.
-     * 
+     *
      * @return <code>true</code> if showing suppressed violations,
      *         <code>false</code> otherwise.
      */
@@ -425,7 +434,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set whether the report should show suppressed violations.
-     * 
+     *
      * @param showSuppressedViolations
      *            <code>true</code> if showing suppressed violations,
      *            <code>false</code> otherwise.
@@ -436,7 +445,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Get the Report properties. These are used to create the Renderer.
-     * 
+     *
      * @return The report properties.
      */
     public Properties getReportProperties() {
@@ -445,7 +454,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the Report properties. These are used to create the Renderer.
-     * 
+     *
      * @param reportProperties
      *            The Report properties to set.
      */
@@ -457,7 +466,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Return the stress test indicator. If this value is <code>true</code> then
      * PMD will randomize the order of file processing to attempt to shake out
      * bugs.
-     * 
+     *
      * @return <code>true</code> if stress test is enbaled, <code>false</code>
      *         otherwise.
      */
@@ -467,7 +476,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the stress test indicator.
-     * 
+     *
      * @param stressTest
      *            The stree test indicator to set.
      * @see #isStressTest()
@@ -479,7 +488,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Return the benchmark indicator. If this value is <code>true</code> then
      * PMD will log benchmark information.
-     * 
+     *
      * @return <code>true</code> if benchmark logging is enbaled,
      *         <code>false</code> otherwise.
      */
@@ -489,7 +498,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the benchmark indicator.
-     * 
+     *
      * @param benchmark
      *            The benchmark indicator to set.
      * @see #isBenchmark()

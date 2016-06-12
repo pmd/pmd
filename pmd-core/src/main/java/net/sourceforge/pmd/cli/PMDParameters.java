@@ -29,6 +29,9 @@ public class PMDParameters {
     @Parameter(names = { "-dir", "-d" }, description = "Root directory for sources.", required = false)
     private String sourceDir;
 
+    @Parameter(names = { "-filelist" }, description = "Path to a file containing a list of files to analyze.", required = false)
+    private String fileListPath;
+
     @Parameter(names = { "-format", "-f" }, description = "Report format type.")
     private String format = "text"; // Enhance to support other usage
 
@@ -121,12 +124,13 @@ public class PMDParameters {
     }
 
     public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
-        if (null == params.getSourceDir() && null == params.getUri()) {
+        if (null == params.getSourceDir() && null == params.getUri() && null == params.getFileListPath()) {
             throw new IllegalArgumentException(
-                    "Please provide either source root directory (-dir or -d) or database URI (-uri or -u) parameter");
+                    "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
         }
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths(params.getSourceDir());
+        configuration.setInputFilePath(params.getFileListPath());
         configuration.setInputUri(params.getUri());
         configuration.setReportFormat(params.getFormat());
         configuration.setBenchmark(params.isBenchmark());
@@ -230,6 +234,10 @@ public class PMDParameters {
     public String getSourceDir() {
         return sourceDir;
     }
+
+    public String getFileListPath() {
+        return fileListPath;
+    };
 
     public String getFormat() {
         return format;
