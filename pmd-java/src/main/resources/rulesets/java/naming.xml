@@ -509,6 +509,7 @@ MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameteri
                 [starts-with(@Image, 'get')]
 and
 ResultType/Type/PrimitiveType[@Image = 'boolean']
+and not(../Annotation//Name[@Image = 'Override'])
 ]
 ]]>
                 </value>
