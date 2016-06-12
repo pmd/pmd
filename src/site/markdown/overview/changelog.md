@@ -83,6 +83,7 @@ you'll need a java8 runtime environment.
 *   [#94](https://github.com/pmd/pmd/pull/94): Added property, fixed code climate renderer output and deleted unused rulessets (Apex)
 *   [#95](https://github.com/pmd/pmd/pull/95): Apex - New apex rule AvoidDmlStatementsInLoops
 *   [#96](https://github.com/pmd/pmd/pull/96): Clean up Code Climate renderer
+*   [#97](https://github.com/pmd/pmd/pull/97): BooleanGetMethodName: Don't report bad method names on @Override
 
 **Bugfixes:**
 
