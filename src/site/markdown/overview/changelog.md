@@ -10,6 +10,8 @@
 
 **Pull Requests:**
 
+*   [#35](https://github.com/adangel/pmd/pull/35): Javascript tokenizer now ignores comment tokens.
+
 **Bugfixes:**
 
 **API Changes:**
