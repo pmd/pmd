@@ -49,6 +49,9 @@ import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * This is the main class for interacting with PMD. The primary flow of all Rule
  * process is controlled via interactions with this class. A command line
@@ -85,7 +88,7 @@ public class PMD {
 
     /**
      * Create a PMD instance using the specified Configuration.
-     * 
+     *
      * @param configuration
      *            The runtime Configuration of PMD to use.
      */
@@ -158,7 +161,7 @@ public class PMD {
     /**
      * Create a report, filter out any defective rules, and keep a record of
      * them.
-     * 
+     *
      * @param rs the rules
      * @param ctx the rule context
      * @param fileName the filename of the source file, which should appear in the report
@@ -179,7 +182,7 @@ public class PMD {
     /**
      * Remove and return the misconfigured rules from the rulesets and log them
      * for good measure.
-     * 
+     *
      * @param ruleSets
      *            RuleSets
      * @return Set<Rule>
@@ -202,7 +205,7 @@ public class PMD {
     /**
      * Get the runtime configuration. The configuration can be modified to
      * affect how PMD behaves.
-     * 
+     *
      * @return The configuration.
      * @see PMDConfiguration
      */
@@ -220,7 +223,7 @@ public class PMD {
 
     /**
      * This method is the main entry point for command line usage.
-     * 
+     *
      * @param configuration the configure to use
      * @return number of violations found.
      */
@@ -299,14 +302,14 @@ public class PMD {
     /**
      * A callback that would be implemented by IDEs keeping track of PMD's
      * progress as it evaluates a set of files.
-     * 
+     *
      * @author Brian Remedios
      */
     public interface ProgressMonitor {
         /**
          * A status update reporting on current progress. Implementers will
          * return true if it is to continue, false otherwise.
-         * 
+         *
          * @param total total number of files to be analyzed
          * @param totalDone number of files, that have been done analyzing.
          * @return <code>true</code> if the execution of PMD should continue, <code>false</code> if the execution
@@ -318,7 +321,7 @@ public class PMD {
     /**
      * An entry point that would typically be used by IDEs intent on providing
      * ongoing feedback and the ability to terminate it at will.
-     * 
+     *
      * @param configuration the PMD configuration to use
      * @param ruleSetFactory ruleset factory
      * @param files the files to analyze
@@ -337,7 +340,7 @@ public class PMD {
     /**
      * Run PMD on a list of files using multiple threads - if more than one is
      * available
-     * 
+     *
      * @param configuration
      *            Configuration
      * @param ruleSetFactory
@@ -417,6 +420,28 @@ public class PMD {
                 throw new RuntimeException("Problem with DBURI: " + uriString, ex);
             }
         }
+
+        if (null != configuration.getInputFilePath()) {
+            String inputFilePath = configuration.getInputFilePath();
+            File file = new File(inputFilePath);
+            try {
+              if (!file.exists()) {
+                LOG.log(Level.SEVERE, "Problem with Input File Path", inputFilePath);
+                throw new RuntimeException("Problem with Input File Path: " + inputFilePath);
+              } else {
+                String filePaths = FileUtils.readFileToString(new File(inputFilePath));
+                filePaths = StringUtils.trimToEmpty(filePaths);
+                filePaths = filePaths.replaceAll("\\r?\\n", ",");
+                filePaths = filePaths.replaceAll(",+", ",");
+
+                files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
+              }
+            } catch (IOException ex) {
+              LOG.log(Level.SEVERE, "Problem with Input File", ex);
+              throw new RuntimeException("Problem with Input File Path: " + inputFilePath, ex);
+            }
+
+        }
         return files;
     }
 
@@ -442,7 +467,7 @@ public class PMD {
 
     /**
      * Entry to invoke PMD as command line tool
-     * 
+     *
      * @param args command line arguments
      */
     public static void main(String[] args) {
