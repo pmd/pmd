@@ -58,6 +58,7 @@ you'll need a java8 runtime environment.
 *   [#32](https://github.com/adangel/pmd/pull/32): Extended Objective-C grammar to accept UTF-8 escapes (\uXXXX) in string literals.
 *   [#33](https://github.com/adangel/pmd/pull/33): Added support for Swift to CPD.
 *   [#34](https://github.com/adangel/pmd/pull/34): multiple code improvements: squid:S1192, squid:S1118, squid:S1066, squid:S1854, squid:S2864
+*   [#35](https://github.com/adangel/pmd/pull/35): Javascript tokenizer now ignores comment tokens.
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
 *   [#73](https://github.com/pmd/pmd/pull/73): Add rule to look for invalid message format in slf4j loggers
 *   [#74](https://github.com/pmd/pmd/pull/74): Fix rendering CommentDefaultAccessModifier description as code
@@ -82,6 +83,8 @@ you'll need a java8 runtime environment.
 *   [#94](https://github.com/pmd/pmd/pull/94): Added property, fixed code climate renderer output and deleted unused rulessets (Apex)
 *   [#95](https://github.com/pmd/pmd/pull/95): Apex - New apex rule AvoidDmlStatementsInLoops
 *   [#96](https://github.com/pmd/pmd/pull/96): Clean up Code Climate renderer
+*   [#97](https://github.com/pmd/pmd/pull/97): BooleanGetMethodName: Don't report bad method names on @Override
+*   [#98](https://github.com/pmd/pmd/pull/98): Input filelist parameter
 
 **Bugfixes:**
 
@@ -168,3 +171,6 @@ you'll need a java8 runtime environment.
     compatibility filter and fails, if e.g. an old rule name is used in the ruleset.
     See also [#1360](https://sourceforge.net/p/pmd/bugs/1360/).
     This option is also available for the ant task: `<noRuleSetCompatibility>true</noRuleSetCompatibility>`.
+*   New command line parameter for PMD: `-filelist`- this provides an alternative way to define, which
+    files should be process by PMD. With this option, you can provide the path to a single file containing a comma
+    delimited list of files to analyze. If this is given, then you don't need to provide `-dir`.
