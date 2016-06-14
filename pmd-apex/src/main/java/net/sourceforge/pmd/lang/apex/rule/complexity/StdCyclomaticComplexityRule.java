@@ -109,7 +109,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 		if (showClassesComplexity) {
 			Entry classEntry = entryStack.pop();
 			if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-				addViolation(data, node, new String[] { "class", node.getImage(),
+				addViolation(data, node, new String[] { "trigger", node.getImage(),
 						classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
 			}
 		}
