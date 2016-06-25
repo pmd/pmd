@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.objectweb.asm.ClassReader;
 
@@ -35,7 +36,11 @@ public final class PMDASMClassLoader extends ClassLoader {
     private static ClassLoader cachedClassLoader;
 
     /** Caches the names of the classes that we can't load or that don't exist. */
-    private final Set<String> dontBother = new HashSet<>();
+    private final ConcurrentHashMap<String, Boolean> m_dontBotherSet = new ConcurrentHashMap<>();
+
+    static {
+        registerAsParallelCapable();
+    }
 
     private PMDASMClassLoader(ClassLoader parent) {
         super(parent);
@@ -56,17 +61,17 @@ public final class PMDASMClassLoader extends ClassLoader {
     }
 
     @Override
-    public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
-        if (dontBother.contains(name)) {
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        if(m_dontBotherSet.containsKey(name))
             throw new ClassNotFoundException(name);
-        }
+
         try {
             return super.loadClass(name);
         } catch (ClassNotFoundException e) {
-            dontBother.add(name);
+            m_dontBotherSet.put(name, Boolean.TRUE);
             throw e;
         } catch (NoClassDefFoundError e) {
-            dontBother.add(name);
+            m_dontBotherSet.put(name, Boolean.TRUE);
             // rethrow as ClassNotFoundException, as the remaining part just
             // deals with that
             // see also: https://sourceforge.net/p/pmd/bugs/1319/
@@ -75,8 +80,7 @@ public final class PMDASMClassLoader extends ClassLoader {
     }
 
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
-
-        if (dontBother.contains(name)) {
+        if (m_dontBotherSet.contains(name)) {
             throw new ClassNotFoundException(name);
         }
         try {
@@ -98,7 +102,7 @@ public final class PMDASMClassLoader extends ClassLoader {
             }
             return asmVisitor.getPackages();
         } catch (IOException e) {
-            dontBother.add(name);
+            m_dontBotherSet.put(name, Boolean.TRUE);
             throw new ClassNotFoundException(name, e);
         }
     }
