@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd;
 import net.sourceforge.pmd.PMD;
 
 import java.util.Iterator;
-
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class CSVRenderer implements Renderer {
 
@@ -58,7 +58,7 @@ public class CSVRenderer implements Renderer {
                 if (lineCountPerFile) {
                     csv.append(mark.getLineCount()).append(separator);
                 }
-                csv.append(mark.getFilename());
+                csv.append(StringEscapeUtils.escapeCsv(mark.getFilename()));
                 if (marks.hasNext()) {
                     csv.append(separator);
                 }

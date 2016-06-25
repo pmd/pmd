@@ -85,7 +85,8 @@ you'll need a java8 runtime environment.
 *   [#96](https://github.com/pmd/pmd/pull/96): Clean up Code Climate renderer
 *   [#97](https://github.com/pmd/pmd/pull/97): BooleanGetMethodName: Don't report bad method names on @Override
 *   [#98](https://github.com/pmd/pmd/pull/98): Input filelist parameter
-*   [#99](https://github.com/pmd/pmd/pull/99): [Apex] Fixed Trigger name is reported incorrectly
+*   [#99](https://github.com/pmd/pmd/pull/99): [apex] Fixed Trigger name is reported incorrectly
+*   [#100](https://github.com/pmd/pmd/pull/100): [core] CSVRenderer: escape filenames with commas in csvrenderer
 
 **Bugfixes:**
 
