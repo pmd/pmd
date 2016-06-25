@@ -1,6 +1,6 @@
 # Changelog
 
-## ????? - 5.5.0-SNAPSHOT
+## 25-June-2016 - 5.5.0
 
 **System requirements:**
 
