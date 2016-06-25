@@ -4,12 +4,9 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import static org.junit.Assert.assertEquals;
+import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -18,7 +15,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public class ApexParserTest {
@@ -150,19 +146,5 @@ public class ApexParserTest {
 		assertEquals("Wrong begin column", beginColumn, node.getBeginColumn());
 		assertEquals("Wrong end line", endLine, node.getEndLine());
 		assertEquals("Wrong end column", endColumn, node.getEndColumn());
-	}
-
-	private ApexNode<Compilation> parse(String code) {
-		ApexParser parser = new ApexParser(new ApexParserOptions());
-		Reader reader = new StringReader(code);
-		return parser.parse(reader);
-	}
-
-	private void dumpNode(Node node) {
-		DumpFacade facade = new DumpFacade();
-		StringWriter writer = new StringWriter();
-		facade.initializeWith(writer, "", true, (ApexNode<?>) node);
-		facade.visit((ApexNode<?>) node, "");
-		System.out.println(writer.toString());
 	}
 }
