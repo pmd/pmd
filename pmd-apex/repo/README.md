@@ -22,3 +22,7 @@ In order to add a the jar files to the local repo, use the following commands:
                              -Dclassifier=tests \
                              -Dpackaging=jar \
                              -DlocalRepositoryPath=./repo
+
+For the PMD 5.5.0 Release, the versions from
+<https://github.com/forcedotcom/idecore/tree/55042bfc2ebeb4c9f38c445b577c3bdd6a18fc5a/com.salesforce.ide.apex.core/lib>
+have been taken.
