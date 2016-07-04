@@ -77,7 +77,7 @@ public final class XMLRenderer implements Renderer {
             transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "codefragment");
             StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
-            return writer.getBuffer().toString();
+            return writer.toString();
         } catch (TransformerException e) {
             throw new IllegalStateException(e);
         }
