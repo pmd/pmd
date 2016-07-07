@@ -11,6 +11,7 @@
 **Pull Requests:**
 
 *   [#101](https://github.com/pmd/pmd/pull/101): \[java] Improve multithreading performance: do not lock on classloader
+*   [#102](https://github.com/pmd/pmd/pull/102): \[apex] Restrict AvoidLogicInTrigger rule to max. 1 violation per file
 
 **Bugfixes:**
 
