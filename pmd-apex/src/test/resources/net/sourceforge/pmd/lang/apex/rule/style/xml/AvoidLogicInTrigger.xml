@@ -27,6 +27,16 @@ trigger AccountTrigger on Account (after insert, after update) {
 		
 		}
 	}
+
+	for(Account a : Trigger.new){           
+		if(Trigger.isInsert){
+		                 
+		}
+		
+		if(Trigger.isDelete){
+		
+		}
+	}
 }
 		]]></code>
 	</test-code>
