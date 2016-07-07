@@ -166,8 +166,8 @@ public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
+    Entry classEntry = entryStack.pop();
     if ( showClassesComplexity ) {
-    	Entry classEntry = entryStack.pop();
 	    if ( classEntry.getComplexityAverage() >= reportLevel
 	        || classEntry.highestDecisionPoints >= reportLevel ) {
 	      addViolation( data, node, new String[] {
