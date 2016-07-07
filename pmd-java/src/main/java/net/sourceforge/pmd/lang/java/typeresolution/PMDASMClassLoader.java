@@ -6,10 +6,10 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.objectweb.asm.ClassReader;
 
@@ -28,6 +28,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
  * the negative cases only. The cache is shared between loadClass and getImportedClasses,
  * as they are using the same (parent) class loader, e.g. if the class foo.Bar cannot be loaded,
  * then the resource foo/Bar.class will not exist, too.
+ * 
+ * Note: since git show 46ad3a4700b7a233a177fa77d08110127a85604c the cache is using
+ * a concurrent hash map to avoid synchronizing on the class loader instance.
  */
 public final class PMDASMClassLoader extends ClassLoader {
 
@@ -35,7 +38,11 @@ public final class PMDASMClassLoader extends ClassLoader {
     private static ClassLoader cachedClassLoader;
 
     /** Caches the names of the classes that we can't load or that don't exist. */
-    private final Set<String> dontBother = new HashSet<>();
+    private final ConcurrentMap<String, Boolean> dontBother = new ConcurrentHashMap<>();
+
+    static {
+        registerAsParallelCapable();
+    }
 
     private PMDASMClassLoader(ClassLoader parent) {
         super(parent);
@@ -56,17 +63,17 @@ public final class PMDASMClassLoader extends ClassLoader {
     }
 
     @Override
-    public synchronized Class<?> loadClass(String name) throws ClassNotFoundException {
-        if (dontBother.contains(name)) {
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        if(dontBother.containsKey(name))
             throw new ClassNotFoundException(name);
-        }
+
         try {
             return super.loadClass(name);
         } catch (ClassNotFoundException e) {
-            dontBother.add(name);
+            dontBother.put(name, Boolean.TRUE);
             throw e;
         } catch (NoClassDefFoundError e) {
-            dontBother.add(name);
+            dontBother.put(name, Boolean.TRUE);
             // rethrow as ClassNotFoundException, as the remaining part just
             // deals with that
             // see also: https://sourceforge.net/p/pmd/bugs/1319/
@@ -75,8 +82,7 @@ public final class PMDASMClassLoader extends ClassLoader {
     }
 
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
-
-        if (dontBother.contains(name)) {
+        if (dontBother.containsValue(name)) {
             throw new ClassNotFoundException(name);
         }
         try {
@@ -98,7 +104,7 @@ public final class PMDASMClassLoader extends ClassLoader {
             }
             return asmVisitor.getPackages();
         } catch (IOException e) {
-            dontBother.add(name);
+            dontBother.put(name, Boolean.TRUE);
             throw new ClassNotFoundException(name, e);
         }
     }
