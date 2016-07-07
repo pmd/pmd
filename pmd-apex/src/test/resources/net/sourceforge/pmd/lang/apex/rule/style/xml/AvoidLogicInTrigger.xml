@@ -16,8 +16,19 @@ trigger Accounts on Account (before insert, after insert, before update, after u
     <test-code>
         <description>Trigger with logic</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 trigger AccountTrigger on Account (after insert, after update) {
+	for(Account a : Trigger.new){           
+		if(Trigger.isInsert){
+		                 
+		}
+		
+		if(Trigger.isDelete){
+		
+		}
+	}
+
 	for(Account a : Trigger.new){           
 		if(Trigger.isInsert){
 		                 

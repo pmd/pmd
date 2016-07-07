@@ -3,11 +3,11 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.style;
 
+import java.util.List;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.ast.Node;
 
 public class AvoidLogicInTriggerRule extends AbstractApexRule {
 	
@@ -18,24 +18,13 @@ public class AvoidLogicInTriggerRule extends AbstractApexRule {
 	}
 
 	@Override
-	public Object visit(ASTBlockStatement node, Object data) {
-		if (insideTrigger(node)) {
+	public Object visit(ASTUserTrigger node, Object data) {
+		List<ASTBlockStatement> blockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
+		
+		if( !blockStatements.isEmpty()){
 			addViolation(data, node);
 		}
-
+	
 		return data;
-	}
-
-	private boolean insideTrigger(ApexNode<?> node) {
-		Node n = node.jjtGetParent();
-
-		while (n != null) {
-			if (n instanceof ASTUserTrigger) {
-				return true;
-			}
-			n = n.jjtGetParent();
-		}
-
-		return false;
 	}
 }
