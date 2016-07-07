@@ -10,6 +10,8 @@
 
 **Pull Requests:**
 
+*   [#101](https://github.com/pmd/pmd/pull/101): \[java] Improve multithreading performance: do not lock on classloader
+
 **Bugfixes:**
 
 *   General
