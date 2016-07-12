@@ -146,7 +146,18 @@
 	       	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
-	
+
+	<rule ref="rulesets/apex/apexunit.xml/ApexUnitTestClassShouldHaveAsserts" message="Apex unit test classes should have at least one System.assert() or assertEquals() or AssertNotEquals() call">
+		<priority>3</priority>
+
+		<properties>
+			<!-- relevant for Code Climate output only -->
+			<property name="cc_categories" value="Bug Risk"/>
+			<property name="cc_remediation_points_multiplier" value="100"/>
+			<property name="cc_block_highlighting" value="false"/>
+		</properties>
+	</rule>
+
 	<rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger" message="Avoid logic in triggers">
 		<priority>3</priority>
         
