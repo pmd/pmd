@@ -158,6 +158,17 @@
 		</properties>
 	</rule>
 
+	<rule ref="rulesets/apex/apexunit.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" message="@isTest(seeAllData=true) should not be used in Apex unit tests because it opens up the existing database data for unexpected modification by tests">
+		<priority>3</priority>
+
+		<properties>
+			<!-- relevant for Code Climate output only -->
+			<property name="cc_categories" value="Bug Risk"/>
+			<property name="cc_remediation_points_multiplier" value="100"/>
+			<property name="cc_block_highlighting" value="false"/>
+		</properties>
+	</rule>
+
 	<rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger" message="Avoid logic in triggers">
 		<priority>3</priority>
         

@@ -11,7 +11,7 @@ public class ApexUnitRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-//        addRule(RULESET, "ApexUnitTestClassShouldHaveAsserts");
+        addRule(RULESET, "ApexUnitTestClassShouldHaveAsserts");
         addRule(RULESET, "ApexUnitTestShouldNotUseSeeAllDataTrue");
     }
 }
