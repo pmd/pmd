@@ -23,6 +23,7 @@ public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule
         if (!isTestMethodOrClass(node)) {
             return data;
         }
+        
         return checkForAssertStatements(node, data);
     }
 
@@ -30,10 +31,13 @@ public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule
         final List<ASTBlockStatement> blockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
         final List<ASTStatement> statements = Iterables.getOnlyElement(blockStatements).findDescendantsOfType(ASTStatement.class);
         boolean isAssertFound = false;
+       
         for (final ASTStatement statement : statements) {
             final List<ASTMethodCallExpression> methodCalls = statement.findDescendantsOfType(ASTMethodCallExpression.class);
+            
             for (final ASTMethodCallExpression methodCallExpression : methodCalls) {
                 final String methodName = methodCallExpression.getNode().getMethod().getName();
+                
                 if (methodCallExpression.getNode().getDefiningType().getApexName().equalsIgnoreCase(SYSTEM)
                     && (methodName.equalsIgnoreCase(ASSERT)
                         || methodName.equalsIgnoreCase(ASSERT_EQUALS)
@@ -42,9 +46,11 @@ public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule
                 }
             }
         }
+        
         if (!isAssertFound) {
             addViolation(data, node);
         }
+        
         return data;
     }
 }

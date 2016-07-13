@@ -19,10 +19,12 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrue extends AbstractApexUnitTest
     public Object visit(final ASTUserClass node, final Object data) {
         // @isTest(seeAllData) was introduced in v24, and was set to false by default
         final Version classApiVersion = node.getNode().getDefiningType().getCodeUnitDetails().getVersion();
+        
         if (!isTestMethodOrClass(node)
             && classApiVersion.isGreaterThan(Version.V174)) {
             return data;
         }
+        
         checkForSeeAllData(node, data);
         return super.visit(node, data);
     }
@@ -32,16 +34,19 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrue extends AbstractApexUnitTest
         if (!isTestMethodOrClass(node)) {
             return data;
         }
+        
         return checkForSeeAllData(node, data);
     }
 
     private Object checkForSeeAllData(final AbstractApexNode node, final Object data) {
         final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
+        
         if (modifierNode != null) {
             for(final ModifierOrAnnotation modifierOrAnnotation : modifierNode.getNode().getModifiers().allNodes()) {
                 if (modifierOrAnnotation instanceof Annotation && TypeInfoEquivalence.isEquivalent(modifierOrAnnotation.getType(), AnnotationTypeInfos.IS_TEST)) {
                     final Annotation annotation = (Annotation) modifierOrAnnotation;
                     final AnnotationParameter parameter = annotation.getParameter("seeAllData");
+                    
                     if (parameter != null && parameter.getBooleanValue() == true) {
                         addViolation(data, node);
                         return data;
@@ -49,6 +54,7 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrue extends AbstractApexUnitTest
                 }
             }
         }
+        
         return data;
     }
 }

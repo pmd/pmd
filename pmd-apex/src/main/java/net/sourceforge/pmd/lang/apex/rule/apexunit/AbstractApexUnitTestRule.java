@@ -11,7 +11,6 @@ import apex.jorje.services.Version;
  */
 public abstract class AbstractApexUnitTestRule extends AbstractApexRule{
 
-    // TODO confirm the meaning of these values
     public AbstractApexUnitTestRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Bug Risk" });
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
@@ -36,5 +35,4 @@ public abstract class AbstractApexUnitTestRule extends AbstractApexRule{
         return modifierNode != null
             && modifierNode.getNode().getModifiers().isTest();
     }
-
 }
