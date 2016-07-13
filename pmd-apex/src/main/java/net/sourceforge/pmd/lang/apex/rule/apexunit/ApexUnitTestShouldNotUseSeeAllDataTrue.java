@@ -38,7 +38,7 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrue extends AbstractApexUnitTest
         return checkForSeeAllData(node, data);
     }
 
-    private Object checkForSeeAllData(final AbstractApexNode node, final Object data) {
+    private Object checkForSeeAllData(final ApexNode<?> node, final Object data) {
         final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
         
         if (modifierNode != null) {

@@ -30,7 +30,7 @@ public abstract class AbstractApexUnitTestRule extends AbstractApexRule{
         return super.visit(node, data);
     }
 
-    boolean isTestMethodOrClass(final AbstractApexNode node) {
+    boolean isTestMethodOrClass(final ApexNode<?> node) {
         final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
         return modifierNode != null
             && modifierNode.getNode().getModifiers().isTest();
