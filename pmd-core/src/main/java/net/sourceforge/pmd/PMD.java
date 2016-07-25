@@ -22,12 +22,20 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.benchmark.TextReport;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PMDParameters;
-import net.sourceforge.pmd.lang.*;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageFilenameFilter;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -500,6 +508,8 @@ public class PMD {
                 pmdVersion = properties.getProperty("version");
             } catch (IOException e) {
                 LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
+            } finally {
+                IOUtils.closeQuietly(stream);
             }
         }
         if (pmdVersion == null) {
