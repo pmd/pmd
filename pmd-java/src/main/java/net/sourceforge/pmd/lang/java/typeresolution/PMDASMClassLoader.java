@@ -85,8 +85,8 @@ public final class PMDASMClassLoader extends ClassLoader {
         if (dontBother.containsValue(name)) {
             throw new ClassNotFoundException(name);
         }
-        try {
-            ClassReader reader = new ClassReader(getResourceAsStream(name.replace('.', '/') + ".class"));
+        try (InputStream classResource = getResourceAsStream(name.replace('.', '/') + ".class")) {
+            ClassReader reader = new ClassReader(classResource);
             PMDASMVisitor asmVisitor = new PMDASMVisitor(name);
             reader.accept(asmVisitor, 0);
 
@@ -95,10 +95,11 @@ public final class PMDASMClassLoader extends ClassLoader {
                 inner = new ArrayList<>(inner); // to avoid
                                                       // ConcurrentModificationException
                 for (String str : inner) {
-                    InputStream i = getResourceAsStream(str.replace('.', '/') + ".class");
-                    if (i != null) {
-                        reader = new ClassReader(i);
-                        reader.accept(asmVisitor, 0);
+                    try (InputStream i = getResourceAsStream(str.replace('.', '/') + ".class")) {
+                        if (i != null) {
+                            reader = new ClassReader(i);
+                            reader.accept(asmVisitor, 0);
+                        }
                     }
                 }
             }
