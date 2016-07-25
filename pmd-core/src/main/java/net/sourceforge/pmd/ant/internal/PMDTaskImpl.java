@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.ant.internal;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,6 +39,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
@@ -268,13 +268,7 @@ public class PMDTaskImpl {
             doTask();
         } finally {
             logManager.close();
-            tryCloseClassLoader(configuration.getClassLoader());
-        }
-    }
-
-    private void tryCloseClassLoader(ClassLoader classLoader) {
-        if (classLoader instanceof Closeable) {
-            IOUtils.closeQuietly((Closeable)classLoader);
+            IOUtil.tryCloseClassLoader(configuration.getClassLoader());
         }
     }
 

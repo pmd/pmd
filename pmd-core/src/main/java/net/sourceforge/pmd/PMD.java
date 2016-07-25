@@ -361,6 +361,8 @@ public class PMD {
         } else {
             new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
         }
+
+        IOUtil.tryCloseClassLoader(configuration.getClassLoader());
     }
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
