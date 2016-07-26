@@ -40,6 +40,7 @@ import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.SystemUtils;
@@ -370,7 +371,9 @@ public class PMD {
             new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
         }
 
-        IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+        if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
+            IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+        }
     }
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
