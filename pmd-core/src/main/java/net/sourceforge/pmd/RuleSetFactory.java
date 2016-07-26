@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -294,6 +295,8 @@ public class RuleSetFactory {
             return classNotFoundProblem(ioe);
         } catch (SAXException se) {
             return classNotFoundProblem(se);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
         }
     }
 
@@ -629,9 +632,11 @@ public class RuleSetFactory {
      */
     private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
         boolean found = false;
+        InputStream ruleset = null;
         try {
+            ruleset = ruleSetReferenceId.getInputStream(classLoader);
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse(ruleSetReferenceId.getInputStream(classLoader));
+            Document document = builder.parse(ruleset);
             Element ruleSetElement = document.getDocumentElement();
 
             NodeList rules = ruleSetElement.getElementsByTagName("rule");
@@ -644,6 +649,8 @@ public class RuleSetFactory {
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(ruleset);
         }
 
         return found;

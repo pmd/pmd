@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
 
 import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
@@ -85,8 +86,10 @@ public final class PMDASMClassLoader extends ClassLoader {
         if (dontBother.containsValue(name)) {
             throw new ClassNotFoundException(name);
         }
+        InputStream stream = null;
         try {
-            ClassReader reader = new ClassReader(getResourceAsStream(name.replace('.', '/') + ".class"));
+            stream = getResourceAsStream(name.replace('.', '/') + ".class");
+            ClassReader reader = new ClassReader(stream);
             PMDASMVisitor asmVisitor = new PMDASMVisitor(name);
             reader.accept(asmVisitor, 0);
 
@@ -95,10 +98,15 @@ public final class PMDASMClassLoader extends ClassLoader {
                 inner = new ArrayList<>(inner); // to avoid
                                                       // ConcurrentModificationException
                 for (String str : inner) {
-                    InputStream i = getResourceAsStream(str.replace('.', '/') + ".class");
-                    if (i != null) {
-                        reader = new ClassReader(i);
-                        reader.accept(asmVisitor, 0);
+                    InputStream innerClassStream = null;
+                    try {
+                        innerClassStream = getResourceAsStream(str.replace('.', '/') + ".class");
+                        if (innerClassStream != null) {
+                            reader = new ClassReader(innerClassStream);
+                            reader.accept(asmVisitor, 0);
+                        }
+                    } finally {
+                        IOUtils.closeQuietly(innerClassStream);
                     }
                 }
             }
@@ -106,6 +114,8 @@ public final class PMDASMClassLoader extends ClassLoader {
         } catch (IOException e) {
             dontBother.put(name, Boolean.TRUE);
             throw new ClassNotFoundException(name, e);
+        } finally {
+            IOUtils.closeQuietly(stream);
         }
     }
 }

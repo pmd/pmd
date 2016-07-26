@@ -22,6 +22,8 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.benchmark.TextReport;
@@ -367,6 +369,8 @@ public class PMD {
         } else {
             new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
         }
+
+        IOUtil.tryCloseClassLoader(configuration.getClassLoader());
     }
 
     private static void sortFiles(final PMDConfiguration configuration, final List<DataSource> files) {
@@ -533,6 +537,8 @@ public class PMD {
                 pmdVersion = properties.getProperty("version");
             } catch (IOException e) {
                 LOG.log(Level.FINE, "Couldn't determine version of PMD", e);
+            } finally {
+                IOUtils.closeQuietly(stream);
             }
         }
         if (pmdVersion == null) {

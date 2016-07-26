@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
@@ -53,7 +54,11 @@ public class UsageGraphBuilder {
                     InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(
                             classResourceName + ".class");
                     ClassReader classReader = new ClassReader(inputStream);
-                    classReader.accept(getNewClassVisitor(), 0);
+                    try {
+                        classReader.accept(getNewClassVisitor(), 0);
+                    } finally {
+                        IOUtils.closeQuietly(inputStream);
+                    }
                 }
             }
         } catch (IOException e) {
