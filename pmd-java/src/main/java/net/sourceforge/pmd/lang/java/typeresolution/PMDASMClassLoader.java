@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
 
+import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
 
 /*
@@ -80,8 +82,10 @@ public final class PMDASMClassLoader extends ClassLoader {
         if (dontBother.contains(name)) {
             throw new ClassNotFoundException(name);
         }
+        InputStream stream = null;
         try {
-            ClassReader reader = new ClassReader(getResourceAsStream(name.replace('.', '/') + ".class"));
+            stream = getResourceAsStream(name.replace('.', '/') + ".class");
+            ClassReader reader = new ClassReader(stream);
             PMDASMVisitor asmVisitor = new PMDASMVisitor();
             reader.accept(asmVisitor, 0);
 
@@ -90,14 +94,22 @@ public final class PMDASMClassLoader extends ClassLoader {
                 inner = new ArrayList<String>(inner); // to avoid
                                                       // ConcurrentModificationException
                 for (String str : inner) {
-                    reader = new ClassReader(getResourceAsStream(str.replace('.', '/') + ".class"));
-                    reader.accept(asmVisitor, 0);
+                    InputStream innerClassStream = null;
+                    try {
+                        innerClassStream = getResourceAsStream(str.replace('.', '/') + ".class");
+                        reader = new ClassReader(innerClassStream);
+                        reader.accept(asmVisitor, 0);
+                    } finally {
+                        IOUtils.closeQuietly(innerClassStream);
+                    }
                 }
             }
             return asmVisitor.getPackages();
         } catch (IOException e) {
             dontBother.add(name);
             throw new ClassNotFoundException(name, e);
+        } finally {
+            IOUtils.closeQuietly(stream);
         }
     }
 }

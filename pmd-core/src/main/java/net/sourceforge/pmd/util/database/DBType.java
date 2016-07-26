@@ -7,11 +7,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * Encapsulate the settings needed to access database source code.
@@ -155,6 +158,7 @@ public class DBType {
         LOGGER.entering(CLASS_NAME, matchString);
         // Locale locale = Control.g;
         ResourceBundle resourceBundle = null;
+        InputStream stream = null;
 
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("class_path+" + System.getProperty("java.class.path"));
@@ -170,7 +174,8 @@ public class DBType {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("Attempting File no file suffix: " + matchString);
             }
-            resourceBundle = new PropertyResourceBundle(new FileInputStream(propertiesFile));
+            stream = new FileInputStream(propertiesFile);
+            resourceBundle = new PropertyResourceBundle(stream);
             propertiesSource = propertiesFile.getAbsolutePath();
             LOGGER.finest("FileSystemWithoutExtension");
         } catch (FileNotFoundException notFoundOnFilesystemWithoutExtension) {
@@ -180,7 +185,8 @@ public class DBType {
             }
             try {
                 File propertiesFile = new File(matchString + ".properties");
-                resourceBundle = new PropertyResourceBundle(new FileInputStream(propertiesFile));
+                stream = new FileInputStream(propertiesFile);
+                resourceBundle = new PropertyResourceBundle(stream);
                 propertiesSource = propertiesFile.getAbsolutePath();
                 LOGGER.finest("FileSystemWithExtension");
             } catch (FileNotFoundException notFoundOnFilesystemWithExtensionTackedOn) {
@@ -207,6 +213,8 @@ public class DBType {
                     }
                 }
             }
+        } finally {
+            IOUtils.closeQuietly(stream);
         }
 
         // Properties in this matched resource
