@@ -130,11 +130,12 @@ public class Benchmarker {
         long start = System.currentTimeMillis();
 
         for (DataSource dataSource: dataSources) {
-            parser.parse(
-            	dataSource.getNiceFileName(false, null),
-            	new InputStreamReader(dataSource.getInputStream()
-            	)
-            );
+            InputStreamReader reader = new InputStreamReader(dataSource.getInputStream());
+            try {
+                parser.parse(dataSource.getNiceFileName(false, null), reader);
+            } finally {
+                IOUtils.closeQuietly(reader);
+            }
         }
 
         if (debug) {
@@ -169,13 +170,15 @@ public class Benchmarker {
 
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            Reader reader = null;
             for (DataSource dataSource: dataSources) {
-            	reader = new InputStreamReader(dataSource.getInputStream());
-            	ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
-            	new SourceCodeProcessor(config).processSourceCode(reader, ruleSets, ctx);
-            	IOUtils.closeQuietly(reader);
-            	}
+                Reader reader = new InputStreamReader(dataSource.getInputStream());
+                try {
+                    ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
+                    new SourceCodeProcessor(config).processSourceCode(reader, ruleSets, ctx);
+                } finally {
+                    IOUtils.closeQuietly(reader);
+                }
+            }
             long end = System.currentTimeMillis();
             long elapsed = end - start;
             results.add(new RuleDuration(elapsed, rule));

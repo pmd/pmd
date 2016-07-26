@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Proxy;
@@ -90,6 +91,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleContext;
@@ -113,11 +120,6 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 public class Designer implements ClipboardOwner {
 
@@ -953,11 +955,13 @@ public class Designer implements ClipboardOwner {
 	+ System.getProperty("file.separator") + ".pmd_designer.xml";
 
 	private void loadSettings() {
+	    InputStream stream = null;
 		try {
 			File file = new File(SETTINGS_FILE_NAME);
 			if (file.exists()) {
 				DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				Document document = builder.parse(new FileInputStream(file));
+				stream = new FileInputStream(file);
+				Document document = builder.parse(stream);
 				Element settingsElement = document.getDocumentElement();
 				Element codeElement = (Element) settingsElement.getElementsByTagName("code").item(0);
 				Element xpathElement = (Element) settingsElement.getElementsByTagName("xpath").item(0);
@@ -984,6 +988,8 @@ public class Designer implements ClipboardOwner {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
+		} finally {
+		    IOUtils.closeQuietly(stream);
 		}
 	}
 
