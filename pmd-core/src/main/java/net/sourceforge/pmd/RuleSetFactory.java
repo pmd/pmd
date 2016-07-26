@@ -20,6 +20,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -29,14 +36,6 @@ import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.apache.commons.io.IOUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML
@@ -200,8 +199,7 @@ public class RuleSetFactory {
 
     private synchronized RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId,
             boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
-        return parseRuleSetNode(ruleSetReferenceId, ruleSetReferenceId.getInputStream(this.classLoader),
-                withDeprecatedRuleReferences);
+        return parseRuleSetNode(ruleSetReferenceId, withDeprecatedRuleReferences);
     }
 
     /**
@@ -234,18 +232,17 @@ public class RuleSetFactory {
      * 
      * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet being
      *            parsed.
-     * @param inputStream InputStream containing the RuleSet XML configuration.
      * @param withDeprecatedRuleReferences whether rule references that are
      *            deprecated should be ignored or not
      * @return The new RuleSet.
      */
-    private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId, InputStream inputStream,
-            boolean withDeprecatedRuleReferences) {
-        if (!ruleSetReferenceId.isExternal()) {
-            throw new IllegalArgumentException("Cannot parse a RuleSet from a non-external reference: <"
-                    + ruleSetReferenceId + ">.");
-        }
-        try {
+    private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId,
+                                     boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
+        try (InputStream inputStream = ruleSetReferenceId.getInputStream(this.classLoader)){
+            if (!ruleSetReferenceId.isExternal()) {
+                throw new IllegalArgumentException("Cannot parse a RuleSet from a non-external reference: <"
+                        + ruleSetReferenceId + ">.");
+            }
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             InputSource inputSource;
             if (compatibilityFilter != null) {
@@ -289,14 +286,10 @@ public class RuleSetFactory {
             return classNotFoundProblem(iae);
         } catch (ParserConfigurationException pce) {
             return classNotFoundProblem(pce);
-        } catch (RuleSetNotFoundException rsnfe) {
-            return classNotFoundProblem(rsnfe);
         } catch (IOException ioe) {
             return classNotFoundProblem(ioe);
         } catch (SAXException se) {
             return classNotFoundProblem(se);
-        } finally {
-            IOUtils.closeQuietly(inputStream);
         }
     }
 
@@ -632,11 +625,9 @@ public class RuleSetFactory {
      */
     private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
         boolean found = false;
-        InputStream ruleset = null;
-        try {
-            ruleset = ruleSetReferenceId.getInputStream(classLoader);
+        try (InputStream ruleSet = ruleSetReferenceId.getInputStream(classLoader)) {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse(ruleset);
+            Document document = builder.parse(ruleSet);
             Element ruleSetElement = document.getDocumentElement();
 
             NodeList rules = ruleSetElement.getElementsByTagName("rule");
@@ -649,8 +640,6 @@ public class RuleSetFactory {
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(ruleset);
         }
 
         return found;

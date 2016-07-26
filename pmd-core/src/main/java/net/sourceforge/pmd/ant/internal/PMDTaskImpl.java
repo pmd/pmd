@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.ant.internal;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -267,8 +268,19 @@ public class PMDTaskImpl {
         try {
             doTask();
         } finally {
+            tryClose(configuration.getClassLoader());
             logManager.close();
             IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+        }
+    }
+
+    private static void tryClose(ClassLoader classLoader) {
+        if (classLoader instanceof Closeable) {
+            try {
+                ((Closeable) classLoader).close();
+            } catch (IOException ignore) {
+                // do nothing.
+            }
         }
     }
 
