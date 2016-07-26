@@ -524,7 +524,7 @@ public class RuleSetFactoryTest {
      * Rule reference can't be resolved - ref is used instead of class and the class is old (pmd 4.3 and not pmd 5).
      * @throws Exception any error
      */
-    @Test(expected = RuntimeException.class)
+    @Test(expected = RuleSetNotFoundException.class)
     public void testBug1202() throws Exception {
         RuleSetReferenceId ref = createRuleSetReferenceId("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
                 "<ruleset>\n" +
