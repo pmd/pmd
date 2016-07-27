@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+
+    <test-code>
+        <description>Problematic apex unit test - no assert calls</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+   public static testMethod void testSomething() {
+      Account a = null;
+      // This is better than having a NullPointerException
+      // System.assertNotEquals(a, null, 'account not found');
+      a.toString();
+   }
+}
+		]]></code>
+    </test-code>
+</test-data>
