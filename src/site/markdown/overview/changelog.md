@@ -1,6 +1,6 @@
 # Changelog
 
-## ????? - 5.5.1-SNAPSHOT
+## 27-July-2016 - 5.5.1
 
 **Pull Requests:**
 
