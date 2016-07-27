@@ -14,6 +14,7 @@
 *   [#102](https://github.com/pmd/pmd/pull/102): \[apex] Restrict AvoidLogicInTrigger rule to max. 1 violation per file
 *   [#103](https://github.com/pmd/pmd/pull/103): \[java] \[apex] Fix for 1501: CyclomaticComplexity rule causes OOM when class reporting is disabled
 *   [#104](https://github.com/pmd/pmd/pull/104): \[core] \[java] Close opened file handles
+*   [apex #43](https://github.com/Up2Go/pmd/pull/43): \[apex] Basic apex unit test rules
 
 **Bugfixes:**
 
