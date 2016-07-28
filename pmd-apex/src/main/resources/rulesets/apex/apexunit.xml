@@ -9,7 +9,7 @@
     </description>
 
     <rule name="ApexUnitTestClassShouldHaveAsserts"
-          since="2.0"
+          since="5.5.1"
           message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
           class="net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestClassShouldHaveAsserts"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/apexunit.html#ApexUnitTestClassShouldHaveAsserts">
@@ -33,7 +33,7 @@ public class Foo {
         </example>
     </rule>
     <rule name="ApexUnitTestShouldNotUseSeeAllDataTrue"
-          since="2.0"
+          since="5.5.1"
           message="Apex unit tests should not use @isTest(seeAllData = true)"
           class="net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestShouldNotUseSeeAllDataTrue"
           externalInfoUrl="${pmd.website.baseurl}/rules/apex/apexunit.html#ApexUnitTestShouldNotUseSeeAllDataTrue">

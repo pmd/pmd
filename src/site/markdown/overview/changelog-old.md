@@ -6,6 +6,11 @@ http://sourceforge.net/projects/pmd/files/pmd/
 
 ## 27-July-2016 - 5.5.1
 
+**New Rules:**
+
+*   New rules for Salesforce.com Apex:
+    *   apex-apexunit: ApexUnitTestClassShouldHaveAsserts, ApexUnitTestShouldNotUseSeeAllDataTrue
+
 **Pull Requests:**
 
 *   [#101](https://github.com/pmd/pmd/pull/101): \[java] Improve multithreading performance: do not lock on classloader
