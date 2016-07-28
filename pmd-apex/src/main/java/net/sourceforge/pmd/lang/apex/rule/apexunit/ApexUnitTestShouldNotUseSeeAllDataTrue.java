@@ -1,11 +1,18 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.apex.rule.apexunit;
 
-import net.sourceforge.pmd.lang.apex.ast.*;
-
-import apex.jorje.semantic.ast.modifier.*;
+import apex.jorje.semantic.ast.modifier.Annotation;
+import apex.jorje.semantic.ast.modifier.AnnotationParameter;
+import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
 import apex.jorje.semantic.symbol.type.AnnotationTypeInfos;
 import apex.jorje.semantic.symbol.type.TypeInfoEquivalence;
 import apex.jorje.services.Version;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
 /**
  * <p>It's a very bad practice to use @isTest(seeAllData=true) in Apex unit tests,

@@ -1,10 +1,17 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.apex.rule.apexunit;
 
 import java.util.List;
 
 import com.google.common.collect.Iterables;
 
-import net.sourceforge.pmd.lang.apex.ast.*;
+import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
 /**
  * Apex unit tests should have System.assert methods in them

@@ -1,9 +1,13 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.apex.rule.apexunit;
 
-import net.sourceforge.pmd.lang.apex.ast.*;
-import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-
 import apex.jorje.services.Version;
+import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
+import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 /**
  * Do special checks for apex unit test classes and methods
