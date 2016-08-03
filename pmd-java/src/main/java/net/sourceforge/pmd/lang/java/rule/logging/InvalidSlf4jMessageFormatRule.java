@@ -71,7 +71,15 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 		final List<ASTExpression> argumentList = parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
 				.getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
 		for (final ASTExpression astExpression : argumentList) {
-			params.add(astExpression.getFirstChildOfType(ASTPrimaryExpression.class));
+			ASTPrimaryExpression primaryExpression = astExpression.getFirstChildOfType(ASTPrimaryExpression.class);
+			if (primaryExpression != null) {
+			    params.add(primaryExpression);
+			}
+		}
+
+		if (params.isEmpty()) {
+		    // no params we could analyze
+		    return super.visit(node, data);
 		}
 
 		final ASTPrimaryExpression messageParam = params.get(0);

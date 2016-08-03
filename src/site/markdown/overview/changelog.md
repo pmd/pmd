@@ -12,4 +12,7 @@
 
 **Bugfixes:**
 
+*   java
+    *   [#1509](https://sourceforge.net/p/pmd/bugs/1509/) \[java] InvalidSlf4jMessageFormat NPE
+
 **API Changes:**
