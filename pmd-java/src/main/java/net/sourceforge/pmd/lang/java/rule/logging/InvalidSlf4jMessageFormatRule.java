@@ -105,13 +105,38 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 	}
 
 	private void removeThrowableParam(final List<ASTPrimaryExpression> params) {
-		final Iterator<ASTPrimaryExpression> it = params.iterator();
-		while (it.hasNext()) {
-			final ASTClassOrInterfaceType throwable = it.next().getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-			if (throwable != null && Throwable.class.isAssignableFrom(throwable.getType())) {
-				it.remove();
-			}
-		}
+	    // Throwable parameters are the last one in the list, if any.
+	    if (params.isEmpty()) return;
+	    int lastIndex = params.size() - 1;
+	    ASTPrimaryExpression last = params.get(lastIndex);
+
+	    // in case a new exception is created or the exception class is mentioned.
+	    ASTClassOrInterfaceType classOrInterface = last.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+	    if (classOrInterface != null && classOrInterface.getType() != null && Throwable.class.isAssignableFrom(classOrInterface.getType())) {
+	        params.remove(lastIndex);
+	        return;
+	    }
+
+	    // if the type could be determined already
+	    if (last.getType() != null && Throwable.class.isAssignableFrom(last.getType())) {
+            params.remove(lastIndex);
+	        return;
+	    }
+
+	    // check the variable type, if there is a reference by name
+	    ASTName variable = last.getFirstDescendantOfType(ASTName.class);
+	    if (variable != null && variable.getNameDeclaration() != null && variable.getNameDeclaration() instanceof VariableNameDeclaration) {
+	        VariableNameDeclaration declaration = (VariableNameDeclaration)variable.getNameDeclaration();
+	        if (declaration.getType() != null && Throwable.class.isAssignableFrom(declaration.getType())) {
+	            params.remove(lastIndex);
+	            return;
+	        }
+	        // convention: Exception type names should end with Exception
+	        if (declaration.getTypeImage() != null && declaration.getTypeImage().endsWith("Exception")) {
+                params.remove(lastIndex);
+                return;
+	        }
+	    }
 	}
 
 	private String getExpectedMessage(final List<ASTPrimaryExpression> params, final int expectedArguments) {
