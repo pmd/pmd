@@ -33,155 +33,158 @@ import org.apache.commons.lang3.StringUtils;
 
 public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
-	private static final Set<String> LOGGER_LEVELS;
-	private static final String LOGGER_CLASS = "org.slf4j.Logger";
-	static {
-		LOGGER_LEVELS = Collections.unmodifiableSet(
-				new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error")));
-	}
+    private static final Set<String> LOGGER_LEVELS;
+    private static final String LOGGER_CLASS = "org.slf4j.Logger";
+    static {
+        LOGGER_LEVELS = Collections
+                .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error")));
+    }
 
-	@Override
-	public Object visit(final ASTName node, final Object data) {
-		final NameDeclaration nameDeclaration = node.getNameDeclaration();
-		// ignore imports or methods
-		if (nameDeclaration == null || !(nameDeclaration instanceof VariableNameDeclaration)) {
-			return super.visit(node, data);
-		}
+    @Override
+    public Object visit(final ASTName node, final Object data) {
+        final NameDeclaration nameDeclaration = node.getNameDeclaration();
+        // ignore imports or methods
+        if (nameDeclaration == null || !(nameDeclaration instanceof VariableNameDeclaration)) {
+            return super.visit(node, data);
+        }
 
-		// ignore non slf4j logger
-		Class<?> type = ((VariableNameDeclaration) nameDeclaration).getType();
-	    if (type == null || !type.getName().equals(LOGGER_CLASS)) {
-			return super.visit(node, data);
-		}
+        // ignore non slf4j logger
+        Class<?> type = ((VariableNameDeclaration) nameDeclaration).getType();
+        if (type == null || !type.getName().equals(LOGGER_CLASS)) {
+            return super.visit(node, data);
+        }
 
-		// get the node that contains the logger
-		final ASTPrimaryExpression parentNode = node.getFirstParentOfType(ASTPrimaryExpression.class);
+        // get the node that contains the logger
+        final ASTPrimaryExpression parentNode = node.getFirstParentOfType(ASTPrimaryExpression.class);
 
-		// get the log level
-		final String method = parentNode.getFirstChildOfType(ASTPrimaryPrefix.class)
-				.getFirstChildOfType(ASTName.class).getImage().replace(nameDeclaration.getImage() + ".", "");
+        // get the log level
+        final String method = parentNode.getFirstChildOfType(ASTPrimaryPrefix.class).getFirstChildOfType(ASTName.class)
+                .getImage().replace(nameDeclaration.getImage() + ".", "");
 
-		// ignore if not a log level
-		if (!LOGGER_LEVELS.contains(method)) {
-			return super.visit(node, data);
-		}
+        // ignore if not a log level
+        if (!LOGGER_LEVELS.contains(method)) {
+            return super.visit(node, data);
+        }
 
-		// find the arguments
-		final List<ASTPrimaryExpression> params = new LinkedList<ASTPrimaryExpression>();
-		final List<ASTExpression> argumentList = parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
-				.getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
-		for (final ASTExpression astExpression : argumentList) {
-			ASTPrimaryExpression primaryExpression = astExpression.getFirstChildOfType(ASTPrimaryExpression.class);
-			if (primaryExpression != null) {
-			    params.add(primaryExpression);
-			}
-		}
+        // find the arguments
+        final List<ASTPrimaryExpression> params = new LinkedList<ASTPrimaryExpression>();
+        final List<ASTExpression> argumentList = parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
+                .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
+        for (final ASTExpression astExpression : argumentList) {
+            ASTPrimaryExpression primaryExpression = astExpression.getFirstChildOfType(ASTPrimaryExpression.class);
+            if (primaryExpression != null) {
+                params.add(primaryExpression);
+            }
+        }
 
-		if (params.isEmpty()) {
-		    // no params we could analyze
-		    return super.visit(node, data);
-		}
+        if (params.isEmpty()) {
+            // no params we could analyze
+            return super.visit(node, data);
+        }
 
-		final ASTPrimaryExpression messageParam = params.get(0);
-		//remove the message parameter
-		params.remove(0);
-		final int expectedArguments = expectedArguments(messageParam);
+        final ASTPrimaryExpression messageParam = params.get(0);
+        //remove the message parameter
+        params.remove(0);
+        final int expectedArguments = expectedArguments(messageParam);
 
-		if (expectedArguments == 0) {
-			// ignore if we are not expecting arguments to format the message
-			return super.visit(node, data);
-		}
+        if (expectedArguments == 0) {
+            // ignore if we are not expecting arguments to format the message
+            return super.visit(node, data);
+        }
 
-		// Remove throwable param, since it is shown separately.
-		removeThrowableParam(params);
+        // Remove throwable param, since it is shown separately.
+        removeThrowableParam(params);
 
-		if (params.size() < expectedArguments) {
-			addViolationWithMessage(data, node, "Missing arguments," + getExpectedMessage(params, expectedArguments));
-		} else if (params.size() > expectedArguments) {
-			addViolationWithMessage(data, node, "Too many arguments," + getExpectedMessage(params, expectedArguments));
-		}
+        if (params.size() < expectedArguments) {
+            addViolationWithMessage(data, node, "Missing arguments," + getExpectedMessage(params, expectedArguments));
+        } else if (params.size() > expectedArguments) {
+            addViolationWithMessage(data, node, "Too many arguments," + getExpectedMessage(params, expectedArguments));
+        }
 
-		return super.visit(node, data);
-	}
+        return super.visit(node, data);
+    }
 
-	private void removeThrowableParam(final List<ASTPrimaryExpression> params) {
-	    // Throwable parameters are the last one in the list, if any.
-	    if (params.isEmpty()) return;
-	    int lastIndex = params.size() - 1;
-	    ASTPrimaryExpression last = params.get(lastIndex);
+    private void removeThrowableParam(final List<ASTPrimaryExpression> params) {
+        // Throwable parameters are the last one in the list, if any.
+        if (params.isEmpty())
+            return;
+        int lastIndex = params.size() - 1;
+        ASTPrimaryExpression last = params.get(lastIndex);
 
-	    // in case a new exception is created or the exception class is mentioned.
-	    ASTClassOrInterfaceType classOrInterface = last.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-	    if (classOrInterface != null && classOrInterface.getType() != null && Throwable.class.isAssignableFrom(classOrInterface.getType())) {
-	        params.remove(lastIndex);
-	        return;
-	    }
-
-	    // if the type could be determined already
-	    if (last.getType() != null && Throwable.class.isAssignableFrom(last.getType())) {
+        // in case a new exception is created or the exception class is mentioned.
+        ASTClassOrInterfaceType classOrInterface = last.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        if (classOrInterface != null && classOrInterface.getType() != null
+                && Throwable.class.isAssignableFrom(classOrInterface.getType())) {
             params.remove(lastIndex);
-	        return;
-	    }
+            return;
+        }
 
-	    // check the variable type, if there is a reference by name
-	    ASTName variable = last.getFirstDescendantOfType(ASTName.class);
-	    if (variable != null && variable.getNameDeclaration() != null && variable.getNameDeclaration() instanceof VariableNameDeclaration) {
-	        VariableNameDeclaration declaration = (VariableNameDeclaration)variable.getNameDeclaration();
-	        if (declaration.getType() != null && Throwable.class.isAssignableFrom(declaration.getType())) {
-	            params.remove(lastIndex);
-	            return;
-	        }
-	        // convention: Exception type names should end with Exception
-	        if (declaration.getTypeImage() != null && declaration.getTypeImage().endsWith("Exception")) {
+        // if the type could be determined already
+        if (last.getType() != null && Throwable.class.isAssignableFrom(last.getType())) {
+            params.remove(lastIndex);
+            return;
+        }
+
+        // check the variable type, if there is a reference by name
+        ASTName variable = last.getFirstDescendantOfType(ASTName.class);
+        if (variable != null && variable.getNameDeclaration() != null
+                && variable.getNameDeclaration() instanceof VariableNameDeclaration) {
+            VariableNameDeclaration declaration = (VariableNameDeclaration) variable.getNameDeclaration();
+            if (declaration.getType() != null && Throwable.class.isAssignableFrom(declaration.getType())) {
                 params.remove(lastIndex);
                 return;
-	        }
-	    }
-	}
+            }
+            // convention: Exception type names should end with Exception
+            if (declaration.getTypeImage() != null && declaration.getTypeImage().endsWith("Exception")) {
+                params.remove(lastIndex);
+                return;
+            }
+        }
+    }
 
-	private String getExpectedMessage(final List<ASTPrimaryExpression> params, final int expectedArguments) {
-		return " expected " + expectedArguments
-				+ (expectedArguments > 1 ? " arguments " : " argument ") + "but have " + params.size();
-	}
+    private String getExpectedMessage(final List<ASTPrimaryExpression> params, final int expectedArguments) {
+        return " expected " + expectedArguments + (expectedArguments > 1 ? " arguments " : " argument ") + "but have "
+                + params.size();
+    }
 
-	private int expectedArguments(final ASTPrimaryExpression node) {
-		int count = 0;
-		// look if the logger have a literal message
-		if (node.getFirstDescendantOfType(ASTLiteral.class) != null) {
-			count = countPlaceholders(node);
-		} else if (node.getFirstDescendantOfType(ASTName.class) != null) {
-			final String variableName = node.getFirstDescendantOfType(ASTName.class).getImage();
-			// look if the message is defined locally
-			final List<ASTVariableDeclarator> localValiables = node.getFirstParentOfType(ASTMethodDeclaration.class)
-					.findDescendantsOfType(ASTVariableDeclarator.class);
-			count = getAmountOfExpectedArguments(variableName, localValiables);
+    private int expectedArguments(final ASTPrimaryExpression node) {
+        int count = 0;
+        // look if the logger have a literal message
+        if (node.getFirstDescendantOfType(ASTLiteral.class) != null) {
+            count = countPlaceholders(node);
+        } else if (node.getFirstDescendantOfType(ASTName.class) != null) {
+            final String variableName = node.getFirstDescendantOfType(ASTName.class).getImage();
+            // look if the message is defined locally
+            final List<ASTVariableDeclarator> localValiables = node.getFirstParentOfType(ASTMethodDeclaration.class)
+                    .findDescendantsOfType(ASTVariableDeclarator.class);
+            count = getAmountOfExpectedArguments(variableName, localValiables);
 
-			if (count == 0) {
-				// look if the message is defined in a field
-				final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfType(ASTClassOrInterfaceBody.class)
-						.findDescendantsOfType(ASTFieldDeclaration.class);
-				// only look for ASTVariableDeclarator that are Fields
-				final List<ASTVariableDeclarator> fields = new LinkedList<ASTVariableDeclarator>();
-				for (final ASTFieldDeclaration astFieldDeclaration : fieldlist) {
-					fields.add(astFieldDeclaration.getFirstChildOfType(ASTVariableDeclarator.class));
-				}
-				count = getAmountOfExpectedArguments(variableName, fields);
-			}
-		}
-		return count;
-	}
+            if (count == 0) {
+                // look if the message is defined in a field
+                final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfType(ASTClassOrInterfaceBody.class)
+                        .findDescendantsOfType(ASTFieldDeclaration.class);
+                // only look for ASTVariableDeclarator that are Fields
+                final List<ASTVariableDeclarator> fields = new LinkedList<ASTVariableDeclarator>();
+                for (final ASTFieldDeclaration astFieldDeclaration : fieldlist) {
+                    fields.add(astFieldDeclaration.getFirstChildOfType(ASTVariableDeclarator.class));
+                }
+                count = getAmountOfExpectedArguments(variableName, fields);
+            }
+        }
+        return count;
+    }
 
-	private int getAmountOfExpectedArguments(final String variableName, final List<ASTVariableDeclarator> variables) {
-		for (final ASTVariableDeclarator astVariableDeclarator : variables) {
-			if (astVariableDeclarator.getFirstChildOfType(ASTVariableDeclaratorId.class)
-					.getImage().equals(variableName)) {
-				return countPlaceholders(astVariableDeclarator);
-			}
-		}
-		return 0;
-	}
+    private int getAmountOfExpectedArguments(final String variableName, final List<ASTVariableDeclarator> variables) {
+        for (final ASTVariableDeclarator astVariableDeclarator : variables) {
+            if (astVariableDeclarator.getFirstChildOfType(ASTVariableDeclaratorId.class).getImage()
+                    .equals(variableName)) {
+                return countPlaceholders(astVariableDeclarator);
+            }
+        }
+        return 0;
+    }
 
-	private int countPlaceholders(final AbstractJavaTypeNode node) {
-		return StringUtils.countMatches(node.getFirstDescendantOfType(ASTLiteral.class).getImage(), "{}");
-	}
+    private int countPlaceholders(final AbstractJavaTypeNode node) {
+        return StringUtils.countMatches(node.getFirstDescendantOfType(ASTLiteral.class).getImage(), "{}");
+    }
 }
