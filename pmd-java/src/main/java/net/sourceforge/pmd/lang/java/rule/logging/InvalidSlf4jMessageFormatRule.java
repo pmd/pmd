@@ -6,10 +6,11 @@ package net.sourceforge.pmd.lang.java.rule.logging;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
@@ -28,8 +29,6 @@ import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
@@ -104,41 +103,52 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
-    private void removeThrowableParam(final List<ASTPrimaryExpression> params) {
-        // Throwable parameters are the last one in the list, if any.
-        if (params.isEmpty())
-            return;
-        int lastIndex = params.size() - 1;
-        ASTPrimaryExpression last = params.get(lastIndex);
-
+    private boolean isNewThrowable(ASTPrimaryExpression last) {
         // in case a new exception is created or the exception class is mentioned.
         ASTClassOrInterfaceType classOrInterface = last.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         if (classOrInterface != null && classOrInterface.getType() != null
                 && Throwable.class.isAssignableFrom(classOrInterface.getType())) {
-            params.remove(lastIndex);
-            return;
+            return true;
         }
+        return false;
+    }
 
+    private boolean hasTypeThrowable(ASTPrimaryExpression last) {
         // if the type could be determined already
         if (last.getType() != null && Throwable.class.isAssignableFrom(last.getType())) {
-            params.remove(lastIndex);
-            return;
+            return true;
         }
+        return false;
+    }
 
+    private boolean isReferencingThrowable(ASTPrimaryExpression last) {
         // check the variable type, if there is a reference by name
         ASTName variable = last.getFirstDescendantOfType(ASTName.class);
         if (variable != null && variable.getNameDeclaration() != null
                 && variable.getNameDeclaration() instanceof VariableNameDeclaration) {
             VariableNameDeclaration declaration = (VariableNameDeclaration) variable.getNameDeclaration();
             if (declaration.getType() != null && Throwable.class.isAssignableFrom(declaration.getType())) {
-                params.remove(lastIndex);
-                return;
+                return true;
             }
             // convention: Exception type names should end with Exception
             if (declaration.getTypeImage() != null && declaration.getTypeImage().endsWith("Exception")) {
-                params.remove(lastIndex);
-                return;
+                return true;
             }
+        }
+        return false;
+    }
+
+    private void removeThrowableParam(final List<ASTPrimaryExpression> params) {
+        // Throwable parameters are the last one in the list, if any.
+        if (params.isEmpty()) {
+            return;
+        }
+        int lastIndex = params.size() - 1;
+        ASTPrimaryExpression last = params.get(lastIndex);
+
+        if (isNewThrowable(last) || hasTypeThrowable(last) || isReferencingThrowable(last)) {
+            params.remove(lastIndex);
+            return;
         }
     }
 
