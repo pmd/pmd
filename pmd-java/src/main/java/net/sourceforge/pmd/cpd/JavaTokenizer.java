@@ -21,6 +21,8 @@ public class JavaTokenizer implements Tokenizer {
     private boolean ignoreAnnotations;
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
+    
+    private boolean constructorCandidate;
 
     public void setProperties(Properties properties) {
         ignoreAnnotations = Boolean.parseBoolean(properties.getProperty(IGNORE_ANNOTATIONS, "false"));
@@ -63,9 +65,18 @@ public class JavaTokenizer implements Tokenizer {
                 || currentToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
             image = String.valueOf(currentToken.kind);
         }
-        if (ignoreIdentifiers && currentToken.kind == JavaParserConstants.IDENTIFIER) {
+        if (ignoreIdentifiers && !constructorCandidate
+                && currentToken.kind == JavaParserConstants.IDENTIFIER) {
             image = String.valueOf(currentToken.kind);
         }
+        
+        // Can the next token be a constructor identifier?
+        constructorCandidate = currentToken.kind == JavaParserConstants.PRIVATE
+                || currentToken.kind == JavaParserConstants.PROTECTED
+                || currentToken.kind == JavaParserConstants.PUBLIC
+                || currentToken.kind == JavaParserConstants.LBRACE
+                || currentToken.kind == JavaParserConstants.RBRACE;
+        
         tokenEntries.add(new TokenEntry(image, fileName, currentToken.beginLine));
     }
 
