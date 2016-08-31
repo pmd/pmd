@@ -4,6 +4,9 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import net.sourceforge.pmd.PMD;
 
 import org.junit.Test;
@@ -203,6 +206,34 @@ public class JavaTokensTokenizerTest {
         assertEquals(1, tokens.size());
     }
 
+    @Test
+    public void testIgnoreIdentifiersDontAffectConstructors() throws Throwable {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        t.setIgnoreIdentifiers(true);
+        
+        SourceCode sourceCode = new SourceCode(
+            new SourceCode.StringCodeLoader(
+                "package foo.bar.baz;" + PMD.EOL +
+                "public class Foo extends Bar {" + PMD.EOL +
+                	"public Foo(int i) { super(i); }" + PMD.EOL +
+                	"private Foo(int i, String s) { super(i, s); }" + PMD.EOL +
+                	"/* default */ Foo(int i, String s, Object o) { super(i, s, o); }" + PMD.EOL +
+                "}" +PMD.EOL
+
+            ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        List<TokenEntry> tokenList = tokens.getTokens();
+        
+        // First constructor
+        assertEquals("Foo", tokenList.get(7).toString());
+        // Second constructor
+        assertEquals("Foo", tokenList.get(19).toString());
+        // Third constructor
+        assertEquals("Foo", tokenList.get(35).toString());
+    }
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(JavaTokensTokenizerTest.class);
