@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF8"?>
 <toolchains>
   <!-- place this file in ${user.home}/.m2/toolchains.xml -->
+  <!-- adjust the paths to jdkhome -->
 
   <toolchain>
     <type>jdk</type>
@@ -8,7 +9,9 @@
       <version>1.6</version>
     </provides>
     <configuration>
-      <jdkHome>/path/to/jdk/1.6</jdkHome>
+      <jdkHome>/path/to/jdk/1.6</jdkHome>                                                   <!-- Linux -->
+      <jdkHome>/Library/Java/JavaVirtualMachines/jdk1.6.0_45.jdk/Contents/Home</jdkHome>    <!-- MacOSX -->
+      <jdkHome>C:\\java\\edition\\jdk1.6.0_45</jdkHome>                                     <!-- Windows -->
     </configuration>
   </toolchain>
   <toolchain>
@@ -17,7 +20,9 @@
       <version>1.7</version>
     </provides>
     <configuration>
-      <jdkHome>/path/to/jdk/1.7</jdkHome>
+      <jdkHome>/path/to/jdk/1.7</jdkHome>                                                   <!-- Linux -->
+      <jdkHome>/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home</jdkHome>    <!-- MacOSX -->
+      <jdkHome>C:\\java\\edition\\jdk1.7.0_80</jdkHome>                                     <!-- Windows -->
     </configuration>
   </toolchain>
   <toolchain>
@@ -26,7 +31,9 @@
       <version>1.8</version>
     </provides>
     <configuration>
-      <jdkHome>/path/to/jdk/1.8</jdkHome>
+      <jdkHome>/path/to/jdk/1.8</jdkHome>                                                   <!-- Linux -->
+      <jdkHome>/Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk/Contents/Home</jdkHome>    <!-- MacOSX -->
+      <jdkHome>C:\\java\\edition\\jdk1.8.0_92</jdkHome>                                     <!-- Windows -->
     </configuration>
   </toolchain>
 </toolchains>
