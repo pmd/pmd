@@ -307,4 +307,24 @@ public class Example {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify #1519 [java] UselessParenthesis: False Positive: "Prohibits the use of useless parentheses" when more than one line</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <code><![CDATA[
+public class Useless {
+    public void method() {
+        boolean isSkipped = (pokeNick.equals(pokemon.getNickname())
+            && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE);
+
+        // now the same in one line
+        boolean isSkipped2 = (pokeNick.equals(pokemon.getNickname()) && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE);
+
+        // now without the outer parenthesis - no additional violation.
+        boolean isSkipped3 = pokeNick.equals(pokemon.getNickname()) && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
