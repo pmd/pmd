@@ -4,6 +4,8 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Properties;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -21,7 +23,7 @@ public class JavaTokenizer implements Tokenizer {
     private boolean ignoreAnnotations;
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
-
+    
     public void setProperties(Properties properties) {
         ignoreAnnotations = Boolean.parseBoolean(properties.getProperty(IGNORE_ANNOTATIONS, "false"));
         ignoreLiterals = Boolean.parseBoolean(properties.getProperty(IGNORE_LITERALS, "false"));
@@ -39,6 +41,7 @@ public class JavaTokenizer implements Tokenizer {
         Token currentToken = (Token) tokenMgr.getNextToken();
 
         TokenDiscarder discarder = new TokenDiscarder(ignoreAnnotations);
+        ConstructorDetector constructorDetector = new ConstructorDetector(ignoreIdentifiers);
 
         while (currentToken.image.length() > 0) {
             discarder.updateState(currentToken);
@@ -48,14 +51,17 @@ public class JavaTokenizer implements Tokenizer {
                 continue;
             }
 
-            processToken(tokenEntries, fileName, currentToken);
+            processToken(tokenEntries, fileName, currentToken, constructorDetector);
             currentToken = (Token) tokenMgr.getNextToken();
         }
         tokenEntries.add(TokenEntry.getEOF());
     }
 
-    private void processToken(Tokens tokenEntries, String fileName, Token currentToken) {
+    private void processToken(Tokens tokenEntries, String fileName, Token currentToken, ConstructorDetector constructorDetector) {
         String image = currentToken.image;
+        
+        constructorDetector.restoreConstructorToken(tokenEntries, currentToken);
+        
         if (ignoreLiterals
                 && (currentToken.kind == JavaParserConstants.STRING_LITERAL
                 || currentToken.kind == JavaParserConstants.CHARACTER_LITERAL
@@ -66,6 +72,9 @@ public class JavaTokenizer implements Tokenizer {
         if (ignoreIdentifiers && currentToken.kind == JavaParserConstants.IDENTIFIER) {
             image = String.valueOf(currentToken.kind);
         }
+        
+        constructorDetector.processToken(currentToken);
+        
         tokenEntries.add(new TokenEntry(image, fileName, currentToken.beginLine));
     }
 
@@ -175,6 +184,84 @@ public class JavaTokenizer implements Tokenizer {
             }
             if (currentToken.kind == JavaParserConstants.AT) {
                 isAnnotation = true;
+            }
+        }
+    }
+    
+    /**
+     * The {@link ConstructorDetector} consumes token by token and maintains state.
+     * It can detect, whether the current token belongs to a constructor method identifier
+     * and if so, is able to restore it when using ignoreIdentifiers.
+     */
+    private static class ConstructorDetector {
+        private boolean ignoreIdentifiers;
+        
+        private Deque<Integer> classMembersIndentations;
+        private int currentNestingLevel;
+        private boolean constructorCandidate;
+        private String prevIdentifier;
+        
+        public ConstructorDetector(boolean ignoreIdentifiers) {
+            this.ignoreIdentifiers = ignoreIdentifiers;
+            
+            currentNestingLevel = 0;
+            classMembersIndentations = new LinkedList<Integer>();
+        }
+        
+        public void processToken(Token currentToken) {
+            if (!ignoreIdentifiers) {
+                return;
+            }
+            
+            switch (currentToken.kind) {
+            case JavaParserConstants.IDENTIFIER:
+                // Could this be a constructor?
+                if (constructorCandidate && (!classMembersIndentations.isEmpty() && classMembersIndentations.peek().intValue() == currentNestingLevel)) {
+                    prevIdentifier = currentToken.image;
+                }
+                break;
+                
+            case JavaParserConstants.CLASS:
+                // If declaring a class, add a new block nesting level at which constructors may exist
+                classMembersIndentations.push(currentNestingLevel + 1);
+                break;
+                
+            case JavaParserConstants.LBRACE:
+                currentNestingLevel++;
+                break;
+                
+            case JavaParserConstants.RBRACE:
+                // Discard completed blocks
+                if (classMembersIndentations.peek() == currentNestingLevel) {
+                    classMembersIndentations.pop();
+                }
+                currentNestingLevel--;
+                break;
+            }
+            
+            // Can the next token be a constructor identifier?
+            constructorCandidate = currentToken.kind == JavaParserConstants.PRIVATE
+                    || currentToken.kind == JavaParserConstants.PROTECTED
+                    || currentToken.kind == JavaParserConstants.PUBLIC
+                    || currentToken.kind == JavaParserConstants.LBRACE
+                    || currentToken.kind == JavaParserConstants.RBRACE;
+        }
+        
+        public void restoreConstructorToken(Tokens tokenEntries, Token currentToken) {
+            if (!ignoreIdentifiers) {
+                return;
+            }
+            
+            if (prevIdentifier != null) {
+                // was the previous token a constructor? If so, restore the identifier
+                if (currentToken.kind == JavaParserConstants.LPAREN) {
+                    int lastTokenIndex = tokenEntries.size() - 1;
+                    TokenEntry lastToken = tokenEntries.getTokens().get(lastTokenIndex);
+                    tokenEntries.getTokens().set(lastTokenIndex,
+                        new TokenEntry(prevIdentifier, lastToken.getTokenSrcID(), lastToken.getBeginLine()));
+                }
+                
+                prevIdentifier = null;
             }
         }
     }

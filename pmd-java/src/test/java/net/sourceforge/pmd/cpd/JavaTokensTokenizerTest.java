@@ -4,7 +4,11 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.JavaParserConstants;
 
 import org.junit.Test;
 
@@ -203,6 +207,42 @@ public class JavaTokensTokenizerTest {
         assertEquals(1, tokens.size());
     }
 
+    @Test
+    public void testIgnoreIdentifiersDontAffectConstructors() throws Throwable {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        t.setIgnoreIdentifiers(true);
+        
+        SourceCode sourceCode = new SourceCode(
+            new SourceCode.StringCodeLoader(
+                "package foo.bar.baz;" + PMD.EOL +
+                "public class Foo extends Bar {" + PMD.EOL +
+                	"private Foo notAConstructor;" + PMD.EOL +
+                	"public Foo(int i) { super(i); }" + PMD.EOL +
+                	"private Foo(int i, String s) { super(i, s); }" + PMD.EOL +
+                	"/* default */ Foo(int i, String s, Object o) { super(i, s, o); }" + PMD.EOL +
+                	"private static class Inner {" + PMD.EOL +
+                		"Inner() { System.out.println(\"Guess who?\"); }" + PMD.EOL +
+                	"}" + PMD.EOL +
+                "}" +PMD.EOL
+
+            ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        List<TokenEntry> tokenList = tokens.getTokens();
+        
+        // Member variable of type Foo
+        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(7).toString());
+        // Public constructor
+        assertEquals("Foo", tokenList.get(10).toString());
+        // Private constructor
+        assertEquals("Foo", tokenList.get(22).toString());
+        // Package-private constructor
+        assertEquals("Foo", tokenList.get(38).toString());
+        // Inner class constructor
+        assertEquals("Inner", tokenList.get(64).toString());
+    }
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(JavaTokensTokenizerTest.class);
