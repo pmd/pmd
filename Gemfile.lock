@@ -132,6 +132,7 @@ GEM
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     unicode-display_width (1.1.0)
+    wdm (0.1.1)
 
 PLATFORMS
   ruby
@@ -140,6 +141,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   jekyll
+  wdm (~> 0.1.0)
 
 BUNDLED WITH
    1.12.5
