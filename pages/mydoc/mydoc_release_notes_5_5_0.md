@@ -9,17 +9,17 @@ permalink: mydoc_release_notes_5_5_0.html
 folder: mydoc
 ---
 
-**System requirements:**
+##System requirements:
 
 PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.com Apex source code, you’ll need a java8 runtime environment.
 
-**New Supported Languages:**
+##New Supported Languages:
 
 *   Salesforce.com Apex is now supported by PMD and CPD. See [PR#86](https://github.com/pmd/pmd/pull/86).
 *   CPD now supports Perl. See [PR#82](https://github.com/pmd/pmd/pull/82).
 *   CPD now supports Swift. See [PR#33](https://github.com/adangel/pmd/pull/33).
 
-**New and modified Rules:**
+##New and modified Rules:
 
 *   New rules in Java:
 
@@ -38,7 +38,7 @@ PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.
 
     *   New Rule: ecmascript-unnecessary/NoElseReturn: The else block in a if-else-construct is unnecessary if the <tt>if</tt> block contains a return. Then the content of the else block can be put outside. See [#1486](https://sourceforge.net/p/pmd/bugs/1486/).
 
-**Improvements and CLI changes:**
+##Improvements and CLI changes:
 
 *   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
 *   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): [core] [java] Provide backwards compatibility for PMD configuration file
@@ -48,7 +48,7 @@ PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.
 *   PMD: New command line parameter: <tt>-norulesetcompatibility</tt> - this disables the ruleset factory compatibility filter and fails, if e.g. an old rule name is used in the ruleset. See also [#1360](https://sourceforge.net/p/pmd/bugs/1360/). This option is also available for the ant task: <tt><noRuleSetCompatibility>true</noRuleSetCompatibility></tt>.
 *   PMD: New command line parameter: <tt>-filelist</tt>- this provides an alternative way to define, which files should be process by PMD. With this option, you can provide the path to a single file containing a comma delimited list of files to analyze. If this is given, then you don’t need to provide <tt>-dir</tt>. See [PR#98](https://github.com/pmd/pmd/pull/98).
 
-**Pull Requests:**
+##Pull Requests:
 
 *   [#25](https://github.com/adangel/pmd/pull/25): [cs] Added option to exclude C# using directives from CPD analysis
 *   [#27](https://github.com/adangel/pmd/pull/27): [cpp] Added support for Raw String Literals (C++11).
