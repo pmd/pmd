@@ -5,7 +5,7 @@ permalink: mydoc_introduction.html
 folder: mydoc
 ---
 
-#Hey There!
+## Hey There!
 
 ## Overview
 
