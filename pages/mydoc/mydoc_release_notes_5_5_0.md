@@ -19,7 +19,7 @@ PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.
 *   CPD now supports Perl. See [PR#82](https://github.com/pmd/pmd/pull/82).
 *   CPD now supports Swift. See [PR#33](https://github.com/adangel/pmd/pull/33).
 
-##New and modified Rules:
+## New and Modified Rules:
 
 *   New rules in Java:
 
@@ -38,7 +38,7 @@ PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.
 
     *   New Rule: ecmascript-unnecessary/NoElseReturn: The else block in a if-else-construct is unnecessary if the <tt>if</tt> block contains a return. Then the content of the else block can be put outside. See [#1486](https://sourceforge.net/p/pmd/bugs/1486/).
 
-## Improvements and CLI changes:
+## Improvements and CLI Changes:
 
 *   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
 *   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): [core] [java] Provide backwards compatibility for PMD configuration file
