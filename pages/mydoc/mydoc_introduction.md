@@ -3,9 +3,10 @@ title: Introduction
 sidebar: mydoc_sidebar
 permalink: mydoc_introduction.html
 folder: mydoc
+published: true
 ---
 
-## Hey There 2! 
+## Hey There 
 
 Some new text
 
