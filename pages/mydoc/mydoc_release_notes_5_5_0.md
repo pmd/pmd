@@ -3,7 +3,7 @@ title: Release Notes 5.5.0
 tags: [getting_started]
 keywords: release notes, announcements, what's new, new features
 last_updated: June 25, 2016
-summary: "Version 5.5.0 of the PMD Opern Source Project, released June 25, 2016."
+summary: "Version 5.5.0 of the PMD Open Source Project, released June 25, 2016."
 sidebar: mydoc_sidebar
 permalink: mydoc_release_notes_5_5_0.html
 folder: mydoc
@@ -88,7 +88,7 @@ PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.
 *   [#99](https://github.com/pmd/pmd/pull/99): [apex] Fixed Trigger name is reported incorrectly
 *   [#100](https://github.com/pmd/pmd/pull/100): [core] CSVRenderer: escape filenames with commas in csvrenderer
 
-**Bugfixes:**
+##Bugfixes:
 
 *   java-basic
     *   [#1471](https://sourceforge.net/p/pmd/bugs/1471/): [java] DoubleCheckedLocking: False positives
