@@ -56,7 +56,7 @@ entries:
       url: /release_notes_5_4_2.html
       output: web, pdf
 
-    - title: 5.0 Release notes
+    - title: 5.4.1 Release notes
       url: /release_notes_5_4_1.html
       output: web, pdf
 
