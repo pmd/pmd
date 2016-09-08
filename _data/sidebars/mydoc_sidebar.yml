@@ -52,8 +52,8 @@ entries:
       url: /mydoc_release_notes_5_5_0.html
       output: web, pdf
 
-    - title: 5.5.0 Release Notes (New Path)
-      url: /release_notes_5_5_0.html
+    - title: 5.4.2 Release Notes
+      url: /release_notes_5_4_2.html
       output: web, pdf
 
     - title: 5.0 Release notes
