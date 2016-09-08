@@ -9,8 +9,7 @@ permalink: 2015-10-04-release-notes-5-4-0.html
 folder: mydoc
 ---
 
-## Note
-	PMD 5.4.0 requires JDK 1.7 or above.
+## Note **PMD 5.4.0 requires JDK 1.7 or above.**
 
 **Summary:**
 
@@ -52,8 +51,7 @@ folder: mydoc
 
 Ruleset snippet to activate the new rules:
 
-	```
-	<pre class="prettyprint linenums"><rule ref="rulesets/java/basic.xml/SimplifiedTernary"/>
+	```<pre class="prettyprint linenums"><rule ref="rulesets/java/basic.xml/SimplifiedTernary"/>
 	<rule ref="rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName"/>
 	<rule ref="rulesets/java/clone.xml/CloneMethodMustBePublic"/>
 	<rule ref="rulesets/java/comments.xml/CommentDefaultAccessModifier"/>
