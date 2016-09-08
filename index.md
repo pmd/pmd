@@ -7,7 +7,7 @@ permalink: index.html
 summary: Welcome to PMD, an OpenSource project for analyzing source code.
 ---
 
-![alt text](/images/logo/Source-Code-Analyzer-Logo-PMD.png)
+![alt text](https://github.com/JosephAllen/PMD-New-Site/raw/master/images/logo/Source-Code-Analyzer-Logo-PMD.png)
 
 # Welcome to PMD
 
