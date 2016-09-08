@@ -9,22 +9,22 @@ permalink: release_notes_5_4_1.html
 folder: mydoc
 ---
 
-##Feature Request and Improvements
+## Feature Request and Improvements
 
 *   CPD: New command line parameter <tt>--ignore-usings</tt>: Ignore using directives in C# when comparing text.
 
-##Modified Rules
+## Modified Rules
 
 *   java-comments/CommentRequired: New property <tt>serialVersionUIDCommentRequired</tt> which controls the comment requirements for _serialVersionUID_ fields. By default, no comment is required for this field.
 
-##Pull Requests
+## Pull Requests
 
 *   [#25](https://github.com/adangel/pmd/pull/25): Added option to exclude C# using directives from CPD analysis
 *   [#72](https://github.com/pmd/pmd/pull/72): Added capability in Java and JSP parser for tracking tokens.
 *   [#74](https://github.com/pmd/pmd/pull/74): Fix rendering CommentDefaultAccessModifier description as code
 *   [#75](https://github.com/pmd/pmd/pull/75): RuleSetFactory Performance Enhancement
 
-##Bugfixes
+## Bugfixes
 
 *   java-comments/CommentDefaultAccessModifier
     *   [#1430](https://sourceforge.net/p/pmd/bugs/1430/): CommentDefaultAccessModifier triggers on field annotated with @VisibleForTesting
