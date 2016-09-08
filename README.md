@@ -10,4 +10,4 @@ A Jekyll-based theme designed for documentation and help systems. See the link f
 
 Build the site to see the instructions for using it. Or just go here: [http://idratherbewriting.com/documentation-theme-jekyll/](http://idratherbewriting.com/documentation-theme-jekyll/)
 
-Run 'bundle exec jekyll serve --watch' to fire up Jekyll on local machine
+Run `bundle exec jekyll serve --watch` to fire up Jekyll on local machine
