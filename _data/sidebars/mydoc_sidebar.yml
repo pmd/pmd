@@ -49,15 +49,15 @@ entries:
     folderitems:
 
     - title: 5.5.0 Release Notes
-      url: /release_notes_5_5_0.html
+      url: /2016-06-25-release-notes-5-5-0.html
       output: web, pdf
 
     - title: 5.4.2 Release Notes
-      url: /release_notes_5_4_2.html
+      url: /2016-05-29-release-notes-5-4-2.html
       output: web, pdf
 
     - title: 5.4.1 Release Notes
-      url: /release_notes_5_4_1.html
+      url: /2015-12-04-release-notes-5-4-1.html
       output: web, pdf
 
   - title: Installation
