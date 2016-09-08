@@ -10,7 +10,8 @@ folder: mydoc
 ---
 
 ## Note
-**PMD 5.4.0 requires JDK 1.7 or above.**
+    PMD 5.4.0 requires JDK 1.7 or above.
+	
 
 **Summary:**
 
@@ -50,18 +51,17 @@ folder: mydoc
     *   Basic: **InvalidDependencyTypes** (rulesets/pom/basic.xml/InvalidDependencyTypes)  
         Verifies that only the default types (jar, war, …) for dependencies are used.
 
-Ruleset snippet to activate the new rules:
-
-	<pre class="prettyprint linenums"><rule ref="rulesets/java/basic.xml/SimplifiedTernary"/>
-	<rule ref="rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName"/>
-	<rule ref="rulesets/java/clone.xml/CloneMethodMustBePublic"/>
-	<rule ref="rulesets/java/comments.xml/CommentDefaultAccessModifier"/>
-	<rule ref="rulesets/java/design.xml/SingleMethodSingleton"/>
-	<rule ref="rulesets/java/design.xml/SingletonClassReturningNewInstance"/>
-	<rule ref="rulesets/java/unnecessary.xml/UselessQualifiedThis"/>
-
-	<rule ref="rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion"/>
-	<rule ref="rulesets/pom/basic.xml/InvalidDependencyTypes"/>
+		Ruleset snippet to activate the new rules:
+			
+			<pre class="prettyprint linenums"><rule ref="rulesets/java/basic.xml/SimplifiedTernary"/>
+			<rule ref="rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName"/>
+			<rule ref="rulesets/java/clone.xml/CloneMethodMustBePublic"/>
+			<rule ref="rulesets/java/comments.xml/CommentDefaultAccessModifier"/>
+			<rule ref="rulesets/java/design.xml/SingleMethodSingleton"/>
+			<rule ref="rulesets/java/design.xml/SingletonClassReturningNewInstance"/>
+			<rule ref="rulesets/java/unnecessary.xml/UselessQualifiedThis"/>
+			<rule ref="rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion"/>
+			<rule ref="rulesets/pom/basic.xml/InvalidDependencyTypes"/>
 
 ## Modified Rules
 

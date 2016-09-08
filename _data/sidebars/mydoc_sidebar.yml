@@ -23,7 +23,7 @@ entries:
     output: web, pdf
     folderitems:
 
-    - title: Get started
+    - title: Welcome!
       url: /index.html
       output: web, pdf
       type: homepage
@@ -32,7 +32,7 @@ entries:
       url: /mydoc_introduction.html
       output: web, pdf
 
-    - title: Supported features
+    - title: Supported Features
       url: /mydoc_supported_features.html
       output: web, pdf
 
@@ -76,7 +76,7 @@ entries:
       url: /mydoc_install_jekyll_on_windows.html
       output: web, pdf
 
-  - title: Authoring
+  - title: Supported Languages
     output: web, pdf
 
     folderitems:
@@ -112,7 +112,7 @@ entries:
       url: /mydoc_atom_text_editor.html
       output: web, pdf
 
-  - title: Navigation
+  - title: Supported IDE's
     output: web, pdf
 
     folderitems:
