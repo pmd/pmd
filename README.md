@@ -1,5 +1,5 @@
 # PMD-New-Site
-New Site For PMD Core Project
+New Site For PMD Core Open Source Project
 
 ## Site Theme
 
