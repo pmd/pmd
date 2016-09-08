@@ -9,8 +9,6 @@ permalink: release_notes_5_4_2.html
 folder: mydoc
 ---
 
-## <a name="a29-May-2016_-_5.4.2"></a>29-May-2016 - 5.4.2
-
 ## New Supported Languages 
 
 *   CPD supports now Swift (see [PR#33](https://github.com/adangel/pmd/pull/33)).
