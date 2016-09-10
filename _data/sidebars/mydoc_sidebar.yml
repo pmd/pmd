@@ -32,6 +32,10 @@ entries:
       url: /mydoc_introduction.html
       output: web, pdf
 
+    - title: How PMD Works
+      url: /how_pmd_works.html
+      output: web, pdf
+
     - title: Supported Features
       url: /mydoc_supported_features.html
       output: web, pdf
