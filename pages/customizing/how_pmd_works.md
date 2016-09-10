@@ -18,7 +18,7 @@ folder: mydoc
 PMD checks source code against rules and produces a report. Like this:
 
 *   Something passes a file name and a RuleSet into PMD.
-*   PMD hands an InputStream to the file to a JavaCC-generated parser.
+*   PMD hands an InputStream of the source file to a JavaCC-generated parser.
 *   PMD gets a reference to an Abstract Syntax Tree back from the parser.
 *   PMD hands the AST off to the symbol table layer which builds scopes, finds declarations, and find usages.
 *   If any rules need data flow analysis, PMD hands the AST over to the DFA layer for building control flow graphs and data flow nodes.
