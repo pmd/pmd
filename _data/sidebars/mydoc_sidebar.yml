@@ -28,9 +28,9 @@ entries:
       output: web, pdf
       type: homepage
 
-    - title: Introduction
-      url: /mydoc_introduction.html
-      output: web, pdf
+#    - title: Introduction
+#      url: /mydoc_introduction.html
+#      output: web, pdf
 
     - title: How PMD Works
       url: /how_pmd_works.html
