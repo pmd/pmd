@@ -56,7 +56,7 @@ The delimiter character is used in the serialized string and cannot be part of t
 
 The 2D value array holds the label-value tuples in the order that they should be presented in the UI widget. See usage below.
 
-## For Rule developers
+## For Rule Developers
 
 All rule properties need to be characterized via individual PropertyDescriptors so that they can be viewed and adjusted the IDE plugin users. Since the descriptors never change at runtime we only need one of each so we create them as static singletons within the rule class definition. The following rule usage example makes use of a pair of integer properties:
 
@@ -154,7 +154,7 @@ You can define your own datatypes by implementing a subclass of AbstractPMDPrope
 
 One of the implementation goals in this system is to try and come up with property constructors sufficiently useful that we don’t need to assemble them within static blocks. A single statement should be enough to build a rule property descriptor.
 
-## <a name="For_IDE_plugin_developers">For IDE plugin developers
+## For IDE Plugin Developers
 
 In order to assemble an effective UI to manage the rule properties the following setup sequence is suggested:
 
