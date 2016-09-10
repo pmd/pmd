@@ -44,6 +44,26 @@ entries:
       url: /mydoc_support.html
       output: web, pdf
 
+  - title: Customizing PMD
+    output: web, pdf
+    folderitems:
+
+    - title: How PMD Works
+      url: /how_pmd_works.html
+      output: web, pdf
+
+    - title: Writing a Rule
+      url: /writing_pmd_rules.html
+      output: web, pdf
+
+    - title: Writing XPath Rules
+      url: /writing_xpath_rules.html
+      output: web, pdf
+
+    - title: Making Rulesets
+      url: /making_rulesets.html
+      output: web, pdf
+
   - title: Release Notes
     output: web, pdf
     folderitems:

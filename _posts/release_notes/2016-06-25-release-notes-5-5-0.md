@@ -11,7 +11,7 @@ folder: mydoc
 
 ## System requirements
 
->**Note:** PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.com Apex source code, you’ll need a java8 runtime environment.
+{% include note.html content="PMD and CPD need at least a java7 runtime environment. For analyzing Salesforce.com Apex source code, you’ll need a java8 runtime environment." %}
 
 ## New Supported Languages
 
