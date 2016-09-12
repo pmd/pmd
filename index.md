@@ -7,6 +7,12 @@ permalink: index.html
 summary: Welcome to PMD, an OpenSource project for analyzing source code.
 ---
 
+Source for this new site can be found here: https://github.com/JosephAllen/PMD-New-Site
+
+Suggested site structure can be made here: https://github.com/JosephAllen/PMD-New-Site/wiki
+
+Please feel free to fork thsi project and make page changes and to a pull so the updates can be merged with the currecnt content. There are a ton of template pages that will be deleted prior to deployment to the PMD project site.
+
 ![alt text](https://github.com/JosephAllen/PMD-New-Site/raw/master/images/logo/Source-Code-Analyzer-Logo-PMD.png)
 
 # Welcome to PMD
