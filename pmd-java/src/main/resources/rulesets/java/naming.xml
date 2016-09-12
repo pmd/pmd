@@ -597,4 +597,20 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
      ]]></example>
     </rule>
 
+<rule name="IsDoesNotReturnBoolean"
+          message="Linguistics Antipattern - Method name starts with is but does not return boolean"
+          class="IsDoesNotReturnBooleanRule">
+      <description>
+      Linguistics Antipattern - Method name starts with is but does not return boolean
+      </description>
+        <priority>3</priority>
+ 
+      <example>
+<![CDATA[
+	int isValid(); // should return boolean
+	boolean isValid(); // try to achieve this
+]]>
+      </example>
+    </rule>
+
 </ruleset>
