@@ -598,8 +598,11 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
     </rule>
 
 <rule name="IsDoesNotReturnBoolean"
+	  language = "java"
+	  since = "5.5.1"
           message="Linguistics Antipattern - Method name starts with is but does not return boolean"
-          class="IsDoesNotReturnBooleanRule">
+          class="net.sourceforge.pmd.lang.java.rule.naming.IsDoesNotReturnBooleanRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/java/naming.html#IsDoesNotReturnBoolean"> 
       <description>
       Linguistics Antipattern - Method name starts with is but does not return boolean
       </description>
