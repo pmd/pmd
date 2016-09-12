@@ -16,6 +16,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "AbstractNaming");
+        addRule(RULESET, "AttributeTypeAndNameIsInconsistent");
         addRule(RULESET, "AtLeastOneConstructor");
         addRule(RULESET, "AvoidDollarSigns");
         addRule(RULESET, "AvoidFinalLocalVariable");
@@ -50,6 +51,7 @@ public class CodeStyleRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "MDBAndSessionBeanNamingConvention");
         addRule(RULESET, "MethodArgumentCouldBeFinal");
         addRule(RULESET, "MethodNamingConventions");
+        addRule(RULESET, "MethodTypeAndNameIsInconsistent");
         addRule(RULESET, "MIsLeadingVariableName");
         addRule(RULESET, "NoPackage");
         addRule(RULESET, "OnlyOneReturn");

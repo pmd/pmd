@@ -45,6 +45,77 @@ public abstract class Foo { // should be AbstractFoo
         </example>
     </rule>
 
+    <rule name="AttributeTypeAndNameIsInconsistent"
+          language="java"
+          since="6.6.0"
+          message="Linguistics Antipattern - Attribute name and type is inconsistent linguistically"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.AttributeTypeAndNameIsInconsistentRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#attributetypeandnameisinconsistent">
+        <description>
+            Linguistics Antipattern - Attribute name and type is inconsistent linguistically
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class AttributeTypeAndNameIsInconsistentTest
+{
+    //First and third variable in every group shouldnt raise error but second should
+
+    int isotherm;
+    int isValid;
+    boolean isTrue;
+
+    int haskell;
+    int hasMoney;
+    boolean hasSalary;
+
+    int cannibal;
+    int canFly;
+    boolean canWalk;
+
+    int william;
+    int willMove;
+    boolean willRun;
+
+    int havexxx;
+    int haveLegs;
+    boolean haveHorns;
+
+    int shoulder;
+    int shouldClimb;
+    boolean shouldEat;
+
+    void myMethod()
+    {
+        int isothermLocal;
+        int isValidLocal;
+        boolean isTrueLocal;
+
+        int haskellLocal;
+        int hasMoneyLocal;
+        boolean hasSalaryLocal;
+
+        int cannibalLocal;
+        int canFlyLocal;
+        boolean canWalkLocal;
+
+        int williamLocal;
+        int willMoveLocal;
+        boolean willRunLocal;
+
+        int havexxxLocal;
+        int haveLegsLocal;
+        boolean haveHornsLocal;
+
+        int shoulderLocal;
+        int shouldClimbLocal;
+        boolean shouldEatLocal;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AtLeastOneConstructor"
           language="java"
           since="1.04"
@@ -1185,6 +1256,160 @@ public void foo2 (final String param) { // better, do stuff with param never ass
 <![CDATA[
 public class Foo {
     public void fooStuff() {
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MethodTypeAndNameIsInconsistent"
+          language="java"
+          since="6.6.0"
+          message="Linguistics Antipattern - Method name and return type is inconsistent linguistically"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.MethodTypeAndNameIsInconsistentRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#methodtypeandnameisinconsistent">
+        <description>
+            Linguistics Antipattern - Method name and return type is inconsistent linguistically
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class MethodTypeAndNameIsInconsistentTest
+{
+    //First and third method in every group shouldnt raise error but second should
+    //Groups are seperated by comments
+
+    int isotherm()
+    {
+        return 1;
+    }
+    int isValid()
+    {
+        return 1;
+    }
+    boolean isSmall()
+    {
+        return true;
+    }
+
+    //////////////////////////
+    int haskell()
+    {
+        return 1;
+    }
+    int hasChild()
+    {
+        return 1;
+    }
+    boolean hasHorn()
+    {
+        return true;
+    }
+
+    //////////////////////////
+    int havelock()
+    {
+        return 1;
+    }
+    int haveChild()
+    {
+        return 1;
+    }
+    boolean haveHorn()
+    {
+        return true;
+    }
+
+    /////////////////////////
+    int cannibal()
+    {
+        return 1;
+    }
+    int canFly()
+    {
+        return 1;
+    }
+    boolean canWalk()
+    {
+        return true;
+    }
+
+    /////////////////////////
+    int william()
+    {
+        return 1;
+    }
+    int willFly()
+    {
+        return 1;
+    }
+    boolean willWalk()
+    {
+        return true;
+    }
+
+    /////////////////////////
+    int shoulder()
+    {
+        return 1;
+    }
+    int shouldFly()
+    {
+        return 1;
+    }
+    boolean shouldWalk()
+    {
+        return true;
+    }
+
+    /////////////////////////
+    int settlement()
+    {
+        return 1;
+    }
+    int setName()
+    {
+        return 1;
+    }
+    void setFlag()
+    {
+        
+    }
+
+    /////////////////////////
+    void getaways()
+    {
+        
+    }
+    void getName()
+    {
+        
+    }
+    int getCount()
+    {
+        return 1;
+    }
+
+    /////////////////////////
+    void tokenize()
+    {
+        
+    }
+    void toDataType()
+    {
+        
+    }
+    int toMyInteger()
+    {
+        return 1;
+    }
+    void grapeToWine()
+    {
+        
+    }
+    int hopsToBeer()
+    {
+        return 1;
     }
 }
 ]]>

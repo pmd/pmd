@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>First and third method in every group shouldnt raise error but second should Groups are separated by comments</description>
+        <expected-problems>10</expected-problems>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentTest 
+{
+	
+	//First and third method in every group shouldnt raise error but second should
+	//Groups are seperated by comments
+	
+	int isotherm()
+	{
+		return 1;
+	}
+	
+	int isValid()
+	{
+		return 1;
+	}
+	
+	boolean isSmall()
+	{
+		return true;
+	}
+	
+	//////////////////////////
+	
+	int haskell()
+	{
+		return 1;
+	}
+	
+	int hasChild()
+	{
+		return 1;
+	}
+	
+	boolean hasHorn()
+	{
+		return true;
+	}
+	
+	//////////////////////////
+	
+	int havelock()
+	{
+		return 1;
+	}
+	
+	int haveChild()
+	{
+		return 1;
+	}
+	
+	boolean haveHorn()
+	{
+		return true;
+	}
+	
+	/////////////////////////
+	
+	int cannibal()
+	{
+		return 1;
+	}
+	
+	int canFly()
+	{
+		return 1;
+	}
+	
+	boolean canWalk()
+	{
+		return true;
+	}
+	
+	/////////////////////////
+	
+	int william()
+	{
+		return 1;
+	}
+	
+	int willFly()
+	{
+		return 1;
+	}
+	
+	boolean willWalk()
+	{
+		return true;
+	}
+	
+	/////////////////////////
+	
+	int shoulder()
+	{
+		return 1;
+	}
+	
+	int shouldFly()
+	{
+		return 1;
+	}
+	
+	boolean shouldWalk()
+	{
+		return true;
+	}
+	
+	/////////////////////////
+
+	int settlement()
+	{
+		return 1;
+	}
+	
+	int setName()
+	{
+		return 1;
+	}
+	
+	void setFlag()
+	{
+		
+	}
+	
+	/////////////////////////
+
+	void getaways()
+	{
+		
+	}
+	
+	void getName()
+	{
+		
+	}
+	
+	int getCount()
+	{
+		return 1;
+	}
+	
+	/////////////////////////
+
+	void tokenize()
+	{
+		
+	}
+	
+	void toDataType()
+	{
+		
+	}
+	
+	int toMyInteger()
+	{
+		return 1;
+	}
+	
+	void grapeToWine()
+	{
+		
+	}
+	
+	int hopsToBeer()
+	{
+		return 1;
+	}
+	
+}
+     ]]></code>
+    </test-code>
+</test-data>
