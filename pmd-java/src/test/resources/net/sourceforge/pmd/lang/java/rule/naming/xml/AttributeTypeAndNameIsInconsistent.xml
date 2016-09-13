@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+	First and third variable in every group shouldnt raise error but second should
+     ]]></description>
+        <expected-problems>12</expected-problems>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentTest 
+{
+	//First and third variable in every group shouldnt raise error but second should
+
+	int isotherm;
+	int isValid;
+	boolean isTrue;
+	
+	int haskell;
+	int hasMoney;
+	boolean hasSalary;
+	
+	int cannibal;
+	int canFly;
+	boolean canWalk;
+	
+	int william;
+	int willMove;
+	boolean willRun;
+	
+	int havexxx;
+	int haveLegs;
+	boolean haveHorns;
+	
+	int shoulder;
+	int shouldClimb;
+	boolean shouldEat;
+	
+	void myMethod()
+	{
+		int isothermLocal;
+		int isValidLocal;
+		boolean isTrueLocal;
+		
+		int haskellLocal;
+		int hasMoneyLocal;
+		boolean hasSalaryLocal;
+		
+		int cannibalLocal;
+		int canFlyLocal;
+		boolean canWalkLocal;
+		
+		int williamLocal;
+		int willMoveLocal;
+		boolean willRunLocal;
+		
+		int havexxxLocal;
+		int haveLegsLocal;
+		boolean haveHornsLocal;
+		
+		int shoulderLocal;
+		int shouldClimbLocal;
+		boolean shouldEatLocal;
+	}
+	
+
+}
+	     ]]></code>
+    </test-code>
+</test-data>
