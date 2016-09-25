@@ -186,7 +186,9 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
                 && n1.getEndColumn() < n2.getEndColumn());
         boolean isNotSameClass = node.getFirstParentOfType(ASTClassOrInterfaceBody.class) != n2
                 .getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        return isNotWithinNode2 || isNotSameClass;
+        boolean isNodeWithinNode2 = (node.getEndLine() < n2.getEndLine() || node.getEndLine() == n2.getEndLine()
+                && node.getEndColumn() < n2.getEndColumn());
+        return isNotWithinNode2 || isNotSameClass || isNodeWithinNode2;
     }
 
     private boolean isCommentBefore(FormalComment n1, Node n2) {
