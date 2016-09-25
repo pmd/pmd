@@ -4,6 +4,8 @@
 
 **New Supported Languages:**
 
+*   CPD now supports Groovy. See [PR#107](https://github.com/pmd/pmd/pull/107).
+
 **Feature Request and Improvements:**
 
 **New/Modified/Deprecated Rules:**
@@ -11,6 +13,7 @@
 **Pull Requests:**
 
 *   [#106](https://github.com/pmd/pmd/pull/106): \[java] CPD: Keep constructor names under ignoreIdentifiers
+*   [#107](https://github.com/pmd/pmd/pull/107): \[groovy] Initial support for CPD Groovy
 
 **Bugfixes:**
 

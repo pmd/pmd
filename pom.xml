@@ -850,6 +850,11 @@
                 <artifactId>wiremock</artifactId>
                 <version>1.57</version>
             </dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>2.4.7</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -965,6 +970,7 @@
         <module>pmd-dist</module>
         <module>pmd-fortran</module>
         <module>pmd-go</module>
+        <module>pmd-groovy</module>
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
