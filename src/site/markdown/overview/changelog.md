@@ -19,6 +19,8 @@
 
 *   Java
     *   [#1501](https://sourceforge.net/p/pmd/bugs/1501/): \[java] \[apex] CyclomaticComplexity rule causes OOM when class reporting is disabled
+*   java-comments
+    *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
 *   java-design/CloseResource
     *   [#1479](https://sourceforge.net/p/pmd/bugs/1479/): CloseResource false positive on Statement
 *   java-unusedcode/UnusedLocalVariable
