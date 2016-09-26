@@ -3,8 +3,6 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.cpd.GroovyTokenizer;
-
 /**
  * Language implementation for Groovy
  */
