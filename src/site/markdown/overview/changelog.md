@@ -23,6 +23,8 @@
     *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
 *   java-design/CloseResource
     *   [#1479](https://sourceforge.net/p/pmd/bugs/1479/): CloseResource false positive on Statement
+*   java-imports/UnusedImports
+    *   [#1529](https://sourceforge.net/p/pmd/bugs/1529/): \[java] UnusedImports: The created rule violation has no class name
 *   java-unusedcode/UnusedLocalVariable
     *   [#1484](https://sourceforge.net/p/pmd/bugs/1484/): UnusedLocalVariable - false positive - parenthesis
 *   java-unusedcode/UnusedModifier
