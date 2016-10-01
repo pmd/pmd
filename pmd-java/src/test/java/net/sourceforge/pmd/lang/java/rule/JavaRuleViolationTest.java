@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.ScopeAndDeclarationFinder;
 
@@ -55,5 +56,50 @@ public class JavaRuleViolationTest {
         final RuleContext context = new RuleContext();
         final JavaRuleViolation violation = new JavaRuleViolation(null, context, md, null);
         assertEquals("bar", violation.getMethodName());
+    }
+
+    /**
+     * Tests that the class name is taken correctly, even if the node is outside of a class scope,
+     * e.g. a import declaration.
+     * @see <a href="https://sourceforge.net/p/pmd/bugs/1529/">#1529</a>
+     */
+    @Test
+    public void testPackageAndClassName() {
+        ASTCompilationUnit ast = parse("package pkg; import java.util.List; public class Foo { }");
+        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+
+        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        assertEquals("pkg", violation.getPackageName());
+        assertEquals("Foo", violation.getClassName());
+    }
+
+    @Test
+    public void testPackageAndEnumName() {
+        ASTCompilationUnit ast = parse("package pkg; import java.util.List; public enum FooE { }");
+        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+
+        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        assertEquals("pkg", violation.getPackageName());
+        assertEquals("FooE", violation.getClassName());
+    }
+
+    @Test
+    public void testDefaultPackageAndClassName() {
+        ASTCompilationUnit ast = parse("import java.util.List; public class Foo { }");
+        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+
+        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        assertEquals("", violation.getPackageName());
+        assertEquals("Foo", violation.getClassName());
+    }
+
+    @Test
+    public void testPackageAndMultipleClassesName() {
+        ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { } public class Bar { }");
+        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+
+        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        assertEquals("pkg", violation.getPackageName());
+        assertEquals("Bar", violation.getClassName());
     }
 }
