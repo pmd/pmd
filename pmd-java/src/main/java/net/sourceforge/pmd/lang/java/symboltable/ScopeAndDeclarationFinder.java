@@ -3,7 +3,8 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
@@ -54,7 +55,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * A stack of scopes reflecting the scope hierarchy when a node is visited.
      * This is used to set the parents of the created scopes correctly.
      */
-    private Stack<Scope> scopes = new Stack<>();
+    private Deque<Scope> scopes = new ArrayDeque<>();
 
     /**
      * Creates a new {@link ScopeAndDeclarationFinder} using the current class loader.
