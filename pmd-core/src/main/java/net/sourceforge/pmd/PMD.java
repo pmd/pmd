@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -22,7 +21,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
@@ -51,9 +52,6 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This is the main class for interacting with PMD. The primary flow of all Rule
@@ -245,8 +243,7 @@ public class PMD {
         long reportStart = System.nanoTime();
         try {
             Renderer renderer = configuration.createRenderer();
-            List<Renderer> renderers = new LinkedList<>();
-            renderers.add(renderer);
+            List<Renderer> renderers = Collections.singletonList(renderer);
 
             renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
             renderer.start();

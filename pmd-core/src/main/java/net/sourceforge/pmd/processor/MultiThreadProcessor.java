@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.processor;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -41,7 +42,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 		PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
 		ExecutorService executor = Executors.newFixedThreadPool(
 				configuration.getThreads(), factory);
-		List<Future<Report>> tasks = new LinkedList<>();
+		List<Future<Report>> tasks = new ArrayList<>(files.size());
 
 		for (DataSource dataSource : files) {
 			String niceFileName = filenameFrom(dataSource);

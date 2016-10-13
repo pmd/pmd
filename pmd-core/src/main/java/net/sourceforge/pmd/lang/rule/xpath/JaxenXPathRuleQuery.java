@@ -3,19 +3,16 @@
  */
 package net.sourceforge.pmd.lang.rule.xpath;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -32,6 +29,10 @@ import org.jaxen.expr.Step;
 import org.jaxen.expr.UnionExpr;
 import org.jaxen.expr.XPathFactory;
 import org.jaxen.saxpath.Axis;
+
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * This is a Jaxen based XPathRule query.
@@ -121,7 +122,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 	indexXPath(originalXPath, AST_ROOT);
 
 	boolean useRuleChain = true;
-	Stack<Expr> pending = new Stack<>();
+	Deque<Expr> pending = new ArrayDeque<>();
 	pending.push(originalXPath.getRootExpr());
 	while (!pending.isEmpty()) {
 	    Expr node = pending.pop();

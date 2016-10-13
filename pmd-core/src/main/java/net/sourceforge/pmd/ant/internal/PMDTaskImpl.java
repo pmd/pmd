@@ -179,7 +179,7 @@ public class PMDTaskImpl {
                     return null;
                 } // not relevant
             };
-            List<Renderer> renderers = new LinkedList<>();
+            List<Renderer> renderers = new ArrayList<>(formatters.size() + 1);
             renderers.add(logRenderer);
             for (Formatter formatter : formatters) {
                 renderers.add(formatter.getRenderer());
