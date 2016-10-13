@@ -67,6 +67,15 @@ public class TypeSet {
          * @throws ClassNotFoundException if the class couldn't be found
          */
         Class<?> resolve(String name) throws ClassNotFoundException;
+
+        /**
+         * Checks if the given class could be resolved by this resolver.
+         * Notice, that a resolver's ability to resolve a class does not imply
+         * that the class will actually be found and resolved.
+         * @param name the name of the class, might be fully classified or not.
+         * @return whether the class can be resolved
+         */
+        boolean couldResolve(String name);
     }
 
     /**
@@ -76,12 +85,21 @@ public class TypeSet {
     public abstract static class AbstractResolver implements Resolver {
         /** the class loader. */
         protected final PMDASMClassLoader pmdClassLoader;
+
         /**
          * Creates a new AbstractResolver that uses the given class loader.
          * @param pmdClassLoader the class loader to use
          */
-        public AbstractResolver(PMDASMClassLoader pmdClassLoader) {
+        public AbstractResolver(final PMDASMClassLoader pmdClassLoader) {
             this.pmdClassLoader = pmdClassLoader;
+        }
+
+        public boolean couldResolve(final String name) {
+            /*
+             * Resolvers based on this one, will attempt to load the class from
+             * the class loader yields no real gain
+             */
+            return true;
         }
     }
 
@@ -100,6 +118,7 @@ public class TypeSet {
             super(pmdClassLoader);
             this.importStmts = importStmts;
         }
+
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             if (name == null) {
@@ -119,6 +138,7 @@ public class TypeSet {
      */
     public static class CurrentPackageResolver extends AbstractResolver {
         private String pkg;
+
         /**
          * Creates a new {@link CurrentPackageResolver}
          * @param pmdClassLoader the class loader to use
@@ -128,6 +148,7 @@ public class TypeSet {
             super(pmdClassLoader);
             this.pkg = pkg;
         }
+
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             return pmdClassLoader.loadClass(pkg + '.' + name);
@@ -168,11 +189,18 @@ public class TypeSet {
         }
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
+            if (name == null) {
+                throw new ClassNotFoundException();
+            }
+
             for (String importStmt : importStmts) {
                 if (importStmt.endsWith("*")) {
                     try {
-                        String importPkg = importStmt.substring(0, importStmt.indexOf('*') - 1);
-                        return pmdClassLoader.loadClass(importPkg + '.' + name);
+                        String fqClassName = new StringBuilder(importStmt.length() + name.length())
+                            .append(importStmt)
+                            .replace(importStmt.length() - 1, importStmt.length(), name)
+                            .toString();
+                        return pmdClassLoader.loadClass(fqClassName);
                     } catch (ClassNotFoundException cnfe) {
                         // ignored as the class could be imported with the next on demand import...
                     }
@@ -201,12 +229,18 @@ public class TypeSet {
             primitiveTypes.put("short", short.class);
             primitiveTypes.put("char", char.class);
         }
+
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             if (!primitiveTypes.containsKey(name)) {
                 throw new ClassNotFoundException(name);
             }
             return primitiveTypes.get(name);
+        }
+
+        @Override
+        public boolean couldResolve(String name) {
+            return primitiveTypes.containsKey(name);
         }
     }
 
@@ -220,6 +254,11 @@ public class TypeSet {
                 return void.class;
             }
             throw new ClassNotFoundException(name);
+        }
+
+        @Override
+        public boolean couldResolve(String name) {
+            return "void".equals(name);
         }
     }
 
@@ -235,6 +274,7 @@ public class TypeSet {
         public FullyQualifiedNameResolver(PMDASMClassLoader pmdClassLoader) {
             super(pmdClassLoader);
         }
+
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             if (name == null) {
@@ -281,11 +321,13 @@ public class TypeSet {
             buildResolvers();
         }
 
-        for (Resolver resolver : resolvers) {
-            try {
-                return resolver.resolve(name);
-            } catch (ClassNotFoundException cnfe) {
-                // ignored, maybe another resolver will find the class
+        for (final Resolver resolver : resolvers) {
+            if (resolver.couldResolve(name)) {
+                try {
+                    return resolver.resolve(name);
+                } catch (ClassNotFoundException cnfe) {
+                    // ignored, maybe another resolver will find the class
+                }
             }
         }
 
