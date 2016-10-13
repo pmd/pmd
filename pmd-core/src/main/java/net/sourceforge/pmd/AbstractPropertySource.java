@@ -32,9 +32,7 @@ public abstract class AbstractPropertySource implements PropertySource {
      * @return a copy of the property descriptors.
      */
     protected List<PropertyDescriptor<?>> copyPropertyDescriptors() {
-        List<PropertyDescriptor<?>> copy = new ArrayList<>(propertyDescriptors.size());
-        copy.addAll(propertyDescriptors);
-        return copy;
+        return new ArrayList<>(propertyDescriptors);
     }
 
     /**
@@ -43,10 +41,7 @@ public abstract class AbstractPropertySource implements PropertySource {
      * @return a copy of the values
      */
     protected Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
-        Map<PropertyDescriptor<?>, Object> copy = new HashMap<>(
-                propertyValuesByDescriptor.size());
-        copy.putAll(propertyValuesByDescriptor);
-        return copy;
+        return new HashMap<>(propertyValuesByDescriptor);
     }
 
     /**

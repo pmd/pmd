@@ -7,17 +7,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
-import net.sourceforge.pmd.lang.*;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
-
-import org.apache.commons.io.IOUtils;
 
 public class SourceCodeProcessor {
 
@@ -141,12 +145,9 @@ public class SourceCodeProcessor {
 		usesDFA(languageVersion, rootNode, ruleSets, language);
 		usesTypeResolution(languageVersion, rootNode, ruleSets,language);
 		
-		List<Node> acus = new ArrayList<>();
-		acus.add(rootNode);
+		List<Node> acus = Collections.singletonList(rootNode);
 		ruleSets.apply(acus, ctx, language);
 	}
-
-
 
 	private void determineLanguage(RuleContext ctx) {
 		// If LanguageVersion of the source file is not known, make a determination

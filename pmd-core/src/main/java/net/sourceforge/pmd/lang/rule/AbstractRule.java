@@ -68,15 +68,11 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 	}
 
 	private List<String> copyExamples() {
-		List<String> copy = new ArrayList<>(examples.size());
-		copy.addAll(examples);
-		return copy;    	
+		return new ArrayList<>(examples);
 	}
 
 	private List<String> copyRuleChainVisits() {
-		List<String> copy = new ArrayList<>(ruleChainVisits.size());
-		copy.addAll(ruleChainVisits);
-		return copy;
+		return new ArrayList<>(ruleChainVisits);
 	}
 
 	/**
