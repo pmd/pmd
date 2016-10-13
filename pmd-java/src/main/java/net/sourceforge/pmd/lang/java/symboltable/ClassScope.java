@@ -28,6 +28,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
@@ -42,6 +44,20 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * method declarations and inner class declarations.
  */
 public class ClassScope extends AbstractJavaScope {
+
+    private static final Set<String> PRIMITIVE_TYPES;
+
+    static {
+        PRIMITIVE_TYPES = new HashSet<>();
+        PRIMITIVE_TYPES.add("boolean");
+        PRIMITIVE_TYPES.add("char");
+        PRIMITIVE_TYPES.add("byte");
+        PRIMITIVE_TYPES.add("short");
+        PRIMITIVE_TYPES.add("int");
+        PRIMITIVE_TYPES.add("long");
+        PRIMITIVE_TYPES.add("float");
+        PRIMITIVE_TYPES.add("double");
+    }
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
@@ -206,7 +222,7 @@ public class ClassScope extends AbstractJavaScope {
                 }
             }
             if (isEnum && "valueOf".equals(occurrence.getImage())) {
-                result.add(createBuiltInMethodDeclaration("valueOf", 1));
+                result.add(createBuiltInMethodDeclaration("valueOf", "String"));
             }
             return result;
         }
@@ -253,7 +269,7 @@ public class ClassScope extends AbstractJavaScope {
      * @param parameterCount the parameter count of the method
      * @return a method name declaration
      */
-    private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName, final int parameterCount) {
+    private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName, final String... parameterTypes) {
         ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(JavaParserTreeConstants.JJTMETHODDECLARATION);
         methodDeclaration.setPublic(true);
         methodDeclaration.setScope(this);
@@ -270,7 +286,7 @@ public class ClassScope extends AbstractJavaScope {
         methodDeclarator.jjtAddChild(formalParameters, 0);
         formalParameters.jjtSetParent(methodDeclarator);
 
-        for (int i = 0; i < parameterCount; i++) {
+        for (int i = 0; i < parameterTypes.length; i++) {
             ASTFormalParameter formalParameter = new ASTFormalParameter(JavaParserTreeConstants.JJTFORMALPARAMETER);
             formalParameters.jjtAddChild(formalParameter, i);
             formalParameter.jjtSetParent(formalParameters);
@@ -282,6 +298,23 @@ public class ClassScope extends AbstractJavaScope {
             variableDeclaratorId.setImage("arg" + i);
             formalParameter.jjtAddChild(variableDeclaratorId, 1);
             variableDeclaratorId.jjtSetParent(formalParameter);
+
+            if (PRIMITIVE_TYPES.contains(parameterTypes[i])) {
+                ASTPrimitiveType primitiveType = new ASTPrimitiveType(JavaParserTreeConstants.JJTPRIMITIVETYPE);
+                primitiveType.setImage(parameterTypes[i]);
+                type.jjtAddChild(primitiveType, 0);
+                primitiveType.jjtSetParent(type);
+            } else {
+                ASTReferenceType referenceType = new ASTReferenceType(JavaParserTreeConstants.JJTREFERENCETYPE);
+                type.jjtAddChild(referenceType, 0);
+                referenceType.jjtSetParent(type);
+
+                // TODO : this could actually be a primitive array...
+                ASTClassOrInterfaceType coiType = new ASTClassOrInterfaceType(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+                coiType.setImage(parameterTypes[i]);
+                referenceType.jjtAddChild(coiType, 0);
+                coiType.jjtSetParent(referenceType);
+            }
         }
 
         MethodNameDeclaration mnd = new MethodNameDeclaration(methodDeclarator);
