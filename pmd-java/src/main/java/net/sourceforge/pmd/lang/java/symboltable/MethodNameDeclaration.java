@@ -22,13 +22,13 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     public boolean isVarargs() {
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
-        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
-            if (p.isVarargs()) {
-            	return true;
-            }
+        if (params.getParameterCount() == 0) {
+            return false;
         }
-        return false;
+
+        // If it's a varargs, it HAS to be the last parameter
+        ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(params.getParameterCount() - 1);
+        return p.isVarargs();
     }
 
     public ASTMethodDeclarator getMethodNameDeclaratorNode() {
