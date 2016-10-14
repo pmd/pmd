@@ -47,7 +47,7 @@ public final class PMDASMClassLoader extends ClassLoader {
     private PMDASMClassLoader(ClassLoader parent) {
         super(parent);
     }
-
+    
     /**
      * A new PMDASMClassLoader is created for each compilation unit, this method
      * allows to reuse the same PMDASMClassLoader across all the compilation
@@ -79,6 +79,18 @@ public final class PMDASMClassLoader extends ClassLoader {
             // see also: https://sourceforge.net/p/pmd/bugs/1319/
             throw new ClassNotFoundException(name, e);
         }
+    }
+    
+    /**
+     * Checks if the class loader could resolve a given class name
+     * (ie: it doesn't know for sure it will fail).
+     * Notice, that the ability to resolve a class does not imply
+     * that the class will actually be found and resolved.
+     * @param name the name of the class
+     * @return whether the class can be resolved
+     */
+    public boolean couldResolve(String name) {
+    	return !dontBother.containsKey(name);
     }
 
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {

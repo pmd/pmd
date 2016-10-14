@@ -98,9 +98,9 @@ public class TypeSet {
         public boolean couldResolve(final String name) {
             /*
              * Resolvers based on this one, will attempt to load the class from
-             * the class loader yields no real gain
+             * the class loader, so ask him
              */
-            return true;
+            return pmdClassLoader.couldResolve(name);
         }
     }
 
@@ -170,6 +170,11 @@ public class TypeSet {
         public Class<?> resolve(String name) throws ClassNotFoundException {
             return pmdClassLoader.loadClass(pkg + '.' + name);
         }
+
+        @Override
+        public boolean couldResolve(String name) {
+        	return super.couldResolve(pkg + '.' + name);
+        }
     }
 
     /**
@@ -208,6 +213,11 @@ public class TypeSet {
 
             return clazz;
         }
+
+        @Override
+        public boolean couldResolve(String name) {
+        	return super.couldResolve("java.lang." + name);
+        }
     }
 
     /**
@@ -244,6 +254,23 @@ public class TypeSet {
                 }
             }
             throw new ClassNotFoundException("Type " + name + " not found");
+        }
+
+        @Override
+        public boolean couldResolve(String name) {
+        	boolean couldResolve = false;
+        	for (String importStmt : importStmts) {
+                if (importStmt.endsWith("*")) {
+                    String fqClassName = new StringBuilder(importStmt.length() + name.length())
+                        .append(importStmt)
+                        .replace(importStmt.length() - 1, importStmt.length(), name)
+                        .toString();
+                    // can any class be resolved / was never attempted?
+                    couldResolve |= super.couldResolve(fqClassName);
+                }
+        	}
+
+        	return couldResolve;
         }
     }
 
