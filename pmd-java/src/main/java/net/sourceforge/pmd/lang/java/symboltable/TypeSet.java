@@ -108,7 +108,8 @@ public class TypeSet {
      * explicit import statements.
      */
     public static class ExplicitImportResolver extends AbstractResolver {
-        private Set<String> importStmts;
+        private Map<String, String> importStmts;
+
         /**
          * Creates a new {@link ExplicitImportResolver}.
          * @param pmdClassLoader the class loader to use.
@@ -116,20 +117,35 @@ public class TypeSet {
          */
         public ExplicitImportResolver(PMDASMClassLoader pmdClassLoader, Set<String> importStmts) {
             super(pmdClassLoader);
-            this.importStmts = importStmts;
+            
+            // unfold imports, to store both FQ and unqualified names mapped to the FQ name
+            this.importStmts = new HashMap<>();
+            for (final String stmt : importStmts) {
+                if (stmt.endsWith("*")) {
+                    continue;
+                }
+
+                this.importStmts.put(stmt, stmt);
+                final int lastDotItdx = stmt.lastIndexOf('.');
+                if (lastDotItdx != -1) {
+                    this.importStmts.put(stmt.substring(lastDotItdx + 1), stmt);
+                }
+            }
         }
 
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
-            if (name == null) {
-                throw new ClassNotFoundException();
+            final String fqName = importStmts.get(name);
+            if (fqName != null) {
+                return pmdClassLoader.loadClass(fqName);
             }
-            for (String importStmt : importStmts) {
-                if (importStmt.endsWith(name)) {
-                    return pmdClassLoader.loadClass(importStmt);
-                }
-            }
+
             throw new ClassNotFoundException("Type " + name + " not found");
+        }
+
+        @Override
+        public boolean couldResolve(String name) {
+            return importStmts.containsKey(name);
         }
     }
 
