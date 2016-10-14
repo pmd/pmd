@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
@@ -176,6 +177,13 @@ public class TypeSet {
      */
     // TODO cite the JLS section on implicit imports
     public static class ImplicitImportResolver extends AbstractResolver {
+        /*
+         * They aren't so many to bother about memory, but are used all the time,
+         * so we worry about performance. On average, you can expect this cache to have ~90% hit ratio
+         * unless abusing star imports (import on demand)
+         */
+        private final ConcurrentHashMap<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
+
         /**
          * Creates a {@link ImplicitImportResolver}
          * @param pmdClassLoader the class loader
@@ -183,9 +191,22 @@ public class TypeSet {
         public ImplicitImportResolver(PMDASMClassLoader pmdClassLoader) {
             super(pmdClassLoader);
         }
+
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
-            return pmdClassLoader.loadClass("java.lang." + name);
+            if (name == null) {
+                throw new ClassNotFoundException();
+            }
+
+            Class<?> clazz = CLASS_CACHE.get(name);
+            if (clazz != null) {
+                return clazz;
+            }
+
+            clazz = pmdClassLoader.loadClass("java.lang." + name);
+            CLASS_CACHE.putIfAbsent(name, clazz);
+
+            return clazz;
         }
     }
 
