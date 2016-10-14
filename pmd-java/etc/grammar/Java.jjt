@@ -1812,8 +1812,7 @@ void PrimaryPrefix() :
   Literal()
 | LOOKAHEAD(2) "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-| LOOKAHEAD( "(" ")" "->" ) LambdaExpression()
-| LOOKAHEAD( VariableDeclaratorId() "->" ) LambdaExpression()
+| LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ) LambdaExpression()
 | LOOKAHEAD( FormalParameters() "->" ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
