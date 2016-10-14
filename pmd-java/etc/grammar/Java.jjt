@@ -1,4 +1,9 @@
 /**
+ * Simplify VariableDeclaratorId, forbidding illegal sequences such as
+ * this[] and MyClass.this[]
+ *
+ * Juan Martin Sotuyo Dodero 10/2016
+ *====================================================================
  * Fix for an expression within an additive expression that was
  * wrongly taken as a cast expression.
  * Bug #1484
@@ -1418,9 +1423,8 @@ void VariableDeclaratorId() :
 {
   (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
    | t=<THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image = t.image;}
-   | t=<IDENTIFIER> { image = t.image; }
+   | t=<IDENTIFIER> { image = t.image; } ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
   )
-  ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
   {
     checkForBadAssertUsage(image, "a variable name");
     checkForBadEnumUsage(image, "a variable name");
