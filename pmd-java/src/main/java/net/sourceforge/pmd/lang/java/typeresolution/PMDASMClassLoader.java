@@ -80,7 +80,7 @@ public final class PMDASMClassLoader extends ClassLoader {
             throw new ClassNotFoundException(name, e);
         }
     }
-    
+
     /**
      * Checks if the class loader could resolve a given class name
      * (ie: it doesn't know for sure it will fail).

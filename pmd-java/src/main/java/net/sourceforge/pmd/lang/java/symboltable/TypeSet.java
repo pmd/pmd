@@ -127,9 +127,9 @@ public class TypeSet {
                 }
 
                 this.importStmts.put(stmt, stmt);
-                final int lastDotItdx = stmt.lastIndexOf('.');
-                if (lastDotItdx != -1) {
-                    this.importStmts.put(stmt.substring(lastDotItdx + 1), stmt);
+                final int lastDotIdx = stmt.lastIndexOf('.');
+                if (lastDotIdx != -1) {
+                    this.importStmts.put(stmt.substring(lastDotIdx + 1), stmt);
                 }
             }
         }
@@ -187,7 +187,7 @@ public class TypeSet {
          * so we worry about performance. On average, you can expect this cache to have ~90% hit ratio
          * unless abusing star imports (import on demand)
          */
-        private final ConcurrentHashMap<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
+        private static final ConcurrentHashMap<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
 
         /**
          * Creates a {@link ImplicitImportResolver}
@@ -258,7 +258,6 @@ public class TypeSet {
 
         @Override
         public boolean couldResolve(String name) {
-        	boolean couldResolve = false;
         	for (String importStmt : importStmts) {
                 if (importStmt.endsWith("*")) {
                     String fqClassName = new StringBuilder(importStmt.length() + name.length())
@@ -266,11 +265,13 @@ public class TypeSet {
                         .replace(importStmt.length() - 1, importStmt.length(), name)
                         .toString();
                     // can any class be resolved / was never attempted?
-                    couldResolve |= super.couldResolve(fqClassName);
+                    if (super.couldResolve(fqClassName)) {
+                    	return true;
+                    }
                 }
         	}
 
-        	return couldResolve;
+        	return false;
         }
     }
 
