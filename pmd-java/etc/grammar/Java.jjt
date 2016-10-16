@@ -1,4 +1,11 @@
 /**
+ * Fix for regression introduced in previous changeset.
+ * The syntactic lookahead was not properly handled by javacc,
+ * so it was converted to a semantic one
+ * Bug #1530
+ *
+ * Juan Martin Sotuyo Dodero 10/2016
+ *====================================================================
  * Fix for an expression within an additive expression that was
  * wrongly taken as a cast expression.
  * Bug #1484
@@ -1761,7 +1768,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {}
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
-| LOOKAHEAD("(" <IDENTIFIER> ")" "+") PostfixExpression()
+| LOOKAHEAD( { getToken(1).kind == LPAREN && getToken(2).kind == IDENTIFIER && getToken(3).kind == RPAREN && getToken(4).kind == PLUS } ) PostfixExpression()
 | LOOKAHEAD( CastExpression() ) CastExpression()
 | LOOKAHEAD("(" Type() ")" "(") CastExpression()
 | PostfixExpression()
@@ -1843,9 +1850,8 @@ void PrimarySuffix() :
 }
 
 void Literal() :
-{}
-{
 { Token t;}
+{
   t=<INTEGER_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
 | t=<FLOATING_POINT_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
