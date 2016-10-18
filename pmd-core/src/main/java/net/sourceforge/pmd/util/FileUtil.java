@@ -103,7 +103,8 @@ public final class FileUtil {
 		    throw new RuntimeException("Archive file " + file.getName() + " can't be opened");
 		}
 	    } else {
-		dataSources.add(new FileDataSource(file));
+			if(filenameFilter.accept(file, file.getName()))
+		        dataSources.add(new FileDataSource(file));
 	    }
 	} else {
 	    // Match files, or directories which are not excluded.
