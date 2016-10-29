@@ -15,11 +15,14 @@
 *   [#106](https://github.com/pmd/pmd/pull/106): \[java] CPD: Keep constructor names under ignoreIdentifiers
 *   [#107](https://github.com/pmd/pmd/pull/107): \[groovy] Initial support for CPD Groovy
 *   [#110](https://github.com/pmd/pmd/pull/110): \[java] Fix parser error (issue 1530)
+*   [#111](https://github.com/pmd/pmd/pull/111): \[java] Fix BooleanInstantiationRule for Java 8
 
 **Bugfixes:**
 
 *   Java
     *   [#1530](https://sourceforge.net/p/pmd/bugs/1530/): \[java] Parser exception on Java code
+*   java-basic/BooleanInstantiation
+    *   [#1533](https://sourceforge.net/p/pmd/bugs/1533/): \[java] BooleanInstantiation: ClassCastException with Annotation
 *   java-comments
     *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
 *   java-imports/UnusedImports

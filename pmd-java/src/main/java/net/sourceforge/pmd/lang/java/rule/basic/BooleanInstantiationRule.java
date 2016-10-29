@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.rule.basic;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
@@ -63,7 +64,9 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
 	        if (node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
 	            return super.visit(node, data);
 	        }
-	        if (TypeHelper.isA((ASTClassOrInterfaceType) node.jjtGetChild(0), Boolean.class)) {
+	        
+	        Node n1 = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
+	    	if (TypeHelper.isA((ASTClassOrInterfaceType) n1, Boolean.class)) {
                 super.addViolation(data, node);
                 return data;
             }
