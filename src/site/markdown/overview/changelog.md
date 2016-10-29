@@ -16,6 +16,7 @@
 *   [#107](https://github.com/pmd/pmd/pull/107): \[groovy] Initial support for CPD Groovy
 *   [#110](https://github.com/pmd/pmd/pull/110): \[java] Fix parser error (issue 1530)
 *   [#111](https://github.com/pmd/pmd/pull/111): \[java] Fix BooleanInstantiationRule for Java 8
+*   [#112](https://github.com/pmd/pmd/pull/112): \[java] Fix ClassCastException on CloneMethodMustImplementCloneable
 
 **Bugfixes:**
 
@@ -30,6 +31,8 @@
 *   java-logging-java
     *   [#1500](https://sourceforge.net/p/pmd/bugs/1500/) \[java] InvalidSlf4jMessageFormat: doesn't ignore exception param
     *   [#1509](https://sourceforge.net/p/pmd/bugs/1509/) \[java] InvalidSlf4jMessageFormat: NPE
+*   java-typeresolution/CloneMethodMustImplementCloneable
+    *   [#1534](https://sourceforge.net/p/pmd/bugs/1534/): \[java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)
 *   General
     *   [#1506](https://sourceforge.net/p/pmd/bugs/1506/): \[core] When runing any RuleTst, start/end methods not called
     *   [#1517](https://sourceforge.net/p/pmd/bugs/1517/): \[java] CPD reports on Java constructors when using ignoreIdentifiers
