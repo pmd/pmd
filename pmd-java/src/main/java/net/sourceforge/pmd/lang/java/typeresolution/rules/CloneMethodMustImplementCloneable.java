@@ -34,12 +34,12 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
         ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
         if (impl != null && impl.jjtGetParent().equals(node)) {
             for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
-            	Node child = impl.jjtGetChild(ix);
-            	
-            	if (child.getClass() != ASTClassOrInterfaceType.class) {
-            		continue;
-            	}
-            	
+                Node child = impl.jjtGetChild(ix);
+
+                if (child.getClass() != ASTClassOrInterfaceType.class) {
+                    continue;
+                }
+
                 ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) child;
                 if (type.getType() == null) {
                     if ("Cloneable".equals(type.getImage())) {
