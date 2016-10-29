@@ -158,4 +158,16 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1533 [java] BooleanInstantiation: ClassCastException with Annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        Object o = new @Interned MyObject();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

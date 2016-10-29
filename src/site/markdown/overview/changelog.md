@@ -13,12 +13,15 @@
 *   [#35](https://github.com/adangel/pmd/pull/35): Javascript tokenizer now ignores comment tokens.
 *   [#103](https://github.com/pmd/pmd/pull/103): \[java] \[apex] Fix for 1501: CyclomaticComplexity rule causes OOM when class reporting is disabled
 *   [#110](https://github.com/pmd/pmd/pull/110): \[java] Fix parser error (issue 1530)
+*   [#111](https://github.com/pmd/pmd/pull/111): \[java] Fix BooleanInstantiationRule for Java 8
 
 **Bugfixes:**
 
 *   Java
     *   [#1501](https://sourceforge.net/p/pmd/bugs/1501/): \[java] \[apex] CyclomaticComplexity rule causes OOM when class reporting is disabled
     *   [#1530](https://sourceforge.net/p/pmd/bugs/1530/): \[java] Parser exception on Java code
+*   java-basic/BooleanInstantiation
+    *   [#1533](https://sourceforge.net/p/pmd/bugs/1533/): \[java] BooleanInstantiation: ClassCastException with Annotation
 *   java-comments
     *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
 *   java-imports/UnusedImports
