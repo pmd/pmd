@@ -15,6 +15,7 @@
 *   [#35](https://github.com/adangel/pmd/pull/35): Javascript tokenizer now ignores comment tokens.
 *   [#103](https://github.com/pmd/pmd/pull/103): \[java] \[apex] Fix for 1501: CyclomaticComplexity rule causes OOM when class reporting is disabled
 *   [#111](https://github.com/pmd/pmd/pull/111): \[java] Fix BooleanInstantiationRule for Java 8
+*   [#112](https://github.com/pmd/pmd/pull/112): \[java] Fix ClassCastException on CloneMethodMustImplementCloneable
 
 **Bugfixes:**
 
@@ -28,6 +29,8 @@
     *   [#1479](https://sourceforge.net/p/pmd/bugs/1479/): CloseResource false positive on Statement
 *   java-imports/UnusedImports
     *   [#1529](https://sourceforge.net/p/pmd/bugs/1529/): \[java] UnusedImports: The created rule violation has no class name
+*   java-typeresolution/CloneMethodMustImplementCloneable
+    *   [#1534](https://sourceforge.net/p/pmd/bugs/1534/): \[java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)
 *   java-unusedcode/UnusedLocalVariable
     *   [#1484](https://sourceforge.net/p/pmd/bugs/1484/): UnusedLocalVariable - false positive - parenthesis
 *   java-unusedcode/UnusedModifier
