@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,6 +60,6 @@ public class Search {
             }
             return scope.addNameOccurrence(nameOccurrence);
         }
-        return new HashSet<>();
+        return Collections.emptySet();
     }
 }

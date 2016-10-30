@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -243,8 +242,7 @@ public class PMD {
         long reportStart = System.nanoTime();
         try {
             Renderer renderer = configuration.createRenderer();
-            List<Renderer> renderers = new LinkedList<>();
-            renderers.add(renderer);
+            List<Renderer> renderers = Collections.singletonList(renderer);
 
             renderer.setWriter(IOUtil.createWriter(configuration.getReportFile()));
             renderer.start();
