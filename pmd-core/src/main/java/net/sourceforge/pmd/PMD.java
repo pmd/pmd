@@ -22,7 +22,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
@@ -43,7 +45,6 @@ import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.SystemUtils;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -51,9 +52,6 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.ReaderDataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * This is the main class for interacting with PMD. The primary flow of all Rule
@@ -365,7 +363,7 @@ public class PMD {
          * be disabled if threadCount is not positive, e.g. using the
          * "-threads 0" command line option.
          */
-        if (SystemUtils.MT_SUPPORTED && configuration.getThreads() > 0) {
+        if (configuration.getThreads() > 0) {
             new MultiThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
         } else {
             new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
