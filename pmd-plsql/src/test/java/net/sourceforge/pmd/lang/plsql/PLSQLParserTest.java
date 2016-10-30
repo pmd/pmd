@@ -36,4 +36,12 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
           + "        doSomethingElse;"
           + "END;");
     }
+
+    @Test(timeout = 5000)
+    public void testBug1531() {
+        parsePLSQL(
+                "create or replace force view oxa.o_xa_function_role_types as\n" +
+                "select \"CFT_ID\",\"CFR_ID\",\"CFT_NAME\",\"TCN\",\"LOG_MODULE\",\"LOG_USER\",\"LOG_DATE\",\"LOG_TIME\" from crm_function_role_types\n" +
+                "/");
+    }
 }
