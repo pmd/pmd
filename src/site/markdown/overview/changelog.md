@@ -22,6 +22,7 @@
 *   [#115](https://github.com/pmd/pmd/pull/115): \[java] Simplify lambda parsing
 *   [#116](https://github.com/pmd/pmd/pull/116): \[core] \[java] Improve collection usage
 *   [#117](https://github.com/pmd/pmd/pull/117): \[java] Improve symboltable performance
+*   [#118](https://github.com/pmd/pmd/pull/118): \[java] Simplify VariableDeclaratorId parsing
 
 **Bugfixes:**
 
