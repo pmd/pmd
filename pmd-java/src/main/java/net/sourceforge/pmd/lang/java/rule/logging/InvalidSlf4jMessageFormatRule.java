@@ -3,10 +3,10 @@
  */
 package net.sourceforge.pmd.lang.java.rule.logging;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -66,9 +66,10 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         }
 
         // find the arguments
-        final List<ASTPrimaryExpression> params = new LinkedList<ASTPrimaryExpression>();
         final List<ASTExpression> argumentList = parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
                 .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
+        final List<ASTPrimaryExpression> params = new ArrayList<ASTPrimaryExpression>(argumentList.size());
+
         for (final ASTExpression astExpression : argumentList) {
             ASTPrimaryExpression primaryExpression = astExpression.getFirstChildOfType(ASTPrimaryExpression.class);
             if (primaryExpression != null) {
@@ -174,7 +175,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
                 final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfType(ASTClassOrInterfaceBody.class)
                         .findDescendantsOfType(ASTFieldDeclaration.class);
                 // only look for ASTVariableDeclarator that are Fields
-                final List<ASTVariableDeclarator> fields = new LinkedList<ASTVariableDeclarator>();
+                final List<ASTVariableDeclarator> fields = new ArrayList<ASTVariableDeclarator>(fieldlist.size());
                 for (final ASTFieldDeclaration astFieldDeclaration : fieldlist) {
                     fields.add(astFieldDeclaration.getFirstChildOfType(ASTVariableDeclarator.class));
                 }

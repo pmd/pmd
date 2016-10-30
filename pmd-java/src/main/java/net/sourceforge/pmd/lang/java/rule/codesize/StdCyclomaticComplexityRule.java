@@ -3,7 +3,8 @@
  */
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
@@ -74,7 +75,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     }
   }
 
-  protected Stack<Entry> entryStack = new Stack<>();
+  protected Deque<Entry> entryStack = new ArrayDeque<>();
 
   public StdCyclomaticComplexityRule() {
       definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);

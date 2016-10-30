@@ -27,8 +27,8 @@ public class JavaRuleChainVisitor extends AbstractRuleChainVisitor {
 			}
 		};
 
-		for (int i = 0; i < nodes.size(); i++) {
-			javaParserVistor.visit((ASTCompilationUnit)nodes.get(i), ctx);
+		for (final Node node : nodes) {
+			javaParserVistor.visit((ASTCompilationUnit) node, ctx);
 		}
 	}
 
