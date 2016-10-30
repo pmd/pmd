@@ -50,7 +50,13 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
         ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
         if (impl != null && impl.jjtGetParent().equals(node)) {
             for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
-                ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) impl.jjtGetChild(ix);
+            	Node child = impl.jjtGetChild(ix);
+            	
+            	if (child.getClass() != ASTClassOrInterfaceType.class) {
+            		continue;
+            	}
+            	
+                ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) child;
                 if (isJUnitTest(type)) {
                     junitImported = true;
                     return super.visit(node, data);
