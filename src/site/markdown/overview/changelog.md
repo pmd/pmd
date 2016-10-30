@@ -23,6 +23,7 @@
 *   [#116](https://github.com/pmd/pmd/pull/116): \[core] \[java] Improve collection usage
 *   [#117](https://github.com/pmd/pmd/pull/117): \[java] Improve symboltable performance
 *   [#118](https://github.com/pmd/pmd/pull/118): \[java] Simplify VariableDeclaratorId parsing
+*   [#119](https://github.com/pmd/pmd/pull/119): \[plsql] Fix PMD issue 1531- endless loop followed by OOM while parsing (PL)SQL
 
 **Bugfixes:**
 
@@ -41,6 +42,8 @@
     *   [#1534](https://sourceforge.net/p/pmd/bugs/1534/): \[java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)
 *   java-typeresolution/SignatureDeclareThrowsException
     *   [#1535](https://sourceforge.net/p/pmd/bugs/1535/): \[java] SignatureDeclareThrowsException: ClassCastException with Annotation
+*   PLSQL
+    *   [#1531](https://sourceforge.net/p/pmd/bugs/1531/): \[plsql] OOM/Endless loop while parsing (PL)SQL
 *   General
     *   [#1506](https://sourceforge.net/p/pmd/bugs/1506/): \[core] When runing any RuleTst, start/end methods not called
     *   [#1517](https://sourceforge.net/p/pmd/bugs/1517/): \[java] CPD reports on Java constructors when using ignoreIdentifiers
