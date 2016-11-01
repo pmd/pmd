@@ -627,6 +627,63 @@ public class RuleSetFactoryTest {
         ruleSetFactory.createRuleSet(ref);
     }
 
+    /**
+     * This unit test manifests the current behavior - which might change in the future. See #1537.
+     *
+     * Currently, if a ruleset is imported twice, the excludes of the first import are ignored.
+     * Duplicated rules are silently ignored.
+     *
+     * @throws Exception any error
+     * @see <a href="https://sourceforge.net/p/pmd/bugs/1537/">#1537 Implement strict ruleset parsing</a>
+     * @see <a href="http://stackoverflow.com/questions/40299075/custom-pmd-ruleset-not-working">stackoverflow - custom ruleset not working</a>
+     */
+    @Test
+    public void testExcludeAndImportTwice() throws Exception {
+        RuleSetReferenceId ref1 = createRuleSetReferenceId("<?xml version=\"1.0\"?>\n" +
+                "<ruleset name=\"Custom ruleset for tests\"\n" +
+                "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" +
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" +
+                "  <description>Custom ruleset for tests</description>\n" +
+                "  <rule ref=\"rulesets/dummy/basic.xml\">\n" +
+                "    <exclude name=\"DummyBasicMockRule\"/>\n" +
+                "  </rule>\n" +
+                "</ruleset>\n");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        RuleSet ruleset = ruleSetFactory.createRuleSet(ref1);
+        Assert.assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
+
+        RuleSetReferenceId ref2 = createRuleSetReferenceId("<?xml version=\"1.0\"?>\n" +
+                "<ruleset name=\"Custom ruleset for tests\"\n" +
+                "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" +
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" +
+                "  <description>Custom ruleset for tests</description>\n" +
+                "  <rule ref=\"rulesets/dummy/basic.xml\">\n" +
+                "    <exclude name=\"DummyBasicMockRule\"/>\n" +
+                "  </rule>\n" +
+                "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n" +
+                "</ruleset>\n");
+        RuleSetFactory ruleSetFactory2 = new RuleSetFactory();
+        RuleSet ruleset2 = ruleSetFactory2.createRuleSet(ref2);
+        Assert.assertNotNull(ruleset2.getRuleByName("DummyBasicMockRule"));
+
+        RuleSetReferenceId ref3 = createRuleSetReferenceId("<?xml version=\"1.0\"?>\n" +
+                "<ruleset name=\"Custom ruleset for tests\"\n" +
+                "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n" +
+                "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n" +
+                "  <description>Custom ruleset for tests</description>\n" +
+                "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n" +
+                "  <rule ref=\"rulesets/dummy/basic.xml\">\n" +
+                "    <exclude name=\"DummyBasicMockRule\"/>\n" +
+                "  </rule>\n" +
+                "</ruleset>\n");
+        RuleSetFactory ruleSetFactory3 = new RuleSetFactory();
+        RuleSet ruleset3 = ruleSetFactory3.createRuleSet(ref3);
+        Assert.assertNotNull(ruleset3.getRuleByName("DummyBasicMockRule"));
+}
+
 	private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>"
 			+ PMD.EOL
 			+ "<ruleset name=\"test\">"
