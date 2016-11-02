@@ -4,37 +4,31 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * @author Eric Olander
  * @author Wouter Zelle
  * @since Created on April 17, 2005, 9:49 PM
  */
-public class SingularFieldRule extends AbstractJavaRule {
+public class SingularFieldRule extends AbstractLombokAwareRule {
 
 	/**
 	 * Restore old behavior by setting both properties to true, which will result in many false positives
@@ -49,48 +43,13 @@ public class SingularFieldRule extends AbstractJavaRule {
 	definePropertyDescriptor(DISALLOW_NOT_ASSIGNMENT);
     }
 
-    private boolean lombokImported = false;
-    private boolean classHasLombokAnnotation = false;
-    private static final String LOMBOK_PACKAGE = "lombok";
-    private static final Set<String> LOMBOK_ANNOTATIONS = new HashSet<String>();
-    static {
-        LOMBOK_ANNOTATIONS.add("Data");
-        LOMBOK_ANNOTATIONS.add("Getter");
-        LOMBOK_ANNOTATIONS.add("Setter");
-        LOMBOK_ANNOTATIONS.add("Value");
-        LOMBOK_ANNOTATIONS.add("RequiredArgsConstructor");
-        LOMBOK_ANNOTATIONS.add("AllArgsConstructor");
-        LOMBOK_ANNOTATIONS.add("Builder");
-    }
-
-    @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        lombokImported = false;
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTImportDeclaration node, Object data) {
-        ASTName name = node.getFirstChildOfType(ASTName.class);
-        if (!lombokImported && name != null && name.getImage() != null & name.getImage().startsWith(LOMBOK_PACKAGE)) {
-            lombokImported = true;
-        }
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        classHasLombokAnnotation = hasLombokAnnotation(node);
-        return super.visit(node, data);
-    }
-
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
     	boolean checkInnerClasses = getProperty(CHECK_INNER_CLASSES);
     	boolean disallowNotAssignment = getProperty(DISALLOW_NOT_ASSIGNMENT);
 
-        if (node.isPrivate() && !node.isStatic()  && !classHasLombokAnnotation && !hasLombokAnnotation(node)) {
+        if (node.isPrivate() && !node.isStatic()  && !hasClassLombokAnnotation() && !hasLombokAnnotation(node)) {
             for (ASTVariableDeclarator declarator: node.findChildrenOfType(ASTVariableDeclarator.class)) {
         	ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.jjtGetChild(0);
                 List<NameOccurrence> usages = declaration.getUsages();
@@ -191,30 +150,4 @@ public class SingularFieldRule extends AbstractJavaRule {
 			return false;
 		}
 	}
-
-    private boolean hasLombokAnnotation(Node node) {
-        boolean result = false;
-        Node parent = node.jjtGetParent();
-        List<ASTAnnotation> annotations = parent.findChildrenOfType(ASTAnnotation.class);
-        for (ASTAnnotation annotation : annotations) {
-            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-            if (name != null) {
-                String annotationName = name.getImage();
-                if (lombokImported) {
-                    if (LOMBOK_ANNOTATIONS.contains(annotationName)) {
-                        result = true;
-                    }
-                } else {
-                    if (annotationName.startsWith(LOMBOK_PACKAGE + ".")) {
-                        String shortName = annotationName.substring(LOMBOK_PACKAGE.length() + 1);
-                        if (LOMBOK_ANNOTATIONS.contains(shortName)) {
-                            result = true;
-                        }
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
 }
