@@ -29,6 +29,8 @@
     *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
 *   java-design/CloseResource
     *   [#1479](https://sourceforge.net/p/pmd/bugs/1479/): CloseResource false positive on Statement
+*   java-design/SingularField
+    *   [#1494](https://sourceforge.net/p/pmd/bugs/1494/): \[java] SingularField: lombok.Data false positive
 *   java-imports/UnusedImports
     *   [#1529](https://sourceforge.net/p/pmd/bugs/1529/): \[java] UnusedImports: The created rule violation has no class name
 *   java-typeresolution/CloneMethodMustImplementCloneable

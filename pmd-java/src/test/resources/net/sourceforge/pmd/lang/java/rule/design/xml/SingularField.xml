@@ -533,4 +533,40 @@ public enum Supplier {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1494 [java] SingularField: lombok.Data false positive - part1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+@Data
+public class MyClass {
+
+    private String field1;
+
+    public MyClass(String field1) {
+        this.field1 = field1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1494 [java] SingularField: lombok.Data false positive - part2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+
+public class MyClass {
+
+    @Getter
+    private String field1;
+
+    public MyClass(String field1) {
+        this.field1 = field1;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
