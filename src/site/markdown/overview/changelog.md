@@ -33,6 +33,8 @@
     *   [#1533](https://sourceforge.net/p/pmd/bugs/1533/): \[java] BooleanInstantiation: ClassCastException with Annotation
 *   java-comments
     *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
+*   java-design/SingularField
+    *   [#1494](https://sourceforge.net/p/pmd/bugs/1494/): \[java] SingularField: lombok.Data false positive
 *   java-imports/UnusedImports
     *   [#1529](https://sourceforge.net/p/pmd/bugs/1529/): \[java] UnusedImports: The created rule violation has no class name
 *   java-logging-java
