@@ -8,7 +8,13 @@
 
 **Feature Request and Improvements:**
 
+*   plsql
+    *   [#1539](https://sourceforge.net/p/pmd/bugs/1539/): \[plsql] Create new rule for strict syntax checking: MisplacedPragma
+
 **New/Modified/Deprecated Rules:**
+
+*   New Rules for plsql
+    *   plsql-strictsyntax: MisplacedPragma
 
 **Pull Requests:**
 
