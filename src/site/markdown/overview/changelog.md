@@ -38,6 +38,7 @@
 *   java-typeresolution/SignatureDeclareThrowsException
     *   [#1535](https://sourceforge.net/p/pmd/bugs/1535/): \[java] SignatureDeclareThrowsException: ClassCastException with Annotation
 *   PLSQL
+    *   [#1520](https://sourceforge.net/p/pmd/bugs/1520/): \[plsql] Missing PL/SQL language constructs in parser: Is Of Type, Using
     *   [#1527](https://sourceforge.net/p/pmd/bugs/1527/): \[plsql] PRAGMA AUTONOMOUS_TRANSACTION gives processing errors
     *   [#1531](https://sourceforge.net/p/pmd/bugs/1531/): \[plsql] OOM/Endless loop while parsing (PL)SQL
 *   General
