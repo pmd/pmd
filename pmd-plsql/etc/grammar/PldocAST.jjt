@@ -25,6 +25,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
+/**
+ * Adjusted ProgramUnit() to allow Pragma(), even though this is not
+ * valid syntax. See PMD Bug #1527.
+ *
+ * Andreas Dangel 11/2016
+ */
+
 //
 options {
 	DEBUG_PARSER = false ;
@@ -483,7 +491,9 @@ ASTProgramUnit ProgramUnit()  :
 			|
 			(
 				DeclarativeSection()
-				<BEGIN> (Statement())* (ExceptionHandler())? <END> [ID()]
+				<BEGIN>
+				[Pragma()] // See PMD Bug #1527
+				(Statement())* (ExceptionHandler())? <END> [ID()]
 			)
 		)
 	]
