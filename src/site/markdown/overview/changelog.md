@@ -27,6 +27,8 @@
 
 **Bugfixes:**
 
+*   apex-apexunit
+    *   [#1521](https://sourceforge.net/p/pmd/bugs/1521/): \[apex] ApexUnitTestClassShouldHaveAsserts: Parsing error on APEX class: expected one element but was: <BlockStatement, BlockStatement>
 *   Java
     *   [#1530](https://sourceforge.net/p/pmd/bugs/1530/): \[java] Parser exception on Java code
     *   [#1490](https://sourceforge.net/p/pmd/bugs/1490/): \[java] PMD Error while processing - NullPointerException
