@@ -1,17 +1,16 @@
 # Changelog
 
-## ????? - 5.4.3-SNAPSHOT
+## 04-November-2016 - 5.4.3
 
-**New Supported Languages:**
+**Summary:**
 
-**Feature Request and Improvements:**
-
-**New/Modified/Deprecated Rules:**
+*   7 pull requests
+*   16 bug fixes
 
 **Pull Requests:**
 
-*   [#35](https://github.com/adangel/pmd/pull/35): Javascript tokenizer now ignores comment tokens.
-*   [#103](https://github.com/pmd/pmd/pull/103): \[java] \[apex] Fix for 1501: CyclomaticComplexity rule causes OOM when class reporting is disabled
+*   [#35](https://github.com/adangel/pmd/pull/35): \[javascript] Javascript tokenizer now ignores comment tokens.
+*   [#103](https://github.com/pmd/pmd/pull/103): \[java] Fix for 1501: CyclomaticComplexity rule causes OOM when class reporting is disabled
 *   [#110](https://github.com/pmd/pmd/pull/110): \[java] Fix parser error (issue 1530)
 *   [#111](https://github.com/pmd/pmd/pull/111): \[java] Fix BooleanInstantiationRule for Java 8
 *   [#112](https://github.com/pmd/pmd/pull/112): \[java] Fix ClassCastException on CloneMethodMustImplementCloneable
@@ -21,7 +20,7 @@
 **Bugfixes:**
 
 *   Java
-    *   [#1501](https://sourceforge.net/p/pmd/bugs/1501/): \[java] \[apex] CyclomaticComplexity rule causes OOM when class reporting is disabled
+    *   [#1501](https://sourceforge.net/p/pmd/bugs/1501/): \[java] CyclomaticComplexity rule causes OOM when class reporting is disabled
     *   [#1530](https://sourceforge.net/p/pmd/bugs/1530/): \[java] Parser exception on Java code
     *   [#1490](https://sourceforge.net/p/pmd/bugs/1490/): \[java] PMD Error while processing - NullPointerException
 *   java-basic/BooleanInstantiation
@@ -46,4 +45,3 @@
     *   [#1506](https://sourceforge.net/p/pmd/bugs/1506/): \[core] When runing any RuleTst, start/end methods not called
     *   [#1508](https://sourceforge.net/p/pmd/bugs/1508/): \[core] \[java] PMD is leaking file handles
 
-**API Changes:**
