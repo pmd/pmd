@@ -101,8 +101,8 @@ The method clone() should only be implemented if the class implements the Clonea
                 <value>
                     <![CDATA[
 //ClassOrInterfaceDeclaration
-[not(./ImplementsList/ClassOrInterfaceType
-[@Image='Cloneable'])]
+[not(./ExtendsList/ClassOrInterfaceType[@Image='Cloneable'])]
+[not(./ImplementsList/ClassOrInterfaceType[@Image='Cloneable'])]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
 [MethodDeclaration
 [MethodDeclarator[@Image
