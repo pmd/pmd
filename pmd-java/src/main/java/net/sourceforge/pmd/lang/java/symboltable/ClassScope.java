@@ -266,7 +266,7 @@ public class ClassScope extends AbstractJavaScope {
      * the Enum Method "valueOf".
      *
      * @param methodName the method name
-     * @param parameterCount the parameter count of the method
+     * @param parameterTypes the reference types of each parameter of the method
      * @return a method name declaration
      */
     private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName, final String... parameterTypes) {
@@ -294,6 +294,7 @@ public class ClassScope extends AbstractJavaScope {
             ASTType type = new ASTType(JavaParserTreeConstants.JJTTYPE);
             formalParameter.jjtAddChild(type, 0);
             type.jjtSetParent(formalParameter);
+
             ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(JavaParserTreeConstants.JJTVARIABLEDECLARATORID);
             variableDeclaratorId.setImage("arg" + i);
             formalParameter.jjtAddChild(variableDeclaratorId, 1);
@@ -310,10 +311,10 @@ public class ClassScope extends AbstractJavaScope {
                 referenceType.jjtSetParent(type);
 
                 // TODO : this could actually be a primitive array...
-                ASTClassOrInterfaceType coiType = new ASTClassOrInterfaceType(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
-                coiType.setImage(parameterTypes[i]);
-                referenceType.jjtAddChild(coiType, 0);
-                coiType.jjtSetParent(referenceType);
+                ASTClassOrInterfaceType classOrInterfaceType = new ASTClassOrInterfaceType(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+                classOrInterfaceType.setImage(parameterTypes[i]);
+                referenceType.jjtAddChild(classOrInterfaceType, 0);
+                classOrInterfaceType.jjtSetParent(referenceType);
             }
         }
 

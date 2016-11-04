@@ -136,6 +136,25 @@ public class AcceptanceTest extends STBBaseTst {
         assertEquals(10, usages.get(1).getLocation().getBeginLine());
     }
 
+    /**
+     * Unit test for bug #1490
+     *
+     * @see <a href="https://sourceforge.net/p/pmd/bugs/1490/">#1490 [java] PMD Error while processing - NullPointerException</a>
+     */
+    @Test
+    public void testNullPointerEnumValueOfOverloaded() {
+        parseCode("public enum EsmDcVoltageSensor {\n"
+                + "    A;\n"
+                + "    void bar(int ... args) {\n"
+                + "        int idx;\n"
+                + "        int startIdx;\n"
+                + "        String name = EsmDcVoltageSensor.valueOf((byte) (idx - startIdx)).getName();\n"
+                + "    }\n"
+                + "    public EsmDCVoltageSensor valueOf(byte b) {\n" // that's the overloaded method
+                + "    }\n"
+                + "}\n");
+    }
+
     private static final String TEST_DEMO =
             "public class Foo  {" + PMD.EOL +
             " void bar(ArrayList buz) { " + PMD.EOL +
