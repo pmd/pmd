@@ -50,4 +50,14 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
     public void testBug1527() throws Exception {
         parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/InlinePragmaProcError.pls")));
     }
+
+    @Test
+    public void testBug1520IsOfType() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/IsOfType.pls")));
+    }
+
+    @Test
+    public void testBug1520Using() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/Using.pls")));
+    }
 }
