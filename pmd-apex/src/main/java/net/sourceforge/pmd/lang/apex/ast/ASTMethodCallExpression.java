@@ -14,4 +14,17 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
 	public Object jjtAccept(ApexParserVisitor visitor, Object data) {
 		return visitor.visit(this, data);
 	}
+
+    public String getMethodName() {
+        return getNode().getMethodName();
+    }
+
+    public String getFullMethodName() {
+        final String methodName = getMethodName();
+        String typeName = "";
+        if (!getNode().getReferenceExpression().getJadtIdentifiers().isEmpty()) {
+            typeName = getNode().getReferenceExpression().getJadtIdentifiers().get(0).value + ".";
+        }
+        return typeName + methodName;
+    }
 }

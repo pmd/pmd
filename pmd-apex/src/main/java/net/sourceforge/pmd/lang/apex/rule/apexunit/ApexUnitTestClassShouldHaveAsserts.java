@@ -3,9 +3,10 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.apexunit;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-import com.google.common.collect.Iterables;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -20,11 +21,13 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
  */
 public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule {
 
-    private static final String SYSTEM = "System";
-    private static final String ASSERT = "assert";
-    private static final String ASSERT_EQUALS = "assertEquals";
-    private static final String ASSERT_NOT_EQUALS = "assertNotEquals";
-
+    private static final Set<String> ASSERT_METHODS = new HashSet<>();
+    static {
+        ASSERT_METHODS.add("System.assert");
+        ASSERT_METHODS.add("System.assertEquals");
+        ASSERT_METHODS.add("System.assertNotEquals");
+    }
+    
     @Override
     public Object visit(ASTMethod node, Object data) {
         if (!isTestMethodOrClass(node)) {
@@ -36,21 +39,18 @@ public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule
 
     private Object checkForAssertStatements(ApexNode<?> node, Object data) {
         final List<ASTBlockStatement> blockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
-        final List<ASTStatement> statements = Iterables.getOnlyElement(blockStatements).findDescendantsOfType(ASTStatement.class);
+        final List<ASTStatement> statements = new ArrayList<>();
+        final List<ASTMethodCallExpression> methodCalls = new ArrayList<>();
+        for (ASTBlockStatement blockStatement : blockStatements) {
+            statements.addAll(blockStatement.findDescendantsOfType(ASTStatement.class));
+            methodCalls.addAll(blockStatement.findDescendantsOfType(ASTMethodCallExpression.class));
+        }
         boolean isAssertFound = false;
-       
-        for (final ASTStatement statement : statements) {
-            final List<ASTMethodCallExpression> methodCalls = statement.findDescendantsOfType(ASTMethodCallExpression.class);
-            
-            for (final ASTMethodCallExpression methodCallExpression : methodCalls) {
-                final String methodName = methodCallExpression.getNode().getMethod().getName();
-                
-                if (methodCallExpression.getNode().getDefiningType().getApexName().equalsIgnoreCase(SYSTEM)
-                    && (methodName.equalsIgnoreCase(ASSERT)
-                        || methodName.equalsIgnoreCase(ASSERT_EQUALS)
-                        || methodName.equalsIgnoreCase(ASSERT_NOT_EQUALS))) {
-                    isAssertFound = true;
-                }
+        
+        for (final ASTMethodCallExpression methodCallExpression : methodCalls) {
+            if (ASSERT_METHODS.contains(methodCallExpression.getFullMethodName())) {
+                isAssertFound = true;
+                break;
             }
         }
         
