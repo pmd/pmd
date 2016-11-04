@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.plsql;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 
@@ -43,5 +44,10 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
                 "create or replace force view oxa.o_xa_function_role_types as\n" +
                 "select \"CFT_ID\",\"CFR_ID\",\"CFT_NAME\",\"TCN\",\"LOG_MODULE\",\"LOG_USER\",\"LOG_DATE\",\"LOG_TIME\" from crm_function_role_types\n" +
                 "/");
+    }
+
+    @Test
+    public void testBug1527() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/InlinePragmaProcError.pls")));
     }
 }
