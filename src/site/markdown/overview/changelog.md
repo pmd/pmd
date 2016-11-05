@@ -1,6 +1,13 @@
 # Changelog
 
-## ????? - 5.5.2-SNAPSHOT
+## 05-November-2016 - 5.5.2
+
+**Summary:**
+
+*   1 new language for CPD: Groovy
+*   1 new rule: plsql-strictsyntax/MisplacedPragma
+*   12 pull requests
+*   17 bug fixes
 
 **New Supported Languages:**
 
@@ -11,7 +18,7 @@
 *   plsql
     *   [#1539](https://sourceforge.net/p/pmd/bugs/1539/): \[plsql] Create new rule for strict syntax checking: MisplacedPragma
 
-**New/Modified/Deprecated Rules:**
+**New Rules:**
 
 *   New Rules for plsql
     *   plsql-strictsyntax: MisplacedPragma
@@ -61,6 +68,3 @@
 *   General
     *   [#1506](https://sourceforge.net/p/pmd/bugs/1506/): \[core] When runing any RuleTst, start/end methods not called
     *   [#1517](https://sourceforge.net/p/pmd/bugs/1517/): \[java] CPD reports on Java constructors when using ignoreIdentifiers
-
-
-**API Changes:**
