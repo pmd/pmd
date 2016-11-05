@@ -261,7 +261,7 @@
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.18.1</surefire.version>
         <checkstyle.version>2.16</checkstyle.version>
-        <pmd.plugin.version>3.6</pmd.plugin.version>
+        <pmd.plugin.version>3.7</pmd.plugin.version>
         <java.version>1.7</java.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <ant.version>1.9.6</ant.version>
@@ -466,12 +466,12 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>5.5.1</version>
+                            <version>5.5.2</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>5.5.1</version>
+                            <version>5.5.2</version>
                         </dependency>
                     </dependencies>
                 </plugin>
