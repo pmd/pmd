@@ -115,8 +115,8 @@ fi
 
 (
     cd pmd-dist/target
-    unzip pmd-bin-*.zip
-    cd pmd-bin-*
+    unzip pmd-bin-${RELEASE_VERSION}-SNAPSHOT.zip
+    cd pmd-bin-${RELEASE_VERSION}-SNAPSHOT
     ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
 )
 
@@ -252,7 +252,7 @@ cat <<EOF
 
 **New Supported Languages:**
 
-**Feature Request and Improvements:**
+**Feature Requests and Improvements:**
 
 **New/Modified/Deprecated Rules:**
 

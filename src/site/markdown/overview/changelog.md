@@ -6,7 +6,7 @@
 
 *   CPD now supports Groovy. See [PR#107](https://github.com/pmd/pmd/pull/107).
 
-**Feature Request and Improvements:**
+**Feature Requests and Improvements:**
 
 *   plsql
     *   [#1539](https://sourceforge.net/p/pmd/bugs/1539/): \[plsql] Create new rule for strict syntax checking: MisplacedPragma
