@@ -23,9 +23,9 @@ public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule
 
     private static final Set<String> ASSERT_METHODS = new HashSet<>();
     static {
-        ASSERT_METHODS.add("System.assert");
-        ASSERT_METHODS.add("System.assertEquals");
-        ASSERT_METHODS.add("System.assertNotEquals");
+        ASSERT_METHODS.add("system.assert");
+        ASSERT_METHODS.add("system.assertequals");
+        ASSERT_METHODS.add("system.assertnotequals");
     }
     
     @Override
@@ -48,7 +48,7 @@ public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule
         boolean isAssertFound = false;
         
         for (final ASTMethodCallExpression methodCallExpression : methodCalls) {
-            if (ASSERT_METHODS.contains(methodCallExpression.getFullMethodName())) {
+            if (ASSERT_METHODS.contains(methodCallExpression.getFullMethodName().toLowerCase())) {
                 isAssertFound = true;
                 break;
             }
