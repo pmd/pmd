@@ -224,7 +224,7 @@ public class JavaTokensTokenizerTest {
                 	"private static class Inner {" + PMD.EOL +
                 		"Inner() { System.out.println(\"Guess who?\"); }" + PMD.EOL +
                 	"}" + PMD.EOL +
-                "}" +PMD.EOL
+                "}" + PMD.EOL
 
             ));
         Tokens tokens = new Tokens();
@@ -242,6 +242,35 @@ public class JavaTokensTokenizerTest {
         assertEquals("Foo", tokenList.get(38).toString());
         // Inner class constructor
         assertEquals("Inner", tokenList.get(64).toString());
+    }
+    
+    @Test
+    public void testIgnoreIdentifiersHandlesEnums() throws Throwable {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        t.setIgnoreIdentifiers(true);
+        
+        SourceCode sourceCode = new SourceCode(
+            new SourceCode.StringCodeLoader(
+                "package foo.bar.baz;" + PMD.EOL +
+                "public enum Foo {" + PMD.EOL +
+                	"BAR(1)," + PMD.EOL +
+                	"BAZ(2);" + PMD.EOL +
+                	"Foo(int val) {" + PMD.EOL +
+                	"}" + PMD.EOL +
+                "}" + PMD.EOL
+
+            ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        List<TokenEntry> tokenList = tokens.getTokens();
+        
+        // Enum member
+        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(4).toString());
+        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(9).toString());
+        // Enum constructor
+        assertEquals("Foo", tokenList.get(13).toString());
     }
 
     public static junit.framework.Test suite() {
