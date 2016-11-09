@@ -196,16 +196,16 @@ public class JavaTokenizer implements Tokenizer {
     private static class ConstructorDetector {
         private boolean ignoreIdentifiers;
         
-        private Deque<Integer> classMembersIndentations;
+        private Deque<TypeDeclaration> classMembersIndentations;
         private int currentNestingLevel;
-        private boolean constructorCandidate;
+        private boolean storeNextIdentifier;
         private String prevIdentifier;
         
         public ConstructorDetector(boolean ignoreIdentifiers) {
             this.ignoreIdentifiers = ignoreIdentifiers;
             
             currentNestingLevel = 0;
-            classMembersIndentations = new LinkedList<Integer>();
+            classMembersIndentations = new LinkedList<TypeDeclaration>();
         }
         
         public void processToken(Token currentToken) {
@@ -215,15 +215,21 @@ public class JavaTokenizer implements Tokenizer {
             
             switch (currentToken.kind) {
             case JavaParserConstants.IDENTIFIER:
-                // Could this be a constructor?
-                if (constructorCandidate && (!classMembersIndentations.isEmpty() && classMembersIndentations.peek().intValue() == currentNestingLevel)) {
-                    prevIdentifier = currentToken.image;
+                if ("enum".equals(currentToken.image)) {
+                    // If declaring an enum, add a new block nesting level at which constructors may exist
+                    pushTypeDeclaration();
+                } else if (storeNextIdentifier) {
+                    classMembersIndentations.peek().name = currentToken.image;
+                    storeNextIdentifier = false;
                 }
+                
+                // Store this token
+                prevIdentifier = currentToken.image;
                 break;
                 
             case JavaParserConstants.CLASS:
                 // If declaring a class, add a new block nesting level at which constructors may exist
-                classMembersIndentations.push(currentNestingLevel + 1);
+                pushTypeDeclaration();
                 break;
                 
             case JavaParserConstants.LBRACE:
@@ -232,37 +238,44 @@ public class JavaTokenizer implements Tokenizer {
                 
             case JavaParserConstants.RBRACE:
                 // Discard completed blocks
-                if (classMembersIndentations.peek() == currentNestingLevel) {
+                if (!classMembersIndentations.isEmpty() &&
+                        classMembersIndentations.peek().indentationLevel == currentNestingLevel) {
                     classMembersIndentations.pop();
                 }
                 currentNestingLevel--;
                 break;
             }
-            
-            // Can the next token be a constructor identifier?
-            constructorCandidate = currentToken.kind == JavaParserConstants.PRIVATE
-                    || currentToken.kind == JavaParserConstants.PROTECTED
-                    || currentToken.kind == JavaParserConstants.PUBLIC
-                    || currentToken.kind == JavaParserConstants.LBRACE
-                    || currentToken.kind == JavaParserConstants.RBRACE;
         }
         
+        private void pushTypeDeclaration() {
+            TypeDeclaration cd = new TypeDeclaration(currentNestingLevel + 1);
+            classMembersIndentations.push(cd);
+            storeNextIdentifier = true;
+        }
+
         public void restoreConstructorToken(Tokens tokenEntries, Token currentToken) {
             if (!ignoreIdentifiers) {
                 return;
             }
             
-            if (prevIdentifier != null) {
+            if (currentToken.kind == JavaParserConstants.LPAREN) {
                 // was the previous token a constructor? If so, restore the identifier
-                if (currentToken.kind == JavaParserConstants.LPAREN) {
+                if (!classMembersIndentations.isEmpty()
+                        && classMembersIndentations.peek().name.equals(prevIdentifier)) {
                     int lastTokenIndex = tokenEntries.size() - 1;
                     TokenEntry lastToken = tokenEntries.getTokens().get(lastTokenIndex);
-                    tokenEntries.getTokens().set(lastTokenIndex,
-                        new TokenEntry(prevIdentifier, lastToken.getTokenSrcID(), lastToken.getBeginLine()));
+                    lastToken.setImage(prevIdentifier);
                 }
-                
-                prevIdentifier = null;
             }
+        }
+    }
+    
+    private static class TypeDeclaration {
+        int indentationLevel;
+        String name;
+        
+        public TypeDeclaration(int indentationLevel) {
+            this.indentationLevel = indentationLevel;
         }
     }
 }

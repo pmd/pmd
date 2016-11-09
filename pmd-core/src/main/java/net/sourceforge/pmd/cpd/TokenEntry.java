@@ -38,12 +38,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
     }
 
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
-        Integer i = TOKENS.get().get(image);
-        if (i == null) {
-            i = TOKENS.get().size() + 1;
-            TOKENS.get().put(image, i);
-        }
-        this.identifier = i.intValue();
+        setImage(image);
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
         this.index = TOKEN_COUNT.get().getAndIncrement();
@@ -127,5 +122,14 @@ public class TokenEntry implements Comparable<TokenEntry> {
             }
         }
         return "--unkown--";
+    }
+
+    final void setImage(String image) {
+        Integer i = TOKENS.get().get(image);
+        if (i == null) {
+            i = TOKENS.get().size() + 1;
+            TOKENS.get().put(image, i);
+        }
+        this.identifier = i.intValue();
     }
 }
