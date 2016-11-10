@@ -18,6 +18,20 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#1543 [apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+   public static testMethod void testSomething() {
+      Account a = null;
+      SYSTEM.AssertNotEquals(a, null, 'account not found');
+   }
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
         <description>#1521 [apex] ApexUnitTestClassShouldHaveAsserts: Parsing error on APEX class: expected one element but was: &lt;BlockStatement, BlockStatement&gt;</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
