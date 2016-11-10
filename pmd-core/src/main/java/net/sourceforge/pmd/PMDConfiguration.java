@@ -3,11 +3,15 @@
  */
 package net.sourceforge.pmd;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import net.sourceforge.pmd.cache.AnalysisCache;
+import net.sourceforge.pmd.cache.FileAnalysisCache;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -109,6 +113,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     private boolean stressTest;
     private boolean benchmark;
+    private AnalysisCache analysisCache = new NoopAnalysisCache();
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate a
@@ -551,5 +556,31 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
         this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;
+    }
+
+    /**
+     * Retrieves the currently used analysis cache. Will never be null.
+     * 
+     * @return The currently used analysis cache. Never null.
+     */
+    public AnalysisCache getAnalysisCache() {
+        return analysisCache ;
+    }
+    
+    /**
+     * Sets the analysis cache to be used.
+     * 
+     * @param cache The analysis cache to be used.
+     */
+    public void setAnalysisCache(final AnalysisCache cache) {
+        if (cache != null) {
+            analysisCache = cache;
+        }
+    }
+
+    public void setAnalysisCacheLocation(final String cacheLocation) {
+        if (cacheLocation != null) {
+            setAnalysisCache(FileAnalysisCache.fromFile(new File(cacheLocation)));
+        }
     }
 }
