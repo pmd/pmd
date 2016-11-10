@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cache;
 import java.io.File;
 
 import net.sourceforge.pmd.ReportListener;
+import net.sourceforge.pmd.RuleSets;
 
 /**
  * An analysis cache for incremental analysis.
@@ -30,4 +31,11 @@ public interface AnalysisCache extends ReportListener {
      * @param sourceFile The file whose analysis failed
      */
     void analysisFailed(File sourceFile);
+    
+    /**
+     * Checks if the cache is valid for the configured rulesets and class loader.
+     * @param ruleSets The rulesets configured for this analysis.
+     * @param classLoader The class loader configured for this analysis.
+     */
+    void checkValidity(RuleSets ruleSets, ClassLoader classLoader);
 }

@@ -82,7 +82,7 @@ public class SourceCodeProcessor {
             }
 
             try {
-                processSource(sourceCode, ruleSets,ctx);
+                processSource(sourceCode, ruleSets, ctx);
             } catch (ParseException pe) {
                 configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
                 throw new PMDException("Error while parsing " + ctx.getSourceCodeFilename(), pe);

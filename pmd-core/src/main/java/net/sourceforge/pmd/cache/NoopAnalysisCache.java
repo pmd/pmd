@@ -2,6 +2,7 @@ package net.sourceforge.pmd.cache;
 
 import java.io.File;
 
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.stat.Metric;
 
@@ -32,6 +33,11 @@ public class NoopAnalysisCache implements AnalysisCache {
 
     @Override
     public void analysisFailed(final File sourceFile) {
+        // noop
+    }
+
+    @Override
+    public void checkValidity(final RuleSets ruleSets, final ClassLoader classLoader) {
         // noop
     }
 }

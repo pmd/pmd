@@ -8,12 +8,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.stat.Metric;
 
@@ -23,12 +27,13 @@ public class FileAnalysisCache implements AnalysisCache {
     
     // TODO : Add benchmark info to cache?
     
-    private final File cache;
+    private final File cacheFile;
     private final String pmdVersion;
-    // TODO : Add a ruleset checksum
-    // TODO : Add a classpath checksum
     private final ConcurrentMap<String, AnalysisResult> fileResultsCache;
     private final ConcurrentMap<String, AnalysisResult> updatedResultsCache;
+    
+    private long rulesetChecksum;
+    private long classpathChecksum;
 
     /**
      * Creates a new empty cache for the given PMD version
@@ -37,7 +42,7 @@ public class FileAnalysisCache implements AnalysisCache {
      */
     private FileAnalysisCache(final File cache, final String pmdVersion) {
         this.pmdVersion = pmdVersion;
-        this.cache = cache;
+        this.cacheFile = cache;
         fileResultsCache = new ConcurrentHashMap<>();
         updatedResultsCache = new ConcurrentHashMap<>();
     }
@@ -53,7 +58,13 @@ public class FileAnalysisCache implements AnalysisCache {
                 final String cacheVersion = inputStream.readUTF();
                 
                 if (PMD.VERSION.equals(cacheVersion)) {
-                    // Cache is valid, load the rest
+                    // Cache seems valid, load the rest
+                    
+                    // Get checksums
+                    cache.rulesetChecksum = inputStream.readLong();
+                    cache.classpathChecksum = inputStream.readLong();
+                    
+                    // Cached results
                     while (inputStream.available() > 0) {
                         final String fileName = inputStream.readUTF();
                         final long checksum = inputStream.readLong();
@@ -76,9 +87,12 @@ public class FileAnalysisCache implements AnalysisCache {
     public void persist() {
         try (
             final DataOutputStream outputStream = new DataOutputStream(
-                new BufferedOutputStream(new FileOutputStream(cache)));
+                new BufferedOutputStream(new FileOutputStream(cacheFile)));
         ) {
             outputStream.writeUTF(pmdVersion);
+            
+            outputStream.writeLong(rulesetChecksum);
+            outputStream.writeLong(classpathChecksum);
             
             for (final Map.Entry<String, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                 // TODO : In the future, we want to persist all violations, for now, just store files with NO violations
@@ -114,6 +128,42 @@ public class FileAnalysisCache implements AnalysisCache {
     @Override
     public void analysisFailed(final File sourceFile) {
         updatedResultsCache.remove(sourceFile.getPath());
+    }
+
+    @Override
+    public void checkValidity(final RuleSets ruleSets, final ClassLoader classLoader) {
+        boolean cacheIsValid = true;
+        
+        if (ruleSets.getChecksum() != rulesetChecksum) {
+            cacheIsValid = false;
+        }
+        
+        final long classLoaderChecksum;
+        if (classLoader instanceof URLClassLoader) {
+            final URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+            classLoaderChecksum = Arrays.hashCode(urlClassLoader.getURLs());
+            
+            if (cacheIsValid && classLoaderChecksum != classpathChecksum) {
+                // Do we even care?
+                for (final Rule r : ruleSets.getAllRules()) {
+                    if (r.usesDFA() || r.usesTypeResolution()) {
+                        cacheIsValid = false;
+                        break;
+                    }
+                }
+            }
+        } else {
+            classLoaderChecksum = 0;
+        }
+        
+        if (!cacheIsValid) {
+            // Clear the cache
+            fileResultsCache.clear();
+        }
+        
+        // Update the local checksums
+        rulesetChecksum = ruleSets.getChecksum();
+        classpathChecksum = classLoaderChecksum;
     }
 
     @Override

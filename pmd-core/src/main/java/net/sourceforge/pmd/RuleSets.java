@@ -203,4 +203,18 @@ public class RuleSets {
 		   ruleSet.removeDysfunctionalRules(collector);
 		}
 	}
+
+	/**
+	 * Retrieves a checksum of the rulesets being used.
+	 * Any change to any rule of any ruleset should trigger a checksum change.
+	 * 
+	 * @return The checksum for this ruleset collection.
+	 */
+	public long getChecksum() {
+	    long checksum = 1;
+	    for (final RuleSet ruleSet : ruleSets) {
+	        checksum = checksum * 31 + ruleSet.getChecksum();
+        }
+	    return checksum;
+	}
 }
