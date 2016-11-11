@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.cache;
 
 import java.io.BufferedInputStream;
@@ -13,6 +16,10 @@ import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.RuleViolation;
 
+/**
+ * The result of a single file analysis.
+ * Includes a checksum of the file and the complete list of violations detected.
+ */
 public class AnalysisResult {
 
     private final long fileChecksum;
@@ -22,11 +29,11 @@ public class AnalysisResult {
         this.fileChecksum = fileChecksum;
         violations = new ArrayList<>();
     }
-    
+
     public AnalysisResult(final File sourceFile) {
         this(computeFileChecksum(sourceFile));
     }
-    
+
     private static long computeFileChecksum(final File sourceFile) {
         try (
             final CheckedInputStream stream = new CheckedInputStream(
@@ -34,15 +41,16 @@ public class AnalysisResult {
         ) {
             // Just read it, the CheckedInputStream will update the checksum on it's own
             IOUtils.skipFully(stream, sourceFile.length());
-            
+
             return stream.getChecksum().getValue();
         } catch (final IOException e) {
-            // TODO : Handle this
+            // We don't really care, if it's unreadable
+            // the analysis will fail and report the error on it's own
         }
-        
+
         return 0;
     }
-    
+
     public long getFileChecksum() {
         return fileChecksum;
     }

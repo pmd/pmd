@@ -100,7 +100,7 @@ public class SourceCodeProcessor {
         long start = System.nanoTime();
         Node rootNode = parser.parse(ctx.getSourceCodeFilename(), sourceCode);
         ctx.getReport().suppress(parser.getSuppressMap());
-        long end = System.nanoTime();        
+        long end = System.nanoTime();
         Benchmarker.mark(Benchmark.Parser, end - start, 0);
         return rootNode;
     }
