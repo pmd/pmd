@@ -55,16 +55,14 @@ public class FileAnalysisCacheTest {
     }
     
     @Test
-    public void testLoadFromDirectory() throws IOException {
-        final FileAnalysisCache cache = new FileAnalysisCache(tempFolder.getRoot());
-        // TODO
+    public void testLoadFromDirectoryShouldntThrow() throws IOException {
+        new FileAnalysisCache(tempFolder.getRoot());
     }
     
     @Test
-    public void testLoadFromUnreadableFile() throws IOException {
+    public void testLoadFromUnreadableFileShouldntThrow() throws IOException {
         emptyCacheFile.setReadable(false);
-        final FileAnalysisCache cache = new FileAnalysisCache(emptyCacheFile);
-        // TODO
+        new FileAnalysisCache(emptyCacheFile);
     }
 
     @Test
@@ -75,12 +73,10 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testStoreOnUnwritableFile() {
+    public void testStoreOnUnwritableFileShouldntThrow() {
         emptyCacheFile.setWritable(false);
         final FileAnalysisCache cache = new FileAnalysisCache(emptyCacheFile);
         cache.persist();
-        // TODO : make proper assertions!
-        assertTrue("Cache file doesn't exist after store", emptyCacheFile.exists());
     }
 
     @Test
