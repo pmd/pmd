@@ -44,32 +44,32 @@ public class FileAnalysisCacheTest {
 
     @Test
     public void testLoadFromNonExistingFile() throws IOException {
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(unexistingCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(unexistingCacheFile);
         assertNotNull("Cache creation from non existing file failed.", cache);
     }
     
     @Test
     public void testLoadFromEmptyFile() throws IOException {
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(emptyCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(emptyCacheFile);
         assertNotNull("Cache creation from empty file failed.", cache);
     }
     
     @Test
     public void testLoadFromDirectory() throws IOException {
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(tempFolder.getRoot());
+        final FileAnalysisCache cache = new FileAnalysisCache(tempFolder.getRoot());
         // TODO
     }
     
     @Test
     public void testLoadFromUnreadableFile() throws IOException {
         emptyCacheFile.setReadable(false);
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(emptyCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(emptyCacheFile);
         // TODO
     }
 
     @Test
     public void testStoreCreatesFile() {
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(unexistingCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(unexistingCacheFile);
         cache.persist();
         assertTrue("Cache file doesn't exist after store", unexistingCacheFile.exists());
     }
@@ -77,7 +77,7 @@ public class FileAnalysisCacheTest {
     @Test
     public void testStoreOnUnwritableFile() {
         emptyCacheFile.setWritable(false);
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(emptyCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(emptyCacheFile);
         cache.persist();
         // TODO : make proper assertions!
         assertTrue("Cache file doesn't exist after store", emptyCacheFile.exists());
@@ -85,7 +85,7 @@ public class FileAnalysisCacheTest {
 
     @Test
     public void testStoreSkipsFilesWithViolations() {
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         cache.isUpToDate(sourceFile);
 
         final RuleViolation rv = mock(RuleViolation.class);
@@ -94,7 +94,7 @@ public class FileAnalysisCacheTest {
         cache.ruleViolationAdded(rv);
         cache.persist();
 
-        final FileAnalysisCache reloadedCache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         assertFalse("Cache believes unmodified file with violations is up to date",
                 reloadedCache.isUpToDate(sourceFile));
     }
@@ -106,7 +106,7 @@ public class FileAnalysisCacheTest {
 
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
 
-        final FileAnalysisCache reloadedCache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         reloadedCache.checkValidity(rs, cl);
         assertTrue("Cache believes unmodified file is not up to date without ruleset / classpath changes",
                 reloadedCache.isUpToDate(sourceFile));
@@ -119,7 +119,7 @@ public class FileAnalysisCacheTest {
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
         
-        final FileAnalysisCache reloadedCache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         when(rs.getChecksum()).thenReturn(1L);
         reloadedCache.checkValidity(rs, cl);
         assertFalse("Cache believes unmodified file is up to date after ruleset changed",
@@ -133,7 +133,7 @@ public class FileAnalysisCacheTest {
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
         
-        final FileAnalysisCache reloadedCache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         when(cl.getURLs()).thenReturn(new URL[] { tempFolder.newFile().toURI().toURL(), });
         reloadedCache.checkValidity(rs, cl);
         assertTrue("Cache believes unmodified file is not up to date after classpath changed when no rule cares",
@@ -147,7 +147,7 @@ public class FileAnalysisCacheTest {
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
         
-        final FileAnalysisCache reloadedCache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
         when(cl.getURLs()).thenReturn(new URL[] { tempFolder.newFile().toURI().toURL(), });
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
         when(r.usesDFA()).thenReturn(true);
@@ -159,7 +159,7 @@ public class FileAnalysisCacheTest {
 
     @Test
     public void testUnknownFileIsNotUpToDate() throws IOException {
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         assertFalse("Cache believes an unknown file is up to date",
                 cache.isUpToDate(sourceFile));
     }
@@ -168,7 +168,7 @@ public class FileAnalysisCacheTest {
     public void testFileIsUpToDate() throws IOException {
         setupCacheWithFiles(newCacheFile, mock(RuleSets.class), mock(ClassLoader.class), sourceFile);
         
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         assertTrue("Cache believes a known, unchanged file is not up to date",
                 cache.isUpToDate(sourceFile));
     }
@@ -180,7 +180,7 @@ public class FileAnalysisCacheTest {
         // Edit the file
         Files.write(Paths.get(sourceFile.getAbsolutePath()), "some text".getBytes());
         
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(newCacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         assertFalse("Cache believes a known, changed file is up to date",
                 cache.isUpToDate(sourceFile));
     }
@@ -188,7 +188,7 @@ public class FileAnalysisCacheTest {
     private void setupCacheWithFiles(final File cacheFile, final RuleSets ruleSets,
             final ClassLoader classLoader, final File... files) {
         // Setup a cache file with an entry for an empty Source.java with no violations
-        final FileAnalysisCache cache = FileAnalysisCache.fromFile(cacheFile);
+        final FileAnalysisCache cache = new FileAnalysisCache(cacheFile);
         cache.checkValidity(ruleSets, classLoader);
         
         for (final File f : files) {

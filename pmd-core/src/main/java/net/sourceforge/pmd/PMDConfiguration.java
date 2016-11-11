@@ -580,7 +580,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     public void setAnalysisCacheLocation(final String cacheLocation) {
         if (cacheLocation != null) {
-            setAnalysisCache(FileAnalysisCache.fromFile(new File(cacheLocation)));
+            setAnalysisCache(new FileAnalysisCache(new File(cacheLocation)));
         }
     }
 }

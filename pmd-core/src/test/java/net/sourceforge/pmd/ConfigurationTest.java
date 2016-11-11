@@ -181,7 +181,7 @@ public class ConfigurationTest {
         
         final File cacheFile = File.createTempFile("pmd-", ".cache");
         cacheFile.deleteOnExit();
-        final FileAnalysisCache analysisCache = FileAnalysisCache.fromFile(cacheFile);
+        final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
         configuration.setAnalysisCache(analysisCache);
         assertSame("Confgured cache not stored", analysisCache, configuration.getAnalysisCache());
     }

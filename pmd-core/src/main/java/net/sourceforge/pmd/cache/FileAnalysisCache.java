@@ -21,22 +21,21 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     private final File cacheFile;
     
     /**
-     * Creates a new empty cache
+     * Creates a new cache backed by the given file, and attempts to load pre-existing data from it.
      * @param cache The file on which to store analysis cache
      */
-    private FileAnalysisCache(final File cache) {
+    public FileAnalysisCache(final File cache) {
         super();
         this.cacheFile = cache;
+
+        loadFromFile(cache);
     }
 
     /**
-     * Loads / creates a cache backed by the given file.
+     * Loads cache data from the given file.
      * @param cacheFile The file which backs the file analysis cache.
-     * @return The new / loaded cache.
      */
-    public static FileAnalysisCache fromFile(final File cacheFile) {
-        final FileAnalysisCache cache = new FileAnalysisCache(cacheFile);
-        
+    private void loadFromFile(final File cacheFile) {
         if (cacheFile.exists()) {
             try (
                 final DataInputStream inputStream = new DataInputStream(
@@ -48,15 +47,15 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                     // Cache seems valid, load the rest
                     
                     // Get checksums
-                    cache.rulesetChecksum = inputStream.readLong();
-                    cache.classpathChecksum = inputStream.readLong();
+                    rulesetChecksum = inputStream.readLong();
+                    classpathChecksum = inputStream.readLong();
                     
                     // Cached results
                     while (inputStream.available() > 0) {
                         final String fileName = inputStream.readUTF();
                         final long checksum = inputStream.readLong();
                         
-                        cache.fileResultsCache.put(fileName, new AnalysisResult(checksum));
+                        fileResultsCache.put(fileName, new AnalysisResult(checksum));
                     }
                 } else {
                     LOG.info("Analysis cache invalidated, PMD version changed.");
@@ -67,8 +66,6 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                 LOG.severe("Could not load analysis cache to file. " + e.getMessage());
             }
         }
-        
-        return cache;
     }
 
     @Override
