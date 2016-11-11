@@ -23,7 +23,7 @@ public class RuleSets {
     /**
      * Map of RuleLanguage on RuleSet.
      */
-    private Collection<RuleSet> ruleSets = new ArrayList<>();
+    private List<RuleSet> ruleSets = new ArrayList<>();
 
     /**
      * RuleChain for efficient AST visitation.
