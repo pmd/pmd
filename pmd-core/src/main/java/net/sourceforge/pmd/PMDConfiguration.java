@@ -568,18 +568,29 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
     
     /**
-     * Sets the analysis cache to be used.
+     * Sets the analysis cache to be used. Setting a
+     * value of <code>null</code> will cause a Noop AnalysisCache to be used.
      * 
      * @param cache The analysis cache to be used.
      */
     public void setAnalysisCache(final AnalysisCache cache) {
-        if (cache != null) {
+        if (cache == null) {
+            analysisCache = new NoopAnalysisCache();
+        } else {
             analysisCache = cache;
         }
     }
 
+    /**
+     * Sets the location of the analysis cache to be used. This will automatically configure
+     * and appropriate AnalysisCache implementation.
+     * 
+     * @param cacheLocation The location of the analysis cache to be used.
+     */
     public void setAnalysisCacheLocation(final String cacheLocation) {
-        if (cacheLocation != null) {
+        if (cacheLocation == null) {
+            setAnalysisCache(new NoopAnalysisCache());
+        } else {
             setAnalysisCache(new FileAnalysisCache(new File(cacheLocation)));
         }
     }
