@@ -60,4 +60,9 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
     public void testBug1520Using() throws Exception {
         parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/Using.pls")));
     }
+
+    @Test
+    public void testIsNull() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/IsNull.pls")));
+    }
 }

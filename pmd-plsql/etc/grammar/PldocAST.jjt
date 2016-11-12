@@ -38,6 +38,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Andreas Dangel 11/2016
  */
 
+ /**
+ * Added ASTIsNullCondition node
+ *
+ * Sergey Yanzin 11/2016
+ */
+
 //
 options {
 	DEBUG_PARSER = false ;
@@ -1972,10 +1978,31 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
   (<NOT>) {sb.append(" NOT "); } 
   (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
-   (simpleNode = IsOfTypeCondition() ) {sb.append(simpleNode.getImage()); }
+   (simpleNode = IsNullCondition() ) {sb.append(simpleNode.getImage()); } 
   )
  { 
  jjtThis.setImage(sb.toString()); return jjtThis; 
+ }
+}
+ASTIsNullCondition IsNullCondition() :  //yanzin
+{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+{
+  (
+    LOOKAHEAD(<IDENTIFIER> <IS> (<NOT> <NULL>|<NULL>))
+    (
+		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");} 
+	)
+	|
+	(
+		simpleNode = IsOfTypeCondition() 
+	) 
+	{ 
+		sb.append(simpleNode.getImage()); 
+	}
+  )
+  {
+    jjtThis.setImage(sb.toString());
+	return jjtThis;
  }
 }
 
