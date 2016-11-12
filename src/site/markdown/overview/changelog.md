@@ -12,6 +12,7 @@
 
 *   [#123](https://github.com/pmd/pmd/pull/123): \[apex] Changing method names to lowercase so casing doesn't matter
 *   [#124](https://github.com/pmd/pmd/pull/124): \[java] CPD: Properly handle enums with `-ignore-identifiers`
+*   [#128](https://github.com/pmd/pmd/pull/128): \[java] Minor optimizations to type resolution
 
 **Bugfixes:**
 
