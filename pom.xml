@@ -260,7 +260,7 @@
     <properties>
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.18.1</surefire.version>
-        <checkstyle.version>2.16</checkstyle.version>
+        <checkstyle.version>2.17</checkstyle.version>
         <pmd.plugin.version>3.7</pmd.plugin.version>
         <java.version>1.7</java.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
@@ -585,15 +585,28 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>checkstyle-check</id>
                         <phase>verify</phase>
                         <goals>
-                            <goal>checkstyle</goal>
+                          <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>7.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-build-tools-config</artifactId>
+                        <version>1.0.0-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
-                    <configLocation>${checkstyle.configLocation}</configLocation>
-                    <suppressionsLocation>${checkstyle.suppressionsFile}</suppressionsLocation>
+                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
             </plugin>
             <plugin>
