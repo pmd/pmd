@@ -62,6 +62,16 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
     }
 
     @Test
+    public void testSingleLineSelect() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/SingleLineSelect.pls")));
+    }
+
+    @Test
+    public void testMultiLineSelect() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/MultiLineSelect.pls")));
+    }
+
+    @Test
     public void testIsNull() throws Exception {
         parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/IsNull.pls")));
     }
