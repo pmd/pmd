@@ -637,39 +637,43 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 				qualifiedName = className;
 			}
 			if (qualifiedName != null) {
-				try {
-					/*
-					 * TODO - the map right now contains just class names. if we
-					 * use a map of classname/class then we don't have to hit
-					 * the class loader for every type - much faster
-					 */
-					myType = pmdClassLoader.loadClass(qualifiedName);
-				} catch (ClassNotFoundException e) {
-					myType = processOnDemand(qualifiedName);
-				} catch (NoClassDefFoundError e) {
-					myType = processOnDemand(qualifiedName);
-				} catch (LinkageError e) {
-					myType = processOnDemand(qualifiedName);
-				}
+                if (pmdClassLoader.couldResolve(qualifiedName)) {
+                    try {
+                        /*
+                         * TODO - the map right now contains just class names.
+                         * if we use a map of classname/class then we don't have
+                         * to hit the class loader for every type - much faster
+                         */
+                        myType = pmdClassLoader.loadClass(qualifiedName);
+                    } catch (ClassNotFoundException | LinkageError e) {
+                        myType = processOnDemand(qualifiedName);
+                    }
+                } else {
+                    myType = processOnDemand(qualifiedName);
+                }
 			}
 		}
 		if (myType == null && qualifiedName != null && qualifiedName.contains(".")) {
 		    // try if the last part defines a inner class
 		    String qualifiedNameInner = qualifiedName.substring(0, qualifiedName.lastIndexOf('.'))
 		            + "$" + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
-		    try {
-		        myType = pmdClassLoader.loadClass(qualifiedNameInner);
-		    } catch (Exception e) {
-		        // ignored
-		    }
+            if (pmdClassLoader.couldResolve(qualifiedNameInner)) {
+                try {
+                    myType = pmdClassLoader.loadClass(qualifiedNameInner);
+                } catch (Exception e) {
+                    // ignored
+                }
+            }
 		}
 		if (myType == null && qualifiedName != null && !qualifiedName.contains(".")) {
 		    // try again with java.lang....
-		    try {
-		        myType = pmdClassLoader.loadClass("java.lang." + qualifiedName);
-		    } catch (Exception e) {
-		        // ignored
-		    }
+            if (pmdClassLoader.couldResolve("java.lang." + qualifiedName)) {
+                try {
+                    myType = pmdClassLoader.loadClass("java.lang." + qualifiedName);
+                } catch (Exception e) {
+                    // ignored
+                }
+            }
 		}
 		if (myType != null) {
 			node.setType(myType);
@@ -679,34 +683,45 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	/**
 	 * Check whether the supplied class name exists.
 	 */
-	public boolean classNameExists(String fullyQualifiedClassName) {
-		try {
-			pmdClassLoader.loadClass(fullyQualifiedClassName);
-			return true; //Class found
-		} catch (ClassNotFoundException e) {
-			return false;
-		} catch (NoClassDefFoundError e) {
-			return false;
-		}
-	}
+    public boolean classNameExists(String fullyQualifiedClassName) {
+        if (pmdClassLoader.couldResolve(fullyQualifiedClassName)) {
+            try {
+                pmdClassLoader.loadClass(fullyQualifiedClassName);
+                return true; // Class found
+            } catch (ClassNotFoundException e) {
+                return false;
+            } catch (NoClassDefFoundError e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
-	public Class<?> loadClass(String fullyQualifiedClassName) {
-	    try {
-            return pmdClassLoader.loadClass(fullyQualifiedClassName);
-        } catch (ClassNotFoundException e) {
+    public Class<?> loadClass(String fullyQualifiedClassName) {
+        if (pmdClassLoader.couldResolve(fullyQualifiedClassName)) {
+            try {
+                return pmdClassLoader.loadClass(fullyQualifiedClassName);
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+        } else {
             return null;
         }
-	}
+    }
 
-	private Class<?> processOnDemand(String qualifiedName) {
-		for (String entry : importedOnDemand) {
-			try {
-				return pmdClassLoader.loadClass(entry + "." + qualifiedName);
-			} catch (Throwable e) {
-			}
-		}
-		return null;
-	}
+    private Class<?> processOnDemand(String qualifiedName) {
+        for (String entry : importedOnDemand) {
+            final String fullyQualifiedName = entry + "." + qualifiedName;
+            if (pmdClassLoader.couldResolve(fullyQualifiedName)) {
+                try {
+                    return pmdClassLoader.loadClass(fullyQualifiedName);
+                } catch (Throwable e) {
+                }
+            }
+        }
+        return null;
+    }
 
 	private String getClassName(ASTCompilationUnit node) {
 		ASTClassOrInterfaceDeclaration classDecl = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
