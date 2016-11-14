@@ -11,6 +11,7 @@
 **Pull Requests:**
 
 *   [#123](https://github.com/pmd/pmd/pull/123): \[apex] Changing method names to lowercase so casing doesn't matter
+*   [#131](https://github.com/pmd/pmd/pull/131): \[core] Make RuleSetFactory immutable
 
 **Bugfixes:**
 
