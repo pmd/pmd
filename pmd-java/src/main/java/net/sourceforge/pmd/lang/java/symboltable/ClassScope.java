@@ -536,6 +536,10 @@ public class ClassScope extends AbstractJavaScope {
                 typeImage), determineSuper(declaringNode));
     }
 
+    public Class<?> resolveType(final String name) {
+        return this.getEnclosingScope(SourceFileScope.class).resolveType(qualifyTypeName(name));
+    }
+
     /**
      * Tries to resolve a given typeImage as a generic Type. If the Generic Type
      * is found, any defined ClassOrInterfaceType below this type declaration is
