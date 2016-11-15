@@ -23,15 +23,17 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  */
 public class SourceFileScope extends AbstractJavaScope {
 
-    private String packageImage;
-    private TypeSet types;
+    private final String packageImage;
+    private final TypeSet types;
 
-    public SourceFileScope() {
-        this("");
+    public SourceFileScope(final ClassLoader classLoader) {
+        this(classLoader, "");
     }
 
-    public SourceFileScope(String packageImage) {
+    public SourceFileScope(final ClassLoader classLoader, final String packageImage) {
+        this.types = new TypeSet(classLoader);
         this.packageImage = packageImage;
+        types.setASTCompilationUnitPackage(packageImage);
     }
 
     /**
@@ -39,9 +41,7 @@ public class SourceFileScope extends AbstractJavaScope {
      * @param classLoader the class loader to use to find additional classes
      * @param imports the import declarations
      */
-    public void configureImports(ClassLoader classLoader, List<ASTImportDeclaration> imports) {
-        this.types = new TypeSet(classLoader);
-        types.setASTCompilationUnitPackage(packageImage);
+    public void configureImports(final List<ASTImportDeclaration> imports) {
         for (ASTImportDeclaration i : imports) {
             if (i.isImportOnDemand()) {
                 types.addImport(i.getImportedName() + ".*");
@@ -72,11 +72,7 @@ public class SourceFileScope extends AbstractJavaScope {
      * @return the class or <code>null</code> if no class could be found
      */
     public Class<?> resolveType(String name) {
-        try {
-            return types.findClass(name);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
+        return types.findClass(name);
     }
 
     public String getPackageName() {
