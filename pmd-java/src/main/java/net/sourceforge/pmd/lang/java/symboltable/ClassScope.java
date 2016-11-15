@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -66,12 +67,12 @@ public class ClassScope extends AbstractJavaScope {
         }
     };
 
-    private String className;
+    private final String className;
 
     private boolean isEnum;
 
-    public ClassScope(String className) {
-        this.className = className;
+    public ClassScope(final String className) {
+        this.className = Objects.requireNonNull(className);
         anonymousInnerClassCounter.set(Integer.valueOf(1));
     }
 
