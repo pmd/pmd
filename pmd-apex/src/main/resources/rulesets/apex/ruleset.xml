@@ -157,7 +157,7 @@
 			<property name="cc_block_highlighting" value="false"/>
 		</properties>
 	</rule>
-
+    
 	<rule ref="rulesets/apex/apexunit.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" message="@isTest(seeAllData=true) should not be used in Apex unit tests because it opens up the existing database data for unexpected modification by tests">
 		<priority>3</priority>
 
@@ -235,5 +235,92 @@
         	<property name="cc_block_highlighting" value="false"/>
        	</properties>
 	</rule>
+	
+	 <rule ref="rulesets/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">
+        <priority>3</priority>
+
+        <properties>
+            <!-- relevant for Code Climate output only -->
+            <property name="cc_categories" value="Security"/>
+            <property name="cc_remediation_points_multiplier" value="5"/>
+            <property name="cc_block_highlighting" value="false"/>
+        </properties>
+    </rule>
+
+ 	<rule ref="rulesets/apex/security.xml/ApexInsecureEndpoint" message="Apex callouts should use encrypted communication channels">
+        <priority>3</priority>
+        <properties>
+            <!-- relevant for Code Climate output only -->
+            <property name="cc_categories" value="Security"/>
+            <property name="cc_remediation_points_multiplier" value="5"/>
+            <property name="cc_block_highlighting" value="false"/>
+        </properties>
+     </rule>
+    
+	 <rule ref="rulesets/apex/security.xml/ApexCSRF" message="Avoid making DML operations in Apex class constructor/init method">
+        <priority>3</priority>
+
+        <properties>
+            <!-- relevant for Code Climate output only -->
+            <property name="cc_categories" value="Security"/>
+            <property name="cc_remediation_points_multiplier" value="150"/>
+            <property name="cc_block_highlighting" value="false"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/apex/security.xml/ApexOpenRedirect" message="Apex classes should safely redirect to a known location">
+        <priority>3</priority>
+
+        <properties>
+            <!-- relevant for Code Climate output only -->
+            <property name="cc_categories" value="Security"/>
+            <property name="cc_remediation_points_multiplier" value="75"/>
+            <property name="cc_block_highlighting" value="false"/>
+        </properties>
+    </rule>	
+    
+     <rule ref="rulesets/apex/security.xml/ApexSOQLInjection" message="Apex classes should escape variables merged in DML query">
+        <priority>3</priority>
+
+        <properties>
+            <!-- relevant for Code Climate output only -->
+            <property name="cc_categories" value="Security"/>
+            <property name="cc_remediation_points_multiplier" value="100"/>
+            <property name="cc_block_highlighting" value="false"/>
+        </properties>
+    </rule>	
+    
+    <rule ref="rulesets/apex/security.xml/ApexXSSFromURLParam" message="Apex classes should escape Strings obtained from URL parameters">
+        <priority>3</priority>
+
+        <properties>
+            <!-- relevant for Code Climate output only -->
+            <property name="cc_categories" value="Security"/>
+            <property name="cc_remediation_points_multiplier" value="100"/>
+            <property name="cc_block_highlighting" value="false"/>
+        </properties>
+    </rule>	
+    
+    <rule ref="rulesets/apex/security.xml/ApexXSSFromEscapeFalse" message="Apex classes should escape addError strings">
+        <priority>3</priority>
+
+        <properties>
+            <!-- relevant for Code Climate output only -->
+            <property name="cc_categories" value="Security"/>
+            <property name="cc_remediation_points_multiplier" value="100"/>
+            <property name="cc_block_highlighting" value="false"/>
+        </properties>
+    </rule>	
+    
+      <rule ref="rulesets/apex/security.xml/ApexBadCrypto" message="Apex Crypto should use random IV/key">
+        <priority>3</priority>
+
+        <properties>
+            <!-- relevant for Code Climate output only -->
+            <property name="cc_categories" value="Security"/>
+            <property name="cc_remediation_points_multiplier" value="100"/>
+            <property name="cc_block_highlighting" value="false"/>
+        </properties>
+    </rule>	
 	
 </ruleset>

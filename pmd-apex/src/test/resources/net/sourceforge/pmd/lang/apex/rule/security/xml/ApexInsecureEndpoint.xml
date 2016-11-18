@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data>
+
+	<test-code>
+		<description>Insecure callout endpoint variable concat</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		HttpRequest req = new HttpRequest();
+		req.setEndpoint('http://localhost:com' + somevar);
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Insecure callout endpoint</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		HttpRequest req = new HttpRequest();
+		req.setEndpoint('http://localhost:com');
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Secure callout endpoint</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		HttpRequest req = new HttpRequest();
+		req.setEndpoint('https://localhost:com');
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Insecure callout endpoint from a variable 1</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		String endpoint = 'http://localhost:3300';
+		HttpRequest req = new HttpRequest();
+		req.setEndpoint(endpoint);
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Insecure callout endpoint from a variable 2</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		String endpoint;
+		endpoint = 'http://localhost:3300' + someVar;
+		HttpRequest req = new HttpRequest();
+		req.setEndpoint(endpoint);
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Insecure callout endpoint from a variable 3</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	private String endpoint = 'http://localhost:3300';
+	void foo() {
+		HttpRequest req = new HttpRequest();
+		req.setEndpoint(endpoint);
+	}
+}
+		]]></code>
+	</test-code>
+</test-data>
