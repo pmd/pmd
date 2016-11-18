@@ -31,6 +31,7 @@ public class RendererFactory {
 	map.put(IDEAJRenderer.NAME, IDEAJRenderer.class);
 	map.put(TextColorRenderer.NAME, TextColorRenderer.class);
 	map.put(TextRenderer.NAME, TextRenderer.class);
+	map.put(AtomRenderer.NAME, AtomRenderer.class);
 	map.put(TextPadRenderer.NAME, TextPadRenderer.class);
 	map.put(EmacsRenderer.NAME, EmacsRenderer.class);
 	map.put(CSVRenderer.NAME, CSVRenderer.class);
