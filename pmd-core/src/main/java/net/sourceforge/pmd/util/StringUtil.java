@@ -257,16 +257,15 @@ public final class StringUtil {
         char c;
         int i = 0;
         while (i < src.length()) {
-            c = src.charAt(i);
+            c = src.charAt(i++);
             if (c > '~') {
                 // 126
                 if (!supportUTF8) {
                     int codepoint = c;
                     // surrogate characters are not allowed in XML
                     if (Character.isHighSurrogate(c)) {
-                        char low = src.charAt(i + 1);
+                        char low = src.charAt(i++);
                         codepoint = Character.toCodePoint(c, low);
-                        i += 1;
                     }
                     buf.append("&#x").append(Integer.toHexString(codepoint)).append(';');
                 } else {
@@ -283,7 +282,6 @@ public final class StringUtil {
             } else {
                 buf.append(c);
             }
-            i++;
         }
     }
 

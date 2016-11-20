@@ -606,6 +606,7 @@
                 </dependencies>
                 <configuration>
                     <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
+                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <sourceDirectories>
                         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
