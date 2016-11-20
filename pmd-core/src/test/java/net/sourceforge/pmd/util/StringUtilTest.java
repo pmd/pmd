@@ -53,6 +53,15 @@ public class StringUtilTest {
     }
 
     @Test
+    public void testUTF8NotSupportedSurrogates() {
+        // D8 34 DD 1E -> U+1D11E
+        StringBuilder sb = new StringBuilder();
+        String test = new String(new char[] {0xd834, 0xdd1e});
+        StringUtil.appendXmlEscaped(sb, test, false);
+        assertEquals("&#x1d11e;", sb.toString());
+    }
+
+    @Test
     public void testUTF8Supported() {
         StringBuilder sb = new StringBuilder();
         String test = "é";

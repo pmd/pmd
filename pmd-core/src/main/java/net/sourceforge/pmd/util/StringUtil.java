@@ -255,7 +255,8 @@ public final class StringUtil {
      */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
-        for (int i = 0; i < src.length(); i++) {
+        int i = 0;
+        while (i < src.length()) {
             c = src.charAt(i);
             if (c > '~') {
                 // 126
@@ -282,6 +283,7 @@ public final class StringUtil {
             } else {
                 buf.append(c);
             }
+            i++;
         }
     }
 

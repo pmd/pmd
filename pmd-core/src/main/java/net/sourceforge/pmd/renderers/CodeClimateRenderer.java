@@ -162,9 +162,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
             result += "\\n\\n### Example:\\n\\n";
 
             for (String snippet : rule.getExamples()) {
-                snippet = snippet.replaceAll("\\n", "\\\\n");
-                snippet = snippet.replaceAll("\\t", "\\\\t");
-                result += "```java\\n" + snippet + "\\n```  ";
+                String exampleSnippet = snippet.replaceAll("\\n", "\\\\n");
+                exampleSnippet = exampleSnippet.replaceAll("\\t", "\\\\t");
+                result += "```java\\n" + exampleSnippet + "\\n```  ";
             }
         }
 
