@@ -6,9 +6,14 @@
 
 **Feature Requests and Improvements:**
 
+*   java
+    *   Type Resolution performance improved by ~15%
+
 **New/Modified/Deprecated Rules:**
 
 **Pull Requests:**
+
+*   [#126](https://github.com/pmd/pmd/pull/126): \[java] Avoid creating a new String to qualify types
 
 **Bugfixes:**
 
