@@ -113,7 +113,7 @@ public class DBTypeTest {
     @Test
     public void testAsProperties() {
         System.out.println("asProperties");
-        ResourceBundle bundle = ResourceBundle.getBundle(DBType.class.getCanonicalName() + ".test");
+        ResourceBundle bundle = ResourceBundle.getBundle(DBType.class.getPackage().getName() + ".test");
         Properties expResult = testProperties;
         Properties result = DBType.getResourceBundleAsProperties(bundle);
         Assert.assertEquals(expResult, result);

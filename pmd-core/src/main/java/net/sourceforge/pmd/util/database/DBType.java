@@ -24,8 +24,6 @@ import org.apache.commons.io.IOUtils;
  * @author sturton
  */
 public class DBType {
-    private static final String CLASS_NAME = DBType.class.getCanonicalName();
-
     private static final Logger LOGGER = Logger.getLogger(DBType.class.getPackage().getName());
 
     private static final String INTERNAL_SETTINGS = "[Internal Settings]";
@@ -158,7 +156,7 @@ public class DBType {
      *         files)
      */
     private Properties loadDBProperties(String matchString) throws IOException {
-        LOGGER.entering(CLASS_NAME, matchString);
+        LOGGER.entering(DBType.class.getCanonicalName(), matchString);
         // Locale locale = Control.g;
         ResourceBundle resourceBundle = null;
         InputStream stream = null;
@@ -202,10 +200,10 @@ public class DBType {
                     LOGGER.finest("InJarWithoutPath");
                 } catch (Exception notInJarWithoutPath) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("Attempting JARWithClass prefix: " + DBType.CLASS_NAME + "." + matchString);
+                        LOGGER.finest("Attempting JARWithClass prefix: " + DBType.class.getCanonicalName() + "." + matchString);
                     }
                     try {
-                        resourceBundle = ResourceBundle.getBundle(DBType.CLASS_NAME + "." + matchString);
+                        resourceBundle = ResourceBundle.getBundle(DBType.class.getPackage().getName() + "." + matchString);
                         propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator + matchString + ".properties";
                         LOGGER.finest("found InJarWithPath");
                     } catch (Exception notInJarWithPath) {
@@ -429,6 +427,6 @@ public class DBType {
 
     @Override
     public String toString() {
-        return CLASS_NAME + "@" + propertiesSource;
+        return DBType.class.getCanonicalName() + "@" + propertiesSource;
     }
 }
