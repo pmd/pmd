@@ -52,8 +52,13 @@ public class SourceCodePositioner {
     }
 
     public int columnFromOffset(int lineNumber, int offset) {
-	int columnOffset = offset - lineOffsets[lineNumber - 1];
-	return columnOffset + 1; // 1-based column offsets
+        int lineIndex = lineNumber - 1;
+        if (lineIndex < 0 || lineIndex >= lineOffsets.length) {
+            // no line found
+            return 0;
+        }
+        int columnOffset = offset - lineOffsets[lineNumber - 1];
+        return columnOffset + 1; // 1-based column offsets
     }
 
     public int getLastLine() {
