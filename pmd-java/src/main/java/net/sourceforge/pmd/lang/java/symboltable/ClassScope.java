@@ -365,7 +365,7 @@ public class ClassScope extends AbstractJavaScope {
         for (String qualified : qualifiedNames) {
             int fullLength = qualified.length();
             if (qualified.endsWith(typeImage)
-                    && (fullLength == nameLength || qualified.substring(0, fullLength - nameLength).endsWith("."))) {
+                    && (fullLength == nameLength || qualified.charAt(fullLength - nameLength - 1) == '.')) {
                 return qualified;
             }
         }
