@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer.gui;
 
 import java.awt.BorderLayout;
@@ -31,7 +32,8 @@ public class EvaluationResultsPanel extends JPanel implements ViewerModelListene
     /**
      * constructs the panel
      *
-     * @param model model to refer to
+     * @param model
+     *            model to refer to
      */
     public EvaluationResultsPanel(ViewerModel model) {
         super(new BorderLayout());
@@ -64,21 +66,21 @@ public class EvaluationResultsPanel extends JPanel implements ViewerModelListene
     @SuppressWarnings("PMD.UseArrayListInsteadOfVector")
     public void viewerModelChanged(ViewerModelEvent e) {
         switch (e.getReason()) {
-            case ViewerModelEvent.PATH_EXPRESSION_EVALUATED:
+        case ViewerModelEvent.PATH_EXPRESSION_EVALUATED:
 
-                if (e.getSource() != this) {
-                    list.setListData(new Vector(model.getLastEvaluationResults()));
-                }
+            if (e.getSource() != this) {
+                list.setListData(new Vector(model.getLastEvaluationResults()));
+            }
 
-                break;
+            break;
 
-            case ViewerModelEvent.CODE_RECOMPILED:
-                list.setListData(new Vector(0));
+        case ViewerModelEvent.CODE_RECOMPILED:
+            list.setListData(new Vector(0));
 
-                break;
-            default:
-        	// Do nothing
-                break;
+            break;
+        default:
+            // Do nothing
+            break;
         }
     }
 }

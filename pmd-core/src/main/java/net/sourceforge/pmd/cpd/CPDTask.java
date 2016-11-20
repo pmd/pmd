@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
@@ -25,13 +26,10 @@ import org.apache.tools.ant.types.FileSet;
  * <project name="CPDProj" default="main" basedir=".">
  * <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  * <target name="main">
- * <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true" ignoreLiterals="true" ignoreAnnotations="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
- * <fileset dir="/path/to/my/src">
- * <include name="*.java"/>
- * </fileset>
- * </cpd>
- * </target>
- * </project>
+ * <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true"
+ * ignoreLiterals="true" ignoreAnnotations="true" minimumTokenCount="100"
+ * outputFile="c:\cpdrun.txt"> <fileset dir="/path/to/my/src">
+ * <include name="*.java"/> </fileset> </cpd> </target> </project>
  * <p/>
  * Required: minimumTokenCount, outputFile, and at least one file
  */
@@ -120,7 +118,7 @@ public class CPDTask extends Task {
         Renderer renderer = createRenderer();
         FileReporter reporter;
         if (outputFile == null) {
-        	reporter = new FileReporter(encoding);
+            reporter = new FileReporter(encoding);
         } else if (outputFile.isAbsolute()) {
             reporter = new FileReporter(outputFile, encoding);
         } else {
@@ -130,11 +128,12 @@ public class CPDTask extends Task {
     }
 
     private void tokenizeFiles(CPD cpd) throws IOException {
-        for (FileSet fileSet: filesets) {
+        for (FileSet fileSet : filesets) {
             DirectoryScanner directoryScanner = fileSet.getDirectoryScanner(getProject());
             String[] includedFiles = directoryScanner.getIncludedFiles();
             for (int i = 0; i < includedFiles.length; i++) {
-                File file = new File(directoryScanner.getBasedir() + System.getProperty("file.separator") + includedFiles[i]);
+                File file = new File(
+                        directoryScanner.getBasedir() + System.getProperty("file.separator") + includedFiles[i]);
                 log("Tokenizing " + file.getAbsolutePath(), Project.MSG_VERBOSE);
                 cpd.add(file);
             }
@@ -229,7 +228,8 @@ public class CPDTask extends Task {
     }
 
     public static class FormatAttribute extends EnumeratedAttribute {
-        private static final String[] FORMATS = new String[]{XML_FORMAT, TEXT_FORMAT, CSV_FORMAT};
+        private static final String[] FORMATS = new String[] { XML_FORMAT, TEXT_FORMAT, CSV_FORMAT };
+
         public String[] getValues() {
             return FORMATS;
         }

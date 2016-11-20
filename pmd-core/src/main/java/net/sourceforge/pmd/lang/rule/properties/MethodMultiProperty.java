@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.lang.reflect.Method;
@@ -35,11 +36,16 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName String
-     * @param theDescription String
-     * @param theDefaults Method[]
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefaults
+     *            Method[]
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults, String[] legalPackageNames,
@@ -50,26 +56,36 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName String
-     * @param theDescription String
-     * @param methodDefaults String
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param methodDefaults
+     *            String
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
-    public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
-            String[] legalPackageNames, float theUIOrder) {
+    public MethodMultiProperty(String theName, String theDescription, String methodDefaults, String[] legalPackageNames,
+            float theUIOrder) {
         super(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder);
     }
 
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName String
-     * @param theDescription String
-     * @param methodDefaults String
-     * @param otherParams Map<String, String>
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param methodDefaults
+     *            String
+     * @param otherParams
+     *            Map<String, String>
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
@@ -78,7 +94,8 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
     }
 
     /**
-     * @param methodsStr String
+     * @param methodsStr
+     *            String
      * @return Method[]
      */
     public static Method[] methodsFrom(String methodsStr) {
@@ -97,7 +114,8 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
      * Return the value as a string that can be easily recognized and parsed
      * when we see it again.
      *
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     @Override
@@ -106,7 +124,8 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
     }
 
     /**
-     * @param item Object
+     * @param item
+     *            Object
      * @return String
      */
     @Override
@@ -134,7 +153,8 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)

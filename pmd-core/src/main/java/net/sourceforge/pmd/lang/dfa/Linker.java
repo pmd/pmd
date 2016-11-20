@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.dfa;
 
 import java.util.List;
@@ -17,7 +18,10 @@ public class Linker {
     private static final Logger LOGGER = Logger.getLogger(Linker.class.getName());
     private static final String CLASS_NAME = Linker.class.getCanonicalName();
 
-    /** Maximum loops to prevent hanging of PMD. See https://sourceforge.net/p/pmd/bugs/1393/ */
+    /**
+     * Maximum loops to prevent hanging of PMD. See
+     * https://sourceforge.net/p/pmd/bugs/1393/
+     */
     private static final int MAX_LOOPS = 100;
 
     private final DataFlowHandler dataFlowHandler;
@@ -45,7 +49,8 @@ public class Linker {
             i++;
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("After sc.run - starting Sequence checking loop with firstIndex=" + sc.getFirstIndex()
-                        + ", lastIndex " + sc.getLastIndex() + " with this StackList " + dump("braceStack", braceStack));
+                        + ", lastIndex " + sc.getLastIndex() + " with this StackList "
+                        + dump("braceStack", braceStack));
             }
             if (sc.getFirstIndex() < 0 || sc.getLastIndex() < 0) {
                 if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -374,8 +379,8 @@ public class Linker {
         DataFlowNode elseStart = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
         DataFlowNode end = elseEnd.getFlow().get(elseEnd.getIndex() + 1);
 
-        LOGGER.log(Level.FINEST, "If ifstart={0}, ifEnd={1}, elseEnd={2}, elseStart={3}, end={4}", new Object[] {
-                ifStart, ifEnd, elseEnd, elseStart, end });
+        LOGGER.log(Level.FINEST, "If ifstart={0}, ifEnd={1}, elseEnd={2}, elseStart={3}, end={4}",
+                new Object[] { ifStart, ifEnd, elseEnd, elseStart, end });
 
         // if if-statement and else-statement contains statements or expressions
         if (ifStart.getIndex() != ifEnd.getIndex() && ifEnd.getIndex() != elseEnd.getIndex()) {

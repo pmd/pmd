@@ -1,16 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.io.ByteArrayOutputStream;
-
-import net.sourceforge.pmd.lang.rule.RuleReference;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.rule.RuleReference;
 
 /**
  * Unit test for {@link RuleSetWriter}.
@@ -39,10 +40,12 @@ public class RuleSetWriterTest {
             writer.close();
         }
     }
+
     /**
-     * Tests the exclude rule behavior.
-     * See bug #945.
-     * @throws Exception any error
+     * Tests the exclude rule behavior. See bug #945.
+     * 
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testWrite() throws Exception {
@@ -57,9 +60,10 @@ public class RuleSetWriterTest {
     }
 
     /**
-     * Unit test for #1312
-     * see https://sourceforge.net/p/pmd/bugs/1312/
-     * @throws Exception any error
+     * Unit test for #1312 see https://sourceforge.net/p/pmd/bugs/1312/
+     * 
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testRuleReferenceOverriddenName() throws Exception {

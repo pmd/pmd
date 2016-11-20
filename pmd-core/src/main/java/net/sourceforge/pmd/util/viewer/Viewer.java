@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer;
 
 import net.sourceforge.pmd.lang.xpath.Initializer;
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.util.viewer.gui.MainFrame;
  */
 public class Viewer {
     public static void main(String[] args) {
-	Initializer.initialize();
+        Initializer.initialize();
         new MainFrame();
     }
 }

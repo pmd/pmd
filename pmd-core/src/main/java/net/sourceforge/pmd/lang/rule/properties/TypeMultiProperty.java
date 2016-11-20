@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -32,11 +33,16 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     /**
      * Constructor for TypeProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefaults Class[]
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefaults
+     *            Class[]
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
@@ -48,11 +54,16 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     /**
      * Constructor for TypeProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theTypeDefaults String
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theTypeDefaults
+     *            String
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, String[] legalPackageNames,
@@ -64,11 +75,16 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     /**
      * Constructor for TypeProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theTypeDefaults String
-     * @param otherParams Map<String, String>
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theTypeDefaults
+     *            String
+     * @param otherParams
+     *            Map<String, String>
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
@@ -77,7 +93,8 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     }
 
     /**
-     * @param classesStr String
+     * @param classesStr
+     *            String
      * @return Class[]
      */
     public static Class<?>[] typesFrom(String classesStr) {
@@ -91,7 +108,8 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     }
 
     /**
-     * @param item Object
+     * @param item
+     *            Object
      * @return String
      */
     @Override
@@ -116,7 +134,8 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     @Override
@@ -125,7 +144,8 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */

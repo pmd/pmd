@@ -1,10 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +11,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author Philippe T'Seyen
  */
@@ -20,8 +21,8 @@ public class FileReporterTest {
 
     @Test
     public void testCreation() {
-        new FileReporter((String)null);
-        new FileReporter((File)null);
+        new FileReporter((String) null);
+        new FileReporter((File) null);
     }
 
     @Test

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -22,19 +23,24 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 
         public StringMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
-            return new StringMultiProperty(nameIn(valuesById), descriptionIn(valuesById), StringUtil.substringsOf(
-                    defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
+            return new StringMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
+                    StringUtil.substringsOf(defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
         }
     };
 
     /**
      * Constructor for StringProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefaults String[]
-     * @param theUIOrder float
-     * @param delimiter String
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefaults
+     *            String[]
+     * @param theUIOrder
+     *            float
+     * @param delimiter
+     *            String
      * @throws IllegalArgumentException
      */
     public StringMultiProperty(String theName, String theDescription, String[] theDefaults, float theUIOrder,
@@ -71,7 +77,8 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
@@ -80,7 +87,8 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return boolean
      */
     private boolean containsDelimiter(String value) {
@@ -96,7 +104,8 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 
     /**
      * 
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     protected String valueErrorFor(Object value) {

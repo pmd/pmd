@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.beans.IntrospectionException;
@@ -40,7 +41,8 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private static final Map<String, Class<? extends Renderer>> RENDERERS = new HashMap<>();
 
-    @Parameter(names = "--language", description = "Sources code language. Default value is " + DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
+    @Parameter(names = "--language", description = "Sources code language. Default value is "
+            + DEFAULT_LANGUAGE, required = false, converter = LanguageConverter.class)
     private Language language;
 
     @Parameter(names = "--minimum-tokens", description = "The minimum token length which should be reported as a duplicate.", required = true)
@@ -49,7 +51,8 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Parameter(names = "--skip-duplicate-files", description = "Ignore multiple copies of files of the same name and length in comparison", required = false)
     private boolean skipDuplicates;
 
-    @Parameter(names = "--format", description = "Report format. Default value is " + DEFAULT_RENDERER, required = false)
+    @Parameter(names = "--format", description = "Report format. Default value is "
+            + DEFAULT_RENDERER, required = false)
     private String rendererName;
 
     /**
@@ -97,7 +100,8 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
     private boolean help;
 
-    @Parameter(names = {"--failOnViolation", "-failOnViolation"}, arity = 1, description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
+    @Parameter(names = { "--failOnViolation",
+            "-failOnViolation" }, arity = 1, description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 
     // this has to be a public static class, so that JCommander can use it!
@@ -151,7 +155,8 @@ public class CPDConfiguration extends AbstractConfiguration {
     /**
      * Gets a renderer with the platform's default encoding.
      * 
-     * @param name renderer name
+     * @param name
+     *            renderer name
      * @return a fresh renderer instance
      * @deprecated use {@link #getRendererFromString(String, String)} instead
      */

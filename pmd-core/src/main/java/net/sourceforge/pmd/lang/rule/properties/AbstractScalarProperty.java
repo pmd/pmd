@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.util.StringUtil;
@@ -17,35 +18,42 @@ public abstract class AbstractScalarProperty<T> extends AbstractProperty<T> {
     /**
      * Constructor for AbstractScalarProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefault Object
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefault
+     *            Object
+     * @param theUIOrder
+     *            float
      */
     protected AbstractScalarProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
     protected abstract Object createFrom(String value);
 
     /**
-     * @param size int
+     * @param size
+     *            int
      * @return Object[]
      */
     protected Object[] arrayFor(int size) {
         if (isMultiValue()) {
-            throw new IllegalStateException("Subclass '" + this.getClass().getSimpleName()
-                    + "' must implement the arrayFor(int) method.");
+            throw new IllegalStateException(
+                    "Subclass '" + this.getClass().getSimpleName() + "' must implement the arrayFor(int) method.");
         }
         throw new UnsupportedOperationException("Arrays not supported on single valued property descriptors.");
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object[]
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)

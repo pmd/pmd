@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer.gui;
 
 import java.awt.BorderLayout;
@@ -42,7 +43,8 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
     /**
      * constructs the panel
      *
-     * @param model model to attach the panel to
+     * @param model
+     *            model to attach the panel to
      */
     public ASTPanel(ViewerModel model) {
         this.model = model;
@@ -74,24 +76,24 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
      */
     public void viewerModelChanged(ViewerModelEvent e) {
         switch (e.getReason()) {
-            case ViewerModelEvent.CODE_RECOMPILED:
-                tree.setModel(new ASTModel(model.getRootNode()));
-                break;
-            case ViewerModelEvent.NODE_SELECTED:
-                if (e.getSource() != this) {
-                    List<Node> list = new ArrayList<>();
-                    for (Node n = (Node) e.getParameter(); n != null; n = n.jjtGetParent()) {
-                        list.add(n);
-                    }
-                    Collections.reverse(list);
-                    TreePath path = new TreePath(list.toArray());
-                    tree.setSelectionPath(path);
-                    tree.scrollPathToVisible(path);
+        case ViewerModelEvent.CODE_RECOMPILED:
+            tree.setModel(new ASTModel(model.getRootNode()));
+            break;
+        case ViewerModelEvent.NODE_SELECTED:
+            if (e.getSource() != this) {
+                List<Node> list = new ArrayList<>();
+                for (Node n = (Node) e.getParameter(); n != null; n = n.jjtGetParent()) {
+                    list.add(n);
                 }
-                break;
-            default:
-        	// Do nothing
-        	break;
+                Collections.reverse(list);
+                TreePath path = new TreePath(list.toArray());
+                tree.setSelectionPath(path);
+                tree.scrollPathToVisible(path);
+            }
+            break;
+        default:
+            // Do nothing
+            break;
         }
     }
 

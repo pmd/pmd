@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -8,10 +9,10 @@ import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.AbstractPropertySource;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * Abstract base class for {@link Renderer} implementations.
@@ -72,8 +73,10 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     /**
      * Define a property.
      * 
-     * @param name The property name.
-     * @param description The description of the property.
+     * @param name
+     *            The property name.
+     * @param description
+     *            The description of the property.
      */
     @Deprecated
     // please use AbstractPropertySource.definePropertyDescriptor() directly

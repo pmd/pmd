@@ -20,17 +20,19 @@
  *
  * Created on Aug 26, 2002
  */
-package net.sourceforge.pmd.stat;
 
-import static org.junit.Assert.assertEquals;
+package net.sourceforge.pmd.stat;
 
 import java.util.Random;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author David Dixon-Peugh
  */
-public class MetricTest  {
+public class MetricTest {
     private String testName = "";
     private Random random = new Random();
 

@@ -1,15 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
+import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
+import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
 
 /**
  * Maintains a pair of boundary limit values between which all values managed by
@@ -18,8 +19,8 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * @author Brian Remedios
  * @param <T>
  */
-public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T> implements
-        NumericPropertyDescriptor<T> {
+public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T>
+        implements NumericPropertyDescriptor<T> {
 
     private Number lowerLimit;
     private Number upperLimit;
@@ -89,7 +90,8 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
      * Returns a string describing any error the value may have when
      * characterized by the receiver.
      * 
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     protected String valueErrorFor(Object value) {
@@ -106,7 +108,8 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
     /**
      * Method addAttributesTo.
      * 
-     * @param attributes Map<String,String>
+     * @param attributes
+     *            Map<String,String>
      */
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);

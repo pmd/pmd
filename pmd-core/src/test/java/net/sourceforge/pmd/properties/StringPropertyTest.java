@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -25,7 +26,8 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createValue.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createValue(int count) {
@@ -42,7 +44,8 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createBadValue.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createBadValue(int count) {
@@ -74,7 +77,8 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method randomCharIn.
      * 
-     * @param chars char[]
+     * @param chars
+     *            char[]
      * @return char
      */
     private char randomCharIn(char[] chars) {
@@ -84,23 +88,27 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createProperty.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createProperty(boolean multiValue) {
-        return multiValue ? new StringMultiProperty("testString", "Test string property", new String[] { "hello",
-                "world" }, 1.0f, delimiter) : new StringProperty("testString", "Test string property", "brian", 1.0f);
+        return multiValue ? new StringMultiProperty("testString", "Test string property",
+                new String[] { "hello", "world" }, 1.0f, delimiter)
+                : new StringProperty("testString", "Test string property", "brian", 1.0f);
     }
 
     /**
      * Method createBadProperty.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
-        return multiValue ? new StringMultiProperty("testString", "Test string property", new String[] { "hello",
-                "world", "a" + delimiter + "b" }, 1.0f, delimiter) : new StringProperty("", "Test string property",
-                "brian", 1.0f);
+        return multiValue
+                ? new StringMultiProperty("testString", "Test string property",
+                        new String[] { "hello", "world", "a" + delimiter + "b" }, 1.0f, delimiter)
+                : new StringProperty("", "Test string property", "brian", 1.0f);
     }
 }

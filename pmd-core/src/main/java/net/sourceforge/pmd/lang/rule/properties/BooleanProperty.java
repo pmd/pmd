@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -27,10 +28,14 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
     /**
      * Constructor for BooleanProperty limited to a single value.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param defaultValue boolean
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param defaultValue
+     *            boolean
+     * @param theUIOrder
+     *            float
      */
     public BooleanProperty(String theName, String theDescription, Boolean defaultValue, float theUIOrder) {
         super(theName, theDescription, Boolean.valueOf(defaultValue), theUIOrder);
@@ -40,10 +45,14 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
      * Constructor for BooleanProperty limited to a single value. Converts
      * default argument string into a boolean.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param defaultBoolStr String
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param defaultBoolStr
+     *            String
+     * @param theUIOrder
+     *            float
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
         this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder);
@@ -67,7 +76,8 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
     /**
      * Creates and returns a Boolean instance from a raw string
      * 
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
     protected Object createFrom(String value) {

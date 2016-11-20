@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.ArrayList;
@@ -11,15 +12,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Base class for any {@link Scope}.
- * Provides useful default implementations.
+ * Base class for any {@link Scope}. Provides useful default implementations.
  */
 public abstract class AbstractScope implements Scope {
 
     private Scope parent;
     /** Stores the name declaration already sorted by class. */
-    private Map<Class<? extends NameDeclaration>, Map<NameDeclaration, List<NameOccurrence>>> nameDeclarations =
-            new LinkedHashMap<>();
+    private Map<Class<? extends NameDeclaration>, Map<NameDeclaration, List<NameOccurrence>>> nameDeclarations = new LinkedHashMap<>();
 
     @Override
     public Scope getParent() {
@@ -43,7 +42,7 @@ public abstract class AbstractScope implements Scope {
     @Override
     public <T extends NameDeclaration> Map<T, List<NameOccurrence>> getDeclarations(Class<T> clazz) {
         @SuppressWarnings("unchecked")
-        Map<T, List<NameOccurrence>> result = (Map<T, List<NameOccurrence>>)nameDeclarations.get(clazz);
+        Map<T, List<NameOccurrence>> result = (Map<T, List<NameOccurrence>>) nameDeclarations.get(clazz);
         if (result == null) {
             result = new LinkedHashMap<>();
         }
@@ -77,7 +76,7 @@ public abstract class AbstractScope implements Scope {
         while (result == null && current != null) {
             if (clazz.isAssignableFrom(current.getClass())) {
                 @SuppressWarnings("unchecked")
-                T cast = (T)current;
+                T cast = (T) current;
                 result = cast;
             }
             current = current.getParent();

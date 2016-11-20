@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.StringWriter;
@@ -38,7 +39,8 @@ public final class XMLRenderer implements Renderer {
     /**
      * Creates a XML Renderer with a specific output encoding.
      * 
-     * @param encoding the encoding to use or null. If null, default (platform
+     * @param encoding
+     *            the encoding to use or null. If null, default (platform
      *            dependent) encoding is used.
      */
     public XMLRenderer(String encoding) {

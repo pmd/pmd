@@ -1,15 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+
+import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
 
 /**
  * Concrete subclasses manage items that reside within namespaces per the design
@@ -53,7 +54,8 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     }
 
     /**
-     * @param attributes Map<String,String>
+     * @param attributes
+     *            Map<String,String>
      */
     @Override
     protected void addAttributesTo(Map<String, String> attributes) {
@@ -135,7 +137,8 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
     /**
      *
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     @Override
@@ -165,7 +168,8 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
     /**
      *
-     * @param item Object
+     * @param item
+     *            Object
      * @return String
      */
     protected abstract String packageNameOf(Object item);

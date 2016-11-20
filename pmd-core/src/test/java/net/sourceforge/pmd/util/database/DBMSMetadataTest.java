@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import java.io.IOException;
@@ -186,8 +187,8 @@ public class DBMSMetadataTest {
          * System.out.println("Reader.read(CharArray)=="+readChars);
          * stringBuilder.append(charArray, 0, readChars); } result.close();
          * 
-         * System.out.println("getSourceCode()==\""+stringBuilder.toString()+"\""
-         * );
+         * System.out.println("getSourceCode()==\""+stringBuilder.toString()+
+         * "\"" );
          * 
          * assertTrue(stringBuilder.toString().startsWith("\n  CREATE "));
          */

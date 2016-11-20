@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 /**
@@ -13,6 +14,7 @@ public interface RuleViolation {
 
     /**
      * Get the Rule which identified this violation.
+     * 
      * @return The identifying Rule.
      */
     Rule getRule();
@@ -26,7 +28,9 @@ public interface RuleViolation {
 
     /**
      * Indicates whether this violation has been suppressed.
-     * @return <code>true</code> if this violation is suppressed, <code>false</code> otherwise.
+     * 
+     * @return <code>true</code> if this violation is suppressed,
+     *         <code>false</code> otherwise.
      */
     boolean isSuppressed();
 
@@ -46,8 +50,8 @@ public interface RuleViolation {
     int getBeginLine();
 
     /**
-     * Get the column number of the begin line in the source file
-     * in which this violation was identified.
+     * Get the column number of the begin line in the source file in which this
+     * violation was identified.
      * 
      * @return Begin column number.
      */
@@ -62,8 +66,8 @@ public interface RuleViolation {
     int getEndLine();
 
     /**
-     * Get the column number of the end line in the source file
-     * in which this violation was identified.
+     * Get the column number of the end line in the source file in which this
+     * violation was identified.
      * 
      * @return End column number.
      */

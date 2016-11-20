@@ -20,6 +20,7 @@
  *
  * Created on Aug 26, 2002
  */
+
 package net.sourceforge.pmd.stat;
 
 import java.util.List;
@@ -33,7 +34,7 @@ import net.sourceforge.pmd.lang.rule.stat.StatisticalRuleHelper;
 public class MockStatisticalRule extends FooRule implements StatisticalRule {
 
     private StatisticalRuleHelper helper;
-    
+
     public MockStatisticalRule() {
         helper = new StatisticalRuleHelper(this);
     }

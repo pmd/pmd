@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -30,15 +31,22 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
      * Constructor for FloatProperty that limits itself to a single value within
      * the specified limits.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param min float
-     * @param max float
-     * @param theDefault float
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            float
+     * @param max
+     *            float
+     * @param theDefault
+     *            float
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
-    public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault, float theUIOrder) {
+    public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
+            float theUIOrder) {
         super(theName, theDescription, Float.valueOf(min), Float.valueOf(max), Float.valueOf(theDefault), theUIOrder);
     }
 
@@ -46,12 +54,18 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
      * Constructor for FloatProperty that limits itself to a single value within
      * the specified limits. Converts string arguments into the Float values.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param minStr String
-     * @param maxStr String
-     * @param defaultStr String
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param minStr
+     *            String
+     * @param maxStr
+     *            String
+     * @param defaultStr
+     *            String
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
@@ -60,7 +74,8 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
     }
 
     /**
-     * @param numberString String
+     * @param numberString
+     *            String
      * @return Float
      */
     public static Float floatFrom(String numberString) {
@@ -78,7 +93,8 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
     /**
      * Creates an property value of the right type from a raw string.
      * 
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
     protected Object createFrom(String value) {

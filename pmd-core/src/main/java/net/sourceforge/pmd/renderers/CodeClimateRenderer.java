@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_BLOCK_HIGHLIGHTING;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
@@ -22,6 +18,10 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_BLOCK_HIGHLIGHTING;
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
 
 /**
  * Renderer for Code Climate JSON format
@@ -65,7 +65,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
      * Generate a CodeClimateIssue suitable for processing into JSON from the
      * given RuleViolation.
      * 
-     * @param rv RuleViolation to convert.
+     * @param rv
+     *            RuleViolation to convert.
      * @return The generated issue.
      */
     private CodeClimateIssue asIssue(RuleViolation rv) {

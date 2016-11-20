@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.util.Map;
@@ -70,7 +71,8 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * Validation function that returns a diagnostic error message for a sample
      * property value. Returns null if the value is acceptable.
      * 
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     String errorFor(Object value);
@@ -96,9 +98,11 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * parsing the propertyString provided. If it isn't a multi-valued property
      * then the value will be returned within an array of size[1].
      * 
-     * @param propertyString String
+     * @param propertyString
+     *            String
      * @return Object
-     * @throws IllegalArgumentException if the given string cannot be parsed
+     * @throws IllegalArgumentException
+     *             if the given string cannot be parsed
      */
     T valueFrom(String propertyString) throws IllegalArgumentException;
 
@@ -106,7 +110,8 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * Formats the object onto a string suitable for storage within the property
      * map.
      * 
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     String asDelimitedString(T value);
@@ -123,7 +128,8 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * A convenience method that returns an error string if the rule holds onto
      * a property value that has a problem. Returns null otherwise.
      * 
-     * @param rule Rule
+     * @param rule
+     *            Rule
      * @return String
      */
     String propertyErrorFor(Rule rule);

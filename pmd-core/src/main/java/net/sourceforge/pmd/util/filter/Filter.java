@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.filter;
 
 /**
@@ -10,5 +11,5 @@ package net.sourceforge.pmd.util.filter;
  *            The underlying type on which the filter applies.
  */
 public interface Filter<T> {
-	boolean filter(T obj);
+    boolean filter(T obj);
 }

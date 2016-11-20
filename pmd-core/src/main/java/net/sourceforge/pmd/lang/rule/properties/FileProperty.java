@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.io.File;
@@ -16,7 +17,8 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class FileProperty extends AbstractProperty<File> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FileProperty>(File.class) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FileProperty>(
+            File.class) {
 
         public FileProperty createWith(Map<String, String> valuesById) {
             return new FileProperty(nameIn(valuesById), descriptionIn(valuesById), null, 0f);

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant.internal;
 
 import java.io.Closeable;
@@ -80,8 +81,8 @@ public class PMDTaskImpl {
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
-            LanguageVersion languageVersion = LanguageRegistry.findLanguageVersionByTerseName(version.getName() + " "
-                    + version.getVersion());
+            LanguageVersion languageVersion = LanguageRegistry
+                    .findLanguageVersionByTerseName(version.getName() + " " + version.getVersion());
             if (languageVersion == null) {
                 throw new BuildException("The following language is not supported:" + version + ".");
             }
@@ -161,7 +162,8 @@ public class PMDTaskImpl {
                 }
 
                 public void startFileAnalysis(DataSource dataSource) {
-                    project.log("Processing file " + dataSource.getNiceFileName(false, inputPaths), Project.MSG_VERBOSE);
+                    project.log("Processing file " + dataSource.getNiceFileName(false, inputPaths),
+                            Project.MSG_VERBOSE);
                 }
 
                 public void renderFileReport(Report r) {
@@ -238,9 +240,9 @@ public class PMDTaskImpl {
             classpath = new Path(project);
         }
         /*
-         * 'basedir' is added to the path to make sure that relative paths
-         * such as "<ruleset>resources/custom_ruleset.xml</ruleset>" still
-         * work when ant is invoked from a different directory using "-f"
+         * 'basedir' is added to the path to make sure that relative paths such
+         * as "<ruleset>resources/custom_ruleset.xml</ruleset>" still work when
+         * ant is invoked from a different directory using "-f"
          */
         classpath.add(new Path(null, project.getBaseDir().toString()));
 
@@ -249,8 +251,8 @@ public class PMDTaskImpl {
         // are loaded twice
         // and exist in multiple class loaders
         boolean parentFirst = true;
-        configuration.setClassLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(), project,
-                classpath, parentFirst));
+        configuration.setClassLoader(
+                new AntClassLoader(Thread.currentThread().getContextClassLoader(), project, classpath, parentFirst));
 
         try {
             if (auxClasspath != null) {

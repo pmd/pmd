@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -31,12 +32,18 @@ public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
     /**
      * Constructor for LongProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param min Long
-     * @param max Long
-     * @param theDefaults Long[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            Long
+     * @param max
+     *            Long
+     * @param theDefaults
+     *            Long[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max, Long[] theDefaults,
@@ -53,7 +60,8 @@ public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
     protected Object createFrom(String value) {
@@ -63,7 +71,8 @@ public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
     /**
      * Returns an array of the correct type for the receiver.
      * 
-     * @param size int
+     * @param size
+     *            int
      * @return Object[]
      */
     protected Object[] arrayFor(int size) {

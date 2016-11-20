@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.util.Map;
@@ -32,7 +33,8 @@ public interface PropertyDescriptorFactory {
      * Create a property descriptor of the appropriate type using the values
      * provided.
      * 
-     * @param valuesById the map of values
+     * @param valuesById
+     *            the map of values
      * @return a new and initialized {@link PropertyDescriptor}
      */
     PropertyDescriptor<?> createWith(Map<String, String> valuesById);

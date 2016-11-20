@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -25,7 +26,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     public static final StringProperty ENCODING = new StringProperty("encoding",
             "XML encoding format, defaults to UTF-8.", "UTF-8", 0);
     private boolean useUTF8 = false;
-
 
     public XMLRenderer() {
         super(NAME, "XML format.");

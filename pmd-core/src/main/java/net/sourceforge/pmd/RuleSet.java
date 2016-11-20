@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.io.File;
@@ -50,8 +51,10 @@ public class RuleSet {
     /**
      * A convenience constructor
      *
-     * @param name the rule set name
-     * @param theRules the rules to add to the rule set
+     * @param name
+     *            the rule set name
+     * @param theRules
+     *            the rules to add to the rule set
      * @return a new rule set with the given rules added
      */
     public static RuleSet createFor(String name, Rule... theRules) {
@@ -77,7 +80,8 @@ public class RuleSet {
      * Add a new rule to this ruleset. Note that this method does not check for
      * duplicates.
      *
-     * @param rule the rule to be added
+     * @param rule
+     *            the rule to be added
      */
     public void addRule(Rule rule) {
         if (rule == null) {
@@ -91,7 +95,8 @@ public class RuleSet {
      * before in the ruleset, then the new rule will replace it. This makes sure
      * that the rule configured is overridden.
      *
-     * @param rule the new rule to add
+     * @param rule
+     *            the new rule to add
      * @return <code>true</code> if the new rule replaced an existing one,
      *         otherwise <code>false</code>.
      */
@@ -117,7 +122,8 @@ public class RuleSet {
      * same language was added before, so that the existent rule configuration
      * won't be overridden.
      *
-     * @param rule the new rule to add
+     * @param rule
+     *            the new rule to add
      * @return <code>true</code> if the rule was added, <code>false</code>
      *         otherwise
      */
@@ -142,8 +148,10 @@ public class RuleSet {
     /**
      * Add a new rule by reference to this ruleset.
      *
-     * @param ruleSetFileName the ruleset which contains the rule
-     * @param rule the rule to be added
+     * @param ruleSetFileName
+     *            the ruleset which contains the rule
+     * @param rule
+     *            the rule to be added
      */
     public void addRuleByReference(String ruleSetFileName, Rule rule) {
         if (StringUtil.isEmpty(ruleSetFileName)) {
@@ -177,7 +185,8 @@ public class RuleSet {
     /**
      * Does any Rule for the given Language use the DFA layer?
      *
-     * @param language The Language.
+     * @param language
+     *            The Language.
      * @return <code>true</code> if a Rule for the Language uses the DFA layer,
      *         <code>false</code> otherwise.
      */
@@ -196,7 +205,8 @@ public class RuleSet {
      * Note: Since we support multiple languages, rule names are not expected to
      * be unique within any specific ruleset.
      *
-     * @param ruleName the exact name of the rule to find
+     * @param ruleName
+     *            the exact name of the rule to find
      * @return the rule or null if not found
      */
     public Rule getRuleByName(String ruleName) {
@@ -212,7 +222,8 @@ public class RuleSet {
     /**
      * Add a whole RuleSet to this RuleSet
      *
-     * @param ruleSet the RuleSet to add
+     * @param ruleSet
+     *            the RuleSet to add
      */
     public void addRuleSet(RuleSet ruleSet) {
         rules.addAll(rules.size(), ruleSet.getRules());
@@ -223,10 +234,12 @@ public class RuleSet {
      * can be added as individual references, or collectively as an all rule
      * reference.
      *
-     * @param ruleSet the RuleSet to add
-     * @param allRules <code>true</code> if the ruleset should be added
-     *            collectively or <code>false</code> to add individual
-     *            references for each rule.
+     * @param ruleSet
+     *            the RuleSet to add
+     * @param allRules
+     *            <code>true</code> if the ruleset should be added collectively
+     *            or <code>false</code> to add individual references for each
+     *            rule.
      */
     public void addRuleSetByReference(RuleSet ruleSet, boolean allRules) {
         addRuleSetByReference(ruleSet, allRules, (String[]) null);
@@ -237,11 +250,14 @@ public class RuleSet {
      * can be added as individual references, or collectively as an all rule
      * reference.
      *
-     * @param ruleSet the RuleSet to add
-     * @param allRules <code>true</code> if the ruleset should be added
-     *            collectively or <code>false</code> to add individual
-     *            references for each rule.
-     * @param excludes names of the rules that should be excluded.
+     * @param ruleSet
+     *            the RuleSet to add
+     * @param allRules
+     *            <code>true</code> if the ruleset should be added collectively
+     *            or <code>false</code> to add individual references for each
+     *            rule.
+     * @param excludes
+     *            names of the rules that should be excluded.
      */
     public void addRuleSetByReference(RuleSet ruleSet, boolean allRules, String... excludes) {
         if (StringUtil.isEmpty(ruleSet.getFileName())) {
@@ -265,7 +281,8 @@ public class RuleSet {
      * which also matches the file. In other words, <code>include</code>
      * patterns override <code>exclude</code> patterns.
      *
-     * @param file the source file to check
+     * @param file
+     *            the source file to check
      * @return <code>true</code> if the file should be checked,
      *         <code>false</code> otherwise
      */
@@ -283,7 +300,8 @@ public class RuleSet {
      * Triggers that start lifecycle event on each rule in this ruleset. Some
      * rules perform initialization tasks on start.
      *
-     * @param ctx the current context
+     * @param ctx
+     *            the current context
      */
     public void start(RuleContext ctx) {
         for (Rule rule : rules) {
@@ -294,9 +312,10 @@ public class RuleSet {
     /**
      * Executes the rules in this ruleset against each of the given nodes.
      *
-     * @param acuList the node list, usually the root nodes like compilation
-     *            units
-     * @param ctx the current context
+     * @param acuList
+     *            the node list, usually the root nodes like compilation units
+     * @param ctx
+     *            the current context
      */
     public void apply(List<? extends Node> acuList, RuleContext ctx) {
         long start = System.nanoTime();
@@ -311,9 +330,8 @@ public class RuleSet {
             } catch (RuntimeException e) {
                 if (ctx.isIgnoreExceptions()) {
                     if (LOG.isLoggable(Level.WARNING)) {
-                        LOG.log(Level.WARNING, "Exception applying rule " + rule.getName()
-                            + " on file " + ctx.getSourceCodeFilename() + ", continuing with next rule",
-                            e);
+                        LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
+                                + ctx.getSourceCodeFilename() + ", continuing with next rule", e);
                     }
                 } else {
                     throw e;
@@ -327,8 +345,10 @@ public class RuleSet {
      * Language must be the same and be between the minimum and maximums
      * versions on the Rule.
      *
-     * @param rule The rule.
-     * @param languageVersion The language version.
+     * @param rule
+     *            The rule.
+     * @param languageVersion
+     *            The language version.
      *
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
@@ -345,7 +365,8 @@ public class RuleSet {
      * Triggers the end lifecycle event on each rule in the ruleset. Some rules
      * perform a final summary calculation or cleanup in the end.
      *
-     * @param ctx the current context
+     * @param ctx
+     *            the current context
      */
     public void end(RuleContext ctx) {
         for (Rule rule : rules) {
@@ -357,7 +378,8 @@ public class RuleSet {
      * Two rulesets are equals, if they have the same name and contain the same
      * rules.
      *
-     * @param o the other ruleset to compare with
+     * @param o
+     *            the other ruleset to compare with
      * @return <code>true</code> if o is a ruleset with the same name and rules,
      *         <code>false</code> otherwise
      */
@@ -411,7 +433,8 @@ public class RuleSet {
     /**
      * Adds a new file exclusion pattern.
      *
-     * @param aPattern the pattern
+     * @param aPattern
+     *            the pattern
      */
     public void addExcludePattern(String aPattern) {
         if (excludePatterns.contains(aPattern)) {
@@ -425,7 +448,8 @@ public class RuleSet {
     /**
      * Adds new file exclusion patterns.
      *
-     * @param someExcludePatterns the patterns
+     * @param someExcludePatterns
+     *            the patterns
      */
     public void addExcludePatterns(Collection<String> someExcludePatterns) {
         int added = CollectionUtil.addWithoutDuplicates(someExcludePatterns, excludePatterns);
@@ -437,7 +461,8 @@ public class RuleSet {
     /**
      * Replaces the existing exclusion patterns with the given patterns.
      *
-     * @param theExcludePatterns the new patterns
+     * @param theExcludePatterns
+     *            the new patterns
      */
     public void setExcludePatterns(Collection<String> theExcludePatterns) {
         if (excludePatterns.equals(theExcludePatterns)) {
@@ -456,7 +481,8 @@ public class RuleSet {
     /**
      * Adds a new inclusion pattern.
      *
-     * @param aPattern the pattern
+     * @param aPattern
+     *            the pattern
      */
     public void addIncludePattern(String aPattern) {
         if (includePatterns.contains(aPattern)) {
@@ -470,7 +496,8 @@ public class RuleSet {
     /**
      * Adds new inclusion patterns.
      *
-     * @param someIncludePatterns the patterns
+     * @param someIncludePatterns
+     *            the patterns
      */
     public void addIncludePatterns(Collection<String> someIncludePatterns) {
         int added = CollectionUtil.addWithoutDuplicates(someIncludePatterns, includePatterns);
@@ -482,7 +509,8 @@ public class RuleSet {
     /**
      * Replaces the existing inclusion patterns with the given patterns.
      *
-     * @param theIncludePatterns the new patterns
+     * @param theIncludePatterns
+     *            the new patterns
      */
     public void setIncludePatterns(Collection<String> theIncludePatterns) {
         if (includePatterns.equals(theIncludePatterns)) {
@@ -502,7 +530,8 @@ public class RuleSet {
     /**
      * Does any Rule for the given Language use Type Resolution?
      *
-     * @param language The Language.
+     * @param language
+     *            The Language.
      * @return <code>true</code> if a Rule for the Language uses Type
      *         Resolution, <code>false</code> otherwise.
      */
@@ -518,7 +547,8 @@ public class RuleSet {
     /**
      * Remove and collect any misconfigured rules.
      *
-     * @param collector the removed rules will be added to this collection
+     * @param collector
+     *            the removed rules will be added to this collection
      */
     public void removeDysfunctionalRules(Collection<Rule> collector) {
         Iterator<Rule> iter = rules.iterator();

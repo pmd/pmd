@@ -1,10 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer.model;
 
 /**
- * The event which will be sent every time  the model changes
+ * The event which will be sent every time the model changes
  * <p/>
  * <p/>
  * <p/>
@@ -41,8 +42,10 @@ public class ViewerModelEvent {
     /**
      * Creates an event
      *
-     * @param source event's source
-     * @param reason event's reason
+     * @param source
+     *            event's source
+     * @param reason
+     *            event's reason
      */
     public ViewerModelEvent(Object source, int reason) {
         this(source, reason, null);
@@ -51,9 +54,12 @@ public class ViewerModelEvent {
     /**
      * Creates an event
      *
-     * @param source    event's source
-     * @param reason    event's reason
-     * @param parameter parameter object
+     * @param source
+     *            event's source
+     * @param reason
+     *            event's reason
+     * @param parameter
+     *            parameter object
      */
     public ViewerModelEvent(Object source, int reason, Object parameter) {
         this.source = source;

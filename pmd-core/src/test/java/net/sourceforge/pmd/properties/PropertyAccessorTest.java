@@ -1,21 +1,23 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.properties;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.cpd.ReportException;
+import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.NumericConstants;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.cpd.ReportException;
-import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.NumericConstants;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  * @author Brian Remedios
@@ -34,8 +36,8 @@ public class PropertyAccessorTest {
         rule.setProperty(NonRuleWithAllPropertyTypes.singleInt, NumericConstants.ZERO);
         assertSame(rule.getProperty(NonRuleWithAllPropertyTypes.singleInt), 0);
 
-        rule.setProperty(NonRuleWithAllPropertyTypes.multiInt, new Integer[] { NumericConstants.ZERO,
-                NumericConstants.ONE });
+        rule.setProperty(NonRuleWithAllPropertyTypes.multiInt,
+                new Integer[] { NumericConstants.ZERO, NumericConstants.ONE });
         assertArrayEquals(rule.getProperty(NonRuleWithAllPropertyTypes.multiInt), new Integer[] { 0, 1 });
     }
 
@@ -77,7 +79,7 @@ public class PropertyAccessorTest {
         assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.singleStr), "brian");
 
         rule.setProperty(NonRuleWithAllPropertyTypes.multiStr, new String[] { "hello", "world" });
-        assertTrue(CollectionUtil.arraysAreEqual(rule.getProperty(NonRuleWithAllPropertyTypes.multiStr), new String[] {
-                "hello", "world" }));
+        assertTrue(CollectionUtil.arraysAreEqual(rule.getProperty(NonRuleWithAllPropertyTypes.multiStr),
+                new String[] { "hello", "world" }));
     }
 }

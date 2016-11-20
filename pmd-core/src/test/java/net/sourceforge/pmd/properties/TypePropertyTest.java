@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.properties;
 
 import java.util.Comparator;
@@ -35,7 +36,8 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createValue.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createValue(int count) {
@@ -52,7 +54,8 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createBadValue.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createBadValue(int count) {
@@ -69,27 +72,33 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createProperty.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
-        return multiValue ? new TypeMultiProperty("testType", "Test type property", javaLangClasses,
-                new String[] { "java.lang" }, 1.0f) : new TypeProperty("testType", "Test type property",
-                javaLangClasses[0], new String[] { "java.lang" }, 1.0f);
+        return multiValue
+                ? new TypeMultiProperty("testType", "Test type property", javaLangClasses, new String[] { "java.lang" },
+                        1.0f)
+                : new TypeProperty("testType", "Test type property", javaLangClasses[0], new String[] { "java.lang" },
+                        1.0f);
     }
 
     /**
      * Method createProperty.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
-        return multiValue ? new TypeMultiProperty("testType", "Test type property", new Class[] { Set.class },
-                new String[] { "java.lang" }, 1.0f) : new TypeProperty("testType", "Test type property",
-                javaLangClasses[0], new String[] { "java.util" }, 1.0f);
+        return multiValue
+                ? new TypeMultiProperty("testType", "Test type property", new Class[] { Set.class },
+                        new String[] { "java.lang" }, 1.0f)
+                : new TypeProperty("testType", "Test type property", javaLangClasses[0], new String[] { "java.util" },
+                        1.0f);
     }
 
 }

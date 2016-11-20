@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.stat.Metric;
@@ -16,7 +17,8 @@ public final class SynchronizedReportListener implements ReportListener {
      * Creates a new {@link SynchronizedReportListener} by wrapping the given
      * report listener.
      * 
-     * @param listener the listener to be synchronized
+     * @param listener
+     *            the listener to be synchronized
      */
     public SynchronizedReportListener(ReportListener listener) {
         this.wrapped = listener;

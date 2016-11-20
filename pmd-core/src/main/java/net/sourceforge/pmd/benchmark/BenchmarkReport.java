@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.benchmark;
 
 import java.io.PrintStream;
@@ -13,17 +14,17 @@ import java.util.Set;
  */
 public interface BenchmarkReport {
 
-	/**
-	 * 
-	 * @param stressResults
-	 * @param out
-	 */
-	void generate(Set<RuleDuration> stressResults, PrintStream out);
-	
-	/**
-	 * 
-	 * @param benchmarksByName
-	 * @param out
-	 */
-	void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream out);
+    /**
+     * 
+     * @param stressResults
+     * @param out
+     */
+    void generate(Set<RuleDuration> stressResults, PrintStream out);
+
+    /**
+     * 
+     * @param benchmarksByName
+     * @param out
+     */
+    void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream out);
 }

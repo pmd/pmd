@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -23,20 +24,26 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
             String[] minMax = minMaxFrom(valuesById);
             char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
             Double[] defaultValues = doublesIn(numericDefaultValueIn(valuesById), delimiter);
-            return new DoubleMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    Double.parseDouble(minMax[0]), Double.parseDouble(minMax[1]), defaultValues, 0f);
+            return new DoubleMultiProperty(nameIn(valuesById), descriptionIn(valuesById), Double.parseDouble(minMax[0]),
+                    Double.parseDouble(minMax[1]), defaultValues, 0f);
         }
     };
 
     /**
      * Constructor for DoubleProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param min Double
-     * @param max Double
-     * @param defaultValues Double[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            Double
+     * @param max
+     *            Double
+     * @param defaultValues
+     *            Double[]
+     * @param theUIOrder
+     *            float
      */
     public DoubleMultiProperty(String theName, String theDescription, Double min, Double max, Double[] defaultValues,
             float theUIOrder) {
@@ -52,7 +59,8 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
     protected Object createFrom(String value) {
@@ -60,7 +68,8 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
     }
 
     /**
-     * @param size int
+     * @param size
+     *            int
      * @return Object[]
      */
     protected Object[] arrayFor(int size) {

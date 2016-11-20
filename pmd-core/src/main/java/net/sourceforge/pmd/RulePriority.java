@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 /**
@@ -11,19 +12,32 @@ package net.sourceforge.pmd;
  * avoided in favor of {@link RulePriority#getPriority()} and
  * {@link RulePriority#valueOf(int)}
  *
- * @see <a href="http://pmd.sourceforge.net/pmd-5.1.2/rule-guidelines.html">How to define rules priority</a>
+ * @see <a href="http://pmd.sourceforge.net/pmd-5.1.2/rule-guidelines.html">How
+ *      to define rules priority</a>
  */
 public enum RulePriority {
 
     /** High: Change absolutely required. Behavior is critically broken/buggy */
     HIGH(1, "High"),
-    /** Medium to high: Change highly recommended. Behavior is quite likely to be broken/buggy. */
+    /**
+     * Medium to high: Change highly recommended. Behavior is quite likely to be
+     * broken/buggy.
+     */
     MEDIUM_HIGH(2, "Medium High"),
-    /** Medium: Change recommended. Behavior is confusing, perhaps buggy, and/or against standards/best practices. */
+    /**
+     * Medium: Change recommended. Behavior is confusing, perhaps buggy, and/or
+     * against standards/best practices.
+     */
     MEDIUM(3, "Medium"),
-    /** Medium to low: Change optional. Behavior is not likely to be buggy, but more just flies in the face of standards/style/good taste. */
+    /**
+     * Medium to low: Change optional. Behavior is not likely to be buggy, but
+     * more just flies in the face of standards/style/good taste.
+     */
     MEDIUM_LOW(4, "Medium Low"),
-    /** Low: Change highly optional. Nice to have, such as a consistent naming policy for package/class/fields... */
+    /**
+     * Low: Change highly optional. Nice to have, such as a consistent naming
+     * policy for package/class/fields...
+     */
     LOW(5, "Low");
 
     private final int priority;
@@ -55,6 +69,7 @@ public enum RulePriority {
 
     /**
      * Returns the descriptive name of the priority.
+     * 
      * @return descriptive name of the priority
      * @see #getName()
      */
@@ -68,7 +83,8 @@ public enum RulePriority {
      * {@link RulePriority#getPriority()}. If the number is an invalid value,
      * then {@link RulePriority#LOW} will be returned.
      *
-     * @param priority The numeric priority value.
+     * @param priority
+     *            The numeric priority value.
      * @return The priority.
      */
     public static RulePriority valueOf(int priority) {

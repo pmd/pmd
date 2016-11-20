@@ -1,15 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.rule.properties.factories;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
-import static net.sourceforge.pmd.PropertyDescriptorFields.DELIMITER;
-import static net.sourceforge.pmd.PropertyDescriptorFields.DESC;
-import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
-import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
-import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
+package net.sourceforge.pmd.lang.rule.properties.factories;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +16,14 @@ import net.sourceforge.pmd.lang.rule.properties.AbstractProperty;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
+import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DELIMITER;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DESC;
+import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
+import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
+import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
+import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
+
 /**
  * 
  * @author Brian Remedios
@@ -34,9 +35,9 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     private final Class<?> valueType;
     private final Map<String, Boolean> fieldTypesByKey;
 
-    protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil
-            .mapFrom(new String[] { NAME, DESC, DEFAULT_VALUE, DELIMITER }, new Boolean[] { Boolean.TRUE, Boolean.TRUE,
-                    Boolean.TRUE, Boolean.FALSE });
+    protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil.mapFrom(
+            new String[] { NAME, DESC, DEFAULT_VALUE, DELIMITER },
+            new Boolean[] { Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE });
 
     public BasicPropertyDescriptorFactory(Class<?> theValueType) {
         valueType = theValueType;
@@ -56,8 +57,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     public BasicPropertyDescriptorFactory(Class<?> theValueType, Map<String, Boolean> additionalFieldTypesByKey) {
 
         valueType = theValueType;
-        Map<String, Boolean> temp = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size()
-                + additionalFieldTypesByKey.size());
+        Map<String, Boolean> temp = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size() + additionalFieldTypesByKey.size());
         temp.putAll(CORE_FIELD_TYPES_BY_KEY);
         temp.putAll(additionalFieldTypesByKey);
 

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.util.HashMap;
@@ -29,9 +30,9 @@ public class RuleChain {
      *            The RuleSet to add Rules from.
      */
     public void add(RuleSet ruleSet) {
-	for (Rule r : ruleSet.getRules()) {
+        for (Rule r : ruleSet.getRules()) {
             add(ruleSet, r);
-	}
+        }
     }
 
     /**
@@ -43,15 +44,15 @@ public class RuleChain {
      *            The Rule to add.
      */
     private void add(RuleSet ruleSet, Rule rule) {
-	RuleChainVisitor visitor = getRuleChainVisitor(rule.getLanguage());
-	if (visitor != null) {
+        RuleChainVisitor visitor = getRuleChainVisitor(rule.getLanguage());
+        if (visitor != null) {
             visitor.add(ruleSet, rule);
-	}
+        }
     }
 
     /**
-     * Apply the RuleChain to the given Nodes using the given
-     * RuleContext, for those rules using the given Language.
+     * Apply the RuleChain to the given Nodes using the given RuleContext, for
+     * those rules using the given Language.
      * 
      * @param nodes
      *            The Nodes.
@@ -61,31 +62,31 @@ public class RuleChain {
      *            The Language.
      */
     public void apply(List<Node> nodes, RuleContext ctx, Language language) {
-	RuleChainVisitor visitor = getRuleChainVisitor(language);
-	if (visitor != null) {
-	    visitor.visitAll(nodes, ctx);
-	}
+        RuleChainVisitor visitor = getRuleChainVisitor(language);
+        if (visitor != null) {
+            visitor.visitAll(nodes, ctx);
+        }
     }
 
     // Get the RuleChainVisitor for the appropriate Language.
     private RuleChainVisitor getRuleChainVisitor(Language language) {
-	RuleChainVisitor visitor = languageToRuleChainVisitor.get(language);
-	if (visitor == null) {
-	    if (language.getRuleChainVisitorClass() != null) {
-		try {
-		    visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().newInstance();
-		} catch (InstantiationException e) {
-		    throw new IllegalStateException("Failure to created RuleChainVisitor: "
-			    + language.getRuleChainVisitorClass(), e);
-		} catch (IllegalAccessException e) {
-		    throw new IllegalStateException("Failure to created RuleChainVisitor: "
-			    + language.getRuleChainVisitorClass(), e);
-		}
-		languageToRuleChainVisitor.put(language, visitor);
-	    } else {
-		throw new IllegalArgumentException("Language does not have a RuleChainVisitor: " + language);
-	    }
-	}
-	return visitor;
+        RuleChainVisitor visitor = languageToRuleChainVisitor.get(language);
+        if (visitor == null) {
+            if (language.getRuleChainVisitorClass() != null) {
+                try {
+                    visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().newInstance();
+                } catch (InstantiationException e) {
+                    throw new IllegalStateException(
+                            "Failure to created RuleChainVisitor: " + language.getRuleChainVisitorClass(), e);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalStateException(
+                            "Failure to created RuleChainVisitor: " + language.getRuleChainVisitorClass(), e);
+                }
+                languageToRuleChainVisitor.put(language, visitor);
+            } else {
+                throw new IllegalArgumentException("Language does not have a RuleChainVisitor: " + language);
+            }
+        }
+        return visitor;
     }
 }

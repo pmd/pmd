@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
-import net.sf.saxon.sxpath.IndependentContext;
-
 import org.jaxen.Navigator;
+
+import net.sf.saxon.sxpath.IndependentContext;
+import net.sourceforge.pmd.lang.xpath.Initializer;
 
 /**
  * Interface for performing Language specific XPath handling, such as

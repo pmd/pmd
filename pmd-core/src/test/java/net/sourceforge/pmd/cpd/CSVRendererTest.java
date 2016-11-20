@@ -1,16 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class CSVRendererTest {
     @Test
@@ -24,9 +25,8 @@ public class CSVRendererTest {
 
         list.add(match);
         String report = renderer.render(list.iterator());
-        String expectedReport =
-            "tokens,occurrences" + PMD.EOL +
-            "75,2,48,10,/var/Foo.java,73,20,/var/Bar.java" + PMD.EOL;
+        String expectedReport = "tokens,occurrences" + PMD.EOL + "75,2,48,10,/var/Foo.java,73,20,/var/Bar.java"
+                + PMD.EOL;
 
         assertEquals(expectedReport, report);
     }
@@ -42,9 +42,8 @@ public class CSVRendererTest {
         list.add(match);
 
         String report = renderer.render(list.iterator());
-        String expectedReport =
-                "lines,tokens,occurrences" + PMD.EOL +
-                "10,75,2,48,\"/var,with,commas/Foo.java\",73,\"/var,with,commas/Bar.java\"" + PMD.EOL;
+        String expectedReport = "lines,tokens,occurrences" + PMD.EOL
+                + "10,75,2,48,\"/var,with,commas/Foo.java\",73,\"/var,with,commas/Bar.java\"" + PMD.EOL;
         assertEquals(expectedReport, report);
     }
 
@@ -56,4 +55,3 @@ public class CSVRendererTest {
         return result;
     }
 }
-

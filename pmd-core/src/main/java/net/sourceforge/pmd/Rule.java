@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.util.List;
@@ -14,10 +15,10 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 /**
  * This is the basic Rule interface for PMD rules.
  *
- * <p><strong>Thread safety:</strong>
- * PMD will create one instance of a rule per thread. The instances are
- * not shared across different threads. However, a single rule instance is
- * reused for analyzing multiple files.
+ * <p>
+ * <strong>Thread safety:</strong> PMD will create one instance of a rule per
+ * thread. The instances are not shared across different threads. However, a
+ * single rule instance is reused for analyzing multiple files.
  * </p>
  */
 // FUTURE Implement Cloneable and clone()
@@ -47,7 +48,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the Language of this Rule.
      * 
-     * @param language the language
+     * @param language
+     *            the language
      */
     void setLanguage(Language language);
 
@@ -62,7 +64,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the minimum LanguageVersion to which this Rule applies.
      * 
-     * @param minimumLanguageVersion the minimum language version
+     * @param minimumLanguageVersion
+     *            the minimum language version
      */
     void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion);
 
@@ -77,7 +80,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the maximum LanguageVersion to which this Rule applies.
      * 
-     * @param maximumLanguageVersion the maximum language version
+     * @param maximumLanguageVersion
+     *            the maximum language version
      */
     void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion);
 
@@ -98,7 +102,8 @@ public interface Rule extends PropertySource {
     /**
      * Sets whether this Rule is deprecated.
      * 
-     * @param deprecated whether this rule is deprecated
+     * @param deprecated
+     *            whether this rule is deprecated
      */
     void setDeprecated(boolean deprecated);
 
@@ -112,7 +117,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the name of this Rule.
      * 
-     * @param name the name
+     * @param name
+     *            the name
      */
     void setName(String name);
 
@@ -127,7 +133,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the version of PMD in which this Rule was added.
      * 
-     * @param since the version of PMD since when this rule was added
+     * @param since
+     *            the version of PMD since when this rule was added
      */
     void setSince(String since);
 
@@ -141,7 +148,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the class of this Rule.
      * 
-     * @param ruleClass the class name of this rule.
+     * @param ruleClass
+     *            the class name of this rule.
      */
     void setRuleClass(String ruleClass);
 
@@ -156,7 +164,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the name of the RuleSet containing this Rule.
      * 
-     * @param name the name of the ruleset containing this rule.
+     * @param name
+     *            the name of the ruleset containing this rule.
      * @see RuleSet
      */
     void setRuleSetName(String name);
@@ -171,7 +180,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the message to show when this Rule identifies a violation.
      * 
-     * @param message the message to show for a violation.
+     * @param message
+     *            the message to show for a violation.
      */
     void setMessage(String message);
 
@@ -185,7 +195,8 @@ public interface Rule extends PropertySource {
     /**
      * Set the description of this Rule.
      * 
-     * @param description the description
+     * @param description
+     *            the description
      */
     void setDescription(String description);
 
@@ -199,7 +210,8 @@ public interface Rule extends PropertySource {
     /**
      * Add a single example for this Rule.
      * 
-     * @param example a single example to add
+     * @param example
+     *            a single example to add
      */
     void addExample(String example);
 
@@ -213,7 +225,8 @@ public interface Rule extends PropertySource {
     /**
      * Set a URL for external information about this Rule.
      * 
-     * @param externalInfoUrl the URL for external information about this rule.
+     * @param externalInfoUrl
+     *            the URL for external information about this rule.
      */
     void setExternalInfoUrl(String externalInfoUrl);
 
@@ -227,15 +240,16 @@ public interface Rule extends PropertySource {
     /**
      * Set the priority of this Rule.
      * 
-     * @param priority the priority
+     * @param priority
+     *            the priority
      */
     void setPriority(RulePriority priority);
 
     /**
      * Get the parser options for this Rule. Parser options are used to
-     * configure the {@link net.sourceforge.pmd.lang.Parser} to create an AST in the form the Rule is
-     * expecting. Because ParserOptions are mutable, a Rule should return a new
-     * instance on each call.
+     * configure the {@link net.sourceforge.pmd.lang.Parser} to create an AST in
+     * the form the Rule is expecting. Because ParserOptions are mutable, a Rule
+     * should return a new instance on each call.
      * 
      * @return the parser options
      */
@@ -288,22 +302,24 @@ public interface Rule extends PropertySource {
     /**
      * Adds an AST node by class to be visited by the Rule on the RuleChain.
      * 
-     * @param nodeClass the AST node to add to the RuleChain visit list
+     * @param nodeClass
+     *            the AST node to add to the RuleChain visit list
      */
     void addRuleChainVisit(Class<? extends Node> nodeClass);
 
     /**
      * Adds an AST node by name to be visited by the Rule on the RuleChain.
      * 
-     * @param astNodeName the AST node to add to the RuleChain visit list as
-     *            string
+     * @param astNodeName
+     *            the AST node to add to the RuleChain visit list as string
      */
     void addRuleChainVisit(String astNodeName);
 
     /**
      * Start processing. Called once, before apply() is first called.
      * 
-     * @param ctx the rule context
+     * @param ctx
+     *            the rule context
      */
     void start(RuleContext ctx);
 
@@ -311,15 +327,18 @@ public interface Rule extends PropertySource {
      * Apply this rule to the given collection of nodes, using the given
      * context.
      * 
-     * @param nodes the nodes
-     * @param ctx the rule context
+     * @param nodes
+     *            the nodes
+     * @param ctx
+     *            the rule context
      */
     void apply(List<? extends Node> nodes, RuleContext ctx);
 
     /**
      * End processing. Called once, after apply() is last called.
      * 
-     * @param ctx the rule context
+     * @param ctx
+     *            the rule context
      */
     void end(RuleContext ctx);
 }

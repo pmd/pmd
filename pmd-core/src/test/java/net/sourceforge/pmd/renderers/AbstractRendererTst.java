@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -15,8 +17,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-import org.junit.Test;
-
+import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractRendererTst {
 
@@ -81,7 +82,8 @@ public abstract class AbstractRendererTst {
         ctx.setSourceCodeFilename("n/a");
         Report report = new Report();
         RuleWithProperties theRule = new RuleWithProperties();
-        theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR, "the string value\nsecond line with \"quotes\"");
+        theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
+                "the string value\nsecond line with \"quotes\"");
         report.addRuleViolation(new ParametricRuleViolation<Node>(theRule, ctx, node, "blah"));
         String rendered = ReportTest.render(getRenderer(), report);
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));

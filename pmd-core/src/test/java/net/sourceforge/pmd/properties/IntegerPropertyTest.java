@@ -1,10 +1,11 @@
+
 package net.sourceforge.pmd.properties;
+
+import org.junit.Test;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-
-import org.junit.Test;
 
 /**
  * Evaluates the functionality of the IntegerProperty descriptor by testing its
@@ -27,7 +28,8 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createValue.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createValue(int count) {
@@ -44,7 +46,8 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Creates and returns (count) number of out-of-range Integer values
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createBadValue(int count) {
@@ -65,20 +68,23 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createProperty.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
-        return multiValue ? new IntegerMultiProperty("testInteger", "Test integer property", MIN, MAX, new Integer[] {
-                MIN, MIN + 1, MAX - 1, MAX }, 1.0f) : new IntegerProperty("testInteger", "Test integer property", MIN,
-                MAX, MAX - 1, 1.0f);
+        return multiValue
+                ? new IntegerMultiProperty("testInteger", "Test integer property", MIN, MAX,
+                        new Integer[] { MIN, MIN + 1, MAX - 1, MAX }, 1.0f)
+                : new IntegerProperty("testInteger", "Test integer property", MIN, MAX, MAX - 1, 1.0f);
     }
 
     /**
      * Method createBadProperty.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createBadProperty(boolean multiValue) {

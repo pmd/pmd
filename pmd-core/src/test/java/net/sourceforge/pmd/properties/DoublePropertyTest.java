@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -25,7 +26,8 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Creates and returns (count) number of legal Double values
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createValue(int count) {
@@ -42,14 +44,15 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Creates and returns (count) number of out-of-range values
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createBadValue(int count) {
 
         if (count == 1)
-            return Double.valueOf(randomBool() ? randomDouble(MIN - SHIFT, MIN - 0.01) : randomDouble(MAX + 0.01, MAX
-                    + SHIFT));
+            return Double.valueOf(
+                    randomBool() ? randomDouble(MIN - SHIFT, MIN - 0.01) : randomDouble(MAX + 0.01, MAX + SHIFT));
 
         Double[] values = new Double[count];
         for (int i = 0; i < values.length; i++)
@@ -60,25 +63,30 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Creates and returns a property with a (maxCount) value cardinality.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
-        return multiValue ? new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX, new Double[] { -1d,
-                0d, 1d, 2d }, 1.0f) : new DoubleProperty("testDouble", "Test double property", MIN, MAX, 9.0, 1.0f);
+        return multiValue
+                ? new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX,
+                        new Double[] { -1d, 0d, 1d, 2d }, 1.0f)
+                : new DoubleProperty("testDouble", "Test double property", MIN, MAX, 9.0, 1.0f);
     }
 
     /**
      * Attempts to create a property with invalid constructor arguments.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
-        return multiValue ? new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX, new Double[] {
-                MIN - SHIFT, MIN, MIN + SHIFT, MAX + SHIFT }, 1.0f) : new DoubleProperty("testDouble",
-                "Test double property", MAX, MIN, 9.0, 1.0f);
+        return multiValue
+                ? new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX,
+                        new Double[] { MIN - SHIFT, MIN, MIN + SHIFT, MAX + SHIFT }, 1.0f)
+                : new DoubleProperty("testDouble", "Test double property", MAX, MIN, 9.0, 1.0f);
     }
 }

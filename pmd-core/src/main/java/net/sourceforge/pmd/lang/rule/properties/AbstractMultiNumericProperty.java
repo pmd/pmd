@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
@@ -13,12 +14,18 @@ public abstract class AbstractMultiNumericProperty<T> extends AbstractNumericPro
     /**
      * Constructor for AbstractMultiNumericProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param lower Number
-     * @param upper Number
-     * @param theDefault T
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param lower
+     *            Number
+     * @param upper
+     *            Number
+     * @param theDefault
+     *            T
+     * @param theUIOrder
+     *            float
      */
     protected AbstractMultiNumericProperty(String theName, String theDescription, Number lower, Number upper,
             T theDefault, float theUIOrder) {

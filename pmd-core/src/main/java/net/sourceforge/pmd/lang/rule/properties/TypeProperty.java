@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -33,11 +34,16 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     /**
      * Constructor for TypeProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefault Class
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefault
+     *            Class
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
@@ -47,11 +53,16 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
 
     /**
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param defaultTypeStr String
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param defaultTypeStr
+     *            String
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames,
@@ -61,11 +72,16 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
 
     /**
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param defaultTypeStr String
-     * @param otherParams Map<String, String>
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param defaultTypeStr
+     *            String
+     * @param otherParams
+     *            Map<String, String>
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<String, String> otherParams,
@@ -83,7 +99,8 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     /**
      * Method packageNameOf.
      * 
-     * @param item Object
+     * @param item
+     *            Object
      * @return String
      */
     @Override
@@ -108,7 +125,8 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     @Override
@@ -117,7 +135,8 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * @param className String
+     * @param className
+     *            String
      * @return Class
      * @throws IllegalArgumentException
      */
@@ -139,7 +158,8 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */

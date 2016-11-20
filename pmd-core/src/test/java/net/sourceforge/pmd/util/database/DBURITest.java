@@ -1,9 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.util.database;
 
-import static org.junit.Assert.assertEquals;
+package net.sourceforge.pmd.util.database;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -67,11 +68,10 @@ public class DBURITest {
     final static String C_HTTP = "http://localhost:80?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java";
 
     static void dump(String description, URI dburi) {
-        System.err
-                .printf("Test %s\n: isOpaque=%s, isAbsolute=%s Scheme=%s,\n SchemeSpecificPart=%s,\n Host=%s,\n Port=%s,\n Path=%s,\n Fragment=%s,\n Query=%s\n",
-                        description, dburi.isOpaque(), dburi.isAbsolute(), dburi.getScheme(),
-                        dburi.getSchemeSpecificPart(), dburi.getHost(), dburi.getPort(), dburi.getPath(),
-                        dburi.getFragment(), dburi.getQuery());
+        System.err.printf(
+                "Test %s\n: isOpaque=%s, isAbsolute=%s Scheme=%s,\n SchemeSpecificPart=%s,\n Host=%s,\n Port=%s,\n Path=%s,\n Fragment=%s,\n Query=%s\n",
+                description, dburi.isOpaque(), dburi.isAbsolute(), dburi.getScheme(), dburi.getSchemeSpecificPart(),
+                dburi.getHost(), dburi.getPort(), dburi.getPath(), dburi.getFragment(), dburi.getQuery());
         String query = dburi.getQuery();
         if (null != query && !query.equals("")) {
             String[] params = query.split("&");
@@ -323,8 +323,8 @@ public class DBURITest {
         String result = instance.getDriverClass();
         System.out.println("testGetThinDriverClass: driverClass=" + result);
         System.out.println("testGetThinDriverClass: getDbType().getProperties() follows");
-        System.out.println("testGetThinDriverClass: getDbType().getProperties()="
-                + instance.getDbType().getProperties());
+        System.out
+                .println("testGetThinDriverClass: getDbType().getProperties()=" + instance.getDbType().getProperties());
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.

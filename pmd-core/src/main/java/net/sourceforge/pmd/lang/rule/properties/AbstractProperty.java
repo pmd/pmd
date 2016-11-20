@@ -1,11 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
-import static net.sourceforge.pmd.PropertyDescriptorFields.DESCRIPTION;
-import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +11,10 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.StringUtil;
+
+import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DESCRIPTION;
+import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
 
 /**
  *
@@ -29,8 +30,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     private final float uiOrder;
 
     /**
-     * Default delimiter for multi properties.
-     * Note: Numeric properties usual use the {@value #DEFAULT_NUMERIC_DELIMITER}.
+     * Default delimiter for multi properties. Note: Numeric properties usual
+     * use the {@value #DEFAULT_NUMERIC_DELIMITER}.
      */
     public static final char DEFAULT_DELIMITER = '|';
     /**
@@ -47,10 +48,14 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * Constructor for AbstractPMDProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefault Object
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefault
+     *            Object
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder, char delimiter) {
@@ -63,8 +68,10 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
     /**
-     * @param arg String
-     * @param argId String
+     * @param arg
+     *            String
+     * @param argId
+     *            String
      * @return String
      * @throws IllegalArgumentException
      */
@@ -78,8 +85,10 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
     /**
-     * @param arg float
-     * @param argId String
+     * @param arg
+     *            float
+     * @param argId
+     *            String
      * @return float
      * @throws IllegalArgumentException
      */
@@ -166,7 +175,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
      * Return the value as a string that can be easily recognized and parsed
      * when we see it again.
      *
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     protected String asString(Object value) {
@@ -183,8 +193,10 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * Return the specified values as a single string using the delimiter.
      * 
-     * @param values Object
-     * @param delimiter char
+     * @param values
+     *            Object
+     * @param delimiter
+     *            char
      * @return String
      * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)
      */
@@ -235,7 +247,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     protected String valueErrorFor(Object value) {
@@ -250,7 +263,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     protected String valuesErrorFor(Object value) {
@@ -273,7 +287,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return boolean
      */
     protected static boolean isArray(Object value) {
@@ -281,7 +296,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     protected String typeErrorFor(Object value) {
@@ -379,8 +395,10 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
     /**
-     * @param value Object
-     * @param otherValue Object
+     * @param value
+     *            Object
+     * @param otherValue
+     *            Object
      * @return boolean
      */
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -409,7 +427,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
     /**
-     * @param attributes Map<String,String>
+     * @param attributes
+     *            Map<String,String>
      */
     protected void addAttributesTo(Map<String, String> attributes) {
         attributes.put(NAME, name);

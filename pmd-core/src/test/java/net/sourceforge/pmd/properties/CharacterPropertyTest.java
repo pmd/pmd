@@ -1,10 +1,11 @@
+
 package net.sourceforge.pmd.properties;
+
+import org.junit.Test;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.CharacterMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
-
-import org.junit.Test;
 
 /**
  * Evaluates the functionality of the CharacterProperty descriptor by testing
@@ -25,7 +26,8 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createValue.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createValue(int count) {
@@ -42,7 +44,8 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createBadValue.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected Object createBadValue(int count) {
@@ -63,26 +66,31 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
     /**
      * Method createProperty.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
-        return multiValue ? new CharacterMultiProperty("testCharacter", "Test character property", new Character[] {
-                'a', 'b', 'c' }, 1.0f, delimiter) : new CharacterProperty("testCharacter", "Test character property",
-                'a', 1.0f);
+        return multiValue
+                ? new CharacterMultiProperty("testCharacter", "Test character property",
+                        new Character[] { 'a', 'b', 'c' }, 1.0f, delimiter)
+                : new CharacterProperty("testCharacter", "Test character property", 'a', 1.0f);
     }
 
     /**
      * Creates a bad property that is missing either its name or description or
      * includes a delimiter in the set of legal values.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
-        return multiValue ? new CharacterMultiProperty("testCharacter", "Test character property", new Character[] {
-                'a', 'b', 'c' }, 1.0f, delimiter) : new CharacterProperty("", "Test character property", 'a', 1.0f);
+        return multiValue
+                ? new CharacterMultiProperty("testCharacter", "Test character property",
+                        new Character[] { 'a', 'b', 'c' }, 1.0f, delimiter)
+                : new CharacterProperty("", "Test character property", 'a', 1.0f);
     }
 }

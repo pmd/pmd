@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Enumeration;
@@ -34,12 +35,18 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
     /**
      * Constructor for EnumeratedProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theLabels String[]
-     * @param theChoices E[]
-     * @param choiceIndices int[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theLabels
+     *            String[]
+     * @param theChoices
+     *            E[]
+     * @param choiceIndices
+     *            int[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
@@ -65,7 +72,8 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      * @see net.sourceforge.pmd.PropertyDescriptor#errorFor(Object)
      */
@@ -82,7 +90,8 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 
     /**
      * 
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
@@ -99,7 +108,8 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 
     /**
      * 
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)
      */

@@ -1,14 +1,15 @@
+
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
+
+import org.junit.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests on FileSelector.
@@ -22,21 +23,22 @@ public class FileSelectorTest {
      */
     @Test
     public void testWantedFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(
+                LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
 
         File javaFile = new File("/path/to/myFile.dummy");
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
-        assertEquals("This file should be selected !",true, selected);
+        assertEquals("This file should be selected !", true, selected);
     }
 
-    
     /**
      * Test unwanted selection of a non source file.
      */
     @Test
     public void testUnwantedFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(
+                LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
 
         File javaFile = new File("/path/to/myFile.txt");
 
@@ -49,7 +51,8 @@ public class FileSelectorTest {
      */
     @Test
     public void testUnwantedJavaFile() {
-        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(
+                LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
 
         File javaFile = new File("/path/to/MyClass.java");
 

@@ -7,7 +7,8 @@ package net.sourceforge.pmd.renderers;
 import net.sourceforge.pmd.PMD;
 
 /**
- * Structure for the Code Climate Issue spec (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)
+ * Structure for the Code Climate Issue spec
+ * (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)
  */
 public class CodeClimateIssue {
     public final String type = "issue";
@@ -32,7 +33,7 @@ public class CodeClimateIssue {
         }
 
         public Location(String path, int beginLine, int endLine) {
-        	this.path = path;
+            this.path = path;
             this.lines = new Lines();
             lines.begin = beginLine;
             lines.end = endLine;
@@ -47,7 +48,9 @@ public class CodeClimateIssue {
 
         /**
          * Strip out all newlines from the body
-         * @param {String} body The text to compose the content from
+         * 
+         * @param {String}
+         *            body The text to compose the content from
          */
         public Content(String body) {
             this.body = body.replace(PMD.EOL, " ");

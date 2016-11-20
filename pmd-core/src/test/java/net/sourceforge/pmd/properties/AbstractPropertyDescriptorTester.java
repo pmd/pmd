@@ -1,12 +1,12 @@
-package net.sourceforge.pmd.properties;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+package net.sourceforge.pmd.properties;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
@@ -14,8 +14,9 @@ import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific
@@ -44,7 +45,8 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Return a legal value(s) per the general scope of the descriptor.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected abstract Object createValue(int count);
@@ -53,7 +55,8 @@ public abstract class AbstractPropertyDescriptorTester {
      * Return a value(s) that is known to be faulty per the general scope of the
      * descriptor.
      * 
-     * @param count int
+     * @param count
+     *            int
      * @return Object
      */
     protected abstract Object createBadValue(int count);
@@ -61,7 +64,8 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Creates and returns a properly configured property descriptor.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected abstract PropertyDescriptor createProperty(boolean multiValue);
@@ -70,7 +74,8 @@ public abstract class AbstractPropertyDescriptorTester {
      * Attempt to create a property with faulty configuration values. This
      * method should throw an IllegalArgumentException if done correctly.
      * 
-     * @param multiValue boolean
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
     protected abstract PropertyDescriptor createBadProperty(boolean multiValue);
@@ -96,8 +101,8 @@ public abstract class AbstractPropertyDescriptorTester {
     public void testFactorySingleValue() {
         PropertyDescriptor prop = getSingleFactory().createWith(getPropertyDescriptorValues());
         Object originalValue = createValue(1);
-        Object value = prop.valueFrom(originalValue instanceof Class ? ((Class) originalValue).getName() : String
-                .valueOf(originalValue));
+        Object value = prop.valueFrom(
+                originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
         String asDelimitedString = prop.asDelimitedString(value);
         Object value2 = prop.valueFrom(asDelimitedString);
         Assert.assertEquals(value, value2);
@@ -235,8 +240,10 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Method randomInt.
      * 
-     * @param min int
-     * @param max int
+     * @param min
+     *            int
+     * @param max
+     *            int
      * @return int
      */
     public static int randomInt(int min, int max) {
@@ -260,8 +267,10 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Method randomFloat.
      * 
-     * @param min float
-     * @param max float
+     * @param min
+     *            float
+     * @param max
+     *            float
      * @return float
      */
     public static float randomFloat(float min, float max) {
@@ -272,8 +281,10 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Method randomDouble.
      * 
-     * @param min double
-     * @param max double
+     * @param min
+     *            double
+     * @param max
+     *            double
      * @return double
      */
     public static double randomDouble(double min, double max) {
@@ -287,7 +298,8 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Method randomChar.
      * 
-     * @param characters char[]
+     * @param characters
+     *            char[]
      * @return char
      */
     public static char randomChar(char[] characters) {
@@ -297,7 +309,8 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Method randomChoice.
      * 
-     * @param items Object[]
+     * @param items
+     *            Object[]
      * @return Object
      */
     public static Object randomChoice(Object[] items) {
@@ -307,8 +320,10 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Method filter.
      * 
-     * @param chars char[]
-     * @param removeChar char
+     * @param chars
+     *            char[]
+     * @param removeChar
+     *            char
      * @return char[]
      */
     protected static final char[] filter(char[] chars, char removeChar) {

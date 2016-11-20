@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -30,12 +31,18 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      * Constructor for IntegerProperty that limits itself to a single value
      * within the specified limits.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param min Integer
-     * @param max Integer
-     * @param theDefault Integer
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            Integer
+     * @param max
+     *            Integer
+     * @param theDefault
+     *            Integer
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
@@ -48,11 +55,16 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      * within the specified limits. Converts string arguments into the Float
      * values.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param minStr String
-     * @param maxStr String
-     * @param defaultStr String
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param minStr
+     *            String
+     * @param maxStr
+     *            String
+     * @param defaultStr
+     *            String
      * @param theUIOrder
      * @throws IllegalArgumentException
      */
@@ -62,7 +74,8 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
     /**
-     * @param numberString String
+     * @param numberString
+     *            String
      * @return Integer
      */
     public static Integer intFrom(String numberString) {
@@ -78,7 +91,8 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
     protected Object createFrom(String value) {

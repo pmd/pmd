@@ -1,11 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+package net.sourceforge.pmd.cpd;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -18,6 +15,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * @author Philippe T'Seyen
  * @author Romain Pelisse <belaran@gmail.com>
@@ -25,8 +26,8 @@ import org.w3c.dom.NodeList;
  */
 public class XMLRendererTest {
 
-	private final static String ENCODING = (String) System.getProperties().get("file.encoding");
-	
+    private final static String ENCODING = (String) System.getProperties().get("file.encoding");
+
     @Test
     public void testWithNoDuplication() {
 
@@ -34,7 +35,8 @@ public class XMLRendererTest {
         List<Match> list = new ArrayList<>();
         String report = renderer.render(list.iterator());
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
             NodeList nodes = doc.getChildNodes();
             Node n = nodes.item(0);
             assertEquals("pmd-cpd", n.getNodeName());
@@ -58,7 +60,8 @@ public class XMLRendererTest {
         list.add(match);
         String report = renderer.render(list.iterator());
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
             NodeList dupes = doc.getElementsByTagName("duplication");
             assertEquals(1, dupes.getLength());
             Node file = dupes.item(0).getFirstChild();
@@ -66,14 +69,15 @@ public class XMLRendererTest {
                 file = file.getNextSibling();
             }
             if (file != null) {
-            	assertEquals("48", file.getAttributes().getNamedItem("line").getNodeValue());
+                assertEquals("48", file.getAttributes().getNamedItem("line").getNodeValue());
                 assertEquals("/var/Foo.java", file.getAttributes().getNamedItem("path").getNodeValue());
-	            file = file.getNextSibling();
-	            while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
-	                file = file.getNextSibling();
-	            }
+                file = file.getNextSibling();
+                while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
+                    file = file.getNextSibling();
+                }
             }
-            if (file != null) assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
+            if (file != null)
+                assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
             assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
             assertEquals(codeFragment, doc.getElementsByTagName("codefragment").item(0).getTextContent());
         } catch (Exception e) {
@@ -102,7 +106,8 @@ public class XMLRendererTest {
         list.add(match2);
         String report = renderer.render(list.iterator());
         try {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
             assertEquals(2, doc.getElementsByTagName("duplication").getLength());
             assertEquals(4, doc.getElementsByTagName("file").getLength());
         } catch (Exception e) {
@@ -122,7 +127,7 @@ public class XMLRendererTest {
         list.add(match1);
         String report = renderer.render(list.iterator());
         assertTrue(report.contains(espaceChar));
-    } 
+    }
 
     private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code) {
         Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
@@ -136,4 +141,3 @@ public class XMLRendererTest {
         return new junit.framework.JUnit4TestAdapter(XMLRendererTest.class);
     }
 }
-

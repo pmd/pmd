@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.Method;
@@ -49,8 +50,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private int position;
     private Node node;
 
-    private static Map<Class<?>, MethodWrapper[]> methodCache =
-            Collections.synchronizedMap(new HashMap<Class<?>, MethodWrapper[]>());
+    private static Map<Class<?>, MethodWrapper[]> methodCache = Collections
+            .synchronizedMap(new HashMap<Class<?>, MethodWrapper[]>());
 
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
@@ -102,14 +103,10 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
         return !deprecated
                 && (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
-                || Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
-                && method.getParameterTypes().length == 0
-                && Void.TYPE != method.getReturnType()
-                && !methodName.startsWith("jjt")
-                && !methodName.equals("toString")
-                && !methodName.equals("getScope")
-                && !methodName.equals("getClass")
-                && !methodName.equals("getTypeNameNode")
+                        || Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
+                && method.getParameterTypes().length == 0 && Void.TYPE != method.getReturnType()
+                && !methodName.startsWith("jjt") && !methodName.equals("toString") && !methodName.equals("getScope")
+                && !methodName.equals("getClass") && !methodName.equals("getTypeNameNode")
                 && !methodName.equals("getImportedNameNode") && !methodName.equals("hashCode");
     }
 }

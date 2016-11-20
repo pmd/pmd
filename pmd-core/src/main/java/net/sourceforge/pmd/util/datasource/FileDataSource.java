@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.datasource;
 
 import java.io.File;
@@ -8,18 +9,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 /**
  * DataSource implementation to read data from a file.
  */
 public class FileDataSource implements DataSource {
-	
-	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
-	
+
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
     private File file;
 
     /**
-     * @param file the file to read
+     * @param file
+     *            the file to read
      */
     public FileDataSource(File file) {
         this.file = file;
@@ -43,7 +44,7 @@ public class FileDataSource implements DataSource {
                 }
                 return trimAnyPathSep(inputFileName.substring(inputFileName.lastIndexOf(FILE_SEPARATOR)));
             }
-        } 
+        }
 
         try {
             return file.getCanonicalFile().getAbsolutePath();
@@ -54,8 +55,6 @@ public class FileDataSource implements DataSource {
 
     private String trimAnyPathSep(String name) {
 
-    	return name.startsWith(FILE_SEPARATOR) ?
-            name.substring(1) :
-            name;
+        return name.startsWith(FILE_SEPARATOR) ? name.substring(1) : name;
     }
 }

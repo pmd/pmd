@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import java.io.File;
@@ -35,14 +36,17 @@ public class DBType {
     public enum property {
         USER("user", "Name of the connecting database user"), PASSWORD("password",
                 "The connecting database user's password"), DRIVER("driver", "JDBC driver classname"), CHARACTERSET(
-                "characterset", "Reader character set"), LANGUAGES("languages",
-                "Comma-separated list of PMD-supported languages"), SCHEMAS("schemas",
-                "SchemaSpy compatible regular expression for schemas to be processed"), SOURCE_TYPES("sourcecodetypes",
-                "Comma-separated list of supported source types"), SOURCE_NAMES("sourcecodenames",
-                "Default comma-separated list of source code names to validate"), GET_SOURCE_CODE_STATEMENT(
-                "getSourceCodeStatement",
-                "SQL92 or Oracle embedded SQL statement to retrieve  code source from the database catalogue"), RETURN_TYPE(
-                "returnType", "int equivalent of java.sql.Types return type of getSourceCodeStatement");
+                        "characterset", "Reader character set"), LANGUAGES("languages",
+                                "Comma-separated list of PMD-supported languages"), SCHEMAS("schemas",
+                                        "SchemaSpy compatible regular expression for schemas to be processed"), SOURCE_TYPES(
+                                                "sourcecodetypes",
+                                                "Comma-separated list of supported source types"), SOURCE_NAMES(
+                                                        "sourcecodenames",
+                                                        "Default comma-separated list of source code names to validate"), GET_SOURCE_CODE_STATEMENT(
+                                                                "getSourceCodeStatement",
+                                                                "SQL92 or Oracle embedded SQL statement to retrieve  code source from the database catalogue"), RETURN_TYPE(
+                                                                        "returnType",
+                                                                        "int equivalent of java.sql.Types return type of getSourceCodeStatement");
 
         private String name;
         private String description;
@@ -126,9 +130,9 @@ public class DBType {
             } else if (subProtocol != null && properties != null) {
                 LOGGER.log(Level.FINE, "DBType found using subProtocol={0}", subProtocol);
             } else {
-                throw new RuntimeException(String.format(
-                        "Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s", subProtocol,
-                        subnamePrefix));
+                throw new RuntimeException(
+                        String.format("Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s",
+                                subProtocol, subnamePrefix));
             }
 
         }
@@ -258,7 +262,8 @@ public class DBType {
     /**
      * Convert <code>resourceBundle</code> to usable {@Properties}.
      *
-     * @param resourceBundle ResourceBundle
+     * @param resourceBundle
+     *            ResourceBundle
      * @return Properties
      */
     public static Properties getResourceBundleAsProperties(ResourceBundle resourceBundle) {
@@ -387,7 +392,8 @@ public class DBType {
     }
 
     /**
-     * @param properties the properties to set
+     * @param properties
+     *            the properties to set
      */
     public void setProperties(Properties properties) {
         this.properties = properties;

@@ -20,19 +20,18 @@
  *
  * Created on Aug 26, 2002
  */
-package net.sourceforge.pmd.stat;
 
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package net.sourceforge.pmd.stat;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import junit.framework.AssertionFailedError;
 import net.sourceforge.pmd.Report;
@@ -44,50 +43,48 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the Statistical Rules in PMD.
  * <p/>
- * The idea is, that we fill up 999 datapoints into
- * the Stat Rule, and then throw random parameters
- * at it.
+ * The idea is, that we fill up 999 datapoints into the Stat Rule, and then
+ * throw random parameters at it.
  * <p/>
- * The three parameters which are checked are:
- * sigma - # Sigmas over the mean.
- * topscore - Only the top 5 or so items.
- * minimum - Only things of score 10 or better
+ * The three parameters which are checked are: sigma - # Sigmas over the mean.
+ * topscore - Only the top 5 or so items. minimum - Only things of score 10 or
+ * better
  * <p/>
- * When more than one parameter is lumped together, then
- * we expect the one which would return the fewest to
- * determine what gets sent back.
+ * When more than one parameter is lumped together, then we expect the one which
+ * would return the fewest to determine what gets sent back.
  * <p/>
- * So, we throw each collection of parameters, where each
- * one is a different order into the system.  We check the
- * results off of what the smallest value should be.
+ * So, we throw each collection of parameters, where each one is a different
+ * order into the system. We check the results off of what the smallest value
+ * should be.
  * <p/>
- * If you are going to work with StatisticalRule any, please
- * bump the "NUM_TESTS" number up to something like 128.  That
- * way you are more likely to identify problems.  It is set low
- * now to make building and running tests easier (when we aren't
- * touching the file.)
+ * If you are going to work with StatisticalRule any, please bump the
+ * "NUM_TESTS" number up to something like 128. That way you are more likely to
+ * identify problems. It is set low now to make building and running tests
+ * easier (when we aren't touching the file.)
  * <p/>
- * Note also, that when verifying the Sigma, I wasn't quite able
- * to determine how many results it would return (it would vary
- * from -2 to 2 of what I expected.)  That is what the delta
- * parameter on the verify method takes.  If you can figure it
- * out exactly, (without stealing code from the StatRule) then
+ * Note also, that when verifying the Sigma, I wasn't quite able to determine
+ * how many results it would return (it would vary from -2 to 2 of what I
+ * expected.) That is what the delta parameter on the verify method takes. If
+ * you can figure it out exactly, (without stealing code from the StatRule) then
  * feel free to change it and tighten the deltas.
  */
-public class StatisticalRuleTest  {
+public class StatisticalRuleTest {
 
     private static final int POINTS = 100;
 
     private DataPoint[] points = new DataPoint[POINTS];
     private MockStatisticalRule IUT = null;
-    private String testName = "";//FIXME - why/when was this added. It was never set.
+    private String testName = "";// FIXME - why/when was this added. It was
+                                 // never set.
     private Random random = new Random();
 
     public static final double MAX_MINIMUM = POINTS;
@@ -97,13 +94,11 @@ public class StatisticalRuleTest  {
     public static final int MIN_TOPSCORE = 0;
     public static final int NO_TOPSCORE = -1;
 
-
     public static final double MEAN = 49.5;
     public static final double SIGMA = 29.0115;
     public static final int NUM_TESTS = 1;
 
     public static final double DELTA = 0.005;
-
 
     @Before
     public void setUp() {
@@ -156,8 +151,8 @@ public class StatisticalRuleTest  {
     }
 
     /**
-     * This test verifies that the Stat rule creates a Metric,
-     * with the proper values.
+     * This test verifies that the Stat rule creates a Metric, with the proper
+     * values.
      */
     @Test
     public void testMetrics() throws Throwable {
@@ -176,16 +171,15 @@ public class StatisticalRuleTest  {
     }
 
     /**
-     * This returns a Random value for Sigma which will
-     * return some values.
+     * This returns a Random value for Sigma which will return some values.
      */
     public double randomSigma() {
         return random.nextDouble() * 1.0;
     }
 
     /**
-     * This returns a Random value for Sigma which value
-     * is greater than the parameter.
+     * This returns a Random value for Sigma which value is greater than the
+     * parameter.
      */
     public double randomSigma(int minimum) {
         double minSigma = ((POINTS - 1 - minimum) - MEAN) / SIGMA;
@@ -197,8 +191,8 @@ public class StatisticalRuleTest  {
     }
 
     /**
-     * This returns the expected number of results when
-     * the Sigma rating is the smallest.
+     * This returns the expected number of results when the Sigma rating is the
+     * smallest.
      */
     public int expectedSigma(double sigma) {
         long expectedMin = Math.round(MEAN + (sigma * SIGMA));
@@ -216,8 +210,8 @@ public class StatisticalRuleTest  {
     }
 
     /**
-     * This generates a random minimum value for which fewer
-     * results would be returned.
+     * This generates a random minimum value for which fewer results would be
+     * returned.
      */
     public double randomMinimum(int minimum) {
         double diffTarget = 1.0 * (POINTS - 1 - minimum);
@@ -227,8 +221,8 @@ public class StatisticalRuleTest  {
     /**
      * This returns the expected number of reports.
      * <p/>
-     * If the Minimum comes in at 521.569 then we expect
-     * 522, 523, ... 999 will pass.
+     * If the Minimum comes in at 521.569 then we expect 522, 523, ... 999 will
+     * pass.
      */
     public int expectedMinimum(double minimum) {
         Double d = Double.valueOf(minimum);
@@ -251,8 +245,8 @@ public class StatisticalRuleTest  {
     }
 
     /**
-     * This will return a random value for the Top Score
-     * which will return more than the minimum provided.
+     * This will return a random value for the Top Score which will return more
+     * than the minimum provided.
      */
     public int randomTopScore(double target) {
         if (target < 0)
@@ -262,8 +256,7 @@ public class StatisticalRuleTest  {
     }
 
     /**
-     * This will return the expected number of results
-     * with the given Top Score.
+     * This will return the expected number of results with the given Top Score.
      */
     public int expectedTopScore(int target) {
         return target;
@@ -282,7 +275,7 @@ public class StatisticalRuleTest  {
         point.setNode(s);
         point.setMessage("SingleDataPoint");
 
-        IUT.setProperty(MINIMUM_DESCRIPTOR, (double)POINTS);
+        IUT.setProperty(MINIMUM_DESCRIPTOR, (double) POINTS);
 
         IUT.addDataPoint(point);
 
@@ -293,9 +286,9 @@ public class StatisticalRuleTest  {
 
     // Okay, we have three properties we need to
     // test in Combination:
-    //  S = Sigma
-    //  T = Top Score
-    //  M = Minimum
+    // S = Sigma
+    // T = Top Score
+    // M = Minimum
     //
     // They are listed in decreasing order of what
     // to expect.
@@ -338,7 +331,6 @@ public class StatisticalRuleTest  {
     public void testS5() throws Throwable {
         testS();
     }
-
 
     @Test
     public void testT() throws Throwable {
@@ -521,7 +513,6 @@ public class StatisticalRuleTest  {
         testSM();
     }
 
-
     @Test
     public void testMS() throws Throwable {
         verifyResults(MAX_SIGMA, randomMinimum(), NO_TOPSCORE, 0, 0);
@@ -557,7 +548,6 @@ public class StatisticalRuleTest  {
     public void testMS5() throws Throwable {
         testMS();
     }
-
 
     @Test
     public void testTM() throws Throwable {
@@ -595,7 +585,6 @@ public class StatisticalRuleTest  {
         testTM();
     }
 
-
     @Test
     public void testMT() throws Throwable {
         verifyResults(NO_SIGMA, randomMinimum(), MIN_TOPSCORE, 0, 0);
@@ -631,7 +620,6 @@ public class StatisticalRuleTest  {
     public void testMT5() throws Throwable {
         testMT();
     }
-
 
     @Test
     public void testSTM() throws Throwable {
@@ -799,21 +787,20 @@ public class StatisticalRuleTest  {
     }
 
     /**
-     * Verifies what happens when you pass these parameters
-     * into the thing.  DELTA is the amount of error allowed.
-     * Usually DELTA is only used for Sigma, as we really can't
-     * calculate it exactly.
+     * Verifies what happens when you pass these parameters into the thing.
+     * DELTA is the amount of error allowed. Usually DELTA is only used for
+     * Sigma, as we really can't calculate it exactly.
      */
 
     public void verifyResults(double sigma, double minimum, int topScore, int expected, int delta) {
         try {
             setUp();
             if (sigma >= 0) {
-            	IUT.setProperty(SIGMA_DESCRIPTOR, sigma);
+                IUT.setProperty(SIGMA_DESCRIPTOR, sigma);
             }
 
             if (minimum >= 0) {
-            	IUT.setProperty(MINIMUM_DESCRIPTOR, minimum);
+                IUT.setProperty(MINIMUM_DESCRIPTOR, minimum);
             }
 
             if (topScore >= 0) {
@@ -822,9 +809,15 @@ public class StatisticalRuleTest  {
 
             Report report = makeReport(IUT);
             if (delta == 0) {
-                assertEquals("Unexpected number of results: sigma= " + Double.toString(sigma) + " min= " + Double.toString(minimum) + " topscore= " + Integer.toString(topScore), expected, report.size());
+                assertEquals(
+                        "Unexpected number of results: sigma= " + Double.toString(sigma) + " min= "
+                                + Double.toString(minimum) + " topscore= " + Integer.toString(topScore),
+                        expected, report.size());
             } else {
-                String assertStr = "Unexpected number of results: sigma= " + Double.toString(sigma) + " min= " + Double.toString(minimum) + " topscore= " + Integer.toString(topScore) + " expected= " + Integer.toString(expected) + " +/- " + Integer.toString(delta) + " actual-result= " + report.size();
+                String assertStr = "Unexpected number of results: sigma= " + Double.toString(sigma) + " min= "
+                        + Double.toString(minimum) + " topscore= " + Integer.toString(topScore) + " expected= "
+                        + Integer.toString(expected) + " +/- " + Integer.toString(delta) + " actual-result= "
+                        + report.size();
 
                 assertTrue(assertStr, report.size() >= (expected - delta));
                 assertTrue(assertStr, report.size() <= (expected + delta));
@@ -832,15 +825,18 @@ public class StatisticalRuleTest  {
         } catch (AssertionFailedError afe) {
             System.err.println("******** " + testName + " ***********");
             if (sigma != NO_SIGMA) {
-                System.err.println("SIGMA: " + Double.toString(sigma) + " EXPECT: " + Integer.toString(expectedSigma(sigma)));
+                System.err.println(
+                        "SIGMA: " + Double.toString(sigma) + " EXPECT: " + Integer.toString(expectedSigma(sigma)));
             }
 
             if (minimum != NO_MINIMUM) {
-                System.err.println("MIN: " + Double.toString(minimum) + " EXPECT: " + Integer.toString(expectedMinimum(minimum)));
+                System.err.println(
+                        "MIN: " + Double.toString(minimum) + " EXPECT: " + Integer.toString(expectedMinimum(minimum)));
             }
 
             if (topScore != NO_TOPSCORE) {
-                System.err.println("TOP: " + Integer.toString(topScore) + " EXPECT: " + Integer.toString(expectedTopScore(topScore)));
+                System.err.println("TOP: " + Integer.toString(topScore) + " EXPECT: "
+                        + Integer.toString(expectedTopScore(topScore)));
             }
 
             throw afe;

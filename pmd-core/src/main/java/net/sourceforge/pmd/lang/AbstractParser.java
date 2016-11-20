@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import java.io.Reader;
@@ -12,19 +13,19 @@ import java.io.Reader;
  */
 public abstract class AbstractParser implements Parser {
     protected final ParserOptions parserOptions;
-    
+
     public AbstractParser(ParserOptions parserOptions) {
-	this.parserOptions = parserOptions;
+        this.parserOptions = parserOptions;
     }
 
     public ParserOptions getParserOptions() {
-	return parserOptions;
+        return parserOptions;
     }
 
     public TokenManager getTokenManager(String fileName, Reader source) {
-	TokenManager tokenManager = createTokenManager(source);
-	tokenManager.setFileName(fileName);
-	return tokenManager;
+        TokenManager tokenManager = createTokenManager(source);
+        tokenManager.setFileName(fileName);
+        return tokenManager;
     }
 
     protected abstract TokenManager createTokenManager(Reader source);

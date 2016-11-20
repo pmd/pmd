@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -27,10 +28,14 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
     /**
      * Constructor for BooleanMultiProperty that allows for multiple values.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param defaultValues Boolean[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param defaultValues
+     *            Boolean[]
+     * @param theUIOrder
+     *            float
      */
     public BooleanMultiProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder) {
         super(theName, theDescription, defaultValues, theUIOrder);
@@ -56,7 +61,8 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
     /**
      * Creates and returns a Boolean instance from a raw string
      * 
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
     protected Object createFrom(String value) {
@@ -64,7 +70,8 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
     }
 
     /**
-     * @param size int
+     * @param size
+     *            int
      * @return Object[]
      */
     protected Boolean[] arrayFor(int size) {

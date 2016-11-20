@@ -1,8 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.util.viewer.model;
 
+package net.sourceforge.pmd.util.viewer.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,6 @@ import javax.swing.tree.TreePath;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-
 /**
  * Model for the AST Panel Tree component
  *
@@ -23,14 +22,15 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 
 public class ASTModel implements TreeModel {
-	
+
     private Node root;
     private List<TreeModelListener> listeners = new ArrayList<>(1);
 
     /**
      * creates the tree model
      *
-     * @param root tree's root
+     * @param root
+     *            tree's root
      */
     public ASTModel(Node root) {
         this.root = root;
@@ -54,7 +54,7 @@ public class ASTModel implements TreeModel {
      * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object,java.lang.Object)
      */
     public int getIndexOfChild(Object parent, Object child) {
-	Node node = (Node) parent;
+        Node node = (Node) parent;
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).equals(child)) {
                 return i;
@@ -91,14 +91,12 @@ public class ASTModel implements TreeModel {
         listeners.add(l);
     }
 
-
     /**
      * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
      */
     public void removeTreeModelListener(TreeModelListener l) {
         listeners.remove(l);
     }
-
 
     protected void fireTreeModelEvent(TreeModelEvent e) {
         for (TreeModelListener listener : listeners) {
@@ -107,4 +105,3 @@ public class ASTModel implements TreeModel {
     }
 
 }
-

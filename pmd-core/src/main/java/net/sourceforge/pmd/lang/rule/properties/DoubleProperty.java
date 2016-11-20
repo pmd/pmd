@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -29,12 +30,18 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     /**
      * Constructor for DoubleProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param min double
-     * @param max double
-     * @param theDefault double
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            double
+     * @param max
+     *            double
+     * @param theDefault
+     *            double
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
@@ -45,12 +52,18 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     /**
      * Constructor for DoubleProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param minStr String
-     * @param maxStr String
-     * @param defaultStr String
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param minStr
+     *            String
+     * @param maxStr
+     *            String
+     * @param defaultStr
+     *            String
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public DoubleProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
@@ -59,7 +72,8 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     }
 
     /**
-     * @param numberString String
+     * @param numberString
+     *            String
      * @return Double
      */
     public static Double doubleFrom(String numberString) {
@@ -77,7 +91,8 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     /**
      * Deserializes a string into its Double form.
      * 
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
     protected Object createFrom(String value) {

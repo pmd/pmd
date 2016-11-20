@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -15,7 +16,8 @@ import net.sourceforge.pmd.Rule;
  * in the encoding of a Rule to XML format to distinguish Rule defined
  * PropertyDescriptors and those which were originally defined in XML.
  * 
- * @param <T> The type of the underlying PropertyDescriptor.
+ * @param <T>
+ *            The type of the underlying PropertyDescriptor.
  */
 public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     private final PropertyDescriptor<T> propertyDescriptor;

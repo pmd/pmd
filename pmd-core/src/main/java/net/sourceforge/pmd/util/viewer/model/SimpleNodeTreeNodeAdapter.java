@@ -1,8 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.util.viewer.model;
 
+package net.sourceforge.pmd.util.viewer.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +13,6 @@ import javax.swing.tree.TreeNode;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-
 /**
  * provides the adapter for the tree model
  *
@@ -22,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 
 public class SimpleNodeTreeNodeAdapter implements TreeNode {
-	
+
     private Node node;
     private List<TreeNode> children;
     private SimpleNodeTreeNodeAdapter parent;
@@ -30,7 +29,8 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     /**
      * constructs the node
      *
-     * @param node underlying AST's node
+     * @param node
+     *            underlying AST's node
      */
     public SimpleNodeTreeNodeAdapter(SimpleNodeTreeNodeAdapter parent, Node node) {
         this.parent = parent;
@@ -46,7 +46,6 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
         return node;
     }
 
-
     /**
      * @see javax.swing.tree.TreeNode#getChildAt(int)
      */
@@ -55,7 +54,6 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
         return children.get(childIndex);
     }
 
-
     /**
      * @see javax.swing.tree.TreeNode#getChildCount()
      */
@@ -63,7 +61,6 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
         checkChildren();
         return children.size();
     }
-
 
     /**
      * @see javax.swing.tree.TreeNode#getParent()
@@ -80,14 +77,12 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
         return children.indexOf(node);
     }
 
-
     /**
      * @see javax.swing.tree.TreeNode#getAllowsChildren()
      */
     public boolean getAllowsChildren() {
         return true;
     }
-
 
     /**
      * @see javax.swing.tree.TreeNode#isLeaf()
@@ -98,7 +93,6 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
         return children.isEmpty();
     }
 
-
     /**
      * @see javax.swing.tree.TreeNode#children()
      */
@@ -106,7 +100,6 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     public Enumeration<TreeNode> children() {
         return Collections.enumeration(children);
     }
-
 
     /**
      * checks the children and creates them if neccessary
@@ -127,4 +120,3 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
         return node.toString();
     }
 }
-

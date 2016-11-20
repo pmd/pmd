@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ public class SequenceChecker {
 
         /**
          * 
-         * @param type candidate
+         * @param type
+         *            candidate
          * @return valid Status or null if NodeType is not a valid transition
          *         NodeType
          */

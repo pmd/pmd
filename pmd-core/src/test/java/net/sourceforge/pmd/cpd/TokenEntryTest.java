@@ -1,13 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+package net.sourceforge.pmd.cpd;
 
 import org.junit.Test;
 
-public class TokenEntryTest  {
+import static org.junit.Assert.assertEquals;
+
+public class TokenEntryTest {
 
     @Test
     public void testSimple() {

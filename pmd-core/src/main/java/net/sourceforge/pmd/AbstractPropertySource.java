@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.util.ArrayList;
@@ -68,7 +69,9 @@ public abstract class AbstractPropertySource implements PropertySource {
     }
 
     /**
-     * Gets the name of the property source. This is e.g. the rule name or the report name.
+     * Gets the name of the property source. This is e.g. the rule name or the
+     * report name.
+     * 
      * @return the name
      */
     public abstract String getName();
@@ -133,8 +136,8 @@ public abstract class AbstractPropertySource implements PropertySource {
 
     private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         if (!propertyDescriptors.contains(propertyDescriptor)) {
-            throw new IllegalArgumentException("Property descriptor not defined for Rule " + getName() + ": "
-                    + propertyDescriptor);
+            throw new IllegalArgumentException(
+                    "Property descriptor not defined for Rule " + getName() + ": " + propertyDescriptor);
         }
     }
 
@@ -147,8 +150,7 @@ public abstract class AbstractPropertySource implements PropertySource {
             return Collections.emptyMap();
         }
 
-        Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<>(
-                propertyDescriptors.size());
+        Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<>(propertyDescriptors.size());
         // Fill with existing explicitly values
         propertiesByPropertyDescriptor.putAll(this.propertyValuesByDescriptor);
 

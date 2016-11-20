@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
@@ -15,11 +16,16 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractPackagedP
     /**
      * Constructor for AbstractMultiPackagedProperty.
      * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefault T
-     * @param theLegalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefault
+     *            T
+     * @param theLegalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      */
     protected AbstractMultiPackagedProperty(String theName, String theDescription, T theDefault,
             String[] theLegalPackageNames, float theUIOrder) {
