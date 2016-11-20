@@ -607,6 +607,9 @@
                 <configuration>
                     <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                    </sourceDirectories>
                 </configuration>
             </plugin>
             <plugin>
