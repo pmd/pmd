@@ -42,7 +42,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
 
     /**
      * Method selectionsIn.
-     * 
+     *
      * @param items
      *            String[]
      * @param selectionIndices
@@ -66,6 +66,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
 
         return isMultiValue() ? (String) defaultValue() : asDelimitedString(defaultValue(), '|');
@@ -73,7 +74,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
 
     /**
      * Method nonLegalValueMsgFor.
-     * 
+     *
      * @param value
      *            Object
      * @return String
@@ -84,7 +85,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
 
     /**
      * Method choiceFrom.
-     * 
+     *
      * @param label
      *            String
      * @return E
@@ -100,6 +101,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
     /**
      * @see net.sourceforge.pmd.PropertyDescriptor#choices()
      */
+    @Override
     public Object[][] choices() {
 
         if (choices != null) {

@@ -20,10 +20,12 @@ public abstract class NodeIterator implements Iterator<Node> {
         this.node = getFirstNode(contextNode);
     }
 
+    @Override
     public boolean hasNext() {
         return node != null;
     }
 
+    @Override
     public Node next() {
         if (node == null) {
             throw new NoSuchElementException();
@@ -33,6 +35,7 @@ public abstract class NodeIterator implements Iterator<Node> {
         return ret;
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }

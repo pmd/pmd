@@ -43,7 +43,7 @@ public class RuleSetWriterTest {
 
     /**
      * Tests the exclude rule behavior. See bug #945.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -61,7 +61,7 @@ public class RuleSetWriterTest {
 
     /**
      * Unit test for #1312 see https://sourceforge.net/p/pmd/bugs/1312/
-     * 
+     *
      * @throws Exception
      *             any error
      */

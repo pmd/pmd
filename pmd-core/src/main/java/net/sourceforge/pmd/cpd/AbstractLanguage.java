@@ -26,26 +26,32 @@ public abstract class AbstractLanguage implements Language {
         this.extensions = Arrays.asList(extensions);
     }
 
+    @Override
     public FilenameFilter getFileFilter() {
         return fileFilter;
     }
 
+    @Override
     public Tokenizer getTokenizer() {
         return tokenizer;
     }
 
+    @Override
     public void setProperties(Properties properties) {
         // needs to be implemented by subclasses.
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getTerseName() {
         return terseName;
     }
 
+    @Override
     public List<String> getExtensions() {
         return extensions;
     }

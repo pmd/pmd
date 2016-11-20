@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
  * Unit test for {@link SourceCodePositioner}.

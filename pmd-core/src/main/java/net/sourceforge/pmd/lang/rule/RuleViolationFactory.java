@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public interface RuleViolationFactory {
     /**
      * Adds a violation to the report.
-     * 
+     *
      * @param ruleContext
      *            the RuleContext
      * @param rule

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.stat.Metric;
 /**
  * This interface tags a Rule as being a Statistical rule, producing various
  * metrics from data points.
- * 
+ *
  * @see DataPoint
  * @see Metric
  * @see StatisticalRuleHelper

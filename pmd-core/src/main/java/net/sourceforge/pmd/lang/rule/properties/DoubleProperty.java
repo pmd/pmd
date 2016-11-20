@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a property type that support single double-type property values
  * within an upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class DoubleProperty extends AbstractNumericProperty<Double> {
@@ -20,6 +20,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<DoubleProperty>(
             Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public DoubleProperty createWith(Map<String, String> valuesById) {
             final String[] minMax = minMaxFrom(valuesById);
             return new DoubleProperty(nameIn(valuesById), descriptionIn(valuesById), Double.valueOf(minMax[0]),
@@ -29,7 +30,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
 
     /**
      * Constructor for DoubleProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -51,7 +52,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
 
     /**
      * Constructor for DoubleProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -84,17 +85,19 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Double> type() {
         return Double.class;
     }
 
     /**
      * Deserializes a string into its Double form.
-     * 
+     *
      * @param value
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return doubleFrom(value);
     }

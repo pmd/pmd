@@ -9,25 +9,30 @@ import net.sourceforge.pmd.Report.ProcessingError;
 
 public class CSVRendererTest extends AbstractRendererTst {
 
+    @Override
     public Renderer getRenderer() {
         return new CSVRenderer();
     }
 
+    @Override
     public String getExpected() {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL
                 + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedEmpty() {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedMultiple() {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL
                 + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL
                 + "\"2\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedError(ProcessingError error) {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL;
     }

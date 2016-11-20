@@ -16,7 +16,7 @@ import java.io.Writer;
 import org.apache.commons.io.IOUtils;
 
 /**
- * 
+ *
  * @author Brian Remedios
  */
 public final class IOUtil {

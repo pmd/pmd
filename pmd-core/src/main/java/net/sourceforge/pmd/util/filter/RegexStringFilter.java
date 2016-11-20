@@ -25,12 +25,12 @@ public class RegexStringFilter implements Filter<String> {
      * may or may not be preceded by a {@code \} escape. The literal path
      * portion is determine by the absence of any of the following characters:
      * <code>\ [ ( . * ? + | { $</code>
-     * 
+     *
      * There are two capturing groups in the expression. The first is for the
      * literal path. The second is for the file extension, without the escaping.
      * The concatenation of these two captures creates the {@link String} which
      * can be used with {@link String#endsWith(String)}.
-     * 
+     *
      * For ease of reference, the non-Java escaped form of this pattern is:
      * <code>\^?\.\*([^\\\[\(\.\*\?\+\|\{\$]+)(?:\\?(\.\w+))?\$?</code>
      */
@@ -74,6 +74,7 @@ public class RegexStringFilter implements Filter<String> {
         }
     }
 
+    @Override
     public boolean filter(String obj) {
         if (this.endsWith != null) {
             return obj.endsWith(this.endsWith);

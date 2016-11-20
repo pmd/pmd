@@ -39,6 +39,7 @@ public class MockRule extends AbstractRule {
         setRuleSetName(ruleSetName);
     }
 
+    @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
     }
 }

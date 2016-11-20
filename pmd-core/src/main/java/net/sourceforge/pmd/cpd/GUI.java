@@ -53,6 +53,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
@@ -75,24 +76,28 @@ public class GUI implements CPDListener {
     // }
 
     private static final Object[][] RENDERER_SETS = new Object[][] { { "Text", new Renderer() {
+        @Override
         public String render(Iterator<Match> items) {
             return new SimpleRenderer().render(items);
         }
-    } }, { "XML", new Renderer() {
+    }, }, { "XML", new Renderer() {
+        @Override
         public String render(Iterator<Match> items) {
             return new XMLRenderer().render(items);
         }
-    } }, { "CSV (comma)", new Renderer() {
+    }, }, { "CSV (comma)", new Renderer() {
+        @Override
         public String render(Iterator<Match> items) {
             return new CSVRenderer(',').render(items);
         }
-    } }, { "CSV (tab)", new Renderer() {
+    }, }, { "CSV (tab)", new Renderer() {
+        @Override
         public String render(Iterator<Match> items) {
             return new CSVRenderer('\t').render(items);
         }
-    } } };
+    }, }, };
 
-    private static abstract class LanguageConfig {
+    private abstract static class LanguageConfig {
         public abstract Language languageFor(Properties p);
 
         public boolean canIgnoreIdentifiers() {
@@ -184,7 +189,7 @@ public class GUI implements CPDListener {
         private int width;
         private Comparator<Match> sorter;
 
-        public ColumnSpec(String aLabel, int anAlignment, int aWidth, Comparator<Match> aSorter) {
+        ColumnSpec(String aLabel, int anAlignment, int aWidth, Comparator<Match> aSorter) {
             label = aLabel;
             alignment = anAlignment;
             width = aWidth;
@@ -209,9 +214,9 @@ public class GUI implements CPDListener {
     }
 
     private final ColumnSpec[] matchColumns = new ColumnSpec[] {
-            new ColumnSpec("Source", SwingConstants.LEFT, -1, Match.LABEL_COMPARATOR),
-            new ColumnSpec("Matches", SwingConstants.RIGHT, 60, Match.MATCHES_COMPARATOR),
-            new ColumnSpec("Lines", SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR), };
+        new ColumnSpec("Source", SwingConstants.LEFT, -1, Match.LABEL_COMPARATOR),
+        new ColumnSpec("Matches", SwingConstants.RIGHT, 60, Match.MATCHES_COMPARATOR),
+        new ColumnSpec("Lines", SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR), };
 
     static {
         for (int i = 0; i < LANGUAGE_SETS.length; i++) {
@@ -224,14 +229,17 @@ public class GUI implements CPDListener {
     }
 
     private static class CancelListener implements ActionListener {
+        @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
         }
     }
 
     private class GoListener implements ActionListener {
+        @Override
         public void actionPerformed(ActionEvent e) {
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     tokenizingFilesBar.setValue(0);
                     tokenizingFilesBar.setString("");
@@ -248,10 +256,11 @@ public class GUI implements CPDListener {
 
         final Renderer renderer;
 
-        public SaveListener(Renderer theRenderer) {
+        SaveListener(Renderer theRenderer) {
             renderer = theRenderer;
         }
 
+        @Override
         public void actionPerformed(ActionEvent evt) {
             JFileChooser fcSave = new JFileChooser();
             int ret = fcSave.showSaveDialog(GUI.this.frame);
@@ -287,6 +296,7 @@ public class GUI implements CPDListener {
     }
 
     private class BrowseListener implements ActionListener {
+        @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser fc = new JFileChooser(rootDirectoryField.getText());
             fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -301,10 +311,11 @@ public class GUI implements CPDListener {
         private static final long serialVersionUID = -2190382865483285032L;
         private int[] alignments;
 
-        public AlignmentRenderer(int[] theAlignments) {
+        AlignmentRenderer(int[] theAlignments) {
             alignments = theAlignments;
         }
 
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                 int row, int column) {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -368,6 +379,7 @@ public class GUI implements CPDListener {
         fileMenu.setMnemonic('v');
         JMenuItem trimItem = new JCheckBoxMenuItem("Trim leading whitespace");
         trimItem.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 AbstractButton button = (AbstractButton) e.getItem();
                 GUI.this.trimLeadingWhitespace = button.isSelected();
@@ -434,6 +446,7 @@ public class GUI implements CPDListener {
             languageBox.addItem(String.valueOf(LANGUAGE_SETS[i][0]));
         }
         languageBox.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 adjustLanguageControlsFor(languageConfigFor((String) languageBox.getSelectedItem()));
             }
@@ -505,7 +518,7 @@ public class GUI implements CPDListener {
         resultsPanel.setLayout(new BorderLayout());
         JScrollPane areaScrollPane = new JScrollPane(resultsTextArea);
         resultsTextArea.setEditable(false);
-        areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        areaScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         areaScrollPane.setPreferredSize(new Dimension(600, 300));
 
         resultsPanel.add(makeMatchList(), BorderLayout.WEST);
@@ -562,18 +575,21 @@ public class GUI implements CPDListener {
     private JComponent makeMatchList() {
 
         resultsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
             public void valueChanged(ListSelectionEvent e) {
                 populateResultArea();
             }
         });
 
         resultsTable.registerKeyboardAction(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 copyMatchListSelectionsToClipboard();
             }
         }, "Copy", COPY_KEY_STROKE, JComponent.WHEN_FOCUSED);
 
         resultsTable.registerKeyboardAction(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 deleteMatchlistSelections();
             }
@@ -588,6 +604,7 @@ public class GUI implements CPDListener {
 
         final JTableHeader header = resultsTable.getTableHeader();
         header.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 sortOnColumn(header.columnAtPoint(new Point(e.getX(), e.getY())));
             }
@@ -664,8 +681,8 @@ public class GUI implements CPDListener {
             tokenizingFilesBar.setMinimum(0);
             phaseLabel.setText("");
             if (isLegalPath(dirPath.getPath(), conf)) { // should use the
-                                                        // language file filter
-                                                        // instead?
+                // language file filter
+                // instead?
                 cpd.add(dirPath);
             } else {
                 if (recurseCheckbox.isSelected()) {
@@ -709,6 +726,7 @@ public class GUI implements CPDListener {
         final long start = System.currentTimeMillis();
 
         Timer t = new Timer(1000, new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 long now = System.currentTimeMillis();
                 long elapsedMillis = now - start;
@@ -754,6 +772,7 @@ public class GUI implements CPDListener {
             private int sortColumn;
             private boolean sortDescending;
 
+            @Override
             public Object getValueAt(int rowIndex, int columnIndex) {
                 Match match = items.get(rowIndex);
                 switch (columnIndex) {
@@ -770,51 +789,64 @@ public class GUI implements CPDListener {
                 }
             }
 
+            @Override
             public int getColumnCount() {
                 return matchColumns.length;
             }
 
+            @Override
             public int getRowCount() {
                 return items.size();
             }
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return false;
             }
 
+            @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return Object.class;
             }
 
+            @Override
             public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             }
 
+            @Override
             public String getColumnName(int i) {
                 return matchColumns[i].label();
             }
 
+            @Override
             public void addTableModelListener(TableModelListener l) {
             }
 
+            @Override
             public void removeTableModelListener(TableModelListener l) {
             }
 
+            @Override
             public int sortColumn() {
                 return sortColumn;
             }
 
+            @Override
             public void sortColumn(int column) {
                 sortColumn = column;
             }
 
+            @Override
             public boolean sortDescending() {
                 return sortDescending;
             }
 
+            @Override
             public void sortDescending(boolean flag) {
                 sortDescending = flag;
             }
 
+            @Override
             public void sort(Comparator<Match> comparator) {
                 Collections.sort(items, comparator);
                 if (sortDescending) {
@@ -859,6 +891,7 @@ public class GUI implements CPDListener {
     }
 
     // CPDListener
+    @Override
     public void phaseUpdate(int phase) {
         phaseLabel.setText(getPhaseText(phase));
     }
@@ -880,6 +913,7 @@ public class GUI implements CPDListener {
         }
     }
 
+    @Override
     public void addedFile(int fileCount, File file) {
         tokenizingFilesBar.setMaximum(fileCount);
         tokenizingFilesBar.setValue(tokenizingFilesBar.getValue() + 1);

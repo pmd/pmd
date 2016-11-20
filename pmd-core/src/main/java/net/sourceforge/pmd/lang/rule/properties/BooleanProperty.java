@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 
 /**
  * Defines a property type that supports single Boolean values.
- * 
+ *
  * @author Brian Remedios
  */
 public class BooleanProperty extends AbstractScalarProperty<Boolean> {
@@ -19,6 +19,7 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<BooleanProperty>(
             Boolean.class) {
 
+        @Override
         public BooleanProperty createWith(Map<String, String> valuesById) {
             return new BooleanProperty(nameIn(valuesById), descriptionIn(valuesById),
                     Boolean.valueOf(defaultValueIn(valuesById)), 0f);
@@ -27,7 +28,7 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
 
     /**
      * Constructor for BooleanProperty limited to a single value.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -44,7 +45,7 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
     /**
      * Constructor for BooleanProperty limited to a single value. Converts
      * default argument string into a boolean.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -62,6 +63,7 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Boolean> type() {
         return Boolean.class;
     }
@@ -69,17 +71,19 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return Boolean.toString(defaultValue());
     }
 
     /**
      * Creates and returns a Boolean instance from a raw string
-     * 
+     *
      * @param value
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return Boolean.valueOf(value);
     }

@@ -16,12 +16,8 @@ public class PropertyDescriptorFactory {
     public static String getPropertyDescriptorType(PropertyDescriptor<?> propertyDescriptor) {
         Class<?> type = propertyDescriptor.type();
         String typeName = null;
-        if (propertyDescriptor instanceof EnumeratedProperty || propertyDescriptor instanceof MethodProperty // TODO
-                                                                                                             // -
-                                                                                                             // yes
-                                                                                                             // we
-                                                                                                             // can,
-                                                                                                             // investigate
+        // TODO - yes we can, investigate
+        if (propertyDescriptor instanceof EnumeratedProperty || propertyDescriptor instanceof MethodProperty
                 || propertyDescriptor instanceof TypeProperty) {
             // Cannot serialize these kinds of PropertyDescriptors
         } else if ("java.lang".equals(type.getPackage().getName())) {

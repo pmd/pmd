@@ -9,10 +9,10 @@ import java.util.NoSuchElementException;
 
 /**
  * Creates a single compound Iterator from an array of Iterators.
- * 
+ *
  * @param <T>
  *            The type returned by the Iterator.
- * 
+ *
  * @see Iterator
  */
 public class CompoundIterator<T> implements Iterator<T> {
@@ -20,7 +20,7 @@ public class CompoundIterator<T> implements Iterator<T> {
     private int index;
 
     /**
-     * 
+     *
      * @param iterators
      *            The iterators use.
      */
@@ -32,6 +32,7 @@ public class CompoundIterator<T> implements Iterator<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasNext() {
         return getNextIterator() != null;
     }
@@ -39,6 +40,7 @@ public class CompoundIterator<T> implements Iterator<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public T next() {
         Iterator<T> iterator = getNextIterator();
         if (iterator != null) {
@@ -51,6 +53,7 @@ public class CompoundIterator<T> implements Iterator<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void remove() {
         Iterator<T> iterator = getNextIterator();
         if (iterator != null) {

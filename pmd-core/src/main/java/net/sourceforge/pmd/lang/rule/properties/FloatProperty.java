@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a property type that supports single float property values within an
  * upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class FloatProperty extends AbstractNumericProperty<Float> {
@@ -20,6 +20,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FloatProperty>(
             float.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public FloatProperty createWith(Map<String, String> valuesById) {
             final String[] minMax = minMaxFrom(valuesById);
             return new FloatProperty(nameIn(valuesById), descriptionIn(valuesById), Float.valueOf(minMax[0]),
@@ -30,7 +31,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
     /**
      * Constructor for FloatProperty that limits itself to a single value within
      * the specified limits.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -53,7 +54,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
     /**
      * Constructor for FloatProperty that limits itself to a single value within
      * the specified limits. Converts string arguments into the Float values.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -86,17 +87,19 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Float> type() {
         return Float.class;
     }
 
     /**
      * Creates an property value of the right type from a raw string.
-     * 
+     *
      * @param value
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return floatFrom(value);
     }

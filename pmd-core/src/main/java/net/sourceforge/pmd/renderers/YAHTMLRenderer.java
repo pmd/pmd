@@ -26,6 +26,7 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
         definePropertyDescriptor(OUTPUT_DIR);
     }
 
+    @Override
     public String defaultFileExtension() {
         return "html";
     }

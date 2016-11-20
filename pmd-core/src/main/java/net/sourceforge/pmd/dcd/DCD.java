@@ -95,6 +95,7 @@ public class DCD {
 
         // Basic filter
         FilenameFilter javaFilter = new FilenameFilter() {
+            @Override
             public boolean accept(File dir, String name) {
                 // Recurse on directories
                 if (new File(dir, name).isDirectory()) {

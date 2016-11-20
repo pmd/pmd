@@ -40,7 +40,7 @@ public interface XPathRuleQuery {
 
     /**
      * Set the XPath query string to be used.
-     * 
+     *
      * @param xpath
      *            The XPath query string.
      */
@@ -48,7 +48,7 @@ public interface XPathRuleQuery {
 
     /**
      * Set the XPath version to be used.
-     * 
+     *
      * @param version
      *            The XPath version.
      * @throws UnsupportedOperationException
@@ -71,7 +71,7 @@ public interface XPathRuleQuery {
 
     /**
      * Evaluate the XPath query against the given Node.
-     * 
+     *
      * @param node
      *            The Node.
      * @param data

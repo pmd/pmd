@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 /**
  * A singleton iterator that never has anything.
- * 
+ *
  * @author Brian Remedios
  *
  * @param <T>

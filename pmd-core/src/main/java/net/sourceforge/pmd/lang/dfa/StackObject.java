@@ -23,6 +23,7 @@ public class StackObject {
         return this.type;
     }
 
+    @Override
     public String toString() {
         return ("StackObject: type=" + NodeType.stringFromType(type) + "(" + type + "), node=" + node.toString());
 

@@ -4,6 +4,13 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -18,13 +25,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.ResourceLoader;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class RuleSetFactoryTest {
     @Test
@@ -44,7 +44,7 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testRefs() throws Throwable {
+    public void testRefs() throws Exception {
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSet rs = rsf.createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
         assertNotNull(rs.getRuleByName("TestRuleRef"));
@@ -479,7 +479,7 @@ public class RuleSetFactoryTest {
     /**
      * Rule reference can't be resolved - ref is used instead of class and the
      * class is old (pmd 4.3 and not pmd 5).
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -496,7 +496,7 @@ public class RuleSetFactoryTest {
 
     /**
      * See https://sourceforge.net/p/pmd/bugs/1225/
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -515,7 +515,7 @@ public class RuleSetFactoryTest {
 
     /**
      * See https://sourceforge.net/p/pmd/bugs/1231/
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -534,7 +534,7 @@ public class RuleSetFactoryTest {
 
     /**
      * Unit test for #1312 see https://sourceforge.net/p/pmd/bugs/1312/
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -559,7 +559,7 @@ public class RuleSetFactoryTest {
 
     /**
      * See https://sourceforge.net/p/pmd/bugs/1231/
-     * 
+     *
      * @throws Exception
      *             any error
      */

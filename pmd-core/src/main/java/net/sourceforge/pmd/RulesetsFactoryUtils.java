@@ -20,7 +20,7 @@ public final class RulesetsFactoryUtils {
     /**
      * Creates a new rulesets with the given string. The resulting rulesets will
      * contain all referenced rulesets.
-     * 
+     *
      * @param rulesets
      *            the string with the rulesets to load
      * @param factory
@@ -52,7 +52,7 @@ public final class RulesetsFactoryUtils {
     /**
      * See {@link #getRuleSets(String, RuleSetFactory)}. In addition, the
      * loading of the rules is benchmarked.
-     * 
+     *
      * @param rulesets
      *            the string with the rulesets to load
      * @param factory

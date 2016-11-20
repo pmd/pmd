@@ -33,7 +33,7 @@ public class MultiThreadProcessorTest {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setRuleSets("rulesets/MultiThreadProcessorTest/basic.xml");
         configuration.setThreads(2);
-        List<DataSource> files = new ArrayList<DataSource>();
+        List<DataSource> files = new ArrayList<>();
         files.add(new StringDataSource("file1-violation.dummy", "ABC"));
         files.add(new StringDataSource("file2-foo.dummy", "DEF"));
 
@@ -57,7 +57,7 @@ public class MultiThreadProcessorTest {
         private final String data;
         private final String name;
 
-        public StringDataSource(String name, String data) {
+        StringDataSource(String name, String data) {
             this.name = name;
             this.data = data;
         }
@@ -76,7 +76,7 @@ public class MultiThreadProcessorTest {
     public static class NotThreadSafeRule extends AbstractRule {
         public static AtomicInteger count = new AtomicInteger(0);
         private boolean hasViolation; // this variable will be overridden
-                                      // between the threads
+        // between the threads
 
         @Override
         public void apply(List<? extends Node> nodes, RuleContext ctx) {

@@ -79,6 +79,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getLanguage()
      */
+    @Override
     public Language getLanguage() {
         return language;
     }
@@ -86,6 +87,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setLanguage(net.sourceforge.pmd.lang.Language)
      */
+    @Override
     public void setLanguage(Language language) {
         if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
             throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
@@ -97,6 +99,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getMinimumLanguageVersion()
      */
+    @Override
     public LanguageVersion getMinimumLanguageVersion() {
         return minimumLanguageVersion;
     }
@@ -104,6 +107,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setMinimumLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
      */
+    @Override
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
         this.minimumLanguageVersion = minimumLanguageVersion;
     }
@@ -111,6 +115,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getMaximumLanguageVersion()
      */
+    @Override
     public LanguageVersion getMaximumLanguageVersion() {
         return maximumLanguageVersion;
     }
@@ -118,6 +123,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setMaximumLanguageVersion(net.sourceforge.pmd.lang.LanguageVersion)
      */
+    @Override
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
         this.maximumLanguageVersion = maximumLanguageVersion;
     }
@@ -125,6 +131,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#isDeprecated()
      */
+    @Override
     public boolean isDeprecated() {
         return deprecated;
     }
@@ -132,6 +139,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setDeprecated(boolean)
      */
+    @Override
     public void setDeprecated(boolean deprecated) {
         this.deprecated = deprecated;
     }
@@ -139,6 +147,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getName()
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -146,6 +155,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setName(String)
      */
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -153,6 +163,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getSince()
      */
+    @Override
     public String getSince() {
         return since;
     }
@@ -160,6 +171,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setSince(String)
      */
+    @Override
     public void setSince(String since) {
         this.since = since;
     }
@@ -167,6 +179,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getRuleClass()
      */
+    @Override
     public String getRuleClass() {
         return ruleClass;
     }
@@ -174,6 +187,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setRuleClass(String)
      */
+    @Override
     public void setRuleClass(String ruleClass) {
         this.ruleClass = ruleClass;
     }
@@ -181,6 +195,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getRuleSetName()
      */
+    @Override
     public String getRuleSetName() {
         return ruleSetName;
     }
@@ -188,6 +203,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setRuleSetName(String)
      */
+    @Override
     public void setRuleSetName(String ruleSetName) {
         this.ruleSetName = ruleSetName;
     }
@@ -195,6 +211,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getMessage()
      */
+    @Override
     public String getMessage() {
         return message;
     }
@@ -202,6 +219,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setMessage(String)
      */
+    @Override
     public void setMessage(String message) {
         this.message = message;
     }
@@ -209,6 +227,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getDescription()
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -216,6 +235,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setDescription(String)
      */
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
@@ -223,6 +243,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getExamples()
      */
+    @Override
     public List<String> getExamples() {
         // TODO Needs to be externally immutable
         return examples;
@@ -231,6 +252,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#addExample(String)
      */
+    @Override
     public void addExample(String example) {
         examples.add(example);
     }
@@ -238,6 +260,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getExternalInfoUrl()
      */
+    @Override
     public String getExternalInfoUrl() {
         return externalInfoUrl;
     }
@@ -245,6 +268,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setExternalInfoUrl(String)
      */
+    @Override
     public void setExternalInfoUrl(String externalInfoUrl) {
         this.externalInfoUrl = externalInfoUrl;
     }
@@ -252,6 +276,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getPriority()
      */
+    @Override
     public RulePriority getPriority() {
         return priority;
     }
@@ -259,6 +284,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setPriority(RulePriority)
      */
+    @Override
     public void setPriority(RulePriority priority) {
         this.priority = priority;
     }
@@ -266,9 +292,10 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * This implementation returns a new instance of {@link ParserOptions} using
      * default settings.
-     * 
+     *
      * @see Rule#setPriority(RulePriority)
      */
+    @Override
     public ParserOptions getParserOptions() {
         return new ParserOptions();
     }
@@ -276,6 +303,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setUsesDFA()
      */
+    @Override
     public void setUsesDFA() {
         usesDFA = true;
     }
@@ -283,6 +311,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#usesDFA()
      */
+    @Override
     public boolean usesDFA() {
         return usesDFA;
     }
@@ -290,6 +319,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#setUsesTypeResolution()
      */
+    @Override
     public void setUsesTypeResolution() {
         usesTypeResolution = true;
     }
@@ -297,6 +327,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#usesTypeResolution()
      */
+    @Override
     public boolean usesTypeResolution() {
         return usesTypeResolution;
     }
@@ -304,6 +335,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#usesRuleChain()
      */
+    @Override
     public boolean usesRuleChain() {
         return !getRuleChainVisits().isEmpty();
     }
@@ -311,6 +343,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#getRuleChainVisits()
      */
+    @Override
     public List<String> getRuleChainVisits() {
         return ruleChainVisits;
     }
@@ -318,6 +351,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#addRuleChainVisit(Class)
      */
+    @Override
     public void addRuleChainVisit(Class<? extends Node> nodeClass) {
         if (!nodeClass.getSimpleName().startsWith("AST")) {
             throw new IllegalArgumentException("Node class does not start with 'AST' prefix: " + nodeClass);
@@ -328,6 +362,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#addRuleChainVisit(String)
      */
+    @Override
     public void addRuleChainVisit(String astNodeName) {
         if (!ruleChainVisits.contains(astNodeName)) {
             ruleChainVisits.add(astNodeName);
@@ -337,6 +372,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#start(RuleContext)
      */
+    @Override
     public void start(RuleContext ctx) {
         // Override as needed
     }
@@ -344,6 +380,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     /**
      * @see Rule#end(RuleContext)
      */
+    @Override
     public void end(RuleContext ctx) {
         // Override as needed
     }

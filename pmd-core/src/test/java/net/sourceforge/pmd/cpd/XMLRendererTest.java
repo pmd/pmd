@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,18 +19,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 /**
  * @author Philippe T'Seyen
  * @author Romain Pelisse <belaran@gmail.com>
- * 
+ *
  */
 public class XMLRendererTest {
 
-    private final static String ENCODING = (String) System.getProperties().get("file.encoding");
+    private static final String ENCODING = (String) System.getProperties().get("file.encoding");
 
     @Test
     public void testWithNoDuplication() {
@@ -76,8 +76,9 @@ public class XMLRendererTest {
                     file = file.getNextSibling();
                 }
             }
-            if (file != null)
+            if (file != null) {
                 assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
+            }
             assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
             assertEquals(codeFragment, doc.getElementsByTagName("codefragment").item(0).getTextContent());
         } catch (Exception e) {

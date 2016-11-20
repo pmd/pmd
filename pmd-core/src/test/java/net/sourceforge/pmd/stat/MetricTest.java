@@ -23,11 +23,11 @@
 
 package net.sourceforge.pmd.stat;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Random;
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author David Dixon-Peugh

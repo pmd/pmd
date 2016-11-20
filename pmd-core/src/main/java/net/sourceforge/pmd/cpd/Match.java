@@ -18,18 +18,21 @@ public class Match implements Comparable<Match> {
     private String label;
 
     public static final Comparator<Match> MATCHES_COMPARATOR = new Comparator<Match>() {
+        @Override
         public int compare(Match ma, Match mb) {
             return mb.getMarkCount() - ma.getMarkCount();
         }
     };
 
     public static final Comparator<Match> LINES_COMPARATOR = new Comparator<Match>() {
+        @Override
         public int compare(Match ma, Match mb) {
             return mb.getLineCount() - ma.getLineCount();
         }
     };
 
     public static final Comparator<Match> LABEL_COMPARATOR = new Comparator<Match>() {
+        @Override
         public int compare(Match ma, Match mb) {
             if (ma.getLabel() == null) {
                 return 1;
@@ -42,6 +45,7 @@ public class Match implements Comparable<Match> {
     };
 
     public static final Comparator<Match> LENGTH_COMPARATOR = new Comparator<Match>() {
+        @Override
         public int compare(Match ma, Match mb) {
             return mb.getLineCount() - ma.getLineCount();
         }
@@ -77,6 +81,7 @@ public class Match implements Comparable<Match> {
         return markSet.iterator();
     }
 
+    @Override
     public int compareTo(Match other) {
         int diff = other.getTokenCount() - getTokenCount();
         if (diff != 0) {
@@ -93,6 +98,7 @@ public class Match implements Comparable<Match> {
         return getMark(1);
     }
 
+    @Override
     public String toString() {
         return "Match: " + PMD.EOL + "tokenCount = " + tokenCount + PMD.EOL + "marks = " + markSet.size();
     }

@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+
 import net.sf.saxon.om.Navigator;
 import net.sf.saxon.om.SequenceIterator;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 /**
  * This is an Attribute axis iterator.
@@ -18,7 +19,7 @@ public class AttributeAxisIterator extends Navigator.BaseEnumeration {
 
     /**
      * Create an iterator over the Attribute axis for the given ElementNode.
-     * 
+     *
      * @see net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator
      */
     public AttributeAxisIterator(ElementNode startNodeInfo) {
@@ -29,6 +30,7 @@ public class AttributeAxisIterator extends Navigator.BaseEnumeration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public SequenceIterator getAnother() {
         return new AttributeAxisIterator(startNodeInfo);
     }
@@ -36,6 +38,7 @@ public class AttributeAxisIterator extends Navigator.BaseEnumeration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void advance() {
         if (this.iterator.hasNext()) {
             Attribute attribute = this.iterator.next();

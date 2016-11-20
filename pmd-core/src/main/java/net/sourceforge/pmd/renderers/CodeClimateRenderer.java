@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_BLOCK_HIGHLIGHTING;
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
+import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
@@ -11,17 +15,13 @@ import java.util.Iterator;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_BLOCK_HIGHLIGHTING;
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Renderer for Code Climate JSON format
@@ -64,7 +64,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     /**
      * Generate a CodeClimateIssue suitable for processing into JSON from the
      * given RuleViolation.
-     * 
+     *
      * @param rv
      *            RuleViolation to convert.
      * @return The generated issue.
@@ -88,6 +88,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
             issue.severity = "normal";
             break;
         case LOW:
+        default:
             issue.severity = "info";
             break;
         }
@@ -177,8 +178,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 PropertyDescriptor<T> typed = (PropertyDescriptor<T>) property;
                 T value = rule.getProperty(typed);
                 String propertyValue = typed.asDelimitedString(value);
-                if (propertyValue == null)
+                if (propertyValue == null) {
                     propertyValue = "";
+                }
                 propertyValue = propertyValue.replaceAll("(\n|\r\n|\r)", "\\\\n");
 
                 String porpertyName = property.name();

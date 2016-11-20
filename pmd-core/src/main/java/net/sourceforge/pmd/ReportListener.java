@@ -13,7 +13,7 @@ import net.sourceforge.pmd.stat.Metric;
 public interface ReportListener {
     /**
      * A new violation has been found.
-     * 
+     *
      * @param ruleViolation
      *            the found violation.
      */
@@ -21,7 +21,7 @@ public interface ReportListener {
 
     /**
      * A new metric point has been reported.
-     * 
+     *
      * @param metric
      *            the metric
      */

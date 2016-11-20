@@ -4,19 +4,20 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
 import org.junit.Test;
 
-import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import junit.framework.JUnit4TestAdapter;
 
 public class ConfigurationTest {
 

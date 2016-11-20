@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
@@ -34,7 +35,7 @@ public class XPathPanel extends JTabbedPane implements ViewerModelListener {
      *            model to refer to
      */
     public XPathPanel(ViewerModel model) {
-        super(JTabbedPane.BOTTOM);
+        super(SwingConstants.BOTTOM);
         this.model = model;
         init();
     }
@@ -55,6 +56,7 @@ public class XPathPanel extends JTabbedPane implements ViewerModelListener {
     /**
      * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
+    @Override
     public void viewerModelChanged(ViewerModelEvent e) {
         switch (e.getReason()) {
         case ViewerModelEvent.PATH_EXPRESSION_APPENDED:

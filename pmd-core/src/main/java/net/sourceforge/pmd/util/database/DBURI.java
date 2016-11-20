@@ -29,11 +29,11 @@ import java.util.logging.Logger;
  * A DBURI is a <i>faux</i>-URI: it does not have a formal specification and
  * comprises a JDBC(-ish) URL and an optional query, e.g.
  * <code>jdbc : subprotocol  [ : subname ] : connection details [ query ] </code>.
- * 
+ *
  * The subprotocol and optional subname parts should be a valid DBType
  * JDBC(-ish) URL jdbc:oracle:thin:username/password@//192.168.100.21:1521/ORCL
  * JDBC(-ish) URL jdbc:thin:username/password@//192.168.100.21:1521/ORCL
- * 
+ *
  * <p>
  * The query includes one or more of these:-
  * <dl>
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  * <dd>comma-separated list of database source code names</dd>
  * </dl>
  * </p>
- * 
+ *
  * @see http://docs.oracle.com/javase/7/docs/api/java/net/URI.html
  * @author sturton
  */
@@ -61,7 +61,7 @@ public class DBURI {
 
     /**
      * A JDBC URL with an associated query.
-     * 
+     *
      * Formats: jdbc:oracle:thin:[<user>/<password>]@//<host>[:<port>]/<service>
      * jdbc:oracle:oci:[<user>/<password>]@//<host>[:<port>]/<service>
      *
@@ -122,7 +122,7 @@ public class DBURI {
 
     /**
      * Create DBURI from a string, combining a JDBC URL and query parameters.
-     * 
+     *
      * <p>
      * From the JDBC URL component, infer:-
      * <ul>
@@ -132,7 +132,7 @@ public class DBURI {
      * <li>default schemas</li>
      * </ul>
      * </p>
-     * 
+     *
      * <p>
      * From the query component, define these values, overriding any defaults:-
      * <ul>
@@ -142,7 +142,7 @@ public class DBURI {
      * <li>source code</li>
      * </ul>
      * </p>
-     * 
+     *
      * @param string
      *            URL string
      * @throws URISyntaxException
@@ -151,7 +151,7 @@ public class DBURI {
     public DBURI(String string) throws URISyntaxException {
         /*
          * A JDBC URL is an opaque URL and does not have a query.
-         * 
+         *
          * We pretend that it does, strip off the query, use the real JDBC URL
          * component to infer languages JDBC driver class supported languages
          * default source code types default schemas generate a faux HTTP URI
@@ -224,7 +224,7 @@ public class DBURI {
 
     /**
      * Create a DBURI from standard individual {@link URI} components.
-     * 
+     *
      * <p>
      * From the JDBC URL components, infer:-
      * <ul>
@@ -234,7 +234,7 @@ public class DBURI {
      * <li>default schemas</li>
      * </ul>
      * </p>
-     * 
+     *
      * <p>
      * From the query component, define these values, overriding any defaults:-
      * <ul>
@@ -244,7 +244,7 @@ public class DBURI {
      * <li>source code</li>
      * </ul>
      * </p>
-     * 
+     *
      * @param scheme
      * @param userInfo
      * @param host
@@ -262,7 +262,7 @@ public class DBURI {
 
     /**
      * Return extracted parameters from dburi.
-     * 
+     *
      * @param dburi
      * @return extracted parameters
      * @throws UnsupportedEncodingException
@@ -289,7 +289,7 @@ public class DBURI {
 
     /**
      * Dump this URI to the log.
-     * 
+     *
      * @param description
      * @param dburi
      */
@@ -433,7 +433,7 @@ public class DBURI {
 
     /**
      * Populate the URI and query collections from the original string
-     * 
+     *
      * @throws URISyntaxException
      * @throws IOException
      */

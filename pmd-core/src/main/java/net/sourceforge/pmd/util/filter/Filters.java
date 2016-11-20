@@ -18,7 +18,7 @@ public class Filters {
 
     /**
      * Filter a given Collection.
-     * 
+     *
      * @param <T>
      *            Type of the Collection.
      * @param filter
@@ -40,7 +40,7 @@ public class Filters {
 
     /**
      * Get a File Filter for files with the given extensions, ignoring case.
-     * 
+     *
      * @param extensions
      *            The extensions to filter.
      * @return A File Filter.
@@ -51,7 +51,7 @@ public class Filters {
 
     /**
      * Get a File Filter for directories.
-     * 
+     *
      * @return A File Filter.
      */
     public static Filter<File> getDirectoryFilter() {
@@ -61,7 +61,7 @@ public class Filters {
     /**
      * Get a File Filter for directories or for files with the given extensions,
      * ignoring case.
-     * 
+     *
      * @param extensions
      *            The extensions to filter.
      * @return A File Filter.
@@ -75,19 +75,21 @@ public class Filters {
      * normalized to a standard pattern using <code>/</code> as a path separator
      * which can be used cross platform easily in a regular expression based
      * String Filter.
-     * 
+     *
      * @param filter
      *            A String Filter.
      * @return A File Filter.
      */
     public static Filter<File> toNormalizedFileFilter(final Filter<String> filter) {
         return new Filter<File>() {
+            @Override
             public boolean filter(File file) {
                 String path = file.getPath();
                 path = path.replace('\\', '/');
                 return filter.filter(path);
             }
 
+            @Override
             public String toString() {
                 return filter.toString();
             }
@@ -98,7 +100,7 @@ public class Filters {
      * Given a String Filter, expose as a Filter on another type. The
      * <code>toString()</code> method is called on the objects of the other type
      * and delegated to the String Filter.
-     * 
+     *
      * @param <T>
      *            The desired type.
      * @param filter
@@ -107,10 +109,12 @@ public class Filters {
      */
     public static <T> Filter<T> fromStringFilter(final Filter<String> filter) {
         return new Filter<T>() {
+            @Override
             public boolean filter(T obj) {
                 return filter.filter(obj.toString());
             }
 
+            @Override
             public String toString() {
                 return filter.toString();
             }
@@ -119,17 +123,19 @@ public class Filters {
 
     /**
      * Given a File Filter, expose as a FilenameFilter.
-     * 
+     *
      * @param filter
      *            The File Filter.
      * @return A FilenameFilter.
      */
     public static FilenameFilter toFilenameFilter(final Filter<File> filter) {
         return new FilenameFilter() {
+            @Override
             public boolean accept(File dir, String name) {
                 return filter.filter(new File(dir, name));
             }
 
+            @Override
             public String toString() {
                 return filter.toString();
             }
@@ -138,17 +144,19 @@ public class Filters {
 
     /**
      * Given a FilenameFilter, expose as a File Filter.
-     * 
+     *
      * @param filter
      *            The FilenameFilter.
      * @return A File Filter.
      */
     public static Filter<File> toFileFilter(final FilenameFilter filter) {
         return new Filter<File>() {
+            @Override
             public boolean filter(File file) {
                 return filter.accept(file.getParentFile(), file.getName());
             }
 
+            @Override
             public String toString() {
                 return filter.toString();
             }
@@ -163,7 +171,7 @@ public class Filters {
      * and does not match an exclude regular expression.
      * <p>
      * In other words, exclude patterns override include patterns.
-     * 
+     *
      * @param includeRegexes
      *            The include regular expressions. May be <code>null</code>.
      * @param excludeRegexes
@@ -199,7 +207,7 @@ public class Filters {
      * matches or there is not an exclude which matches.
      * <p>
      * In other words, include patterns override exclude patterns.
-     * 
+     *
      * @param includeRegexes
      *            The include regular expressions. May be <code>null</code>.
      * @param excludeRegexes

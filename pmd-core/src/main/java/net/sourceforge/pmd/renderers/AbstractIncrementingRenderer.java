@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * significantly less working memory at any given time. Variations in the
  * delivery of source file reports are reflected in the output of the
  * {@link Renderer}, so report output can be different between runs.
- * 
+ *
  * Only processing errors and suppressed violations are accumulated across all
  * files. These are intended to be processed in the {@link #end()} method.
  */
@@ -43,18 +43,21 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void start() throws IOException {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void startFileAnalysis(DataSource dataSource) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void renderFileReport(Report report) throws IOException {
         Iterator<RuleViolation> violations = report.iterator();
         if (violations.hasNext()) {
@@ -73,7 +76,7 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
 
     /**
      * Render a series of {@link RuleViolation}s.
-     * 
+     *
      * @param violations
      *            The iterator of violations to render.
      * @throws IOException
@@ -83,6 +86,7 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void end() throws IOException {
     }
 }

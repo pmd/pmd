@@ -15,10 +15,12 @@ public final class DirectoryFilter implements Filter<File> {
     private DirectoryFilter() {
     }
 
+    @Override
     public boolean filter(File file) {
         return file.isDirectory();
     }
 
+    @Override
     public String toString() {
         return "is Directory";
     }

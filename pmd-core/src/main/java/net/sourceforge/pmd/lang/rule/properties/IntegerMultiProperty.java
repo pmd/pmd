@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a datatype that supports multiple Integer property values within an
  * upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]> {
@@ -20,6 +20,7 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<IntegerMultiProperty>(
             Integer[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public IntegerMultiProperty createWith(Map<String, String> valuesById) {
             String[] minMax = minMaxFrom(valuesById);
             char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
@@ -31,7 +32,7 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
 
     /**
      * Constructor for IntegerProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -55,6 +56,7 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Integer[]> type() {
         return Integer[].class;
     }
@@ -64,6 +66,7 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return Integer.valueOf(value);
     }
@@ -73,6 +76,7 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
      *            int
      * @return Object[]
      */
+    @Override
     protected Object[] arrayFor(int size) {
         return new Integer[size];
     }

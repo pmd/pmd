@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.util;
 
 /**
- * 
+ *
  * @author Brian Remedios
  */
 public final class DateTimeUtil {
@@ -14,7 +14,7 @@ public final class DateTimeUtil {
     }
 
     /**
-     * 
+     *
      * @param milliseconds
      * @return String
      */

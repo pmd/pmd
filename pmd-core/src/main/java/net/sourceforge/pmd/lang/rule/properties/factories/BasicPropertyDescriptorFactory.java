@@ -4,6 +4,14 @@
 
 package net.sourceforge.pmd.lang.rule.properties.factories;
 
+import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DELIMITER;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DESC;
+import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
+import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
+import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
+import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,16 +24,8 @@ import net.sourceforge.pmd.lang.rule.properties.AbstractProperty;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
-import static net.sourceforge.pmd.PropertyDescriptorFields.DELIMITER;
-import static net.sourceforge.pmd.PropertyDescriptorFields.DESC;
-import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
-import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
-import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
-
 /**
- * 
+ *
  * @author Brian Remedios
  *
  * @param <T>
@@ -64,14 +64,17 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         fieldTypesByKey = Collections.unmodifiableMap(temp);
     }
 
+    @Override
     public Class<?> valueType() {
         return valueType;
     }
 
+    @Override
     public PropertyDescriptor<?> createWith(Map<String, String> valuesById) {
         throw new RuntimeException("Unimplemented createWith() method in subclass");
     }
 
+    @Override
     public Map<String, Boolean> expectedFields() {
         return fieldTypesByKey;
     }
@@ -91,8 +94,8 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     protected String numericDefaultValueIn(Map<String, String> valuesById) {
         String number = defaultValueIn(valuesById);
         return StringUtil.isEmpty(number) ? "0" : number; // TODO is 0
-                                                          // reasonable if
-                                                          // undefined?
+        // reasonable if
+        // undefined?
     }
 
     protected static String minValueIn(Map<String, String> valuesById) {

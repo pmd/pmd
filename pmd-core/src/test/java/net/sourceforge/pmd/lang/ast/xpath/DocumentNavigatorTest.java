@@ -4,15 +4,15 @@
 
 package net.sourceforge.pmd.lang.ast.xpath;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
 
 /**
  * Unit test for {@link DocumentNavigator}
@@ -20,7 +20,7 @@ import static org.junit.Assert.fail;
 public class DocumentNavigatorTest {
 
     private static class DummyRootNode extends DummyNode implements RootNode {
-        public DummyRootNode(int id) {
+        DummyRootNode(int id) {
             super(id);
         }
     }

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * 
+ *
  * @author Brian Remedios
  * @param <T>
  */
@@ -15,7 +15,7 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractPackagedP
 
     /**
      * Constructor for AbstractMultiPackagedProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -44,6 +44,7 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractPackagedP
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return asDelimitedString(defaultValue());
     }

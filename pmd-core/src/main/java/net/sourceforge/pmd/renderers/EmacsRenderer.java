@@ -23,6 +23,7 @@ public class EmacsRenderer extends AbstractIncrementingRenderer {
         super(NAME, "GNU Emacs integration.");
     }
 
+    @Override
     public String defaultFileExtension() {
         return "emacs";
     }

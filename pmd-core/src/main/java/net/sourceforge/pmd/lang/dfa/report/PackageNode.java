@@ -16,6 +16,7 @@ public class PackageNode extends AbstractReportNode {
         return this.packageName;
     }
 
+    @Override
     public boolean equalsNode(AbstractReportNode arg0) {
         if (!(arg0 instanceof PackageNode)) {
             return false;

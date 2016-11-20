@@ -15,6 +15,7 @@ public class CodeEditorTextPane extends JTextPane implements LineGetter {
         return getText().split("\r\n|\r|\n");
     }
 
+    @Override
     public String getLine(int number) {
         String[] lines = getLines();
         if (number < lines.length) {

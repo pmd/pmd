@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.ant;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 
 import org.junit.Test;
@@ -12,10 +16,6 @@ import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class FormatterTest {
 

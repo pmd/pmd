@@ -48,6 +48,7 @@ public class VariableAccess {
         return variableName;
     }
 
+    @Override
     public String toString() {
         if (isDefinition()) {
             return "Definition(" + variableName + ")";

@@ -1,6 +1,8 @@
 
 package net.sourceforge.pmd.jaxen;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +14,6 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.xpath.MatchesFunction;
 
-import static org.junit.Assert.assertTrue;
-
 public class MatchesFunctionTest {
 
     public static class MyNode extends AbstractNode {
@@ -23,6 +23,7 @@ public class MatchesFunctionTest {
             super(1);
         }
 
+        @Override
         public String toString() {
             return "MyNode";
         }

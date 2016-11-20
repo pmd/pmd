@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.stat;
 
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
+
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -13,14 +17,10 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
 
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
-
 /**
  * This class is used to implement the core logic of a StatisticalRule. Concrete
  * Rule implementations should delegate to an instance of this class.
- * 
+ *
  * @author David Dixon-Peugh Aug 8, 2002 StatisticalRule.java
  */
 public class StatisticalRuleHelper {
@@ -53,17 +53,17 @@ public class StatisticalRuleHelper {
         double minimum = 0.0;
 
         if (rule.getProperty(SIGMA_DESCRIPTOR) != null) { // TODO - need to come
-                                                          // up with a good
-                                                          // default value
+            // up with a good
+            // default value
             deviation = getStdDev();
             double sigma = rule.getProperty(SIGMA_DESCRIPTOR);
             minimum = getMean() + (sigma * deviation);
         }
 
         if (rule.getProperty(MINIMUM_DESCRIPTOR) != null) { // TODO - need to
-                                                            // come up with a
-                                                            // good default
-                                                            // value
+            // come up with a
+            // good default
+            // value
             double mMin = rule.getProperty(MINIMUM_DESCRIPTOR);
             if (mMin > minimum) {
                 minimum = mMin;
@@ -73,9 +73,9 @@ public class StatisticalRuleHelper {
         SortedSet<DataPoint> newPoints = applyMinimumValue(dataPoints, minimum);
 
         if (rule.getProperty(TOP_SCORE_DESCRIPTOR) != null) { // TODO - need to
-                                                              // come up with a
-                                                              // good default
-                                                              // value
+            // come up with a
+            // good default
+            // value
             int topScore = rule.getProperty(TOP_SCORE_DESCRIPTOR);
             if (newPoints.size() >= topScore) {
                 newPoints = applyTopScore(newPoints, topScore);

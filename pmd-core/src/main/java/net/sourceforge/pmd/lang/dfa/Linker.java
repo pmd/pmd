@@ -159,18 +159,18 @@ public class Linker {
                 /*
                  * for(int i = cList.indexOf(node)-1;i>=0;i--) { IDataFlowNode n
                  * = (IDataFlowNode)cList.get(i);
-                 * 
+                 *
                  * if(n.isType(NodeType.FOR_UPDATE) ||
                  * n.isType(NodeType.FOR_EXPR) || n.isType(NodeType.WHILE_EXPR))
                  * {
                  */
                 /*
                  * while(..) { while(...) { ... } continue; }
-                 * 
+                 *
                  * Without this Expression he continues the second WHILE loop.
                  * The continue statement and the while loop have to be in
                  * different scopes.
-                 * 
+                 *
                  * TODO An error occurs if "continue" is even nested in scopes
                  * other than local loop scopes, like "if". The result is, that
                  * the data flow isn't build right and the pathfinder runs in
@@ -180,31 +180,30 @@ public class Linker {
                  * if(n.getNode().getScope().equals(node.getNode().getScope()))
                  * { System.err.println("equals"); continue; } else {
                  * System.err.println("don't equals"); }
-                 * 
+                 *
                  * //remove all children (should contain only one child)
                  * node.removePathToChild
                  * ((IDataFlowNode)node.getChildren().get(0));
-                 * 
+                 *
                  * node.addPathToChild(n); cbrStack.remove(0); break;
-                 * 
+                 *
                  * }else if(n.isType(NodeType.DO_BEFOR_FIRST_STATEMENT)) {
-                 * 
+                 *
                  * IDataFlowNode inode =
                  * (IDataFlowNode)n.getFlow().get(n.getIndex()1);
-                 * 
+                 *
                  * for(int j=0;j<inode.getParents().size();j) { IDataFlowNode
                  * parent = (IDataFlowNode)inode.getParents().get(j);
-                 * 
+                 *
                  * if(parent.isType(NodeType.DO_EXPR)) {
                  * node.removePathToChild((
                  * IDataFlowNode)node.getChildren().get(0));
                  * node.addPathToChild(parent);
-                 * 
+                 *
                  * cbrStack.remove(0); break; } } break; } }
                  */
-                continueBreakReturnStack.remove(0); // delete this statement if
-                                                    // you uncomment the stuff
-                                                    // above
+                // delete this statement if you uncomment the stuff above
+                continueBreakReturnStack.remove(0);
                 break;
             default:
                 LOGGER.finest("CBR: default");
@@ -382,17 +381,16 @@ public class Linker {
         LOGGER.log(Level.FINEST, "If ifstart={0}, ifEnd={1}, elseEnd={2}, elseStart={3}, end={4}",
                 new Object[] { ifStart, ifEnd, elseEnd, elseStart, end });
 
-        // if if-statement and else-statement contains statements or expressions
         if (ifStart.getIndex() != ifEnd.getIndex() && ifEnd.getIndex() != elseEnd.getIndex()) {
+            // if if-statement and else-statement contains statements or
+            // expressions
             elseStart.reverseParentPathsTo(end);
             ifStart.addPathToChild(elseStart);
-        }
-        // if only if-statement contains no expressions
-        else if (ifStart.getIndex() == ifEnd.getIndex() && ifEnd.getIndex() != elseEnd.getIndex()) {
+        } else if (ifStart.getIndex() == ifEnd.getIndex() && ifEnd.getIndex() != elseEnd.getIndex()) {
+            // if only if-statement contains no expressions
             ifStart.addPathToChild(end);
-        }
-        // if only else-statement contains no expressions
-        else if (ifEnd.getIndex() == elseEnd.getIndex() && ifStart.getIndex() != ifEnd.getIndex()) {
+        } else if (ifEnd.getIndex() == elseEnd.getIndex() && ifStart.getIndex() != ifEnd.getIndex()) {
+            // if only else-statement contains no expressions
             ifStart.addPathToChild(end);
         }
         LOGGER.exiting(CLASS_NAME, "computeIf(3)");
@@ -412,7 +410,7 @@ public class Linker {
     }
 
     /**
-     * 
+     *
      * @return formatted dump of the StackList
      */
     private static String dump(String description, List<StackObject> stackList) {

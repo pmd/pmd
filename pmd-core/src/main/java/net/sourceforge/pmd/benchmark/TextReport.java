@@ -34,6 +34,7 @@ public class TextReport implements BenchmarkReport {
      * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Set<Result>,
      *      PrintStream)
      */
+    @Override
     public void generate(Set<RuleDuration> stressResults, PrintStream out) {
 
         out.println("=========================================================");
@@ -70,6 +71,7 @@ public class TextReport implements BenchmarkReport {
      * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Map<String,BenchmarkResult>,
      *      PrintStream)
      */
+    @Override
     public void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream out) {
 
         List<BenchmarkResult> results = new ArrayList<>(benchmarksByName.values());

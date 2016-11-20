@@ -6,12 +6,14 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import org.jaxen.Navigator;
 
-import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.XPathHandler;
 
+import net.sf.saxon.sxpath.IndependentContext;
+
 public abstract class AbstractASTXPathHandler implements XPathHandler {
 
+    @Override
     public Navigator getNavigator() {
         return new DocumentNavigator();
     }

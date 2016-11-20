@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_1_0;
+import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_1_0_COMPATIBILITY;
+import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_2_0;
+
 import java.util.List;
 
 import net.sourceforge.pmd.PropertySource;
@@ -15,10 +19,6 @@ import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.util.StringUtil;
-
-import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_1_0;
-import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_1_0_COMPATIBILITY;
-import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_2_0;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
@@ -55,6 +55,7 @@ public class XPathRule extends AbstractRule {
     /**
      * Apply the rule to all nodes.
      */
+    @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
         for (Node node : nodes) {
             evaluate(node, ctx);
@@ -116,6 +117,7 @@ public class XPathRule extends AbstractRule {
     /**
      * @see PropertySource#dysfunctionReason()
      */
+    @Override
     public String dysfunctionReason() {
         return hasXPathExpression() ? null : "Missing xPath expression";
     }

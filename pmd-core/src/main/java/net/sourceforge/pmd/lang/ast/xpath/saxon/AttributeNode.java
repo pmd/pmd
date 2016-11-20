@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.trans.XPathException;
@@ -13,7 +15,6 @@ import net.sf.saxon.value.EmptySequence;
 import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.Value;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 /**
  * A Saxon OM Attribute node for an AST Node Attribute.

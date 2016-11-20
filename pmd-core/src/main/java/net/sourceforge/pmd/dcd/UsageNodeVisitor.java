@@ -110,6 +110,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
 
     private final Options options = new Options();
 
+    @Override
     public Object visit(UsageGraph usageGraph, Object data) {
         System.out.println("----------------------------------------");
         super.visit(usageGraph, data);
@@ -117,6 +118,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ClassNode classNode, Object data) {
         boolean log = true;
         if (options.isIgnoreClassAnonymous() && classNode.getType().isAnonymousClass()) {
@@ -131,6 +133,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
         }
     }
 
+    @Override
     public Object visit(FieldNode fieldNode, Object data) {
         if (fieldNode.getUsers().isEmpty()) {
             boolean log = true;
@@ -152,6 +155,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
         return super.visit(fieldNode, data);
     }
 
+    @Override
     public Object visit(ConstructorNode constructorNode, Object data) {
         if (constructorNode.getUsers().isEmpty()) {
             boolean log = true;
@@ -190,6 +194,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
                 && method.getParameterTypes()[0].getComponentType().equals(java.lang.String.class);
     }
 
+    @Override
     public Object visit(MethodNode methodNode, Object data) {
         if (methodNode.getUsers().isEmpty()) {
             boolean log = true;

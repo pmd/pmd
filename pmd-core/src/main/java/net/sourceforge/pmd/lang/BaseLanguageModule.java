@@ -84,6 +84,7 @@ public abstract class BaseLanguageModule implements Language {
         return versions != null && versions.containsKey(version);
     }
 
+    @Override
     public LanguageVersion getVersion(String versionName) {
         if (versions != null) {
             return versions.get(versionName);
@@ -108,10 +109,12 @@ public abstract class BaseLanguageModule implements Language {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (!(obj instanceof BaseLanguageModule))
+        }
+        if (!(obj instanceof BaseLanguageModule)) {
             return false;
+        }
         BaseLanguageModule other = (BaseLanguageModule) obj;
         return name.equals(other.name);
     }

@@ -41,7 +41,7 @@ public class SimpleRenderer implements Renderer {
         }
 
         rpt.append(PMD.EOL); // add a line to separate the source from the desc
-                             // above
+        // above
 
         String source = match.getSourceCodeSlice();
 
@@ -60,6 +60,7 @@ public class SimpleRenderer implements Renderer {
         rpt.append(source).append(PMD.EOL);
     }
 
+    @Override
     public String render(Iterator<Match> matches) {
 
         StringBuilder rpt = new StringBuilder(300);

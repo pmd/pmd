@@ -25,7 +25,7 @@ public class RuleChain {
     /**
      * Add all Rules from the given RuleSet which want to participate in the
      * RuleChain.
-     * 
+     *
      * @param ruleSet
      *            The RuleSet to add Rules from.
      */
@@ -37,7 +37,7 @@ public class RuleChain {
 
     /**
      * Add the given Rule if it wants to participate in the RuleChain.
-     * 
+     *
      * @param ruleSet
      *            The RuleSet to which the rule belongs.
      * @param rule
@@ -53,7 +53,7 @@ public class RuleChain {
     /**
      * Apply the RuleChain to the given Nodes using the given RuleContext, for
      * those rules using the given Language.
-     * 
+     *
      * @param nodes
      *            The Nodes.
      * @param ctx

@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.util.designer;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for {@link Designer}

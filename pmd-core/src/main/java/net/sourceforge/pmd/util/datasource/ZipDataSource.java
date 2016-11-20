@@ -27,10 +27,12 @@ public class ZipDataSource implements DataSource {
         this.zipEntry = zipEntry;
     }
 
+    @Override
     public InputStream getInputStream() throws IOException {
         return zipFile.getInputStream(zipEntry);
     }
 
+    @Override
     public String getNiceFileName(boolean shortNames, String inputFileName) {
         // FIXME: this could probably be done better
         return zipFile.getName() + ":" + zipEntry.getName();

@@ -40,14 +40,14 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the Language of this Rule.
-     * 
+     *
      * @return the language
      */
     Language getLanguage();
 
     /**
      * Set the Language of this Rule.
-     * 
+     *
      * @param language
      *            the language
      */
@@ -56,14 +56,14 @@ public interface Rule extends PropertySource {
     /**
      * Get the minimum LanguageVersion to which this Rule applies. If this value
      * is <code>null</code> it indicates there is no minimum bound.
-     * 
+     *
      * @return the minimum language version
      */
     LanguageVersion getMinimumLanguageVersion();
 
     /**
      * Set the minimum LanguageVersion to which this Rule applies.
-     * 
+     *
      * @param minimumLanguageVersion
      *            the minimum language version
      */
@@ -72,14 +72,14 @@ public interface Rule extends PropertySource {
     /**
      * Get the maximum LanguageVersion to which this Rule applies. If this value
      * is <code>null</code> it indicates there is no maximum bound.
-     * 
+     *
      * @return the maximum language version
      */
     LanguageVersion getMaximumLanguageVersion();
 
     /**
      * Set the maximum LanguageVersion to which this Rule applies.
-     * 
+     *
      * @param maximumLanguageVersion
      *            the maximum language version
      */
@@ -94,14 +94,14 @@ public interface Rule extends PropertySource {
      * <li>or, has been renamed/moved and the old name will be completely
      * removed in a future version of PMD</li>
      * </ul>
-     * 
+     *
      * @return <code>true</code> if this rule is deprecated
      */
     boolean isDeprecated();
 
     /**
      * Sets whether this Rule is deprecated.
-     * 
+     *
      * @param deprecated
      *            whether this rule is deprecated
      */
@@ -109,14 +109,14 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the name of this Rule.
-     * 
+     *
      * @return the name
      */
     String getName();
 
     /**
      * Set the name of this Rule.
-     * 
+     *
      * @param name
      *            the name
      */
@@ -125,14 +125,14 @@ public interface Rule extends PropertySource {
     /**
      * Get the version of PMD in which this Rule was added. Return
      * <code>null</code> if not applicable.
-     * 
+     *
      * @return version of PMD since when this rule was added
      */
     String getSince();
 
     /**
      * Set the version of PMD in which this Rule was added.
-     * 
+     *
      * @param since
      *            the version of PMD since when this rule was added
      */
@@ -140,14 +140,14 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the implementation class of this Rule.
-     * 
+     *
      * @return the implementation class name of this rule.
      */
     String getRuleClass();
 
     /**
      * Set the class of this Rule.
-     * 
+     *
      * @param ruleClass
      *            the class name of this rule.
      */
@@ -155,7 +155,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the name of the RuleSet containing this Rule.
-     * 
+     *
      * @return the name of th ruleset containing this rule.
      * @see RuleSet
      */
@@ -163,7 +163,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Set the name of the RuleSet containing this Rule.
-     * 
+     *
      * @param name
      *            the name of the ruleset containing this rule.
      * @see RuleSet
@@ -172,14 +172,14 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the message to show when this Rule identifies a violation.
-     * 
+     *
      * @return the message to show for a violation.
      */
     String getMessage();
 
     /**
      * Set the message to show when this Rule identifies a violation.
-     * 
+     *
      * @param message
      *            the message to show for a violation.
      */
@@ -187,14 +187,14 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the description of this Rule.
-     * 
+     *
      * @return the description
      */
     String getDescription();
 
     /**
      * Set the description of this Rule.
-     * 
+     *
      * @param description
      *            the description
      */
@@ -202,14 +202,14 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the list of examples for this Rule.
-     * 
+     *
      * @return the list of examples for this rule.
      */
     List<String> getExamples();
 
     /**
      * Add a single example for this Rule.
-     * 
+     *
      * @param example
      *            a single example to add
      */
@@ -217,14 +217,14 @@ public interface Rule extends PropertySource {
 
     /**
      * Get a URL for external information about this Rule.
-     * 
+     *
      * @return the URL for external information about this rule.
      */
     String getExternalInfoUrl();
 
     /**
      * Set a URL for external information about this Rule.
-     * 
+     *
      * @param externalInfoUrl
      *            the URL for external information about this rule.
      */
@@ -232,14 +232,14 @@ public interface Rule extends PropertySource {
 
     /**
      * Get the priority of this Rule.
-     * 
+     *
      * @return the priority
      */
     RulePriority getPriority();
 
     /**
      * Set the priority of this Rule.
-     * 
+     *
      * @param priority
      *            the priority
      */
@@ -250,7 +250,7 @@ public interface Rule extends PropertySource {
      * configure the {@link net.sourceforge.pmd.lang.Parser} to create an AST in
      * the form the Rule is expecting. Because ParserOptions are mutable, a Rule
      * should return a new instance on each call.
-     * 
+     *
      * @return the parser options
      */
     ParserOptions getParserOptions();
@@ -263,7 +263,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Gets whether this Rule uses Data Flow Analysis.
-     * 
+     *
      * @return <code>true</code> if Data Flow Analysis is used.
      */
     // FUTURE Use JavaBean conventions for boolean attributes
@@ -277,7 +277,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Gets whether this Rule uses Type Resolution.
-     * 
+     *
      * @return <code>true</code> if Type Resolution is used.
      */
     // FUTURE Use JavaBean conventions for boolean attributes
@@ -285,7 +285,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Gets whether this Rule uses the RuleChain.
-     * 
+     *
      * @return <code>true</code> if RuleChain is used.
      */
     // FUTURE Use JavaBean conventions for boolean attributes
@@ -294,14 +294,14 @@ public interface Rule extends PropertySource {
     /**
      * Gets the collection of AST node names visited by the Rule on the
      * RuleChain.
-     * 
+     *
      * @return the list of AST node names
      */
     List<String> getRuleChainVisits();
 
     /**
      * Adds an AST node by class to be visited by the Rule on the RuleChain.
-     * 
+     *
      * @param nodeClass
      *            the AST node to add to the RuleChain visit list
      */
@@ -309,7 +309,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Adds an AST node by name to be visited by the Rule on the RuleChain.
-     * 
+     *
      * @param astNodeName
      *            the AST node to add to the RuleChain visit list as string
      */
@@ -317,7 +317,7 @@ public interface Rule extends PropertySource {
 
     /**
      * Start processing. Called once, before apply() is first called.
-     * 
+     *
      * @param ctx
      *            the rule context
      */
@@ -326,7 +326,7 @@ public interface Rule extends PropertySource {
     /**
      * Apply this rule to the given collection of nodes, using the given
      * context.
-     * 
+     *
      * @param nodes
      *            the nodes
      * @param ctx
@@ -336,7 +336,7 @@ public interface Rule extends PropertySource {
 
     /**
      * End processing. Called once, after apply() is last called.
-     * 
+     *
      * @param ctx
      *            the rule context
      */

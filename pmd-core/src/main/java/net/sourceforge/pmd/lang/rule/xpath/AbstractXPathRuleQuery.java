@@ -40,6 +40,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setXPath(String xpath) {
         this.xpath = xpath;
     }
@@ -47,6 +48,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setVersion(String version) throws UnsupportedOperationException {
         if (!isSupportedVersion(version)) {
             throw new UnsupportedOperationException(
@@ -58,7 +60,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * Subclasses should implement to indicate whether an XPath version is
      * supported.
-     * 
+     *
      * @param version
      *            The XPath version.
      * @return <code>true</code> if the XPath version is supported,
@@ -69,6 +71,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setProperties(Map<PropertyDescriptor<?>, Object> properties) {
         this.properties = properties;
     }
@@ -76,6 +79,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getRuleChainVisits() {
         return ruleChainVisits;
     }
@@ -83,5 +87,6 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract List<Node> evaluate(Node node, RuleContext data);
 }

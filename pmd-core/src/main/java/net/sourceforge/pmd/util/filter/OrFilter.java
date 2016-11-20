@@ -6,7 +6,7 @@ package net.sourceforge.pmd.util.filter;
 
 /**
  * A logical OR of a list of Filters. This implementation is short circuiting.
- * 
+ *
  * @param <T>
  *            The underlying type on which the filter applies.
  */
@@ -20,6 +20,7 @@ public class OrFilter<T> extends AbstractCompoundFilter<T> {
         super(filters);
     }
 
+    @Override
     public boolean filter(T obj) {
         boolean match = false;
         for (Filter<T> filter : filters) {

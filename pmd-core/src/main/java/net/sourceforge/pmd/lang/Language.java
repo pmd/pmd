@@ -33,7 +33,7 @@ public interface Language extends Comparable<Language> {
     /**
      * Get the full name of this Language. This is generally the name of this
      * Language without the use of acronyms.
-     * 
+     *
      * @return The full name of this Language.
      */
     String getName();
@@ -41,21 +41,21 @@ public interface Language extends Comparable<Language> {
     /**
      * Get the short name of this Language. This is the commonly used short form
      * of this Language's name, perhaps an acronym.
-     * 
+     *
      * @return The short name of this Language.
      */
     String getShortName();
 
     /**
      * Get the terse name of this Language. This is used for Rule configuration.
-     * 
+     *
      * @return The terse name of this Language.
      */
     String getTerseName();
 
     /**
      * Get the list of file extensions associated with this Language.
-     * 
+     *
      * @return List of file extensions.
      */
     List<String> getExtensions();
@@ -63,7 +63,7 @@ public interface Language extends Comparable<Language> {
     /**
      * Returns whether the given Language handles the given file extension. The
      * comparison is done ignoring case.
-     * 
+     *
      * @param extension
      *            A file extension.
      * @return <code>true</code> if this Language handles this extension,
@@ -74,7 +74,7 @@ public interface Language extends Comparable<Language> {
     /**
      * Get the RuleChainVisitor implementation class used when visiting the AST
      * structure for this Rules for this Language.
-     * 
+     *
      * @return The RuleChainVisitor class.
      * @see net.sourceforge.pmd.lang.rule.RuleChainVisitor
      */
@@ -82,7 +82,7 @@ public interface Language extends Comparable<Language> {
 
     /**
      * Gets the list of supported LanguageVersion for this Language.
-     * 
+     *
      * @return The LanguageVersion for this Language.
      */
     List<LanguageVersion> getVersions();
@@ -91,7 +91,7 @@ public interface Language extends Comparable<Language> {
 
     /**
      * Get the LanguageVersion for the version string from this Language.
-     * 
+     *
      * @param version
      *            The language version string.
      * @return The corresponding LanguageVersion, <code>null</code> if the
@@ -103,7 +103,7 @@ public interface Language extends Comparable<Language> {
      * Get the current PMD defined default LanguageVersion for this Language.
      * This is an arbitrary choice made by the PMD product, and can change
      * between PMD releases. Every Language has a default version.
-     * 
+     *
      * @return The current default LanguageVersion for this Language.
      */
     LanguageVersion getDefaultVersion();

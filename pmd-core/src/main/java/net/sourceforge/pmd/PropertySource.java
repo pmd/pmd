@@ -11,14 +11,14 @@ import java.util.Set;
 /**
  * Any entity that manages a list of properties is a {@link PropertySource}.
  * These are e.g. Rules and Renderers.
- * 
+ *
  * @author Brian Remedios
  */
 public interface PropertySource {
 
     /**
      * Define a new property via a PropertyDescriptor.
-     * 
+     *
      * @param propertyDescriptor
      *            The property descriptor.
      * @throws IllegalArgumentException
@@ -28,7 +28,7 @@ public interface PropertySource {
 
     /**
      * Get the PropertyDescriptor for the given property name.
-     * 
+     *
      * @param name
      *            The name of the property.
      * @return The PropertyDescriptor for the named property, <code>null</code>
@@ -39,14 +39,14 @@ public interface PropertySource {
     /**
      * Get the PropertyDescriptors for all defined properties. The properties
      * are returned sorted by UI order.
-     * 
+     *
      * @return The PropertyDescriptors in UI order.
      */
     List<PropertyDescriptor<?>> getPropertyDescriptors();
 
     /**
      * Get the typed value for the given property.
-     * 
+     *
      * @param <T>
      *            The underlying type of the property descriptor.
      * @param propertyDescriptor
@@ -57,7 +57,7 @@ public interface PropertySource {
 
     /**
      * Set the property value specified (will be type-checked)
-     * 
+     *
      * @param <T>
      *            The underlying type of the property descriptor.
      * @param propertyDescriptor
@@ -70,14 +70,14 @@ public interface PropertySource {
     /**
      * Returns all the current property values for the receiver or an immutable
      * empty map if none are specified.
-     * 
+     *
      * @return all current property values or a empty map.
      */
     Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor();
 
     /**
      * Returns whether this Rule has the specified PropertyDescriptor.
-     * 
+     *
      * @param descriptor
      *            The PropertyDescriptor for which to check.
      * @return boolean <code>true</code> if the descriptor is present,
@@ -87,7 +87,7 @@ public interface PropertySource {
 
     /**
      * Returns whether this Rule uses default values for properties.
-     * 
+     *
      * @return boolean <code>true</code> if the properties all have default
      *         values, <code>false</code> otherwise.
      */
@@ -96,7 +96,7 @@ public interface PropertySource {
     /**
      * Clears out any user-specified value for the property allowing it to use
      * the default value in the descriptor.
-     * 
+     *
      * @param desc
      *            the property to clear out
      */
@@ -106,7 +106,7 @@ public interface PropertySource {
      * Return the properties that are effectively ignored due to the
      * configuration of the rule and values held by other properties. This can
      * be used to disable corresponding widgets in a UI.
-     * 
+     *
      * @return the properties that are ignored
      */
     Set<PropertyDescriptor<?>> ignoredProperties();
@@ -115,7 +115,7 @@ public interface PropertySource {
      * Returns a description of why the receiver may be dysfunctional. Usually
      * due to missing property values or some kind of conflict between values.
      * Returns null if the receiver is ok.
-     * 
+     *
      * @return String
      */
     String dysfunctionReason();

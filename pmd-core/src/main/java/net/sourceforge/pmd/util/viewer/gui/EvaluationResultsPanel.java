@@ -50,6 +50,7 @@ public class EvaluationResultsPanel extends JPanel implements ViewerModelListene
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         list.addListSelectionListener(new ListSelectionListener() {
+            @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (list.getSelectedValue() != null) {
                     model.selectNode((Node) list.getSelectedValue(), EvaluationResultsPanel.this);
@@ -63,6 +64,7 @@ public class EvaluationResultsPanel extends JPanel implements ViewerModelListene
     /**
      * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
+    @Override
     @SuppressWarnings("PMD.UseArrayListInsteadOfVector")
     public void viewerModelChanged(ViewerModelEvent e) {
         switch (e.getReason()) {

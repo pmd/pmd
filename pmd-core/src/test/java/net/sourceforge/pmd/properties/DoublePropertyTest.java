@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
  * ability to catch creation errors (illegal args), flag out-of-range test
  * values, and serialize/deserialize groups of double values onto/from a string
  * buffer.
- * 
+ *
  * @author Brian Remedios
  */
 public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
@@ -25,48 +25,55 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 
     /**
      * Creates and returns (count) number of legal Double values
-     * 
+     *
      * @param count
      *            int
      * @return Object
      */
+    @Override
     protected Object createValue(int count) {
 
-        if (count == 1)
+        if (count == 1) {
             return Double.valueOf(randomDouble(MIN, MAX));
+        }
 
         Double[] values = new Double[count];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = (Double) createValue(1);
+        }
         return values;
     }
 
     /**
      * Creates and returns (count) number of out-of-range values
-     * 
+     *
      * @param count
      *            int
      * @return Object
      */
+    @Override
     protected Object createBadValue(int count) {
 
-        if (count == 1)
+        if (count == 1) {
             return Double.valueOf(
                     randomBool() ? randomDouble(MIN - SHIFT, MIN - 0.01) : randomDouble(MAX + 0.01, MAX + SHIFT));
+        }
 
         Double[] values = new Double[count];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = (Double) createBadValue(1);
+        }
         return values;
     }
 
     /**
      * Creates and returns a property with a (maxCount) value cardinality.
-     * 
+     *
      * @param multiValue
      *            boolean
      * @return PropertyDescriptor
      */
+    @Override
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
         return multiValue
@@ -77,11 +84,12 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 
     /**
      * Attempts to create a property with invalid constructor arguments.
-     * 
+     *
      * @param multiValue
      *            boolean
      * @return PropertyDescriptor
      */
+    @Override
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
         return multiValue

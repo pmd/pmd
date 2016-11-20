@@ -14,7 +14,7 @@ import net.sourceforge.pmd.RuleViolation;
 
 /**
  * Renderer to another HTML format.
- * 
+ *
  * @author Vladimir
  */
 public class VBHTMLRenderer extends AbstractIncrementingRenderer {
@@ -25,6 +25,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
         super(NAME, "Vladimir Bossicard HTML format.");
     }
 
+    @Override
     public String defaultFileExtension() {
         return "vb.html";
     }

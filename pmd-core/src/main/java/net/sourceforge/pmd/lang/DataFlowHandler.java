@@ -12,10 +12,12 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 public interface DataFlowHandler {
 
     DataFlowHandler DUMMY = new DataFlowHandler() {
+        @Override
         public DataFlowNode createDataFlowNode(List<DataFlowNode> dataFlow, Node node) {
             return null;
         }
 
+        @Override
         public Class<? extends Node> getLabelStatementNodeClass() {
             return null;
         }

@@ -8,7 +8,7 @@ import java.io.InputStream;
 
 /**
  * Helper class for retrieving resources relative to the installation.
- * 
+ *
  * @author Stuart Turton
  */
 public class ResourceLoader {

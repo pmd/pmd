@@ -13,7 +13,7 @@ import java.util.List;
  * Represents a Class Member in a UsageGraph.
  */
 public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
-        implements NodeVisitorAcceptor, Comparable<S> {
+    implements NodeVisitorAcceptor, Comparable<S> {
     protected final ClassNode classNode;
 
     protected final String name;
@@ -32,6 +32,7 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
         this.desc = desc;
     }
 
+    @Override
     public Object accept(NodeVisitor visitor, Object data) {
         visitor.visitUses(this, data);
         visitor.visitUsers(this, data);
@@ -78,6 +79,7 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
         return users != null ? users : Collections.<MemberNode>emptyList();
     }
 
+    @Override
     public String toString() {
         return name + " " + desc;
     }
@@ -85,8 +87,6 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
     public String toStringLong() {
         return getMember().toString();
     }
-
-    public abstract boolean equals(Object that);
 
     @SuppressWarnings("PMD.SuspiciousEqualsMethodName")
     public boolean equals(S that) {
@@ -97,7 +97,47 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member>
         return this.name.equals(name) && this.desc.equals(desc);
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
     public int hashCode() {
-        return name.hashCode() + desc.hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((desc == null) ? 0 : desc.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MemberNode other = (MemberNode) obj;
+        if (desc == null) {
+            if (other.desc != null) {
+                return false;
+            }
+        } else if (!desc.equals(other.desc)) {
+            return false;
+        }
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        return true;
     }
 }

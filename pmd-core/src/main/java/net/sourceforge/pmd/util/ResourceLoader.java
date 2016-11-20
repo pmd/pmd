@@ -18,6 +18,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 public final class ResourceLoader {
 
     public static final int TIMEOUT;
+
     static {
         int timeoutProperty = 5000;
         try {
@@ -39,7 +40,7 @@ public final class ResourceLoader {
      * Method to find a file, first by finding it as a file (either by the
      * absolute or relative path), then as a URL, and then finally seeing if it
      * is on the classpath.
-     * 
+     *
      * @param name
      *            String
      * @return InputStream
@@ -57,7 +58,7 @@ public final class ResourceLoader {
     /**
      * Uses the ClassLoader passed in to attempt to load the resource if it's
      * not a File or a URL
-     * 
+     *
      * @param name
      *            String
      * @param loader

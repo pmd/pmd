@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -12,15 +14,13 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.SourceCode.FileCodeLoader;
 
-import static org.junit.Assert.assertEquals;
-
 public class SourceCodeTest {
     private static final String BASE_RESOURCE_PATH = "src/test/resources/net/sourceforge/pmd/cpd/files/";
 
     private static final String SAMPLE_CODE = "Line 1\n" + "Line 2\n" + "Line 3\n" + "Line 4\n";
 
     @Test
-    public void testSimple() throws Throwable {
+    public void testSimple() throws Exception {
         Tokenizer tokenizer = new AbstractTokenizer() {
             {
                 this.stringToken = new ArrayList<>();

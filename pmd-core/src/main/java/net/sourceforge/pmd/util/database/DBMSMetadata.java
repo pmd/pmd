@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 /**
  * Wrap JDBC connection for use by PMD: {@link DBURI} parameters specify the
  * source code to be passed to PMD.
- * 
+ *
  * @author sturton
  */
 public class DBMSMetadata {
@@ -42,7 +42,7 @@ public class DBMSMetadata {
     /**
      * Optional DBType property specifying a query to fetch the Source Objects
      * from the database.
-     * 
+     *
      * <p>
      * If the DBType lacks this property, then the standard
      * DatabaseMetaData.getProcedures method is used.
@@ -53,7 +53,7 @@ public class DBMSMetadata {
     /**
      * Essential DBType property specifying a CallableStatement to retrieve the
      * Source Object's code from the database.
-     * 
+     *
      * <p>
      * <b>If the DBType lacks this property, there is no DatabaseMetaData method
      * to fallback to</b>.
@@ -89,7 +89,7 @@ public class DBMSMetadata {
     /**
      * {@link java.sql.Types} value representing the type returned by
      * {@link callableStatement}
-     * 
+     *
      * <b>Currently only java.sql.Types.String and java.sql.Types.Clob are
      * supported</b>
      */
@@ -98,7 +98,7 @@ public class DBMSMetadata {
     /* constructors */
     /**
      * Minimal constructor
-     * 
+     *
      * @param c
      *            JDBC Connection
      * @throws SQLException
@@ -110,7 +110,7 @@ public class DBMSMetadata {
     /**
      * Define database connection and source code to retrieve with explicit
      * database username and password.
-     * 
+     *
      * @param user
      *            Database username
      * @param password
@@ -144,7 +144,7 @@ public class DBMSMetadata {
     /**
      * Define database connection and source code to retrieve with database
      * properties.
-     * 
+     *
      * @param properties
      *            database settings such as database username, password
      * @param dbURI
@@ -177,11 +177,11 @@ public class DBMSMetadata {
 
     /**
      * Define database connection and source code to retrieve.
-     * 
+     *
      * <p>
      * This constructor is reliant on database username and password embedded in
      * the JDBC URL or defaulted from the {@link DBURI}'s {@link DriverType}.
-     * 
+     *
      * @param user
      *            Database username
      * @param password
@@ -212,7 +212,7 @@ public class DBMSMetadata {
 
     /**
      * Return JDBC Connection for direct JDBC access to the specified database.
-     * 
+     *
      * @return I=JDBC Connection
      * @throws SQLException
      */
@@ -244,7 +244,7 @@ public class DBMSMetadata {
 
     /**
      * Return source code text from the database.
-     * 
+     *
      * @param source
      *            object
      * @return source code
@@ -257,7 +257,7 @@ public class DBMSMetadata {
 
     /**
      * return source code text
-     * 
+     *
      * @param objectType
      * @param name
      *            Source Code name
@@ -299,7 +299,7 @@ public class DBMSMetadata {
 
     /**
      * Return all source code objects associated with any associated DBURI.
-     * 
+     *
      * @return
      */
     public List<SourceObject> getSourceObjectList() {
@@ -317,12 +317,12 @@ public class DBMSMetadata {
     /**
      * Return all source code objects associated with the specified languages,
      * schemas, source code types and source code names.
-     * 
+     *
      * <p>
      * Each parameter may be null and the appropriate field from any related
      * DBURI is assigned, defaulting to the normal SQL wildcard expression
      * ("%"). </.>
-     * 
+     *
      * @param languages
      *            Optional list of languages to search for
      * @param schemas
@@ -346,9 +346,9 @@ public class DBMSMetadata {
 
         /*
          * Assign each search list to the first
-         * 
+         *
          * explicit parameter dburi field wildcard list
-         * 
+         *
          */
         if (null == searchLanguages) {
             List<String> dbURIList = (null == dburi) ? null : dburi.getLanguagesList();
@@ -447,8 +447,8 @@ public class DBMSMetadata {
                         }
                     }
                 }
-            } else // Use standard DatabaseMetaData interface
-            {
+            } else {
+                // Use standard DatabaseMetaData interface
                 LOGGER.fine(
                         "Have dbUri - no returnSourceCodeObjectsStatement, reverting to DatabaseMetaData.getProcedures(...)");
 
@@ -477,7 +477,7 @@ public class DBMSMetadata {
                          * procedureReturnsResult - Returns a return value
                          * SPECIFIC_NAME String => The name which uniquely
                          * identifies this procedure within its schema.
-                         * 
+                         *
                          * Oracle getProcedures actually returns these 8
                          * columns:- ResultSet "Matched Procedures" has 8
                          * columns and contains ...

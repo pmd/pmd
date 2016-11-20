@@ -60,10 +60,12 @@ public class SourceCodePanel extends JPanel implements ViewerModelListener {
     /**
      * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
+    @Override
     public void viewerModelChanged(ViewerModelEvent e) {
         if (e.getReason() == ViewerModelEvent.NODE_SELECTED) {
             final Node node = (Node) e.getParameter();
             SwingUtilities.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     try {
                         sourceCodeArea.getHighlighter().removeAllHighlights();

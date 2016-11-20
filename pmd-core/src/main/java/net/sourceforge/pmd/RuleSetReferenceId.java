@@ -24,27 +24,27 @@ import net.sourceforge.pmd.util.StringUtil;
  * RuleSet XML. The RuleSet reference can refer to either an external RuleSet or
  * the current RuleSet when used as a Rule 'ref' attribute value. An individual
  * Rule in the RuleSet can be indicated.
- * 
+ *
  * For an external RuleSet, referring to the entire RuleSet, the format is
  * <i>ruleSetName</i>, where the RuleSet name is either a resource file path to
  * a RuleSet that ends with <code>'.xml'</code>.</li>, or a simple RuleSet name.
- * 
+ *
  * A simple RuleSet name, is one which contains no path separators, and either
  * contains a '-' or is entirely numeric release number. A simple name of the
  * form <code>[language]-[name]</code> is short for the full RuleSet name
  * <code>rulesets/[language]/[name].xml</code>. A numeric release simple name of
  * the form <code>[release]</code> is short for the full PMD Release RuleSet
  * name <code>rulesets/releases/[release].xml</code>.
- * 
+ *
  * For an external RuleSet, referring to a single Rule, the format is
  * <i>ruleSetName/ruleName</i>, where the RuleSet name is as described above. A
  * Rule with the <i>ruleName</i> should exist in this external RuleSet.
- * 
+ *
  * For the current RuleSet, the format is <i>ruleName</i>, where the Rule name
  * is not RuleSet name (i.e. contains no path separators, '-' or '.xml' in it,
  * and is not all numeric). A Rule with the <i>ruleName</i> should exist in the
  * current RuleSet.
- * 
+ *
  * <table>
  * <caption>Examples</caption> <thead>
  * <tr>
@@ -90,7 +90,7 @@ public class RuleSetReferenceId {
 
     /**
      * Construct a RuleSetReferenceId for the given single ID string.
-     * 
+     *
      * @param id
      *            The id string.
      * @throws IllegalArgumentException
@@ -106,7 +106,7 @@ public class RuleSetReferenceId {
      * external RuleSetReferenceId is given, the ID must refer to a non-external
      * Rule. The external RuleSetReferenceId will be responsible for producing
      * the InputStream containing the Rule.
-     * 
+     *
      * @param id
      *            The id string.
      * @param externalRuleSetReferenceId
@@ -219,7 +219,7 @@ public class RuleSetReferenceId {
 
     /**
      * Tries to load the given ruleset.
-     * 
+     *
      * @param name
      *            the ruleset name
      * @return <code>true</code> if the ruleset could be loaded,
@@ -276,7 +276,7 @@ public class RuleSetReferenceId {
      * Extracts the rule name out of a ruleset path. E.g. for
      * "/my/ruleset.xml/MyRule" it would return "MyRule". If no single rule is
      * specified, <code>null</code> is returned.
-     * 
+     *
      * @param rulesetName
      *            the full rule set path
      * @return the rule name or <code>null</code>.
@@ -334,7 +334,7 @@ public class RuleSetReferenceId {
     /**
      * Parse a String comma separated list of RuleSet reference IDs into a List
      * of RuleReferenceId instances.
-     * 
+     *
      * @param referenceString
      *            A comma separated list of RuleSet reference IDs.
      * @return The corresponding List of RuleSetReferenceId instances.
@@ -356,7 +356,7 @@ public class RuleSetReferenceId {
 
     /**
      * Is this an external RuleSet reference?
-     * 
+     *
      * @return <code>true</code> if this is an external reference,
      *         <code>false</code> otherwise.
      */
@@ -366,7 +366,7 @@ public class RuleSetReferenceId {
 
     /**
      * Is this a reference to all Rules in a RuleSet, or a single Rule?
-     * 
+     *
      * @return <code>true</code> if this is a reference to all Rules,
      *         <code>false</code> otherwise.
      */
@@ -376,7 +376,7 @@ public class RuleSetReferenceId {
 
     /**
      * Get the RuleSet file name.
-     * 
+     *
      * @return The RuleSet file name if this is an external reference,
      *         <code>null</code> otherwise.
      */
@@ -386,7 +386,7 @@ public class RuleSetReferenceId {
 
     /**
      * Get the Rule name.
-     * 
+     *
      * @return The Rule name. The Rule name.
      */
     public String getRuleName() {
@@ -423,12 +423,13 @@ public class RuleSetReferenceId {
 
     /**
      * Return the String form of this Rule reference.
-     * 
+     *
      * @return Return the String form of this Rule reference, which is
      *         <i>ruleSetFileName</i> for all Rule external references,
      *         <i>ruleSetFileName/ruleName</i>, for a single Rule external
      *         references, or <i>ruleName</i> otherwise.
      */
+    @Override
     public String toString() {
         if (ruleSetFileName != null) {
             if (allRules) {

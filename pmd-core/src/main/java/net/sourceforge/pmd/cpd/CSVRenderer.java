@@ -35,6 +35,7 @@ public class CSVRenderer implements Renderer {
         this.lineCountPerFile = lineCountPerFile;
     }
 
+    @Override
     public String render(Iterator<Match> matches) {
         StringBuilder csv = new StringBuilder(1000);
 

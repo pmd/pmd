@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * 
+ *
  * @author Brian Remedios
  * @param <T>
  */
@@ -13,7 +13,7 @@ public abstract class AbstractMultiNumericProperty<T> extends AbstractNumericPro
 
     /**
      * Constructor for AbstractMultiNumericProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -44,6 +44,7 @@ public abstract class AbstractMultiNumericProperty<T> extends AbstractNumericPro
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return asDelimitedString(defaultValue());
     }

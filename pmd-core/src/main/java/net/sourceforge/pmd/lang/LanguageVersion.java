@@ -34,7 +34,7 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
     /**
      * Get the name of this LanguageVersion. This is Language name appended with
      * the LanguageVersion version if not an empty String.
-     * 
+     *
      * @return The name of this LanguageVersion.
      */
     public String getName() {
@@ -44,7 +44,7 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
     /**
      * Get the short name of this LanguageVersion. This is Language short name
      * appended with the LanguageVersion version if not an empty String.
-     * 
+     *
      * @return The short name of this LanguageVersion.
      */
     public String getShortName() {
@@ -54,7 +54,7 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
     /**
      * Get the terse name of this LanguageVersion. This is Language terse name
      * appended with the LanguageVersion version if not an empty String.
-     * 
+     *
      * @return The terse name of this LanguageVersion.
      */
     public String getTerseName() {

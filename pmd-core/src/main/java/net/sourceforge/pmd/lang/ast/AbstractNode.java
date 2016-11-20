@@ -395,7 +395,7 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * 
+     *
      * @param types
      * @return boolean
      */

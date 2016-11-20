@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a property type that support float property values within an upper
  * and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class FloatMultiProperty extends AbstractMultiNumericProperty<Float[]> {
@@ -20,6 +20,7 @@ public class FloatMultiProperty extends AbstractMultiNumericProperty<Float[]> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FloatMultiProperty>(
             Float[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public FloatMultiProperty createWith(Map<String, String> valuesById) {
             String[] minMax = minMaxFrom(valuesById);
             char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
@@ -32,7 +33,7 @@ public class FloatMultiProperty extends AbstractMultiNumericProperty<Float[]> {
     /**
      * Constructor for FloatProperty that configures it to accept multiple
      * values and any number of defaults.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -56,28 +57,31 @@ public class FloatMultiProperty extends AbstractMultiNumericProperty<Float[]> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Float[]> type() {
         return Float[].class;
     }
 
     /**
      * Creates an property value of the right type from a raw string.
-     * 
+     *
      * @param value
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return Float.valueOf(value);
     }
 
     /**
      * Returns an array of the correct type for the receiver.
-     * 
+     *
      * @param size
      *            int
      * @return Object[]
      */
+    @Override
     protected Object[] arrayFor(int size) {
         return new Float[size];
     }

@@ -26,6 +26,7 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<MethodMultiProperty>(
             Method[].class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public MethodMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new MethodMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
@@ -148,6 +149,7 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Method[]> type() {
         return Method[].class;
     }
@@ -159,6 +161,7 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Method[] valueFrom(String valueString) throws IllegalArgumentException {
         return methodsFrom(valueString);
     }

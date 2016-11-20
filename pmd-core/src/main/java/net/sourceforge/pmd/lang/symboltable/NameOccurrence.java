@@ -11,14 +11,14 @@ package net.sourceforge.pmd.lang.symboltable;
 public interface NameOccurrence {
     /**
      * Gets the location where the usage occurred.
-     * 
+     *
      * @return the node
      */
     ScopedNode getLocation();
 
     /**
      * Gets the image of the used declaration, such as the variable name.
-     * 
+     *
      * @return the image
      */
     String getImage();

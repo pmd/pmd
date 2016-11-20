@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 
-import static org.junit.Assert.assertEquals;
-
 public class AnyTokenizerTest {
 
     @Test
-    public void testMultiLineMacros() throws Throwable {
+    public void testMultiLineMacros() {
         AnyTokenizer tokenizer = new AnyTokenizer();
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(TEST1));
         Tokens tokens = new Tokens();

@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 /**
  * @author Philippe T'Seyen - original implementation
  * @author Romain Pelisse - javax.xml implementation
- * 
+ *
  */
 public final class XMLRenderer implements Renderer {
 
@@ -38,7 +38,7 @@ public final class XMLRenderer implements Renderer {
 
     /**
      * Creates a XML Renderer with a specific output encoding.
-     * 
+     *
      * @param encoding
      *            the encoding to use or null. If null, default (platform
      *            dependent) encoding is used.
@@ -85,6 +85,7 @@ public final class XMLRenderer implements Renderer {
         }
     }
 
+    @Override
     public String render(Iterator<Match> matches) {
         Document doc = createDocument();
         Element root = doc.createElement("pmd-cpd");

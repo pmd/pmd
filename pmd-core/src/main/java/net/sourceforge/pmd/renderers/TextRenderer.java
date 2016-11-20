@@ -23,6 +23,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
         super(NAME, "Text format.");
     }
 
+    @Override
     public String defaultFileExtension() {
         return "txt";
     }

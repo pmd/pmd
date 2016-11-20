@@ -5,6 +5,7 @@ import net.sourceforge.pmd.PMD;
 
 public class IDEAJRendererTest extends AbstractRendererTst {
 
+    @Override
     public Renderer getRenderer() {
         Renderer result = new IDEAJRenderer();
         result.setProperty(IDEAJRenderer.SOURCE_PATH, "");
@@ -13,14 +14,17 @@ public class IDEAJRendererTest extends AbstractRendererTst {
         return result;
     }
 
+    @Override
     public String getExpected() {
         return "blah" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL;
     }
 
+    @Override
     public String getExpectedEmpty() {
         return "";
     }
 
+    @Override
     public String getExpectedMultiple() {
         return "blah" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL + "blah" + PMD.EOL
                 + " at Foo <init>(Foo.java:1)" + PMD.EOL;

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 import net.sf.saxon.om.Axis;
 import net.sf.saxon.om.AxisIterator;
 import net.sf.saxon.om.DocumentInfo;
@@ -15,7 +17,6 @@ import net.sf.saxon.om.Navigator;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SingleNodeIterator;
 import net.sf.saxon.type.Type;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * A Saxon OM Document node for an AST Node.
@@ -35,10 +36,10 @@ public class DocumentNode extends AbstractNodeInfo implements DocumentInfo {
     /**
      * Construct a DocumentNode, with the given AST Node serving as the root
      * ElementNode.
-     * 
+     *
      * @param node
      *            The root AST Node.
-     * 
+     *
      * @see ElementNode
      */
     public DocumentNode(Node node) {
@@ -48,6 +49,7 @@ public class DocumentNode extends AbstractNodeInfo implements DocumentInfo {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getUnparsedEntity(String name) {
         throw createUnsupportedOperationException("DocumentInfo.getUnparsedEntity(String)");
     }
@@ -55,6 +57,7 @@ public class DocumentNode extends AbstractNodeInfo implements DocumentInfo {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Iterator getUnparsedEntityNames() {
         throw createUnsupportedOperationException("DocumentInfo.getUnparsedEntityNames()");
     }
@@ -62,6 +65,7 @@ public class DocumentNode extends AbstractNodeInfo implements DocumentInfo {
     /**
      * {@inheritDoc}
      */
+    @Override
     public NodeInfo selectID(String id) {
         throw createUnsupportedOperationException("DocumentInfo.selectID(String)");
     }

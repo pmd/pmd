@@ -20,7 +20,7 @@ public class Metric {
 
     /**
      * Creates a new metric with the given information.
-     * 
+     *
      * @param name
      *            the metric's name
      * @param count

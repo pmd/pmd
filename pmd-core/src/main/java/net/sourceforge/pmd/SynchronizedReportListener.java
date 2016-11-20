@@ -16,7 +16,7 @@ public final class SynchronizedReportListener implements ReportListener {
     /**
      * Creates a new {@link SynchronizedReportListener} by wrapping the given
      * report listener.
-     * 
+     *
      * @param listener
      *            the listener to be synchronized
      */
@@ -27,6 +27,7 @@ public final class SynchronizedReportListener implements ReportListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized void ruleViolationAdded(RuleViolation ruleViolation) {
         wrapped.ruleViolationAdded(ruleViolation);
     }
@@ -34,6 +35,7 @@ public final class SynchronizedReportListener implements ReportListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized void metricAdded(Metric metric) {
         wrapped.metricAdded(metric);
     }

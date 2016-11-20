@@ -17,6 +17,7 @@ public final class MemberNodeComparator implements Comparator<MemberNode> {
     private MemberNodeComparator() {
     }
 
+    @Override
     public int compare(MemberNode node1, MemberNode node2) {
         if (node1 instanceof FieldNode) {
             if (node2 instanceof FieldNode) {

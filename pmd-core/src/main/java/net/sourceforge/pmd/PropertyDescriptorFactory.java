@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * A factory to create {@link PropertyDescriptor}s based on a map of values.
- * 
+ *
  * @author Brian Remedios
  */
 public interface PropertyDescriptorFactory {
@@ -16,7 +16,7 @@ public interface PropertyDescriptorFactory {
     /**
      * The type of the value of the {@link PropertyDescriptor} created by this
      * factory.
-     * 
+     *
      * @return the type of the value.
      */
     Class<?> valueType();
@@ -24,7 +24,7 @@ public interface PropertyDescriptorFactory {
     /**
      * Denote the identifiers of the expected fields paired with booleans
      * denoting whether they are required (non-null) or not.
-     * 
+     *
      * @return Map
      */
     Map<String, Boolean> expectedFields();
@@ -32,7 +32,7 @@ public interface PropertyDescriptorFactory {
     /**
      * Create a property descriptor of the appropriate type using the values
      * provided.
-     * 
+     *
      * @param valuesById
      *            the map of values
      * @return a new and initialized {@link PropertyDescriptor}

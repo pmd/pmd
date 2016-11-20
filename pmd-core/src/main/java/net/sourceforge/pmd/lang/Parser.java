@@ -23,7 +23,7 @@ public interface Parser {
 
     /**
      * Get a TokenManager for the given source.
-     * 
+     *
      * @param fileName
      *            The file name being parsed (may be <code>null</code>).
      * @param source

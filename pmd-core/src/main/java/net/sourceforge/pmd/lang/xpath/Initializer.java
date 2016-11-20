@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.lang.xpath;
 
-import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+
+import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * This class serves as the means to perform XPath related static

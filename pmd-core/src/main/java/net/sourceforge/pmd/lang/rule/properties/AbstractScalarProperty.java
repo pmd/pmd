@@ -9,7 +9,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * No, subclasses are not necessarily scalar per se, they're just easy to parse
  * without error. If you can come up with a better name...
- * 
+ *
  * @author Brian Remedios
  * @param <T>
  */
@@ -17,7 +17,7 @@ public abstract class AbstractScalarProperty<T> extends AbstractProperty<T> {
 
     /**
      * Constructor for AbstractScalarProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -58,6 +58,7 @@ public abstract class AbstractScalarProperty<T> extends AbstractProperty<T> {
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     @SuppressWarnings("unchecked")
     public T valueFrom(String valueString) throws IllegalArgumentException {
 

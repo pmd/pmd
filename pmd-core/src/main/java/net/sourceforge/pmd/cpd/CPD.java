@@ -157,7 +157,7 @@ public class CPD {
 
     /**
      * List names/paths of each source to be processed.
-     * 
+     *
      * @return names of sources to be processed
      */
     public List<String> getSourcePaths() {
@@ -166,7 +166,7 @@ public class CPD {
 
     /**
      * Get each Source to be processed.
-     * 
+     *
      * @return all Sources to be processed
      */
     public List<SourceCode> getSources() {

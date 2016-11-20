@@ -16,6 +16,7 @@ public class StartOrEndDataFlowNode extends AbstractDataFlowNode {
         this.isStartNode = isStartNode;
     }
 
+    @Override
     public String toString() {
         return isStartNode ? "Start node" : "End node";
     }

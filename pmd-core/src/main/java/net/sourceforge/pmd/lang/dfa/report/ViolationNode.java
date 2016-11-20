@@ -18,6 +18,7 @@ public class ViolationNode extends AbstractReportNode {
         return ruleViolation;
     }
 
+    @Override
     public boolean equalsNode(AbstractReportNode arg0) {
         if (!(arg0 instanceof ViolationNode)) {
             return false;

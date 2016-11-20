@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
  * Renderer to XML format with a XSL Transformation applied.
- * 
+ *
  * @author Romain Pelisse, belaran@gmail.com
  */
 public class XSLTRenderer extends XMLRenderer {
@@ -53,6 +53,7 @@ public class XSLTRenderer extends XMLRenderer {
         definePropertyDescriptor(XSLT_FILENAME);
     }
 
+    @Override
     public String defaultFileExtension() {
         return "xsl";
     }

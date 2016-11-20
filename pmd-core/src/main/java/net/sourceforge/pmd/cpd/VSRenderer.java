@@ -10,6 +10,7 @@ import net.sourceforge.pmd.PMD;
 
 public class VSRenderer implements Renderer {
 
+    @Override
     public String render(Iterator<Match> matches) {
 
         StringBuilder buffer = new StringBuilder(300);

@@ -6,14 +6,14 @@ package net.sourceforge.pmd.cli;
 
 import java.util.Properties;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 
 /**
  * @author Romain Pelisse <belaran@gmail.com>
@@ -81,7 +81,8 @@ public class PMDCommandLineInterface {
         fullText += "Available report formats and their configuration properties are:" + PMD.EOL + getReports()
                 + PMD.EOL + getExamples() + PMD.EOL + PMD.EOL + PMD.EOL;
 
-        return fullText += usage.toString();
+        fullText += usage.toString();
+        return fullText;
     }
 
     private static String getExamples() {

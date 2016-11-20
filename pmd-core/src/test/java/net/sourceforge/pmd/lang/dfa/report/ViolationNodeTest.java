@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.dfa.report;
 
-import org.junit.Test;
-
-import net.sourceforge.pmd.RuleViolation;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.junit.Test;
+
+import net.sourceforge.pmd.RuleViolation;
 
 /**
  * @author Philip Graf

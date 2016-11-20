@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a property type that supports multiple double-type property values
  * within an upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> {
@@ -20,6 +20,7 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<DoubleMultiProperty>(
             Double[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public DoubleMultiProperty createWith(Map<String, String> valuesById) {
             String[] minMax = minMaxFrom(valuesById);
             char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
@@ -31,7 +32,7 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
 
     /**
      * Constructor for DoubleProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -54,6 +55,7 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Double[]> type() {
         return Double[].class;
     }
@@ -63,6 +65,7 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return Double.valueOf(value);
     }
@@ -72,6 +75,7 @@ public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> 
      *            int
      * @return Object[]
      */
+    @Override
     protected Object[] arrayFor(int size) {
         return new Double[size];
     }

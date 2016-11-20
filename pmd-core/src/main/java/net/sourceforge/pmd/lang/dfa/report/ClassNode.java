@@ -16,6 +16,7 @@ public class ClassNode extends AbstractReportNode {
         return className;
     }
 
+    @Override
     public boolean equalsNode(AbstractReportNode arg0) {
         if (!(arg0 instanceof ClassNode)) {
             return false;

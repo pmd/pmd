@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.dfa.NodeType;
 /**
  * Finds all paths of a data flow. Each loop will be 0 or 2 times traversed -> 2
  * paths. This is special to the data flow anomaly analysis.
- * 
+ *
  * @since Created on 09.08.2004
  * @author raik
  */
@@ -144,9 +144,8 @@ public class DAAPathFinder {
             }
         } else {
             DataFlowNode inode = currentPath.getLast();
-            DataFlowNode child = inode.getChildren().get(0); // TODO ????
-                                                             // IMPORTANT -
-                                                             // ERROR?
+            // TODO ???? IMPORTANT - ERROR?
+            DataFlowNode child = inode.getChildren().get(0);
             this.currentPath.addLast(child);
         }
     }

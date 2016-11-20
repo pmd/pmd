@@ -48,7 +48,7 @@ public class CodeClimateIssue {
 
         /**
          * Strip out all newlines from the body
-         * 
+         *
          * @param {String}
          *            body The text to compose the content from
          */

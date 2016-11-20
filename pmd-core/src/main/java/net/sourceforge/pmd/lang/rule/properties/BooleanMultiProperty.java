@@ -11,13 +11,14 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 
 /**
  * Defines a property type that supports multiple Boolean values.
- * 
+ *
  * @author Brian Remedios
  */
 public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
 
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringMultiProperty>(
             String[].class) {
+        @Override
         public BooleanMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new BooleanMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
@@ -27,7 +28,7 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
 
     /**
      * Constructor for BooleanMultiProperty that allows for multiple values.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -45,6 +46,7 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Boolean[]> type() {
         return Boolean[].class;
     }
@@ -60,11 +62,12 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
 
     /**
      * Creates and returns a Boolean instance from a raw string
-     * 
+     *
      * @param value
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return Boolean.valueOf(value);
     }
@@ -74,6 +77,7 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
      *            int
      * @return Object[]
      */
+    @Override
     protected Boolean[] arrayFor(int size) {
         return new Boolean[size];
     }
@@ -81,6 +85,7 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return asDelimitedString(defaultValue());
     }

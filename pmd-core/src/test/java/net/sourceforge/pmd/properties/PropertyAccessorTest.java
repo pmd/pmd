@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,12 +18,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.ReportException;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.NumericConstants;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Brian Remedios
@@ -57,21 +57,22 @@ public class PropertyAccessorTest {
         /*
          * rule.setProperty("singleFloat", new Float(0));
          * assertTrue(rule.getFloatProperty("singleFloat") == 0f);
-         * 
+         *
          * rule.setProperties("multiBool", new Boolean[] {Boolean.TRUE,
          * Boolean.FALSE});
          * assertTrue(areEqual(rule.getBooleanProperties("multiBool"), new
          * boolean[]{true, false}));
-         * 
+         *
          * boolean exceptionOccurred = false; try {
          * rule.setProperties("singleBool", new Boolean[] {Boolean.TRUE,
          * Boolean.FALSE}); } catch (Exception ex) { exceptionOccurred = true; }
          * assertTrue(exceptionOccurred);
-         * 
+         *
          * exceptionOccurred = false; try { rule.setProperty("multiBool",
          * Boolean.TRUE); } catch (Exception ex) { exceptionOccurred = true; }
          * assertTrue(exceptionOccurred);
-         */}
+         */
+    }
 
     @Test
     public void testStrings() {

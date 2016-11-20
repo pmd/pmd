@@ -7,7 +7,7 @@ package net.sourceforge.pmd.benchmark;
 /**
  * A wrapped StringBuilder that appends a variable number of text segments
  * efficiently and always appends the specified carriage return terminator.
- * 
+ *
  * @author Brian Remedios
  */
 public class StringBuilderCR {
@@ -32,6 +32,7 @@ public class StringBuilderCR {
         sb.append(cr);
     }
 
+    @Override
     public String toString() {
         return sb.toString();
     }

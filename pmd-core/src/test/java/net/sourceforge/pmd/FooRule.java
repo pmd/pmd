@@ -19,18 +19,22 @@ public class FooRule extends AbstractRule {
         setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
     }
 
+    @Override
     public String getMessage() {
         return "blah";
     }
 
+    @Override
     public String getName() {
         return "Foo";
     }
 
+    @Override
     public String getRuleSetName() {
         return "RuleSet";
     }
 
+    @Override
     public String getDescription() {
         return "desc";
     }

@@ -25,13 +25,13 @@ public final class CollectionUtil {
 
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
     public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(new Class[] { java.util.List.class,
-            java.util.Collection.class, java.util.Map.class, java.util.Set.class, });
+        java.util.Collection.class, java.util.Map.class, java.util.Set.class, });
 
     @SuppressWarnings({ "PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName" })
     public static final TypeMap COLLECTION_CLASSES_BY_NAMES = new TypeMap(new Class[] { java.util.ArrayList.class,
-            java.util.LinkedList.class, java.util.Vector.class, java.util.HashMap.class, java.util.LinkedHashMap.class,
-            java.util.TreeMap.class, java.util.TreeSet.class, java.util.HashSet.class, java.util.LinkedHashSet.class,
-            java.util.Hashtable.class });
+        java.util.LinkedList.class, java.util.Vector.class, java.util.HashMap.class, java.util.LinkedHashMap.class,
+        java.util.TreeMap.class, java.util.TreeSet.class, java.util.HashSet.class, java.util.LinkedHashSet.class,
+        java.util.Hashtable.class, });
 
     private CollectionUtil() {
     }
@@ -39,7 +39,7 @@ public final class CollectionUtil {
     /**
      * Add elements from the source to the target as long as they don't already
      * exist there. Return the number of items actually added.
-     * 
+     *
      * @param source
      * @param target
      * @return int
@@ -238,7 +238,7 @@ public final class CollectionUtil {
 
     /**
      * Returns whether the items array is null or has zero length.
-     * 
+     *
      * @param items
      * @return boolean
      */
@@ -248,7 +248,7 @@ public final class CollectionUtil {
 
     /**
      * Returns whether the items array is non-null and has at least one entry.
-     * 
+     *
      * @param items
      * @return boolean
      */

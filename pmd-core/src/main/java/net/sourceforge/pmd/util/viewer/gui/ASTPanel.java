@@ -58,6 +58,7 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
         tree = new JTree((TreeNode) null);
         tree.addTreeSelectionListener(this);
         tree.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) {
                     TreePath path = tree.getClosestPathForLocation(e.getX(), e.getY());
@@ -74,6 +75,7 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
     /**
      * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
+    @Override
     public void viewerModelChanged(ViewerModelEvent e) {
         switch (e.getReason()) {
         case ViewerModelEvent.CODE_RECOMPILED:
@@ -100,6 +102,7 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
     /**
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */
+    @Override
     public void valueChanged(TreeSelectionEvent e) {
         model.selectNode((Node) e.getNewLeadSelectionPath().getLastPathComponent(), this);
     }

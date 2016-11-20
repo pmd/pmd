@@ -54,6 +54,7 @@ public class CPDTask extends Task {
     private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<>();
 
+    @Override
     public void execute() throws BuildException {
         ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(CPDTask.class.getClassLoader());
@@ -230,6 +231,7 @@ public class CPDTask extends Task {
     public static class FormatAttribute extends EnumeratedAttribute {
         private static final String[] FORMATS = new String[] { XML_FORMAT, TEXT_FORMAT, CSV_FORMAT };
 
+        @Override
         public String[] getValues() {
             return FORMATS;
         }

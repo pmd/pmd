@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.ant;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
 import org.apache.tools.ant.BuildFileRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  *

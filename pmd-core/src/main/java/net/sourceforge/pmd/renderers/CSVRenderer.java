@@ -38,47 +38,47 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     @SuppressWarnings("unchecked")
     private static final ColumnDescriptor<RuleViolation>[] ALL_COLUMNS = new ColumnDescriptor[] {
-            new ColumnDescriptor<>("problem", "Problem", new Accessor<RuleViolation>() {
-                @Override
-                public String get(int idx, RuleViolation rv, String cr) {
-                    return Integer.toString(idx);
-                }
-            }), new ColumnDescriptor<>("package", "Package", new Accessor<RuleViolation>() {
-                @Override
-                public String get(int idx, RuleViolation rv, String cr) {
-                    return rv.getPackageName();
-                }
-            }), new ColumnDescriptor<>("file", "File", new Accessor<RuleViolation>() {
-                @Override
-                public String get(int idx, RuleViolation rv, String cr) {
-                    return rv.getFilename();
-                }
-            }), new ColumnDescriptor<>("priority", "Priority", new Accessor<RuleViolation>() {
-                @Override
-                public String get(int idx, RuleViolation rv, String cr) {
-                    return Integer.toString(rv.getRule().getPriority().getPriority());
-                }
-            }), new ColumnDescriptor<>("line", "Line", new Accessor<RuleViolation>() {
-                @Override
-                public String get(int idx, RuleViolation rv, String cr) {
-                    return Integer.toString(rv.getBeginLine());
-                }
-            }), new ColumnDescriptor<>("desc", "Description", new Accessor<RuleViolation>() {
-                @Override
-                public String get(int idx, RuleViolation rv, String cr) {
-                    return StringUtil.replaceString(rv.getDescription(), '\"', "'");
-                }
-            }), new ColumnDescriptor<>("ruleSet", "Rule set", new Accessor<RuleViolation>() {
-                @Override
-                public String get(int idx, RuleViolation rv, String cr) {
-                    return rv.getRule().getRuleSetName();
-                }
-            }), new ColumnDescriptor<>("rule", "Rule", new Accessor<RuleViolation>() {
-                @Override
-                public String get(int idx, RuleViolation rv, String cr) {
-                    return rv.getRule().getName();
-                }
-            }) };
+        new ColumnDescriptor<>("problem", "Problem", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return Integer.toString(idx);
+            }
+        }), new ColumnDescriptor<>("package", "Package", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return rv.getPackageName();
+            }
+        }), new ColumnDescriptor<>("file", "File", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return rv.getFilename();
+            }
+        }), new ColumnDescriptor<>("priority", "Priority", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return Integer.toString(rv.getRule().getPriority().getPriority());
+            }
+        }), new ColumnDescriptor<>("line", "Line", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return Integer.toString(rv.getBeginLine());
+            }
+        }), new ColumnDescriptor<>("desc", "Description", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return StringUtil.replaceString(rv.getDescription(), '\"', "'");
+            }
+        }), new ColumnDescriptor<>("ruleSet", "Rule set", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return rv.getRule().getRuleSetName();
+            }
+        }), new ColumnDescriptor<>("rule", "Rule", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return rv.getRule().getName();
+            }
+        }), };
 
     public CSVRenderer(ColumnDescriptor<RuleViolation>[] columns, String theSeparator, String theCR) {
         super(NAME, "Comma-separated values tabular format.");

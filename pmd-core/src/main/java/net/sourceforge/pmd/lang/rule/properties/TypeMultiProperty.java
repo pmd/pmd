@@ -13,7 +13,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Defines a property that supports multiple class types, even for primitive
  * values!
- * 
+ *
  * TODO - untested for array types
  *
  * @author Brian Remedios
@@ -23,6 +23,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeMultiProperty>(
             Class[].class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public TypeMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new TypeMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
@@ -32,7 +33,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     /**
      * Constructor for TypeProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -53,7 +54,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     /**
      * Constructor for TypeProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -74,7 +75,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     /**
      * Constructor for TypeProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -121,6 +122,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Class[]> type() {
         return Class[].class;
     }
@@ -149,6 +151,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Class<?>[] valueFrom(String valueString) {
         return typesFrom(valueString);
     }

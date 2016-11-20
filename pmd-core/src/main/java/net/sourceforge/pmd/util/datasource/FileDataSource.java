@@ -26,10 +26,12 @@ public class FileDataSource implements DataSource {
         this.file = file;
     }
 
+    @Override
     public InputStream getInputStream() throws IOException {
         return new FileInputStream(file);
     }
 
+    @Override
     public String getNiceFileName(boolean shortNames, String inputFileName) {
         return glomName(shortNames, inputFileName, file);
     }

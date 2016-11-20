@@ -54,6 +54,7 @@ public class UsageGraph implements NodeVisitorAcceptor {
         this.classFilter = classFilter;
     }
 
+    @Override
     public Object accept(NodeVisitor visitor, Object data) {
         for (ClassNode classNode : classNodes) {
             visitor.visit(classNode, data);
@@ -124,7 +125,7 @@ public class UsageGraph implements NodeVisitorAcceptor {
         user.addUse(use);
     }
 
-    private final void checkClassName(String className) {
+    private void checkClassName(String className) {
         // Make sure it's not in byte code internal format, or file system path.
         if (className.indexOf('/') >= 0 || className.indexOf('\\') >= 0) {
             throw new IllegalArgumentException("Invalid class name: " + className);

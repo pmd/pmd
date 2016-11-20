@@ -6,7 +6,7 @@ package net.sourceforge.pmd;
 
 /**
  * These are the possible Rule priority values.
- * 
+ *
  * For backward compatibility, priorities range in value from 1 to 5, with 5
  * being the lowest priority. This means the ordinal value of the Enum should be
  * avoided in favor of {@link RulePriority#getPriority()} and
@@ -43,7 +43,7 @@ public enum RulePriority {
     private final int priority;
     private final String name;
 
-    private RulePriority(int priority, String name) {
+    RulePriority(int priority, String name) {
         this.priority = priority;
         this.name = name;
     }
@@ -69,7 +69,7 @@ public enum RulePriority {
 
     /**
      * Returns the descriptive name of the priority.
-     * 
+     *
      * @return descriptive name of the priority
      * @see #getName()
      */

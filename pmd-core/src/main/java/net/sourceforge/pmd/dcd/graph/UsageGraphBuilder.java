@@ -80,7 +80,7 @@ public class UsageGraphBuilder {
         private final PrintVisitor p;
         private String className;
 
-        public MyClassVisitor() {
+        MyClassVisitor() {
             super(Opcodes.ASM5);
             p = new PrintVisitor();
         }

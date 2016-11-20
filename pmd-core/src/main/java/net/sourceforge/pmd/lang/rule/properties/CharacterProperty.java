@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 
 /**
  * Defines a property type that supports single Character values.
- * 
+ *
  * @author Brian Remedios
  */
 public class CharacterProperty extends AbstractProperty<Character> {
@@ -19,6 +19,7 @@ public class CharacterProperty extends AbstractProperty<Character> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterProperty>(
             Character.class) {
 
+        @Override
         public CharacterProperty createWith(Map<String, String> valuesById) {
             return new CharacterProperty(nameIn(valuesById), descriptionIn(valuesById),
                     defaultValueIn(valuesById) != null ? new Character(defaultValueIn(valuesById).charAt(0)) : null,
@@ -28,7 +29,7 @@ public class CharacterProperty extends AbstractProperty<Character> {
 
     /**
      * Constructor for CharacterProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -44,7 +45,7 @@ public class CharacterProperty extends AbstractProperty<Character> {
 
     /**
      * Constructor for CharacterProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -76,6 +77,7 @@ public class CharacterProperty extends AbstractProperty<Character> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Character> type() {
         return Character.class;
     }
@@ -87,15 +89,17 @@ public class CharacterProperty extends AbstractProperty<Character> {
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Character valueFrom(String valueString) throws IllegalArgumentException {
         return charFrom(valueString);
     }
 
     /**
      * Method defaultAsString.
-     * 
+     *
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return Character.toString(defaultValue());
     }

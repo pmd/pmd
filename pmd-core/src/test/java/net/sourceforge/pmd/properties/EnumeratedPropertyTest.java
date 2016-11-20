@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
  * Evaluates the functionality of the EnumeratedProperty descriptor by testing
  * its ability to catch creation errors (illegal args), flag invalid selections,
  * and serialize/deserialize selection options.
- * 
+ *
  * @author Brian Remedios
  */
 public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
@@ -23,7 +23,7 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
     private static final String[] keys = new String[] { "map", "emptyArray", "list", "string", };
 
     private static final Object[] values = new Object[] { new HashMap(), new Object[0], new ArrayList(),
-            "Hello World!", };
+        "Hello World!", };
 
     public EnumeratedPropertyTest() {
         super("Enum");
@@ -31,48 +31,55 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 
     /**
      * Method createValue.
-     * 
+     *
      * @param count
      *            int
      * @return Object
      */
+    @Override
     protected Object createValue(int count) {
 
-        if (count == 1)
+        if (count == 1) {
             return randomChoice(values);
+        }
 
         Object[] values = new Object[count];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = createValue(1);
+        }
         return values;
     }
 
     /**
      * Returns a (count) number of values that are not in the set of legal
      * values.
-     * 
+     *
      * @param count
      *            int
      * @return Object
      */
+    @Override
     protected Object createBadValue(int count) {
 
-        if (count == 1)
+        if (count == 1) {
             return Integer.toString(randomInt()); // not in the set of values
+        }
 
         Object[] values = new Object[count];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = createBadValue(1);
+        }
         return values;
     }
 
     /**
      * Method createProperty.
-     * 
+     *
      * @param multiValue
      *            boolean
      * @return PropertyDescriptor
      */
+    @Override
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
         return multiValue
@@ -84,11 +91,12 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 
     /**
      * Method createBadProperty.
-     * 
+     *
      * @param multiValue
      *            boolean
      * @return PropertyDescriptor
      */
+    @Override
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
         return multiValue
@@ -98,16 +106,19 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
                         values, -1, 1.0f);
     }
 
+    @Override
     @Test
     public void testFactorySingleValue() {
         Assume.assumeTrue("The EnumeratedProperty is not implemented completely yet", false);
     }
 
+    @Override
     @Test
     public void testFactoryMultiValueCustomDelimiter() {
         Assume.assumeTrue("The EnumeratedProperty is not implemented completely yet", false);
     }
 
+    @Override
     @Test
     public void testFactoryMultiValueDefaultDelimiter() {
         Assume.assumeTrue("The EnumeratedProperty is not implemented completely yet", false);

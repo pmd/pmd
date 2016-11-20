@@ -196,8 +196,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
             String arrayTypeName = typeName.substring(0, typeName.length() - ARRAY_FLAG.length());
             type = typeFor(arrayTypeName); // recurse
             return Array.newInstance(type, 0).getClass(); // TODO is there a
-                                                          // better way to get
-                                                          // an array type?
+            // better way to get
+            // an array type?
         }
 
         type = ClassUtil.getTypeFor(typeName); // try shortcut first

@@ -19,8 +19,8 @@ import org.apache.commons.io.IOUtils;
 
 /**
  * Encapsulate the settings needed to access database source code.
- * 
- * 
+ *
+ *
  * @author sturton
  */
 public class DBType {
@@ -34,24 +34,23 @@ public class DBType {
      * The names of the properties
      */
     public enum property {
-        USER("user", "Name of the connecting database user"), PASSWORD("password",
-                "The connecting database user's password"), DRIVER("driver", "JDBC driver classname"), CHARACTERSET(
-                        "characterset", "Reader character set"), LANGUAGES("languages",
-                                "Comma-separated list of PMD-supported languages"), SCHEMAS("schemas",
-                                        "SchemaSpy compatible regular expression for schemas to be processed"), SOURCE_TYPES(
-                                                "sourcecodetypes",
-                                                "Comma-separated list of supported source types"), SOURCE_NAMES(
-                                                        "sourcecodenames",
-                                                        "Default comma-separated list of source code names to validate"), GET_SOURCE_CODE_STATEMENT(
-                                                                "getSourceCodeStatement",
-                                                                "SQL92 or Oracle embedded SQL statement to retrieve  code source from the database catalogue"), RETURN_TYPE(
-                                                                        "returnType",
-                                                                        "int equivalent of java.sql.Types return type of getSourceCodeStatement");
+        USER("user", "Name of the connecting database user"),
+        PASSWORD("password", "The connecting database user's password"),
+        DRIVER("driver", "JDBC driver classname"),
+        CHARACTERSET("characterset", "Reader character set"),
+        LANGUAGES("languages", "Comma-separated list of PMD-supported languages"),
+        SCHEMAS("schemas", "SchemaSpy compatible regular expression for schemas to be processed"),
+        SOURCE_TYPES("sourcecodetypes", "Comma-separated list of supported source types"),
+        SOURCE_NAMES("sourcecodenames", "Default comma-separated list of source code names to validate"),
+        GET_SOURCE_CODE_STATEMENT(
+                "getSourceCodeStatement",
+                "SQL92 or Oracle embedded SQL statement to retrieve  code source from the database catalogue"),
+        RETURN_TYPE("returnType", "int equivalent of java.sql.Types return type of getSourceCodeStatement");
 
         private String name;
         private String description;
 
-        private property(String name, String description) {
+        property(String name, String description) {
             this.name = name;
             this.description = description;
         }
@@ -91,7 +90,7 @@ public class DBType {
     private int sourceCodeReturnType;
 
     /**
-     * 
+     *
      * @param dbType
      */
     public DBType(String dbType) throws Exception {
@@ -100,7 +99,7 @@ public class DBType {
 
     /**
      * Load the most specific dbType for the protocol
-     * 
+     *
      * @param subProtocol
      * @param subnamePrefix
      * @throws IOException
@@ -145,7 +144,7 @@ public class DBType {
 
     /**
      * Load properties from one or more files or resources.
-     * 
+     *
      * <p>
      * This method recursively finds property files or JAR resources matching
      * {@matchstring}.

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static net.sourceforge.pmd.renderers.CodeClimateRenderer.REMEDIATION_POINTS_DEFAULT;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-
-import static net.sourceforge.pmd.renderers.CodeClimateRenderer.REMEDIATION_POINTS_DEFAULT;
 
 /**
  * This interface tags a Rule specifying properties required for the Code
@@ -26,12 +26,12 @@ public interface CodeClimateRule extends Rule {
      *      "https://github.com/codeclimate/spec/blob/master/SPEC.md#categories">Code
      *      Climate Spec</a>
      */
-    EnumeratedMultiProperty<String> CODECLIMATE_CATEGORIES = new EnumeratedMultiProperty<String>("cc_categories",
+    EnumeratedMultiProperty<String> CODECLIMATE_CATEGORIES = new EnumeratedMultiProperty<>("cc_categories",
             "Code Climate Categories",
             new String[] { "Bug Risk", "Clarity", "Compatibility", "Complexity", "Duplication", "Performance",
-                    "Security", "Style" },
+                "Security", "Style", },
             new String[] { "Bug Risk", "Clarity", "Compatibility", "Complexity", "Duplication", "Performance",
-                    "Security", "Style" },
+                "Security", "Style", },
             new int[] { 7 }, 1.0f);
 
     /**

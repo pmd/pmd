@@ -1,6 +1,10 @@
 
 package net.sourceforge.pmd.properties;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,15 +18,11 @@ import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific
  * property descriptors. Checks for error conditions during construction, error
  * value detection, serialization, etc.
- * 
+ *
  * @author Brian Remedios
  */
 public abstract class AbstractPropertyDescriptorTester {
@@ -44,7 +44,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     /**
      * Return a legal value(s) per the general scope of the descriptor.
-     * 
+     *
      * @param count
      *            int
      * @return Object
@@ -54,7 +54,7 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Return a value(s) that is known to be faulty per the general scope of the
      * descriptor.
-     * 
+     *
      * @param count
      *            int
      * @return Object
@@ -63,7 +63,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     /**
      * Creates and returns a properly configured property descriptor.
-     * 
+     *
      * @param multiValue
      *            boolean
      * @return PropertyDescriptor
@@ -73,7 +73,7 @@ public abstract class AbstractPropertyDescriptorTester {
     /**
      * Attempt to create a property with faulty configuration values. This
      * method should throw an IllegalArgumentException if done correctly.
-     * 
+     *
      * @param multiValue
      *            boolean
      * @return PropertyDescriptor
@@ -180,14 +180,14 @@ public abstract class AbstractPropertyDescriptorTester {
 
         Object testValue = createValue(1);
         PropertyDescriptor<?> pmdProp = createProperty(false); // plain vanilla
-                                                               // property &
-                                                               // valid test
-                                                               // value
+        // property &
+        // valid test
+        // value
         String errorMsg = pmdProp.errorFor(testValue);
         assertNull(errorMsg, errorMsg);
 
         testValue = createValue(multiValueCount); // multi-value property, all
-                                                  // valid test values
+        // valid test values
         pmdProp = createProperty(true);
         errorMsg = pmdProp.errorFor(testValue);
         assertNull(errorMsg, errorMsg);
@@ -200,13 +200,13 @@ public abstract class AbstractPropertyDescriptorTester {
         PropertyDescriptor<?> pmdProp = createProperty(false);
         Object testValue = createBadValue(1);
         String errorMsg = pmdProp.errorFor(testValue); // bad value should
-                                                       // result in an error
+        // result in an error
         if (errorMsg == null) {
             Assert.fail("uncaught bad value: " + testValue);
         }
 
         testValue = createBadValue(multiValueCount); // multi-value prop,
-                                                     // several bad values
+        // several bad values
         pmdProp = createProperty(true);
         errorMsg = pmdProp.errorFor(testValue);
         if (errorMsg == null) {
@@ -228,7 +228,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     /**
      * Method randomInt.
-     * 
+     *
      * @return int
      */
     public static int randomInt() {
@@ -239,7 +239,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     /**
      * Method randomInt.
-     * 
+     *
      * @param min
      *            int
      * @param max
@@ -247,8 +247,9 @@ public abstract class AbstractPropertyDescriptorTester {
      * @return int
      */
     public static int randomInt(int min, int max) {
-        if (max < min)
+        if (max < min) {
             max = min;
+        }
         int range = Math.abs(max - min);
         int x = (int) (range * Math.random());
         return x + min;
@@ -259,14 +260,15 @@ public abstract class AbstractPropertyDescriptorTester {
         final char[] chars = alphaChars.toCharArray();
 
         StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < length; i++) {
             sb.append(randomChar(chars));
+        }
         return sb.toString();
     }
 
     /**
      * Method randomFloat.
-     * 
+     *
      * @param min
      *            float
      * @param max
@@ -280,7 +282,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     /**
      * Method randomDouble.
-     * 
+     *
      * @param min
      *            double
      * @param max
@@ -288,8 +290,9 @@ public abstract class AbstractPropertyDescriptorTester {
      * @return double
      */
     public static double randomDouble(double min, double max) {
-        if (max < min)
+        if (max < min) {
             max = min;
+        }
         double range = Math.abs(max - min);
         double x = range * Math.random();
         return x + min;
@@ -297,7 +300,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     /**
      * Method randomChar.
-     * 
+     *
      * @param characters
      *            char[]
      * @return char
@@ -308,7 +311,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     /**
      * Method randomChoice.
-     * 
+     *
      * @param items
      *            Object[]
      * @return Object
@@ -319,7 +322,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     /**
      * Method filter.
-     * 
+     *
      * @param chars
      *            char[]
      * @param removeChar
@@ -328,15 +331,18 @@ public abstract class AbstractPropertyDescriptorTester {
      */
     protected static final char[] filter(char[] chars, char removeChar) {
         int count = 0;
-        for (int i = 0; i < chars.length; i++)
-            if (chars[i] == removeChar)
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == removeChar) {
                 count++;
+            }
+        }
         char[] results = new char[chars.length - count];
 
         int index = 0;
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] != removeChar)
+            if (chars[i] != removeChar) {
                 results[index++] = chars[i];
+            }
         }
         return results;
     }

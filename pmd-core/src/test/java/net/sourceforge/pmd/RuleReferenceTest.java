@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
-import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -14,10 +18,7 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import junit.framework.JUnit4TestAdapter;
 
 public class RuleReferenceTest {
 

@@ -4,20 +4,20 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
-
 /**
  * Concrete subclasses manage items that reside within namespaces per the design
  * of the Java language. Rule developers can limit the range of permissible
  * items by specifying portions of their package names in the constructor. If
  * the legalPackageNames value is set to null then no restrictions are made.
- * 
+ *
  * @author Brian Remedios
  * @param <T>
  */
@@ -31,7 +31,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
             .expectedFieldTypesWith(new String[] { LEGAL_PACKAGES }, new Boolean[] { Boolean.FALSE });
 
     /**
-     * 
+     *
      * @param theName
      * @param theDescription
      * @param theDefault
@@ -67,7 +67,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     /**
      * @return String
      */
-    private final String delimitedPackageNames() {
+    private String delimitedPackageNames() {
 
         if (legalPackageNames == null || legalPackageNames.length == 0) {
             return "";
@@ -87,7 +87,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     /**
      * Evaluates the names of the items against the allowable name prefixes. If
      * one or more do not have valid prefixes then an exception will be thrown.
-     * 
+     *
      * @param item
      * @param legalNamePrefixes
      * @throws IllegalArgumentException
@@ -130,7 +130,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
     /**
      * Method itemTypeName.
-     * 
+     *
      * @return String
      */
     protected abstract String itemTypeName();

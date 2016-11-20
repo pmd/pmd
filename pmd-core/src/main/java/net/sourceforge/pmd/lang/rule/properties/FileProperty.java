@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * 
+ *
  * @author Brian Remedios
  */
 public class FileProperty extends AbstractProperty<File> {
@@ -20,6 +20,7 @@ public class FileProperty extends AbstractProperty<File> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FileProperty>(
             File.class) {
 
+        @Override
         public FileProperty createWith(Map<String, String> valuesById) {
             return new FileProperty(nameIn(valuesById), descriptionIn(valuesById), null, 0f);
         }
@@ -29,10 +30,12 @@ public class FileProperty extends AbstractProperty<File> {
         super(theName, theDescription, theDefault, theUIOrder);
     }
 
+    @Override
     public Class<File> type() {
         return File.class;
     }
 
+    @Override
     public File valueFrom(String propertyString) throws IllegalArgumentException {
 
         return StringUtil.isEmpty(propertyString) ? null : new File(propertyString);

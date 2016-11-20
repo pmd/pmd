@@ -21,14 +21,14 @@ public class SourceObject {
 
     /**
      * Database Schema/Owner - SYS,SYSTEM,SCOTT
-     * 
+     *
      */
 
     String schema;
 
     /**
      * Source Code Name - DBMS_METADATA
-     * 
+     *
      */
 
     String name;
@@ -36,14 +36,14 @@ public class SourceObject {
     /**
      * Source Code Type -
      * FUNCTION,PROCEDURE,TRIGGER,PACKAGE,PACKAGE_BODY,TYPE,TYPE_BODY,JAVA_SOURCE.
-     * 
+     *
      */
 
     String type;
 
     /**
      * Source Code Revision - Optional revision/version
-     * 
+     *
      */
 
     String revision;
@@ -123,11 +123,11 @@ public class SourceObject {
 
     /**
      * Map the type to a file suffix associated with a {@link Language}
-     * 
+     *
      * @return inferred suffix
      */
     public String getSuffixFromType() {
-        LOG.entering(CLASS_NAME, "getSuffixFromType", this);// .entering("type="+type.toUpperCase());
+        LOG.entering(CLASS_NAME, "getSuffixFromType", this);
         if (null == type || type.isEmpty()) {
             return "";
         } else if (type.toUpperCase().indexOf("JAVA") >= 0) {

@@ -18,6 +18,7 @@ public final class LanguageFactory {
     private static LanguageFactory instance = new LanguageFactory();
 
     public static String[] supportedLanguages;
+
     static {
         supportedLanguages = instance.languages.keySet().toArray(new String[instance.languages.size()]);
     }

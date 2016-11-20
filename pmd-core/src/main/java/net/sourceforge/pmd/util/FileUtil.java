@@ -35,7 +35,7 @@ public final class FileUtil {
 
     /**
      * Helper method to get a filename without its extension
-     * 
+     *
      * @param fileName
      *            String
      * @return String
@@ -54,7 +54,7 @@ public final class FileUtil {
     /**
      * Normalizes the filename by taking the casing into account, e.g. on
      * Windows, the filename is changed to lowercase only.
-     * 
+     *
      * @param fileName
      *            the file name
      * @return the normalized file name

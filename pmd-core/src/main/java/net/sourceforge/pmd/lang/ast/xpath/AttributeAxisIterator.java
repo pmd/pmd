@@ -20,7 +20,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         public Method method;
         public String name;
 
-        public MethodWrapper(Method m) {
+        MethodWrapper(Method m) {
             this.method = m;
             this.name = truncateMethodName(m.getName());
         }
@@ -71,6 +71,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         this.currObj = getNextAttribute();
     }
 
+    @Override
     public Attribute next() {
         if (currObj == null) {
             throw new IndexOutOfBoundsException();
@@ -80,10 +81,12 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         return ret;
     }
 
+    @Override
     public boolean hasNext() {
         return currObj != null;
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }

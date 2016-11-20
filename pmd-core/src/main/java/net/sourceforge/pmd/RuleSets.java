@@ -89,7 +89,7 @@ public class RuleSets {
 
     /**
      * Check if a given source file should be checked by rules in this RuleSets.
-     * 
+     *
      * @param file
      *            the source file to check
      * @return <code>true</code> if the file should be checked,
@@ -165,7 +165,7 @@ public class RuleSets {
      *
      * Note: Since we support multiple languages, rule names are not expected to
      * be unique within any specific ruleset.
-     * 
+     *
      * @param ruleName
      *            the exact name of the rule to find
      * @return the rule or null if not found
@@ -181,7 +181,7 @@ public class RuleSets {
 
     /**
      * Determines the total count of rules that are used in all rule sets.
-     * 
+     *
      * @return the count
      */
     public int ruleCount() {
@@ -203,7 +203,7 @@ public class RuleSets {
 
     /**
      * Remove and collect any rules that report problems.
-     * 
+     *
      * @param collector
      */
     public void removeDysfunctionalRules(Collection<Rule> collector) {

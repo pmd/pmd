@@ -1,6 +1,9 @@
 
 package net.sourceforge.pmd.properties;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -11,25 +14,22 @@ import net.sourceforge.pmd.lang.rule.properties.MethodMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
 import net.sourceforge.pmd.util.ClassUtil;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  * Evaluates the functionality of the MethodProperty descriptor by testing its
  * ability to catch creation errors (illegal args), flag invalid methods per the
  * allowable packages, and serialize/deserialize groups of methods onto/from a
  * string buffer.
- * 
+ *
  * We're using methods from java.lang classes for 'normal' constructors and
  * applying ones from java.util types as ones we expect to fail.
- * 
+ *
  * @author Brian Remedios
  */
 public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
     private static final String[] methodSignatures = new String[] { "String#indexOf(int)", "String#substring(int,int)",
-            "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
-            "HashMap#containsKey(Object)" };
+        "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
+        "HashMap#containsKey(Object)", };
 
     public MethodPropertyTest() {
         super("Method");
@@ -83,7 +83,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
         Method[] allMethods = HashMap.class.getDeclaredMethods();
 
         if (count == 1) {
-            return (Method) randomChoice(allMethods);
+            return randomChoice(allMethods);
         }
 
         Method[] methods = new Method[count];
@@ -111,7 +111,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
         Method[] allMethods = String.class.getDeclaredMethods();
 
         if (count == 1) {
-            return (Method) randomChoice(allMethods);
+            return randomChoice(allMethods);
         }
 
         Method[] methods = new Method[count];

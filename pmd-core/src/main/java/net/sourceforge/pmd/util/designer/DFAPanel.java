@@ -245,7 +245,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
     private static class ElementWrapper {
         private DFAGraphMethod node;
 
-        public ElementWrapper(DFAGraphMethod node) {
+        ElementWrapper(DFAGraphMethod node) {
             this.node = node;
         }
 

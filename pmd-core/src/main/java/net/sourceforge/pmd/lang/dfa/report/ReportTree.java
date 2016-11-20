@@ -18,15 +18,18 @@ public class ReportTree implements Iterable<RuleViolation> {
         private AbstractReportNode iterNode = rootNode;
         private boolean hasNextFlag;
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean hasNext() {
             hasNextFlag = true;
             return getNext() != null;
         }
 
+        @Override
         public RuleViolation next() {
             if (!hasNextFlag) {
                 getNext();

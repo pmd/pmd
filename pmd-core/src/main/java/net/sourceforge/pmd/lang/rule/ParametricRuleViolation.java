@@ -113,50 +113,62 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
         }
     }
 
+    @Override
     public Rule getRule() {
         return rule;
     }
 
+    @Override
     public String getDescription() {
         return expandVariables(description);
     }
 
+    @Override
     public boolean isSuppressed() {
         return suppressed;
     }
 
+    @Override
     public String getFilename() {
         return filename;
     }
 
+    @Override
     public int getBeginLine() {
         return beginLine;
     }
 
+    @Override
     public int getBeginColumn() {
         return beginColumn;
     }
 
+    @Override
     public int getEndLine() {
         return endLine;
     }
 
+    @Override
     public int getEndColumn() {
         return endColumn;
     }
 
+    @Override
     public String getPackageName() {
         return packageName;
     }
 
+    @Override
     public String getClassName() {
         return className;
     }
 
+    @Override
     public String getMethodName() {
         return methodName;
     }
 
+    @Override
     public String getVariableName() {
         return variableName;
     }

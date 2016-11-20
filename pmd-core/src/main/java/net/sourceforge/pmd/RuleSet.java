@@ -524,7 +524,7 @@ public class RuleSet {
 
     private void patternsChanged() {
         filter = null; // ensure we start with one that reflects the current
-                       // patterns
+        // patterns
     }
 
     /**

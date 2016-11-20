@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +23,6 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class AbstractRuleTest {
 
     private static class MyRule extends AbstractRule {
@@ -30,7 +30,7 @@ public class AbstractRuleTest {
 
         private static final StringProperty xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
 
-        public MyRule() {
+        MyRule() {
             definePropertyDescriptor(pd);
             definePropertyDescriptor(xpath);
             setName("MyRule");
@@ -47,7 +47,7 @@ public class AbstractRuleTest {
     private static class MyOtherRule extends AbstractRule {
         private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
-        public MyOtherRule() {
+        MyOtherRule() {
             definePropertyDescriptor(pd);
             setName("MyOtherRule");
             setMessage("my other rule");

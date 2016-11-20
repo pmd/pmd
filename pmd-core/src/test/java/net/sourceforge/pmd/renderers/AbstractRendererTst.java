@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
@@ -16,8 +18,6 @@ import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-
-import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractRendererTst {
 
@@ -42,7 +42,7 @@ public abstract class AbstractRendererTst {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNullPassedIn() throws Throwable {
+    public void testNullPassedIn() throws Exception {
         getRenderer().renderFileReport(null);
     }
 
@@ -90,28 +90,28 @@ public abstract class AbstractRendererTst {
     }
 
     @Test
-    public void testRenderer() throws Throwable {
+    public void testRenderer() throws Exception {
         Report rep = reportOneViolation();
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpected()), filter(actual));
     }
 
     @Test
-    public void testRendererEmpty() throws Throwable {
+    public void testRendererEmpty() throws Exception {
         Report rep = new Report();
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedEmpty()), filter(actual));
     }
 
     @Test
-    public void testRendererMultiple() throws Throwable {
+    public void testRendererMultiple() throws Exception {
         Report rep = reportTwoViolations();
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedMultiple()), filter(actual));
     }
 
     @Test
-    public void testError() throws Throwable {
+    public void testError() throws Exception {
         Report rep = new Report();
         Report.ProcessingError err = new Report.ProcessingError("Error", "file");
         rep.addError(err);

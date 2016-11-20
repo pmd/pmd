@@ -126,6 +126,15 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        if (this.getUnderlyingNode() != null) {
+            return super.hashCode() + 31 * this.getUnderlyingNode().hashCode();
+        } else {
+            return super.hashCode();
+        }
+    }
+
     /**
      * {@inheritDoc}
      */

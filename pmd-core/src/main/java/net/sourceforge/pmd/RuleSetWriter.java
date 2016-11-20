@@ -267,20 +267,20 @@ public class RuleSetWriter {
         if (propertyDescriptors != null) {
 
             for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) { // For
-                                                                                   // each
-                                                                                   // provided
-                                                                                   // PropertyDescriptor
+                // each
+                // provided
+                // PropertyDescriptor
 
                 if (propertyDescriptor instanceof PropertyDescriptorWrapper) { // Any
-                                                                               // wrapper
-                                                                               // property
-                                                                               // needs
-                                                                               // to
-                                                                               // go
-                                                                               // out
-                                                                               // as
-                                                                               // a
-                                                                               // definition.
+                    // wrapper
+                    // property
+                    // needs
+                    // to
+                    // go
+                    // out
+                    // as
+                    // a
+                    // definition.
                     if (propertiesElement == null) {
                         propertiesElement = createPropertiesElement();
                     }
@@ -290,16 +290,16 @@ public class RuleSetWriter {
                     propertiesElement.appendChild(propertyElement);
                 } else {
                     if (propertiesByPropertyDescriptor != null) { // Otherwise,
-                                                                  // any
-                                                                  // property
-                                                                  // which has a
-                                                                  // value
-                                                                  // different
-                                                                  // than the
-                                                                  // default
-                                                                  // needs to go
-                                                                  // out as a
-                                                                  // value.
+                        // any
+                        // property
+                        // which has a
+                        // value
+                        // different
+                        // than the
+                        // default
+                        // needs to go
+                        // out as a
+                        // value.
                         Object defaultValue = propertyDescriptor.defaultValue();
                         Object value = propertiesByPropertyDescriptor.get(propertyDescriptor);
                         if (value != defaultValue && (value == null || !value.equals(defaultValue))) {

@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,12 +27,6 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 public class RuleSetTest {
 
@@ -151,7 +151,7 @@ public class RuleSetTest {
     }
 
     @Test
-    public void testApply0Rules() throws Throwable {
+    public void testApply0Rules() {
         RuleSet IUT = new RuleSet();
         verifyRuleSet(IUT, 0, new HashSet());
     }
@@ -406,7 +406,7 @@ public class RuleSetTest {
         assertEquals("Violations", 1, r.size());
     }
 
-    private void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {
+    private void verifyRuleSet(RuleSet IUT, int size, Set values) {
 
         RuleContext context = new RuleContext();
         Set<RuleViolation> reportedValues = new HashSet<>();

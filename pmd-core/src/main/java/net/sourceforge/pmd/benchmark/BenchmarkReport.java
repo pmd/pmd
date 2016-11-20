@@ -9,20 +9,20 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author Brian Remedios
  */
 public interface BenchmarkReport {
 
     /**
-     * 
+     *
      * @param stressResults
      * @param out
      */
     void generate(Set<RuleDuration> stressResults, PrintStream out);
 
     /**
-     * 
+     *
      * @param benchmarksByName
      * @param out
      */

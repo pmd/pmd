@@ -30,6 +30,7 @@ public class FileExtensionFilter implements Filter<File> {
         }
     }
 
+    @Override
     public boolean filter(File file) {
         boolean accept = extensions == null;
         if (!accept) {

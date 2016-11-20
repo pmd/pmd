@@ -84,6 +84,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
      * contains the name of the class, Package - represents a package and
      * contains the name(s) of the package.
      */
+    @Override
     public void visit(AbstractReportNode node) {
 
         /*

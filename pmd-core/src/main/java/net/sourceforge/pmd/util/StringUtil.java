@@ -210,7 +210,7 @@ public final class StringUtil {
 
     /**
      * Replace some whitespace characters so they are visually apparent.
-     * 
+     *
      * @param o
      * @return String
      */
@@ -257,7 +257,8 @@ public final class StringUtil {
         char c;
         for (int i = 0; i < src.length(); i++) {
             c = src.charAt(i);
-            if (c > '~') {// 126
+            if (c > '~') {
+                // 126
                 if (!supportUTF8) {
                     int codepoint = c;
                     // surrogate characters are not allowed in XML
@@ -502,7 +503,7 @@ public final class StringUtil {
 
     /**
      * Left pads a string.
-     * 
+     *
      * @param s
      *            The String to pad
      * @param length
@@ -590,7 +591,7 @@ public final class StringUtil {
 
     /**
      * Returns an empty array of string
-     * 
+     *
      * @return String
      */
     public static String[] getEmptyStrings() {

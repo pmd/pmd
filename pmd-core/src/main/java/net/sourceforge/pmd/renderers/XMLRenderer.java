@@ -37,6 +37,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         setProperty(ENCODING, encoding);
     }
 
+    @Override
     public String defaultFileExtension() {
         return "xml";
     }
@@ -75,8 +76,10 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             buf.setLength(0);
             RuleViolation rv = violations.next();
-            if (!rv.getFilename().equals(filename)) { // New File
-                if (filename != null) {// Not first file ?
+            if (!rv.getFilename().equals(filename)) {
+                // New File
+                if (filename != null) {
+                    // Not first file ?
                     buf.append("</file>").append(PMD.EOL);
                 }
                 filename = rv.getFilename();

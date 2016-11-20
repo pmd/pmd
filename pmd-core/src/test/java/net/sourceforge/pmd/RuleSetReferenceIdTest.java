@@ -4,15 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -25,6 +16,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class RuleSetReferenceIdTest {
 

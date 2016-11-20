@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -115,7 +116,7 @@ public class MainFrame extends JFrame implements ActionListener, ViewerModelList
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
         setSize(800, 600);
         setVisible(true);
@@ -143,6 +144,7 @@ public class MainFrame extends JFrame implements ActionListener, ViewerModelList
     /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         long t0;
@@ -184,6 +186,7 @@ public class MainFrame extends JFrame implements ActionListener, ViewerModelList
     /**
      * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
+    @Override
     public void viewerModelChanged(ViewerModelEvent e) {
         evalBtn.setEnabled(model.hasCompiledTree());
     }

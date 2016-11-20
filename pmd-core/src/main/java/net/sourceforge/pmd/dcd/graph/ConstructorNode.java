@@ -33,6 +33,7 @@ public class ConstructorNode extends MemberNode<ConstructorNode, Constructor<?>>
         return ClassLoaderUtil.INIT.equals(name);
     }
 
+    @Override
     public Constructor<?> getMember() {
         if (ClassLoaderUtil.CLINIT.equals(name)) {
             return null;
@@ -50,6 +51,7 @@ public class ConstructorNode extends MemberNode<ConstructorNode, Constructor<?>>
         }
     }
 
+    @Override
     public String toStringLong() {
         if (ClassLoaderUtil.CLINIT.equals(name)) {
             return name;
@@ -58,6 +60,7 @@ public class ConstructorNode extends MemberNode<ConstructorNode, Constructor<?>>
         }
     }
 
+    @Override
     public int compareTo(ConstructorNode that) {
         // Order by name
         int cmp = this.getName().compareTo(that.getName());
@@ -78,11 +81,20 @@ public class ConstructorNode extends MemberNode<ConstructorNode, Constructor<?>>
         return cmp;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof ConstructorNode) {
             ConstructorNode that = (ConstructorNode) obj;
             return super.equals(that);
         }
         return false;
+    }
+
+    /* (non-Javadoc)
+     * @see net.sourceforge.pmd.dcd.graph.MemberNode#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

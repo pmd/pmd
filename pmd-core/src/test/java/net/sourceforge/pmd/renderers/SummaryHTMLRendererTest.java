@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,8 +19,6 @@ import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-
-import static org.junit.Assert.assertEquals;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTst {
 

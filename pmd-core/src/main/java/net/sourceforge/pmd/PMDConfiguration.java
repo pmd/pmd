@@ -514,7 +514,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Whether PMD should exit with status 4 (the default behavior, true) if
      * violations are found or just with 0 (to not break the build, e.g.).
-     * 
+     *
      * @return failOnViolation
      */
     public boolean isFailOnViolation() {
@@ -524,7 +524,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Sets whether PMD should exit with status 4 (the default behavior, true)
      * if violations are found or just with 0 (to not break the build, e.g.).
-     * 
+     *
      * @param failOnViolation
      *            failOnViolation
      */

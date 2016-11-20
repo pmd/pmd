@@ -95,7 +95,7 @@ public class PmdRunnable extends PMD implements Callable<Report> {
         private RuleSets rulesets;
         private final RuleSetFactory ruleSetFactory;
 
-        public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory, RuleContext ctx) {
+        PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory, RuleContext ctx) {
             super(r, "PmdThread " + id);
             this.id = id;
             context = new RuleContext(ctx);

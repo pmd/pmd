@@ -34,6 +34,7 @@ public class FileIterable implements Iterable<String> {
         }
     }
 
+    @Override
     protected void finalize() throws Throwable {
         try {
             if (lineReader != null) {
@@ -45,6 +46,7 @@ public class FileIterable implements Iterable<String> {
         super.finalize();
     }
 
+    @Override
     public Iterator<String> iterator() {
         return new FileIterator();
     }
@@ -53,10 +55,12 @@ public class FileIterable implements Iterable<String> {
 
         private boolean hasNext = true;
 
+        @Override
         public boolean hasNext() {
             return hasNext;
         }
 
+        @Override
         public String next() {
             String line = null;
             try {
@@ -73,6 +77,7 @@ public class FileIterable implements Iterable<String> {
             }
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("remove is not supported by " + this.getClass().getName());
         }

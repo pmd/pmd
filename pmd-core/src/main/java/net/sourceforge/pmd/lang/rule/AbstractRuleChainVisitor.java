@@ -40,6 +40,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * @see RuleChainVisitor#add(RuleSet, Rule)
      */
+    @Override
     public void add(RuleSet ruleSet, Rule rule) {
 
         if (!ruleSetRules.containsKey(ruleSet)) {
@@ -51,6 +52,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * @see RuleChainVisitor#visitAll(List, RuleContext)
      */
+    @Override
     public void visitAll(List<Node> nodes, RuleContext ctx) {
         initialize();
         clear();

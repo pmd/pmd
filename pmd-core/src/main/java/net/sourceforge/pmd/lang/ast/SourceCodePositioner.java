@@ -10,7 +10,7 @@ import java.util.Arrays;
  * Calculates from an absolute offset in the source file the line/column
  * coordinate. This is needed as Rhino only offers absolute positions for each
  * node. Some other languages like XML and Apex use this, too.
- * 
+ *
  * Idea from:
  * http://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/javascript/jscomp/SourceFile.java
  */
@@ -49,7 +49,7 @@ public class SourceCodePositioner {
             insertionPoint += 1;
             insertionPoint *= -1;
             lineNumber = insertionPoint - 1; // take the insertion point one
-                                             // before
+            // before
         }
         return lineNumber + 1; // 1-based line numbers
     }

@@ -40,6 +40,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
         definePropertyDescriptor(CLASS_AND_METHOD_NAME);
     }
 
+    @Override
     public String defaultFileExtension() {
         return "txt";
     }
@@ -102,7 +103,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 
         private Set<String> paths = new HashSet<>();
 
-        public SourcePath(String sourcePathString) {
+        SourcePath(String sourcePathString) {
             for (StringTokenizer st = new StringTokenizer(sourcePathString, PATH_SEPARATOR); st.hasMoreTokens();) {
                 paths.add(st.nextToken());
             }

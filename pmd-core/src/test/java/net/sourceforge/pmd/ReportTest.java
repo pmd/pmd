@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -19,19 +23,17 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class ReportTest implements ReportListener {
 
     private boolean violationSemaphore;
     private boolean metricSemaphore;
 
+    @Override
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         violationSemaphore = true;
     }
 
+    @Override
     public void metricAdded(Metric metric) {
         metricSemaphore = true;
     }

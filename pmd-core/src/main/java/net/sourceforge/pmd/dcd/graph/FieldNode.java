@@ -22,6 +22,7 @@ public class FieldNode extends MemberNode<FieldNode, Field> {
         getMember();
     }
 
+    @Override
     public Field getMember() {
         Field field = fieldReference == null ? null : fieldReference.get();
         if (field == null) {
@@ -31,15 +32,25 @@ public class FieldNode extends MemberNode<FieldNode, Field> {
         return field;
     }
 
+    @Override
     public int compareTo(FieldNode that) {
         return this.name.compareTo(that.name);
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof FieldNode) {
             FieldNode that = (FieldNode) obj;
             return super.equals(that);
         }
         return false;
+    }
+
+    /* (non-Javadoc)
+     * @see net.sourceforge.pmd.dcd.graph.MemberNode#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

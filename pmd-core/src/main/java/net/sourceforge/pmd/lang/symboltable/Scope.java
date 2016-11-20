@@ -32,7 +32,7 @@ public interface Scope {
     /**
      * Helper method that goes up the parent scopes to find a scope of the
      * specified type
-     * 
+     *
      * @param clazz
      *            the type of the Scope to search for
      * @return the found scope of the specified type or <code>null</code> if no
@@ -42,7 +42,7 @@ public interface Scope {
 
     /**
      * Gets all the declaration with the occurrences in this scope.
-     * 
+     *
      * @return map of declarations with occurrences.
      */
     Map<NameDeclaration, List<NameOccurrence>> getDeclarations();
@@ -51,7 +51,7 @@ public interface Scope {
      * Helper method to get only a specific type of name declarations. The
      * return map elemens have already been casted to the correct type. This
      * method usually returns a subset of {@link #getDeclarations()}.
-     * 
+     *
      * @param clazz
      *            the type of name declarations to use
      * @return map of declarations with occurrences.
@@ -71,7 +71,7 @@ public interface Scope {
      * Adds a new declaration to this scope. Only after the declaration has been
      * added, {@link #contains(NameOccurrence)} and
      * {@link #addNameOccurrence(NameOccurrence)} can be used correctly.
-     * 
+     *
      * @param declaration
      *            the declaration to add
      */
@@ -80,7 +80,7 @@ public interface Scope {
     /**
      * Adds a {@link NameOccurrence} to this scope - only call this after
      * getting a true back from {@link #contains(NameOccurrence)}.
-     * 
+     *
      * @return the {@link NameDeclaration}s that are referenced by the given
      *         {@link NameOccurrence}, if the {@link NameOccurrence} could be
      *         added. Otherwise an empty set is returned.

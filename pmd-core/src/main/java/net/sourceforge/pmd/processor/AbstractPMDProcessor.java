@@ -54,7 +54,7 @@ public abstract class AbstractPMDProcessor {
      * not</strong> be used by different threads. Each thread must create its
      * own copy of the rules (see
      * {@link PmdRunnable.PmdThread#getRuleSets(String)}).
-     * 
+     *
      * @param factory
      * @return the rules within a rulesets
      */

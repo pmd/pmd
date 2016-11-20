@@ -95,7 +95,7 @@ public class Structure {
     }
 
     /**
-     * 
+     *
      * @return formatted dump of the DFA Structure's
      */
     public String dump() {

@@ -28,7 +28,7 @@ import org.apache.commons.io.IOUtils;
 public class RuleSetFactoryCompatibility {
     private static final Logger LOG = Logger.getLogger(RuleSetFactoryCompatibility.class.getName());
 
-    private List<RuleSetFilter> filters = new LinkedList<RuleSetFilter>();
+    private List<RuleSetFilter> filters = new LinkedList<>();
 
     /**
      * Creates a new instance of the compatibility filter with the built-in
@@ -107,7 +107,7 @@ public class RuleSetFactoryCompatibility {
     /**
      * Determines the encoding of the given bytes, assuming this is a XML
      * document, which specifies the encoding in the first 1024 bytes.
-     * 
+     *
      * @param bytes
      *            the input bytes, might be more or less than 1024 bytes
      * @return the determined encoding, falls back to the default UTF-8 encoding
@@ -185,8 +185,9 @@ public class RuleSetFactoryCompatibility {
                 }
             }
 
-            if (exclusionPattern == null)
+            if (exclusionPattern == null) {
                 return result;
+            }
 
             Matcher exclusions = exclusionPattern.matcher(result);
             if (exclusions.find()) {

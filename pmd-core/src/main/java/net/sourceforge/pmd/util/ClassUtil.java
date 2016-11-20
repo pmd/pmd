@@ -24,11 +24,11 @@ public final class ClassUtil {
 
     @SuppressWarnings("PMD.AvoidUsingShortType")
     private static final TypeMap PRIMITIVE_TYPE_NAMES = new TypeMap(new Class[] { int.class, byte.class, long.class,
-            short.class, float.class, double.class, char.class, boolean.class, });
+        short.class, float.class, double.class, char.class, boolean.class, });
 
     private static final TypeMap TYPES_BY_NAME = new TypeMap(
             new Class[] { Integer.class, Byte.class, Long.class, Short.class, Float.class, Double.class,
-                    Character.class, Boolean.class, BigDecimal.class, String.class, Object.class, Class.class });
+                Character.class, Boolean.class, BigDecimal.class, String.class, Object.class, Class.class, });
 
     private static final Map<Class<?>, String> SHORT_NAMES_BY_TYPE = computeClassShortNames();
 
@@ -88,7 +88,7 @@ public final class ClassUtil {
     /**
      * Return the name of the type in its short form if its known to us
      * otherwise return its name fully packaged.
-     * 
+     *
      * @param type
      * @return String
      */
@@ -141,7 +141,7 @@ public final class ClassUtil {
 
     /**
      * Return the methods as a map keyed by their common declaration types.
-     * 
+     *
      * @param methods
      * @return Map<String, List<Method>>
      */

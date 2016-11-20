@@ -1,6 +1,8 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 
 import org.junit.Test;
@@ -8,8 +10,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageFilenameFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests on FileSelector.

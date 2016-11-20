@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  * A console renderer with optional color support under *nix systems.
  * </p>
  * <p/>
- * 
+ *
  * <pre>
  * * file: ./src/gilot/Test.java
  *     src:  Test.java:12
@@ -83,6 +83,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         definePropertyDescriptor(COLOR);
     }
 
+    @Override
     public String defaultFileExtension() {
         return "txt";
     }

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Defines a property that supports single class types, even for primitive
  * values!
- * 
+ *
  * TODO - untested for array types
  *
  * @author Brian Remedios
@@ -24,6 +24,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeProperty>(
             Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public TypeProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new TypeProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
@@ -33,7 +34,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
 
     /**
      * Constructor for TypeProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -52,7 +53,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -71,7 +72,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -92,13 +93,14 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return asString(defaultValue());
     }
 
     /**
      * Method packageNameOf.
-     * 
+     *
      * @param item
      *            Object
      * @return String
@@ -112,6 +114,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Class> type() {
         return Class.class;
     }
@@ -163,6 +166,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Class<?> valueFrom(String valueString) {
         return classFrom(valueString);
     }

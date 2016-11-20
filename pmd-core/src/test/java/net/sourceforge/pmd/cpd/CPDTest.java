@@ -17,6 +17,7 @@ import org.junit.Test;
 public class CPDTest {
 
     private static final String BASE_TEST_RESOURCE_PATH;
+
     static {
         if (new File("target/clover/test-classes").exists()) {
             BASE_TEST_RESOURCE_PATH = "target/clover/test-classes/net/sourceforge/pmd/cpd/files/";
@@ -24,6 +25,7 @@ public class CPDTest {
             BASE_TEST_RESOURCE_PATH = "target/test-classes/net/sourceforge/pmd/cpd/files/";
         }
     }
+
     private CPD cpd;
 
     private boolean canTestSymLinks = false;
@@ -47,7 +49,7 @@ public class CPDTest {
     /**
      * As java doesn't support symlinks in zip files, maven does not, too. So,
      * we are creating the symlinks manually here before the test.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -56,11 +58,11 @@ public class CPDTest {
             Runtime runtime = Runtime.getRuntime();
             if (!new File(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt").exists()) {
                 runtime.exec(new String[] { "ln", "-s", "real-file.txt",
-                        BASE_TEST_RESOURCE_PATH + "symlink-for-real-file.txt" }).waitFor();
+                    BASE_TEST_RESOURCE_PATH + "symlink-for-real-file.txt", }).waitFor();
             }
             if (!new File(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test").exists()) {
                 runtime.exec(new String[] { "ln", "-s", "broken-sym-link",
-                        BASE_TEST_RESOURCE_PATH + "this-is-a-broken-sym-link-for-test" }).waitFor();
+                    BASE_TEST_RESOURCE_PATH + "this-is-a-broken-sym-link-for-test", }).waitFor();
             }
         }
     }
@@ -68,7 +70,7 @@ public class CPDTest {
     /**
      * A broken symlink (which is basically a not existing file), should be
      * skipped.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -86,7 +88,7 @@ public class CPDTest {
     /**
      * A file should be added only once - even if it was found twice, because of
      * a sym link.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -105,7 +107,7 @@ public class CPDTest {
     /**
      * Add a file with a relative path - should still be added and not be
      * detected as a sym link.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -125,11 +127,12 @@ public class CPDTest {
         private int expectedFilesCount;
         private int files;
 
-        public NoFileAssertListener(int expectedFilesCount) {
+        NoFileAssertListener(int expectedFilesCount) {
             this.expectedFilesCount = expectedFilesCount;
             this.files = 0;
         }
 
+        @Override
         public void addedFile(int fileCount, File file) {
             files++;
             if (files > expectedFilesCount) {
@@ -137,6 +140,7 @@ public class CPDTest {
             }
         }
 
+        @Override
         public void phaseUpdate(int phase) {
             // not needed for this test
         }

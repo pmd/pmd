@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collection;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.ReadableDurationTest;
 
-import static org.junit.Assert.assertEquals;
-
 /**
- * 
+ *
  * @author Brian Remedios
  */
 public class DateTimeUtilTest {

@@ -49,6 +49,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     /**
      * @see javax.swing.tree.TreeNode#getChildAt(int)
      */
+    @Override
     public TreeNode getChildAt(int childIndex) {
         checkChildren();
         return children.get(childIndex);
@@ -57,6 +58,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     /**
      * @see javax.swing.tree.TreeNode#getChildCount()
      */
+    @Override
     public int getChildCount() {
         checkChildren();
         return children.size();
@@ -65,6 +67,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     /**
      * @see javax.swing.tree.TreeNode#getParent()
      */
+    @Override
     public TreeNode getParent() {
         return parent;
     }
@@ -72,6 +75,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     /**
      * @see javax.swing.tree.TreeNode#getIndex(javax.swing.tree.TreeNode)
      */
+    @Override
     public int getIndex(TreeNode node) {
         checkChildren();
         return children.indexOf(node);
@@ -80,6 +84,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     /**
      * @see javax.swing.tree.TreeNode#getAllowsChildren()
      */
+    @Override
     public boolean getAllowsChildren() {
         return true;
     }
@@ -88,6 +93,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
      * @see javax.swing.tree.TreeNode#isLeaf()
      */
 
+    @Override
     public boolean isLeaf() {
         checkChildren();
         return children.isEmpty();
@@ -97,6 +103,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
      * @see javax.swing.tree.TreeNode#children()
      */
 
+    @Override
     public Enumeration<TreeNode> children() {
         return Collections.enumeration(children);
     }
@@ -116,6 +123,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return node.toString();
     }

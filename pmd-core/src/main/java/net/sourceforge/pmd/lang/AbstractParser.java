@@ -8,7 +8,7 @@ import java.io.Reader;
 
 /**
  * This is a generic implementation of the Parser interface.
- * 
+ *
  * @see Parser
  */
 public abstract class AbstractParser implements Parser {
@@ -18,10 +18,12 @@ public abstract class AbstractParser implements Parser {
         this.parserOptions = parserOptions;
     }
 
+    @Override
     public ParserOptions getParserOptions() {
         return parserOptions;
     }
 
+    @Override
     public TokenManager getTokenManager(String fileName, Reader source) {
         TokenManager tokenManager = createTokenManager(source);
         tokenManager.setFileName(fileName);

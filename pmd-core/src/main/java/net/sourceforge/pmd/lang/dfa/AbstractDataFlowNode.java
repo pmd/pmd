@@ -44,6 +44,7 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
         this.line = node.getBeginLine();
     }
 
+    @Override
     public void addPathToChild(DataFlowNode child) {
         DataFlowNode thisChild = child;
         // TODO - throw an exception if already contained in children list?
@@ -53,12 +54,14 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
         }
     }
 
+    @Override
     public boolean removePathToChild(DataFlowNode child) {
         DataFlowNode thisChild = child;
         thisChild.getParents().remove(this);
         return this.children.remove(thisChild);
     }
 
+    @Override
     public void reverseParentPathsTo(DataFlowNode destination) {
         while (!parents.isEmpty()) {
             DataFlowNode parent = parents.get(0);
@@ -67,14 +70,17 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
         }
     }
 
+    @Override
     public int getLine() {
         return this.line;
     }
 
+    @Override
     public void setType(int type) {
         this.type.set(type);
     }
 
+    @Override
     public boolean isType(int intype) {
         try {
             return type.get(intype);
@@ -84,26 +90,32 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
         return false;
     }
 
+    @Override
     public Node getNode() {
         return this.node;
     }
 
+    @Override
     public List<DataFlowNode> getChildren() {
         return this.children;
     }
 
+    @Override
     public List<DataFlowNode> getParents() {
         return this.parents;
     }
 
+    @Override
     public List<DataFlowNode> getFlow() {
         return this.dataFlow;
     }
 
+    @Override
     public int getIndex() {
         return this.dataFlow.indexOf(this);
     }
 
+    @Override
     public void setVariableAccess(List<VariableAccess> variableAccess) {
         if (this.variableAccess.isEmpty()) {
             this.variableAccess = variableAccess;
@@ -112,6 +124,7 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
         }
     }
 
+    @Override
     public List<VariableAccess> getVariableAccess() {
         return this.variableAccess;
     }

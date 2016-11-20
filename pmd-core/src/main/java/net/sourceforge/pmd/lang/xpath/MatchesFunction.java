@@ -25,6 +25,7 @@ public class MatchesFunction implements Function {
                 new MatchesFunction());
     }
 
+    @Override
     public Object call(Context context, List args) throws FunctionCallException {
         if (args.isEmpty()) {
             return Boolean.FALSE;

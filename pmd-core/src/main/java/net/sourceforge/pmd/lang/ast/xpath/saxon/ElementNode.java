@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 import net.sf.saxon.om.Axis;
 import net.sf.saxon.om.AxisIterator;
 import net.sf.saxon.om.DocumentInfo;
@@ -13,7 +15,6 @@ import net.sf.saxon.om.NodeArrayIterator;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SingleNodeIterator;
 import net.sf.saxon.type.Type;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * A Saxon OM Element type node for an AST Node.

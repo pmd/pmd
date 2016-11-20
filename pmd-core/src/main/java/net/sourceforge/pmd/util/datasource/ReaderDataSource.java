@@ -21,7 +21,7 @@ public class ReaderDataSource implements DataSource {
 
     /**
      * Real or pseudo filename or path name.
-     * 
+     *
      * <p>
      * Including a file suffix mapped to the correct language helps assign the
      * correct parser.
@@ -42,7 +42,7 @@ public class ReaderDataSource implements DataSource {
      * <p>
      * <strong>Note:</strong> This uses the default encoding.
      * </p>
-     * 
+     *
      * @return Derived InputStream
      * @throws IOException
      */
@@ -53,11 +53,11 @@ public class ReaderDataSource implements DataSource {
 
     /**
      * Return the dataSourceName via the {@link DataSource} Interface method.
-     * 
+     *
      * <p>
      * Both the parameters are ignored
      * </p>
-     * 
+     *
      * @param shortNames
      *            ignored
      * @param inputFileName

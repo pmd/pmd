@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorFields.DESCRIPTION;
+import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +15,6 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.StringUtil;
-
-import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
-import static net.sourceforge.pmd.PropertyDescriptorFields.DESCRIPTION;
-import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
 
 /**
  *
@@ -47,7 +47,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
     /**
      * Constructor for AbstractPMDProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -102,6 +102,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public char multiValueDelimiter() {
         return multiValueDelimiter;
     }
@@ -109,6 +110,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String name() {
         return name;
     }
@@ -116,6 +118,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String description() {
         return description;
     }
@@ -123,13 +126,14 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public T defaultValue() {
         return defaultValue;
     }
 
     /**
      * Method defaultHasNullValue.
-     * 
+     *
      * @return boolean
      */
     protected boolean defaultHasNullValue() {
@@ -153,6 +157,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isMultiValue() {
         return false;
     }
@@ -160,6 +165,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isRequired() {
         return isRequired;
     }
@@ -167,6 +173,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public float uiOrder() {
         return uiOrder;
     }
@@ -186,13 +193,14 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String asDelimitedString(T values) {
         return asDelimitedString(values, multiValueDelimiter());
     }
 
     /**
      * Return the specified values as a single string using the delimiter.
-     * 
+     *
      * @param values
      *            Object
      * @param delimiter
@@ -229,6 +237,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compareTo(PropertyDescriptor<?> otherProperty) {
         float otherOrder = otherProperty.uiOrder();
         return (int) (otherOrder - uiOrder);
@@ -237,6 +246,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String errorFor(Object value) {
 
         String typeError = typeErrorFor(value);
@@ -328,6 +338,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String propertyErrorFor(Rule rule) {
         Object realValue = rule.getProperty(this);
         if (realValue == null && !isRequired()) {
@@ -339,6 +350,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object[][] choices() {
         return null;
     }
@@ -346,6 +358,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int preferredRowCount() {
         return 1;
     }
@@ -419,6 +432,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     /**
      * @return Map<String,String>
      */
+    @Override
     public Map<String, String> attributeValuesById() {
 
         Map<String, String> values = new HashMap<>();

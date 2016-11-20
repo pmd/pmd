@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a datatype that supports the single Long property values within an
  * upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class LongProperty extends AbstractNumericProperty<Long> {
@@ -20,6 +20,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<LongProperty>(Long.class,
             NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public LongProperty createWith(Map<String, String> valuesById) {
             final String[] minMax = minMaxFrom(valuesById);
             return new LongProperty(nameIn(valuesById), descriptionIn(valuesById), Long.valueOf(minMax[0]),
@@ -29,7 +30,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
 
     /**
      * Constructor for LongProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -51,7 +52,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
     /**
      * Constructor for LongProperty that limits itself to a single value within
      * the specified limits. Converts string arguments into the Long values.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -84,6 +85,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Long> type() {
         return Long.class;
     }
@@ -93,6 +95,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return longFrom(value);
     }

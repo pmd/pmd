@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a datatype that supports single Integer property values within an
  * upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class IntegerProperty extends AbstractNumericProperty<Integer> {
@@ -20,6 +20,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<IntegerProperty>(
             Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public IntegerProperty createWith(Map<String, String> valuesById) {
             final String[] minMax = minMaxFrom(valuesById);
             return new IntegerProperty(nameIn(valuesById), descriptionIn(valuesById), Integer.valueOf(minMax[0]),
@@ -30,7 +31,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     /**
      * Constructor for IntegerProperty that limits itself to a single value
      * within the specified limits.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -54,7 +55,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      * Constructor for IntegerProperty that limits itself to a single value
      * within the specified limits. Converts string arguments into the Float
      * values.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -86,6 +87,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Integer> type() {
         return Integer.class;
     }
@@ -95,6 +97,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return intFrom(value);
     }

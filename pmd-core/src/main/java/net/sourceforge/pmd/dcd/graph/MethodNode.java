@@ -25,6 +25,7 @@ public class MethodNode extends MemberNode<MethodNode, Method> {
         // getMember();
     }
 
+    @Override
     public Method getMember() {
         Method method = methodReference == null ? null : methodReference.get();
         if (method == null) {
@@ -37,6 +38,7 @@ public class MethodNode extends MemberNode<MethodNode, Method> {
         return method;
     }
 
+    @Override
     public int compareTo(MethodNode that) {
         // Order by method name
         int cmp = this.getName().compareTo(that.getName());
@@ -57,11 +59,20 @@ public class MethodNode extends MemberNode<MethodNode, Method> {
         return cmp;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof MethodNode) {
             MethodNode that = (MethodNode) obj;
             return super.equals(that);
         }
         return false;
+    }
+
+    /* (non-Javadoc)
+     * @see net.sourceforge.pmd.dcd.graph.MemberNode#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil
 
 /**
  * Field names for parsing the properties out of the ruleset xml files.
- * 
+ *
  * @author Brian Remedios
  * @see RuleSetFactory
  */
@@ -16,7 +16,7 @@ public class PropertyDescriptorFields {
 
     /**
      * The type of the property.
-     * 
+     *
      * @see PropertyDescriptorUtil
      */
     public static final String TYPE = "type";

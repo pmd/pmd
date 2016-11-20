@@ -17,7 +17,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * Base class for objects which can be configured through properties. Rules and
  * Reports are such objects.
- * 
+ *
  * @author Brian Remedios
  */
 public abstract class AbstractPropertySource implements PropertySource {
@@ -29,7 +29,7 @@ public abstract class AbstractPropertySource implements PropertySource {
 
     /**
      * Creates a copied list of the property descriptors and returns it.
-     * 
+     *
      * @return a copy of the property descriptors.
      */
     protected List<PropertyDescriptor<?>> copyPropertyDescriptors() {
@@ -38,7 +38,7 @@ public abstract class AbstractPropertySource implements PropertySource {
 
     /**
      * Creates a copied map of the values of the properties and returns it.
-     * 
+     *
      * @return a copy of the values
      */
     protected Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
@@ -48,6 +48,7 @@ public abstract class AbstractPropertySource implements PropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Set<PropertyDescriptor<?>> ignoredProperties() {
         return Collections.emptySet();
     }
@@ -55,6 +56,7 @@ public abstract class AbstractPropertySource implements PropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         // Check to ensure the property does not already exist.
         for (PropertyDescriptor<?> descriptor : propertyDescriptors) {
@@ -71,7 +73,7 @@ public abstract class AbstractPropertySource implements PropertySource {
     /**
      * Gets the name of the property source. This is e.g. the rule name or the
      * report name.
-     * 
+     *
      * @return the name
      */
     public abstract String getName();

@@ -45,6 +45,7 @@ public class ImportWrapper {
         this.isStaticDemand = isStaticDemand;
     }
 
+    @Override
     public boolean equals(Object other) {
         if (other == null) {
             return false;
@@ -74,6 +75,7 @@ public class ImportWrapper {
         return i.getName().equals(name);
     }
 
+    @Override
     public int hashCode() {
         if (name == null) {
             return fullname.hashCode();

@@ -42,7 +42,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private static final Logger LOG = Logger.getLogger(JaxenXPathRuleQuery.class.getName());
 
-    private static enum InitializationStatus {
+    private enum InitializationStatus {
         NONE, PARTIAL, FULL
     }
 
@@ -180,8 +180,8 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
                     }
                 }
             } else if (node instanceof UnionExpr) { // Or a UnionExpr, that is
-                                                    // something like //TypeA |
-                                                    // //TypeB
+                // something like //TypeA |
+                // //TypeB
                 UnionExpr unionExpr = (UnionExpr) node;
                 pending.push(unionExpr.getLHS());
                 pending.push(unionExpr.getRHS());

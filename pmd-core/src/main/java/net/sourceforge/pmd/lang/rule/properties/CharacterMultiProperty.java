@@ -12,7 +12,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property type that supports multiple Character values.
- * 
+ *
  * @author Brian Remedios
  */
 public class CharacterMultiProperty extends AbstractProperty<Character[]> {
@@ -20,6 +20,7 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterMultiProperty>(
             Character[].class) {
 
+        @Override
         public CharacterMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new CharacterMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
@@ -29,7 +30,7 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
 
     /**
      * Constructor for CharacterProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -59,6 +60,7 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Character[]> type() {
         return Character[].class;
     }
@@ -70,6 +72,7 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Character[] valueFrom(String valueString) throws IllegalArgumentException {
         String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter());
 

@@ -6,8 +6,9 @@ package net.sourceforge.pmd.lang;
 
 import org.jaxen.Navigator;
 
-import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.xpath.Initializer;
+
+import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Interface for performing Language specific XPath handling, such as
@@ -16,12 +17,15 @@ import net.sourceforge.pmd.lang.xpath.Initializer;
 public interface XPathHandler {
 
     XPathHandler DUMMY = new XPathHandler() {
+        @Override
         public void initialize() {
         }
 
+        @Override
         public void initialize(IndependentContext context) {
         }
 
+        @Override
         public Navigator getNavigator() {
             return null;
         }

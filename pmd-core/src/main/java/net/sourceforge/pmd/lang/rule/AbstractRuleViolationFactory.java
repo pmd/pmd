@@ -28,6 +28,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         }
     }
 
+    @Override
     public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args) {
 
         String formattedMessage = cleanup(message, args);
@@ -35,6 +36,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         ruleContext.getReport().addRuleViolation(createRuleViolation(rule, ruleContext, node, formattedMessage));
     }
 
+    @Override
     public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, int beginLine, int endLine,
             Object[] args) {
 

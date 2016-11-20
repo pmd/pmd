@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-
-import static org.junit.Assert.assertEquals;
 
 public class CSVRendererTest {
     @Test

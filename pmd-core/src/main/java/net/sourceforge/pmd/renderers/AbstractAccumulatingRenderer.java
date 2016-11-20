@@ -15,10 +15,10 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * working memory proportional to the number of violations found, which can be
  * quite large in some scenarios. Consider using
  * {@link AbstractIncrementingRenderer} which can use significantly less memory.
- * 
+ *
  * Subclasses should implement the {@link #end()} method to output the
  * {@link #report}.
- * 
+ *
  * @see AbstractIncrementingRenderer
  */
 public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
@@ -35,6 +35,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void start() throws IOException {
         report = new Report();
     }
@@ -42,20 +43,23 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void startFileAnalysis(DataSource dataSource) {
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void renderFileReport(Report report) throws IOException {
         this.report.merge(report);
     }
 
     /**
      * Subclasses should output the {@link #report}.
-     * 
+     *
      * {@inheritDoc}
      */
+    @Override
     public abstract void end() throws IOException;
 }

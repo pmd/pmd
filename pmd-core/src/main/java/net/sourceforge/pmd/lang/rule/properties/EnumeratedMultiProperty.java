@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * pair of maps. While the values are not serialized out, the labels are and
  * serve as keys to obtain the values. The choices() method provides the ordered
  * selections to be used in an editor widget.
- * 
+ *
  * @author Brian Remedios
  * @param <E>
  */
@@ -25,6 +25,7 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<EnumeratedMultiProperty>(
             Enumeration[].class) {
 
+        @Override
         public EnumeratedMultiProperty createWith(Map<String, String> valuesById) {
 
             return new EnumeratedMultiProperty(nameIn(valuesById), descriptionIn(valuesById), labelsIn(valuesById),
@@ -34,7 +35,7 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 
     /**
      * Constructor for EnumeratedProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -58,6 +59,7 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Object[]> type() {
         return Object[].class;
     }
@@ -89,13 +91,14 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
     }
 
     /**
-     * 
+     *
      * @param value
      *            String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Object[] valueFrom(String value) throws IllegalArgumentException {
         String[] strValues = StringUtil.substringsOf(value, multiValueDelimiter());
 
@@ -107,7 +110,7 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
     }
 
     /**
-     * 
+     *
      * @param value
      *            Object
      * @return String

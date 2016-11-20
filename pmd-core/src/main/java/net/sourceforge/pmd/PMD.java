@@ -106,7 +106,7 @@ public class PMD {
     /**
      * Parses the given string as a database uri and returns a list of
      * datasources.
-     * 
+     *
      * @param uriString
      *            the URI to parse
      * @return list of data sources
@@ -153,7 +153,7 @@ public class PMD {
     /**
      * Helper method to get a configured parser for the requested language. The
      * parser is configured based on the given {@link PMDConfiguration}.
-     * 
+     *
      * @param languageVersion
      *            the requested language
      * @param configuration
@@ -232,7 +232,7 @@ public class PMD {
 
     /**
      * Gets the source code processor.
-     * 
+     *
      * @return SourceCodeProcessor
      */
     public SourceCodeProcessor getSourceCodeProcessor() {
@@ -423,7 +423,7 @@ public class PMD {
 
     /**
      * Determines all the files, that should be analyzed by PMD.
-     * 
+     *
      * @param configuration
      *            contains either the file path or the DB URI, from where to
      *            load the files
@@ -516,7 +516,7 @@ public class PMD {
 
     /**
      * Parses the command line arguments and executes PMD.
-     * 
+     *
      * @param args
      *            command line arguments
      * @return the exit code, where <code>0</code> means successful execution,
@@ -533,8 +533,10 @@ public class PMD {
         final Handler logHandler = new ConsoleLogHandler();
         final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, logHandler);
         final Level oldLogLevel = LOG.getLevel();
-        LOG.setLevel(logLevel); // Need to do this, since the static logger has
-                                // already been initialized at this point
+        // Need to do this, since the static logger has already been initialized
+        // at this point
+        LOG.setLevel(logLevel);
+
         try {
             int violations = PMD.doPMD(configuration);
             if (violations > 0 && configuration.isFailOnViolation()) {
@@ -554,9 +556,9 @@ public class PMD {
                 long end = System.nanoTime();
                 Benchmarker.mark(Benchmark.TotalPMD, end - start, 0);
 
-                TextReport report = new TextReport(); // TODO get specified
-                                                      // report format from
-                                                      // config
+                // TODO get specified report format from config
+                TextReport report = new TextReport();
+
                 report.generate(Benchmarker.values(), System.err);
             }
         }

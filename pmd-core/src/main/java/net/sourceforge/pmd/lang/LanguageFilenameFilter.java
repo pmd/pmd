@@ -23,7 +23,7 @@ public class LanguageFilenameFilter implements FilenameFilter {
 
     /**
      * Create a LanguageFilenameFilter for a single Language.
-     * 
+     *
      * @param language
      *            The Language.
      */
@@ -33,7 +33,7 @@ public class LanguageFilenameFilter implements FilenameFilter {
 
     /**
      * Create a LanguageFilenameFilter for a List of Languages.
-     * 
+     *
      * @param languages
      *            The List of Languages.
      */
@@ -44,6 +44,7 @@ public class LanguageFilenameFilter implements FilenameFilter {
     /**
      * Check if a file should be checked by PMD. {@inheritDoc}
      */
+    @Override
     public boolean accept(File dir, String name) {
         // Any source file should have a '.' in its name...
         int lastDotIndex = name.lastIndexOf('.');
@@ -62,6 +63,7 @@ public class LanguageFilenameFilter implements FilenameFilter {
         return false;
     }
 
+    @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder("(Extension is one of: ");
         for (Language language : languages) {

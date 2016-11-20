@@ -45,7 +45,7 @@ public interface Node {
     /**
      * Sets the index of this node from the perspective of its parent. This
      * means: this.jjtGetParent().jjtGetChild(index) == this.
-     * 
+     *
      * @param index
      *            the child index
      */
@@ -197,7 +197,7 @@ public interface Node {
     /**
      * Get the user data associated with this node. By default there is no data,
      * unless it has been set via {@link #setUserData(Object)}.
-     * 
+     *
      * @return The user data set on this node.
      */
     Object getUserData();
@@ -212,7 +212,7 @@ public interface Node {
      * This API is most useful for external applications looking to leverage
      * PMD's robust support for AST structures, in which case application
      * specific annotations on the AST nodes can be quite useful.
-     * 
+     *
      * @param userData
      *            The data to set on this node.
      */

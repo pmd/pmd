@@ -48,6 +48,7 @@ public class TextPadRenderer extends AbstractIncrementingRenderer {
         super(NAME, "TextPad integration.");
     }
 
+    @Override
     public String defaultFileExtension() {
         return "txt";
     }

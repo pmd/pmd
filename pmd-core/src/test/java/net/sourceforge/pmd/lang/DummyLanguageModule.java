@@ -109,7 +109,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
             ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
                 {
                     this.packageName = "foo"; // just for testing variable
-                                              // expansion
+                    // expansion
                 }
             };
             rv.setLines(beginLine, endLine);

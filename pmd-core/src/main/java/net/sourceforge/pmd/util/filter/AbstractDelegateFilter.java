@@ -7,7 +7,7 @@ package net.sourceforge.pmd.util.filter;
 /**
  * A base class for Filters which implements behavior using delegation to an
  * underlying filter.
- * 
+ *
  * @param <T>
  *            The underlying type on which the filter applies.
  */
@@ -30,11 +30,13 @@ public abstract class AbstractDelegateFilter<T> implements Filter<T> {
     }
 
     // Subclass should override to do something other the simply delegate.
+    @Override
     public boolean filter(T obj) {
         return filter.filter(obj);
     }
 
     // Subclass should override to do something other the simply delegate.
+    @Override
     public String toString() {
         return filter.toString();
     }

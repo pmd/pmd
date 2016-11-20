@@ -25,6 +25,7 @@ public final class RuleViolationComparator implements Comparator<RuleViolation> 
     private RuleViolationComparator() {
     }
 
+    @Override
     public int compare(final RuleViolation r1, final RuleViolation r2) {
         int cmp = r1.getFilename().compareTo(r2.getFilename());
         if (cmp == 0) {

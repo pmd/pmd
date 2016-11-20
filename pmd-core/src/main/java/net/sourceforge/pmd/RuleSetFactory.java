@@ -74,7 +74,7 @@ public class RuleSetFactory {
     /**
      * Set the minimum rule priority threshold for all Rules which are loaded
      * from RuleSets via reference.
-     * 
+     *
      * @param minimumPriority
      *            The minimum priority.
      */
@@ -85,7 +85,7 @@ public class RuleSetFactory {
     /**
      * Set whether warning messages should be logged for usage of deprecated
      * Rules.
-     * 
+     *
      * @param warnDeprecated
      *            <code>true</code> to log warning messages.
      */
@@ -105,7 +105,7 @@ public class RuleSetFactory {
     /**
      * Gets the compatibility filter in order to adjust it, e.g. add additional
      * filters.
-     * 
+     *
      * @return the {@link RuleSetFactoryCompatibility}
      */
     public RuleSetFactoryCompatibility getCompatibilityFilter() {
@@ -244,7 +244,7 @@ public class RuleSetFactory {
 
     /**
      * Parse a ruleset node to construct a RuleSet.
-     * 
+     *
      * @param ruleSetReferenceId
      *            The RuleSetReferenceId of the RuleSet being parsed.
      * @param withDeprecatedRuleReferences
@@ -309,7 +309,7 @@ public class RuleSetFactory {
         }
     }
 
-    private static RuleSet classNotFoundProblem(Exception ex) throws RuntimeException {
+    private static RuleSet classNotFoundProblem(Exception ex) {
         ex.printStackTrace();
         throw new RuntimeException("Couldn't find the class " + ex.getMessage());
     }
@@ -563,12 +563,9 @@ public class RuleSetFactory {
             otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
             isSameRuleSet = true;
         }
-        Rule referencedRule = ruleSetFactory.createRule(otherRuleSetReferenceId, true); // do
-                                                                                        // not
-                                                                                        // ignore
-                                                                                        // deprecated
-                                                                                        // rule
-                                                                                        // references
+        // do not ignore deprecated rule references
+        Rule referencedRule = ruleSetFactory.createRule(otherRuleSetReferenceId, true);
+
         if (referencedRule == null) {
             throw new IllegalArgumentException("Unable to find referenced rule " + otherRuleSetReferenceId.getRuleName()
                     + "; perhaps the rule name is mispelled?");
@@ -646,7 +643,7 @@ public class RuleSetFactory {
 
     /**
      * Check whether the given ruleName is contained in the given ruleset.
-     * 
+     *
      * @param ruleSetReferenceId
      *            the ruleset to check
      * @param ruleName
@@ -794,9 +791,8 @@ public class RuleSetFactory {
         for (Map.Entry<String, Boolean> entry : valueKeys.entrySet()) {
             String valueStr = propertyElement.getAttribute(entry.getKey());
             if (entry.getValue() && StringUtil.isEmpty(valueStr)) {
-                System.out.println("Missing required value for: " + entry.getKey()); // debug
-                                                                                     // pt
-                                                                                     // TODO
+                // TODO debug pt
+                System.out.println("Missing required value for: " + entry.getKey());
             }
             values.put(entry.getKey(), valueStr);
         }
@@ -836,7 +832,7 @@ public class RuleSetFactory {
     /**
      * Determine if the specified rule element will represent a Rule with the
      * given name.
-     * 
+     *
      * @param ruleElement
      *            The rule element.
      * @param ruleName

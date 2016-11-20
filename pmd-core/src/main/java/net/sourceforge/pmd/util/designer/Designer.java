@@ -167,7 +167,7 @@ public class Designer implements ClipboardOwner {
         JMenuBar menuBar = createMenuBar();
         frame.setJMenuBar(menuBar);
         frame.getContentPane().add(containerSplitPane);
-        frame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenHeight = screenSize.height;
@@ -258,7 +258,7 @@ public class Designer implements ClipboardOwner {
         private Object item;
         private ExceptionNode[] kids;
 
-        public ExceptionNode(Object theItem) {
+        ExceptionNode(Object theItem) {
             item = theItem;
 
             if (item instanceof ParseException) {
@@ -344,7 +344,7 @@ public class Designer implements ClipboardOwner {
         private ASTTreeNode parent;
         private ASTTreeNode[] kids;
 
-        public ASTTreeNode(Node theNode) {
+        ASTTreeNode(Node theNode) {
             node = theNode;
 
             Node parent = node.jjtGetParent();
@@ -469,7 +469,7 @@ public class Designer implements ClipboardOwner {
 
         private static final long serialVersionUID = 1L;
 
-        public TreeWidget(Object[] items) {
+        TreeWidget(Object[] items) {
             super(items);
             setToolTipText("");
         }
@@ -940,7 +940,7 @@ public class Designer implements ClipboardOwner {
         codeEditorPane.setText(text);
     }
 
-    private final String getXmlTreeCode() {
+    private String getXmlTreeCode() {
         if (codeEditorPane.getText() != null && codeEditorPane.getText().trim().length() > 0) {
             Node cu = getCompilationUnit();
             return getXmlTreeCode(cu);
@@ -961,7 +961,7 @@ public class Designer implements ClipboardOwner {
         return xml;
     }
 
-    private final void copyXmlToClipboard() {
+    private void copyXmlToClipboard() {
         String xml = getXmlTreeCode();
         if (xml != null) {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xml), this);

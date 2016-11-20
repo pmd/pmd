@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -13,8 +15,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import junit.framework.JUnit4TestAdapter;
-
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class ReadableDurationTest {
@@ -30,7 +30,7 @@ public class ReadableDurationTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { { "0s", 35 }, { "25s", (25 * 1000) }, { "5m 0s", (60 * 1000 * 5) },
-                { "2h 0m 0s", (60 * 1000 * 120) } });
+            { "2h 0m 0s", (60 * 1000 * 120) }, });
     }
 
     @Test

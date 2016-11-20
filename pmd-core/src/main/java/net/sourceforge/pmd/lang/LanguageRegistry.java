@@ -112,7 +112,7 @@ public final class LanguageRegistry {
 
     /**
      * A utility method to find the Languages which have Rule support.
-     * 
+     *
      * @return A List of Languages with Rule support.
      */
     public static List<Language> findWithRuleSupport() {

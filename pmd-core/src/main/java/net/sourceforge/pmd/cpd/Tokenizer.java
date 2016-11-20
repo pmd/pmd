@@ -19,7 +19,7 @@ public interface Tokenizer {
     /**
      * Enables or disabled skipping of blocks like a pre-processor. It is a
      * boolean property. The default value is <code>true</code>.
-     * 
+     *
      * @see #OPTION_SKIP_BLOCKS_PATTERN
      */
     String OPTION_SKIP_BLOCKS = "net.sourceforge.pmd.cpd.Tokenizer.skipBlocks";
@@ -28,7 +28,7 @@ public interface Tokenizer {
      * property and contains of two parts, separated by {@code |}. The first
      * part is the start pattern, the second part is the ending pattern. Default
      * value is "{@code #if 0|#endif}".
-     * 
+     *
      * @see #DEFAULT_SKIP_BLOCKS_PATTERN
      */
     String OPTION_SKIP_BLOCKS_PATTERN = "net.sourceforge.pmd.cpd.Tokenizer.skipBlocksPattern";

@@ -23,6 +23,12 @@
 
 package net.sourceforge.pmd.stat;
 
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,7 +39,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import junit.framework.AssertionFailedError;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -43,11 +48,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
-import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import junit.framework.AssertionFailedError;
 
 /**
  * This class tests the Statistical Rules in PMD.
@@ -83,8 +84,8 @@ public class StatisticalRuleTest {
 
     private DataPoint[] points = new DataPoint[POINTS];
     private MockStatisticalRule IUT = null;
-    private String testName = "";// FIXME - why/when was this added. It was
-                                 // never set.
+    // FIXME - why/when was this added. It was never set.
+    private String testName = "";
     private Random random = new Random();
 
     public static final double MAX_MINIMUM = POINTS;
@@ -155,7 +156,7 @@ public class StatisticalRuleTest {
      * values.
      */
     @Test
-    public void testMetrics() throws Throwable {
+    public void testMetrics() {
         Report report = makeReport(IUT);
         Iterator<Metric> metrics = report.metrics();
 
@@ -184,8 +185,9 @@ public class StatisticalRuleTest {
     public double randomSigma(int minimum) {
         double minSigma = ((POINTS - 1 - minimum) - MEAN) / SIGMA;
 
-        if ((minSigma <= 0) || (minSigma > 2))
+        if ((minSigma <= 0) || (minSigma > 2)) {
             return randomSigma();
+        }
 
         return minSigma + (random.nextDouble() * (2 - minSigma));
     }
@@ -197,8 +199,9 @@ public class StatisticalRuleTest {
     public int expectedSigma(double sigma) {
         long expectedMin = Math.round(MEAN + (sigma * SIGMA));
 
-        if (((POINTS - 1) - expectedMin) < 0)
+        if (((POINTS - 1) - expectedMin) < 0) {
             return 0;
+        }
         return (POINTS - 1) - (int) expectedMin;
     }
 
@@ -249,8 +252,9 @@ public class StatisticalRuleTest {
      * than the minimum provided.
      */
     public int randomTopScore(double target) {
-        if (target < 0)
+        if (target < 0) {
             return 0;
+        }
 
         return random.nextInt(Double.valueOf(target).intValue());
     }
@@ -298,7 +302,7 @@ public class StatisticalRuleTest {
     //
 
     @Test
-    public void testS() throws Throwable {
+    public void testS() {
         verifyResults(MAX_SIGMA, NO_MINIMUM, NO_TOPSCORE, 0, 2);
 
         for (int i = 0; i < NUM_TESTS; i++) {
@@ -308,32 +312,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testS1() throws Throwable {
+    public void testS1() {
         testS();
     }
 
     @Test
-    public void testS2() throws Throwable {
+    public void testS2() {
         testS();
     }
 
     @Test
-    public void testS3() throws Throwable {
+    public void testS3() {
         testS();
     }
 
     @Test
-    public void testS4() throws Throwable {
+    public void testS4() {
         testS();
     }
 
     @Test
-    public void testS5() throws Throwable {
+    public void testS5() {
         testS();
     }
 
     @Test
-    public void testT() throws Throwable {
+    public void testT() {
         verifyResults(NO_SIGMA, NO_MINIMUM, MIN_TOPSCORE, 0, 0);
 
         for (int i = 0; i < NUM_TESTS; i++) {
@@ -343,32 +347,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testT1() throws Throwable {
+    public void testT1() {
         testT();
     }
 
     @Test
-    public void testT2() throws Throwable {
+    public void testT2() {
         testT();
     }
 
     @Test
-    public void testT3() throws Throwable {
+    public void testT3() {
         testT();
     }
 
     @Test
-    public void testT4() throws Throwable {
+    public void testT4() {
         testT();
     }
 
     @Test
-    public void testT5() throws Throwable {
+    public void testT5() {
         testT();
     }
 
     @Test
-    public void testM() throws Throwable {
+    public void testM() {
         verifyResults(NO_SIGMA, MAX_MINIMUM, NO_TOPSCORE, 0, 0);
 
         for (int i = 0; i < NUM_TESTS; i++) {
@@ -378,32 +382,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testM1() throws Throwable {
+    public void testM1() {
         testM();
     }
 
     @Test
-    public void testM2() throws Throwable {
+    public void testM2() {
         testM();
     }
 
     @Test
-    public void testM3() throws Throwable {
+    public void testM3() {
         testM();
     }
 
     @Test
-    public void testM4() throws Throwable {
+    public void testM4() {
         testM();
     }
 
     @Test
-    public void testM5() throws Throwable {
+    public void testM5() {
         testM();
     }
 
     @Test
-    public void testST() throws Throwable {
+    public void testST() {
         verifyResults(randomSigma(), NO_MINIMUM, MIN_TOPSCORE, 0, 0);
 
         for (int i = 0; i < NUM_TESTS; i++) {
@@ -415,32 +419,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testST1() throws Throwable {
+    public void testST1() {
         testST();
     }
 
     @Test
-    public void testST2() throws Throwable {
+    public void testST2() {
         testST();
     }
 
     @Test
-    public void testST3() throws Throwable {
+    public void testST3() {
         testST();
     }
 
     @Test
-    public void testST4() throws Throwable {
+    public void testST4() {
         testST();
     }
 
     @Test
-    public void testST5() throws Throwable {
+    public void testST5() {
         testST();
     }
 
     @Test
-    public void testTS() throws Throwable {
+    public void testTS() {
         verifyResults(MAX_SIGMA, NO_MINIMUM, randomTopScore(), 0, 0);
 
         for (int i = 0; i < NUM_TESTS; i++) {
@@ -452,32 +456,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testTS1() throws Throwable {
+    public void testTS1() {
         testTS();
     }
 
     @Test
-    public void testTS2() throws Throwable {
+    public void testTS2() {
         testTS();
     }
 
     @Test
-    public void testTS3() throws Throwable {
+    public void testTS3() {
         testTS();
     }
 
     @Test
-    public void testTS4() throws Throwable {
+    public void testTS4() {
         testTS();
     }
 
     @Test
-    public void testTS5() throws Throwable {
+    public void testTS5() {
         testTS();
     }
 
     @Test
-    public void testSM() throws Throwable {
+    public void testSM() {
         verifyResults(randomSigma(), MAX_MINIMUM, NO_TOPSCORE, 0, 0);
         for (int i = 0; i < NUM_TESTS; i++) {
             double sigma = randomSigma();
@@ -489,32 +493,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testSM1() throws Throwable {
+    public void testSM1() {
         testSM();
     }
 
     @Test
-    public void testSM2() throws Throwable {
+    public void testSM2() {
         testSM();
     }
 
     @Test
-    public void testSM3() throws Throwable {
+    public void testSM3() {
         testSM();
     }
 
     @Test
-    public void testSM4() throws Throwable {
+    public void testSM4() {
         testSM();
     }
 
     @Test
-    public void testSM5() throws Throwable {
+    public void testSM5() {
         testSM();
     }
 
     @Test
-    public void testMS() throws Throwable {
+    public void testMS() {
         verifyResults(MAX_SIGMA, randomMinimum(), NO_TOPSCORE, 0, 0);
         for (int i = 0; i < NUM_TESTS; i++) {
             double minimum = randomMinimum();
@@ -525,32 +529,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testMS1() throws Throwable {
+    public void testMS1() {
         testMS();
     }
 
     @Test
-    public void testMS2() throws Throwable {
+    public void testMS2() {
         testMS();
     }
 
     @Test
-    public void testMS3() throws Throwable {
+    public void testMS3() {
         testMS();
     }
 
     @Test
-    public void testMS4() throws Throwable {
+    public void testMS4() {
         testMS();
     }
 
     @Test
-    public void testMS5() throws Throwable {
+    public void testMS5() {
         testMS();
     }
 
     @Test
-    public void testTM() throws Throwable {
+    public void testTM() {
         verifyResults(NO_SIGMA, MAX_MINIMUM, randomTopScore(), 0, 0);
         for (int i = 0; i < NUM_TESTS; i++) {
             int topScore = randomTopScore();
@@ -561,32 +565,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testTM1() throws Throwable {
+    public void testTM1() {
         testTM();
     }
 
     @Test
-    public void testTM2() throws Throwable {
+    public void testTM2() {
         testTM();
     }
 
     @Test
-    public void testTM3() throws Throwable {
+    public void testTM3() {
         testTM();
     }
 
     @Test
-    public void testTM4() throws Throwable {
+    public void testTM4() {
         testTM();
     }
 
     @Test
-    public void testTM5() throws Throwable {
+    public void testTM5() {
         testTM();
     }
 
     @Test
-    public void testMT() throws Throwable {
+    public void testMT() {
         verifyResults(NO_SIGMA, randomMinimum(), MIN_TOPSCORE, 0, 0);
         for (int i = 0; i < NUM_TESTS; i++) {
             double minimum = randomMinimum();
@@ -597,32 +601,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testMT1() throws Throwable {
+    public void testMT1() {
         testMT();
     }
 
     @Test
-    public void testMT2() throws Throwable {
+    public void testMT2() {
         testMT();
     }
 
     @Test
-    public void testMT3() throws Throwable {
+    public void testMT3() {
         testMT();
     }
 
     @Test
-    public void testMT4() throws Throwable {
+    public void testMT4() {
         testMT();
     }
 
     @Test
-    public void testMT5() throws Throwable {
+    public void testMT5() {
         testMT();
     }
 
     @Test
-    public void testSTM() throws Throwable {
+    public void testSTM() {
         double sigma = randomSigma();
         verifyResults(sigma, MAX_MINIMUM, randomTopScore(expectedSigma(sigma)), 0, 0);
 
@@ -636,32 +640,32 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testSTM1() throws Throwable {
+    public void testSTM1() {
         testSTM();
     }
 
     @Test
-    public void testSTM2() throws Throwable {
+    public void testSTM2() {
         testSTM();
     }
 
     @Test
-    public void testSTM3() throws Throwable {
+    public void testSTM3() {
         testSTM();
     }
 
     @Test
-    public void testSTM4() throws Throwable {
+    public void testSTM4() {
         testSTM();
     }
 
     @Test
-    public void testSTM5() throws Throwable {
+    public void testSTM5() {
         testSTM();
     }
 
     @Test
-    public void testSMT() throws Throwable {
+    public void testSMT() {
         double sigma = randomSigma();
         verifyResults(sigma, randomMinimum(expectedSigma(sigma)), MIN_TOPSCORE, 0, 0);
 
@@ -675,27 +679,27 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testSMT1() throws Throwable {
+    public void testSMT1() {
         testSMT();
     }
 
     @Test
-    public void testSMT2() throws Throwable {
+    public void testSMT2() {
         testSMT();
     }
 
     @Test
-    public void testSMT3() throws Throwable {
+    public void testSMT3() {
         testSMT();
     }
 
     @Test
-    public void testSMT4() throws Throwable {
+    public void testSMT4() {
         testSMT();
     }
 
     @Test
-    public void testSMT5() throws Throwable {
+    public void testSMT5() {
         testSMT();
     }
 
@@ -704,7 +708,7 @@ public class StatisticalRuleTest {
     // tests are disabled in regress mode until somebody figures out
     // what the tests are supposed to measure and why they sometime fail
     @Ignore("random failures during continuous integration")
-    public void testTSM() throws Throwable {
+    public void testTSM() {
         int topScore = randomTopScore();
         verifyResults(randomSigma(expectedTopScore(topScore)), MAX_MINIMUM, topScore, 0, 0);
 
@@ -719,36 +723,36 @@ public class StatisticalRuleTest {
 
     @Test
     @Ignore("random failures during continuous integration")
-    public void testTSM1() throws Throwable {
+    public void testTSM1() {
         testTSM();
     }
 
     @Test
     @Ignore("random failures during continuous integration")
-    public void testTSM2() throws Throwable {
+    public void testTSM2() {
         testTSM();
     }
 
     @Test
     @Ignore("random failures during continuous integration")
-    public void testTSM3() throws Throwable {
+    public void testTSM3() {
         testTSM();
     }
 
     @Test
     @Ignore("random failures during continuous integration")
-    public void testTSM4() throws Throwable {
+    public void testTSM4() {
         testTSM();
     }
 
     @Test
     @Ignore("random failures during continuous integration")
-    public void testTSM5() throws Throwable {
+    public void testTSM5() {
         testTSM();
     }
 
     @Test
-    public void testTMS() throws Throwable {
+    public void testTMS() {
         int topScore = randomTopScore();
         verifyResults(MAX_SIGMA, randomMinimum(expectedTopScore(topScore)), topScore, 0, 0);
 
@@ -762,27 +766,27 @@ public class StatisticalRuleTest {
     }
 
     @Test
-    public void testTMS1() throws Throwable {
+    public void testTMS1() {
         testTMS();
     }
 
     @Test
-    public void testTMS2() throws Throwable {
+    public void testTMS2() {
         testTMS();
     }
 
     @Test
-    public void testTMS3() throws Throwable {
+    public void testTMS3() {
         testTMS();
     }
 
     @Test
-    public void testTMS4() throws Throwable {
+    public void testTMS4() {
         testTMS();
     }
 
     @Test
-    public void testTMS5() throws Throwable {
+    public void testTMS5() {
         testTMS();
     }
 

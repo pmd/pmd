@@ -157,15 +157,18 @@ public class PMDTaskImpl {
             configuration.setInputPaths(inputPaths);
 
             Renderer logRenderer = new AbstractRenderer("log", "Logging renderer") {
+                @Override
                 public void start() {
                     // Nothing to do
                 }
 
+                @Override
                 public void startFileAnalysis(DataSource dataSource) {
                     project.log("Processing file " + dataSource.getNiceFileName(false, inputPaths),
                             Project.MSG_VERBOSE);
                 }
 
+                @Override
                 public void renderFileReport(Report r) {
                     int size = r.size();
                     if (size > 0) {
@@ -173,10 +176,12 @@ public class PMDTaskImpl {
                     }
                 }
 
+                @Override
                 public void end() {
                     // Nothing to do
                 }
 
+                @Override
                 public String defaultFileExtension() {
                     return null;
                 } // not relevant

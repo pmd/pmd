@@ -13,7 +13,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Defines a datatype that supports multiple String values. Note that all
  * strings must be filtered by the delimiter character.
- * 
+ *
  * @author Brian Remedios
  */
 public class StringMultiProperty extends AbstractProperty<String[]> {
@@ -21,6 +21,7 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringMultiProperty>(
             String[].class) {
 
+        @Override
         public StringMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new StringMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
@@ -30,7 +31,7 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 
     /**
      * Constructor for StringProperty.
-     * 
+     *
      * @param theName
      *            String
      * @param theDescription
@@ -72,6 +73,7 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<String[]> type() {
         return String[].class;
     }
@@ -82,6 +84,7 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public String[] valueFrom(String valueString) {
         return StringUtil.substringsOf(valueString, multiValueDelimiter());
     }
@@ -98,16 +101,17 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
     /**
      * @return String
      */
-    private final String illegalCharMsg() {
+    private String illegalCharMsg() {
         return "Value cannot contain the '" + multiValueDelimiter() + "' character";
     }
 
     /**
-     * 
+     *
      * @param value
      *            Object
      * @return String
      */
+    @Override
     protected String valueErrorFor(Object value) {
 
         if (value == null) {

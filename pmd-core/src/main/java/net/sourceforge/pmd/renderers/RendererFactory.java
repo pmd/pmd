@@ -18,7 +18,7 @@ import net.sourceforge.pmd.PropertyDescriptor;
 
 /**
  * This class handles the creation of Renderers.
- * 
+ *
  * @see Renderer
  */
 public class RendererFactory {
@@ -26,6 +26,7 @@ public class RendererFactory {
     private static final Logger LOG = Logger.getLogger(RendererFactory.class.getName());
 
     public static final Map<String, Class<? extends Renderer>> REPORT_FORMAT_TO_RENDERER;
+
     static {
         Map<String, Class<? extends Renderer>> map = new TreeMap<>();
         map.put(CodeClimateRenderer.NAME, CodeClimateRenderer.class);
@@ -46,7 +47,7 @@ public class RendererFactory {
 
     /**
      * Construct an instance of a Renderer based on report format name.
-     * 
+     *
      * @param reportFormat
      *            The report format name.
      * @param properties

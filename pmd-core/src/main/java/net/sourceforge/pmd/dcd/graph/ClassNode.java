@@ -31,6 +31,7 @@ public class ClassNode implements NodeVisitorAcceptor, Comparable<ClassNode> {
         this.name = name;
     }
 
+    @Override
     public Object accept(NodeVisitor visitor, Object data) {
         visitor.visitFields(this, data);
         visitor.visitConstructors(this, data);
@@ -107,10 +108,12 @@ public class ClassNode implements NodeVisitorAcceptor, Comparable<ClassNode> {
         return methodNodes != null ? methodNodes : Collections.<MethodNode>emptyList();
     }
 
+    @Override
     public int compareTo(ClassNode that) {
         return this.name.compareTo(that.name);
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof ClassNode) {
             return this.name.equals(((ClassNode) obj).name);
@@ -118,6 +121,7 @@ public class ClassNode implements NodeVisitorAcceptor, Comparable<ClassNode> {
         return false;
     }
 
+    @Override
     public int hashCode() {
         return name.hashCode();
     }

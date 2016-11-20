@@ -34,7 +34,7 @@ public interface LanguageVersionHandler {
 
     /**
      * Get the default ParserOptions.
-     * 
+     *
      * @return ParserOptions
      */
     ParserOptions getDefaultParserOptions();
@@ -62,7 +62,7 @@ public interface LanguageVersionHandler {
 
     /**
      * Get the SymbolFacade.
-     * 
+     *
      * @param classLoader
      *            A ClassLoader to use for resolving Types.
      * @return VisitorStarter
