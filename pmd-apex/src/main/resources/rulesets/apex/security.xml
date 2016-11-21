@@ -7,10 +7,10 @@
         These rules deal with different security problems that can occur within Apex.
     </description>
 
-	<rule name="ApexSharingViolations" since="5.5.1"
+	<rule name="ApexSharingViolations" since="5.5.3"
 		message="Apex classes should declare a sharing model if DML or SOQL/SOSL is used"
 		class="net.sourceforge.pmd.lang.apex.rule.security.ApexSharingViolationsRule"
-		externalInfoUrl="${pmd.website.baseurl}/">
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexSharingViolations">
 		<description>
             Avoid Apex classes declared with no explicit sharing mode if DML methods are used.
         </description>
@@ -24,10 +24,10 @@ public class without sharing Foo {
         </example>
 	</rule>
 
-	<rule name="ApexOpenRedirect" since="5.5.1"
+	<rule name="ApexOpenRedirect" since="5.5.3"
 		message="Apex classes should safely redirect to a known location"
 		class="net.sourceforge.pmd.lang.apex.rule.security.ApexOpenRedirectRule"
-		externalInfoUrl="${pmd.website.baseurl}/">
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexOpenRedirect">
 		<description>
             Avoid Apex controllers using PageReference to redirect to an unknown location
         </description>
@@ -45,10 +45,10 @@ public class without sharing Foo {
 	</rule>
 
 
-	<rule name="ApexInsecureEndpoint" since="5.5.1"
+	<rule name="ApexInsecureEndpoint" since="5.5.3"
 		message="Apex callouts should use encrypted communication channels"
 		class="net.sourceforge.pmd.lang.apex.rule.security.ApexInsecureEndpointRule"
-		externalInfoUrl="${pmd.website.baseurl}/">
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexInsecureEndpoint">
 		<description>
             Apex callouts should use encrypted communication channels
         </description>
@@ -65,10 +65,10 @@ public class without sharing Foo {
         </example>
 	</rule>
 
-	<rule name="ApexXSSFromURLParam" since="5.5.1"
+	<rule name="ApexXSSFromURLParam" since="5.5.3"
 		message="Apex classes should escape/sanitize Strings obtained from URL parameters"
 		class="net.sourceforge.pmd.lang.apex.rule.security.ApexXSSFromURLParamRule"
-		externalInfoUrl="${pmd.website.baseurl}/">
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexXSSFromURLParam">
 		<description>
             Apex classes should escape/sanitize Strings obtained from URL parameters
         </description>
@@ -84,10 +84,10 @@ public class without sharing Foo {
 	</rule>
 
 
-	<rule name="ApexXSSFromEscapeFalse" since="5.5.1"
+	<rule name="ApexXSSFromEscapeFalse" since="5.5.3"
 	message="Apex classes should escape Strings in error messages"
 	class="net.sourceforge.pmd.lang.apex.rule.security.ApexXSSFromEscapeFalseRule"
-	externalInfoUrl="${pmd.website.baseurl}/">
+	externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexXSSFromEscapeFalse">
 		<description>
             Apex classes should escape Strings in error messages
         </description>
@@ -101,10 +101,10 @@ public class without sharing Foo {
         </example>
 	</rule>
 
-	<rule name="ApexBadCrypto" since="5.5.1"
+	<rule name="ApexBadCrypto" since="5.5.3"
 		message="Apex classes should use random IV/key"
 		class="net.sourceforge.pmd.lang.apex.rule.security.ApexBadCryptoRule"
-		externalInfoUrl="${pmd.website.baseurl}/">
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexBadCrypto">
 		<description>
             Apex classes should use random IV/key
         </description>
@@ -122,10 +122,10 @@ public class without sharing Foo {
 	</rule>
 
 
-	<rule name="ApexCSRF" since="5.5.1"
+	<rule name="ApexCSRF" since="5.5.3"
 		message="Avoid making DML operations in Apex class constructor/init method"
 		class="net.sourceforge.pmd.lang.apex.rule.security.ApexCSRFRule"
-		externalInfoUrl="${pmd.website.baseurl}/">
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexCSRF">
 		<description>
             Avoid DML actions in Apex class constructor/init method without CSRF protection
         </description>
@@ -145,10 +145,10 @@ public class Foo {
         </example>
 	</rule>
 
-	<rule name="ApexSOQLInjection" since="5.5.1"
+	<rule name="ApexSOQLInjection" since="5.5.3"
 		message="Avoid untrusted/unescaped variables in DML query"
 		class="net.sourceforge.pmd.lang.apex.rule.security.ApexSOQLInjectionRule"
-		externalInfoUrl="${pmd.website.baseurl}/">
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexSOQLInjection">
 		<description>
             Avoid merging untrusted/unescaped variables in DML operations 
         </description>
