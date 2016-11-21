@@ -16,19 +16,22 @@ import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
-public class Helper {
+public final class Helper {
+	private Helper() {
+		throw new AssertionError("Can't instantiate helper classes");
+	}
+
 	static boolean isTestMethodOrClass(final ApexNode<?> node) {
 		final List<ASTModifierNode> modifierNode = node.findChildrenOfType(ASTModifierNode.class);
-		for (ASTModifierNode m : modifierNode) {
+		for (final ASTModifierNode m : modifierNode) {
 			if (m.getNode().getModifiers().isTest()) {
 				return true;
 			}
-			;
 		}
 		return false;
 	}
 
-	static boolean foundAnySOQLorSOSL(ApexNode<?> node) {
+	static boolean foundAnySOQLorSOSL(final ApexNode<?> node) {
 		final List<ASTSoqlExpression> dmlSoqlExpression = node.findDescendantsOfType(ASTSoqlExpression.class);
 		final List<ASTSoslExpression> dmlSoslExpression = node.findDescendantsOfType(ASTSoslExpression.class);
 
@@ -46,7 +49,7 @@ public class Helper {
 	 * 
 	 * @return true if found DML operations in node descendants
 	 */
-	static boolean foundAnyDML(ApexNode<?> node) {
+	static boolean foundAnyDML(final ApexNode<?> node) {
 
 		final List<ASTDmlUpsertStatement> dmlUpsertStatement = node.findDescendantsOfType(ASTDmlUpsertStatement.class);
 		final List<ASTDmlUpdateStatement> dmlUpdateStatement = node.findDescendantsOfType(ASTDmlUpdateStatement.class);
@@ -64,8 +67,9 @@ public class Helper {
 		return true;
 	}
 
-	static boolean isMethodName(ASTMethodCallExpression methodNode, String className, String methodName) {
-		ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
+	static boolean isMethodName(final ASTMethodCallExpression methodNode, final String className,
+			final String methodName) {
+		final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
 		if (reference.getNode().getJadtIdentifiers().size() == 1) {
 			if (reference.getNode().getJadtIdentifiers().get(0).value.equalsIgnoreCase(className)
 					&& isMethodName(methodNode, methodName)) {
@@ -76,11 +80,11 @@ public class Helper {
 		return false;
 	}
 
-	static boolean isMethodName(ASTMethodCallExpression m, String methodName) {
+	static boolean isMethodName(final ASTMethodCallExpression m, final String methodName) {
 		return isMethodName(m.getNode(), methodName);
 	}
 
-	static boolean isMethodName(MethodCallExpression m, String methodName) {
+	static boolean isMethodName(final MethodCallExpression m, final String methodName) {
 		return m.getMethodName().equalsIgnoreCase(methodName);
 	}
 }
