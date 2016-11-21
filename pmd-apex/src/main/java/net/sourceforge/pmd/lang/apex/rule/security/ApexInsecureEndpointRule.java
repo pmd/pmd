@@ -73,7 +73,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 				String literal = (String) o;
 				if (PATTERN.matcher(literal).matches()) {
 					VariableExpression varExpression = variableNode.getNode();
-					StringBuffer sb = new StringBuffer().append(varExpression.getDefiningType()).append(":")
+					StringBuilder sb = new StringBuilder().append(varExpression.getDefiningType()).append(":")
 							.append(varExpression.getIdentifier().value);
 					httpEndpointStrings.add(sb.toString());
 				}

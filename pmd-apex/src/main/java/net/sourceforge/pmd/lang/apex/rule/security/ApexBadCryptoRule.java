@@ -27,7 +27,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 	private static final String ENCRYPT_WITH_MANAGED_IV = "encryptWithManagedIV";
 	private static final String DECRYPT_WITH_MANAGED_IV = "decryptWithManagedIV";
 
-	final private Set<String> potentiallyStaticBlob = new HashSet<>();
+	private final Set<String> potentiallyStaticBlob = new HashSet<>();
 
 	public ApexBadCryptoRule() {
 		setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
@@ -67,7 +67,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 		ASTMethodCallExpression methodCall = var.getFirstChildOfType(ASTMethodCallExpression.class);
 		if (methodCall != null && Helper.isMethodName(methodCall, BLOB, VALUE_OF)) {
 			ASTVariableExpression variable = var.getFirstChildOfType(ASTVariableExpression.class);
-			StringBuffer sb = new StringBuffer().append(variable.getNode().getDefiningType()).append(":")
+			StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
 					.append(variable.getNode().getIdentifier().value);
 			potentiallyStaticBlob.add(sb.toString());
 		}
@@ -98,7 +98,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 	private void reportIfHardCoded(Object data, Object potentialIV) {
 		if (potentialIV instanceof ASTVariableExpression) {
 			ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
-			StringBuffer sb = new StringBuffer().append(variable.getNode().getDefiningType()).append(":")
+			StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
 					.append(variable.getNode().getIdentifier().value);
 			if (potentiallyStaticBlob.contains(sb.toString())) {
 				addViolation(data, variable);

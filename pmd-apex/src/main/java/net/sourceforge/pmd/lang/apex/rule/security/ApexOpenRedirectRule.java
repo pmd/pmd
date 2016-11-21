@@ -49,7 +49,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 		if (literal != null) {
 			ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
 			if (variable != null) {
-				StringBuffer sb = new StringBuffer().append(variable.getNode().getDefiningType()).append(":")
+				StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
 						.append(variable.getNode().getIdentifier().value);
 				listOfStringLiteralVariables.add(sb.toString());
 			}
@@ -89,7 +89,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 		// PageReference(foo);
 		final List<ASTVariableExpression> variableExpressions = node.findChildrenOfType(ASTVariableExpression.class);
 		for (ASTVariableExpression variable : variableExpressions) {
-			StringBuffer sb = new StringBuffer().append(variable.getNode().getDefiningType()).append(":")
+			StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
 					.append(variable.getNode().getIdentifier().value);
 			if (variable.jjtGetChildIndex() == 0 && !listOfStringLiteralVariables.contains(sb.toString())) {
 				addViolation(data, variable);

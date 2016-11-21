@@ -45,7 +45,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 		if (literal != null) {
 			if (left != null) {
 				final VariableExpression l = left.getNode();
-				StringBuffer sb = new StringBuffer().append(l.getDefiningType()).append(":")
+				StringBuilder sb = new StringBuilder().append(l.getDefiningType()).append(":")
 						.append(l.getIdentifier().value);
 				safeVariables.add(sb.toString());
 			}
@@ -55,7 +55,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 			if (Helper.isMethodName(right, STRING, ESCAPE_SINGLE_QUOTES)) {
 				if (left != null) {
 					final VariableExpression l = left.getNode();
-					StringBuffer sb = new StringBuffer().append(l.getDefiningType()).append(":")
+					StringBuilder sb = new StringBuilder().append(l.getDefiningType()).append(":")
 							.append(l.getIdentifier().value);
 					safeVariables.add(sb.toString());
 				}
@@ -69,7 +69,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 			List<ASTVariableExpression> vars = b.findDescendantsOfType(ASTVariableExpression.class);
 			for (ASTVariableExpression v : vars) {
 				final VariableExpression l = v.getNode();
-				StringBuffer sb = new StringBuffer().append(l.getDefiningType()).append(":")
+				StringBuilder sb = new StringBuilder().append(l.getDefiningType()).append(":")
 						.append(l.getIdentifier().value);
 
 				if (safeVariables.contains(sb.toString())) {
