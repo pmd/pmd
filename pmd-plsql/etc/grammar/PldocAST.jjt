@@ -38,6 +38,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Andreas Dangel 11/2016
  */
 
+ /**
+ * Added ASTIsNullCondition node
+ *
+ * Sergey Yanzin 11/2016
+ */
+
 //
 options {
 	DEBUG_PARSER = false ;
@@ -923,6 +929,7 @@ ASTExceptionHandler ExceptionHandler() :
 
 void Skip2NextTerminator(String initiator,String terminator) :
 {
+  Token beginToken = getToken(0);
   Token t = getToken(1);
   int count = (initiator == null) ? 0 : 1;
   if(t.image.equals(initiator)) count++;
@@ -932,7 +939,9 @@ void Skip2NextTerminator(String initiator,String terminator) :
     t = getToken(1);
 	  if(t.image.equals(initiator)) count++;
 	  if(t.image.equals(terminator)) count--;
-	  if(null != t.specialToken || t.kind == EOF)
+    if((null != t.specialToken && beginToken.kind != SELECT && beginToken.kind != INSERT && beginToken.kind != UPDATE && beginToken.kind != DELETE && beginToken.kind != MERGE) || t.kind == EOF)
+        return;
+    if (t.specialToken != null && "/".equals(t.image))
 	    return;
   }
 }
@@ -1972,10 +1981,31 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
   (<NOT>) {sb.append(" NOT "); } 
   (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
-   (simpleNode = IsOfTypeCondition() ) {sb.append(simpleNode.getImage()); }
+   (simpleNode = IsNullCondition() ) {sb.append(simpleNode.getImage()); } 
   )
  { 
  jjtThis.setImage(sb.toString()); return jjtThis; 
+ }
+}
+ASTIsNullCondition IsNullCondition() :  //yanzin
+{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+{
+  (
+    LOOKAHEAD(<IDENTIFIER> <IS> (<NOT> <NULL>|<NULL>))
+    (
+		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");} 
+	)
+	|
+	(
+		simpleNode = IsOfTypeCondition() 
+	) 
+	{ 
+		sb.append(simpleNode.getImage()); 
+	}
+  )
+  {
+    jjtThis.setImage(sb.toString());
+	return jjtThis;
  }
 }
 
