@@ -27,8 +27,8 @@
 *   [#123](https://github.com/pmd/pmd/pull/123): \[apex] Changing method names to lowercase so casing doesn't matter
 *   [#124](https://github.com/pmd/pmd/pull/124): \[java] CPD: Properly handle enums with `-ignore-identifiers`
 *   [#126](https://github.com/pmd/pmd/pull/126): \[java] Avoid creating a new String to qualify types
+*   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
-
 
 **Bugfixes:**
 
@@ -38,6 +38,8 @@
     *   [#1543](https://sourceforge.net/p/pmd/bugs/1543/): \[apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive
 *   XML
     *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
+*   psql
+    *   [#1549](https://sourceforge.net/p/pmd/bugs/1549/): \[plsql] Parse error for IS [NOT] NULL construct
 
 
 **API Changes:**
