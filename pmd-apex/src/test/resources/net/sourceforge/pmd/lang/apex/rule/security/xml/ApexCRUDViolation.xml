@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data>
+
+	<test-code>
+		<description>Proper CRUD,FLS via ESAPI</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+		List<String> fieldsToView = new List<String> { 'name' };
+		if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) { 
+			c.Name = newName; 
+			update c; 
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Improper CRUD,FLS via ESAPI</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+		List<String> fieldsToView = new List<String> { 'name' };
+		if (ESAPI.accessController().isAuthorizedToView(Lead.sObject, fieldsToView)) { 
+			c.Name = newName; 
+			update c; 
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>CRUD,FLS check for update</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
+		if(Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
+			c.Name = newName; 
+			update c; 
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>No CRUD,FLS check for update</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
+		c.Name = newName; 
+		update c; 
+	} 
+} ]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>Proper CRUD,FLS check for update</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public Contact foo(String newName, String tempID) { 
+		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
+		if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()){ 
+			return null; 
+		} 
+		c.Name = newName; 
+		update c; 
+		return c; 
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>No CRUD check for insert</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void foo() {
+		Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		insert myCon;
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Proper CRUD check for insert</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void foo() {
+		if (Contact.sObjectType.getDescribe().isCreateable()) {
+			Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+			insert myCon;
+		}	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>No CRUD check for delete</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void bar(String contactId) {
+			Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+			delete toDelete;			
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Proper CRUD check for delete</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void bar(String contactId) {
+		if (Contact.sObjectType.getDescribe().isDeletable()) {
+			Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+			delete toDelete;
+		}	
+	}
+}
+		]]></code>
+	</test-code>
+
+
+</test-data>
