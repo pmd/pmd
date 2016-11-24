@@ -36,14 +36,14 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
-            .compile("@see\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([\\w\\s,]*)\\))?)?");
+            .compile("@see\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([\\w\\s,]*)\\))?)?");
 
     private static final Pattern LINK_PATTERNS = Pattern
-            .compile("\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
+            .compile("\\{@link(?:plain)?\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
 
-    private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");
+    private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\w*)[\\s#\\}]");
 
-    private static final Pattern THROWS_PATTERN = Pattern.compile("@throws\\s+(\\p{Alpha}\\p{Alnum}*)");
+    private static final Pattern THROWS_PATTERN = Pattern.compile("@throws\\s+(\\p{Alpha}\\w*)");
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
 
