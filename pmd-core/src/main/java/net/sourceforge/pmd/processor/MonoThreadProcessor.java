@@ -39,6 +39,7 @@ public final class MonoThreadProcessor extends AbstractPMDProcessor {
 		// single threaded execution
 
 		RuleSets rs = createRuleSets(ruleSetFactory);
+		configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
 		SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 		
 		for (DataSource dataSource : files) {

@@ -38,6 +38,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 
 		RuleSets rs = createRuleSets(ruleSetFactory);
 		rs.start(ctx);
+		configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
 
 		PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
 		ExecutorService executor = Executors.newFixedThreadPool(

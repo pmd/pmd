@@ -34,6 +34,7 @@ public class PMDTask extends Task {
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
     private SourceLanguage sourceLanguage;
+    private String cacheLocation;
     private final Collection<RuleSetWrapper> nestedRules = new ArrayList<>();
 
     @Override
@@ -243,5 +244,13 @@ public class PMDTask extends Task {
 
     public void setNoRuleSetCompatibility(boolean noRuleSetCompatibility) {
         this.noRuleSetCompatibility = noRuleSetCompatibility;
+    }
+
+    public String getCacheLocation() {
+        return cacheLocation;
+    }
+
+    public void setCacheLocation(String cacheLocation) {
+        this.cacheLocation = cacheLocation;
     }
 }
