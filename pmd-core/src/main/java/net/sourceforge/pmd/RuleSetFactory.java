@@ -15,6 +15,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -238,7 +240,10 @@ public class RuleSetFactory {
      */
     private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId,
                                      boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
-        try (InputStream inputStream = ruleSetReferenceId.getInputStream(this.classLoader)){
+        try (
+            final CheckedInputStream inputStream = new CheckedInputStream(
+                    ruleSetReferenceId.getInputStream(this.classLoader), new Adler32());
+        ) {
             if (!ruleSetReferenceId.isExternal()) {
                 throw new IllegalArgumentException("Cannot parse a RuleSet from a non-external reference: <"
                         + ruleSetReferenceId + ">.");
@@ -253,7 +258,7 @@ public class RuleSetFactory {
             Document document = builder.parse(inputSource);
             Element ruleSetElement = document.getDocumentElement();
 
-            RuleSet ruleSet = new RuleSet();
+            RuleSet ruleSet = new RuleSet(inputStream.getChecksum().getValue());
             ruleSet.setFileName(ruleSetReferenceId.getRuleSetFileName());
             ruleSet.setName(ruleSetElement.getAttribute("name"));
 

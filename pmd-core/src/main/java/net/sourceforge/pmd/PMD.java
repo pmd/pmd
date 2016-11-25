@@ -356,6 +356,9 @@ public class PMD {
 
         sortFiles(configuration, files);
 
+        // Make sure the cache is listening for analysis results
+        ctx.getReport().addListener(configuration.getAnalysisCache());
+        
         /*
          * Check if multithreaded support is available. ExecutorService can also
          * be disabled if threadCount is not positive, e.g. using the
@@ -366,6 +369,9 @@ public class PMD {
         } else {
             new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
         }
+        
+        // Persist the analysis cache
+        configuration.getAnalysisCache().persist();
 
         if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
             IOUtil.tryCloseClassLoader(configuration.getClassLoader());

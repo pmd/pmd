@@ -8,6 +8,10 @@
 
 *   java
     *   Type Resolution performance improved by ~15%
+*   Core
+    *   [#1538](https://sourceforge.net/p/pmd/bugs/1538/): \[core] Incremental analysis - All PMD analysis can now run
+        incrementally using a local file cache. This can greatly reduce the analysis time when running from CLI or tools
+        such as Ant, Maven or Gradle. New CLI and tasks `cache` argument i exposed.
 
 **New/Modified/Deprecated Rules:**
 
@@ -26,6 +30,7 @@
 
 *   [#123](https://github.com/pmd/pmd/pull/123): \[apex] Changing method names to lowercase so casing doesn't matter
 *   [#124](https://github.com/pmd/pmd/pull/124): \[java] CPD: Properly handle enums with `-ignore-identifiers`
+*   [#125](https://github.com/pmd/pmd/pull/125): \[core] Incremental analysis
 *   [#126](https://github.com/pmd/pmd/pull/126): \[java] Avoid creating a new String to qualify types
 *   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
