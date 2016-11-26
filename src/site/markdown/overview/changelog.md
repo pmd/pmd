@@ -30,6 +30,7 @@
 *   [#127](https://github.com/pmd/pmd/pull/127): \[java] Don't look twice for the same variables
 *   [#128](https://github.com/pmd/pmd/pull/128): \[java] Minor optimizations to type resolution
 *   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
+*   [#130](https://github.com/pmd/pmd/pull/130); \[core] Reduce thread contention
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
 
 **Bugfixes:**
