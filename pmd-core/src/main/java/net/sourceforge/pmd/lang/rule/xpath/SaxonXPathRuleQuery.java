@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +40,15 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
     // Mapping from Node name to applicable XPath queries
     private XPathExpression xpathExpression;
     private List<XPathVariable> xpathVariables;
+
+    private static final int MAX_CACHE_SIZE = 20;
+    private static final Map<Node, DocumentNode> CACHE = new LinkedHashMap<Node, DocumentNode>(MAX_CACHE_SIZE) {
+        private static final long serialVersionUID = -7653916493967142443L;
+
+        protected boolean removeEldestEntry(final Map.Entry<Node, DocumentNode> eldest) {
+            return size() > MAX_CACHE_SIZE;
+        }
+    };
 
     /**
      * {@inheritDoc}
@@ -117,8 +126,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         return results;
     }
 
-    private static final Map<Node, DocumentNode> CACHE = new HashMap<>();
-
     private DocumentNode getDocumentNode(Node node) {
         // Get the root AST node
         Node root = node;
@@ -126,17 +133,12 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             root = root.jjtGetParent();
         }
 
-        // Cache DocumentNode trees, so that different XPath queries can re-use
-        // them.
-        // Ideally this would be an LRU cache.
+        // Cache DocumentNode trees, so that different XPath queries can re-use them.
         DocumentNode documentNode;
         synchronized (CACHE) {
             documentNode = CACHE.get(root);
             if (documentNode == null) {
                 documentNode = new DocumentNode(root);
-                if (CACHE.size() > 20) {
-                    CACHE.clear();
-                }
                 CACHE.put(root, documentNode);
             }
         }
