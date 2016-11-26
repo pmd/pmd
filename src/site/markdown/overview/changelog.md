@@ -52,3 +52,7 @@
 
 
 **API Changes:**
+
+*   `net.sourceforge.pmd.RuleSetFactory` is now immutable and its behavior cannot be changed anymore.
+    It provides constructors to create new adjusted instances. This allows to avoid synchronization in RuleSetFactory.
+    See [PR #131](https://github.com/pmd/pmd/pull/131).
