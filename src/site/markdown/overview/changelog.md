@@ -27,6 +27,7 @@
 *   [#123](https://github.com/pmd/pmd/pull/123): \[apex] Changing method names to lowercase so casing doesn't matter
 *   [#124](https://github.com/pmd/pmd/pull/124): \[java] CPD: Properly handle enums with `-ignore-identifiers`
 *   [#126](https://github.com/pmd/pmd/pull/126): \[java] Avoid creating a new String to qualify types
+*   [#127](https://github.com/pmd/pmd/pull/127): \[java] Don't look twice for the same variables
 *   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
 
