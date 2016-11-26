@@ -38,6 +38,7 @@
 *   [#130](https://github.com/pmd/pmd/pull/130); \[core] Reduce thread contention
 *   [#131](https://github.com/pmd/pmd/pull/131): \[core] Make RuleSetFactory immutable
 *   [#133](https://github.com/pmd/pmd/pull/133): \[java] UnnecessaryFullyQualifiedName can detect conflicts
+*   [#134](https://github.com/pmd/pmd/pull/134): \[java] Symbol table can now handle inner classes
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
 
 **Bugfixes:**
@@ -46,6 +47,8 @@
     *   [#1542](https://sourceforge.net/p/pmd/bugs/1542/): \[java] CPD throws an NPE when parsing enums with -ignore-identifiers
 *   apex-apexunit
     *   [#1543](https://sourceforge.net/p/pmd/bugs/1543/): \[apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive
+*   Java
+    *    [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
 *   java-imports
     *    [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
 *   XML
