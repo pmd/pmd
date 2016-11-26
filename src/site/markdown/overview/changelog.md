@@ -14,6 +14,7 @@
 **Pull Requests:**
 
 *   [#126](https://github.com/pmd/pmd/pull/126): \[java] Avoid creating a new String to qualify types
+*   [#127](https://github.com/pmd/pmd/pull/127): \[java] Don't look twice for the same variables
 *   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
 
 **Bugfixes:**
