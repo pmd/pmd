@@ -18,9 +18,12 @@
 *   [#128](https://github.com/pmd/pmd/pull/128): \[java] Minor optimizations to type resolution
 *   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
 *   [#130](https://github.com/pmd/pmd/pull/130); \[core] Reduce thread contention
+*   [#133](https://github.com/pmd/pmd/pull/133): \[java] UnnecessaryFullyQualifiedName can detect conflicts
 
 **Bugfixes:**
 
+*   java-imports
+    *    [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
 *   XML
     *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
 *   psql
