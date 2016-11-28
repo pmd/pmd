@@ -10,10 +10,14 @@ import java.util.HashSet;
 import apex.jorje.data.ast.Identifier;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -36,6 +40,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 	private static final String IS_CREATEABLE = "isCreateable";
 	private static final String IS_DELETABLE = "isDeletable";
 	private static final String IS_UPDATEABLE = "isUpdateable";
+	private static final String IS_MERGEABLE = "isMergeable";
 
 	private static final String S_OBJECT_TYPE = "sObjectType";
 	private static final String GET_DESCRIBE = "getDescribe";
@@ -108,6 +113,18 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 	}
 
 	@Override
+	public Object visit(ASTDmlUpsertStatement node, Object data) {
+		checkForCRUD(node, data, IS_CREATEABLE);
+		return data;
+	}
+
+	@Override
+	public Object visit(ASTDmlMergeStatement node, Object data) {
+		checkForCRUD(node, data, IS_MERGEABLE);
+		return data;
+	}
+
+	@Override
 	public Object visit(ASTSoqlExpression node, Object data) {
 		final ASTVariableDeclaration variable = node.getFirstParentOfType(ASTVariableDeclaration.class);
 		if (variable != null) {
@@ -125,6 +142,24 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 		StringBuilder sb = new StringBuilder().append(node.getNode().getDefiningType().getApexName()).append(":")
 				.append(node.getNode().getLocalInfo().getName());
 		varToTypeMapping.put(sb.toString(), type);
+
+		return data;
+
+	}
+
+	@Override
+	public Object visit(final ASTProperty node, Object data) {
+		ASTField field = node.getFirstChildOfType(ASTField.class);
+		if (field != null) {
+			String fieldName = field.getNode().getFieldInfo().getName();
+			String fieldType = field.getNode().getFieldInfo().getType().getApexName();
+
+			StringBuilder sb = new StringBuilder().append(field.getNode().getDefiningType().getApexName()).append(":")
+					.append(fieldName);
+
+			varToTypeMapping.put(sb.toString(), fieldType);
+
+		}
 
 		return data;
 
