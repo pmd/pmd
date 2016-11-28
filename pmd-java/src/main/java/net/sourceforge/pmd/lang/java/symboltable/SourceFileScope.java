@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +51,7 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     public Set<String> getExplicitImports() {
-        return types != null ? types.getExplicitImports() : Collections.<String> emptySet();
+        return types.getExplicitImports();
     }
 
     /**
