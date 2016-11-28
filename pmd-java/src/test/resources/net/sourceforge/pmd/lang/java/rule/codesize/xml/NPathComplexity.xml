@@ -92,4 +92,18 @@ class Bar
         </expected-messages>
         <code-ref id="bug3484404"/>
     </test-code>
+    <test-code>
+        <description>ignore method</description>
+        <rule-property name="minimum">1.0</rule-property>
+        <rule-property name="ignore-methods">hashCode</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int hashCode() {
+  if (true) {List buz = new ArrayList();}
+  return 0;
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

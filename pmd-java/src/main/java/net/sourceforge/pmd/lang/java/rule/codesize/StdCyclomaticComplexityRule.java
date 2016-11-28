@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 
 /**
  * Implements the standard cyclomatic complexity rule 
@@ -81,6 +82,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
       definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
       definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
       definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
+      definePropertyDescriptor(StatisticalRule.IGNORE_METHODS);
   }
 
   @Override
@@ -183,7 +185,9 @@ public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 
   @Override
 public Object visit(ASTMethodDeclaration node, Object data) {
-    entryStack.push( new Entry( node ) );
+      if (ignoreMethod(node)) return data;
+
+      entryStack.push( new Entry( node ) );
     super.visit( node, data );
 	    Entry methodEntry = entryStack.pop();
     if (!isSuppressed(node)) {
@@ -214,7 +218,21 @@ public Object visit(ASTMethodDeclaration node, Object data) {
     return data;
   }
 
-  @Override
+    private boolean ignoreMethod(ASTMethodDeclaration node) {
+        Object data;
+        String[] methodsToIgnore = getProperty(StatisticalRule.IGNORE_METHODS);
+        if (methodsToIgnore != null) {
+            for (String m : methodsToIgnore) {
+                if (node.getMethodName().equals(m)) {
+                    //ignoring with method name
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
 public Object visit(ASTEnumDeclaration node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );

@@ -36,6 +36,7 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
     public NPathComplexityRule() {
         super();
         setProperty(MINIMUM_DESCRIPTOR, 200d);
+        definePropertyDescriptor(IGNORE_METHODS);
     }
 
     private int complexityMultipleOf(JavaNode node, int npathStart, Object data) {
@@ -66,6 +67,17 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+
+        String[] methodsToIgnore = getProperty(IGNORE_METHODS);
+        if (methodsToIgnore != null) {
+            for (String m : methodsToIgnore) {
+                if (node.getMethodName().equals(m)) {
+                    //ignoring this method
+                    return 0;
+                }
+            }
+        }
+
         int npath = complexityMultipleOf(node, 1, data);
 
         DataPoint point = new DataPoint();
