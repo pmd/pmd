@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.util.Arrays;
 import java.util.List;
 
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
@@ -9,6 +10,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
@@ -87,4 +89,31 @@ public final class Helper {
 	static boolean isMethodName(final MethodCallExpression m, final String methodName) {
 		return m.getMethodName().equalsIgnoreCase(methodName);
 	}
+
+	static boolean isMethodCallChain(final ASTMethodCallExpression methodNode, final String... methodNames) {
+		String methodName = methodNames[methodNames.length - 1];
+		if (Helper.isMethodName(methodNode, methodName)) {
+			final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
+			if (reference != null) {
+				final ASTDottedExpression dottedExpression = reference.getFirstChildOfType(ASTDottedExpression.class);
+				if (dottedExpression != null) {
+					final ASTMethodCallExpression nestedMethod = dottedExpression
+							.getFirstChildOfType(ASTMethodCallExpression.class);
+					if (nestedMethod != null) {
+						String[] newMethodNames = Arrays.copyOf(methodNames, methodNames.length - 1);
+						return isMethodCallChain(nestedMethod, newMethodNames);
+					} else {
+						String[] newClassName = Arrays.copyOf(methodNames, methodNames.length - 1);
+						if (newClassName.length == 1) {
+							return Helper.isMethodName(methodNode, newClassName[0], methodName);
+						}
+					}
+				}
+
+			}
+		}
+
+		return false;
+	}
+
 }
