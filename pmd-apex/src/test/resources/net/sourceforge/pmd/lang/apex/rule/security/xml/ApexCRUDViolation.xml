@@ -2,6 +2,66 @@
 
 <test-data>
 
+<test-code>
+		<description>Proper CRUD,FLS via getters</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public Contact MyWriteOnlyProp { get; set; }
+	
+	public void foo(String newName, String tempID) { 
+		if (Contact.sObjectType.getDescribe().isCreateable()) {
+			MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+			upsert MyWriteOnlyProp;
+		}
+	} 
+	
+} 
+]]></code>
+	</test-code>
+
+
+<test-code>
+		<description>No CRUD,FLS via getters</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public Contact MyWriteOnlyProp { get; set; }
+	
+	public void foo(String newName, String tempID) { 
+			MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+			upsert MyWriteOnlyProp;
+	} 
+} 
+]]></code>
+	</test-code>
+
+	<test-code>
+		<description>CRUD,FLS via upsert</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		if (Contact.sObjectType.getDescribe().isCreateable()) {
+			Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+			upsert myCon;
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description> No CRUD,FLS via upsert</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		upsert myCon;
+	} 
+} ]]></code>
+	</test-code>
+
 	<test-code>
 		<description>Proper CRUD,FLS via ESAPI</description>
 		<expected-problems>0</expected-problems>
@@ -136,6 +196,5 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-
 
 </test-data>
