@@ -690,4 +690,8 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
                 return visit((PLSQLNode) node, data);
         }
 
+    @Override
+    public Object visit(ASTIsOfTypeCondition node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
 }
