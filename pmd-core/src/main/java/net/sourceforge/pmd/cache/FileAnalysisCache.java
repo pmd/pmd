@@ -73,6 +73,14 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
     @Override
     public void persist() {
+        // Create directories missing along the way
+        if (!cacheFile.exists()) {
+            final File parentFile = cacheFile.getAbsoluteFile().getParentFile();
+            if (parentFile != null && !parentFile.exists()) {
+                parentFile.mkdirs();
+            }
+        }
+
         try (
             final DataOutputStream outputStream = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(cacheFile)));
