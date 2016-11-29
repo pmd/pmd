@@ -40,6 +40,7 @@
 *   [#133](https://github.com/pmd/pmd/pull/133): \[java] UnnecessaryFullyQualifiedName can detect conflicts
 *   [#134](https://github.com/pmd/pmd/pull/134): \[java] Symbol table can now handle inner classes
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
+*   [#137](https://github.com/pmd/pmd/pull/137): \[apex] Adjusted remediation points
 
 **Bugfixes:**
 
