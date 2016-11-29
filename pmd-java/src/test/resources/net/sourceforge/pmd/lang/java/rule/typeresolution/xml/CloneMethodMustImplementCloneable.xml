@@ -161,4 +161,39 @@ public enum Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1534 [java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1532 [java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable - part 1: interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+  interface TestInterface extends Cloneable {
+    TestInterface clone();
+  }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1532 [java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+  interface TestInterface extends Cloneable {
+    TestInterface clone();
+  }
+
+  class CloneableClass implements TestInterface {
+    @Override // creates a warning though CloneableClass is actually implementing Cloneable
+    public CloneableClass clone() {
+      // clone implementation
+    }
+  }
+        ]]></code>
+    </test-code>
 </test-data>

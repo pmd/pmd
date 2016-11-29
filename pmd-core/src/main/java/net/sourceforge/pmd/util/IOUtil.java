@@ -5,11 +5,14 @@ package net.sourceforge.pmd.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * 
@@ -45,4 +48,11 @@ public final class IOUtil {
         }
         return in;
     }
+
+    public static void tryCloseClassLoader(ClassLoader classLoader) {
+        if (classLoader instanceof Closeable) {
+            IOUtils.closeQuietly((Closeable)classLoader);
+        }
+    }
+
 }

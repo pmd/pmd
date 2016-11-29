@@ -25,6 +25,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
+/**
+ * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN_OUT
+ * See PMD Bug #1520
+ *
+ * Andreas Dangel 11/2016
+ *====================================================================
+ * Adjusted ProgramUnit() to allow Pragma(), even though this is not
+ * valid syntax. See PMD Bug #1527.
+ *
+ * Andreas Dangel 11/2016
+ */
+
 //
 options {
 	DEBUG_PARSER = false ;
@@ -483,7 +496,9 @@ ASTProgramUnit ProgramUnit()  :
 			|
 			(
 				DeclarativeSection()
-				<BEGIN> (Statement())* (ExceptionHandler())? <END> [ID()]
+				<BEGIN>
+				[Pragma()] // See PMD Bug #1527
+				(Statement())* (ExceptionHandler())? <END> [ID()]
 			)
 		)
 	]
@@ -917,6 +932,8 @@ void Skip2NextTerminator(String initiator,String terminator) :
     t = getToken(1);
 	  if(t.image.equals(initiator)) count++;
 	  if(t.image.equals(terminator)) count--;
+	  if(null != t.specialToken || t.kind == EOF)
+	    return;
   }
 }
 {
@@ -1356,7 +1373,7 @@ ASTOpenStatement OpenStatement()  :
 {
 	 <OPEN> [Expression()]
 		//[LOOKAHEAD(functionCall()) functionCall() | QualifiedName()]
-		[<FOR> Expression() [<USING> Expression() ("," Expression())*]] 
+		[<FOR> Expression() [<USING> (<IN> | <OUT> | <IN_OUT>)? Expression() ("," (<IN> | <OUT> | <IN_OUT>)? Expression())*]] 
       { return jjtThis ; }
 }
 
@@ -1955,11 +1972,26 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
   (<NOT>) {sb.append(" NOT "); } 
   (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
-   (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
+   (simpleNode = IsOfTypeCondition() ) {sb.append(simpleNode.getImage()); }
   )
  { 
  jjtThis.setImage(sb.toString()); return jjtThis; 
  }
+}
+
+ASTIsOfTypeCondition IsOfTypeCondition() :
+{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+{
+  (
+    LOOKAHEAD(<IDENTIFIER> <IS>)
+    ((name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <OF> {sb.append(" OF");} [<TYPE>]
+      "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")")
+  |
+    (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
+  )
+  {
+    jjtThis.setImage(sb.toString()); return jjtThis;
+  }
 }
 
 /**
@@ -3236,6 +3268,7 @@ TOKEN [IGNORE_CASE]:
  *                                 Added: <MERGE: "MERGE">, <AFTER: "AFTER">, <BEFORE: "BEFORE">,
  *                                 <INSTEADOF: "INSTEAD OF">, <FOREACHROW: "FOR EACH ROW">, <REFERENCING: "REFERENCING">,
  *                                 <OLD: "OLD">, <PARENT: "PARENT">
+ * 2016-11-04 - Andreas Dangel - Added <ONLY: "ONLY">, <IN_OUT: "IN_OUT">
  */
 
 TOKEN [IGNORE_CASE]:
@@ -3335,6 +3368,7 @@ TOKEN [IGNORE_CASE]:
 <IF: "IF"> |
 <IMMEDIATE: "IMMEDIATE"> |
 <IN: "IN"> |
+<IN_OUT: "IN_OUT"> |
 <INDEX: "INDEX"> |
 <INDICES: "INDICES"> |
 <INCLUDING: "INCLUDING"> |
@@ -3396,6 +3430,7 @@ TOKEN [IGNORE_CASE]:
 <OF: "OF"> |
 <OID: "OID"> |
 <ON: "ON"> |
+<ONLY: "ONLY"> |
 <OPAQUE: "OPAQUE"> |
 <OPEN: "OPEN"> |
 <OPERATOR: "OPERATOR"> |
