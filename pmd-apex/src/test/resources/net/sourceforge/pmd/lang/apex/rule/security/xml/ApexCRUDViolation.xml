@@ -2,8 +2,82 @@
 
 <test-data>
 
-<test-code>
-		<description>Proper CRUD,FLS via getters</description>
+
+	<test-code>
+		<description>No CRUD,FLS needed via sObject property</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public Contact contactProperty { get; set; }
+	
+	public void foo(String tempID) {
+	 		contactProperty = [SELECT Name FROM Contact WHERE Id=:tempID];
+	} 
+} 
+]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Proper FLS check </description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		List<String> fieldsToView = new List<String> { 'name' };
+		if (ESAPI.accessController().isAuthorizedToUpdate(Contact.sObject, fieldsToView)) { 
+			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
+			c.Name = newName;
+			update c; 
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Proper FLS fall-through check </description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		if (Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
+			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
+			c.Name = newName;
+			update c; 
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Improper accessibility CRUD </description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public Contact foo(String tempID) { 
+		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+		return c;
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Proper accessibility CRUD,FLS </description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public Contact foo(String tempID) { 
+		if (Contact.sObjectType.getDescribe().isAccessible()) {
+			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+			return c;
+		}
+		return null;
+	} 
+} ]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>Proper CRUD,FLS via property</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
@@ -12,7 +86,7 @@ public class Foo {
 	public void foo(String newName, String tempID) { 
 		if (Contact.sObjectType.getDescribe().isCreateable()) {
 			MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-			upsert MyWriteOnlyProp;
+			insert MyWriteOnlyProp;
 		}
 	} 
 	
@@ -21,8 +95,9 @@ public class Foo {
 	</test-code>
 
 
-<test-code>
-		<description>No CRUD,FLS via getters</description>
+	<test-code>
+		<description>No CRUD,FLS via sObject property, write is not protected
+		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
@@ -30,19 +105,49 @@ public class Foo {
 	
 	public void foo(String newName, String tempID) { 
 			MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
-			upsert MyWriteOnlyProp;
+			insert MyWriteOnlyProp;
 	} 
 } 
 ]]></code>
 	</test-code>
 
 	<test-code>
-		<description>CRUD,FLS via upsert</description>
+		<description>No CRUD,FLS via String property</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public String nameProperty { get; set; }
+	
+	public void foo(String tempID) {
+	 		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+			nameProperty = c.Name;
+	} 
+} 
+]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>Proper CRUD,FLS via upsert</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
 	public void foo(String newName, String tempID) { 
-		if (Contact.sObjectType.getDescribe().isCreateable()) {
+		if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
+			Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+			upsert myCon;
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Partial CRUD,FLS via upsert</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		if (Contact.sObjectType.getDescribe().isUpdateable()) {
 			Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
 			upsert myCon;
 		}
@@ -52,7 +157,7 @@ public class Foo {
 
 	<test-code>
 		<description> No CRUD,FLS via upsert</description>
-		<expected-problems>1</expected-problems>
+		<expected-problems>2</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
 	public void foo(String newName, String tempID) { 
@@ -63,13 +168,15 @@ public class Foo {
 	</test-code>
 
 	<test-code>
-		<description>Proper CRUD,FLS via ESAPI</description>
-		<expected-problems>0</expected-problems>
+		<description>Improper CRUD,FLS via ESAPI 1</description>
+		<expected-problems>2</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
 	public void foo(String newName, String tempID) { 
+		// missing accessibility check
 		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
 		List<String> fieldsToView = new List<String> { 'name' };
+		// wrong ESAPI check
 		if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) { 
 			c.Name = newName; 
 			update c; 
@@ -78,14 +185,37 @@ public class Foo {
 } ]]></code>
 	</test-code>
 
+
+
 	<test-code>
-		<description>Improper CRUD,FLS via ESAPI</description>
-		<expected-problems>1</expected-problems>
+		<description>Proper CRUD,FLS via ESAPI</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) {
+		List<String> fieldsToView = new List<String> { 'name' };
+		if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) { 
+			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+			if (ESAPI.accessController().isAuthorizedToUpdate(Contact.sObject, fieldsToView)) { 
+				c.Name = newName; 
+				update c; 
+			}
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>Improper CRUD,FLS via ESAPI 2</description>
+		<expected-problems>2</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
 	public void foo(String newName, String tempID) { 
+		// missing accessibility check
 		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
 		List<String> fieldsToView = new List<String> { 'name' };
+		// wrong object check
 		if (ESAPI.accessController().isAuthorizedToView(Lead.sObject, fieldsToView)) { 
 			c.Name = newName; 
 			update c; 
@@ -100,10 +230,13 @@ public class Foo {
 		<code><![CDATA[ 
 public class Foo { 
 	public void foo(String newName, String tempID) { 
-		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
-		if(Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
-			c.Name = newName; 
-			update c; 
+		List<String> fieldsToView = new List<String> { 'name' };
+		if (ESAPI.accessController().isAuthorizedToView(Contact.sObject, fieldsToView)) { 
+			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
+			if(Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
+				c.Name = newName; 
+				update c; 
+			}
 		}
 	} 
 } ]]></code>
@@ -112,7 +245,7 @@ public class Foo {
 
 	<test-code>
 		<description>No CRUD,FLS check for update</description>
-		<expected-problems>1</expected-problems>
+		<expected-problems>2</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
 	public void foo(String newName, String tempID) { 
@@ -130,11 +263,13 @@ public class Foo {
 		<code><![CDATA[ 
 public class Foo { 
 	public Contact foo(String newName, String tempID) { 
-		Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
-		if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()){ 
-			return null; 
-		} 
-		c.Name = newName; 
+		if (Contact.sObjectType.getDescribe().isAccessible()) {
+			Contact c = [SELECT Name FROM Contact WHERE Id=:tempID]; 
+			if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()){ 
+				return null; 
+			} 
+			c.Name = newName; 
+		}
 		update c; 
 		return c; 
 	} 
@@ -171,7 +306,7 @@ public class Foo {
 
 	<test-code>
 		<description>No CRUD check for delete</description>
-		<expected-problems>1</expected-problems>
+		<expected-problems>2</expected-problems>
 		<code><![CDATA[
 public class Foo {
 	public void bar(String contactId) {
@@ -188,13 +323,14 @@ public class Foo {
 		<code><![CDATA[
 public class Foo {
 	public void bar(String contactId) {
-		if (Contact.sObjectType.getDescribe().isDeletable()) {
-			Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
-			delete toDelete;
-		}	
+		if (Contact.sObjectType.getDescribe().isAccessible()) {
+			Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];		
+			if (Contact.sObjectType.getDescribe().isDeletable()) {
+				delete toDelete;
+			}	
+		}
 	}
 }
 		]]></code>
 	</test-code>
-
 </test-data>
