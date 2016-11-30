@@ -241,7 +241,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 		final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
 		final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
-		if (Helper.isTestMethodOrClass(wrappingClass) || Helper.isTestMethodOrClass(wrappingMethod)) {
+		if ((wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
+				|| (wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod))) {
 			return;
 		}
 
@@ -322,7 +323,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 		final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
 		final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
-		if (Helper.isTestMethodOrClass(wrappingClass) || Helper.isTestMethodOrClass(wrappingMethod)) {
+		if ((wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
+				|| (wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod))) {
 			return;
 		}
 
@@ -346,7 +348,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
 			if (varToTypeMapping.containsKey(variableWithClass.toString())) {
 				String type = varToTypeMapping.get(variableWithClass.toString());
-					
+
 				validateCRUDCheckPresent(node, data, ANY, type);
 
 			}
