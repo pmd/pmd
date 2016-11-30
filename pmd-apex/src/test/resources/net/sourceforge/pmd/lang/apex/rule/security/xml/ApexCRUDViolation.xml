@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
-
-
 	<test-code>
 		<description>No CRUD,FLS needed via sObject property</description>
 		<expected-problems>1</expected-problems>
@@ -94,7 +92,6 @@ public class Foo {
 ]]></code>
 	</test-code>
 
-
 	<test-code>
 		<description>No CRUD,FLS via sObject property, write is not protected
 		</description>
@@ -106,6 +103,38 @@ public class Foo {
 	public void foo(String newName, String tempID) { 
 			MyWriteOnlyProp = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
 			insert MyWriteOnlyProp;
+	} 
+} 
+]]></code>
+	</test-code>
+
+	<test-code>
+		<description>No CRUD,FLS for List insertion </description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public List<Contact> MyWriteOnlyProp { get; set; }
+	
+	public void foo(String newName, String tempID) { 
+			MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+			insert MyWriteOnlyProp;
+	} 
+} 
+]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Proper CRUD,FLS for List insertion </description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public List<Contact> MyWriteOnlyProp { get; set; }
+	
+	public void foo(String newName, String tempID) { 
+			MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+			if(Contact.sObjectType.getDescribe().isCreateable()) {
+				insert MyWriteOnlyProp;
+			}
 	} 
 } 
 ]]></code>
@@ -325,6 +354,22 @@ public class Foo {
 	public void bar(String contactId) {
 		if (Contact.sObjectType.getDescribe().isAccessible()) {
 			Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];		
+			if (Contact.sObjectType.getDescribe().isDeletable()) {
+				delete toDelete;
+			}	
+		}
+	}
+}
+		]]></code>
+	</test-code>
+	<test-code>
+		<description>Proper CRUD check for a list of sObject</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void bar(String contactId) {
+		if (Contact.sObjectType.getDescribe().isAccessible()) {
+			List<Contact> contacts = [SELECT Id FROM Contact];		
 			if (Contact.sObjectType.getDescribe().isDeletable()) {
 				delete toDelete;
 			}	
