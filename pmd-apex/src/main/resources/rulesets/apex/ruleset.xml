@@ -253,7 +253,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <rule ref="rulesets/apex/security.xml/ApexCRUDViolation" message="Validate CRUD permission before DML operation">
+   <rule ref="rulesets/apex/security.xml/ApexCRUDViolation" message="Validate CRUD permission before SOQL/DML operation">
        <priority>3</priority>
        <properties>
           <!-- relevant for Code Climate output only -->
