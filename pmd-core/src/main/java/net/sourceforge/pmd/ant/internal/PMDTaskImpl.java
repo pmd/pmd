@@ -33,6 +33,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -77,6 +78,7 @@ public class PMDTaskImpl {
         configuration.setThreads(task.getThreads());
         this.failuresPropertyName = task.getFailuresPropertyName();
         configuration.setMinimumPriority(RulePriority.valueOf(task.getMinimumPriority()));
+        configuration.setAnalysisCacheLocation(task.getCacheLocation());
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
@@ -101,23 +103,15 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        ruleSetFactory.setClassLoader(configuration.getClassLoader());
-        if (!configuration.isRuleSetFactoryCompatibilityEnabled()) {
-            ruleSetFactory.disableCompatibilityFilter();
-        }
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
         try {
-            // This is just used to validate and display rules. Each thread will
-            // create its own ruleset
-            ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
-            ruleSetFactory.setWarnDeprecated(true);
+            // This is just used to validate and display rules. Each thread will create its own ruleset
             String ruleSets = configuration.getRuleSets();
             if (StringUtil.isNotEmpty(ruleSets)) {
                 // Substitute env variables/properties
                 configuration.setRuleSets(project.replaceProperties(ruleSets));
             }
             RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-            ruleSetFactory.setWarnDeprecated(false);
             logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage(), e);

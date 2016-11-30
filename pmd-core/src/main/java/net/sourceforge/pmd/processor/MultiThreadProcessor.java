@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.processor;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -38,6 +37,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 
 		RuleSets rs = createRuleSets(ruleSetFactory);
 		rs.start(ctx);
+		configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
 
 		PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
 		ExecutorService executor = Executors.newFixedThreadPool(
