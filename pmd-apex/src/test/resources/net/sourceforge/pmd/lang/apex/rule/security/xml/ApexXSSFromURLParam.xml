@@ -2,6 +2,56 @@
 
 <test-data>
 
+	<test-code>
+		<description>URL parameter in return statement</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public String test1() {
+		return ApexPages.currentPage().getParameters().get('foo');
+	}		
+}
+		]]></code>
+	</test-code>
+	
+		<test-code>
+		<description>URL parameter in return statement concatenation</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public String test1() {
+		return 'text' + ApexPages.currentPage().getParameters().get('foo');
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>URL parameter used without being escaped in return statement</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public String test1() {
+		String bas = ApexPages.currentPage().getParameters().get('foo');
+		return bas;
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>URL parameter used without being escaped in return statement concatenation</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public String test1() {
+		String bas = ApexPages.currentPage().getParameters().get('foo');
+		return 'text' + bas;
+	}		
+}
+		]]></code>
+	</test-code>
+
 	  <test-code>
 		<description>URL parameter used without being escaped 1</description>
 		<expected-problems>1</expected-problems>
@@ -221,6 +271,5 @@ public class Foo {
 		
 		
 	</test-code>
-
 
 </test-data>
