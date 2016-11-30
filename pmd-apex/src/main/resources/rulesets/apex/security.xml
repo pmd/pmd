@@ -165,11 +165,11 @@ public class Foo {
 	</rule>
 	
 	<rule name="ApexCRUDViolation" since="5.5.3"
-		message="Validate CRUD permission before DML operation"
+		message="Validate CRUD permission before SOQL/DML operation"
 		class="net.sourceforge.pmd.lang.apex.rule.security.ApexCRUDViolationRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexCRUDViolationRule">
 		<description>
-            Validate CRUD permission before DML operation
+            Validate CRUD permission before SOQL/SOSL/DML operation
         </description>
 		<priority>3</priority>
 		<example>
