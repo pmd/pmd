@@ -9,11 +9,15 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -29,9 +33,6 @@ import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.testframework.RuleTst;
-
-import org.junit.Before;
-import org.junit.Test;
 
  /**
   * @author daniels
@@ -56,8 +57,7 @@ import org.junit.Test;
          Report report = new Report();
          ctx.setReport(report);
          ctx.setSourceCodeFilename("n/a");
-         RuleSet rules = new RuleSet();
-         rules.addRule(rule);
+         RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
          p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST1), new RuleSets(rules), ctx);
          RuleViolation rv = report.iterator().next();
          assertEquals("a", rv.getDescription());
@@ -75,8 +75,7 @@ import org.junit.Test;
          Report report = new Report();
          ctx.setReport(report);
          ctx.setSourceCodeFilename("n/a");
-         RuleSet rules = new RuleSet();
-         rules.addRule(rule);
+         RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
          p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST2), new RuleSets(rules), ctx);
          RuleViolation rv = report.iterator().next();
          assertEquals(3, rv.getBeginLine());

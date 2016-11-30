@@ -8,14 +8,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
-
-import org.junit.Before;
-import org.junit.Test;
 
 
  public class ExcludeLinesTest extends RuleTst {
@@ -41,8 +41,7 @@ import org.junit.Test;
          ctx.setReport(r);
          ctx.setSourceCodeFilename("n/a");
          ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
-         RuleSet rules = new RuleSet();
-         rules.addRule(rule);
+         RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
          p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
          assertTrue(r.isEmpty());
          assertEquals(r.getSuppressedRuleViolations().size(), 1);
