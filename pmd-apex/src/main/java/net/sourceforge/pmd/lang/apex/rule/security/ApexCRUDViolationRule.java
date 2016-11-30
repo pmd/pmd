@@ -1,15 +1,14 @@
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import apex.jorje.data.ast.Identifier;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -24,7 +23,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
@@ -32,7 +30,7 @@ import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 /**
- * Finding missed CRUD checks.
+ * Finding missed CRUD checks for SOQL and DML operations.
  * 
  * @author sergey.gorbaty
  *
@@ -147,32 +145,20 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 		checkForCRUD(node, data, IS_MERGEABLE);
 		return data;
 	}
-
+	
 	@Override
 	public Object visit(final ASTAssignmentExpression node, Object data) {
-
-		ASTSoslExpression sosl = node.getFirstChildOfType(ASTSoslExpression.class);
-		if (sosl != null) {
-			checkForAccessibility(sosl, data);
-		}
-
-		ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
+		final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
 		if (soql != null) {
 			checkForAccessibility(soql, data);
 		}
-
+		
 		return data;
 	}
-
+	
 	@Override
 	public Object visit(final ASTVariableDeclaration node, Object data) {
-
-		ASTSoslExpression sosl = node.getFirstChildOfType(ASTSoslExpression.class);
-		if (sosl != null) {
-			checkForAccessibility(sosl, data);
-		}
-
-		ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
+		final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
 		if (soql != null) {
 			checkForAccessibility(soql, data);
 		}
@@ -180,10 +166,26 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 		String type = node.getNode().getLocalInfo().getType().getApexName();
 		StringBuilder sb = new StringBuilder().append(node.getNode().getDefiningType().getApexName()).append(":")
 				.append(node.getNode().getLocalInfo().getName());
-		varToTypeMapping.put(sb.toString(), type);
+		addVariableToMapping(sb.toString(), type);
 
 		return data;
 
+	}
+
+	private void addVariableToMapping(final String variableName, final String type) {
+		varToTypeMapping.put(variableName, getSimpleType(type));
+	}
+
+	private String getSimpleType(final String type) {
+		String typeToUse = type;
+
+		Pattern pattern = Pattern.compile("^[list<]?list<(\\S+?)>[>]?$", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(typeToUse);
+
+		if (matcher.find()) {
+			typeToUse = matcher.group(1);
+		}
+		return typeToUse;
 	}
 
 	@Override
@@ -196,7 +198,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 			StringBuilder sb = new StringBuilder().append(field.getNode().getDefiningType().getApexName()).append(":")
 					.append(fieldName);
 
-			varToTypeMapping.put(sb.toString(), fieldType);
+			addVariableToMapping(sb.toString(), fieldType);
 
 		}
 
@@ -331,6 +333,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 		final ASTVariableDeclaration variableDecl = node.getFirstParentOfType(ASTVariableDeclaration.class);
 		if (variableDecl != null) {
 			String type = variableDecl.getNode().getLocalInfo().getType().getApexName();
+			type = getSimpleType(type);
 			StringBuilder typeCheck = new StringBuilder().append(variableDecl.getNode().getDefiningType().getApexName())
 					.append(":").append(type);
 
@@ -354,6 +357,5 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 			}
 
 		}
-
 	}
 }
