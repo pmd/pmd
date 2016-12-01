@@ -222,7 +222,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 		final List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
 		for (ASTVariableExpression n : nodes) {
 			final VariableExpression expression = n.getNode();
-			StringBuilder sb = new StringBuilder().append(expression.getDefiningType()).append(":").append(expression);
+			StringBuilder sb = new StringBuilder().append(expression.getDefiningType().getApexName()).append(":").append(expression.getIdentifier().value);
 
 			if (urlParameterString.contains(sb.toString())) {
 				addViolation(data, n);
