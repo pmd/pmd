@@ -16,6 +16,7 @@ public class SecurityRulesTest extends SimpleAggregatorTst {
 		addRule(RULESET, "ApexSOQLInjection");
 		addRule(RULESET, "ApexSharingViolations");
 		addRule(RULESET, "ApexInsecureEndpoint");
+		addRule(RULESET, "ApexCRUDViolation");
 
 	}
 

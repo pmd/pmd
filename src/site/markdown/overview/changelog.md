@@ -18,6 +18,7 @@
 *   apex
     *   New Security ruleset including:
         *   ApexBadCrypto
+        *   ApexCRUDViolation
         *   ApexCSRF
         *   ApexInsecureEndpoint
         *   ApexOpenRedirect
@@ -41,6 +42,7 @@
 *   [#134](https://github.com/pmd/pmd/pull/134): \[java] Symbol table can now handle inner classes
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
 *   [#137](https://github.com/pmd/pmd/pull/137): \[apex] Adjusted remediation points
+*   [#146](https://github.com/pmd/pmd/pull/146): \[apex] Detection of missing Apex CRUD checks for SOQL/DML operations
 
 **Bugfixes:**
 
@@ -49,9 +51,9 @@
 *   apex-apexunit
     *   [#1543](https://sourceforge.net/p/pmd/bugs/1543/): \[apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive
 *   Java
-    *    [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
+    *   [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
 *   java-imports
-    *    [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
+    *   [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
 *   XML
     *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
 *   psql
