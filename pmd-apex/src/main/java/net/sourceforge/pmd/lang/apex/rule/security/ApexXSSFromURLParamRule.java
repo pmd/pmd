@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
@@ -68,6 +69,32 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 	public Object visit(ASTMethodCallExpression node, Object data) {
 		processEscapingMethodCalls(node, data);
 		processInlineMethodCalls(node, data, false);
+		return data;
+	}
+	
+	@Override
+	public Object visit(ASTReturnStatement node, Object data) {
+		ASTBinaryExpression binaryExpression = node.getFirstChildOfType(ASTBinaryExpression.class);
+		if (binaryExpression != null) {
+			processBinaryExpression(binaryExpression, data);
+		}
+
+		ASTMethodCallExpression methodCall = node.getFirstChildOfType(ASTMethodCallExpression.class);
+		if (methodCall != null) {
+			processInlineMethodCalls(methodCall, data, true);
+		}
+		
+		List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
+		
+		for (ASTVariableExpression varExpression : nodes) {
+			StringBuilder sb = new StringBuilder().append(varExpression.getNode().getDefiningType().getApexName()).append(":")
+					.append(varExpression.getNode().getIdentifier().value);
+
+			if (urlParameterString.contains(sb.toString())) {
+				addViolation(data, nodes.get(0));
+			}
+		}
+		
 		return data;
 	}
 
@@ -159,6 +186,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 					processBinaryExpression(o, data);
 				}
 			}
+			
 		}
 			break;
 		case 2: {
@@ -181,6 +209,11 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 	}
 
 	private void processBinaryExpression(AbstractApexNode<?> node, Object data) {
+		ASTBinaryExpression nestedBinaryExpression = node.getFirstChildOfType(ASTBinaryExpression.class);
+		if (nestedBinaryExpression != null) {
+			processBinaryExpression(nestedBinaryExpression, data);
+		}
+		
 		ASTMethodCallExpression methodCallAssignment = node.getFirstChildOfType(ASTMethodCallExpression.class);
 		if (methodCallAssignment != null) {
 			processInlineMethodCalls(methodCallAssignment, data, true);
@@ -189,7 +222,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 		final List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
 		for (ASTVariableExpression n : nodes) {
 			final VariableExpression expression = n.getNode();
-			StringBuilder sb = new StringBuilder().append(expression.getDefiningType()).append(":").append(expression);
+			StringBuilder sb = new StringBuilder().append(expression.getDefiningType().getApexName()).append(":").append(expression.getIdentifier().value);
 
 			if (urlParameterString.contains(sb.toString())) {
 				addViolation(data, n);
