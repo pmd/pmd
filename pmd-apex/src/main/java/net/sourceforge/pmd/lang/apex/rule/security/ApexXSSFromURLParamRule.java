@@ -35,6 +35,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 	private static final String[] INTEGER_VALUEOF = new String[] { "Integer", "valueOf" };
 	private static final String[] ID_VALUEOF = new String[] { "ID", "valueOf" };
 	private static final String[] DOUBLE_VALUEOF = new String[] { "Double", "valueOf" };
+	private static final String[] STRING_ISEMPTY = new String[] { "String", "isEmpty" };
+	
 
 	private static final Set<String> urlParameterString = new HashSet<>();
 
@@ -153,7 +155,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
 			// safe method
 			if (isMethodCallChain(methodNode, INTEGER_VALUEOF) || isMethodCallChain(methodNode, ID_VALUEOF)
-					|| isMethodCallChain(methodNode, DOUBLE_VALUEOF)) {
+					|| isMethodCallChain(methodNode, DOUBLE_VALUEOF) || isMethodCallChain(methodNode, STRING_ISEMPTY)) {
 				return;
 			}
 
