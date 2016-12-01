@@ -13,8 +13,8 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
-		<test-code>
+
+	<test-code>
 		<description>URL parameter in return statement concatenation</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -27,7 +27,8 @@ public class Foo {
 	</test-code>
 
 	<test-code>
-		<description>URL parameter used without being escaped in return statement</description>
+		<description>URL parameter used without being escaped in return
+			statement</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -40,7 +41,8 @@ public class Foo {
 	</test-code>
 
 	<test-code>
-		<description>URL parameter used without being escaped in return statement concatenation</description>
+		<description>URL parameter used without being escaped in return
+			statement concatenation</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -52,7 +54,21 @@ public class Foo {
 		]]></code>
 	</test-code>
 
-	  <test-code>
+	<test-code>
+		<description>URL parameter used without being escaped in return
+			statement concatenation 2</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public String test1() {
+		String bas = ApexPages.currentPage().getParameters().get('foo');
+		return 'text' + bas + 'ttt';
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
 		<description>URL parameter used without being escaped 1</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -166,9 +182,9 @@ public class Foo {
 	}		
 }
 		]]></code>
-	</test-code> 
-	
-	 <test-code>
+	</test-code>
+
+	<test-code>
 		<description>URL parameter passed to a function</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -178,8 +194,8 @@ public class Foo {
 	}		
 }
 		]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
 		<description>Safe URL parameter passed to a function</description>
 		<expected-problems>0</expected-problems>
@@ -190,10 +206,11 @@ public class Foo {
 	}		
 }
 		]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
-		<description>URL parameter passed to a function with variable declaration</description>
+		<description>URL parameter passed to a function with variable
+			declaration</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -203,9 +220,10 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
-		<description>Safe URL parameter passed to a function with variable declaration</description>
+		<description>Safe URL parameter passed to a function with variable
+			declaration</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -214,9 +232,9 @@ public class Foo {
 	}		
 }
 		]]></code>
-	</test-code> 
-	
-	 <test-code>
+	</test-code>
+
+	<test-code>
 		<description>URL parameter concatenated with variable
 		</description>
 		<expected-problems>1</expected-problems>
@@ -227,8 +245,8 @@ public class Foo {
 	}		
 }
 		]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
 		<description>Safe URL parameter concatenated with variable
 		</description>
@@ -240,8 +258,8 @@ public class Foo {
 	}		
 }
 		]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
 		<description>URL parameter type casting is a safety check</description>
 		<expected-problems>0</expected-problems>
@@ -255,7 +273,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>URL parameter method passing</description>
 		<expected-problems>1</expected-problems>
@@ -268,8 +286,8 @@ public class Foo {
 	}		
 }
 		]]></code>
-		
-		
+
+
 	</test-code>
 
 </test-data>
