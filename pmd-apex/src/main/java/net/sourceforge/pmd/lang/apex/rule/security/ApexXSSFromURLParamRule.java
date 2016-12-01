@@ -209,6 +209,11 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 	}
 
 	private void processBinaryExpression(AbstractApexNode<?> node, Object data) {
+		ASTBinaryExpression nestedBinaryExpression = node.getFirstChildOfType(ASTBinaryExpression.class);
+		if (nestedBinaryExpression != null) {
+			processBinaryExpression(nestedBinaryExpression, data);
+		}
+		
 		ASTMethodCallExpression methodCallAssignment = node.getFirstChildOfType(ASTMethodCallExpression.class);
 		if (methodCallAssignment != null) {
 			processInlineMethodCalls(methodCallAssignment, data, true);
