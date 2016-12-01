@@ -94,7 +94,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 						.append(l.getIdentifier().value);
 				Object o = literal.getNode().getLiteral();
 				if (o instanceof String) {
-					if (pattern.matcher((String)o).matches()) {
+					if (pattern.matcher((String) o).matches()) {
 						selectContainingVariables.put(sb.toString(), Boolean.TRUE);
 					} else {
 						safeVariables.add(sb.toString());
@@ -144,17 +144,15 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 		final ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
 		if (literal != null) {
 
-			String str = literal.getNode().getLiteral().toString();
-			if (pattern.matcher(str).matches()) {
-				StringBuilder sb = new StringBuilder().append(var.getNode().getDefiningType().getApexName()).append(":")
-						.append(var.getNode().getIdentifier().value);
-				if (!isSafeVariable) {
-					selectContainingVariables.put(sb.toString(), Boolean.FALSE); // select
-																					// literal
-																					// +
-																					// other
-																					// unsafe
-																					// vars
+			Object o = literal.getNode().getLiteral();
+			if (o instanceof String) {
+				if (pattern.matcher((String) o).matches()) {
+					StringBuilder sb = new StringBuilder().append(var.getNode().getDefiningType().getApexName())
+							.append(":").append(var.getNode().getIdentifier().value);
+					if (!isSafeVariable) {
+						// select literal + other unsafe vars
+						selectContainingVariables.put(sb.toString(), Boolean.FALSE);
+					}
 				}
 			}
 		}
