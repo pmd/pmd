@@ -92,10 +92,13 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 				final VariableExpression l = left.getNode();
 				StringBuilder sb = new StringBuilder().append(l.getDefiningType()).append(":")
 						.append(l.getIdentifier().value);
-				if (pattern.matcher(literal.getNode().getLiteral().toString()).matches()) {
-					selectContainingVariables.put(sb.toString(), Boolean.TRUE); //e.g. Select literal in var 
-				} else {
-					safeVariables.add(sb.toString());
+				Object o = literal.getNode().getLiteral();
+				if (o instanceof String) {
+					if (pattern.matcher((String)o).matches()) {
+						selectContainingVariables.put(sb.toString(), Boolean.TRUE);
+					} else {
+						safeVariables.add(sb.toString());
+					}
 				}
 			}
 		}
@@ -146,7 +149,12 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 				StringBuilder sb = new StringBuilder().append(var.getNode().getDefiningType().getApexName()).append(":")
 						.append(var.getNode().getIdentifier().value);
 				if (!isSafeVariable) {
-					selectContainingVariables.put(sb.toString(), Boolean.FALSE); // select literal + other unsafe vars 
+					selectContainingVariables.put(sb.toString(), Boolean.FALSE); // select
+																					// literal
+																					// +
+																					// other
+																					// unsafe
+																					// vars
 				}
 			}
 		}
