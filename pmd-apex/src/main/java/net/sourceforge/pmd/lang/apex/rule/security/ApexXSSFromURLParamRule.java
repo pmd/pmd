@@ -36,7 +36,6 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 	private static final String[] ID_VALUEOF = new String[] { "ID", "valueOf" };
 	private static final String[] DOUBLE_VALUEOF = new String[] { "Double", "valueOf" };
 	private static final String[] STRING_ISEMPTY = new String[] { "String", "isEmpty" };
-	
 
 	private static final Set<String> urlParameterString = new HashSet<>();
 
@@ -73,7 +72,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 		processInlineMethodCalls(node, data, false);
 		return data;
 	}
-	
+
 	@Override
 	public Object visit(ASTReturnStatement node, Object data) {
 		ASTBinaryExpression binaryExpression = node.getFirstChildOfType(ASTBinaryExpression.class);
@@ -85,24 +84,26 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 		if (methodCall != null) {
 			processInlineMethodCalls(methodCall, data, true);
 		}
-		
+
 		List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
-		
+
 		for (ASTVariableExpression varExpression : nodes) {
-			StringBuilder sb = new StringBuilder().append(varExpression.getNode().getDefiningType().getApexName()).append(":")
-					.append(varExpression.getNode().getIdentifier().value);
+			StringBuilder sb = new StringBuilder().append(varExpression.getNode().getDefiningType().getApexName())
+					.append(":").append(varExpression.getNode().getIdentifier().value);
 
 			if (urlParameterString.contains(sb.toString())) {
 				addViolation(data, nodes.get(0));
 			}
 		}
-		
+
 		return data;
 	}
 
 	private boolean isEscapingMethod(ASTMethodCallExpression methodNode) {
 		return isMethodCallChain(methodNode, HTML_ESCAPING) || isMethodCallChain(methodNode, JS_ESCAPING)
-				|| isMethodCallChain(methodNode, JSINHTML_ESCAPING) || isMethodCallChain(methodNode, URL_ESCAPING);
+				|| isMethodCallChain(methodNode, JSINHTML_ESCAPING) || isMethodCallChain(methodNode, URL_ESCAPING)
+				|| isMethodCallChain(methodNode, INTEGER_VALUEOF) || isMethodCallChain(methodNode, DOUBLE_VALUEOF)
+				|| isMethodCallChain(methodNode, STRING_ISEMPTY) || isMethodCallChain(methodNode, ID_VALUEOF);
 	}
 
 	private void processInlineMethodCalls(ASTMethodCallExpression methodNode, Object data, final boolean isNested) {
@@ -188,7 +189,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 					processBinaryExpression(o, data);
 				}
 			}
-			
+
 		}
 			break;
 		case 2: {
@@ -215,7 +216,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 		if (nestedBinaryExpression != null) {
 			processBinaryExpression(nestedBinaryExpression, data);
 		}
-		
+
 		ASTMethodCallExpression methodCallAssignment = node.getFirstChildOfType(ASTMethodCallExpression.class);
 		if (methodCallAssignment != null) {
 			processInlineMethodCalls(methodCallAssignment, data, true);
@@ -224,7 +225,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 		final List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
 		for (ASTVariableExpression n : nodes) {
 			final VariableExpression expression = n.getNode();
-			StringBuilder sb = new StringBuilder().append(expression.getDefiningType().getApexName()).append(":").append(expression.getIdentifier().value);
+			StringBuilder sb = new StringBuilder().append(expression.getDefiningType().getApexName()).append(":")
+					.append(expression.getIdentifier().value);
 
 			if (urlParameterString.contains(sb.toString())) {
 				addViolation(data, n);

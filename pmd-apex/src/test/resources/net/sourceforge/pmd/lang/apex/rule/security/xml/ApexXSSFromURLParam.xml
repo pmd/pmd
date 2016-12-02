@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
-
 	<test-code>
 		<description>URL parameter in return statement</description>
 		<expected-problems>1</expected-problems>
@@ -15,7 +14,8 @@ public class Foo {
 	</test-code>
 
 	<test-code>
-		<description>URL parameter in return statement concatenation</description>
+		<description>URL parameter in return statement concatenation
+		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -28,7 +28,8 @@ public class Foo {
 
 	<test-code>
 		<description>URL parameter used without being escaped in return
-			statement</description>
+			statement
+		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -42,7 +43,8 @@ public class Foo {
 
 	<test-code>
 		<description>URL parameter used without being escaped in return
-			statement concatenation</description>
+			statement concatenation
+		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -56,13 +58,27 @@ public class Foo {
 
 	<test-code>
 		<description>URL parameter used without being escaped in return
-			statement concatenation 2</description>
+			statement concatenation 2
+		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
 	public String test1() {
 		String bas = ApexPages.currentPage().getParameters().get('foo');
 		return 'text' + bas + 'ttt';
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Safe URL parameter cast to Integer
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public Integer test1() {
+		return Integer.valueOf(ApexPages.currentPage().getParameters().get('foo'));
 	}		
 }
 		]]></code>
@@ -113,7 +129,8 @@ public class Foo {
 
 	<test-code>
 		<description>URL parameter passed to escaping function and then
-			assigned</description>
+			assigned
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -210,7 +227,8 @@ public class Foo {
 
 	<test-code>
 		<description>URL parameter passed to a function with variable
-			declaration</description>
+			declaration
+		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -223,7 +241,8 @@ public class Foo {
 
 	<test-code>
 		<description>Safe URL parameter passed to a function with variable
-			declaration</description>
+			declaration
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -261,7 +280,8 @@ public class Foo {
 	</test-code>
 
 	<test-code>
-		<description>URL parameter type casting is a safety check</description>
+		<description>URL parameter type casting is a safety check
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -269,6 +289,32 @@ public class Foo {
 		String baz, bas;
 		bas = ApexPages.currentPage().getParameters().get('foo');
 		baz = Integer.valueOf(bas);
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>URL parameter type empty check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String baz, bas;
+		bas = ApexPages.currentPage().getParameters().get('foo');
+		boolean isEmpty = String.isEmpty(bas);
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>URL parameter type empty check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		boolean isEmpty = String.isEmpty(ApexPages.currentPage().getParameters().get('foo'););
 	}		
 }
 		]]></code>
@@ -286,8 +332,5 @@ public class Foo {
 	}		
 }
 		]]></code>
-
-
 	</test-code>
-
 </test-data>
