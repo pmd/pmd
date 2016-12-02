@@ -369,9 +369,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
 			if (varToTypeMapping.containsKey(variableWithClass.toString())) {
 				String type = varToTypeMapping.get(variableWithClass.toString());
-
-				validateCRUDCheckPresent(node, data, ANY, type);
-
+				if (!isGetter) {
+					validateCRUDCheckPresent(node, data, ANY, type);
+				}
 			}
 
 		}
@@ -386,7 +386,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 	}
 
 	private String getReturnType(final ASTMethod method) {
-		return new StringBuilder().append(method.getNode().getDefiningType().getApexName()).append(":").append(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).toString();
+		return new StringBuilder().append(method.getNode().getDefiningType().getApexName()).append(":")
+				.append(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).toString();
 	}
 
 	private boolean isMethodAGetter(final ASTMethod method) {
