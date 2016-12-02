@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.ecmascript;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
