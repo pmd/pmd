@@ -17,18 +17,17 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
+
 package org.sonar.plugins.scala.language;
 
 /**
- * This enum is a helper to distinguish between the
- * different types of comments in Sonar.
+ * This enum is a helper to distinguish between the different types of comments
+ * in Sonar.
  *
  * @author Felix Müller
  * @since 0.1
  */
 public enum CommentType {
 
-  NORMAL,
-  DOC,
-  HEADER;
+    NORMAL, DOC, HEADER;
 }
