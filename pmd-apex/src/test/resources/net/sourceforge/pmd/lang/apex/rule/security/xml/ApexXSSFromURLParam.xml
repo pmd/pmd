@@ -314,7 +314,7 @@ public class Foo {
 		<code><![CDATA[
 public class Foo {
 	public void test1() {
-		boolean isEmpty = String.isEmpty(ApexPages.currentPage().getParameters().get('foo'););
+		boolean isEmpty = String.isEmpty(ApexPages.currentPage().getParameters().get('foo'));
 	}		
 }
 		]]></code>
