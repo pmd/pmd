@@ -93,7 +93,7 @@ public final class PMDASMClassLoader extends ClassLoader {
     	return !dontBother.containsKey(name);
     }
 
-    public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
+    public Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
         if (dontBother.containsValue(name)) {
             throw new ClassNotFoundException(name);
         }
@@ -107,7 +107,7 @@ public final class PMDASMClassLoader extends ClassLoader {
                 inner = new ArrayList<>(inner); // to avoid
                                                       // ConcurrentModificationException
                 for (String str : inner) {
-                    try (InputStream innerClassStream = getResourceAsStream(str.replace('.', '/') + ".class")){
+                    try (InputStream innerClassStream = getResourceAsStream(str.replace('.', '/') + ".class")) {
                         if (innerClassStream != null) {
                             reader = new ClassReader(innerClassStream);
                             reader.accept(asmVisitor, 0);
