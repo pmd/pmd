@@ -30,14 +30,14 @@ public abstract class AbstractJavaScope extends AbstractScope {
 
     @Override
     public boolean contains(NameOccurrence occurrence) {
-        return !findVariableHere((JavaNameOccurrence)occurrence).isEmpty();
+        return !findVariableHere((JavaNameOccurrence) occurrence).isEmpty();
     }
 
     protected abstract Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence);
 
     protected <T> String glomNames(Set<T> s) {
-    	StringBuilder result = new StringBuilder();
-        for (T t: s) {
+        StringBuilder result = new StringBuilder();
+        for (T t : s) {
             result.append(t.toString());
             result.append(',');
         }

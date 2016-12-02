@@ -22,7 +22,6 @@ public class StringConcatenationRule extends AbstractJavaRule {
             return data;
         }
 
-
         return data;
     }
 }

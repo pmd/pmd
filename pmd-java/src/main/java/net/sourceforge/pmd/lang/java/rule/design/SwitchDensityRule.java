@@ -50,10 +50,10 @@ public class SwitchDensityRule extends AbstractStatisticalJavaRule {
             return (double) stmts / (double) labels;
         }
     }
-    
+
     public SwitchDensityRule() {
-	super();
-	setProperty(MINIMUM_DESCRIPTOR, 10d);
+        super();
+        setProperty(MINIMUM_DESCRIPTOR, 10d);
     }
 
     public Object visit(ASTSwitchStatement node, Object data) {

@@ -14,7 +14,6 @@ public class ASTAssertStatement extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

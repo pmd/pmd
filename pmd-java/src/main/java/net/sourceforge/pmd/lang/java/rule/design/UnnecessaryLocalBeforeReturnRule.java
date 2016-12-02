@@ -36,15 +36,17 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         }
 
         // skip 'complicated' expressions
-        if (rtn.findDescendantsOfType(ASTExpression.class).size() > 1 || rtn.findDescendantsOfType(ASTPrimaryExpression.class).size() > 1 || isMethodCall(rtn)) {
+        if (rtn.findDescendantsOfType(ASTExpression.class).size() > 1
+                || rtn.findDescendantsOfType(ASTPrimaryExpression.class).size() > 1 || isMethodCall(rtn)) {
             return data;
         }
 
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = name.getScope().getDeclarations(VariableNameDeclaration.class);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = name.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration key = entry.getKey();
             List<NameOccurrence> usages = entry.getValue();
-            for (NameOccurrence occ: usages) {
+            for (NameOccurrence occ : usages) {
                 if (occ.getLocation().equals(name)) {
                     // only check declarations that occur one line earlier
                     if (key.getNode().getBeginLine() == name.getBeginLine() - 1) {
@@ -68,12 +70,12 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
      * @return true if any method calls are made within the given return
      */
     private boolean isMethodCall(ASTReturnStatement rtn) {
-     List<ASTPrimarySuffix> suffix = rtn.findDescendantsOfType( ASTPrimarySuffix.class );
-     for ( ASTPrimarySuffix element: suffix ) {
-        if ( element.isArguments() ) {
-          return true;
+        List<ASTPrimarySuffix> suffix = rtn.findDescendantsOfType(ASTPrimarySuffix.class);
+        for (ASTPrimarySuffix element : suffix) {
+            if (element.isArguments()) {
+                return true;
+            }
         }
-      }
-      return false;
+        return false;
     }
 }

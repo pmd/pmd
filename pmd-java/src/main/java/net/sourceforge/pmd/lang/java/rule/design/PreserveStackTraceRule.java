@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import java.util.List;
 import java.util.Map;
 
+import org.jaxen.JaxenException;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -22,8 +24,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-
-import org.jaxen.JaxenException;
 
 /**
  *
@@ -107,8 +107,8 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                 image = occurrence.getLocation().getImage();
             }
             if (image != null && image.endsWith("initCause")) {
-                ASTPrimaryExpression primaryExpression = occurrence.getLocation().getFirstParentOfType(
-                        ASTPrimaryExpression.class);
+                ASTPrimaryExpression primaryExpression = occurrence.getLocation()
+                        .getFirstParentOfType(ASTPrimaryExpression.class);
                 if (primaryExpression != null) {
                     ASTArgumentList args2 = primaryExpression.getFirstDescendantOfType(ASTArgumentList.class);
                     if (checkForTargetUsage(target, args2)) {
@@ -131,9 +131,8 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                 ASTCatchStatement catchStmt = node.getFirstParentOfType(ASTCatchStatement.class);
 
                 while (catchStmt != null) {
-                    List<Node> violations = catchStmt
-                            .findChildNodesWithXPath("//Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = '"
-                                    + variableName + "']");
+                    List<Node> violations = catchStmt.findChildNodesWithXPath(
+                            "//Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + variableName + "']");
                     if (!violations.isEmpty()) {
                         // If, after this allocation, the 'initCause' method is
                         // called, and the ex passed
@@ -157,8 +156,8 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     private boolean useInitCause(Node node, ASTCatchStatement catchStmt) {
         // In case of NPE...
         if (node != null && node.getImage() != null) {
-            return catchStmt
-                    .hasDescendantMatchingXPath("./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '"
+            return catchStmt.hasDescendantMatchingXPath(
+                    "./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '"
                             + node.getImage() + ".initCause']");
         }
         return false;

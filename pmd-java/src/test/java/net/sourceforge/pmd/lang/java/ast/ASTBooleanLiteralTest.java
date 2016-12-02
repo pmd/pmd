@@ -5,10 +5,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ParserTst;
-
-import org.junit.Test;
 
 public class ASTBooleanLiteralTest extends ParserTst {
 
@@ -26,15 +26,9 @@ public class ASTBooleanLiteralTest extends ParserTst {
         assertFalse(b.isTrue());
     }
 
-    private static final String TEST1 =
-            "class Foo { " + PMD.EOL +
-            " boolean bar = true; " + PMD.EOL +
-            "} ";
+    private static final String TEST1 = "class Foo { " + PMD.EOL + " boolean bar = true; " + PMD.EOL + "} ";
 
-    private static final String TEST2 =
-            "class Foo { " + PMD.EOL +
-            " boolean bar = false; " + PMD.EOL +
-            "} ";
+    private static final String TEST2 = "class Foo { " + PMD.EOL + " boolean bar = false; " + PMD.EOL + "} ";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ASTBooleanLiteralTest.class);

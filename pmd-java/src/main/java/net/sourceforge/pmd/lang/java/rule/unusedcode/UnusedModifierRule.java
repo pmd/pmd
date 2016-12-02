@@ -13,7 +13,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class UnusedModifierRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (!node.isNested()) return super.visit(node, data);
+        if (!node.isNested())
+            return super.visit(node, data);
 
         ASTClassOrInterfaceDeclaration parentClassOrInterface = node
                 .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
@@ -64,7 +65,8 @@ public class UnusedModifierRule extends AbstractJavaRule {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
         Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();
-        if (parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
+        if (parent instanceof ASTClassOrInterfaceDeclaration
+                && ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
             addViolation(data, fieldOrMethod);
         }
     }

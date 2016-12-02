@@ -161,17 +161,14 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
                                     || otherLcType.equals("short") || otherLcType.equals("char")
                                     || otherLcType.equals("character") || otherLcType.equals("byte"))) {
                         return true;
-                    } else if (lcType.equals("double")
-                            && (otherLcType.equals("float") || otherLcType.equals("int")
-                                    || otherLcType.equals("integer") || otherLcType.equals("long"))) {
+                    } else if (lcType.equals("double") && (otherLcType.equals("float") || otherLcType.equals("int")
+                            || otherLcType.equals("integer") || otherLcType.equals("long"))) {
                         return true;
-                    } else if (lcType.equals("float")
-                            && (otherLcType.equals("int") || otherLcType.equals("integer") || otherLcType
-                                    .equals("long"))) {
+                    } else if (lcType.equals("float") && (otherLcType.equals("int") || otherLcType.equals("integer")
+                            || otherLcType.equals("long"))) {
                         return true;
-                    } else if (lcType.equals("long")
-                            && (otherLcType.equals("int") || otherLcType.equals("integer")
-                                    || otherLcType.equals("char") || otherLcType.equals("character"))) {
+                    } else if (lcType.equals("long") && (otherLcType.equals("int") || otherLcType.equals("integer")
+                            || otherLcType.equals("char") || otherLcType.equals("character"))) {
                         return true;
                     }
                 }

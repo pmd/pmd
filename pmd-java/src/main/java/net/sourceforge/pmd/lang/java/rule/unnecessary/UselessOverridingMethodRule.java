@@ -39,8 +39,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
     private static final String CLONE = "clone";
     private static final String OBJECT = "Object";
 
-    private static final BooleanProperty IGNORE_ANNOTATIONS_DESCRIPTOR = new BooleanProperty(
-                "ignoreAnnotations", "Ignore annotations", false, 1.0f);
+    private static final BooleanProperty IGNORE_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("ignoreAnnotations",
+            "Ignore annotations", false, 1.0f);
 
     public UselessOverridingMethodRule() {
         definePropertyDescriptor(IGNORE_ANNOTATIONS_DESCRIPTOR);
@@ -72,8 +72,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         boolean result = false;
         ASTResultType type = node.getResultType();
         if (type != null) {
-            result = type.hasDescendantMatchingXPath("./Type/ReferenceType/ClassOrInterfaceType[@Image = '"
-                        + methodType + "']");
+            result = type.hasDescendantMatchingXPath(
+                    "./Type/ReferenceType/ClassOrInterfaceType[@Image = '" + methodType + "']");
         }
         return result;
     }
@@ -158,7 +158,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         ASTMethodDeclarator methodDeclarator = findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
         ASTPrimarySuffix primarySuffix = primarySuffixList.get(0);
         if (!primarySuffix.hasImageEqualTo(methodDeclarator.getImage())) {
-        	return super.visit(node, data);
+            return super.visit(node, data);
         }
         //Process arguments
         primarySuffix = primarySuffixList.get(1);

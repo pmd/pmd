@@ -118,7 +118,7 @@ public class TypeSet {
          */
         public ExplicitImportResolver(PMDASMClassLoader pmdClassLoader, Set<String> importStmts) {
             super(pmdClassLoader);
-            
+
             // unfold imports, to store both FQ and unqualified names mapped to the FQ name
             this.importStmts = new HashMap<>();
             for (final String stmt : importStmts) {
@@ -173,7 +173,7 @@ public class TypeSet {
 
         @Override
         public boolean couldResolve(String name) {
-        	return super.couldResolve(pkg + '.' + name);
+            return super.couldResolve(pkg + '.' + name);
         }
     }
 
@@ -216,7 +216,7 @@ public class TypeSet {
 
         @Override
         public boolean couldResolve(String name) {
-        	return super.couldResolve("java.lang." + name);
+            return super.couldResolve("java.lang." + name);
         }
     }
 
@@ -225,6 +225,7 @@ public class TypeSet {
      */
     public static class ImportOnDemandResolver extends AbstractResolver {
         private Set<String> importStmts;
+
         /**
          * Creates a {@link ImportOnDemandResolver}
          * @param pmdClassLoader the class loader to use
@@ -234,6 +235,7 @@ public class TypeSet {
             super(pmdClassLoader);
             this.importStmts = importStmts;
         }
+
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
             if (name == null) {
@@ -243,10 +245,8 @@ public class TypeSet {
             for (String importStmt : importStmts) {
                 if (importStmt.endsWith("*")) {
                     try {
-                        String fqClassName = new StringBuilder(importStmt.length() + name.length())
-                            .append(importStmt)
-                            .replace(importStmt.length() - 1, importStmt.length(), name)
-                            .toString();
+                        String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
+                                .replace(importStmt.length() - 1, importStmt.length(), name).toString();
                         return pmdClassLoader.loadClass(fqClassName);
                     } catch (ClassNotFoundException cnfe) {
                         // ignored as the class could be imported with the next on demand import...
@@ -258,20 +258,18 @@ public class TypeSet {
 
         @Override
         public boolean couldResolve(String name) {
-        	for (String importStmt : importStmts) {
+            for (String importStmt : importStmts) {
                 if (importStmt.endsWith("*")) {
-                    String fqClassName = new StringBuilder(importStmt.length() + name.length())
-                        .append(importStmt)
-                        .replace(importStmt.length() - 1, importStmt.length(), name)
-                        .toString();
+                    String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
+                            .replace(importStmt.length() - 1, importStmt.length(), name).toString();
                     // can any class be resolved / was never attempted?
                     if (super.couldResolve(fqClassName)) {
-                    	return true;
+                        return true;
                     }
                 }
-        	}
+            }
 
-        	return false;
+            return false;
         }
     }
 
@@ -280,6 +278,7 @@ public class TypeSet {
      */
     public static class PrimitiveTypeResolver implements Resolver {
         private Map<String, Class<?>> primitiveTypes = new HashMap<>();
+
         /**
          * Creates a new {@link PrimitiveTypeResolver}.
          */

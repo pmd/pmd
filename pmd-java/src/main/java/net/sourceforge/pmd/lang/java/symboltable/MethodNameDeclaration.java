@@ -69,7 +69,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         }
 
         // compare parameter count - this catches the case where there are no params, too
-        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
+        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node)
+                .getParameterCount()) {
             return false;
         }
 
@@ -140,6 +141,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     @Override
     public String toString() {
-        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
+        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = "
+                + ((ASTMethodDeclarator) node).getParameterCount();
     }
 }

@@ -8,36 +8,36 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class MethodDeclTest extends ParserTst {
 
     @Test
     public void testPublic() throws Throwable {
-        String[] access = {"public"};
+        String[] access = { "public" };
         ASTMethodDeclaration amd = getMethodDecl(access);
         assertTrue("Expecting method to be public.", amd.isPublic());
     }
 
     @Test
     public void testPrivate() throws Throwable {
-        String[] access = {"private"};
+        String[] access = { "private" };
         ASTMethodDeclaration amd = getMethodDecl(access);
         assertTrue("Expecting method to be private.", amd.isPrivate());
     }
 
     @Test
     public void testProtected() throws Throwable {
-        String[] access = {"protected"};
+        String[] access = { "protected" };
         ASTMethodDeclaration amd = getMethodDecl(access);
         assertTrue("Expecting method to be protected.", amd.isProtected());
     }
 
     @Test
     public void testFinal() throws Throwable {
-        String[] access = {"public", "final"};
+        String[] access = { "public", "final" };
         ASTMethodDeclaration amd = getMethodDecl(access);
         assertTrue("Expecting method to be final.", amd.isFinal());
         assertTrue("Expecting method to be public.", amd.isPublic());
@@ -45,7 +45,7 @@ public class MethodDeclTest extends ParserTst {
 
     @Test
     public void testSynchronized() throws Throwable {
-        String[] access = {"public", "synchronized"};
+        String[] access = { "public", "synchronized" };
         ASTMethodDeclaration amd = getMethodDecl(access);
         assertTrue("Expecting method to be synchronized.", amd.isSynchronized());
         assertTrue("Expecting method to be public.", amd.isPublic());
@@ -53,7 +53,7 @@ public class MethodDeclTest extends ParserTst {
 
     @Test
     public void testAbstract() throws Throwable {
-        String[] access = {"public", "abstract"};
+        String[] access = { "public", "abstract" };
         ASTMethodDeclaration amd = getMethodDecl(access);
         assertTrue("Expecting method to be abstract.", amd.isAbstract());
         assertTrue("Expecting method to be public.", amd.isPublic());
@@ -61,7 +61,7 @@ public class MethodDeclTest extends ParserTst {
 
     @Test
     public void testNative() throws Throwable {
-        String[] access = {"private", "native"};
+        String[] access = { "private", "native" };
         ASTMethodDeclaration amd = getMethodDecl(access);
         assertTrue("Expecting method to be native.", amd.isNative());
         assertTrue("Expecting method to be private.", amd.isPrivate());
@@ -69,7 +69,7 @@ public class MethodDeclTest extends ParserTst {
 
     @Test
     public void testStrict() throws Throwable {
-        String[] access = {"public", "strictfp"};
+        String[] access = { "public", "strictfp" };
         ASTMethodDeclaration amd = getMethodDecl(access);
         assertTrue("Expecting method to be strict.", amd.isStrictfp());
         assertTrue("Expecting method to be public.", amd.isPublic());

@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 /**
  * @author mgriffa
@@ -30,19 +30,11 @@ public class ASTThrowStatementTest extends ParserTst {
         assertEquals("FooException", t.getFirstClassOrInterfaceTypeImage());
     }
 
-    private static final String NULL_NAME =
-            "public class Test {" + PMD.EOL +
-            "  void bar() {" + PMD.EOL +
-            "   throw e;" + PMD.EOL +
-            "  }" + PMD.EOL +
-            "}";
+    private static final String NULL_NAME = "public class Test {" + PMD.EOL + "  void bar() {" + PMD.EOL + "   throw e;"
+            + PMD.EOL + "  }" + PMD.EOL + "}";
 
-    private static final String OK_NAME =
-            "public class Test {" + PMD.EOL +
-            "  void bar() {" + PMD.EOL +
-            "   throw new FooException();" + PMD.EOL +
-            "  }" + PMD.EOL +
-            "}";
+    private static final String OK_NAME = "public class Test {" + PMD.EOL + "  void bar() {" + PMD.EOL
+            + "   throw new FooException();" + PMD.EOL + "  }" + PMD.EOL + "}";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ASTThrowStatementTest.class);

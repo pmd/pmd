@@ -45,7 +45,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (node.isFinal() && node.isStatic()) {
             return NumericConstants.ZERO;
-        } 
+        }
         return this.getTallyOnAccessType(node);
     }
 

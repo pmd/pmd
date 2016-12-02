@@ -9,6 +9,6 @@ import net.sourceforge.pmd.lang.ParserOptions;
 public class Java18Handler extends AbstractJavaHandler {
 
     public Parser getParser(ParserOptions parserOptions) {
-	return new Java18Parser(parserOptions);
+        return new Java18Parser(parserOptions);
     }
 }

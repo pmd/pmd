@@ -17,8 +17,8 @@ package net.sourceforge.pmd.lang.java.rule.unusedcode.unusedprivatemethod;
  *
  */
 public class ClassWithPublicEnum {
-    public enum PublicEnum
-    {
-            VALUE1, VALUE2
+    public enum PublicEnum {
+        VALUE1,
+        VALUE2
     }
 }

@@ -18,11 +18,11 @@ public class PositionalIteratorRule extends AbstractJavaRule {
             String exprName = getName(node.jjtGetChild(0));
             if (exprName.indexOf(".hasNext") != -1 && node.jjtGetNumChildren() > 1) {
 
-        	Node loopBody = node.jjtGetChild(1);
+                Node loopBody = node.jjtGetChild(1);
                 List<String> names = new ArrayList<>();
                 collectNames(getVariableName(exprName), names, loopBody);
                 int nextCount = 0;
-                for (String name: names) {
+                for (String name : names) {
                     if (name.indexOf(".next") != -1) {
                         nextCount++;
                     }
@@ -47,7 +47,8 @@ public class PositionalIteratorRule extends AbstractJavaRule {
             if (child.jjtGetNumChildren() > 0) {
                 collectNames(target, names, child);
             } else {
-                if (child instanceof ASTName && isQualifiedName(child) && target.equals(getVariableName(child.getImage()))) {
+                if (child instanceof ASTName && isQualifiedName(child)
+                        && target.equals(getVariableName(child.getImage()))) {
                     names.add(child.getImage());
                 }
             }
@@ -59,7 +60,7 @@ public class PositionalIteratorRule extends AbstractJavaRule {
             if (node.jjtGetChild(0) instanceof ASTName) {
                 return true;
             } else {
-        	return hasNameAsChild(node.jjtGetChild(0));
+                return hasNameAsChild(node.jjtGetChild(0));
             }
         }
         return false;
@@ -70,7 +71,7 @@ public class PositionalIteratorRule extends AbstractJavaRule {
             if (node.jjtGetChild(0) instanceof ASTName) {
                 return ((ASTName) node.jjtGetChild(0)).getImage();
             } else {
-        	return getName(node.jjtGetChild(0));
+                return getName(node.jjtGetChild(0));
             }
         }
         throw new IllegalArgumentException("Check with hasNameAsChild() first!");

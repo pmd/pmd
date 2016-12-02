@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jaxen.JaxenException;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.optimizations.AbstractOptimizationRule;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-
-import org.jaxen.JaxenException;
 
 /**
  * Check that log.debug, log.trace, log.error, etc... statements are guarded by
@@ -65,11 +65,12 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     }
 
     @SuppressWarnings("unchecked")
-    private List<? extends Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard, String xpathExpression) {
+    private List<? extends Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard,
+            String xpathExpression) {
         try {
-            return unit.findChildNodesWithXPath(xpathExpression
-                    .replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase()).replaceAll("LOG_LEVEL", logLevel)
-                    .replaceAll("GUARD", guard));
+            return unit
+                    .findChildNodesWithXPath(xpathExpression.replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase())
+                            .replaceAll("LOG_LEVEL", logLevel).replaceAll("GUARD", guard));
         } catch (JaxenException e) {
             e.printStackTrace();
         }

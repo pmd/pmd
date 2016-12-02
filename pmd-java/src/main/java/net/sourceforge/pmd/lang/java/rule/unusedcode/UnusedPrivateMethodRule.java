@@ -26,7 +26,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public class UnusedPrivateMethodRule extends AbstractJavaRule {
 
-
     /**
      * Visit each method declaration.
      * @param node the method declaration
@@ -38,8 +37,9 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
             return data;
         }
 
-        Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class).getMethodDeclarations();
-        for (MethodNameDeclaration mnd: findUnique(methods)) {
+        Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
+                .getMethodDeclarations();
+        for (MethodNameDeclaration mnd : findUnique(methods)) {
             List<NameOccurrence> occs = methods.get(mnd);
             if (!privateAndNotExcluded(mnd)) {
                 continue;
@@ -62,7 +62,7 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
         // when it does, delete this
         Set<MethodNameDeclaration> unique = new HashSet<>();
         Set<String> sigs = new HashSet<>();
-        for (MethodNameDeclaration mnd: methods.keySet()) {
+        for (MethodNameDeclaration mnd : methods.keySet()) {
             String sig = mnd.getImage() + mnd.getParameterCount() + mnd.isVarargs();
             if (!sigs.contains(sig)) {
                 unique.add(mnd);
@@ -74,9 +74,10 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
 
     private boolean calledFromOutsideItself(List<NameOccurrence> occs, NameDeclaration mnd) {
         int callsFromOutsideMethod = 0;
-        for (NameOccurrence occ: occs) {
+        for (NameOccurrence occ : occs) {
             Node occNode = occ.getLocation();
-            ASTConstructorDeclaration enclosingConstructor = occNode.getFirstParentOfType(ASTConstructorDeclaration.class);
+            ASTConstructorDeclaration enclosingConstructor = occNode
+                    .getFirstParentOfType(ASTConstructorDeclaration.class);
             if (enclosingConstructor != null) {
                 callsFromOutsideMethod++;
                 break; // Do we miss unused private constructors here?
@@ -97,6 +98,8 @@ public class UnusedPrivateMethodRule extends AbstractJavaRule {
 
     private boolean privateAndNotExcluded(NameDeclaration mnd) {
         ASTMethodDeclarator node = (ASTMethodDeclarator) mnd.getNode();
-        return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.hasImageEqualTo("readObject") && !node.hasImageEqualTo("writeObject") && !node.hasImageEqualTo("readResolve") && !node.hasImageEqualTo("writeReplace");
+        return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.hasImageEqualTo("readObject")
+                && !node.hasImageEqualTo("writeObject") && !node.hasImageEqualTo("readResolve")
+                && !node.hasImageEqualTo("writeReplace");
     }
 }

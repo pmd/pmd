@@ -88,7 +88,6 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
         // (npath of if + npath of else (or 1) + bool_comp of if) * npath of
         // next
 
-
         List<JavaNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {

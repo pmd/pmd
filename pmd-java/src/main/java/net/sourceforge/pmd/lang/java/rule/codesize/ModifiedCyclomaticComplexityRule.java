@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codesize;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
-
 /**
  * Implements the modified cyclomatic complexity rule 
  * <p>
@@ -19,11 +18,11 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  */
 public class ModifiedCyclomaticComplexityRule extends StdCyclomaticComplexityRule {
 
-  @Override
-  public Object visit(ASTSwitchStatement node, Object data) {
-    entryStack.peek().bumpDecisionPoints();
-    visit((JavaNode) node, data);
-    return data;
-  }
+    @Override
+    public Object visit(ASTSwitchStatement node, Object data) {
+        entryStack.peek().bumpDecisionPoints();
+        visit((JavaNode) node, data);
+        return data;
+    }
 
 }

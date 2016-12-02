@@ -14,7 +14,6 @@ public class ASTThrowStatement extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

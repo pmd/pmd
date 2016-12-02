@@ -122,7 +122,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
         for (int i = 0; i < exitBlocks.size(); i++) {
             Node exitNode = (Node) exitBlocks.get(i);
             if (!hasAsParentBetween(exitNode, ASTMethodDeclaration.class, block)
-                && !hasAsParentBetween(exitNode, ASTLambdaExpression.class, block)) {
+                    && !hasAsParentBetween(exitNode, ASTLambdaExpression.class, block)) {
                 result = true;
                 break;
             }

@@ -8,10 +8,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.util.FileUtil;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.sourceforge.pmd.util.FileUtil;
 
 /**
  * @author Romain Pelisse <belaran@gmail.com>
@@ -26,8 +26,8 @@ public class CLITest extends BaseCLITest {
 
     @Test
     public void minimumPriority() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design", "-min", "1"};
-        runTest(args,"minimumPriority");
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design", "-min", "1" };
+        runTest(args, "minimumPriority");
     }
 
     @Test
@@ -38,8 +38,8 @@ public class CLITest extends BaseCLITest {
 
     @Test
     public void changeJavaVersion() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design", "-version", "1.5",
-                "-language", "java", "-debug" };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design", "-version", "1.5", "-language",
+                "java", "-debug" };
         String resultFilename = runTest(args, "chgJavaVersion");
         assertTrue("Invalid Java version",
                 FileUtil.findPatternInFile(new File(resultFilename), "Using Java version: Java 1.5"));
@@ -75,8 +75,8 @@ public class CLITest extends BaseCLITest {
         createTestOutputFile(filename);
         runPMDWith(args);
         Assert.assertEquals(1, getStatusCode());
-        assertTrue(FileUtil.findPatternInFile(new File(filename), "Can't find resource 'null' for rule 'java-designn'."
-                + "  Make sure the resource is a valid file"));
+        assertTrue(FileUtil.findPatternInFile(new File(filename),
+                "Can't find resource 'null' for rule 'java-designn'." + "  Make sure the resource is a valid file"));
     }
 
     /**
@@ -89,8 +89,8 @@ public class CLITest extends BaseCLITest {
         createTestOutputFile(filename);
         runPMDWith(args);
         Assert.assertEquals(1, getStatusCode());
-        assertTrue(FileUtil.findPatternInFile(new File(filename), "Can't find resource 'null' for rule "
-                + "'java-designn/UseCollectionIsEmpty'."));
+        assertTrue(FileUtil.findPatternInFile(new File(filename),
+                "Can't find resource 'null' for rule " + "'java-designn/UseCollectionIsEmpty'."));
     }
 
     /**
@@ -103,7 +103,7 @@ public class CLITest extends BaseCLITest {
         createTestOutputFile(filename);
         runPMDWith(args);
         Assert.assertEquals(1, getStatusCode());
-        assertTrue(FileUtil.findPatternInFile(new File(filename), Pattern.quote("No rules found. Maybe you mispelled a rule name?"
-                + " (java-design/ThisRuleDoesNotExist)")));
+        assertTrue(FileUtil.findPatternInFile(new File(filename), Pattern
+                .quote("No rules found. Maybe you mispelled a rule name?" + " (java-design/ThisRuleDoesNotExist)")));
     }
 }

@@ -8,21 +8,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class AccessNodeTest extends ParserTst {
 
     public static class MyAccessNode extends AbstractJavaAccessNode {
-	public MyAccessNode(int i) {
-	    super(i);
-	}
+        public MyAccessNode(int i) {
+            super(i);
+        }
 
-	public MyAccessNode(JavaParser parser, int i) {
-	    super(parser, i);
-	}
+        public MyAccessNode(JavaParser parser, int i) {
+            super(parser, i);
+        }
     }
 
     @Test
@@ -31,9 +30,7 @@ public class AccessNodeTest extends ParserTst {
         assertTrue(ops.iterator().next().isPublic());
     }
 
-    private static final String TEST1 =
-            "public class Foo {}";
-
+    private static final String TEST1 = "public class Foo {}";
 
     @Test
     public void testStatic() {

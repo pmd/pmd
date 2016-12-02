@@ -34,17 +34,15 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * {@value  package.class#field}
      * @throws package.class label
      */
-    private static final Pattern SEE_PATTERN = Pattern.compile(
-            "@see\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([\\w\\s,]*)\\))?)?");
+    private static final Pattern SEE_PATTERN = Pattern
+            .compile("@see\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([\\w\\s,]*)\\))?)?");
 
-    private static final Pattern LINK_PATTERNS = Pattern.compile(
-            "\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
+    private static final Pattern LINK_PATTERNS = Pattern
+            .compile("\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
 
-    private static final Pattern VALUE_PATTERN = Pattern.compile(
-            "\\{@value\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");
+    private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");
 
-    private static final Pattern THROWS_PATTERN = Pattern.compile(
-            "@throws\\s+(\\p{Alpha}\\p{Alnum}*)");
+    private static final Pattern THROWS_PATTERN = Pattern.compile("@throws\\s+(\\p{Alpha}\\p{Alnum}*)");
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
 
@@ -71,11 +69,11 @@ public class UnusedImportsRule extends AbstractJavaRule {
         if (imports.isEmpty()) {
             return;
         }
-        for (Comment comment: node.getComments()) {
+        for (Comment comment : node.getComments()) {
             if (!(comment instanceof FormalComment)) {
                 continue;
             }
-            for (Pattern p: PATTERNS) {
+            for (Pattern p : PATTERNS) {
                 Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
                     String s = m.group(1);

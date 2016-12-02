@@ -7,16 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
-import net.sourceforge.pmd.lang.java.symboltable.Applier;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableUsageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-import org.junit.Test;
 public class VariableUsageFinderFunctionTest {
 
     @Test

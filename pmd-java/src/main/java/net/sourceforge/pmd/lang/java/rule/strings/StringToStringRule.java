@@ -20,8 +20,8 @@ public class StringToStringRule extends AbstractJavaRule {
             return data;
         }
         boolean isArray = node.isArray();
-        for (NameOccurrence occ: node.getUsages()) {
-            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+        for (NameOccurrence occ : node.getUsages()) {
+            JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             NameOccurrence qualifier = jocc.getNameForWhichThisIsAQualifier();
             if (qualifier != null) {
                 if (!isArray && isNotAMethodReference(qualifier) && qualifier.getImage().indexOf("toString") != -1) {

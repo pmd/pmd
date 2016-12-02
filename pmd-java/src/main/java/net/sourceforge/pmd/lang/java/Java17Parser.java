@@ -15,13 +15,13 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
 public class Java17Parser extends AbstractJavaParser {
 
     public Java17Parser(ParserOptions parserOptions) {
-	super(parserOptions);
+        super(parserOptions);
     }
 
     @Override
     protected JavaParser createJavaParser(Reader source) throws ParseException {
-	JavaParser javaParser = super.createJavaParser(source);
-	javaParser.setJdkVersion(7);
-	return javaParser;
+        JavaParser javaParser = super.createJavaParser(source);
+        javaParser.setJdkVersion(7);
+        return javaParser;
     }
 }

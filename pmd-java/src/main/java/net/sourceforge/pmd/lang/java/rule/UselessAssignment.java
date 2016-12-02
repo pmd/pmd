@@ -23,7 +23,7 @@ public class UselessAssignment extends AbstractJavaRule implements Executable {
     public Object visit(ASTMethodDeclaration node, Object data) {
         this.rc = (RuleContext) data;
 
-/*
+        /*
         IDataFlowNode n1 = node.getDataFlowNode();
         List f = n1.getFlow();
         for (Iterator i = f.iterator(); i.hasNext();) {
@@ -35,7 +35,7 @@ public class UselessAssignment extends AbstractJavaRule implements Executable {
                 System.out.println(o);
             }
         }
-*/
+        */
 
         DAAPathFinder a = new DAAPathFinder(node.getDataFlowNode().getFlow().get(0), this);
         a.run();
@@ -80,8 +80,8 @@ public class UselessAssignment extends AbstractJavaRule implements Executable {
                         //System.out.println(va.getVariableName() + ":" + u);
                         addViolation(rc, u.node.getNode(), va.getVariableName());
                     }
-/*                        // UR - ??
-                  else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
+                    /*                        // UR - ??
+                                      else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
                         //this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getNode(), va.getVariableName(), "UR"));
                     }
                     // DU - variable is defined and then goes out of scope
@@ -91,7 +91,7 @@ public class UselessAssignment extends AbstractJavaRule implements Executable {
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, tmp, va.getVariableName(), "DU"));
                         }
                     }
-*/
+                    */
                 }
                 u = new Usage(va.getAccessType(), inode);
                 hash.put(va.getVariableName(), u);

@@ -6,10 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ParserTst;
-
-import org.junit.Test;
 
 public class ASTLiteralTest extends ParserTst {
 
@@ -99,38 +99,17 @@ public class ASTLiteralTest extends ParserTst {
         assertEquals("0", literal.getImage());
     }
 
-    private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    "  String x = \"foo\";" + PMD.EOL +
-    "}";
+    private static final String TEST1 = "public class Foo {" + PMD.EOL + "  String x = \"foo\";" + PMD.EOL + "}";
 
-    private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    "  int x = 42;" + PMD.EOL +
-    "}";
+    private static final String TEST2 = "public class Foo {" + PMD.EOL + "  int x = 42;" + PMD.EOL + "}";
 
-    private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    "  int x = 42;" + PMD.EOL +
-    "}";
+    private static final String TEST3 = "public class Foo {" + PMD.EOL + "  int x = 42;" + PMD.EOL + "}";
 
-    private static final String TEST4 =
-    "public class Foo {" + PMD.EOL +
-    "  long x = 42L;" + PMD.EOL +
-    "}";
+    private static final String TEST4 = "public class Foo {" + PMD.EOL + "  long x = 42L;" + PMD.EOL + "}";
 
-    private static final String TEST5 =
-    "public class Foo {" + PMD.EOL +
-    "  float x = 3.14159f;" + PMD.EOL +
-    "}";
+    private static final String TEST5 = "public class Foo {" + PMD.EOL + "  float x = 3.14159f;" + PMD.EOL + "}";
 
-    private static final String TEST6 =
-    "public class Foo {" + PMD.EOL +
-    "  double x = 3.14159;" + PMD.EOL +
-    "}";
+    private static final String TEST6 = "public class Foo {" + PMD.EOL + "  double x = 3.14159;" + PMD.EOL + "}";
 
-    private static final String TEST7 =
-    "public class Foo {" + PMD.EOL +
-    "  char x = 'x';" + PMD.EOL +
-    "}";
+    private static final String TEST7 = "public class Foo {" + PMD.EOL + "  char x = 'x';" + PMD.EOL + "}";
 }

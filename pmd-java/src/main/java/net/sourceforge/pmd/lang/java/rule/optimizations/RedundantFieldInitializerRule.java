@@ -68,7 +68,8 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
                             }
                         } else {
                             // Primitive type
-                            if (literal.jjtGetNumChildren() == 1 && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                            if (literal.jjtGetNumChildren() == 1
+                                    && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
                                 // boolean type
                                 ASTBooleanLiteral booleanLiteral = (ASTBooleanLiteral) literal.jjtGetChild(0);
                                 if (!booleanLiteral.isTrue()) {

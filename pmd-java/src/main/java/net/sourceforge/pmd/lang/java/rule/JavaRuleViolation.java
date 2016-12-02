@@ -106,11 +106,12 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         }
 
         if (qualifiedName == null) {
-            Set<ClassNameDeclaration> classes = node.getScope().getEnclosingScope(SourceFileScope.class).getClassDeclarations().keySet();
+            Set<ClassNameDeclaration> classes = node.getScope().getEnclosingScope(SourceFileScope.class)
+                    .getClassDeclarations().keySet();
             for (ClassNameDeclaration c : classes) {
                 // find the first public class/enum declaration
                 if (c.getAccessNodeParent() instanceof AccessNode) {
-                    if (((AccessNode)c.getAccessNodeParent()).isPublic()) {
+                    if (((AccessNode) c.getAccessNodeParent()).isPublic()) {
                         qualifiedName = c.getImage();
                         break;
                     }

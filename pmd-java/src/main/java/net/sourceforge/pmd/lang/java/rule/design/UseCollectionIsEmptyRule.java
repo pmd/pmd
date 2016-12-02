@@ -29,11 +29,11 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Jason Bennett
  */
 public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
-    
-    public boolean appliesToClassName(String name){
+
+    public boolean appliesToClassName(String name) {
         return CollectionUtil.isCollectionType(name, true);
     }
-    
+
     /**
      * Determine if we're dealing with .size method
      * 
@@ -81,18 +81,16 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
 
     private ASTClassOrInterfaceType getTypeOfMethodCall(ASTPrimarySuffix node) {
         ASTClassOrInterfaceType type = null;
-        ASTName methodName = node.jjtGetParent()
-                .getFirstChildOfType(ASTPrimaryPrefix.class)
+        ASTName methodName = node.jjtGetParent().getFirstChildOfType(ASTPrimaryPrefix.class)
                 .getFirstChildOfType(ASTName.class);
         if (methodName != null) {
             ClassScope classScope = node.getScope().getEnclosingScope(ClassScope.class);
             Map<MethodNameDeclaration, List<NameOccurrence>> methods = classScope.getMethodDeclarations();
             for (Map.Entry<MethodNameDeclaration, List<NameOccurrence>> e : methods.entrySet()) {
                 if (e.getKey().getName().equals(methodName.getImage())) {
-                    type = e.getKey().getNode()
-                        .getFirstParentOfType(ASTMethodDeclaration.class)
-                        .getFirstChildOfType(ASTResultType.class)
-                        .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+                    type = e.getKey().getNode().getFirstParentOfType(ASTMethodDeclaration.class)
+                            .getFirstChildOfType(ASTResultType.class)
+                            .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
                     break;
                 }
             }
@@ -101,8 +99,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
     }
 
     private ASTClassOrInterfaceType getTypeOfPrimaryPrefix(ASTPrimarySuffix node) {
-        return node.jjtGetParent()
-                .getFirstChildOfType(ASTPrimaryPrefix.class)
+        return node.jjtGetParent().getFirstChildOfType(ASTPrimaryPrefix.class)
                 .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
     }
 }

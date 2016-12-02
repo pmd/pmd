@@ -65,7 +65,7 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
                         // found in the declaration of
                         // this type. The type however may or may not be known to
                         // PMD (see aux classpath).
-    
+
                         // we can't find it, so just give up
                         // when we decide to do full symbol resolution
                         // force this to either find a symbol or throw a

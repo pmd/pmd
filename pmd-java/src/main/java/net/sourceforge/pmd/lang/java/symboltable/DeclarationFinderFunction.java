@@ -24,8 +24,7 @@ public class DeclarationFinderFunction implements UnaryFunction<NameDeclaration>
 
     private boolean isDeclaredBefore(NameDeclaration nameDeclaration) {
         if (nameDeclaration.getNode() != null && occurrence.getLocation() != null) {
-            return nameDeclaration.getNode().getBeginLine() <=
-                    occurrence.getLocation().getBeginLine();
+            return nameDeclaration.getNode().getBeginLine() <= occurrence.getLocation().getBeginLine();
         }
 
         return true;

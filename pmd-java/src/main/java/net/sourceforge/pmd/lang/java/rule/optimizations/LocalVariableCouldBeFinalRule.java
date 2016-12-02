@@ -19,7 +19,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
         }
         Scope s = node.getScope();
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = s.getDeclarations(VariableNameDeclaration.class);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: decls.entrySet()) {
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
             VariableNameDeclaration var = entry.getKey();
             if (var.getAccessNodeParent() != node) {
                 continue;

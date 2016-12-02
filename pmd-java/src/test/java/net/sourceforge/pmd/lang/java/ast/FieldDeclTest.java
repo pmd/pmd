@@ -8,9 +8,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class FieldDeclTest extends ParserTst {
 
@@ -31,28 +31,28 @@ public class FieldDeclTest extends ParserTst {
 
     @Test
     public void testPublic() throws Throwable {
-        String[] access = {"public"};
+        String[] access = { "public" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be public.", afd.isPublic());
     }
 
     @Test
     public void testProtected() throws Throwable {
-        String[] access = {"protected"};
+        String[] access = { "protected" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be protected.", afd.isProtected());
     }
 
     @Test
     public void testPrivate() throws Throwable {
-        String[] access = {"private"};
+        String[] access = { "private" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be private.", afd.isPrivate());
     }
 
     @Test
     public void testStatic() throws Throwable {
-        String[] access = {"private", "static"};
+        String[] access = { "private", "static" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be static.", afd.isStatic());
         assertTrue("Expecting field to be private.", afd.isPrivate());
@@ -60,7 +60,7 @@ public class FieldDeclTest extends ParserTst {
 
     @Test
     public void testFinal() throws Throwable {
-        String[] access = {"public", "final"};
+        String[] access = { "public", "final" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be final.", afd.isFinal());
         assertTrue("Expecting field to be public.", afd.isPublic());
@@ -68,7 +68,7 @@ public class FieldDeclTest extends ParserTst {
 
     @Test
     public void testTransient() throws Throwable {
-        String[] access = {"private", "transient"};
+        String[] access = { "private", "transient" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be private.", afd.isPrivate());
         assertTrue("Expecting field to be transient.", afd.isTransient());
@@ -76,7 +76,7 @@ public class FieldDeclTest extends ParserTst {
 
     @Test
     public void testVolatile() throws Throwable {
-        String[] access = {"private", "volatile"};
+        String[] access = { "private", "volatile" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be volatile.", afd.isVolatile());
         assertTrue("Expecting field to be private.", afd.isPrivate());

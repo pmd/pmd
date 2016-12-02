@@ -35,9 +35,12 @@ public class ImportsRulesTest extends SimpleAggregatorTst {
     // see: /pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/rule/imports/xml/UnnecessaryFullyQualifiedName.xml
     // #1436 UnnecessaryFullyQualifiedName false positive on clashing static imports with enums
     public enum ENUM1 {
-        A, B;
+        A,
+        B;
     }
+
     public enum ENUM2 {
-        C, D;
+        C,
+        D;
     }
 }

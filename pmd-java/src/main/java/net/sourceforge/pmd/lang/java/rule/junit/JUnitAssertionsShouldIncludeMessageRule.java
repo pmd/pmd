@@ -3,14 +3,14 @@
  */
 package net.sourceforge.pmd.lang.java.rule.junit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
 
@@ -27,8 +27,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
             if (node.getArgumentCount() == argumentsCount
                     && node.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
                 ASTPrimaryExpression primary = (ASTPrimaryExpression) node.jjtGetParent().jjtGetParent();
-                if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix
-                        && primary.jjtGetChild(0).jjtGetNumChildren() > 0
+                if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix && primary.jjtGetChild(0).jjtGetNumChildren() > 0
                         && primary.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
                     ASTName name = (ASTName) primary.jjtGetChild(0).jjtGetChild(0);
 

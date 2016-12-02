@@ -32,14 +32,16 @@ public class BigIntegerInstantiationRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        boolean jdk15 = ((RuleContext) data).getLanguageVersion().compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
-        if ((TypeHelper.isA((ASTClassOrInterfaceType) type, BigInteger.class) || jdk15 && TypeHelper.isA((ASTClassOrInterfaceType) type, BigDecimal.class)) &&
-                !node.hasDescendantOfType(ASTArrayDimsAndInits.class)
-        ) {
+        boolean jdk15 = ((RuleContext) data).getLanguageVersion()
+                .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
+        if ((TypeHelper.isA((ASTClassOrInterfaceType) type, BigInteger.class)
+                || jdk15 && TypeHelper.isA((ASTClassOrInterfaceType) type, BigDecimal.class))
+                && !node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
             ASTArguments args = node.getFirstChildOfType(ASTArguments.class);
             if (args.getArgumentCount() == 1) {
                 ASTLiteral literal = node.getFirstDescendantOfType(ASTLiteral.class);
-                if (literal == null || literal.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() != args) {
+                if (literal == null
+                        || literal.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() != args) {
                     return super.visit(node, data);
                 }
 

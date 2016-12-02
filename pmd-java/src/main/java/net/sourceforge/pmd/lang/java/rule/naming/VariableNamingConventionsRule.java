@@ -117,12 +117,12 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         // Anything from an interface is necessarily static and final
         // Anything inside an annotation type is also static and final
         if (type instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) type).isInterface()
-            || type instanceof ASTAnnotationTypeDeclaration) {
+                || type instanceof ASTAnnotationTypeDeclaration) {
             isStatic = true;
             isFinal = true;
         }
-        return checkVariableDeclarators(node.isStatic() ? staticPrefixes : memberPrefixes, isStatic ? staticSuffixes
-                : memberSuffixes, node, isStatic, isFinal, data);
+        return checkVariableDeclarators(node.isStatic() ? staticPrefixes : memberPrefixes,
+                isStatic ? staticSuffixes : memberSuffixes, node, isStatic, isFinal, data);
     }
 
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
@@ -185,9 +185,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
             String normalizedVarName = normalizeVariableName(varName, prefixes, suffixes);
 
             if (normalizedVarName.indexOf('_') >= 0) {
-                addViolationWithMessage(
-                        data,
-                        variableDeclaratorId,
+                addViolationWithMessage(data, variableDeclaratorId,
                         "Only variables that are final should contain underscores (except for underscores in standard prefix/suffix), ''{0}'' is not final.",
                         new Object[] { varName });
             }

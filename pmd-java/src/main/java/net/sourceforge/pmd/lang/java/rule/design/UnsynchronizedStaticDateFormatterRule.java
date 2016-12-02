@@ -29,9 +29,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class UnsynchronizedStaticDateFormatterRule extends AbstractJavaRule {
 
-    private static Set<String> targets = CollectionUtil.asSet(new String[] {
-    	"DateFormat", "SimpleDateFormat", "java.text.DateFormat","java.text.SimpleDateFormat"
-    	});
+    private static Set<String> targets = CollectionUtil.asSet(
+            new String[] { "DateFormat", "SimpleDateFormat", "java.text.DateFormat", "java.text.SimpleDateFormat" });
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -43,7 +42,7 @@ public class UnsynchronizedStaticDateFormatterRule extends AbstractJavaRule {
             return data;
         }
         ASTVariableDeclaratorId var = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        for (NameOccurrence occ: var.getUsages()) {
+        for (NameOccurrence occ : var.getUsages()) {
             Node n = occ.getLocation();
             if (n.getFirstParentOfType(ASTSynchronizedStatement.class) != null) {
                 continue;

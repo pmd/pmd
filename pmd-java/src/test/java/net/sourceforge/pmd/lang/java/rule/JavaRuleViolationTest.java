@@ -7,6 +7,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -17,8 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.ScopeAndDeclarationFinder;
-
-import org.junit.Test;
 
 /**
  * @author Philip Graf
@@ -37,9 +37,11 @@ public class JavaRuleViolationTest {
     }
 
     private ASTCompilationUnit parse(final String code) {
-        final LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        final LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         final ParserOptions options = languageVersionHandler.getDefaultParserOptions();
-        final ASTCompilationUnit ast = (ASTCompilationUnit) languageVersionHandler.getParser(options).parse(null, new StringReader(code));
+        final ASTCompilationUnit ast = (ASTCompilationUnit) languageVersionHandler.getParser(options).parse(null,
+                new StringReader(code));
         // set scope of AST nodes
         ast.jjtAccept(new ScopeAndDeclarationFinder(), null);
         return ast;

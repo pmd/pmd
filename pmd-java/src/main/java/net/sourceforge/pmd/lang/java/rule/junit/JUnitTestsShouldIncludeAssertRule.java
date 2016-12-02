@@ -61,8 +61,8 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         List<ASTNormalAnnotation> annotations = methodParent.findDescendantsOfType(ASTNormalAnnotation.class);
         for (ASTNormalAnnotation annotation : annotations) {
             ASTName name = annotation.getFirstChildOfType(ASTName.class);
-            if (name != null
-                    && ("Test".equals(name.getImage()) || name.getType() != null && name.getType().equals(JUNIT4_CLASS))) {
+            if (name != null && ("Test".equals(name.getImage())
+                    || name.getType() != null && name.getType().equals(JUNIT4_CLASS))) {
                 List<ASTMemberValuePair> memberValues = annotation.findDescendantsOfType(ASTMemberValuePair.class);
                 for (ASTMemberValuePair pair : memberValues) {
                     if ("expected".equals(pair.getImage())) {
@@ -85,9 +85,8 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                 ASTPrimaryPrefix pp = (ASTPrimaryPrefix) pe.jjtGetChild(0);
                 if (pp.jjtGetNumChildren() > 0 && pp.jjtGetChild(0) instanceof ASTName) {
                     String img = ((ASTName) pp.jjtGetChild(0)).getImage();
-                    if (img != null
-                            && (img.startsWith("assert") || img.startsWith("fail") || img.startsWith("Assert.assert") || img
-                                    .startsWith("Assert.fail"))) {
+                    if (img != null && (img.startsWith("assert") || img.startsWith("fail")
+                            || img.startsWith("Assert.assert") || img.startsWith("Assert.fail"))) {
                         return true;
                     }
                 }

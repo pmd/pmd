@@ -3,11 +3,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class ASTFieldDeclarationTest extends ParserTst {
 
@@ -46,26 +46,14 @@ public class ASTFieldDeclarationTest extends ParserTst {
         assertFalse(node.isInterfaceMember());
     }
 
-    private static final String TEST1 =
-            "class Foo {" + PMD.EOL +
-            " String[] foo;" + PMD.EOL +
-            "}";
+    private static final String TEST1 = "class Foo {" + PMD.EOL + " String[] foo;" + PMD.EOL + "}";
 
-    private static final String TEST2 =
-            "class Foo {" + PMD.EOL +
-            " String[][][] foo;" + PMD.EOL +
-            "}";
+    private static final String TEST2 = "class Foo {" + PMD.EOL + " String[][][] foo;" + PMD.EOL + "}";
 
-    private static final String TEST3 =
-            "interface Foo {" + PMD.EOL +
-            " int BAR = 6;" + PMD.EOL +
-            "}";
+    private static final String TEST3 = "interface Foo {" + PMD.EOL + " int BAR = 6;" + PMD.EOL + "}";
 
-    private static final String TEST4 =
-            "public enum Foo {" + PMD.EOL +
-            " FOO(1);" + PMD.EOL +
-            " private int x;" + PMD.EOL +
-            "}";
+    private static final String TEST4 = "public enum Foo {" + PMD.EOL + " FOO(1);" + PMD.EOL + " private int x;"
+            + PMD.EOL + "}";
 
     @Test
     public void testGetVariableName() {

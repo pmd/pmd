@@ -17,22 +17,22 @@ public class JavaDFAGraphRule extends AbstractJavaRule implements DFAGraphRule {
     private List<DFAGraphMethod> methods;
 
     public JavaDFAGraphRule() {
-	super.setUsesDFA();
+        super.setUsesDFA();
     }
 
     public List<DFAGraphMethod> getMethods() {
-	return this.methods;
+        return this.methods;
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-	methods.add(node);
-	return super.visit(node, data);
+        methods.add(node);
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTCompilationUnit acu, Object data) {
-	methods = new ArrayList<>();
-	return super.visit(acu, data);
+        methods = new ArrayList<>();
+        return super.visit(acu, data);
     }
 }

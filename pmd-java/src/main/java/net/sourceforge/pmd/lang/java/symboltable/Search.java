@@ -19,7 +19,8 @@ public class Search {
 
     public Search(JavaNameOccurrence occ) {
         if (TRACE) {
-            System.out.println("new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
+            System.out.println(
+                    "new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
         }
         this.occ = occ;
     }

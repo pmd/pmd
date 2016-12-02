@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.util.NumericConstants;
 
-
 public class TooManyFieldsRule extends AbstractJavaRule {
 
     private static final int DEFAULT_MAXFIELDS = 15;
@@ -23,13 +22,11 @@ public class TooManyFieldsRule extends AbstractJavaRule {
     private Map<String, Integer> stats;
     private Map<String, ASTClassOrInterfaceDeclaration> nodes;
 
-    private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty(
-    		"maxfields", "Max allowable fields",
-    		1, 300, DEFAULT_MAXFIELDS, 1.0f
-    		);
-    
+    private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty("maxfields",
+            "Max allowable fields", 1, 300, DEFAULT_MAXFIELDS, 1.0f);
+
     public TooManyFieldsRule() {
-	definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
+        definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
     }
 
     @Override
@@ -42,7 +39,7 @@ public class TooManyFieldsRule extends AbstractJavaRule {
 
         List<ASTFieldDeclaration> l = node.findDescendantsOfType(ASTFieldDeclaration.class);
 
-        for (ASTFieldDeclaration fd: l) {
+        for (ASTFieldDeclaration fd : l) {
             if (fd.isFinal() && fd.isStatic()) {
                 continue;
             }

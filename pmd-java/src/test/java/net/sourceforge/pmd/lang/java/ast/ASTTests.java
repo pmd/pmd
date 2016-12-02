@@ -8,7 +8,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { ASTImportDeclarationTest.class, ASTVariableDeclaratorIdTest.class, AccessNodeTest.class, ClassDeclTest.class, FieldDeclTest.class, MethodDeclTest.class, SimpleNodeTest.class })
+@SuiteClasses({ ASTImportDeclarationTest.class, ASTVariableDeclaratorIdTest.class, AccessNodeTest.class,
+        ClassDeclTest.class, FieldDeclTest.class, MethodDeclTest.class, SimpleNodeTest.class })
 public class ASTTests {
 
 }

@@ -14,16 +14,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 public class JavaDataFlowNode extends AbstractDataFlowNode {
 
     public JavaDataFlowNode(List<DataFlowNode> dataFlow, Node node) {
-	super(dataFlow, node);
+        super(dataFlow, node);
     }
 
     public String toString() {
-	String res = "DataFlowNode: line " + this.getLine() + ", ";
-	if (node instanceof ASTMethodDeclaration || node instanceof ASTConstructorDeclaration) {
-	    res += node instanceof ASTMethodDeclaration ? "(method)" : "(constructor)";
-	} else {
-	    res = super.toString();
-	}
-	return res;
+        String res = "DataFlowNode: line " + this.getLine() + ", ";
+        if (node instanceof ASTMethodDeclaration || node instanceof ASTConstructorDeclaration) {
+            res += node instanceof ASTMethodDeclaration ? "(method)" : "(constructor)";
+        } else {
+            res = super.toString();
+        }
+        return res;
     }
 }

@@ -109,8 +109,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
                 // Get name and strip off all superfluous data
                 // strip off package name if it is current package
                 if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
-                    throw new RuntimeException("BUG: Expected a ASTClassOrInterfaceType, got a "
-                            + node.jjtGetChild(0).getClass());
+                    throw new RuntimeException(
+                            "BUG: Expected a ASTClassOrInterfaceType, got a " + node.jjtGetChild(0).getClass());
                 }
                 ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) node.jjtGetChild(0);
                 name = stripString(aPackageName + '.', an.getImage());
@@ -250,8 +250,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         // check constructors of outerIterator against allocations of
         // innerIterator
         for (ClassData outerDataSet : classDataList) {
-            for (Iterator<ASTConstructorDeclaration> constructors = outerDataSet.getPrivateConstructorIterator(); constructors
-                    .hasNext();) {
+            for (Iterator<ASTConstructorDeclaration> constructors = outerDataSet
+                    .getPrivateConstructorIterator(); constructors.hasNext();) {
                 ASTConstructorDeclaration cd = constructors.next();
 
                 for (ClassData innerDataSet : classDataList) {
@@ -307,7 +307,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         String returnValue;
         int index = value.indexOf(remove);
         if (index != -1) { // if the package name can start anywhere but 0
-                           // please inform the author because this will break
+                               // please inform the author because this will break
             returnValue = value.substring(0, index) + value.substring(index + remove.length());
         } else {
             returnValue = value;

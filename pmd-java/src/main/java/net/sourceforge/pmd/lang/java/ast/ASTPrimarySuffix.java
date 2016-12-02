@@ -45,7 +45,7 @@ public class ASTPrimarySuffix extends AbstractJavaNode {
         if (!this.isArguments()) {
             return -1;
         }
-        return ((ASTArguments)jjtGetChild(jjtGetNumChildren()-1)).getArgumentCount();
+        return ((ASTArguments) jjtGetChild(jjtGetNumChildren() - 1)).getArgumentCount();
     }
 
     /**

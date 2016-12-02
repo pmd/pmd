@@ -20,18 +20,19 @@ public class DaaRuleViolation extends JavaRuleViolation {
 
     private final String variableName;
     private final String type;
-    
-    public DaaRuleViolation(Rule rule, RuleContext ctx, Node node, String type, String msg, String var, int beginLine, int endLine) {
-        super(rule, ctx, (JavaNode)node, msg);
+
+    public DaaRuleViolation(Rule rule, RuleContext ctx, Node node, String type, String msg, String var, int beginLine,
+            int endLine) {
+        super(rule, ctx, (JavaNode) node, msg);
         this.variableName = var;
         setLines(beginLine, endLine);
         this.type = type;
     }
-	
+
     public String getVariableName() {
         return variableName;
     }
-    
+
     public String getType() {
         return type;
     }

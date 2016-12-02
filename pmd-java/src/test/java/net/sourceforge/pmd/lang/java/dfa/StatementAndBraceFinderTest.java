@@ -5,6 +5,9 @@ package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
@@ -17,9 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-
-import org.junit.Test;
-
 
 public class StatementAndBraceFinderTest extends ParserTst {
 
@@ -70,46 +70,27 @@ public class StatementAndBraceFinderTest extends ParserTst {
 
     @Test(expected = RuntimeException.class)
     public void testOnlyWorksForMethodsAndConstructors() {
-        StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
+        StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
         sbf.buildDataFlowFor(new ASTMethodDeclaration(1));
         sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
         sbf.buildDataFlowFor(new ASTCompilationUnit(1));
     }
 
-    private static final String TEST1 =
-            "class Foo {" + PMD.EOL +
-            " void bar() {" + PMD.EOL +
-            "  x = 2;" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    private static final String TEST1 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  x = 2;" + PMD.EOL
+            + " }" + PMD.EOL + "}";
 
-    private static final String TEST2 =
-            "class Foo {" + PMD.EOL +
-            " void bar() {" + PMD.EOL +
-            "  int x;" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    private static final String TEST2 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  int x;" + PMD.EOL
+            + " }" + PMD.EOL + "}";
 
-    private static final String TEST3 =
-            "class Foo {" + PMD.EOL +
-            " void bar() {" + PMD.EOL +
-            "  if (x) {}" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    private static final String TEST3 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  if (x) {}" + PMD.EOL
+            + " }" + PMD.EOL + "}";
 
-    private static final String TEST4 =
-            "class Foo {" + PMD.EOL +
-            " void bar() {" + PMD.EOL +
-            "  while (x) {}" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    private static final String TEST4 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  while (x) {}" + PMD.EOL
+            + " }" + PMD.EOL + "}";
 
-    private static final String TEST5 =
-            "class Foo {" + PMD.EOL +
-            " void bar() {" + PMD.EOL +
-            "  for (int i=0; i<10; i++) {}" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    private static final String TEST5 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL
+            + "  for (int i=0; i<10; i++) {}" + PMD.EOL + " }" + PMD.EOL + "}";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(StatementAndBraceFinderTest.class);

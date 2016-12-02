@@ -95,8 +95,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         }
         Node lastBlock = getFirstParentBlock(node);
         Node currentBlock = lastBlock;
-        Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope().getDeclarations(
-                VariableNameDeclaration.class);
+        Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
         Node rootNode = null;
         // only want the constructor flagged if it's really containing strings
         if (concurrentCount >= 1) {
@@ -169,7 +169,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     private int checkConstructor(ASTVariableDeclaratorId node, Object data) {
         Node parent = node.jjtGetParent();
         if (parent.jjtGetNumChildren() >= 2) {
-            ASTAllocationExpression allocationExpression = parent.jjtGetChild(1).getFirstDescendantOfType(ASTAllocationExpression.class);
+            ASTAllocationExpression allocationExpression = parent.jjtGetChild(1)
+                    .getFirstDescendantOfType(ASTAllocationExpression.class);
             ASTArgumentList list = null;
             if (allocationExpression != null) {
                 list = allocationExpression.getFirstDescendantOfType(ASTArgumentList.class);
@@ -204,7 +205,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
                 continue; // skip the constructor call, that has already been checked
             }
             if (child instanceof ASTPrimarySuffix) {
-                ASTPrimarySuffix suffix = (ASTPrimarySuffix)child;
+                ASTPrimarySuffix suffix = (ASTPrimarySuffix) child;
                 if (suffix.jjtGetNumChildren() == 0 && suffix.hasImageEqualTo("append")) {
                     previousWasAppend = true;
                 } else if (suffix.jjtGetNumChildren() > 0 && previousWasAppend) {

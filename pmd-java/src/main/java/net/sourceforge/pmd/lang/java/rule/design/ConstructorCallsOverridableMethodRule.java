@@ -176,7 +176,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private List<String> argumentTypes;
         private boolean superCall;
 
-        private MethodInvocation(ASTPrimaryExpression ape, List<String> qualifierNames, List<String> referenceNames, String name, int argumentSize, List<String> argumentTypes, boolean superCall) {
+        private MethodInvocation(ASTPrimaryExpression ape, List<String> qualifierNames, List<String> referenceNames,
+                String name, int argumentSize, List<String> argumentTypes, boolean superCall) {
             this.ape = ape;
             this.qualifierNames = qualifierNames;
             this.referenceNames = referenceNames;
@@ -277,7 +278,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                         //Hack that must be removed if and when the patters of super.method() begins to logically match the rest of the patterns !!!
                         if (superFirst) { //this is when super is the first node of statement.  no qualifiers, all variables or method
                             //							System.out.println("super first");
-                            FIRSTNODE:{
+                            FIRSTNODE: {
                                 ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
                                 String name = child.getImage();//special case
                                 if (i == 2) { //last named node = method name
@@ -286,7 +287,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                     varNames.add(name);
                                 }
                             }
-                            OTHERNODES:{ //variables
+                            OTHERNODES: { //variables
                                 for (int x = 1; x < i - 1; x++) {
                                     Node child = node.jjtGetChild(x);
                                     ASTPrimarySuffix ps = (ASTPrimarySuffix) child;
@@ -301,7 +302,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 }
                             }
                         } else {//not super call
-                            FIRSTNODE:{
+                            FIRSTNODE: {
                                 if (thisIndex == 1) {//qualifiers in node 0
                                     ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
                                     String toParse = getNameFromPrefix(child);
@@ -312,7 +313,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                     }
                                 }
                             }
-                            OTHERNODES:{ //other methods called in this statement are grabbed here
+                            OTHERNODES: { //other methods called in this statement are grabbed here
                                 //this is at 0, then no Qualifiers
                                 //this is at 1, the node 0 contains qualifiers
                                 for (int x = thisIndex + 1; x < i - 1; x++) {//everything after this is var name or method name
@@ -331,7 +332,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                         }
                     } else { //if no this or super found, everything is method name or variable
                         //System.out.println("no this found:");
-                        FIRSTNODE:{ //variable names are in the prefix + the first method call [a.b.c.x()]
+                        FIRSTNODE: { //variable names are in the prefix + the first method call [a.b.c.x()]
                             ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
                             String toParse = getNameFromPrefix(child);
                             //							System.out.println("parsing for var names in : " + toParse);
@@ -349,7 +350,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 }
                             }
                         }
-                        OTHERNODES:{ //other methods called in this statement are grabbed here
+                        OTHERNODES: { //other methods called in this statement are grabbed here
                             for (int x = 1; x < i - 1; x++) {
                                 ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
                                 if (!child.isArguments()) {
@@ -363,8 +364,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             }
                         }
                     }
-                    meth = new MethodInvocation(node, packagesAndClasses, varNames, methodName, numOfArguments, argumentTypes, superFirst);
-//                    meth.show();
+                    meth = new MethodInvocation(node, packagesAndClasses, varNames, methodName, numOfArguments,
+                            argumentTypes, superFirst);
+                    //                    meth.show();
                 }
             }
             return meth;
@@ -373,13 +375,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         public void show() {
             System.out.println("<MethodInvocation>");
             System.out.println("  <Qualifiers>");
-            for (String name: getQualifierNames()) {
+            for (String name : getQualifierNames()) {
                 System.out.println("    " + name);
             }
             System.out.println("  </Qualifiers>");
             System.out.println("  <Super>" + isSuper() + "</Super>");
             System.out.println("  <References>");
-            for (String name: getReferenceNames()) {
+            for (String name : getReferenceNames()) {
                 System.out.println("    " + name);
             }
             System.out.println("  </References>");
@@ -487,7 +489,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
 
         private void initCI() {
-            List<ASTExplicitConstructorInvocation> expressions = cd.findChildrenOfType(ASTExplicitConstructorInvocation.class); //only 1...
+            List<ASTExplicitConstructorInvocation> expressions = cd
+                    .findChildrenOfType(ASTExplicitConstructorInvocation.class); //only 1...
             if (!expressions.isEmpty()) {
                 ASTExplicitConstructorInvocation eci = expressions.get(0);
                 ci = new ConstructorInvocation(eci);
@@ -599,15 +602,18 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         //skip this class if it has no evaluation package
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
             //evaluate danger of all methods in class, this method will return false when all methods have been evaluated
-            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) { } //NOPMD
+            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) {
+            } //NOPMD
             //evaluate danger of constructors
-            evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass, getCurrentEvalPackage().allMethodsOfClass.keySet());
-            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) { } //NOPMD
+            evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass,
+                    getCurrentEvalPackage().allMethodsOfClass.keySet());
+            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) {
+            } //NOPMD
 
             //get each method called on this object from a non-private constructor, if its dangerous flag it
-            for (MethodInvocation meth: getCurrentEvalPackage().calledMethods) {
+            for (MethodInvocation meth : getCurrentEvalPackage().calledMethods) {
                 //check against each dangerous method in class
-                for (MethodHolder h: getCurrentEvalPackage().allMethodsOfClass.keySet()) {
+                for (MethodHolder h : getCurrentEvalPackage().allMethodsOfClass.keySet()) {
                     if (h.isDangerous()) {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
@@ -620,11 +626,11 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 }
             }
             //get each unsafe private constructor, and check if its called from any non private constructors
-            for (ConstructorHolder ch: getCurrentEvalPackage().allPrivateConstructorsOfClass.keySet()) {
+            for (ConstructorHolder ch : getCurrentEvalPackage().allPrivateConstructorsOfClass.keySet()) {
                 if (ch.isDangerous()) { //if its dangerous check if its called from any non-private constructors
                     //System.out.println("visitClassDec Evaluating dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
                     int paramCount = ch.getASTConstructorDeclaration().getParameterCount();
-                    for (ConstructorInvocation ci: getCurrentEvalPackage().calledConstructors) {
+                    for (ConstructorInvocation ci : getCurrentEvalPackage().calledConstructors) {
                         if (ci.getArgumentCount() == paramCount) {
                             //match name  super / this !?
                             addViolation(data, ci.getASTExplicitConstructorInvocation(), "constructor");
@@ -655,14 +661,15 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     private boolean evaluateDangerOfMethods(Map<MethodHolder, List<MethodInvocation>> classMethodMap) {
         //check each method if it calls overridable method
         boolean found = false;
-        for (Map.Entry<MethodHolder, List<MethodInvocation>> entry: classMethodMap.entrySet()) {
+        for (Map.Entry<MethodHolder, List<MethodInvocation>> entry : classMethodMap.entrySet()) {
             MethodHolder h = entry.getKey();
             List<MethodInvocation> calledMeths = entry.getValue();
-            for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !h.isDangerous();) {
+            for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext()
+                    && !h.isDangerous();) {
                 //if this method matches one of our dangerous methods, mark it dangerous
                 MethodInvocation meth = calledMethsIter.next();
                 //System.out.println("Called meth is " + meth);
-                for (MethodHolder h3: classMethodMap.keySet()) { //need to skip self here h == h3
+                for (MethodHolder h3 : classMethodMap.keySet()) { //need to skip self here h == h3
                     if (h3.isDangerous()) {
                         String matchMethodName = h3.getASTMethodDeclarator().getImage();
                         int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
@@ -688,20 +695,22 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      *
      * TODO optimize by having methods already evaluated somehow!?
      */
-    private void evaluateDangerOfConstructors1(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap, Set<MethodHolder> evaluatedMethods) {
+    private void evaluateDangerOfConstructors1(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap,
+            Set<MethodHolder> evaluatedMethods) {
         //check each constructor in the class
-        for (Map.Entry<ConstructorHolder, List<MethodInvocation>> entry: classConstructorMap.entrySet()) {
+        for (Map.Entry<ConstructorHolder, List<MethodInvocation>> entry : classConstructorMap.entrySet()) {
             ConstructorHolder ch = entry.getKey();
             if (!ch.isDangerous()) {//if its not dangerous then evaluate if it should be
                 //if it calls dangerous method mark it as dangerous
                 List<MethodInvocation> calledMeths = entry.getValue();
                 //check each method it calls
-                for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !ch.isDangerous();) {//but thee are diff objects which represent same thing but were never evaluated, they need reevaluation
+                for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext()
+                        && !ch.isDangerous();) {//but thee are diff objects which represent same thing but were never evaluated, they need reevaluation
                     MethodInvocation meth = calledMethsIter.next();//CCE
                     String methName = meth.getName();
                     int methArgCount = meth.getArgumentCount();
                     //check each of the already evaluated methods: need to optimize this out
-                    for (MethodHolder h: evaluatedMethods) {
+                    for (MethodHolder h : evaluatedMethods) {
                         if (h.isDangerous()) {
                             String matchName = h.getASTMethodDeclarator().getImage();
                             int matchParamCount = h.getASTMethodDeclarator().getParameterCount();
@@ -731,7 +740,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     private boolean evaluateDangerOfConstructors2(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap) {
         boolean found = false;//triggers on danger state change
         //check each constructor in the class
-        for (ConstructorHolder ch: classConstructorMap.keySet()) {
+        for (ConstructorHolder ch : classConstructorMap.keySet()) {
             ConstructorInvocation calledC = ch.getCalledConstructor();
             if (calledC == null || ch.isDangerous()) {
                 continue;
@@ -739,7 +748,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             //if its not dangerous then evaluate if it should be
             //if it calls dangerous constructor mark it as dangerous
             int cCount = calledC.getArgumentCount();
-            for (Iterator<ConstructorHolder> innerConstIter = classConstructorMap.keySet().iterator(); innerConstIter.hasNext() && !ch.isDangerous();) { //forget skipping self because that introduces another check for each, but only 1 hit
+            for (Iterator<ConstructorHolder> innerConstIter = classConstructorMap.keySet().iterator(); innerConstIter
+                    .hasNext() && !ch.isDangerous();) { //forget skipping self because that introduces another check for each, but only 1 hit
                 ConstructorHolder h2 = innerConstIter.next();
                 if (h2.isDangerous()) {
                     int matchConstArgCount = h2.getASTConstructorDeclaration().getParameterCount();
@@ -782,7 +792,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             return o;
         }
     }
-
 
     /**
      * Non-private constructor's methods are added to a list for later safety
@@ -845,7 +854,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         return super.visit(node, data);
     }
 
-
     /**
      * Adds all methods called on this instance from within this Node.
      */
@@ -855,8 +863,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
 
-    private static void addCalledMethodsOfNodeImpl(List<ASTPrimaryExpression> expressions, List<MethodInvocation> calledMethods, String className) {
-        for (ASTPrimaryExpression ape: expressions) {
+    private static void addCalledMethodsOfNodeImpl(List<ASTPrimaryExpression> expressions,
+            List<MethodInvocation> calledMethods, String className) {
+        for (ASTPrimaryExpression ape : expressions) {
             MethodInvocation meth = findMethod(ape, className);
             if (meth != null) {
                 //System.out.println("Adding call " + methName);
@@ -872,8 +881,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * method being called.
      */
     private static MethodInvocation findMethod(ASTPrimaryExpression node, String className) {
-        if (node.jjtGetNumChildren() > 0
-                && node.jjtGetChild(0).jjtGetNumChildren() > 0
+        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0).jjtGetNumChildren() > 0
                 && node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
             return null;
         }
@@ -889,7 +897,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 //this is a cheezy test... but it errs on the side of less false hits.
                 List<String> packClass = meth.getQualifierNames();
                 if (!packClass.isEmpty()) {
-                    for (String name: packClass) {
+                    for (String name : packClass) {
                         if (name.equals(className)) {
                             found = true;
                             break;
@@ -920,7 +928,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static List<String> getMethodDeclaratorParameterTypes(Node methodOrConstructorDeclarator) {
-        List<ASTFormalParameter> parameters = methodOrConstructorDeclarator.findDescendantsOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = methodOrConstructorDeclarator
+                .findDescendantsOfType(ASTFormalParameter.class);
         List<String> parameterTypes = new ArrayList<>();
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {

@@ -1,9 +1,11 @@
 package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.lang.dfa.VariableAccess;
 
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
+
 public class VariableAccessTest {
 
     @Test

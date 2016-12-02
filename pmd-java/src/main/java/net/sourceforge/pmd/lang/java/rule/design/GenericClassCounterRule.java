@@ -47,119 +47,116 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  */
 public class GenericClassCounterRule extends AbstractJavaRule {
 
+    private static final StringMultiProperty NAME_MATCH_DESCRIPTOR = new StringMultiProperty("nameMatch",
+            "A series of regex, separated by ',' to match on the classname", new String[] { "" }, 1.0f, ',');
 
-	private static final StringMultiProperty NAME_MATCH_DESCRIPTOR = new StringMultiProperty("nameMatch",
-			"A series of regex, separated by ',' to match on the classname", new String[] {""},1.0f,',');
+    private static final StringProperty OPERAND_DESCRIPTOR = new StringProperty("operand",
+            "or/and value to refined match criteria", new String(), 2.0f);
 
-	private static final StringProperty OPERAND_DESCRIPTOR = new StringProperty("operand",
-			"or/and value to refined match criteria",new String(),2.0f);
+    private static final StringMultiProperty TYPE_MATCH_DESCRIPTOR = new StringMultiProperty("typeMatch",
+            "A series of regex, separated by ',' to match on implements/extends classname", new String[] { "" }, 3.0f,
+            ',');
 
-	private static final StringMultiProperty TYPE_MATCH_DESCRIPTOR = new StringMultiProperty("typeMatch",
-			"A series of regex, separated by ',' to match on implements/extends classname",new String[]{""},3.0f,',');
+    // TODO - this should be an IntegerProperty instead?
+    private static final StringProperty THRESHOLD_DESCRIPTOR = new StringProperty("threshold",
+            "Defines how many occurences are legal", new String(), 4.0f);
 
-	// TODO - this should be an IntegerProperty instead?
-	private static final StringProperty THRESHOLD_DESCRIPTOR = new StringProperty("threshold",
-			"Defines how many occurences are legal",new String(),4.0f);
+    private List<Pattern> namesMatch = new ArrayList<>(0);
+    private List<Pattern> typesMatch = new ArrayList<>(0);
+    private List<Node> matches = new ArrayList<>(0);
+    private List<String> simpleClassname = new ArrayList<>(0);
 
+    @SuppressWarnings("PMD") // When the rule is finished, this field will be used.
+    private String operand;
+    private int threshold;
 
-	private List<Pattern> namesMatch = new ArrayList<>(0);
-	private List<Pattern> typesMatch = new ArrayList<>(0);
-	private List<Node> matches = new ArrayList<>(0);
-	private List<String> simpleClassname = new ArrayList<>(0);
+    private static String counterLabel;
 
+    public GenericClassCounterRule() {
+        definePropertyDescriptor(NAME_MATCH_DESCRIPTOR);
+        definePropertyDescriptor(OPERAND_DESCRIPTOR);
+        definePropertyDescriptor(TYPE_MATCH_DESCRIPTOR);
+        definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+    }
 
-	@SuppressWarnings("PMD") // When the rule is finished, this field will be used.
-	private String operand;
-	private int threshold;
+    private List<String> arrayAsList(String[] array) {
+        List<String> list = new ArrayList<>(array.length);
+        int nbItem = 0;
+        while (nbItem < array.length) {
+            list.add(array[nbItem++]);
+        }
+        return list;
+    }
 
-	private static String counterLabel;
+    protected void init() {
+        // Creating the attribute name for the rule context
+        counterLabel = this.getClass().getSimpleName() + ".number of match";
+        // Constructing the request from the input parameters
+        this.namesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getProperty(NAME_MATCH_DESCRIPTOR)));
+        this.operand = getProperty(OPERAND_DESCRIPTOR);
+        this.typesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getProperty(TYPE_MATCH_DESCRIPTOR)));
+        String thresholdAsString = getProperty(THRESHOLD_DESCRIPTOR);
+        this.threshold = Integer.valueOf(thresholdAsString);
+        // Initializing list of match
+        this.matches = new ArrayList<>();
 
-	public GenericClassCounterRule() {
-	    definePropertyDescriptor(NAME_MATCH_DESCRIPTOR);
-	    definePropertyDescriptor(OPERAND_DESCRIPTOR);
-	    definePropertyDescriptor(TYPE_MATCH_DESCRIPTOR);
-	    definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
-	}
+    }
 
+    @Override
+    public void start(RuleContext ctx) {
+        // Adding the proper attribute to the context
+        ctx.setAttribute(counterLabel, new AtomicLong());
+        super.start(ctx);
+    }
 
-	private List<String> arrayAsList(String[] array) {
-		List<String> list = new ArrayList<>(array.length);
-		int nbItem = 0;
-		while (nbItem < array.length ) {
-			list.add(array[nbItem++]);
-		}
-		return list;
-	}
+    @Override
+    public Object visit(ASTCompilationUnit node, Object data) {
+        init();
+        return super.visit(node, data);
+    }
 
-	protected void init(){
-		// Creating the attribute name for the rule context
-		counterLabel = this.getClass().getSimpleName() + ".number of match";
-		// Constructing the request from the input parameters
-		this.namesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getProperty(NAME_MATCH_DESCRIPTOR)));
-		this.operand = getProperty(OPERAND_DESCRIPTOR);
-		this.typesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getProperty(TYPE_MATCH_DESCRIPTOR)));
-		String thresholdAsString = getProperty(THRESHOLD_DESCRIPTOR);
-		this.threshold = Integer.valueOf(thresholdAsString);
-		// Initializing list of match
-		this.matches = new ArrayList<>();
+    @Override
+    public Object visit(ASTImportDeclaration node, Object data) {
+        // Is there any imported types that match ?
+        for (Pattern pattern : this.typesMatch) {
+            if (RegexHelper.isMatch(pattern, node.getImportedName())) {
+                if (simpleClassname == null) {
+                    simpleClassname = new ArrayList<>(1);
+                }
+                simpleClassname.add(node.getImportedName());
+            }
+            // FIXME: use type resolution framework to deal with star import ?
+        }
+        return super.visit(node, data);
+    }
 
-	}
+    @Override
+    public Object visit(ASTClassOrInterfaceType classType, Object data) {
+        // Is extends/implements list using one of the previous match on import ?
+        // FIXME: use type resolution framework to deal with star import ?
+        for (String matchType : simpleClassname) {
+            if (searchForAMatch(matchType, classType)) {
+                addAMatch(classType, data);
+            }
+        }
+        // TODO: implements the "operand" functionnality
+        // Is there any names that actually match ?
+        for (Pattern pattern : this.namesMatch) {
+            if (RegexHelper.isMatch(pattern, classType.getImage())) {
+                addAMatch(classType, data);
+            }
+        }
+        return super.visit(classType, data);
+    }
 
-	 @Override
-     public void start(RuleContext ctx) {
-		 // Adding the proper attribute to the context
-         ctx.setAttribute(counterLabel, new AtomicLong());
-         super.start(ctx);
-     }
-
-     @Override
-     public Object visit(ASTCompilationUnit node, Object data) {
-    	 init();
-    	 return super.visit(node,data);
-     }
-
-     @Override
-     public Object visit(ASTImportDeclaration node, Object data) {
-    	 // Is there any imported types that match ?
-    	 for (Pattern pattern : this.typesMatch) {
-    		 if ( RegexHelper.isMatch(pattern,node.getImportedName())) {
-    			 if ( simpleClassname == null ) {
-    				 simpleClassname = new ArrayList<>(1);
-    			 }
-    			 simpleClassname.add(node.getImportedName());
-    		 }
-    		 // FIXME: use type resolution framework to deal with star import ?
-    	 }
-         return super.visit(node, data);
-     }
-
-	@Override
-	public Object visit(ASTClassOrInterfaceType classType,Object data) {
-		// Is extends/implements list using one of the previous match on import ?
-		// FIXME: use type resolution framework to deal with star import ?
-		for (String matchType : simpleClassname) {
-			if ( searchForAMatch(matchType,classType)) {
-				addAMatch(classType, data);
-			}
-		}
-		// TODO: implements the "operand" functionnality
-		// Is there any names that actually match ?
-		for (Pattern pattern : this.namesMatch) {
-			if ( RegexHelper.isMatch(pattern, classType.getImage())) {
-				addAMatch(classType, data);
-			}
-		}
-		return super.visit(classType, data);
-	}
-
-	private void addAMatch(Node node,Object data) {
-		// We have a match, we increment
-		RuleContext ctx = (RuleContext)data;
-		AtomicLong total = (AtomicLong)ctx.getAttribute(counterLabel);
-		total.incrementAndGet();
-		// And we keep a ref on the node for the report generation
-		this.matches.add(node);
-	}
+    private void addAMatch(Node node, Object data) {
+        // We have a match, we increment
+        RuleContext ctx = (RuleContext) data;
+        AtomicLong total = (AtomicLong) ctx.getAttribute(counterLabel);
+        total.incrementAndGet();
+        // And we keep a ref on the node for the report generation
+        this.matches.add(node);
+    }
 
     private boolean searchForAMatch(String matchType, Node node) {
         String xpathQuery = "//ClassOrInterfaceDeclaration[(./ExtendsList/ClassOrInterfaceType[@Image = '" + matchType
@@ -168,17 +165,17 @@ public class GenericClassCounterRule extends AbstractJavaRule {
         return node.hasDescendantMatchingXPath(xpathQuery);
     }
 
-	@Override
+    @Override
     public void end(RuleContext ctx) {
-		AtomicLong total = (AtomicLong)ctx.getAttribute(counterLabel);
+        AtomicLong total = (AtomicLong) ctx.getAttribute(counterLabel);
         // Do we have a violation ?
-        if ( total.get() > this.threshold ) {
-        	for (Node node : this.matches) {
-        		addViolation(ctx,node , new Object[] { total });
-        	}
-		// Cleaning the context for the others rules
-		ctx.removeAttribute(counterLabel);
-		super.end(ctx);
+        if (total.get() > this.threshold) {
+            for (Node node : this.matches) {
+                addViolation(ctx, node, new Object[] { total });
+            }
+            // Cleaning the context for the others rules
+            ctx.removeAttribute(counterLabel);
+            super.end(ctx);
         }
-     }
+    }
 }

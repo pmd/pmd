@@ -4,10 +4,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class EncodingTest extends ParserTst {
 
@@ -18,9 +19,6 @@ public class EncodingTest extends ParserTst {
         assertEquals("é", methodName);
     }
 
-    private static final String TEST_UTF8 = 
-            "class Foo {" + PMD.EOL +
-            "  void é() {}" + PMD.EOL +
-            "  void fiddle() {}" + PMD.EOL +
-            "}";
+    private static final String TEST_UTF8 = "class Foo {" + PMD.EOL + "  void é() {}" + PMD.EOL + "  void fiddle() {}"
+            + PMD.EOL + "}";
 }

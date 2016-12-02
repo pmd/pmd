@@ -35,7 +35,7 @@ public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
             if (child.jjtGetNumChildren() == 0) {
                 continue;
             }
-            child = child.jjtGetChild(child.jjtGetNumChildren()-1);
+            child = child.jjtGetChild(child.jjtGetNumChildren() - 1);
             if (child instanceof ASTFieldDeclaration) {
                 fields.add((ASTFieldDeclaration) child);
             } else if (child instanceof ASTMethodDeclaration) {

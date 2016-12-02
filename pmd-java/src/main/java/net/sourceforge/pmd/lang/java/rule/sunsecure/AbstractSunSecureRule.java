@@ -64,7 +64,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
     protected final String getReturnedVariableName(ASTReturnStatement ret) {
         if (hasTernaryCondition(ret) && hasTernaryNullCheck(ret)) {
             return ret.getFirstDescendantOfType(ASTConditionalExpression.class).jjtGetChild(0)
-                        .getFirstDescendantOfType(ASTName.class).getImage();
+                    .getFirstDescendantOfType(ASTName.class).getImage();
         }
 
         final ASTName n = ret.getFirstDescendantOfType(ASTName.class);

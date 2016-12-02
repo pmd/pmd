@@ -63,12 +63,12 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-    
-    public void setPackage(Package packge){
+
+    public void setPackage(Package packge) {
         this.pkg = packge;
     }
-    
-    public Package getPackage(){
+
+    public Package getPackage() {
         return this.pkg;
     }
 }

@@ -4,10 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ParserTst;
-
-import org.junit.Test;
 
 public class ASTPrimarySuffixTest extends ParserTst {
 
@@ -23,15 +23,9 @@ public class ASTPrimarySuffixTest extends ParserTst {
         assertTrue(ops.iterator().next().isArguments());
     }
 
-    private static final String TEST1 =
-            "public class Foo {" + PMD.EOL +
-            "  {x[0] = 2;}" + PMD.EOL +
-            "}";
+    private static final String TEST1 = "public class Foo {" + PMD.EOL + "  {x[0] = 2;}" + PMD.EOL + "}";
 
-    private static final String TEST2 =
-            "public class Foo {" + PMD.EOL +
-            "  {foo(a);}" + PMD.EOL +
-            "}";
+    private static final String TEST2 = "public class Foo {" + PMD.EOL + "  {foo(a);}" + PMD.EOL + "}";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ASTPrimarySuffixTest.class);

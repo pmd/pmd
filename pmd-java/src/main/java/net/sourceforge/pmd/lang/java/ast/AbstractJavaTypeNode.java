@@ -14,20 +14,20 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
     private Class<?> type;
 
     public AbstractJavaTypeNode(int i) {
-	super(i);
+        super(i);
     }
 
     public AbstractJavaTypeNode(JavaParser p, int i) {
-	super(p, i);
+        super(p, i);
     }
 
     @Override
     public Class<?> getType() {
-	return type;
+        return type;
     }
 
     @Override
     public void setType(Class<?> type) {
-	this.type = type;
+        this.type = type;
     }
 }

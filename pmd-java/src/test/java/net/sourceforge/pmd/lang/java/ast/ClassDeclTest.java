@@ -7,48 +7,49 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class ClassDeclTest extends ParserTst {
 
     @Test
     public void testPublic() throws Throwable {
-        String[] access = {"public"};
+        String[] access = { "public" };
         ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, true, false, false, false);
     }
 
     @Test
     public void testAbstract() throws Throwable {
-        String[] access = {"abstract"};
+        String[] access = { "abstract" };
         ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, false, true, false, false);
     }
 
     @Test
     public void testFinal() throws Throwable {
-        String[] access = {"final"};
+        String[] access = { "final" };
         ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, false, false, true, false);
     }
 
     @Test
     public void testStrict() throws Throwable {
-        String[] access = {"strictfp"};
+        String[] access = { "strictfp" };
         ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, false, false, false, true);
     }
 
     @Test
     public void testPublicFinal() throws Throwable {
-        String[] access = {"public", "final"};
+        String[] access = { "public", "final" };
         ASTClassOrInterfaceDeclaration acd = getClassDecl(access);
         verifyFlags(acd, true, false, true, false);
     }
 
-    public void verifyFlags(ASTClassOrInterfaceDeclaration acd, boolean bPublic, boolean bAbstract, boolean bFinal, boolean bStrict) {
+    public void verifyFlags(ASTClassOrInterfaceDeclaration acd, boolean bPublic, boolean bAbstract, boolean bFinal,
+            boolean bStrict) {
         assertEquals("Public: ", bPublic, acd.isPublic());
         assertEquals("Abstract: ", bAbstract, acd.isAbstract());
         assertEquals("Final: ", bFinal, acd.isFinal());

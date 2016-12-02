@@ -34,8 +34,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     private int maxRuleViolations;
     private int currentRuleViolationCount;
 
-    private static final IntegerProperty MAX_PATH_DESCRIPTOR = new IntegerProperty(
-            "maxPaths",
+    private static final IntegerProperty MAX_PATH_DESCRIPTOR = new IntegerProperty("maxPaths",
             "Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.",
             100, 8000, 1000, 1.0f);
 

@@ -21,19 +21,19 @@ public class ExcessiveLengthRule extends AbstractStatisticalJavaRule {
     private Class<?> nodeClass;
 
     public ExcessiveLengthRule(Class<?> nodeClass) {
-	this.nodeClass = nodeClass;
+        this.nodeClass = nodeClass;
     }
 
     @Override
     public Object visit(JavaNode node, Object data) {
-	if (nodeClass.isInstance(node)) {
-	    DataPoint point = new DataPoint();
-	    point.setNode(node);
-	    point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
-	    point.setMessage(getMessage());
-	    addDataPoint(point);
-	}
+        if (nodeClass.isInstance(node)) {
+            DataPoint point = new DataPoint();
+            point.setNode(node);
+            point.setScore(1.0 * (node.getEndLine() - node.getBeginLine()));
+            point.setMessage(getMessage());
+            addDataPoint(point);
+        }
 
-	return node.childrenAccept(this, data);
+        return node.childrenAccept(this, data);
     }
 }

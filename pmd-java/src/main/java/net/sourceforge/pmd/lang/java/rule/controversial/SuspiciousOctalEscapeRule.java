@@ -17,9 +17,8 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRule {
 
             // process escape sequences
             int offset = 0;
-            for (int slash = s.indexOf('\\', offset);
-                 slash != -1 && slash < s.length() - 1;
-                 slash = s.indexOf('\\', offset)) {
+            for (int slash = s.indexOf('\\', offset); slash != -1
+                    && slash < s.length() - 1; slash = s.indexOf('\\', offset)) {
                 String escapeSequence = s.substring(slash + 1);
                 char first = escapeSequence.charAt(0);
                 if (isOctal(first)) {

@@ -84,7 +84,7 @@ public class PMDASMVisitor extends ClassVisitor {
         }
     }
 
-	/* Start ClassVisitor implementations */
+    /* Start ClassVisitor implementations */
 
     @Override
     public void visit(int version, int access, String name, String sig, String superName, String[] interfaces) {
@@ -166,15 +166,15 @@ public class PMDASMVisitor extends ClassVisitor {
 
     private void addType(Type t) {
         switch (t.getSort()) {
-            case Type.ARRAY:
-                addType(t.getElementType());
-                break;
-            case Type.OBJECT:
-                parseClassName(t.getClassName().replace('.', '/'));
-                break;
-            default:
-                // Do nothing
-                break;
+        case Type.ARRAY:
+            addType(t.getElementType());
+            break;
+        case Type.OBJECT:
+            parseClassName(t.getClassName().replace('.', '/'));
+            break;
+        default:
+            // Do nothing
+            break;
         }
     }
 
@@ -182,9 +182,9 @@ public class PMDASMVisitor extends ClassVisitor {
     public void visitAttribute(Attribute attr) {
     }
 
-	/*
+    /*
      * Start visitors
-	 */
+     */
 
     private static class PMDFieldVisitor extends FieldVisitor {
 

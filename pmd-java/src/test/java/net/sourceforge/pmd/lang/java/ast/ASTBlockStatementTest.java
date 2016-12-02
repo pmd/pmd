@@ -2,10 +2,10 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class ASTBlockStatementTest extends ParserTst {
 

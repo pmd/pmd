@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -111,7 +110,7 @@ public class SourceFileScope extends AbstractJavaScope {
     public ClassNameDeclaration findClassNameDeclaration(String name) {
         ImageFinderFunction finder = new ImageFinderFunction(name);
         Applier.apply(finder, getClassDeclarations().keySet().iterator());
-        return (ClassNameDeclaration)finder.getDecl();
+        return (ClassNameDeclaration) finder.getDecl();
     }
 
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occ) {

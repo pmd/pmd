@@ -35,10 +35,10 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Typ
     }
 
     public String getTypeImage() {
-        return ((ASTClassOrInterfaceDeclaration)node).getImage();
+        return ((ASTClassOrInterfaceDeclaration) node).getImage();
     }
 
     public Class<?> getType() {
-        return ((ASTClassOrInterfaceDeclaration)node).getType();
+        return ((ASTClassOrInterfaceDeclaration) node).getType();
     }
 }

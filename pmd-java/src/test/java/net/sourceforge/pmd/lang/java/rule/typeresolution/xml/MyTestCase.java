@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.rule.typeresolution.xml;
 
 import org.junit.Ignore;
+
 import junit.framework.TestCase;
 
 /**

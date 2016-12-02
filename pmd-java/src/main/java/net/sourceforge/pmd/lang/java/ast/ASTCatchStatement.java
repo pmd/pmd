@@ -14,7 +14,6 @@ public class ASTCatchStatement extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

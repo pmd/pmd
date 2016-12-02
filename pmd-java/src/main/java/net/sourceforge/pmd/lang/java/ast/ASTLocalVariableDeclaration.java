@@ -59,7 +59,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     }
 
     private ASTVariableDeclaratorId getDecl() {
-        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren()-1).jjtGetChild(0);
+        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1).jjtGetChild(0);
     }
 
     private int checkDecl() {

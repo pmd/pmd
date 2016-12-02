@@ -17,27 +17,27 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class JavaRuleChainVisitor extends AbstractRuleChainVisitor {
 
-	protected void indexNodes(List<Node> nodes, RuleContext ctx) {
-		JavaParserVisitor javaParserVistor = new JavaParserVisitorAdapter() {
-			// Perform a visitation of the AST to index nodes which need
-			// visiting by type
-			public Object visit(JavaNode node, Object data) {
-				indexNode(node);
-				return super.visit(node, data);
-			}
-		};
+    protected void indexNodes(List<Node> nodes, RuleContext ctx) {
+        JavaParserVisitor javaParserVistor = new JavaParserVisitorAdapter() {
+            // Perform a visitation of the AST to index nodes which need
+            // visiting by type
+            public Object visit(JavaNode node, Object data) {
+                indexNode(node);
+                return super.visit(node, data);
+            }
+        };
 
-		for (final Node node : nodes) {
-			javaParserVistor.visit((ASTCompilationUnit) node, ctx);
-		}
-	}
+        for (final Node node : nodes) {
+            javaParserVistor.visit((ASTCompilationUnit) node, ctx);
+        }
+    }
 
-	protected void visit(Rule rule, Node node, RuleContext ctx) {
-		// Rule better either be a JavaParserVisitor, or a XPathRule
-		if (rule instanceof XPathRule) {
-			((XPathRule)rule).evaluate(node, ctx);
-		} else {
-			((JavaNode)node).jjtAccept((JavaParserVisitor)rule, ctx);
-		}
-	}
+    protected void visit(Rule rule, Node node, RuleContext ctx) {
+        // Rule better either be a JavaParserVisitor, or a XPathRule
+        if (rule instanceof XPathRule) {
+            ((XPathRule) rule).evaluate(node, ctx);
+        } else {
+            ((JavaNode) node).jjtAccept((JavaParserVisitor) rule, ctx);
+        }
+    }
 }

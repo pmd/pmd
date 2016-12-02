@@ -15,13 +15,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ParserTst;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class SimpleNodeTest extends ParserTst {
 
@@ -101,13 +100,13 @@ public class SimpleNodeTest extends ParserTst {
 
     @Test
     public void testLineNumbersAreSetOnAllSiblings() throws Throwable {
-        for (ASTBlock b: getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTBlock b : getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
-        for (ASTVariableInitializer b: getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTVariableInitializer b : getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
-        for (ASTExpression b: getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
+        for (ASTExpression b : getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
     }
@@ -186,25 +185,22 @@ public class SimpleNodeTest extends ParserTst {
 
     @Test
     public void testParentMethods() throws Throwable {
-    	ASTCompilationUnit u = parseJava14(TEST1);
+        ASTCompilationUnit u = parseJava14(TEST1);
 
-    	ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
-    	assertSame("getFirstParentOfType ASTMethodDeclaration", d.jjtGetParent(), d.getFirstParentOfType(ASTMethodDeclaration.class));
-    	assertNull("getFirstParentOfType ASTName", d.getFirstParentOfType(ASTName.class));
+        ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
+        assertSame("getFirstParentOfType ASTMethodDeclaration", d.jjtGetParent(),
+                d.getFirstParentOfType(ASTMethodDeclaration.class));
+        assertNull("getFirstParentOfType ASTName", d.getFirstParentOfType(ASTName.class));
 
-    	assertSame("getNthParent 1", d.jjtGetParent(), d.getNthParent(1));
-    	assertSame("getNthParent 2", d.jjtGetParent().jjtGetParent(), d.getNthParent(2));
-    	assertSame("getNthParent 6", u, d.getNthParent(6));
-    	assertNull("getNthParent 7", d.getNthParent(7));
-    	assertNull("getNthParent 8", d.getNthParent(8));
+        assertSame("getNthParent 1", d.jjtGetParent(), d.getNthParent(1));
+        assertSame("getNthParent 2", d.jjtGetParent().jjtGetParent(), d.getNthParent(2));
+        assertSame("getNthParent 6", u, d.getNthParent(6));
+        assertNull("getNthParent 7", d.getNthParent(7));
+        assertNull("getNthParent 8", d.getNthParent(8));
     }
 
-    private static final String TEST1 =
-            "public class Test {" + PMD.EOL +
-            "  void bar(String s) {" + PMD.EOL +
-            "   s = s.toLowerCase();" + PMD.EOL +
-            "  }" + PMD.EOL +
-            "}";
+    private static final String TEST1 = "public class Test {" + PMD.EOL + "  void bar(String s) {" + PMD.EOL
+            + "   s = s.toLowerCase();" + PMD.EOL + "  }" + PMD.EOL + "}";
 
     @Ignore
     @Test
@@ -213,7 +209,7 @@ public class SimpleNodeTest extends ParserTst {
         List<ASTFieldDeclaration> res = new ArrayList<>();
         c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
-/*        String expectedXml = "<CompilationUnit BeginColumn=\"1\" BeginLine=\"5\" EndColumn=\"1\" EndLine=\"5\">" +
+        /*        String expectedXml = "<CompilationUnit BeginColumn=\"1\" BeginLine=\"5\" EndColumn=\"1\" EndLine=\"5\">" +
                 "<TypeDeclaration BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"1\" EndLine=\"5\">" +
                 "<ClassOrInterfaceDeclaration Abstract=\"false\" BeginColumn=\"8\" BeginLine=\"1\" EndColumn=\"1\" " +
                 "EndLine=\"5\" Final=\"false\" Image=\"Test\" Interface=\"false\" Native=\"false\" Nested=\"false\" PackagePrivate=\"false\" Private=\"false\" Protected=\"false\" Public=\"true\" Static=\"false\" Strictfp=\"false\" Synchronized=\"false\" Transient=\"false\" Volatile=\"false\">" +
@@ -233,7 +229,7 @@ public class SimpleNodeTest extends ParserTst {
                 "</ClassOrInterfaceDeclaration></ClassOrInterfaceBodyDeclaration></ClassOrInterfaceBody></ClassOrInterfaceDeclaration>" +
                 "</TypeDeclaration></CompilationUnit>";
         assertEquals( expectedXml, getXmlString( c ) );
-*/    }
+        */ }
 
     @Test
     public void testContainsNoInnerWithAnonInner() throws Throwable {
@@ -245,7 +241,8 @@ public class SimpleNodeTest extends ParserTst {
 
     @Test
     public void testContainsChildOfType() throws Throwable {
-        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE).iterator().next();
+        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE)
+                .iterator().next();
         assertTrue(c.hasDescendantOfType(ASTFieldDeclaration.class));
     }
 
@@ -259,10 +256,11 @@ public class SimpleNodeTest extends ParserTst {
         assertTrue(c.hasDescendantMatchingXPath("//FieldDeclaration"));
         assertFalse(c.hasDescendantMatchingXPath("//MethodDeclaration"));
     }
-    
+
     @Test
     public void testUserData() throws Throwable {
-        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS).iterator().next();
+        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS)
+                .iterator().next();
         assertNull(c.getUserData());
         c.setUserData("foo");
         assertEquals("foo", c.getUserData());
@@ -277,76 +275,42 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals("Unexpected ending column:", endCol, node.getEndColumn());
     }
 
-    private static final String HAS_EXPLICIT_EXTENDS =
-            "public class Test extends Foo {}";
+    private static final String HAS_EXPLICIT_EXTENDS = "public class Test extends Foo {}";
 
-    private static final String NO_EXPLICIT_EXTENDS =
-            "public class Test {}";
+    private static final String NO_EXPLICIT_EXTENDS = "public class Test {}";
 
-    private static final String HAS_EXPLICIT_IMPLEMENTS =
-            "public class Test implements Foo {}";
+    private static final String HAS_EXPLICIT_IMPLEMENTS = "public class Test implements Foo {}";
 
-    private static final String NO_EXPLICIT_IMPLEMENTS =
-            "public class Test {}";
+    private static final String NO_EXPLICIT_IMPLEMENTS = "public class Test {}";
 
-    private static final String METHOD_SAME_LINE =
-            "public class Test {" + PMD.EOL +
-            " public void foo() {}" + PMD.EOL +
-            "}";
+    private static final String METHOD_SAME_LINE = "public class Test {" + PMD.EOL + " public void foo() {}" + PMD.EOL
+            + "}";
 
-    private static final String QUALIFIED_NAME =
-            "import java.io.File;" + PMD.EOL +
-            "public class Foo{}";
+    private static final String QUALIFIED_NAME = "import java.io.File;" + PMD.EOL + "public class Foo{}";
 
-    private static final String BROKEN_LINE_IN_NAME =
-            "import java.io." + PMD.EOL +
-            "File;" + PMD.EOL +
-            "public class Foo{}";
+    private static final String BROKEN_LINE_IN_NAME = "import java.io." + PMD.EOL + "File;" + PMD.EOL
+            + "public class Foo{}";
 
-    private static final String LINE_NUMBERS_ON_SIBLINGS =
-            "public class Foo {" + PMD.EOL +
-            " void bar() {" + PMD.EOL +
-            "  try {" + PMD.EOL +
-            "  } catch (Exception1 e) {" + PMD.EOL +
-            "   int x =2;" + PMD.EOL +
-            "  }" + PMD.EOL +
-            " if (x != null) {}" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    private static final String LINE_NUMBERS_ON_SIBLINGS = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL
+            + "  try {" + PMD.EOL + "  } catch (Exception1 e) {" + PMD.EOL + "   int x =2;" + PMD.EOL + "  }" + PMD.EOL
+            + " if (x != null) {}" + PMD.EOL + " }" + PMD.EOL + "}";
 
     private static final String NO_LOOKAHEAD = "public class Foo { }";
 
-    private static final String METHOD_DIFF_LINES =
-            "public class Test {" + PMD.EOL +
-            " public void foo() {" + PMD.EOL +
-            "  int x;" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    private static final String METHOD_DIFF_LINES = "public class Test {" + PMD.EOL + " public void foo() {" + PMD.EOL
+            + "  int x;" + PMD.EOL + " }" + PMD.EOL + "}";
 
-    private static final String CONTAINS_CHILDREN_OF_TYPE =
-            "public class Test {" + PMD.EOL +
-            "  int x;" + PMD.EOL +
-            "}";
+    private static final String CONTAINS_CHILDREN_OF_TYPE = "public class Test {" + PMD.EOL + "  int x;" + PMD.EOL
+            + "}";
 
-    private static final String CONTAINS_NO_INNER =
-            "public class Test {" + PMD.EOL +
-            "  public class Inner {" + PMD.EOL +
-            "   int foo;" + PMD.EOL +
-            "  }" + PMD.EOL +
-            "}";
+    private static final String CONTAINS_NO_INNER = "public class Test {" + PMD.EOL + "  public class Inner {" + PMD.EOL
+            + "   int foo;" + PMD.EOL + "  }" + PMD.EOL + "}";
 
-    private static final String CONTAINS_NO_INNER_WITH_ANON_INNER =
-            "public class Test {" + PMD.EOL +
-            "  void bar() {" + PMD.EOL +
-            "   foo(new Fuz() { int x = 2;});" + PMD.EOL +
-            "  }" + PMD.EOL +
-            "}";
+    private static final String CONTAINS_NO_INNER_WITH_ANON_INNER = "public class Test {" + PMD.EOL + "  void bar() {"
+            + PMD.EOL + "   foo(new Fuz() { int x = 2;});" + PMD.EOL + "  }" + PMD.EOL + "}";
 
-    private static final String TEST_XPATH =
-            "public class Test {" + PMD.EOL +
-            "  int x = 2;" + PMD.EOL +
-            "  int y = 42;" + PMD.EOL +
-            "}";
+    private static final String TEST_XPATH = "public class Test {" + PMD.EOL + "  int x = 2;" + PMD.EOL
+            + "  int y = 42;" + PMD.EOL + "}";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(SimpleNodeTest.class);

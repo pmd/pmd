@@ -18,12 +18,8 @@ public class XPathCLITest {
         System.setOut(new PrintStream(output));
 
         try {
-            XPathCLI.main(new String[] {
-                    "-xpath",
-                    "//ClassOrInterfaceDeclaration",
-                    "-filename",
-                    "src/test/java/net/sourceforge/pmd/cli/XPathCLITest.java"
-            });
+            XPathCLI.main(new String[] { "-xpath", "//ClassOrInterfaceDeclaration", "-filename",
+                    "src/test/java/net/sourceforge/pmd/cli/XPathCLITest.java" });
             System.out.flush();
         } finally {
             System.setOut(oldOut);

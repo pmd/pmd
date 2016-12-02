@@ -14,7 +14,6 @@ public class ASTShiftExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

@@ -43,7 +43,8 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
-        if ((methodDeclaration.getMethodName().equals("setUp") || methodDeclaration.getMethodName().equals("tearDown")) && junitImported) {
+        if ((methodDeclaration.getMethodName().equals("setUp") || methodDeclaration.getMethodName().equals("tearDown"))
+                && junitImported) {
             return super.visit(methodDeclaration, o);
         }
 
@@ -62,7 +63,6 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
         return super.visit(methodDeclaration, o);
     }
 
-
     @Override
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
         List<ASTName> exceptionList = constructorDeclaration.findDescendantsOfType(ASTName.class);
@@ -79,7 +79,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
      * @param context
      */
     private void evaluateExceptions(List<ASTName> exceptionList, Object context) {
-        for (ASTName exception: exceptionList) {
+        for (ASTName exception : exceptionList) {
             if (hasDeclaredExceptionInSignature(exception)) {
                 addViolation(context, exception);
             }

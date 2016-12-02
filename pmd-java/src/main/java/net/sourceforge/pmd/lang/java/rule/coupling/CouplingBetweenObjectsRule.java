@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
-
 /**
  * CouplingBetweenObjects attempts to capture all unique Class attributes,
  * local variables, and return types to determine how many objects a class is
@@ -36,12 +35,11 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     private int couplingCount;
     private Set<String> typesFoundSoFar;
 
-    private static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty(
-    	"threshold", "Unique type reporting threshold", 2, 100, 20, 1.0f
-    	);
+    private static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold",
+            "Unique type reporting threshold", 2, 100, 20, 1.0f);
 
     public CouplingBetweenObjectsRule() {
-	definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+        definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
     }
 
     @Override
@@ -52,7 +50,8 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         Object returnObj = cu.childrenAccept(this, data);
 
         if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
-            addViolation(data, cu, "A value of " + couplingCount + " may denote a high amount of coupling within the class");
+            addViolation(data, cu,
+                    "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
         return returnObj;
@@ -71,11 +70,11 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
             Node tNode = node.jjtGetChild(x);
             if (tNode instanceof ASTType) {
-        	Node reftypeNode = tNode.jjtGetChild(0);
+                Node reftypeNode = tNode.jjtGetChild(0);
                 if (reftypeNode instanceof ASTReferenceType) {
                     Node classOrIntType = reftypeNode.jjtGetChild(0);
                     if (classOrIntType instanceof ASTClassOrInterfaceType) {
-                	Node nameNode = classOrIntType;
+                        Node nameNode = classOrIntType;
                         this.checkVariableType(nameNode, nameNode.getImage());
                     }
                 }
@@ -118,7 +117,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
             Node sNode = node.jjtGetChild(x);
             if (sNode instanceof ASTType) {
-        	Node nameNode = sNode.jjtGetChild(0);
+                Node nameNode = sNode.jjtGetChild(0);
                 checkVariableType(nameNode, nameNode.getImage());
             }
         }
@@ -137,8 +136,9 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         }
         //if the field is of any type other than the class type
         //increment the count
-        ClassScope clzScope = ((JavaNode)nameNode).getScope().getEnclosingScope(ClassScope.class);
-        if (!clzScope.getClassName().equals(variableType) && !this.filterTypes(variableType) && !this.typesFoundSoFar.contains(variableType)) {
+        ClassScope clzScope = ((JavaNode) nameNode).getScope().getEnclosingScope(ClassScope.class);
+        if (!clzScope.getClassName().equals(variableType) && !this.filterTypes(variableType)
+                && !this.typesFoundSoFar.contains(variableType)) {
             couplingCount++;
             typesFoundSoFar.add(variableType);
         }
@@ -152,7 +152,8 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @return boolean true if variableType is not what we care about
      */
     private boolean filterTypes(String variableType) {
-        return variableType != null && (variableType.startsWith("java.lang.") || variableType.equals("String") || filterPrimitivesAndWrappers(variableType));
+        return variableType != null && (variableType.startsWith("java.lang.") || variableType.equals("String")
+                || filterPrimitivesAndWrappers(variableType));
     }
 
     /**
@@ -160,15 +161,9 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @return boolean true if variableType is a primitive or wrapper
      */
     private boolean filterPrimitivesAndWrappers(String variableType) {
-        return "int".equals(variableType)
-                || "Integer".equals(variableType)
-                || "char".equals(variableType)
-                || "Character".equals(variableType)
-                || "double".equals(variableType)
-                || "long".equals(variableType)
-                || "short".equals(variableType)
-                || "float".equals(variableType)
-                || "byte".equals(variableType)
+        return "int".equals(variableType) || "Integer".equals(variableType) || "char".equals(variableType)
+                || "Character".equals(variableType) || "double".equals(variableType) || "long".equals(variableType)
+                || "short".equals(variableType) || "float".equals(variableType) || "byte".equals(variableType)
                 || "boolean".equals(variableType);
     }
 }

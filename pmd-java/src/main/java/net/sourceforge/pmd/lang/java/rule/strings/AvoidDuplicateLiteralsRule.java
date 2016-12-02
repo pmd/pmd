@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -27,8 +29,6 @@ import net.sourceforge.pmd.lang.rule.properties.FileProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.apache.commons.io.IOUtils;
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 

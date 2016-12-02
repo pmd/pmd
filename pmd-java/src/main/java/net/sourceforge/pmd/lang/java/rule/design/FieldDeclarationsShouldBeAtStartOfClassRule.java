@@ -34,8 +34,10 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  */
 public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRule {
 
-    private BooleanProperty ignoreEnumDeclarations = new BooleanProperty("ignoreEnumDeclarations", "Ignore Enum Declarations that precede fields.", true, 1.0f);
-    private BooleanProperty ignoreAnonymousClassDeclarations = new BooleanProperty("ignoreAnonymousClassDeclarations", "Ignore Field Declarations, that are initialized with anonymous class declarations", true, 2.0f);
+    private BooleanProperty ignoreEnumDeclarations = new BooleanProperty("ignoreEnumDeclarations",
+            "Ignore Enum Declarations that precede fields.", true, 1.0f);
+    private BooleanProperty ignoreAnonymousClassDeclarations = new BooleanProperty("ignoreAnonymousClassDeclarations",
+            "Ignore Field Declarations, that are initialized with anonymous class declarations", true, 2.0f);
 
     /**
      * Initializes the rule {@link FieldDeclarationsShouldBeAtStartOfClassRule}.
@@ -59,13 +61,12 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             if (child instanceof ASTFieldDeclaration) {
                 continue;
             }
-            if (node.hasDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class) && getProperty(ignoreAnonymousClassDeclarations).booleanValue()) {
+            if (node.hasDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class)
+                    && getProperty(ignoreAnonymousClassDeclarations).booleanValue()) {
                 continue;
             }
-            if (child instanceof ASTClassOrInterfaceDeclaration
-                    || child instanceof ASTMethodDeclaration
-                    || child instanceof ASTConstructorDeclaration
-                    || child instanceof ASTAnnotationTypeDeclaration) {
+            if (child instanceof ASTClassOrInterfaceDeclaration || child instanceof ASTMethodDeclaration
+                    || child instanceof ASTConstructorDeclaration || child instanceof ASTAnnotationTypeDeclaration) {
                 addViolation(data, node);
                 break;
             }

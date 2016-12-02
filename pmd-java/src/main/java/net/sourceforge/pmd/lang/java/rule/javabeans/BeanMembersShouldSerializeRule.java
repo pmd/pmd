@@ -71,8 +71,8 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
         Arrays.sort(methNameArray);
 
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(
-                VariableNameDeclaration.class);
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
         for (VariableNameDeclaration decl : vars.keySet()) {
             AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (vars.get(decl).isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()) {

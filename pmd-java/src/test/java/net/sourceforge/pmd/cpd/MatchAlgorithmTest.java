@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.sourceforge.pmd.PMD;
-
 import org.junit.Test;
+
+import net.sourceforge.pmd.PMD;
 
 public class MatchAlgorithmTest {
 

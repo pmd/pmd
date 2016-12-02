@@ -9,6 +9,6 @@ import net.sourceforge.pmd.lang.ParserOptions;
 public class Java17Handler extends AbstractJavaHandler {
 
     public Parser getParser(ParserOptions parserOptions) {
-	return new Java17Parser(parserOptions);
+        return new Java17Parser(parserOptions);
     }
 }

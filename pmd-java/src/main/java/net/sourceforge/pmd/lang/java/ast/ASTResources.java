@@ -6,18 +6,17 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTResources extends AbstractJavaNode {
-  public ASTResources(int id) {
-    super(id);
-  }
+    public ASTResources(int id) {
+        super(id);
+    }
 
-  public ASTResources(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTResources(JavaParser p, int id) {
+        super(p, id);
+    }
 
-
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /** Accept the visitor. **/
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }
 /* JavaCC - OriginalChecksum=e83b6cb79b9c5c88242c7dca5255e114 (do not edit this line) */

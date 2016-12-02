@@ -9,6 +9,7 @@ public class SymbolFacade {
     public void initializeWith(ASTCompilationUnit node) {
         initializeWith(SymbolFacade.class.getClassLoader(), node);
     }
+
     public void initializeWith(ClassLoader classLoader, ASTCompilationUnit node) {
         ScopeAndDeclarationFinder sc = new ScopeAndDeclarationFinder(classLoader);
         node.jjtAccept(sc, null);

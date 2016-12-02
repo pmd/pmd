@@ -42,9 +42,8 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
                  * up to detect nested loops
                  */
                 n = n.jjtGetParent();
-            } else if (n.jjtGetParent() instanceof ASTForStatement
-                && n.jjtGetParent().jjtGetNumChildren() > 1
-                && n == n.jjtGetParent().jjtGetChild(1)) {
+            } else if (n.jjtGetParent() instanceof ASTForStatement && n.jjtGetParent().jjtGetNumChildren() > 1
+                    && n == n.jjtGetParent().jjtGetChild(1)) {
                 // it is the second child of a ForStatement - which means
                 // we are dealing with a for-each construct
                 // In that case, we can ignore this allocation expression, as the second child

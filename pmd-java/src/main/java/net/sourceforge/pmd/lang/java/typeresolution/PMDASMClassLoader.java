@@ -47,7 +47,7 @@ public final class PMDASMClassLoader extends ClassLoader {
     private PMDASMClassLoader(ClassLoader parent) {
         super(parent);
     }
-    
+
     /**
      * A new PMDASMClassLoader is created for each compilation unit, this method
      * allows to reuse the same PMDASMClassLoader across all the compilation
@@ -64,7 +64,7 @@ public final class PMDASMClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        if(dontBother.containsKey(name))
+        if (dontBother.containsKey(name))
             throw new ClassNotFoundException(name);
 
         try {
@@ -90,7 +90,7 @@ public final class PMDASMClassLoader extends ClassLoader {
      * @return whether the class can be resolved
      */
     public boolean couldResolve(String name) {
-    	return !dontBother.containsKey(name);
+        return !dontBother.containsKey(name);
     }
 
     public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
@@ -105,9 +105,9 @@ public final class PMDASMClassLoader extends ClassLoader {
             List<String> inner = asmVisitor.getInnerClasses();
             if (inner != null && !inner.isEmpty()) {
                 inner = new ArrayList<>(inner); // to avoid
-                                                      // ConcurrentModificationException
+                                                // ConcurrentModificationException
                 for (String str : inner) {
-                    try (InputStream innerClassStream = getResourceAsStream(str.replace('.', '/') + ".class")){
+                    try (InputStream innerClassStream = getResourceAsStream(str.replace('.', '/') + ".class")) {
                         if (innerClassStream != null) {
                             reader = new ClassReader(innerClassStream);
                             reader.accept(asmVisitor, 0);

@@ -3,14 +3,14 @@
  */
 package net.sourceforge.pmd.jaxen;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
-
-import org.junit.Test;
 
 public class RegexpAcceptanceTest extends SimpleAggregatorTst {
 

@@ -8,20 +8,20 @@ import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 
 public class JavadocElement extends AbstractNode {
 
-	private final JavadocTag tag;
-	
-	public JavadocElement(int theBeginLine, int theEndLine, int theBeginColumn,	int theEndColumn, JavadocTag theTag) {
-		super(-1, theBeginLine, theEndLine, theBeginColumn, theEndColumn);
+    private final JavadocTag tag;
 
-		tag = theTag;
-	}
+    public JavadocElement(int theBeginLine, int theEndLine, int theBeginColumn, int theEndColumn, JavadocTag theTag) {
+        super(-1, theBeginLine, theEndLine, theBeginColumn, theEndColumn);
 
-	public JavadocTag tag() {
-		return tag;
-	}
+        tag = theTag;
+    }
 
-	@Override
-	public String toString() {
-		return tag.label + " : " + tag.description;
-	}
+    public JavadocTag tag() {
+        return tag;
+    }
+
+    @Override
+    public String toString() {
+        return tag.label + " : " + tag.description;
+    }
 }

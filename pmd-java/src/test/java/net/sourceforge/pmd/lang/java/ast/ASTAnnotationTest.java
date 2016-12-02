@@ -1,12 +1,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ParserTst;
-
-import org.junit.Test;
-
 
 public class ASTAnnotationTest extends ParserTst {
 
@@ -25,13 +24,8 @@ public class ASTAnnotationTest extends ParserTst {
         getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"), ASTAnnotation.class, TEST1);
     }
 
-    private static final String TEST1 =
-            "public class Foo extends Buz {" + PMD.EOL +
-            " @Override" + PMD.EOL +
-            " void bar() {" + PMD.EOL +
-            "  // overrides a superclass method" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    private static final String TEST1 = "public class Foo extends Buz {" + PMD.EOL + " @Override" + PMD.EOL
+            + " void bar() {" + PMD.EOL + "  // overrides a superclass method" + PMD.EOL + " }" + PMD.EOL + "}";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ASTAnnotationTest.class);

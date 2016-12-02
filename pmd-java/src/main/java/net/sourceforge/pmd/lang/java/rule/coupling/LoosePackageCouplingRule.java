@@ -114,8 +114,8 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
     // Is 1st package a containing package of the 2nd package?
     protected boolean isContainingPackage(String pkg1, String pkg2) {
-        return pkg1.equals(pkg2) || pkg1.length() < pkg2.length() && pkg2.startsWith(pkg1)
-                && pkg2.charAt(pkg1.length()) == '.';
+        return pkg1.equals(pkg2)
+                || pkg1.length() < pkg2.length() && pkg2.startsWith(pkg1) && pkg2.charAt(pkg1.length()) == '.';
     }
 
     protected boolean isAllowedClass(ASTImportDeclaration node) {

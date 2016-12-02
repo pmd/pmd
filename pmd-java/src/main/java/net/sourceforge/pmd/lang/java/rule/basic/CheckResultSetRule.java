@@ -46,11 +46,10 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        ASTClassOrInterfaceType type = node.getFirstChildOfType(ASTType.class).getFirstDescendantOfType(
-                ASTClassOrInterfaceType.class);
-        if (type != null
-                && (type.getType() != null && "java.sql.ResultSet".equals(type.getType().getName()) || "ResultSet"
-                        .equals(type.getImage()))) {
+        ASTClassOrInterfaceType type = node.getFirstChildOfType(ASTType.class)
+                .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        if (type != null && (type.getType() != null && "java.sql.ResultSet".equals(type.getType().getName())
+                || "ResultSet".equals(type.getImage()))) {
             ASTVariableDeclarator declarator = node.getFirstChildOfType(ASTVariableDeclarator.class);
             if (declarator != null) {
                 ASTName name = declarator.getFirstDescendantOfType(ASTName.class);

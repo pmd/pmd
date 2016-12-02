@@ -4,13 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import junit.framework.JUnit4TestAdapter;
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
-import org.junit.Test;
+import junit.framework.JUnit4TestAdapter;
 
 public class LanguageVersionDiscovererTest {
 
@@ -23,8 +24,8 @@ public class LanguageVersionDiscovererTest {
         File javaFile = new File("/path/to/MyClass.java");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
-        assertEquals("LanguageVersion must be Java 1.8 !", LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
-                .getVersion("1.8"), languageVersion);
+        assertEquals("LanguageVersion must be Java 1.8 !",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8"), languageVersion);
     }
 
     /**
@@ -37,8 +38,8 @@ public class LanguageVersionDiscovererTest {
         File javaFile = new File("/path/to/MyClass.java");
 
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(javaFile);
-        assertEquals("LanguageVersion must be Java 1.4!", LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
-                .getVersion("1.4"), languageVersion);
+        assertEquals("LanguageVersion must be Java 1.4!",
+                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.4"), languageVersion);
     }
 
     @Test
@@ -46,13 +47,13 @@ public class LanguageVersionDiscovererTest {
         PMDConfiguration configuration = new PMDConfiguration();
         LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
         assertEquals("Default Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.8"),
-                languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry
-                        .getLanguage(JavaLanguageModule.NAME)));
+                languageVersionDiscoverer
+                        .getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
         configuration
                 .setDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
         assertEquals("Modified Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"),
-                languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry
-                        .getLanguage(JavaLanguageModule.NAME)));
+                languageVersionDiscoverer
+                        .getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
     }
 
     public static junit.framework.Test suite() {
