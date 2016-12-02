@@ -38,6 +38,7 @@
 *   [#137](https://github.com/pmd/pmd/pull/137): \[apex] Adjusted remediation points
 *   [#146](https://github.com/pmd/pmd/pull/146): \[apex] Detection of missing Apex CRUD checks for SOQL/DML operations
 *   [#147](https://github.com/pmd/pmd/pull/147): \[apex] Adding XSS detection to return statements
+*   [#149](https://github.com/pmd/pmd/pull/149): \[apex] Whitelisting String.isEmpty and casting
 
 **Bugfixes:**
 
