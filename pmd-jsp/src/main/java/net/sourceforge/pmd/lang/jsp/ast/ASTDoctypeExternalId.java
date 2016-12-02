@@ -37,22 +37,24 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
     }
 
     /**
-     * @param name The name to set.
+     * @param name
+     *            The name to set.
      */
     public void setUri(String name) {
         this.uri = name;
     }
 
     /**
-     * @return Returns the publicId (or an empty string if there is none
-     *         for this external entity id).
+     * @return Returns the publicId (or an empty string if there is none for
+     *         this external entity id).
      */
     public String getPublicId() {
         return null == publicId ? "" : publicId;
     }
 
     /**
-     * @param publicId The publicId to set.
+     * @param publicId
+     *            The publicId to set.
      */
     public void setPublicId(String publicId) {
         this.publicId = publicId;

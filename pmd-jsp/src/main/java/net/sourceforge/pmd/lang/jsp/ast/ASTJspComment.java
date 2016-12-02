@@ -14,7 +14,6 @@ public class ASTJspComment extends AbstractJspNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

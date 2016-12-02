@@ -14,7 +14,6 @@ public class ASTJspDocument extends AbstractJspNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

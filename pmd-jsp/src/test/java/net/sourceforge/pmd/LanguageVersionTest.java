@@ -1,16 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.junit.runners.Parameterized.Parameters;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
-
-import org.junit.runners.Parameterized.Parameters;
 
 public class LanguageVersionTest extends AbstractLanguageVersionTest {
 
@@ -20,8 +21,7 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { JspLanguageModule.NAME, JspLanguageModule.TERSE_NAME, "", LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion() }
-            });
+        return Arrays.asList(new Object[][] { { JspLanguageModule.NAME, JspLanguageModule.TERSE_NAME, "",
+            LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), }, });
     }
 }

@@ -1,17 +1,18 @@
-package net.sourceforge.pmd;
 
+package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import junit.framework.JUnit4TestAdapter;
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 
-import org.junit.Test;
+import junit.framework.JUnit4TestAdapter;
 
 public class LanguageVersionDiscovererTest {
 
@@ -23,7 +24,8 @@ public class LanguageVersionDiscovererTest {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer();
         File jspFile = new File("/path/to/MyPage.jsp");
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(jspFile);
-        assertEquals("LanguageVersion must be JSP!", LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), languageVersion);
+        assertEquals("LanguageVersion must be JSP!",
+                LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), languageVersion);
     }
 
     public static junit.framework.Test suite() {
