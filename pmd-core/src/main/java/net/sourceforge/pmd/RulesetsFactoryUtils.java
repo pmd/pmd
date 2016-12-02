@@ -33,9 +33,7 @@ public final class RulesetsFactoryUtils {
     public static RuleSets getRuleSets(String rulesets, RuleSetFactory factory) {
         RuleSets ruleSets = null;
         try {
-            factory.setWarnDeprecated(true);
             ruleSets = factory.createRuleSets(rulesets);
-            factory.setWarnDeprecated(false);
             printRuleNamesInDebug(ruleSets);
             if (ruleSets.ruleCount() == 0) {
                 String msg = "No rules found. Maybe you mispelled a rule name? (" + rulesets + ")";
@@ -74,13 +72,9 @@ public final class RulesetsFactoryUtils {
         return ruleSets;
     }
 
-    public static RuleSetFactory getRulesetFactory(PMDConfiguration configuration) {
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
-        if (!configuration.isRuleSetFactoryCompatibilityEnabled()) {
-            ruleSetFactory.disableCompatibilityFilter();
-        }
-        return ruleSetFactory;
+    public static RuleSetFactory getRulesetFactory(final PMDConfiguration configuration) {
+        return new RuleSetFactory(configuration.getClassLoader(), configuration.getMinimumPriority(), true,
+                configuration.isRuleSetFactoryCompatibilityEnabled());
     }
 
     /**

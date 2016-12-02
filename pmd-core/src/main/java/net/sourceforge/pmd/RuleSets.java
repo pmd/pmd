@@ -24,7 +24,7 @@ public class RuleSets {
     /**
      * Map of RuleLanguage on RuleSet.
      */
-    private Collection<RuleSet> ruleSets = new ArrayList<>();
+    private List<RuleSet> ruleSets = new ArrayList<>();
 
     /**
      * RuleChain for efficient AST visitation.
@@ -207,9 +207,22 @@ public class RuleSets {
      * @param collector
      */
     public void removeDysfunctionalRules(Collection<Rule> collector) {
-
         for (RuleSet ruleSet : ruleSets) {
             ruleSet.removeDysfunctionalRules(collector);
         }
+    }
+
+    /**
+     * Retrieves a checksum of the rulesets being used. Any change to any rule
+     * of any ruleset should trigger a checksum change.
+     * 
+     * @return The checksum for this ruleset collection.
+     */
+    public long getChecksum() {
+        long checksum = 1;
+        for (final RuleSet ruleSet : ruleSets) {
+            checksum = checksum * 31 + ruleSet.getChecksum();
+        }
+        return checksum;
     }
 }

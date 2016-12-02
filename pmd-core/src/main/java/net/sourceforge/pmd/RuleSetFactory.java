@@ -16,6 +16,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -56,50 +58,37 @@ public class RuleSetFactory {
     private static final String MESSAGE = "message";
     private static final String EXTERNAL_INFO_URL = "externalInfoUrl";
 
-    private ClassLoader classLoader = RuleSetFactory.class.getClassLoader();
-    private RulePriority minimumPriority = RulePriority.LOW;
-    private boolean warnDeprecated = false;
-    private RuleSetFactoryCompatibility compatibilityFilter = new RuleSetFactoryCompatibility();
+    private final ClassLoader classLoader;
+    private final RulePriority minimumPriority;
+    private final boolean warnDeprecated;
+    private final RuleSetFactoryCompatibility compatibilityFilter;
 
-    /**
-     * Set the ClassLoader to use when loading Rules.
-     *
-     * @param classLoader
-     *            The ClassLoader to use.
-     */
-    public void setClassLoader(ClassLoader classLoader) {
+
+    public RuleSetFactory() {
+        this(RuleSetFactory.class.getClassLoader(), RulePriority.LOW, false, true);
+    }
+
+    public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
+            final boolean warnDeprecated, final boolean enableCompatibility) {
         this.classLoader = classLoader;
-    }
-
-    /**
-     * Set the minimum rule priority threshold for all Rules which are loaded
-     * from RuleSets via reference.
-     *
-     * @param minimumPriority
-     *            The minimum priority.
-     */
-    public void setMinimumPriority(RulePriority minimumPriority) {
         this.minimumPriority = minimumPriority;
-    }
-
-    /**
-     * Set whether warning messages should be logged for usage of deprecated
-     * Rules.
-     *
-     * @param warnDeprecated
-     *            <code>true</code> to log warning messages.
-     */
-    public void setWarnDeprecated(boolean warnDeprecated) {
         this.warnDeprecated = warnDeprecated;
-    }
 
+        if (enableCompatibility) {
+            this.compatibilityFilter = new RuleSetFactoryCompatibility();
+        } else {
+            this.compatibilityFilter = null;
+        }
+    }
+    
     /**
-     * Disable the ruleset compatibility filter. Disabling this filter will
-     * cause exception when loading a ruleset, which uses references to old/not
-     * existing rules.
+     * Constructor copying all configuration from another factory.
+     * @param factory The factory whose configuration to copy.
+     * @param warnDeprecated Whether deprecation warnings are to be produced by this factory.
      */
-    public void disableCompatibilityFilter() {
-        compatibilityFilter = null;
+    public RuleSetFactory(final RuleSetFactory factory, final boolean warnDeprecated) {
+        this(factory.classLoader, factory.minimumPriority,
+                warnDeprecated, factory.compatibilityFilter != null);
     }
 
     /**
@@ -108,7 +97,7 @@ public class RuleSetFactory {
      *
      * @return the {@link RuleSetFactoryCompatibility}
      */
-    public RuleSetFactoryCompatibility getCompatibilityFilter() {
+    /* package */ RuleSetFactoryCompatibility getCompatibilityFilter() {
         return compatibilityFilter;
     }
 
@@ -150,7 +139,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      */
-    public synchronized RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
+    public RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
         return createRuleSets(RuleSetReferenceId.parse(referenceString));
     }
 
@@ -164,7 +153,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      */
-    public synchronized RuleSets createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds)
+    public RuleSets createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds)
             throws RuleSetNotFoundException {
         RuleSets ruleSets = new RuleSets();
         for (RuleSetReferenceId ruleSetReferenceId : ruleSetReferenceIds) {
@@ -187,7 +176,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      */
-    public synchronized RuleSet createRuleSet(String referenceString) throws RuleSetNotFoundException {
+    public RuleSet createRuleSet(String referenceString) throws RuleSetNotFoundException {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(referenceString);
         if (references.isEmpty()) {
             throw new RuleSetNotFoundException(
@@ -206,11 +195,11 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException
      *             if unable to find a resource.
      */
-    public synchronized RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
+    public RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
         return createRuleSet(ruleSetReferenceId, false);
     }
 
-    private synchronized RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId,
+    private RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId,
             boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
         return parseRuleSetNode(ruleSetReferenceId, withDeprecatedRuleReferences);
     }
@@ -252,9 +241,12 @@ public class RuleSetFactory {
      *            or not
      * @return The new RuleSet.
      */
-    private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
-            throws RuleSetNotFoundException {
-        try (InputStream inputStream = ruleSetReferenceId.getInputStream(this.classLoader)) {
+    private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId,
+                                     boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
+        try (
+            final CheckedInputStream inputStream = new CheckedInputStream(
+                    ruleSetReferenceId.getInputStream(this.classLoader), new Adler32());
+        ) {
             if (!ruleSetReferenceId.isExternal()) {
                 throw new IllegalArgumentException(
                         "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
@@ -269,7 +261,7 @@ public class RuleSetFactory {
             Document document = builder.parse(inputSource);
             Element ruleSetElement = document.getDocumentElement();
 
-            RuleSet ruleSet = new RuleSet();
+            RuleSet ruleSet = new RuleSet(inputStream.getChecksum().getValue());
             ruleSet.setFileName(ruleSetReferenceId.getRuleSetFileName());
             ruleSet.setName(ruleSetElement.getAttribute("name"));
 
@@ -376,13 +368,11 @@ public class RuleSetFactory {
             }
         }
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        ruleSetFactory.setClassLoader(classLoader);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
         for (Rule rule : otherRuleSet.getRules()) {
             excludedRulesCheck.remove(rule.getName());
-            if (!ruleSetReference.getExcludes().contains(rule.getName())
-                    && rule.getPriority().compareTo(minimumPriority) <= 0 && !rule.isDeprecated()) {
+            if (!ruleSetReference.getExcludes().contains(rule.getName()) && !rule.isDeprecated()) {
                 RuleReference ruleReference = new RuleReference();
                 ruleReference.setRuleSetReference(ruleSetReference);
                 ruleReference.setRule(rule);
@@ -553,8 +543,7 @@ public class RuleSetFactory {
             return;
         }
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        ruleSetFactory.setClassLoader(classLoader);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);

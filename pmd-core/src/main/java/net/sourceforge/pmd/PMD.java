@@ -387,16 +387,24 @@ public class PMD {
 
         sortFiles(configuration, files);
 
+        // Make sure the cache is listening for analysis results
+        ctx.getReport().addListener(configuration.getAnalysisCache());
+
+        final RuleSetFactory silentFactoy = new RuleSetFactory(ruleSetFactory, false);
+
         /*
          * Check if multithreaded support is available. ExecutorService can also
          * be disabled if threadCount is not positive, e.g. using the
          * "-threads 0" command line option.
          */
         if (configuration.getThreads() > 0) {
-            new MultiThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
+            new MultiThreadProcessor(configuration).processFiles(silentFactoy, files, ctx, renderers);
         } else {
-            new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
+            new MonoThreadProcessor(configuration).processFiles(silentFactoy, files, ctx, renderers);
         }
+        
+        // Persist the analysis cache
+        configuration.getAnalysisCache().persist();
 
         if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
             IOUtil.tryCloseClassLoader(configuration.getClassLoader());

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.imports;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,6 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     private List<ASTImportDeclaration> imports = new ArrayList<>();
     private List<ASTImportDeclaration> matches = new ArrayList<>();
     private List<PotentialViolation> violations = new ArrayList<>();
-    private List<PotentialViolation> enumViolations = new ArrayList<>();
 
     public UnnecessaryFullyQualifiedNameRule() {
         super.addRuleChainVisit(ASTCompilationUnit.class);
@@ -33,11 +33,9 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
         violations.clear();
-        enumViolations.clear();
 
         super.visit(node, data);
 
-        filterPotentialViolations();
         reportViolations(data);
         return data;
     }
@@ -126,17 +124,55 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
         if (!matches.isEmpty()) {
             ASTImportDeclaration firstMatch = matches.get(0);
-            String importStr = firstMatch.getImportedName() + (matches.get(0).isImportOnDemand() ? ".*" : "");
-            String type = firstMatch.isStatic() ? "static " : "";
 
-            PotentialViolation v = new PotentialViolation(node, importStr, type);
-            violations.add(v);
-            if (isEnum(firstMatch.getType())) {
-                enumViolations.add(v);
+            // Could this done to avoid a conflict?
+            if (!isAvoidingConflict(name, firstMatch)) {
+                String importStr = firstMatch.getImportedName() + (firstMatch.isImportOnDemand() ? ".*" : "");
+                String type = firstMatch.isStatic() ? "static " : "";
+
+                PotentialViolation v = new PotentialViolation(node, importStr, type);
+                violations.add(v);
             }
         }
 
         matches.clear();
+    }
+
+    private boolean isAvoidingConflict(final String name, final ASTImportDeclaration firstMatch) {
+        if (firstMatch.isImportOnDemand() && firstMatch.isStatic() && name.indexOf('.') != -1) {
+            final String methodCalled = name.substring(name.indexOf('.') + 1);
+
+            // Is there any other static import conflictive?
+            for (final ASTImportDeclaration importDeclaration : imports) {
+                if (importDeclaration != firstMatch && importDeclaration.isStatic()) {
+                    if (importDeclaration.getImportedName().startsWith(firstMatch.getImportedName())
+                            && importDeclaration.getImportedName().lastIndexOf('.') == firstMatch.getImportedName()
+                                    .length()) {
+                        // A conflict against the same class is not an excuse,
+                        // ie:
+                        // import java.util.Arrays;
+                        // import static java.util.Arrays.asList;
+                        continue;
+                    }
+
+                    if (importDeclaration.isImportOnDemand()) {
+                        // We need type resolution to make sure there is a
+                        // conflicting method
+                        if (importDeclaration.getType() != null) {
+                            for (final Method m : importDeclaration.getType().getMethods()) {
+                                if (m.getName().equals(methodCalled)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    } else if (importDeclaration.getImportedName().endsWith(methodCalled)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private static class PotentialViolation {
@@ -144,7 +180,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         private String importStr;
         private String importType;
 
-        PotentialViolation(JavaNode node, String importStr, String importType) {
+        public PotentialViolation(JavaNode node, String importStr, String importType) {
             this.node = node;
             this.importStr = importStr;
             this.importType = importType;
@@ -155,22 +191,9 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
     }
 
-    private void filterPotentialViolations() {
-        if (enumViolations.size() > 1) {
-            violations.removeAll(enumViolations);
-        }
-    }
-
     private void reportViolations(Object data) {
         for (PotentialViolation v : violations) {
             v.addViolation(this, data);
         }
-    }
-
-    private boolean isEnum(Class<?> type) {
-        if (type != null && Enum.class.isAssignableFrom(type)) {
-            return true;
-        }
-        return false;
     }
 }

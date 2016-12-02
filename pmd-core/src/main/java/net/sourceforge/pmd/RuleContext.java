@@ -5,8 +5,8 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -33,7 +33,7 @@ public class RuleContext {
     private File sourceCodeFile;
     private String sourceCodeFilename;
     private LanguageVersion languageVersion;
-    private final Map<String, Object> attributes;
+    private final ConcurrentMap<String, Object> attributes;
     private boolean ignoreExceptions = true;
 
     /**
@@ -164,14 +164,7 @@ public class RuleContext {
         if (value == null) {
             throw new IllegalArgumentException("Parameter 'value' cannot be null.");
         }
-        synchronized (this.attributes) {
-            if (!this.attributes.containsKey(name)) {
-                this.attributes.put(name, value);
-                return true;
-            } else {
-                return false;
-            }
-        }
+        return this.attributes.putIfAbsent(name, value) == null;
     }
 
     /**

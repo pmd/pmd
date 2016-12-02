@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +38,8 @@ public class RuleSet {
     private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
     private static final String MISSING_RULE = "Missing rule";
 
+    private final long checksum;
+    
     private List<Rule> rules = new ArrayList<>();
     private String fileName;
     private String name = "";
@@ -47,6 +50,23 @@ public class RuleSet {
     private List<String> includePatterns = new ArrayList<>(0);
 
     private Filter<File> filter;
+
+    /**
+     * Creates a new RuleSet with the given checksum.
+     * @param checksum A checksum of the ruleset, should change
+     * only if the ruleset was configured differently
+     */
+    public RuleSet(final long checksum) {
+        this.checksum = checksum;
+    }
+    
+    /**
+     * Creates a new RuleSet with a random checksum.
+     * Notice this means the results for this analysis will not be cached.
+     */
+    public RuleSet() {
+        this(new Random().nextLong());
+    }
 
     /**
      * A convenience constructor
@@ -560,5 +580,15 @@ public class RuleSet {
                 collector.add(rule);
             }
         }
+    }
+
+    /**
+     * Retrieves a checksum for this ruleset. Should take into account all
+     * rules and configuration, any changes should trigger a fingerprint change
+     * 
+     * @return The ruleset's checksum
+     */
+    public long getChecksum() {
+        return checksum;
     }
 }

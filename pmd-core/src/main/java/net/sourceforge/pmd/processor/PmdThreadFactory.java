@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.processor;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,7 +15,6 @@ public class PmdThreadFactory implements ThreadFactory {
     private final RuleSetFactory ruleSetFactory;
     private final RuleContext ctx;
     private final AtomicInteger counter = new AtomicInteger();
-    public List<Runnable> threadList = Collections.synchronizedList(new LinkedList<Runnable>());
 
     public PmdThreadFactory(RuleSetFactory ruleSetFactory, RuleContext ctx) {
         this.ruleSetFactory = ruleSetFactory;
@@ -28,7 +24,6 @@ public class PmdThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable r) {
         Thread t = PmdRunnable.createThread(counter.incrementAndGet(), r, ruleSetFactory, ctx);
-        threadList.add(t);
         return t;
     }
 

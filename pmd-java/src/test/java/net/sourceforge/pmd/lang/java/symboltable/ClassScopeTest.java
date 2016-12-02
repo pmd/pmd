@@ -21,6 +21,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass;
+import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass;
+import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass.EnumTest;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -157,6 +160,24 @@ public class ClassScopeTest extends STBBaseTst {
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("(String,String...)", mnd.getParameterDisplaySignature());
+    }
+
+    @Test
+    public void testNestedClassesResolution() {
+        parseForClass(InnerClass.class);
+        final ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        final ClassScope c = (ClassScope) n.getScope();
+        assertEquals(InnerClass.class, c.resolveType("InnerClass"));
+        assertEquals(TheInnerClass.class, c.resolveType("InnerClass.TheInnerClass"));
+        assertEquals(TheInnerClass.class, c.resolveType("TheInnerClass")); // Within this scope, we can access it directly
+    }
+
+    @Test
+    public void testImportNestedClassesResolution() {
+        parseCode(IMPORT_NESTED_CLASSES);
+        final ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        final ClassScope c = (ClassScope) n.getScope();
+        assertEquals(EnumTest.class, c.resolveType("EnumTest"));
     }
 
     @Test
@@ -323,6 +344,12 @@ public class ClassScopeTest extends STBBaseTst {
             + "   BAR(isCustomer(BazEnum.FOO_BAR));" + PMD.EOL + "   Foo(boolean isCustomer) { }" + PMD.EOL
             + "   private static boolean isCustomer(BazEnum baz) {" + PMD.EOL + "      return false;" + PMD.EOL + "   }"
             + PMD.EOL + "}";
+
+    private static final String IMPORT_NESTED_CLASSES =
+            "import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass.EnumTest;" + PMD.EOL +
+            "public class Foo {" + PMD.EOL +
+            " public EnumTest e;" + PMD.EOL +
+            "}" + PMD.EOL;
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ClassScopeTest.class);

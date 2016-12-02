@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.xml;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
@@ -11,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -357,6 +360,21 @@ public class XmlParserTest {
         Assert.assertNotNull(document);
         assertNode(document.jjtGetChild(0), "mypi", 0);
         assertLineNumbers(document.jjtGetChild(0), 1, 22, 1, 29);
+    }
+
+    private Node parseXml(String xml) {
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        XmlParserOptions options = (XmlParserOptions)xmlVersionHandler.getDefaultParserOptions();
+        Parser parser = xmlVersionHandler.getParser(options);
+        Node document = parser.parse(null, new StringReader(xml));
+        return document;
+    }
+
+    @Test
+    public void testBug1518() throws Exception {
+        String xml = IOUtils.toString(XmlParserTest.class.getResourceAsStream("parsertests/bug1518.xml"));
+        Node document = parseXml(xml);
+        assertNotNull(document);
     }
 
     /**

@@ -6,11 +6,10 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -50,8 +49,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private int position;
     private Node node;
 
-    private static Map<Class<?>, MethodWrapper[]> methodCache = Collections
-            .synchronizedMap(new HashMap<Class<?>, MethodWrapper[]>());
+    private static ConcurrentMap<Class<?>, MethodWrapper[]> methodCache =
+            new ConcurrentHashMap<Class<?>, MethodWrapper[]>();
 
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
@@ -63,7 +62,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                     postFilter.add(new MethodWrapper(element));
                 }
             }
-            methodCache.put(contextNode.getClass(), postFilter.toArray(new MethodWrapper[postFilter.size()]));
+            methodCache.putIfAbsent(contextNode.getClass(), postFilter.toArray(new MethodWrapper[postFilter.size()]));
         }
         this.methodWrappers = methodCache.get(contextNode.getClass());
 

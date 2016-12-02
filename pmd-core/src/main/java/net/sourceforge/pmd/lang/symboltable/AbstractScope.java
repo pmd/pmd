@@ -69,19 +69,17 @@ public abstract class AbstractScope implements Scope {
         declarationsPerClass.put(declaration, new ArrayList<NameOccurrence>());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends Scope> T getEnclosingScope(Class<T> clazz) {
-        T result = null;
         Scope current = this;
-        while (result == null && current != null) {
+        while (current != null) {
             if (clazz.isAssignableFrom(current.getClass())) {
-                @SuppressWarnings("unchecked")
-                T cast = (T) current;
-                result = cast;
+                return (T) current;
             }
             current = current.getParent();
         }
-        return result;
+        return null;
     }
 
     @Override

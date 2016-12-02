@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -97,6 +98,7 @@ public class TypeSet {
     public abstract static class AbstractResolver implements Resolver {
         /** the class loader. */
         protected final PMDASMClassLoader pmdClassLoader;
+        private final Map<String, String> classNames;
 
         /**
          * Creates a new AbstractResolver that uses the given class loader.
@@ -106,6 +108,59 @@ public class TypeSet {
          */
         public AbstractResolver(final PMDASMClassLoader pmdClassLoader) {
             this.pmdClassLoader = pmdClassLoader;
+            classNames = new HashMap<>();
+        }
+
+        /**
+         * Resolves the given class name with the given FQCN, considering it may
+         * be an inner class.
+         *
+         * @param name
+         *            The name of the class to load.
+         * @param fqName
+         *            The proposed FQCN for the class.
+         * @return The matched class or null if not found.
+         */
+        protected Class<?> resolveMaybeInner(final String name, final String fqName) {
+            // Do we know the actual class name?
+            final String className = classNames.get(name);
+            if (className != null) {
+                try {
+                    return pmdClassLoader.loadClass(className);
+                } catch (final ClassNotFoundException e) {
+                    // Ignored, can never actually happen
+                }
+            }
+
+            if (fqName != null) {
+                final StringBuilder sb = new StringBuilder(fqName);
+                String actualClassName = fqName;
+                // We have a FQCN, but it may be an inner class, so we have to
+                // brute force our way...
+                do {
+                    if (pmdClassLoader.couldResolve(actualClassName)) {
+                        try {
+                            final Class<?> c = pmdClassLoader.loadClass(actualClassName);
+                            // Update the mapping
+                            classNames.put(name, actualClassName);
+                            return c;
+                        } catch (final ClassNotFoundException e) {
+                            // Ignored
+                        }
+                    }
+
+                    // Check if the last segment is an inner class
+                    final int lastDot = actualClassName.lastIndexOf('.');
+                    if (lastDot == -1) {
+                        break;
+                    }
+
+                    sb.setCharAt(lastDot, '$');
+                    actualClassName = sb.toString();
+                } while (true);
+            }
+
+            return null;
         }
 
         public boolean couldResolve(final String name) {
@@ -113,7 +168,7 @@ public class TypeSet {
              * Resolvers based on this one, will attempt to load the class from
              * the class loader, so ask him
              */
-            return pmdClassLoader.couldResolve(name);
+            return classNames.containsKey(name) || pmdClassLoader.couldResolve(name);
         }
     }
 
@@ -152,17 +207,18 @@ public class TypeSet {
         }
 
         @Override
-        public Class<?> resolve(String name) throws ClassNotFoundException {
-            final String fqName = importStmts.get(name);
-            if (fqName != null) {
-                return pmdClassLoader.loadClass(fqName);
+        public Class<?> resolve(final String name) throws ClassNotFoundException {
+            final Class<?> c = resolveMaybeInner(name, importStmts.get(name));
+
+            if (c == null) {
+                throw new ClassNotFoundException("Type " + name + " not found");
             }
 
-            throw new ClassNotFoundException("Type " + name + " not found");
+            return c;
         }
 
         @Override
-        public boolean couldResolve(String name) {
+        public boolean couldResolve(final String name) {
             return importStmts.containsKey(name);
         }
     }
@@ -188,12 +244,27 @@ public class TypeSet {
 
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
-            return pmdClassLoader.loadClass(pkg + '.' + name);
+            final String fqName = qualifyName(name);
+            final Class<?> c = resolveMaybeInner(fqName, fqName);
+
+            if (c == null) {
+                throw new ClassNotFoundException("Type " + name + " not found");
+            }
+
+            return c;
         }
 
         @Override
         public boolean couldResolve(String name) {
-            return super.couldResolve(pkg + '.' + name);
+            return super.couldResolve(qualifyName(name));
+        }
+
+        private String qualifyName(final String name) {
+            if (pkg == null) {
+                return name;
+            }
+
+            return pkg + '.' + name;
         }
     }
 
@@ -271,16 +342,15 @@ public class TypeSet {
 
             for (String importStmt : importStmts) {
                 if (importStmt.endsWith("*")) {
-                    try {
-                        String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
-                                .replace(importStmt.length() - 1, importStmt.length(), name).toString();
-                        return pmdClassLoader.loadClass(fqClassName);
-                    } catch (ClassNotFoundException cnfe) {
-                        // ignored as the class could be imported with the next
-                        // on demand import...
+                    final String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
+                            .replace(importStmt.length() - 1, importStmt.length(), name).toString();
+                    final Class<?> c = resolveMaybeInner(name, fqClassName);
+                    if (c != null) {
+                        return c;
                     }
                 }
             }
+
             throw new ClassNotFoundException("Type " + name + " not found");
         }
 
@@ -288,7 +358,7 @@ public class TypeSet {
         public boolean couldResolve(String name) {
             for (String importStmt : importStmts) {
                 if (importStmt.endsWith("*")) {
-                    String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
+                    final String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
                             .replace(importStmt.length() - 1, importStmt.length(), name).toString();
                     // can any class be resolved / was never attempted?
                     if (super.couldResolve(fqClassName)) {
@@ -305,34 +375,32 @@ public class TypeSet {
      * Resolver that resolves primitive types such as int or double.
      */
     public static class PrimitiveTypeResolver implements Resolver {
-        private Map<String, Class<?>> primitiveTypes = new HashMap<>();
+        private static final Map<String, Class<?>> PRIMITIVE_TYPES;
 
-        /**
-         * Creates a new {@link PrimitiveTypeResolver}.
-         */
-        @SuppressWarnings("PMD.AvoidUsingShortType")
-        public PrimitiveTypeResolver() {
-            primitiveTypes.put("int", int.class);
-            primitiveTypes.put("float", float.class);
-            primitiveTypes.put("double", double.class);
-            primitiveTypes.put("long", long.class);
-            primitiveTypes.put("boolean", boolean.class);
-            primitiveTypes.put("byte", byte.class);
-            primitiveTypes.put("short", short.class);
-            primitiveTypes.put("char", char.class);
+        static {
+            final Map<String, Class<?>> types = new HashMap<>();
+            types.put("int", int.class);
+            types.put("float", float.class);
+            types.put("double", double.class);
+            types.put("long", long.class);
+            types.put("boolean", boolean.class);
+            types.put("byte", byte.class);
+            types.put("short", short.class);
+            types.put("char", char.class);
+            PRIMITIVE_TYPES = Collections.unmodifiableMap(types);
         }
 
         @Override
         public Class<?> resolve(String name) throws ClassNotFoundException {
-            if (!primitiveTypes.containsKey(name)) {
+            if (!PRIMITIVE_TYPES.containsKey(name)) {
                 throw new ClassNotFoundException(name);
             }
-            return primitiveTypes.get(name);
+            return PRIMITIVE_TYPES.get(name);
         }
 
         @Override
         public boolean couldResolve(String name) {
-            return primitiveTypes.containsKey(name);
+            return PRIMITIVE_TYPES.containsKey(name);
         }
     }
 
@@ -374,7 +442,14 @@ public class TypeSet {
             if (name == null) {
                 throw new ClassNotFoundException();
             }
-            return pmdClassLoader.loadClass(name);
+
+            final Class<?> c = resolveMaybeInner(name, name);
+
+            if (c == null) {
+                throw new ClassNotFoundException("Type " + name + " not found");
+            }
+
+            return c;
         }
     }
 
@@ -414,7 +489,7 @@ public class TypeSet {
      * @throws ClassNotFoundException
      *             if there is no such class
      */
-    public Class<?> findClass(String name) throws ClassNotFoundException {
+    public Class<?> findClass(String name) {
         // we don't build the resolvers until now since we first want to get all
         // the imports
         if (resolvers.isEmpty()) {
@@ -431,7 +506,7 @@ public class TypeSet {
             }
         }
 
-        throw new ClassNotFoundException("Type " + name + " not found");
+        return null;
     }
 
     private void buildResolvers() {

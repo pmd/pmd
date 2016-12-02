@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data>
+
+	<test-code>
+		<description>PageReference open redirect with unsafe variable
+			concatenation
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public PageReference redirect() {
+	    return new PageReference(test1 + 'something later');
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>PageReference open redirect with variable</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public PageReference redirect() {
+		return new PageReference(test);
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>PageReference open redirect with variable that comes from
+			a literal
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public PageReference redirect() {
+		String test = 'hardcoded value here'; 
+		return new PageReference(test);
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>PageReference open redirect with variable concatenation
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void redirect() {
+	    PageReference newTestPage = new PageReference('https://www.apex.com/myVFPage' + test);
+	}
+}
+		]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>PageReference open redirect with variable concatenation
+			obtained from a literal
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void redirect() {
+		String test = 'hardcoded';
+	    PageReference newTestPage = new PageReference(test + 'something later');
+	}
+}
+		]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>PageReference redirect to literal</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public PageReference redirect() {
+	    return new PageReference('/apex/myVFPage');
+	}
+}
+		]]></code>
+	</test-code>
+
+</test-data>

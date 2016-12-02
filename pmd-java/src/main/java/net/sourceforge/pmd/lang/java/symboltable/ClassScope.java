@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -67,12 +68,12 @@ public class ClassScope extends AbstractJavaScope {
         }
     };
 
-    private String className;
+    private final String className;
 
     private boolean isEnum;
 
-    public ClassScope(String className) {
-        this.className = className;
+    public ClassScope(final String className) {
+        this.className = Objects.requireNonNull(className);
         anonymousInnerClassCounter.set(Integer.valueOf(1));
     }
 
@@ -154,10 +155,9 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
-        Set<NameDeclaration> result = new HashSet<>();
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
-        if (occurrence.isThisOrSuper() || occurrence.getImage() != null && occurrence.getImage().equals(className)) {
+        if (occurrence.isThisOrSuper() || className.equals(occurrence.getImage())) {
             if (variableDeclarations.isEmpty() && methodDeclarations.isEmpty()) {
                 // this could happen if you do this:
                 // public class Foo {
@@ -175,13 +175,12 @@ public class ClassScope extends AbstractJavaScope {
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
             if (!variableDeclarations.isEmpty()) {
-                result.add(variableDeclarations.keySet().iterator().next());
-                return result;
+                return Collections.<NameDeclaration>singleton(variableDeclarations.keySet().iterator().next());
             }
-            result.add(methodDeclarations.keySet().iterator().next());
-            return result;
+            return Collections.<NameDeclaration>singleton(methodDeclarations.keySet().iterator().next());
         }
 
+        Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isMethodOrConstructorInvocation()) {
             for (MethodNameDeclaration mnd : methodDeclarations.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
@@ -371,7 +370,7 @@ public class ClassScope extends AbstractJavaScope {
         for (String qualified : qualifiedNames) {
             int fullLength = qualified.length();
             if (qualified.endsWith(typeImage)
-                    && (fullLength == nameLength || qualified.substring(0, fullLength - nameLength).endsWith("."))) {
+                    && (fullLength == nameLength || qualified.charAt(fullLength - nameLength - 1) == '.')) {
                 return qualified;
             }
         }
@@ -420,8 +419,9 @@ public class ClassScope extends AbstractJavaScope {
                 if (child instanceof ASTName && !isMethodCall) {
                     ASTName name = (ASTName) child;
                     Scope s = name.getScope();
+                    final JavaNameOccurrence nameOccurrence = new JavaNameOccurrence(name, name.getImage());
                     while (s != null) {
-                        if (s.contains(new JavaNameOccurrence(name, name.getImage()))) {
+                        if (s.contains(nameOccurrence)) {
                             break;
                         }
                         s = s.getParent();
@@ -539,6 +539,10 @@ public class ClassScope extends AbstractJavaScope {
         Node declaringNode = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().get(typeImage);
         return new SimpleTypedNameDeclaration(typeImage,
                 this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage), determineSuper(declaringNode));
+    }
+
+    public Class<?> resolveType(final String name) {
+        return this.getEnclosingScope(SourceFileScope.class).resolveType(qualifyTypeName(name));
     }
 
     /**

@@ -37,6 +37,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 
         RuleSets rs = createRuleSets(ruleSetFactory);
         rs.start(ctx);
+        configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
 
         PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
         ExecutorService executor = Executors.newFixedThreadPool(configuration.getThreads(), factory);
@@ -58,7 +59,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 
     }
 
-    private void processReports(final List<Renderer> renderers, List<Future<Report>> tasks) {
+    private void processReports(final List<Renderer> renderers, List<Future<Report>> tasks) throws Error {
 
         while (!tasks.isEmpty()) {
             Future<Report> future = tasks.remove(0);
@@ -82,5 +83,4 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
             super.renderReports(renderers, report);
         }
     }
-
 }

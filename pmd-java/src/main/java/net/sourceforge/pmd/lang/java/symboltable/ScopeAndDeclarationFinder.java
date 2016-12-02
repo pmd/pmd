@@ -151,11 +151,12 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         SourceFileScope scope;
         ASTPackageDeclaration n = node.getPackageDeclaration();
         if (n != null) {
-            scope = new SourceFileScope(n.jjtGetChild(0).getImage());
+            scope = new SourceFileScope(classLoader, n.jjtGetChild(0).getImage());
         } else {
-            scope = new SourceFileScope();
+            scope = new SourceFileScope(classLoader);
         }
-        scope.configureImports(classLoader, node.findChildrenOfType(ASTImportDeclaration.class));
+        scope.configureImports(node.findChildrenOfType(ASTImportDeclaration.class));
+
         scopes.push(scope);
         node.setScope(scope);
     }

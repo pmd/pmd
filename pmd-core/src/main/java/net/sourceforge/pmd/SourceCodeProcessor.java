@@ -82,16 +82,20 @@ public class SourceCodeProcessor {
         // make sure custom XPath functions are initialized
         Initializer.initialize();
 
-        // Coarse check to see if any RuleSet applies to file, will need to do a
-        // finer RuleSet specific check later
+        // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
         if (ruleSets.applies(ctx.getSourceCodeFile())) {
+            // Is the cache up to date?
+            if (configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile())) {
+                return;
+            }
 
             try {
                 processSource(sourceCode, ruleSets, ctx);
-
             } catch (ParseException pe) {
+                configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
                 throw new PMDException("Error while parsing " + ctx.getSourceCodeFilename(), pe);
             } catch (Exception e) {
+                configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
                 throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
             } finally {
                 IOUtils.closeQuietly(sourceCode);
@@ -125,7 +129,6 @@ public class SourceCodeProcessor {
     // }
 
     private void usesDFA(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language) {
-
         if (ruleSets.usesDFA(language)) {
             long start = System.nanoTime();
             VisitorStarter dataFlowFacade = languageVersion.getLanguageVersionHandler().getDataFlowFacade();

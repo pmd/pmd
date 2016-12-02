@@ -5,19 +5,22 @@
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.cache.FileAnalysisCache;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
-
-import junit.framework.JUnit4TestAdapter;
 
 public class ConfigurationTest {
 
@@ -167,7 +170,32 @@ public class ConfigurationTest {
         assertEquals("Changed benchmark", true, configuration.isBenchmark());
     }
 
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(ConfigurationTest.class);
+    @Test
+    public void testAnalysisCache() throws IOException {
+        final PMDConfiguration configuration = new PMDConfiguration();
+        assertNotNull("Default cache is null", configuration.getAnalysisCache());
+        assertTrue("Default cache is not a noop", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
+        configuration.setAnalysisCache(null);
+        assertNotNull("Default cache was set to null", configuration.getAnalysisCache());
+
+        final File cacheFile = File.createTempFile("pmd-", ".cache");
+        cacheFile.deleteOnExit();
+        final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
+        configuration.setAnalysisCache(analysisCache);
+        assertSame("Confgured cache not stored", analysisCache, configuration.getAnalysisCache());
+    }
+
+    @Test
+    public void testAnalysisCacheLocation() throws IOException {
+        final PMDConfiguration configuration = new PMDConfiguration();
+
+        configuration.setAnalysisCacheLocation(null);
+        assertNotNull("Null cache location accepted", configuration.getAnalysisCache());
+        assertTrue("Null cache location accepted", configuration.getAnalysisCache() instanceof NoopAnalysisCache);
+
+        configuration.setAnalysisCacheLocation("pmd.cache");
+        assertNotNull("Not null cache location produces null cache", configuration.getAnalysisCache());
+        assertTrue("File cache location doesn't produce a file cache",
+                configuration.getAnalysisCache() instanceof FileAnalysisCache);
     }
 }
