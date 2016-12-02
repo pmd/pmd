@@ -131,9 +131,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                             List<ASTStatementExpression> sel = is2.findDescendantsOfType(ASTStatementExpression.class);
                             if (sel.size() == 1) {
                                 ASTStatementExpression se = sel.get(0);
-                                if (se.jjtGetNumChildren() == 3) { // primaryExpression,
-                                                                   // AssignmentOperator,
-                                                                   // Expression
+                                if (se.jjtGetNumChildren() == 3) {
+                                    // primaryExpression, AssignmentOperator, Expression
                                     if (se.jjtGetChild(0) instanceof ASTPrimaryExpression) {
                                         ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
                                         if (matchName(pe, returnVariableName)) {
@@ -163,8 +162,9 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             }
         }
         // the return variable name doesn't seem to be a local variable
-        if (initializer == null)
+        if (initializer == null) {
             return false;
+        }
 
         // verify the value with which the local variable is initialized
         if (initializer.jjtGetNumChildren() > 0 && initializer.jjtGetChild(0) instanceof ASTExpression
@@ -186,12 +186,14 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         // now check every usage/assignment of the variable
         List<ASTName> names = node.findDescendantsOfType(ASTName.class);
         for (ASTName n : names) {
-            if (!n.hasImageEqualTo(returnVariableName))
+            if (!n.hasImageEqualTo(returnVariableName)) {
                 continue;
+            }
 
             Node expression = n.getNthParent(3);
-            if (expression instanceof ASTEqualityExpression)
+            if (expression instanceof ASTEqualityExpression) {
                 continue;
+            }
             if (expression instanceof ASTStatementExpression) {
                 if (expression.jjtGetNumChildren() > 2 && expression.jjtGetChild(1) instanceof ASTAssignmentOperator) {
                     ASTName value = expression.jjtGetChild(2).getFirstDescendantOfType(ASTName.class);

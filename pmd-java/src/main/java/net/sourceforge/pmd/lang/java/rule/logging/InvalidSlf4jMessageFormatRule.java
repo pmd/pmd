@@ -35,6 +35,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
     private static final Set<String> LOGGER_LEVELS;
     private static final String LOGGER_CLASS = "org.slf4j.Logger";
+
     static {
         LOGGER_LEVELS = Collections
                 .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error")));

@@ -30,7 +30,7 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
     private static final Set<String> BIG_DECIMAL_METHODS = CollectionUtil
             .asSet(new String[] { ".abs", ".add", ".divide", ".divideToIntegralValue", ".max", ".min", ".movePointLeft",
                 ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round",
-                ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp" });
+                ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp", });
 
     /**
      * These are the BigInteger methods which are immutable
@@ -38,19 +38,20 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
     private static final Set<String> BIG_INTEGER_METHODS = CollectionUtil
             .asSet(new String[] { ".abs", ".add", ".and", ".andNot", ".clearBit", ".divide", ".flipBit", ".gcd", ".max",
                 ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not", ".or",
-                ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor" });
+                ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor", });
 
     /**
      * These are the String methods which are immutable
      */
     private static final Set<String> STRING_METHODS = CollectionUtil
             .asSet(new String[] { ".concat", ".intern", ".replace", ".replaceAll", ".replaceFirst", ".substring",
-                ".toLowerCase", ".toString", ".toUpperCase", ".trim" });
+                ".toLowerCase", ".toString", ".toUpperCase", ".trim", });
 
     /**
      * These are the classes that the rule can apply to
      */
     private static final Map<String, Set<String>> MAP_CLASSES = new HashMap<>();
+
     static {
         MAP_CLASSES.put("java.math.BigDecimal", BIG_DECIMAL_METHODS);
         MAP_CLASSES.put("BigDecimal", BIG_DECIMAL_METHODS);

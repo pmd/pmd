@@ -18,6 +18,7 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
     private SimpleTypedNameDeclaration next;
 
     private static Set<String> primitiveTypes = new HashSet<>();
+
     static {
         primitiveTypes.add("float");
         primitiveTypes.add("double");

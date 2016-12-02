@@ -406,7 +406,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private boolean iterator;
         private boolean forLoop;
 
-        public Assignment(int line, boolean allocation, boolean iterator, boolean forLoop) {
+        Assignment(int line, boolean allocation, boolean iterator, boolean forLoop) {
             this.line = line;
             this.allocation = allocation;
             this.iterator = iterator;

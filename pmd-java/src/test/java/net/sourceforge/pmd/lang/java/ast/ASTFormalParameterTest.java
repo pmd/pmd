@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ParserTst;
 public class ASTFormalParameterTest extends ParserTst {
 
     @Test
-    public void testVarargs() throws Throwable {
+    public void testVarargs() {
         int nrOfVarArgs = 0;
         int nrOfNoVarArgs = 0;
 
@@ -42,8 +42,4 @@ public class ASTFormalParameterTest extends ParserTst {
     }
 
     private static final String TEST1 = "class Foo {" + PMD.EOL + " void bar(int x, int... others) {}" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTFormalParameterTest.class);
-    }
 }

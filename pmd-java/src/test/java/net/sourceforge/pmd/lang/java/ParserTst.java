@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java;
 
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -28,11 +29,11 @@ public abstract class ParserTst {
         private Class<E> clazz = null;
         private Collection<E> collection;
 
-        public Collector(Class<E> clazz) {
+        Collector(Class<E> clazz) {
             this(clazz, new HashSet<E>());
         }
 
-        public Collector(Class<E> clazz, Collection<E> coll) {
+        Collector(Class<E> clazz, Collection<E> coll) {
             this.clazz = clazz;
             this.collection = coll;
         }
@@ -41,7 +42,8 @@ public abstract class ParserTst {
             return collection;
         }
 
-        public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
+        public Object invoke(Object proxy, Method method, Object[] params) throws NoSuchMethodException,
+                SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             if (method.getName().equals("visit")) {
                 if (clazz.isInstance(params[0])) {
                     collection.add((E) params[0]);
@@ -55,11 +57,11 @@ public abstract class ParserTst {
         }
     }
 
-    public <E> Set<E> getNodes(Class<E> clazz, String javaCode) throws Throwable {
+    public <E> Set<E> getNodes(Class<E> clazz, String javaCode) {
         return getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion(), clazz, javaCode);
     }
 
-    public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String javaCode) throws Throwable {
+    public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String javaCode) {
         Collector<E> coll = new Collector<>(clazz);
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         ASTCompilationUnit cu = (ASTCompilationUnit) languageVersionHandler
@@ -70,7 +72,7 @@ public abstract class ParserTst {
         return (Set<E>) coll.getCollection();
     }
 
-    public <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) throws Throwable {
+    public <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) {
         Collector<E> coll = new Collector<>(clazz, new ArrayList<E>());
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
                 .getDefaultVersion().getLanguageVersionHandler();
@@ -87,7 +89,7 @@ public abstract class ParserTst {
         return (List<E>) coll.getCollection();
     }
 
-    public <E> String dumpNodes(List<E> list) throws Throwable {
+    public <E> String dumpNodes(List<E> list) {
         StringBuilder sb = new StringBuilder();
         int index = 0;
         for (E item : list) {
@@ -97,7 +99,7 @@ public abstract class ParserTst {
         return sb.toString();
     }
 
-    public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {
+    public ASTCompilationUnit buildDFA(String javaCode) {
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
                 .getDefaultVersion().getLanguageVersionHandler();
         ASTCompilationUnit cu = (ASTCompilationUnit) languageVersionHandler

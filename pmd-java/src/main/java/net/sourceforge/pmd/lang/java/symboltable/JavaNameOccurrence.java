@@ -141,9 +141,8 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     /**
-     * Assert it the occurrence is a self assignment such as: <code>
-     * 		i += 3;
-     * </code>
+     * Assert it the occurrence is a self assignment such as:
+     * <code>i += 3;</code>
      *
      * @return true, if the occurrence is self-assignment, false, otherwise.
      */

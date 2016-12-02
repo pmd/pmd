@@ -17,8 +17,6 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.testframework.TestDescriptor;
 
-import junit.framework.JUnit4TestAdapter;
-
 public class ExcludeLinesTest extends RuleTst {
     private Rule rule;
 
@@ -34,7 +32,7 @@ public class ExcludeLinesTest extends RuleTst {
     }
 
     @Test
-    public void testAlternateMarker() throws Throwable {
+    public void testAlternateMarker() throws PMDException {
         PMD p = new PMD();
         p.getConfiguration().setSuppressMarker("FOOBAR");
         RuleContext ctx = new RuleContext();
@@ -57,8 +55,4 @@ public class ExcludeLinesTest extends RuleTst {
 
     private static final String TEST3 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL
             + "  int x; // FOOBAR" + PMD.EOL + " } " + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(ExcludeLinesTest.class);
-    }
 }

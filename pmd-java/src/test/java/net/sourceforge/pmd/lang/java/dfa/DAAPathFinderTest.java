@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 public class DAAPathFinderTest extends ParserTst implements Executable {
 
     @Test
-    public void testTwoUpdateDefs() throws Throwable {
+    public void testTwoUpdateDefs() {
         ASTMethodDeclarator meth = getOrderedNodes(ASTMethodDeclarator.class, TWO_UPDATE_DEFS).get(0);
         DAAPathFinder a = new DAAPathFinder(meth.getDataFlowNode().getFlow().get(0), this);
         // a.run();
@@ -27,8 +27,4 @@ public class DAAPathFinderTest extends ParserTst implements Executable {
 
     private static final String TWO_UPDATE_DEFS = "class Foo {" + PMD.EOL + " void bar(int x) {" + PMD.EOL
             + "  for (int i=0; i<10; i++, j--) {}" + PMD.EOL + " }" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(DAAPathFinderTest.class);
-    }
 }

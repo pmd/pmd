@@ -67,8 +67,9 @@ public final class PMDASMClassLoader extends ClassLoader {
 
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        if (dontBother.containsKey(name))
+        if (dontBother.containsKey(name)) {
             throw new ClassNotFoundException(name);
+        }
 
         try {
             return super.loadClass(name);
@@ -109,8 +110,8 @@ public final class PMDASMClassLoader extends ClassLoader {
 
             List<String> inner = asmVisitor.getInnerClasses();
             if (inner != null && !inner.isEmpty()) {
-                inner = new ArrayList<>(inner); // to avoid
-                                                // ConcurrentModificationException
+                // to avoid ConcurrentModificationException
+                inner = new ArrayList<>(inner);
                 for (String str : inner) {
                     try (InputStream innerClassStream = getResourceAsStream(str.replace('.', '/') + ".class")) {
                         if (innerClassStream != null) {

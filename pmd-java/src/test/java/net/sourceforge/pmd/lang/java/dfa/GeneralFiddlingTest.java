@@ -21,19 +21,16 @@ public class GeneralFiddlingTest extends ParserTst {
 
     /**
      * Unit test for https://sourceforge.net/p/pmd/bugs/1325/
-     * 
-     * @throws Throwable
-     *             any error
      */
     @Test
-    public void innerClassShouldWork() throws Throwable {
+    public void innerClassShouldWork() {
         ASTCompilationUnit acu = buildDFA(
                 "class Foo {" + "    void bar() {" + "        class X {}" + "        int i;" + "    }" + "}");
         assertNotNull(acu);
     }
 
     @Test
-    public void test1() throws Throwable {
+    public void test1() {
         ASTCompilationUnit acu = buildDFA(TEST1);
         ASTMethodDeclarator meth = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0);
         DataFlowNode n = meth.getDataFlowNode();

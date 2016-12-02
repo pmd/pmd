@@ -52,12 +52,12 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     /**
      * 2: method();
      * ASTPrimaryPrefix
-     * ASTName			image = "method"
+     * ASTName image = "method"
      * ASTPrimarySuffix
      * *ASTArguments
      * 3: a.method();
      * ASTPrimaryPrefix ->
-     * ASTName			image = "a.method" ???
+     * ASTName image = "a.method" ???
      * ASTPrimarySuffix -> ()
      * ASTArguments
      * 3: this.method();
@@ -87,7 +87,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * <p/>
      * 4: ClassName.this.method();
      * ASTPrimaryPrefix
-     * ASTName	image = "ClassName"
+     * ASTName image = "ClassName"
      * ASTPrimarySuffix -> this image=null
      * ASTPrimarySuffix -> image = "method"
      * ASTPrimarySuffix -> ()
@@ -134,19 +134,19 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * OuterClass.InnerClass.this.a.method().method().method();
      * ASTPrimaryPrefix
      * ASTName image = "OuterClass.InnerClass"
-     * ASTPrimarySuffix -> this		image=null
-     * ASTPrimarySuffix -> a			image='a'
-     * ASTPrimarySuffix -> method		image='method'
-     * ASTPrimarySuffix -> ()			image=null
+     * ASTPrimarySuffix -> this image=null
+     * ASTPrimarySuffix -> a image='a'
+     * ASTPrimarySuffix -> method image='method'
+     * ASTPrimarySuffix -> () image=null
      * ASTArguments
-     * ASTPrimarySuffix -> method		image='method'
-     * ASTPrimarySuffix -> ()			image=null
+     * ASTPrimarySuffix -> method image='method'
+     * ASTPrimarySuffix -> () image=null
      * ASTArguments
-     * ASTPrimarySuffix -> method		image='method'
-     * ASTPrimarySuffix -> ()			image=null
+     * ASTPrimarySuffix -> method image='method'
+     * ASTPrimarySuffix -> () image=null
      * ASTArguments
      * <p/>
-     * 3..n:	Class.InnerClass[0].InnerClass[n].this.method();
+     * 3..n: Class.InnerClass[0].InnerClass[n].this.method();
      * ASTPrimaryPrefix
      * ASTName image = "Class[0]..InnerClass[n]"
      * ASTPrimarySuffix -> image=null
@@ -206,7 +206,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
 
         public List<String> getReferenceNames() {
-            return referenceNames;// new ArrayList(variableNames);
+            return referenceNames; // new ArrayList(variableNames);
         }
 
         public List<String> getQualifierNames() {
@@ -309,11 +309,12 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             // System.out.println("super first");
                             FIRSTNODE: {
                                 ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
-                                String name = child.getImage();// special case
+                                String name = child.getImage(); // special case
                                 if (i == 2) { // last named node = method name
                                     methodName = name;
-                                } else { // not the last named node so its only
-                                         // var name
+                                } else {
+                                    // not the last named node so its only
+                                    // var name
                                     varNames.add(name);
                                 }
                             }
@@ -323,18 +324,20 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                     ASTPrimarySuffix ps = (ASTPrimarySuffix) child;
                                     if (!ps.isArguments()) {
                                         String name = ((ASTPrimarySuffix) child).getImage();
-                                        if (x == i - 2) {// last node
+                                        if (x == i - 2) { // last node
                                             methodName = name;
-                                        } else {// not the last named node so
-                                                // its only var name
+                                        } else {
+                                            // not the last named node so
+                                            // its only var name
                                             varNames.add(name);
                                         }
                                     }
                                 }
                             }
-                        } else {// not super call
+                        } else {
+                            // not super call
                             FIRSTNODE: {
-                                if (thisIndex == 1) {// qualifiers in node 0
+                                if (thisIndex == 1) { // qualifiers in node 0
                                     ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
                                     String toParse = getNameFromPrefix(child);
                                     // System.out.println("parsing for
@@ -345,8 +348,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                     }
                                 }
                             }
-                            OTHERNODES: { // other methods called in this
-                                          // statement are grabbed here
+                            OTHERNODES: {
+                                // other methods called in this
+                                // statement are grabbed here
                                 // this is at 0, then no Qualifiers
                                 // this is at 1, the node 0 contains qualifiers
                                 for (int x = thisIndex + 1; x < i - 1; x++) {
@@ -366,11 +370,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 }
                             }
                         }
-                    } else { // if no this or super found, everything is method
-                             // name or variable
+                    } else {
+                        // if no this or super found, everything is method
+                        // name or variable
                         // System.out.println("no this found:");
-                        FIRSTNODE: { // variable names are in the prefix + the
-                                     // first method call [a.b.c.x()]
+                        FIRSTNODE: {
+                            // variable names are in the prefix + the
+                            // first method call [a.b.c.x()]
                             ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
                             String toParse = getNameFromPrefix(child);
                             // System.out.println("parsing for var names in : "
@@ -393,8 +399,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 }
                             }
                         }
-                        OTHERNODES: { // other methods called in this statement
-                                      // are grabbed here
+                        OTHERNODES: {
+                            // other methods called in this statement
+                            // are grabbed here
                             for (int x = 1; x < i - 1; x++) {
                                 ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
                                 if (!child.isArguments()) {
@@ -442,7 +449,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private int count = 0;
         private List<String> argumentTypes = new ArrayList<>();
 
-        public ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
+        ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
             this.eci = eci;
             List<ASTArguments> l = eci.findChildrenOfType(ASTArguments.class);
             if (!l.isEmpty()) {
@@ -475,7 +482,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private boolean dangerous;
         private String called;
 
-        public MethodHolder(ASTMethodDeclarator amd) {
+        MethodHolder(ASTMethodDeclarator amd) {
             this.amd = amd;
         }
 
@@ -506,7 +513,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private ConstructorInvocation ci;
         private boolean ciInitialized;
 
-        public ConstructorHolder(ASTConstructorDeclaration cd) {
+        ConstructorHolder(ASTConstructorDeclaration cd) {
             this.cd = cd;
         }
 
@@ -589,10 +596,10 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         public List<ConstructorInvocation> calledConstructors;
         public Map<ConstructorHolder, List<MethodInvocation>> allPrivateConstructorsOfClass;
 
-        public EvalPackage() {
+        EvalPackage() {
         }
 
-        public EvalPackage(String className) {
+        EvalPackage(String className) {
             this.className = className;
             // meths called from constructor
             this.calledMethods = new ArrayList<>();
@@ -605,7 +612,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static final class NullEvalPackage extends EvalPackage {
-        public NullEvalPackage() {
+        NullEvalPackage() {
             className = "";
             calledMethods = Collections.emptyList();
             allMethodsOfClass = Collections.emptyMap();
@@ -653,7 +660,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             // false when all methods have been evaluated
             while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) {
             } // NOPMD
-              // evaluate danger of constructors
+
+            // evaluate danger of constructors
             evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass,
                     getCurrentEvalPackage().allMethodsOfClass.keySet());
             while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) {
@@ -678,8 +686,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             // get each unsafe private constructor, and check if its called from
             // any non private constructors
             for (ConstructorHolder ch : getCurrentEvalPackage().allPrivateConstructorsOfClass.keySet()) {
-                if (ch.isDangerous()) { // if its dangerous check if its called
-                                        // from any non-private constructors
+                if (ch.isDangerous()) {
+                    // if its dangerous check if its called
+                    // from any non-private constructors
                     // System.out.println("visitClassDec Evaluating dangerous
                     // constructor with " +
                     // ch.getASTConstructorDeclaration().getParameterCount() + "
@@ -770,7 +779,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     // which represent same thing
                     // but were never evaluated,
                     // they need reevaluation
-                    MethodInvocation meth = calledMethsIter.next();// CCE
+                    MethodInvocation meth = calledMethsIter.next(); // CCE
                     String methName = meth.getName();
                     int methArgCount = meth.getArgumentCount();
                     // check each of the already evaluated methods: need to
@@ -806,7 +815,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * just process it till its done.
      */
     private boolean evaluateDangerOfConstructors2(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap) {
-        boolean found = false;// triggers on danger state change
+        boolean found = false; // triggers on danger state change
         // check each constructor in the class
         for (ConstructorHolder ch : classConstructorMap.keySet()) {
             ConstructorInvocation calledC = ch.getCalledConstructor();
@@ -926,7 +935,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             MethodHolder h = new MethodHolder(node);
             if (!parent.isAbstract() && !parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) {
                 // Skip abstract methods, have a separate rule for that
-                h.setDangerous();// this method is overridable
+                h.setDangerous(); // this method is overridable
                 ASTMethodDeclaration decl = node.getFirstParentOfType(ASTMethodDeclaration.class);
                 h.setCalledMethod(decl.getMethodName());
             }

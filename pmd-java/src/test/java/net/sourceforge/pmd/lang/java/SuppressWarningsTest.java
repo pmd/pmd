@@ -17,8 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
-import junit.framework.JUnit4TestAdapter;
-
 public class SuppressWarningsTest extends RuleTst {
 
     private static class BarRule extends AbstractJavaRule {
@@ -41,7 +39,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testClassLevelSuppression() throws Throwable {
+    public void testClassLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST1, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -52,7 +50,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testInheritedSuppression() throws Throwable {
+    public void testInheritedSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST3, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -60,7 +58,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testMethodLevelSuppression() throws Throwable {
+    public void testMethodLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST4, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -68,7 +66,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testConstructorLevelSuppression() throws Throwable {
+    public void testConstructorLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST5, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -76,7 +74,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testFieldLevelSuppression() throws Throwable {
+    public void testFieldLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST6, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -84,7 +82,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testParameterLevelSuppression() throws Throwable {
+    public void testParameterLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST7, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -92,7 +90,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testLocalVariableLevelSuppression() throws Throwable {
+    public void testLocalVariableLevelSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST8, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -100,7 +98,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSpecificSuppression() throws Throwable {
+    public void testSpecificSuppression() {
         Report rpt = new Report();
         runTestFromString(TEST9, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -108,7 +106,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSpecificSuppressionValue1() throws Throwable {
+    public void testSpecificSuppressionValue1() {
         Report rpt = new Report();
         runTestFromString(TEST9_VALUE1, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -116,7 +114,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSpecificSuppressionValue2() throws Throwable {
+    public void testSpecificSuppressionValue2() {
         Report rpt = new Report();
         runTestFromString(TEST9_VALUE2, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -124,7 +122,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSpecificSuppressionValue3() throws Throwable {
+    public void testSpecificSuppressionValue3() {
         Report rpt = new Report();
         runTestFromString(TEST9_VALUE3, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -132,7 +130,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSpecificSuppressionMulitpleValues1() throws Throwable {
+    public void testSpecificSuppressionMulitpleValues1() {
         Report rpt = new Report();
         runTestFromString(TEST9_MULTIPLE_VALUES_1, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -140,7 +138,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSpecificSuppressionMulitpleValues2() throws Throwable {
+    public void testSpecificSuppressionMulitpleValues2() {
         Report rpt = new Report();
         runTestFromString(TEST9_MULTIPLE_VALUES_2, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -148,7 +146,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testNoSuppressionBlank() throws Throwable {
+    public void testNoSuppressionBlank() {
         Report rpt = new Report();
         runTestFromString(TEST10, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -156,7 +154,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testNoSuppressionSomethingElseS() throws Throwable {
+    public void testNoSuppressionSomethingElseS() {
         Report rpt = new Report();
         runTestFromString(TEST11, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -164,7 +162,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSuppressAll() throws Throwable {
+    public void testSuppressAll() {
         Report rpt = new Report();
         runTestFromString(TEST12, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -172,7 +170,7 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSpecificSuppressionAtTopLevel() throws Throwable {
+    public void testSpecificSuppressionAtTopLevel() {
         Report rpt = new Report();
         runTestFromString(TEST13, new BarRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
@@ -234,8 +232,4 @@ public class SuppressWarningsTest extends RuleTst {
 
     private static final String TEST13 = "@SuppressWarnings(\"PMD.NoBar\")" + PMD.EOL + "public class Bar {" + PMD.EOL
             + "}";
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(SuppressWarningsTest.class);
-    }
 }

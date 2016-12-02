@@ -66,9 +66,8 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         this.dataFlow.createEndNode(node.getEndLine());
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("DataFlow is " + this.dataFlow.dump()); // @TODO SRT
-                                                                // Remove after
-                                                                // development
+            // TODO SRT Remove after development
+            LOGGER.fine("DataFlow is " + this.dataFlow.dump());
         }
         Linker linker = new Linker(dataFlowHandler, dataFlow.getBraceStack(), dataFlow.getContinueBreakReturnStack());
         try {

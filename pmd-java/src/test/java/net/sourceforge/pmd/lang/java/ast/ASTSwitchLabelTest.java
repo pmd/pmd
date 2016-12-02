@@ -14,13 +14,13 @@ import net.sourceforge.pmd.lang.java.ParserTst;
 public class ASTSwitchLabelTest extends ParserTst {
 
     @Test
-    public void testDefaultOff() throws Throwable {
+    public void testDefaultOff() {
         Set<ASTSwitchLabel> ops = getNodes(ASTSwitchLabel.class, TEST1);
         assertFalse(ops.iterator().next().isDefault());
     }
 
     @Test
-    public void testDefaultSet() throws Throwable {
+    public void testDefaultSet() {
         Set<ASTSwitchLabel> ops = getNodes(ASTSwitchLabel.class, TEST2);
         assertTrue(ops.iterator().next().isDefault());
     }
@@ -30,8 +30,4 @@ public class ASTSwitchLabelTest extends ParserTst {
 
     private static final String TEST2 = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  switch (x) {"
             + PMD.EOL + "   default: y = 2;" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTSwitchLabelTest.class);
-    }
 }

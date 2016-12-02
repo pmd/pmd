@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.jaxen.JaxenException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -26,54 +27,54 @@ import net.sourceforge.pmd.lang.java.ParserTst;
 public class SimpleNodeTest extends ParserTst {
 
     @Test
-    public void testMethodDiffLines() throws Throwable {
+    public void testMethodDiffLines() {
         Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
         verifyNode(methods.iterator().next(), 2, 9, 4, 2);
     }
 
     @Test
-    public void testMethodSameLine() throws Throwable {
+    public void testMethodSameLine() {
         Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
         verifyNode(methods.iterator().next(), 2, 9, 2, 21);
     }
 
     @Test
-    public void testNoLookahead() throws Throwable {
+    public void testNoLookahead() {
         String code = NO_LOOKAHEAD; // 1, 8 -> 1, 20
         Set<ASTClassOrInterfaceDeclaration> uCD = getNodes(ASTClassOrInterfaceDeclaration.class, code);
         verifyNode(uCD.iterator().next(), 1, 8, 1, 20);
     }
 
     @Test
-    public void testHasExplicitExtends() throws Throwable {
+    public void testHasExplicitExtends() {
         String code = HAS_EXPLICIT_EXTENDS;
         ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertTrue(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
     @Test
-    public void testNoExplicitExtends() throws Throwable {
+    public void testNoExplicitExtends() {
         String code = NO_EXPLICIT_EXTENDS;
         ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertFalse(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
     @Test
-    public void testHasExplicitImplements() throws Throwable {
+    public void testHasExplicitImplements() {
         String code = HAS_EXPLICIT_IMPLEMENTS;
         ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertTrue(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
     @Test
-    public void testNoExplicitImplements() throws Throwable {
+    public void testNoExplicitImplements() {
         String code = NO_EXPLICIT_IMPLEMENTS;
         ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertFalse(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
     @Test
-    public void testColumnsOnQualifiedName() throws Throwable {
+    public void testColumnsOnQualifiedName() {
         Set<ASTName> name = getNodes(ASTName.class, QUALIFIED_NAME);
         Iterator<ASTName> i = name.iterator();
         while (i.hasNext()) {
@@ -85,7 +86,7 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     @Test
-    public void testLineNumbersForNameSplitOverTwoLines() throws Throwable {
+    public void testLineNumbersForNameSplitOverTwoLines() {
         Set<ASTName> name = getNodes(ASTName.class, BROKEN_LINE_IN_NAME);
         Iterator<ASTName> i = name.iterator();
         while (i.hasNext()) {
@@ -100,7 +101,7 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     @Test
-    public void testLineNumbersAreSetOnAllSiblings() throws Throwable {
+    public void testLineNumbersAreSetOnAllSiblings() {
         for (ASTBlock b : getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
@@ -185,7 +186,7 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     @Test
-    public void testParentMethods() throws Throwable {
+    public void testParentMethods() {
         ASTCompilationUnit u = parseJava14(TEST1);
 
         ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
@@ -205,7 +206,7 @@ public class SimpleNodeTest extends ParserTst {
 
     @Ignore
     @Test
-    public void testContainsNoInner() throws Throwable {
+    public void testContainsNoInner() {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
         List<ASTFieldDeclaration> res = new ArrayList<>();
         c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
@@ -250,7 +251,7 @@ public class SimpleNodeTest extends ParserTst {
          */ }
 
     @Test
-    public void testContainsNoInnerWithAnonInner() throws Throwable {
+    public void testContainsNoInnerWithAnonInner() {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
         List<ASTFieldDeclaration> res = new ArrayList<>();
         c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
@@ -258,14 +259,14 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     @Test
-    public void testContainsChildOfType() throws Throwable {
+    public void testContainsChildOfType() {
         ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE)
                 .iterator().next();
         assertTrue(c.hasDescendantOfType(ASTFieldDeclaration.class));
     }
 
     @Test
-    public void testXPathNodeSelect() throws Throwable {
+    public void testXPathNodeSelect() throws JaxenException {
         ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
         List<Node> nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
@@ -276,7 +277,7 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     @Test
-    public void testUserData() throws Throwable {
+    public void testUserData() {
         ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, HAS_EXPLICIT_EXTENDS)
                 .iterator().next();
         assertNull(c.getUserData());
@@ -329,8 +330,4 @@ public class SimpleNodeTest extends ParserTst {
 
     private static final String TEST_XPATH = "public class Test {" + PMD.EOL + "  int x = 2;" + PMD.EOL
             + "  int y = 42;" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(SimpleNodeTest.class);
-    }
 }

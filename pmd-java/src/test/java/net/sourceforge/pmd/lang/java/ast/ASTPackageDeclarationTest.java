@@ -20,12 +20,9 @@ public class ASTPackageDeclarationTest extends ParserTst {
 
     /**
      * Regression test for bug 3524607.
-     * 
-     * @throws Throwable
-     *             any error
      */
     @Test
-    public void testPackageName() throws Throwable {
+    public void testPackageName() {
         Set<ASTPackageDeclaration> nodes = getNodes(ASTPackageDeclaration.class, PACKAGE_INFO_ANNOTATED);
 
         assertEquals(1, nodes.size());

@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 public class StatementAndBraceFinderTest extends ParserTst {
 
     @Test
-    public void testStatementExpressionParentChildLinks() throws Throwable {
+    public void testStatementExpressionParentChildLinks() {
         ASTStatementExpression se = getOrderedNodes(ASTStatementExpression.class, TEST1).get(0);
         ASTMethodDeclaration seParent = (ASTMethodDeclaration) se.getDataFlowNode().getParents().get(0).getNode();
         assertEquals(se, seParent.getDataFlowNode().getChildren().get(0).getNode());
@@ -33,7 +33,7 @@ public class StatementAndBraceFinderTest extends ParserTst {
     }
 
     @Test
-    public void testVariableDeclaratorParentChildLinks() throws Throwable {
+    public void testVariableDeclaratorParentChildLinks() {
         ASTVariableDeclarator vd = getOrderedNodes(ASTVariableDeclarator.class, TEST2).get(0);
         ASTMethodDeclaration vdParent = (ASTMethodDeclaration) vd.getDataFlowNode().getParents().get(0).getNode();
         assertEquals(vd, vdParent.getDataFlowNode().getChildren().get(0).getNode());
@@ -41,7 +41,7 @@ public class StatementAndBraceFinderTest extends ParserTst {
     }
 
     @Test
-    public void testIfStmtHasCorrectTypes() throws Throwable {
+    public void testIfStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST3).get(0);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.IF_EXPR));
@@ -49,7 +49,7 @@ public class StatementAndBraceFinderTest extends ParserTst {
     }
 
     @Test
-    public void testWhileStmtHasCorrectTypes() throws Throwable {
+    public void testWhileStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST4).get(0);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.WHILE_EXPR));
@@ -57,7 +57,7 @@ public class StatementAndBraceFinderTest extends ParserTst {
     }
 
     @Test
-    public void testForStmtHasCorrectTypes() throws Throwable {
+    public void testForStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST5).get(0);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.FOR_INIT));
@@ -92,8 +92,4 @@ public class StatementAndBraceFinderTest extends ParserTst {
 
     private static final String TEST5 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL
             + "  for (int i=0; i<10; i++) {}" + PMD.EOL + " }" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(StatementAndBraceFinderTest.class);
-    }
 }

@@ -52,9 +52,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTSwitchStatement.class);
     }
 
-    public static final int DEFAULT_BUFFER_SIZE = 16; // as specified in
-                                                      // StringBuffer &
-                                                      // StringBuilder
+    // as specified in StringBuffer and StringBuilder
+    public static final int DEFAULT_BUFFER_SIZE = 16;
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -185,7 +184,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         return anticipatedLength;
     }
 
-    private static final boolean isStringOrCharLiteral(ASTLiteral literal) {
+    private static boolean isStringOrCharLiteral(ASTLiteral literal) {
         return literal.isStringLiteral() || literal.isCharLiteral();
     }
 
@@ -274,8 +273,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 // since it's not taken into account
                 // anywhere. only count the extra 16
                 // characters
-                iConstructorLength = 14 + str.length(); // don't add the
-                                                        // constructor's length,
+                // don't add the constructor's length
+                iConstructorLength = 14 + str.length();
             } else if (literal.isIntLiteral() && str.startsWith("0x")) {
                 // bug 3516101 - the string could be a hex number
                 iConstructorLength = Integer.parseInt(str.substring(2), 16);

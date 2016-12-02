@@ -18,7 +18,7 @@ public class RegexpAcceptanceTest extends SimpleAggregatorTst {
     private static final String xPath = "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]";
 
     @Test
-    public void testSimple() throws Throwable {
+    public void testSimple() {
         Rule r = new XPathRule(xPath);
         r.setLanguage(LanguageRegistry.getLanguage(JavaLanguageModule.NAME));
         r.setMessage("");

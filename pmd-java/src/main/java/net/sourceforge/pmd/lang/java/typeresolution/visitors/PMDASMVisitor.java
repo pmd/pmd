@@ -193,7 +193,7 @@ public class PMDASMVisitor extends ClassVisitor {
 
         private PMDASMVisitor parent;
 
-        public PMDFieldVisitor(PMDASMVisitor visitor) {
+        PMDFieldVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             parent = visitor;
         }
@@ -216,7 +216,7 @@ public class PMDASMVisitor extends ClassVisitor {
     private static class PMDAnnotationVisitor extends AnnotationVisitor {
         private PMDASMVisitor parent;
 
-        public PMDAnnotationVisitor(PMDASMVisitor visitor) {
+        PMDAnnotationVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             parent = visitor;
         }
@@ -252,7 +252,7 @@ public class PMDASMVisitor extends ClassVisitor {
     private static class PMDSignatureVisitor extends SignatureVisitor {
         private PMDASMVisitor parent;
 
-        public PMDSignatureVisitor(PMDASMVisitor visitor) {
+        PMDSignatureVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             this.parent = visitor;
         }
@@ -336,7 +336,7 @@ public class PMDASMVisitor extends ClassVisitor {
     private static class PMDMethodVisitor extends MethodVisitor {
         private PMDASMVisitor parent;
 
-        public PMDMethodVisitor(PMDASMVisitor visitor) {
+        PMDMethodVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             parent = visitor;
         }

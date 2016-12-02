@@ -15,43 +15,43 @@ import net.sourceforge.pmd.lang.java.ParserTst;
 public class ASTLiteralTest extends ParserTst {
 
     @Test
-    public void testIsStringLiteral() throws Throwable {
+    public void testIsStringLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST1);
         assertTrue((literals.iterator().next()).isStringLiteral());
     }
 
     @Test
-    public void testIsNotStringLiteral() throws Throwable {
+    public void testIsNotStringLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST2);
         assertFalse((literals.iterator().next()).isStringLiteral());
     }
 
     @Test
-    public void testIsIntIntLiteral() throws Throwable {
+    public void testIsIntIntLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST3);
         assertTrue((literals.iterator().next()).isIntLiteral());
     }
 
     @Test
-    public void testIsIntLongLiteral() throws Throwable {
+    public void testIsIntLongLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST4);
         assertTrue((literals.iterator().next()).isLongLiteral());
     }
 
     @Test
-    public void testIsFloatFloatLiteral() throws Throwable {
+    public void testIsFloatFloatLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST5);
         assertTrue((literals.iterator().next()).isFloatLiteral());
     }
 
     @Test
-    public void testIsFloatDoubleLiteral() throws Throwable {
+    public void testIsFloatDoubleLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST6);
         assertTrue((literals.iterator().next()).isDoubleLiteral());
     }
 
     @Test
-    public void testIsCharLiteral() throws Throwable {
+    public void testIsCharLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST7);
         assertTrue((literals.iterator().next()).isCharLiteral());
     }

@@ -37,8 +37,8 @@ public abstract class Comment extends AbstractNode {
             if (tag == null) {
                 continue;
             }
-            kids.add(new JavadocElement(getBeginLine(), getBeginLine(), // TODO
-                                                                        // valid?
+            kids.add(new JavadocElement(getBeginLine(), getBeginLine(),
+                    // TODO valid?
                     entry.getValue() + 1, entry.getValue() + tag.label.length() + 1, tag));
         }
 

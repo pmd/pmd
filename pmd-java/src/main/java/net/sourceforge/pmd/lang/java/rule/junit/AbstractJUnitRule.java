@@ -54,7 +54,8 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 
-        isJUnit3Class = isJUnit4Class = false;
+        isJUnit3Class = false;
+        isJUnit4Class = false;
 
         isJUnit3Class = isJUnit3Class(node);
         if (!isJUnit3Class) {

@@ -20,13 +20,13 @@ import net.sourceforge.pmd.lang.java.ParserTst;
 public class ASTThrowStatementTest extends ParserTst {
 
     @Test
-    public final void testGetFirstASTNameImageNull() throws Throwable {
+    public final void testGetFirstASTNameImageNull() {
         ASTThrowStatement t = getNodes(ASTThrowStatement.class, NULL_NAME).iterator().next();
         assertNull(t.getFirstClassOrInterfaceTypeImage());
     }
 
     @Test
-    public final void testGetFirstASTNameImageNew() throws Throwable {
+    public final void testGetFirstASTNameImageNew() {
         ASTThrowStatement t = getNodes(ASTThrowStatement.class, OK_NAME).iterator().next();
         assertEquals("FooException", t.getFirstClassOrInterfaceTypeImage());
     }
@@ -36,8 +36,4 @@ public class ASTThrowStatementTest extends ParserTst {
 
     private static final String OK_NAME = "public class Test {" + PMD.EOL + "  void bar() {" + PMD.EOL
             + "   throw new FooException();" + PMD.EOL + "  }" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTThrowStatementTest.class);
-    }
 }

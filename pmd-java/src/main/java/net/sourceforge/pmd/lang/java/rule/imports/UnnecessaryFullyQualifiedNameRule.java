@@ -144,7 +144,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         private String importStr;
         private String importType;
 
-        public PotentialViolation(JavaNode node, String importStr, String importType) {
+        PotentialViolation(JavaNode node, String importStr, String importType) {
             this.node = node;
             this.importStr = importStr;
             this.importType = importType;

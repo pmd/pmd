@@ -112,7 +112,7 @@ public class JavaTokenizer implements Tokenizer {
         private boolean discardingAnnotations = false;
         private boolean ignoreAnnotations = false;
 
-        public TokenDiscarder(boolean ignoreAnnotations) {
+        TokenDiscarder(boolean ignoreAnnotations) {
             this.ignoreAnnotations = ignoreAnnotations;
         }
 
@@ -208,7 +208,7 @@ public class JavaTokenizer implements Tokenizer {
         private boolean storeNextIdentifier;
         private String prevIdentifier;
 
-        public ConstructorDetector(boolean ignoreIdentifiers) {
+        ConstructorDetector(boolean ignoreIdentifiers) {
             this.ignoreIdentifiers = ignoreIdentifiers;
 
             currentNestingLevel = 0;
@@ -253,6 +253,10 @@ public class JavaTokenizer implements Tokenizer {
                 }
                 currentNestingLevel--;
                 break;
+
+            default:
+                // other tokens are not relevant to process
+                break;
             }
         }
 
@@ -284,7 +288,7 @@ public class JavaTokenizer implements Tokenizer {
         int indentationLevel;
         String name;
 
-        public TypeDeclaration(int indentationLevel) {
+        TypeDeclaration(int indentationLevel) {
             this.indentationLevel = indentationLevel;
         }
     }

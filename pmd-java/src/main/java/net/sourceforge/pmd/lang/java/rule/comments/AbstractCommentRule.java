@@ -130,8 +130,8 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
         String[] lines = comment.split("\n");
         List<String> filteredLines = new ArrayList<>(lines.length);
 
-        for (String line : lines) {
-            line = line.trim();
+        for (String origLine : lines) {
+            String line = origLine.trim();
 
             if (line.endsWith("*/")) {
                 filteredLines.add(line.substring(0, line.length() - 2));

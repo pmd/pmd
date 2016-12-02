@@ -149,10 +149,8 @@ public class AcceptanceTest extends STBBaseTst {
         parseCode("public enum EsmDcVoltageSensor {\n" + "    A;\n" + "    void bar(int ... args) {\n"
                 + "        int idx;\n" + "        int startIdx;\n"
                 + "        String name = EsmDcVoltageSensor.valueOf((byte) (idx - startIdx)).getName();\n" + "    }\n"
-                + "    public EsmDCVoltageSensor valueOf(byte b) {\n" // that's
-                                                                      // the
-                                                                      // overloaded
-                                                                      // method
+                // that's the overloaded method
+                + "    public EsmDCVoltageSensor valueOf(byte b) {\n"
                 + "    }\n" + "}\n");
     }
 

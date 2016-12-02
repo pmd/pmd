@@ -49,6 +49,7 @@ public class CommentContentRule extends AbstractCommentRule {
             "Illegal terms or phrases", BAD_WORDS, 3.0f, '|');
 
     private static final Set<PropertyDescriptor<?>> NON_REGEX_PROPERTIES;
+
     static {
         NON_REGEX_PROPERTIES = new HashSet<>(1);
         NON_REGEX_PROPERTIES.add(CASE_SENSITIVE_DESCRIPTOR);

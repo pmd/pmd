@@ -23,7 +23,7 @@ public class FieldDeclTest extends ParserTst {
         return result + " int j;  }";
     }
 
-    public ASTFieldDeclaration getFieldDecl(String[] access) throws Throwable {
+    public ASTFieldDeclaration getFieldDecl(String[] access) {
         Set<ASTFieldDeclaration> fields = getNodes(ASTFieldDeclaration.class, makeAccessJavaCode(access));
 
         assertEquals("Wrong number of fields", 1, fields.size());
@@ -31,28 +31,28 @@ public class FieldDeclTest extends ParserTst {
     }
 
     @Test
-    public void testPublic() throws Throwable {
+    public void testPublic() {
         String[] access = { "public" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be public.", afd.isPublic());
     }
 
     @Test
-    public void testProtected() throws Throwable {
+    public void testProtected() {
         String[] access = { "protected" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be protected.", afd.isProtected());
     }
 
     @Test
-    public void testPrivate() throws Throwable {
+    public void testPrivate() {
         String[] access = { "private" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be private.", afd.isPrivate());
     }
 
     @Test
-    public void testStatic() throws Throwable {
+    public void testStatic() {
         String[] access = { "private", "static" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be static.", afd.isStatic());
@@ -60,7 +60,7 @@ public class FieldDeclTest extends ParserTst {
     }
 
     @Test
-    public void testFinal() throws Throwable {
+    public void testFinal() {
         String[] access = { "public", "final" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be final.", afd.isFinal());
@@ -68,7 +68,7 @@ public class FieldDeclTest extends ParserTst {
     }
 
     @Test
-    public void testTransient() throws Throwable {
+    public void testTransient() {
         String[] access = { "private", "transient" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be private.", afd.isPrivate());
@@ -76,14 +76,10 @@ public class FieldDeclTest extends ParserTst {
     }
 
     @Test
-    public void testVolatile() throws Throwable {
+    public void testVolatile() {
         String[] access = { "private", "volatile" };
         ASTFieldDeclaration afd = getFieldDecl(access);
         assertTrue("Expecting field to be volatile.", afd.isVolatile());
         assertTrue("Expecting field to be private.", afd.isPrivate());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(FieldDeclTest.class);
     }
 }

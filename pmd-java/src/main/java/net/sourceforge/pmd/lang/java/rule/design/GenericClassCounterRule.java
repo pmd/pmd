@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -32,13 +33,13 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  *     &lt;property name="nameMatch" description="a regex on which to match"
  *         value="^Abstract.*Bean*$,^*EJB*$"/>
  *     &lt;!-- An operand to refine match strategy TODO: Not implemented yet !!! -->
- *     &lt;property name"operand"	description=""
+ *     &lt;property name"operand" description=""
  *         value="and"/> <!-- possible values are and/or -->
  *     &lt;!-- Must be a full name to ensure type control !!! -->
  *     &lt;property name="typeMatch" description="a regex to match on implements/extends classname"
  *         value="javax.servlet.Filter"/>
  *     &lt;!-- Define after how many occurences one should log a violation -->
- *     &lt;property name="threshold"	description="Defines how many occurences are legal"
+ *     &lt;property name="threshold" description="Defines how many occurences are legal"
  *         value="2"/>
  *     &lt;!-- TODO: Add a parameter to allow "ignore" pattern based on name -->
  * </pre>

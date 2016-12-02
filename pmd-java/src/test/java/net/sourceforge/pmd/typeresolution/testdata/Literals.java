@@ -27,7 +27,7 @@ public class Literals {
     long long2 = 0x0F;
     long long3 = -007;
     long long4 = 0L;
-    long long5 = 0x0Fl;
+    long long5 = 0x0Fl; // SUPPRESS CHECKSTYLE this explicitly tests lowercase l
     long long6 = -007L;
     long long7 = 'a';
     float float1 = 0.0f;

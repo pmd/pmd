@@ -45,8 +45,8 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
 
         // is it part of a for-loop declaration?
         if (node.jjtGetParent() instanceof ASTForInit) {
-            return visit((AbstractJavaNode) node, data); // yes, those don't
-                                                         // count
+            // yes, those don't count
+            return visit((AbstractJavaNode) node, data);
         }
 
         String varName = varNameIn(node);

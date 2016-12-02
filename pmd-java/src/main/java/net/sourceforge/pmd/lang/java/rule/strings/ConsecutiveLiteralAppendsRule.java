@@ -204,8 +204,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         for (int i = 0; i < primary.jjtGetNumChildren(); i++) {
             Node child = primary.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0 && child.jjtGetChild(0) instanceof ASTAllocationExpression) {
-                continue; // skip the constructor call, that has already been
-                          // checked
+                // skip the constructor call, that has already been checked
+                continue;
             }
             if (child instanceof ASTPrimarySuffix) {
                 ASTPrimarySuffix suffix = (ASTPrimarySuffix) child;

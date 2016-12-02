@@ -27,6 +27,7 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
     private boolean classHasLombokAnnotation = false;
     private static final String LOMBOK_PACKAGE = "lombok";
     private static final Set<String> LOMBOK_ANNOTATIONS = new HashSet<>();
+
     static {
         LOMBOK_ANNOTATIONS.add("Data");
         LOMBOK_ANNOTATIONS.add("Getter");

@@ -22,6 +22,8 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRule {
                     && slash < s.length() - 1; slash = s.indexOf('\\', offset)) {
                 String escapeSequence = s.substring(slash + 1);
                 char first = escapeSequence.charAt(0);
+                offset = slash + 1; // next offset - after slash
+
                 if (isOctal(first)) {
                     if (escapeSequence.length() > 1) {
                         char second = escapeSequence.charAt(1);
@@ -70,10 +72,8 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRule {
                         }
                     }
                 } else if (first == '\\') {
-                    slash++;
+                    offset++;
                 }
-
-                offset = slash + 1;
             }
         }
 

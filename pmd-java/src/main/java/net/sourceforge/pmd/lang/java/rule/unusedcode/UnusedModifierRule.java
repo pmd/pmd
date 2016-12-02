@@ -14,8 +14,9 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class UnusedModifierRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (!node.isNested())
+        if (!node.isNested()) {
             return super.visit(node, data);
+        }
 
         ASTClassOrInterfaceDeclaration parentClassOrInterface = node
                 .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);

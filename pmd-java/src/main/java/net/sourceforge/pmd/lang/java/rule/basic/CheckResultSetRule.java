@@ -32,6 +32,7 @@ public class CheckResultSetRule extends AbstractJavaRule {
     private Map<String, Node> resultSetVariables = new HashMap<>();
 
     private static Set<String> methods = new HashSet<>();
+
     static {
         methods.add(".next");
         methods.add(".previous");

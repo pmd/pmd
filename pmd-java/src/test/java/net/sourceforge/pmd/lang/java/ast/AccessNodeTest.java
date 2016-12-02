@@ -26,7 +26,7 @@ public class AccessNodeTest extends ParserTst {
     }
 
     @Test
-    public void testModifiersOnClassDecl() throws Throwable {
+    public void testModifiersOnClassDecl() {
         Set<ASTClassOrInterfaceDeclaration> ops = getNodes(ASTClassOrInterfaceDeclaration.class, TEST1);
         assertTrue(ops.iterator().next().isPublic());
     }
@@ -133,9 +133,5 @@ public class AccessNodeTest extends ParserTst {
         node = new MyAccessNode(1);
         node.setProtected(true);
         assertFalse("Node set to protected, still package private.", node.isPackagePrivate());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(AccessNodeTest.class);
     }
 }

@@ -480,12 +480,8 @@ public class ClassScope extends AbstractJavaScope {
                     if (parameterTypes.size() > i) {
                         type = parameterTypes.get(i);
                     } else {
-                        type = parameterTypes.get(parameterTypes.size() - 1); // last
-                                                                              // parameter
-                                                                              // is
-                                                                              // the
-                                                                              // vararg
-                                                                              // type
+                        // last parameter is the vararg type
+                        type = parameterTypes.get(parameterTypes.size() - 1);
                     }
                 }
                 if (type != null && type.getType() == null) {

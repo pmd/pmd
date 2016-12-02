@@ -17,19 +17,19 @@ import net.sourceforge.pmd.lang.java.ParserTst;
 public class ASTAssignmentOperatorTest extends ParserTst {
 
     @Test
-    public void testSimpleAssignmentRecognized() throws Throwable {
+    public void testSimpleAssignmentRecognized() {
         Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST1);
         assertFalse((ops.iterator().next()).isCompound());
     }
 
     @Test
-    public void testCompoundAssignmentPlusRecognized() throws Throwable {
+    public void testCompoundAssignmentPlusRecognized() {
         Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST2);
         assertTrue((ops.iterator().next()).isCompound());
     }
 
     @Test
-    public void testCompoundAssignmentMultRecognized() throws Throwable {
+    public void testCompoundAssignmentMultRecognized() {
         Set<ASTAssignmentOperator> ops = super.getNodes(ASTAssignmentOperator.class, TEST3);
         assertTrue((ops.iterator().next()).isCompound());
     }
@@ -42,8 +42,4 @@ public class ASTAssignmentOperatorTest extends ParserTst {
 
     private static final String TEST3 = "public class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  int x;"
             + PMD.EOL + "  x *= 2;" + PMD.EOL + " }" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTAssignmentOperatorTest.class);
-    }
 }

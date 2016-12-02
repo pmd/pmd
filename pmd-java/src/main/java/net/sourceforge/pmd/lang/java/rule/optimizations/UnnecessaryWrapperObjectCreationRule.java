@@ -20,10 +20,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
 
     private static final Set<String> PREFIX_SET = CollectionUtil.asSet(new String[] { "Byte.valueOf", "Short.valueOf",
-        "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf" });
+        "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf", });
 
     private static final Set<String> SUFFIX_SET = CollectionUtil.asSet(new String[] { "toString", "byteValue",
-        "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue" });
+        "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue", });
 
     public Object visit(ASTPrimaryPrefix node, Object data) {
         if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {

@@ -19,7 +19,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
         private final int argumentsCount;
         private final String assertionName;
 
-        public AssertionCall(String assertionName, int argumentsCount) {
+        AssertionCall(String assertionName, int argumentsCount) {
             this.argumentsCount = argumentsCount;
             this.assertionName = assertionName;
         }

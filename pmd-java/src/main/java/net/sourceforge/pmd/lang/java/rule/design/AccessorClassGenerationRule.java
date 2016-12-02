@@ -61,7 +61,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
          */
         private List<String> classQualifyingNames;
 
-        public ClassData(String className) {
+        ClassData(String className) {
             this.className = className;
             this.privateConstructors = new ArrayList<>();
             this.instantiations = new ArrayList<>();
@@ -103,7 +103,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         private ASTAllocationExpression allocationExpression;
         private boolean isArray;
 
-        public AllocData(ASTAllocationExpression node, String aPackageName, List<String> classQualifyingNames) {
+        AllocData(ASTAllocationExpression node, String aPackageName, List<String> classQualifyingNames) {
             if (node.jjtGetChild(1) instanceof ASTArguments) {
                 ASTArguments aa = (ASTArguments) node.jjtGetChild(1);
                 argumentCount = aa.getArgumentCount();
@@ -194,7 +194,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         if (!node.isStatic()) { // See bug# 1807370
             String typeName = node.getImage();
             classDataList.clear();
-            setClassID(0);// first class
+            setClassID(0); // first class
             classDataList.add(getClassID(), new ClassData(typeName));
         }
         Object o = super.visit(node, data);
@@ -307,8 +307,9 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
     private static String stripString(String remove, String value) {
         String returnValue;
         int index = value.indexOf(remove);
-        if (index != -1) { // if the package name can start anywhere but 0
-                           // please inform the author because this will break
+        if (index != -1) {
+            // if the package name can start anywhere but 0
+            // please inform the author because this will break
             returnValue = value.substring(0, index) + value.substring(index + remove.length());
         } else {
             returnValue = value;

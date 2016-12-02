@@ -115,7 +115,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
-    public final void testOneParam() throws Throwable {
+    public final void testOneParam() {
         parseCode(ONE_PARAM);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
@@ -124,7 +124,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
-    public final void testTwoParams() throws Throwable {
+    public final void testTwoParams() {
         parseCode(TWO_PARAMS);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
@@ -133,7 +133,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
-    public final void testNoParams() throws Throwable {
+    public final void testNoParams() {
         parseCode(NO_PARAMS);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
@@ -142,7 +142,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
-    public final void testOneParamVararg() throws Throwable {
+    public final void testOneParamVararg() {
         parseCode15(ONE_PARAM_VARARG);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
@@ -151,7 +151,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
-    public final void testTwoParamsVararg() throws Throwable {
+    public final void testTwoParamsVararg() {
         parseCode15(TWO_PARAMS_VARARG);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<NameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getDeclarations();
@@ -160,7 +160,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
-    public final void testNestedClassDeclFound() throws Throwable {
+    public final void testNestedClassDeclFound() {
         parseCode(NESTED_CLASS_FOUND);
         ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         ClassScope c = (ClassScope) n.getScope();
@@ -170,7 +170,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
-    public final void testbuz() throws Throwable {
+    public final void testbuz() {
         parseCode(METH);
         // SymbolTableViewer st = new SymbolTableViewer();
         // acu.jjtAccept(st, null);

@@ -88,9 +88,9 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
     public Object visit(ASTMethodDeclaration node, Object data) {
         ASTClassOrInterfaceDeclaration classOrInterface = node
                 .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (classOrInterface != null && // Don't analyze enums, which cannot
-                                        // subclass clone()
-                (node.isFinal() || classOrInterface.isFinal())) {
+        if (classOrInterface != null
+                // Don't analyze enums, which cannot subclass clone()
+                && (node.isFinal() || classOrInterface.isFinal())) {
             if (node.findDescendantsOfType(ASTBlock.class).size() == 1) {
                 List<ASTBlockStatement> blocks = node.findDescendantsOfType(ASTBlockStatement.class);
                 if (blocks.size() == 1) {

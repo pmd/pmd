@@ -27,7 +27,7 @@ public class ParserCornersTest extends ParserTst {
      *             any error
      */
     @Test
-    public void testInnerOuterClass() throws Exception {
+    public void testInnerOuterClass() {
         parseJava17("/**\n" + " * @author azagorulko\n" + " *\n" + " */\n"
                 + "public class TestInnerClassCallsOuterParent {\n" + "\n" + "    public void test() {\n"
                 + "        new Runnable() {\n" + "            @Override\n" + "            public void run() {\n"
@@ -36,12 +36,12 @@ public class ParserCornersTest extends ParserTst {
     }
 
     @Test
-    public final void testGetFirstASTNameImageNull() throws Throwable {
+    public final void testGetFirstASTNameImageNull() {
         parseJava14(ABSTRACT_METHOD_LEVEL_CLASS_DECL);
     }
 
     @Test
-    public final void testCastLookaheadProblem() throws Throwable {
+    public final void testCastLookaheadProblem() {
         parseJava14(CAST_LOOKAHEAD_PROBLEM);
     }
 

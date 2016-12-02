@@ -26,7 +26,7 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
     }
 
     @Test
-    public void testTypeNameNode() throws Throwable {
+    public void testTypeNameNode() {
         ASTCompilationUnit acu = super.getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next();
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
@@ -35,7 +35,7 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
     }
 
     @Test
-    public void testAnnotations() throws Throwable {
+    public void testAnnotations() {
         ASTCompilationUnit acu = super.getNodes(ASTCompilationUnit.class, TEST_ANNOTATIONS).iterator().next();
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 

@@ -111,9 +111,10 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
 
         for (int i = 0; i < nullCompareNames.size(); i++) {
             if (expressionUsageNames.size() == i) {
-                return false; // The used expression is shorter than the null
-                              // compare expression (and we don't want to crash
-                              // below)
+                // The used expression is shorter than the null
+                // compare expression (and we don't want to crash
+                // below)
+                return false;
             }
 
             String nullCompareExpressionName = nullCompareNames.get(i);
@@ -123,8 +124,9 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
             // variable with a method call (ie. var.equals())
             if (!nullCompareExpressionName.equals(expressionUsageName)
                     && !expressionUsageName.startsWith(nullCompareExpressionName + ".")) {
-                return false; // Some other expression is being used after the
-                              // null compare
+                // Some other expression is being used after the
+                // null compare
+                return false; 
             }
         }
 
@@ -139,8 +141,8 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
         for (int i = 0; i < nullCompareVariable.jjtGetNumChildren(); i++) {
             Node child = nullCompareVariable.jjtGetChild(i);
 
-            if (child instanceof ASTName) { // Variable names and some method
-                                            // calls
+            if (child instanceof ASTName) {
+                // Variable names and some method calls
                 results.add(((ASTName) child).getImage());
             } else if (child instanceof ASTLiteral) { // Array arguments
                 String literalImage = ((ASTLiteral) child).getImage();
@@ -153,10 +155,8 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
                 if (StringUtil.isNotEmpty(name)) {
                     results.add(name);
                 }
-            } else if (child instanceof ASTClassOrInterfaceType) { // A class
-                                                                   // can be an
-                                                                   // argument
-                                                                   // too
+            } else if (child instanceof ASTClassOrInterfaceType) {
+                // A class can be an argument too
                 String name = ((ASTClassOrInterfaceType) child).getImage();
                 results.add(name);
             }

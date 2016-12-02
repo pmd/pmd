@@ -43,7 +43,7 @@ public class UselessAssignment extends AbstractJavaRule implements Executable {
         public int accessType;
         public DataFlowNode node;
 
-        public Usage(int accessType, DataFlowNode node) {
+        Usage(int accessType, DataFlowNode node) {
             this.accessType = accessType;
             this.node = node;
         }

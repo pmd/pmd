@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
@@ -49,7 +50,7 @@ public class XPathRuleTest extends RuleTst {
     }
 
     @Test
-    public void testPluginname() throws Throwable {
+    public void testPluginname() throws PMDException {
         rule.setXPath("//VariableDeclaratorId[string-length(@Image) < 3]");
         rule.setMessage("{0}");
         PMD p = new PMD();
@@ -65,7 +66,7 @@ public class XPathRuleTest extends RuleTst {
     }
 
     @Test
-    public void testVariables() throws Throwable {
+    public void testVariables() throws PMDException {
         rule.setXPath("//VariableDeclaratorId[@Image=$var]");
         rule.setMessage("Avoid vars");
         StringProperty varDescriptor = new StringProperty("var", "Test var", null, 1.0f);
@@ -173,8 +174,4 @@ public class XPathRuleTest extends RuleTst {
 
     private static final String TEST2 = "public class Foo {" + PMD.EOL + " int faddle;" + PMD.EOL + " int fiddle;"
             + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(XPathRuleTest.class);
-    }
 }
