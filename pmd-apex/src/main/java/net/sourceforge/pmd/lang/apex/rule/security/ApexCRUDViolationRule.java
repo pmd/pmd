@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
@@ -175,6 +176,16 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     }
 
+    @Override
+    public Object visit(final ASTReturnStatement node, Object data) {
+        final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
+        if (soql != null) {
+            checkForAccessibility(soql, data);
+        }
+
+        return data;
+    }
+
     private void addVariableToMapping(final String variableName, final String type) {
         varToTypeMapping.put(variableName, getSimpleType(type));
     }
@@ -322,12 +333,20 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkForAccessibility(final AbstractApexNode<?> node, Object data) {
+        boolean isGetter = false;
+        String returnType = null;
+
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
         if ((wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
                 || (wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod))) {
             return;
+        }
+
+        if (wrappingMethod != null) {
+            isGetter = isMethodAGetter(wrappingMethod);
+            returnType = getReturnType(wrappingMethod);
         }
 
         final ASTVariableDeclaration variableDecl = node.getFirstParentOfType(ASTVariableDeclaration.class);
@@ -337,7 +356,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             StringBuilder typeCheck = new StringBuilder().append(variableDecl.getNode().getDefiningType().getApexName())
                     .append(":").append(type);
 
-            validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
+            if (!isGetter) {
+                validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
+            }
 
         }
 
@@ -353,5 +374,26 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             }
 
         }
+
+        final ASTReturnStatement returnStatement = node.getFirstParentOfType(ASTReturnStatement.class);
+        if (returnStatement != null) {
+            if (!isGetter) {
+                validateCRUDCheckPresent(node, data, ANY, returnType == null ? "" : returnType);
+            }
+        }
+    }
+
+    private String getReturnType(final ASTMethod method) {
+        return new StringBuilder().append(method.getNode().getDefiningType().getApexName()).append(":")
+                .append(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).toString();
+    }
+
+    private boolean isMethodAGetter(final ASTMethod method) {
+        final Pattern p = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
+        final boolean startsWithGet = method.getNode().getMethodInfo().getCanonicalName().startsWith("get");
+        final boolean voidOrString = p
+                .matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
+
+        return (startsWithGet && !voidOrString);
     }
 }
