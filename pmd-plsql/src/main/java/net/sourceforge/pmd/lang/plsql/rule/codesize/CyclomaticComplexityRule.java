@@ -232,7 +232,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
                 addViolation(data, node, new String[] { "class", node.getImage(),
-                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
             }
         }
         LOGGER.exiting(CLASS_NAME, "visit(ASTPackageBody)");
@@ -253,7 +253,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
                 addViolation(data, node, new String[] { "class", node.getImage(),
-                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
             }
         }
         LOGGER.exiting(CLASS_NAME, "visit(ASTTriggerUnit)");
@@ -273,22 +273,17 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
         if (showMethodsComplexity) {
             // Entry methodEntry = entryStack.pop();
             int methodDecisionPoints = methodEntry.decisionPoints;
-            if (null != node.getFirstParentOfType(ASTPackageBody.class) // PackageBody
-                                                                        // (including
-                                                                        // Object
-                                                                        // Type
-                                                                        // Body)
-                    || null != node.getFirstParentOfType(ASTTriggerUnit.class) // Trigger
-                                                                               // of
-                                                                               // any
-                                                                               // form
-            // @TODO || null != node.getFirstParentOfType(ASTProgramUnit.class)
+            // PackageBody (including Object Type Body)
+            if (null != node.getFirstParentOfType(ASTPackageBody.class)
+                    // Trigger of any form
+                    || null != node.getFirstParentOfType(ASTTriggerUnit.class)
+            // TODO || null != node.getFirstParentOfType(ASTProgramUnit.class)
             // //Another Procedure
-            // @TODO || null != node.getFirstParentOfType(ASTTypeMethod.class)
+            // TODO || null != node.getFirstParentOfType(ASTTypeMethod.class)
             // //Another Type method
             ) {
                 /*
-                 * @TODO This does not cope with nested methods We need the
+                 * TODO This does not cope with nested methods We need the
                  * outer most ASTPackageBody ASTTriggerUni ASTProgramUnit
                  * ASTTypeMethod
                  * 
@@ -314,7 +309,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             if (methodEntry.decisionPoints >= reportLevel) {
                 addViolation(data, node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
-                            String.valueOf(methodEntry.decisionPoints) });
+                            String.valueOf(methodEntry.decisionPoints), });
             }
         }
         LOGGER.exiting(CLASS_NAME, "visit(ASTProgramUnit)");
@@ -334,14 +329,10 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
         if (showMethodsComplexity) {
             // Entry methodEntry = entryStack.pop();
             int methodDecisionPoints = methodEntry.decisionPoints;
-            if (null != node.getFirstParentOfType(ASTPackageBody.class) // PackageBody
-                                                                        // (including
-                                                                        // Object
-                                                                        // Type
-                                                                        // Body)
-            ) {
+            // PAckageBody (including Object Type Body)
+            if (null != node.getFirstParentOfType(ASTPackageBody.class)) {
                 /*
-                 * @TODO This does not cope with nested methods We need the
+                 * TODO This does not cope with nested methods We need the
                  * outer most ASTPackageBody
                  */
                 Entry classEntry = entryStack.peek();
@@ -365,7 +356,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             if (methodEntry.decisionPoints >= reportLevel) {
                 addViolation(data, node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
-                            String.valueOf(methodEntry.decisionPoints) });
+                            String.valueOf(methodEntry.decisionPoints), });
             }
         }
         LOGGER.exiting(CLASS_NAME, "visit(ASTTypeMethod)");
@@ -404,7 +395,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             if (methodEntry.decisionPoints >= reportLevel) {
                 addViolation(data, node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
-                            String.valueOf(methodEntry.decisionPoints) });
+                            String.valueOf(methodEntry.decisionPoints), });
             }
         }
         LOGGER.exiting(CLASS_NAME, "visit(ASTTriggerTimingPointSection)");

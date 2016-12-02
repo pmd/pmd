@@ -22,6 +22,6 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { { PLSQLLanguageModule.NAME, PLSQLLanguageModule.TERSE_NAME, "",
-            LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion() } });
+            LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion(), }, });
     }
 }

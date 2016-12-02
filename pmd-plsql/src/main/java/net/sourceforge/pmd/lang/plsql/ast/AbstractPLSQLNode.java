@@ -119,7 +119,7 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
      * @param image
      * @return
      */
-    static public String getCanonicalImage(String image) {
+    public static String getCanonicalImage(String image) {
         return PLSQLParser.canonicalName(image);
     }
 

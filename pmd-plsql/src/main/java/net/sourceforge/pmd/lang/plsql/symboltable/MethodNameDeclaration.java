@@ -140,9 +140,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     @Override
     public int hashCode() {
         try {
-            return node.hashCode(); // SRT node.getImage().hashCode() +
-                                    // ((ASTMethodDeclarator)
-                                    // node).getParameterCount();
+            // SRT node.getImage().hashCode() + ((ASTMethodDeclarator)node).getParameterCount();
+            return node.hashCode();
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest(

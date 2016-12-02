@@ -27,11 +27,9 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     /**
      * Java ASTStatementExpression equivalent is inferred as an Expression()
      * which has an UnlabelledStatement as a parent.
-     * 
-     * @throws Throwable
      */
     @Test
-    public void testExpressionParentChildLinks() throws Throwable {
+    public void testExpressionParentChildLinks() {
         ASTExpression ex = getOrderedNodes(ASTExpression.class, TEST1).get(0);
         DataFlowNode dfn = ex.getDataFlowNode();
         assertEquals(3, dfn.getLine());
@@ -48,7 +46,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testVariableOrConstantDeclaratorParentChildLinks() throws Throwable {
+    public void testVariableOrConstantDeclaratorParentChildLinks() {
         ASTVariableOrConstantDeclarator vd = getOrderedNodes(ASTVariableOrConstantDeclarator.class, TEST2).get(0);
         // ASTMethodDeclaration vdParent = (ASTMethodDeclaration)
         // ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getNode();
@@ -59,7 +57,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testIfStmtHasCorrectTypes() throws Throwable {
+    public void testIfStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST3).get(0);
         assertEquals(5, exp.getDataFlowNode().getFlow().size());
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
@@ -71,7 +69,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testWhileStmtHasCorrectTypes() throws Throwable {
+    public void testWhileStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST4).get(0);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.WHILE_EXPR));
@@ -80,7 +78,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testForStmtHasCorrectTypes() throws Throwable {
+    public void testForStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST5).get(0);
         DataFlowNode dfn = null;
         dfn = exp.getDataFlowNode().getFlow().get(0);
@@ -98,7 +96,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     }
 
     @Test
-    public void testSimpleCaseStmtHasCorrectTypes() throws Throwable {
+    public void testSimpleCaseStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST6).get(0);
         DataFlowNode dfn = null;
         dfn = exp.getDataFlowNode().getFlow().get(0);
@@ -124,7 +122,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
     }
 
     /*
-     * @Test public void testSearchedCaseStmtHasCorrectTypes() throws Throwable
+     * @Test public void testSearchedCaseStmtHasCorrectTypes()
      * { List<ASTStatement> statements = getOrderedNodes(ASTStatement.class,
      * TEST7); List<ASTExpression> expressions =
      * getOrderedNodes(ASTExpression.class, TEST7);
@@ -176,7 +174,7 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
      * assertTrue(dfn.isType(NodeType.SWITCH_END)); }
      */
     @Test
-    public void testLabelledStmtHasCorrectTypes() throws Throwable {
+    public void testLabelledStmtHasCorrectTypes() {
         ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST8).get(0);
         DataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertEquals(3, dfn.getLine());
@@ -223,8 +221,4 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
 
     private static final String TEST8 = "CREATE OR REPLACE PACKAGE BODY Foo AS" + PMD.EOL + " PROCEDURE bar IS BEGIN"
             + PMD.EOL + " <<label>> NULL;" + PMD.EOL + " END bar;" + PMD.EOL + "END foo;";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(StatementAndBraceFinderTest.class);
-    }
 }

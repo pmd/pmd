@@ -231,9 +231,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
                         + node.getBeginColumn());
             }
             dataFlow.createNewNode(node);
-        } else
-        // TODO what about throw stmts?
-        if (node.jjtGetParent() instanceof ASTIfStatement) {
+        } else if (node.jjtGetParent() instanceof ASTIfStatement) {
+            // TODO what about throw stmts?
             dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -510,11 +509,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
          * statement ( see visit(ASTExpression)), but a SEARCHED CASE statement
          * must have an atificial start node
          */
-        if (null == node.getFirstChildOfType(ASTExpression.class) // CASE is
-                                                                  // "searched
-                                                                  // case
-                                                                  // statement"
-        ) {
+        // CASE is "searched case statement"
+        if (null == node.getFirstChildOfType(ASTExpression.class)) {
             dataFlow.createNewNode(node);
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -576,11 +572,9 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
          */
         List<ASTElsifClause> elsifs = node.findChildrenOfType(ASTElsifClause.class);
         ASTElseClause elseClause = node.getFirstChildOfType(ASTElseClause.class);
-        if (null == elseClause && elsifs.isEmpty()) // The IF statements has no
-                                                    // ELSE or ELSIF statements
-                                                    // and this is the last
-                                                    // Statement
-        {
+        // The IF statements have no ELSE or ELSIF statements and this is the last
+        // statement
+        if (null == elseClause && elsifs.isEmpty()) {
             dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("pushOnStack (ASTIfClause - no ELSIFs) IF_LAST_STATEMENT_WITHOUT_ELSE: line "
