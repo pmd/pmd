@@ -1,7 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm.rule.basic;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vm.ast.ASTBlock;
@@ -11,8 +14,6 @@ import net.sourceforge.pmd.lang.vm.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTText;
 import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
 import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class CollapsibleIfStatementsRule extends AbstractVmRule {
 
@@ -44,24 +45,21 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
                         violationFound = false;
                         break;
                     }
-                }
-                else if (blockChild instanceof ASTIfStatement) {
+                } else if (blockChild instanceof ASTIfStatement) {
                     // check if it has an ELSE of ELSEIF
                     violationFound = !hasElseOrElseIf(blockChild);
                     if (!violationFound) {
                         break;
                     }
                     ifCounter++;
-                }
-                else if (blockChild instanceof ASTElseIfStatement) {
+                } else if (blockChild instanceof ASTElseIfStatement) {
                     // check if it has an ELSE of ELSEIF
                     violationFound = !hasElseOrElseIf(blockChild);
                     if (!violationFound) {
                         break;
                     }
                     ifCounter++;
-                }
-                else {
+                } else {
                     // any other node - not violation
                     violationFound = false;
                     break;
