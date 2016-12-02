@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.plsql;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
@@ -16,10 +17,10 @@ public class PLSQLLanguageModule extends BaseLanguageModule {
                 "sql", "trg",
                 "prc", "fnc",
                 "pld", // Oracle*Forms
-                "pls" ,"plh" ,"plb", // Packages
-                "pck" ,"pks" ,"pkh" ,"pkb", // Packages
-                "typ" ,"tyb", // Object Types
-                "tps" ,"tpb" /* Object Types*/);
+                "pls", "plh", "plb", // Packages
+                "pck", "pks", "pkh", "pkb", // Packages
+                "typ", "tyb", // Object Types
+                "tps", "tpb" /* Object Types */);
         addVersion("", new PLSQLHandler(), true);
     }
 

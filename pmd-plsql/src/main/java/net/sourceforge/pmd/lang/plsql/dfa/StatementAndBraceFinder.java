@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.dfa;
 
 import java.util.List;
@@ -112,8 +113,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("createNewNode ASTSqlStatement: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
+            LOGGER.finest(
+                    "createNewNode ASTSqlStatement: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
         }
         return super.visit(node, data);
     }
@@ -241,7 +242,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             }
         } else if (node.jjtGetParent() instanceof ASTElsifClause) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("parent (Elsif) IF_EXPR at  " + node.getBeginLine() + ", column " + node.getBeginColumn());
+                LOGGER.finest(
+                        "parent (Elsif) IF_EXPR at  " + node.getBeginLine() + ", column " + node.getBeginColumn());
             }
             dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
@@ -276,8 +278,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
                 }
             }
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("parent (ASTForStatement): line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
+                LOGGER.finest(
+                        "parent (ASTForStatement): line " + node.getBeginLine() + ", column " + node.getBeginColumn());
             }
         } else if (node.jjtGetParent() instanceof ASTLoopStatement) {
             dataFlow.createNewNode(node); // DO EXPR
@@ -296,8 +298,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.LABEL_STATEMENT, dataFlow.getLast());
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack LABEL_STATEMENT: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
+            LOGGER.finest(
+                    "pushOnStack LABEL_STATEMENT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
         }
         return super.visit(node, data);
     }
@@ -509,13 +511,15 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
          * must have an atificial start node
          */
         if (null == node.getFirstChildOfType(ASTExpression.class) // CASE is
-                                                                  // "searched case statement"
+                                                                  // "searched
+                                                                  // case
+                                                                  // statement"
         ) {
             dataFlow.createNewNode(node);
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack SWITCH_START: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
+                LOGGER.finest(
+                        "pushOnStack SWITCH_START: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
             }
         }
 
@@ -597,8 +601,9 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
                     if (lastElsifClause.equals(elsifClause) && elseClause == null) {
                         dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
                         if (LOGGER.isLoggable(Level.FINEST)) {
-                            LOGGER.finest("pushOnStack (ASTIfClause - with ELSIFs) IF_LAST_STATEMENT_WITHOUT_ELSE: line "
-                                    + node.getBeginLine() + ", column " + node.getBeginColumn());
+                            LOGGER.finest(
+                                    "pushOnStack (ASTIfClause - with ELSIFs) IF_LAST_STATEMENT_WITHOUT_ELSE: line "
+                                            + node.getBeginLine() + ", column " + node.getBeginColumn());
                         }
                     }
 
@@ -744,8 +749,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack RETURN_STATEMENT: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
+            LOGGER.finest(
+                    "pushOnStack RETURN_STATEMENT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
         }
         return super.visit(node, data);
     }

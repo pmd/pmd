@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.logging.Level;
@@ -83,7 +84,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
         // compare parameter count - this catches the case where there are no
         // params, too
-        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
+        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node)
+                .getParameterCount()) {
             return false;
         }
 
@@ -143,9 +145,9 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
                                     // node).getParameterCount();
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("MethodNameDeclaration problem for " + node + " of class "
-                        + node.getClass().getCanonicalName() + " => " + node.getBeginLine() + "/"
-                        + node.getBeginColumn());
+                LOGGER.finest(
+                        "MethodNameDeclaration problem for " + node + " of class " + node.getClass().getCanonicalName()
+                                + " => " + node.getBeginLine() + "/" + node.getBeginColumn());
             }
             // @TODO SRT restore the thrown exception - throw e;
             return 0;

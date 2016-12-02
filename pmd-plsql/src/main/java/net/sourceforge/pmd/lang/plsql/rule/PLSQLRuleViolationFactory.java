@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.rule;
 
 import net.sourceforge.pmd.Rule;
@@ -20,14 +21,13 @@ public final class PLSQLRuleViolationFactory extends AbstractRuleViolationFactor
 
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-    	return new ParametricRuleViolation<>(rule, ruleContext, node, message);
+        return new ParametricRuleViolation<>(rule, ruleContext, node, message);
     }
-    
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {
+
+    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
+            int beginLine, int endLine) {
         ParametricRuleViolation<Node> violation = new ParametricRuleViolation<>(rule, ruleContext, node, message);
         violation.setLines(beginLine, endLine);
-		return violation;
-	}
+        return violation;
+    }
 }
-
-

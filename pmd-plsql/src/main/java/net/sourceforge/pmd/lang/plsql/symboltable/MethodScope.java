@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.HashSet;
@@ -33,7 +34,7 @@ public class MethodScope extends AbstractScope {
 
     @Override
     public Set<NameDeclaration> addNameOccurrence(NameOccurrence occ) {
-        PLSQLNameOccurrence occurrence = (PLSQLNameOccurrence)occ;
+        PLSQLNameOccurrence occurrence = (PLSQLNameOccurrence) occ;
         Set<NameDeclaration> declarations = findVariableHere(occurrence);
         if (!declarations.isEmpty() && !occurrence.isThisOrSuper()) {
             for (NameDeclaration decl : declarations) {
@@ -69,7 +70,7 @@ public class MethodScope extends AbstractScope {
     }
 
     public String getName() {
-        return ( (AbstractPLSQLNode) node.jjtGetChild(1) ) .getCanonicalImage();
+        return ((AbstractPLSQLNode) node.jjtGetChild(1)).getCanonicalImage();
     }
 
     public String toString() {
