@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,8 @@ import net.sourceforge.pmd.lang.java.symboltable.ScopeAndDeclarationFinder;
  */
 public class JavaRuleViolationTest {
     /**
-     * Verifies that {@link JavaRuleViolation} sets the variable name for an {@link ASTFormalParameter} node.
+     * Verifies that {@link JavaRuleViolation} sets the variable name for an
+     * {@link ASTFormalParameter} node.
      */
     @Test
     public void testASTFormalParameterVariableName() {
@@ -49,6 +51,7 @@ public class JavaRuleViolationTest {
 
     /**
      * Tests that the method name is taken correctly from the given node.
+     * 
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1250/">#1250</a>
      */
     @Test
@@ -61,8 +64,9 @@ public class JavaRuleViolationTest {
     }
 
     /**
-     * Tests that the class name is taken correctly, even if the node is outside of a class scope,
-     * e.g. a import declaration.
+     * Tests that the class name is taken correctly, even if the node is outside
+     * of a class scope, e.g. a import declaration.
+     * 
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1529/">#1529</a>
      */
     @Test

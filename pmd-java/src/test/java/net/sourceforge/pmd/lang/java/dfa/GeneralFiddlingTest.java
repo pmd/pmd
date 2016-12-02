@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +21,9 @@ public class GeneralFiddlingTest extends ParserTst {
 
     /**
      * Unit test for https://sourceforge.net/p/pmd/bugs/1325/
-     * @throws Throwable any error
+     * 
+     * @throws Throwable
+     *             any error
      */
     @Test
     public void innerClassShouldWork() throws Throwable {
@@ -44,13 +47,13 @@ public class GeneralFiddlingTest extends ParserTst {
         assertEquals("Definition(x)", String.valueOf(f.get(4).getVariableAccess().get(0)));
         assertEquals("Undefinition(x)", String.valueOf(f.get(5).getVariableAccess().get(0)));
 
-        //        for (DataFlowNode dfan : f) {
-        //            System.out.println("Flow starting on line " + dfan.getLine());
-        //            List<VariableAccess> va = dfan.getVariableAccess();
-        //            for (VariableAccess o : va) {
-        //                System.out.println("  variable: " + o);
-        //            }
-        //        }
+        // for (DataFlowNode dfan : f) {
+        // System.out.println("Flow starting on line " + dfan.getLine());
+        // List<VariableAccess> va = dfan.getVariableAccess();
+        // for (VariableAccess o : va) {
+        // System.out.println(" variable: " + o);
+        // }
+        // }
     }
 
     private static final String TEST1 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  int x = 2;" + PMD.EOL

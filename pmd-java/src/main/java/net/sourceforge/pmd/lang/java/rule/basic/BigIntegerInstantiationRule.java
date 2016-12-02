@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.math.BigDecimal;
@@ -19,8 +20,9 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
- * Rule that marks instantiations of new {@link BigInteger} or {@link BigDecimal} objects,
- * when there is a well-known constant available, such as {@link BigInteger#ZERO}.
+ * Rule that marks instantiations of new {@link BigInteger} or
+ * {@link BigDecimal} objects, when there is a well-known constant available,
+ * such as {@link BigInteger#ZERO}.
  */
 public class BigIntegerInstantiationRule extends AbstractJavaRule {
 

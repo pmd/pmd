@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -140,7 +141,9 @@ public class ParserCornersTest extends ParserTst {
     }
 
     /**
-     * This triggered bug #1484 UnusedLocalVariable - false positive - parenthesis
+     * This triggered bug #1484 UnusedLocalVariable - false positive -
+     * parenthesis
+     * 
      * @throws Exception
      */
     @Test

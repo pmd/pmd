@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.comments;
 
 import java.util.HashSet;
@@ -21,7 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
- * Check for Methods, Fields and Nested Classes that have a default access modifier
+ * Check for Methods, Fields and Nested Classes that have a default access
+ * modifier
  *
  * @author Damián Techeira
  */
@@ -89,9 +91,11 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
                 .getParentsOfType(ASTClassOrInterfaceDeclaration.class);
         // ignore if is a Interface
         return (!parentClassOrInterface.isEmpty() && !parentClassOrInterface.get(0).isInterface())
-                // check if the field/method/nested class has a default access modifier
+                // check if the field/method/nested class has a default access
+                // modifier
                 && decl.isPackagePrivate()
-                // if is a default access modifier check if there is a comment in this line
+                // if is a default access modifier check if there is a comment
+                // in this line
                 && !interestingLineNumberComments.contains(decl.getBeginLine())
                 // that it is not annotated with @VisibleForTesting
                 && hasNoVisibleForTestingAnnotation(decl);

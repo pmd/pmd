@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.coupling;
 
 import java.util.ArrayList;
@@ -32,14 +33,17 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
- * This rule can detect possible violations of the Law of Demeter.
- * The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce
- * coupling between classes or objects.
+ * This rule can detect possible violations of the Law of Demeter. The Law of
+ * Demeter is a simple rule, that says "only talk to friends". It helps to
+ * reduce coupling between classes or objects.
  * <p>
  * See:
  * <ul>
- *   <li>Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer. From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October 1999.</li>
- *   <li>K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented programs. Software, IEEE, 6(5):38–48, 1989.</li>
+ * <li>Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer.
+ * From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October
+ * 1999.</li>
+ * <li>K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented
+ * programs. Software, IEEE, 6(5):38–48, 1989.</li>
  * </ul>
  * 
  * @since 5.0
@@ -51,7 +55,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
     private static final String REASON_STATIC_ACCESS = "static property access";
 
     /**
-     * That's a new method. We are going to check each method call inside the method.
+     * That's a new method. We are going to check each method call inside the
+     * method.
+     * 
      * @return <code>null</code>.
      */
     @Override
@@ -98,7 +104,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private String violationReason;
 
         /**
-         * Create a new method call for the prefix expression part of the primary expression.
+         * Create a new method call for the prefix expression part of the
+         * primary expression.
          */
         private MethodCall(ASTPrimaryExpression expression, ASTPrimaryPrefix prefix) {
             this.expression = expression;
@@ -108,8 +115,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
 
         /**
-         * Create a new method call for the given suffix expression part of the primary expression.
-         * This is used for method chains.
+         * Create a new method call for the given suffix expression part of the
+         * primary expression. This is used for method chains.
          */
         private MethodCall(ASTPrimaryExpression expression, ASTPrimarySuffix suffix) {
             this.expression = expression;
@@ -119,9 +126,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
 
         /**
-         * Factory method to convert a given primary expression into MethodCalls.
-         * In case the primary expression represents a method chain call, then multiple
-         * MethodCalls are returned.
+         * Factory method to convert a given primary expression into
+         * MethodCalls. In case the primary expression represents a method chain
+         * call, then multiple MethodCalls are returned.
          * 
          * @return a list of MethodCalls, might be empty.
          */
@@ -276,7 +283,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             } else if (baseName.contains(".") && !baseName.startsWith("System.")) {
                 baseScope = SCOPE_STATIC_CHAIN;
             } else {
-                // everything else is no violation - probably a static method call.
+                // everything else is no violation - probably a static method
+                // call.
                 baseScope = null;
             }
         }
@@ -389,8 +397,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
     /**
      * Stores the assignment of a variable and whether the variable's value is
-     * allocated locally (new constructor call). The class is comparable, so that
-     * the last assignment can be determined.
+     * allocated locally (new constructor call). The class is comparable, so
+     * that the last assignment can be determined.
      */
     private static class Assignment implements Comparable<Assignment> {
         private int line;

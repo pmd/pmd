@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.imports;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         String name = node.getImage();
         matches.clear();
 
-        //  Find all "matching" import declarations
+        // Find all "matching" import declarations
         for (ASTImportDeclaration importDeclaration : imports) {
             if (importDeclaration.isImportOnDemand()) {
                 // On demand import exactly matches the package of the type
@@ -96,19 +97,19 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         // direct static import, but also a static method on a class import?
         // For example:
         //
-        //    import java.util.Arrays;
-        //    import static java.util.Arrays.asList;
-        //    static {
-        //       List list1 = Arrays.asList("foo");  // Array class name not needed!
-        //       List list2 = asList("foo"); // Preferred, used static import
-        //    }
+        // import java.util.Arrays;
+        // import static java.util.Arrays.asList;
+        // static {
+        // List list1 = Arrays.asList("foo"); // Array class name not needed!
+        // List list2 = asList("foo"); // Preferred, used static import
+        // }
         if (matches.isEmpty() && name.indexOf('.') >= 0) {
             for (ASTImportDeclaration importDeclaration : imports) {
                 if (importDeclaration.isStatic()) {
                     String[] importParts = importDeclaration.getImportedName().split("\\.");
                     String[] nameParts = name.split("\\.");
                     if (importDeclaration.isImportOnDemand()) {
-                        //  Name class part matches class part of static import?
+                        // Name class part matches class part of static import?
                         if (nameParts[nameParts.length - 2].equals(importParts[importParts.length - 1])) {
                             matches.add(importDeclaration);
                         }

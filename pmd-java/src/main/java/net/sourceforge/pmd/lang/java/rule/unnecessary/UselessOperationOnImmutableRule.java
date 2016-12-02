@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unnecessary;
 
 import java.util.HashMap;
@@ -17,9 +18,9 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * An operation on an Immutable object (String, BigDecimal or BigInteger) won't change
- * the object itself. The result of the operation is a new object. Therefore,
- * ignoring the operation result is an error.
+ * An operation on an Immutable object (String, BigDecimal or BigInteger) won't
+ * change the object itself. The result of the operation is a new object.
+ * Therefore, ignoring the operation result is an error.
  */
 public class UselessOperationOnImmutableRule extends AbstractJavaRule {
 
@@ -28,23 +29,23 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
      */
     private static final Set<String> BIG_DECIMAL_METHODS = CollectionUtil
             .asSet(new String[] { ".abs", ".add", ".divide", ".divideToIntegralValue", ".max", ".min", ".movePointLeft",
-                    ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round",
-                    ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp" });
+                ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round",
+                ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp" });
 
     /**
      * These are the BigInteger methods which are immutable
      */
     private static final Set<String> BIG_INTEGER_METHODS = CollectionUtil
             .asSet(new String[] { ".abs", ".add", ".and", ".andNot", ".clearBit", ".divide", ".flipBit", ".gcd", ".max",
-                    ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not",
-                    ".or", ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor" });
+                ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not", ".or",
+                ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor" });
 
     /**
      * These are the String methods which are immutable
      */
     private static final Set<String> STRING_METHODS = CollectionUtil
             .asSet(new String[] { ".concat", ".intern", ".replace", ".replaceAll", ".replaceFirst", ".substring",
-                    ".toLowerCase", ".toString", ".toUpperCase", ".trim" });
+                ".toLowerCase", ".toString", ".toUpperCase", ".trim" });
 
     /**
      * These are the classes that the rule can apply to
@@ -68,8 +69,10 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
         }
         String variableName = var.getImage();
         for (NameOccurrence no : var.getUsages()) {
-            // FIXME - getUsages will return everything with the same name as the variable,
-            // see JUnit test, case 6. Changing to Node below, revisit when getUsages is fixed
+            // FIXME - getUsages will return everything with the same name as
+            // the variable,
+            // see JUnit test, case 6. Changing to Node below, revisit when
+            // getUsages is fixed
             Node sn = no.getLocation();
             Node primaryExpression = sn.jjtGetParent().jjtGetParent();
             Class<? extends Node> parentClass = primaryExpression.jjtGetParent().getClass();

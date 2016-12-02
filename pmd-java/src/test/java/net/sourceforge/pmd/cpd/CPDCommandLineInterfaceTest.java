@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
@@ -82,7 +83,9 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
 
     /**
      * See: https://sourceforge.net/p/pmd/bugs/1178/
-     * @throws IOException any error
+     * 
+     * @throws IOException
+     *             any error
      */
     @Test
     public void testBrokenAndValidFile() throws IOException {

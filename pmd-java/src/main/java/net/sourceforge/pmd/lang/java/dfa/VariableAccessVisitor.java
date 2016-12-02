@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.dfa;
 
 import java.util.ArrayList;
@@ -25,8 +26,9 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- *         Searches for special nodes and computes based on the sequence, the type of
- *         access of a variable.
+ * Searches for special nodes and computes based on the sequence, the type of
+ * access of a variable.
+ * 
  * @since Created on 14.07.2004
  * @author raik, Sven Jacob
  */
@@ -111,9 +113,13 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     /**
      * Adds a VariableAccess to a dataflow node.
-     * @param node location of the access of a variable
-     * @param va variable access to add
-     * @param flow dataflownodes that can contain the node.
+     * 
+     * @param node
+     *            location of the access of a variable
+     * @param va
+     *            variable access to add
+     * @param flow
+     *            dataflownodes that can contain the node.
      */
     private void addVariableAccess(Node node, VariableAccess va, List<DataFlowNode> flow) {
         // backwards to find the right inode (not a method declaration)

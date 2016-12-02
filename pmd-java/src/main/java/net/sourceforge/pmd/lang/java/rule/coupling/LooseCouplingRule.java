@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.coupling;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -18,12 +19,15 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class LooseCouplingRule extends AbstractJavaRule {
 
     // TODO - these should be brought in via external properties
-    //    private static final Set implClassNames = CollectionUtil.asSet( new Object[] {
-    //    	"ArrayList", "HashSet", "HashMap", "LinkedHashMap", "LinkedHashSet", "TreeSet", "TreeMap", "Vector",
-    //    	"java.util.ArrayList", "java.util.HashSet", "java.util.HashMap",
-    //    	"java.util.LinkedHashMap", "java.util.LinkedHashSet", "java.util.TreeSet",
-    //    	"java.util.TreeMap", "java.util.Vector" 
-    //    	});
+    // private static final Set implClassNames = CollectionUtil.asSet( new
+    // Object[] {
+    // "ArrayList", "HashSet", "HashMap", "LinkedHashMap", "LinkedHashSet",
+    // "TreeSet", "TreeMap", "Vector",
+    // "java.util.ArrayList", "java.util.HashSet", "java.util.HashMap",
+    // "java.util.LinkedHashMap", "java.util.LinkedHashSet",
+    // "java.util.TreeSet",
+    // "java.util.TreeMap", "java.util.Vector"
+    // });
 
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         if (methodHasOverride(node)) {

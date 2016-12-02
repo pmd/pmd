@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import static org.junit.Assert.assertEquals;
@@ -171,8 +172,8 @@ public class ClassScopeTest extends STBBaseTst {
     @Test
     public final void testbuz() throws Throwable {
         parseCode(METH);
-        //SymbolTableViewer st = new SymbolTableViewer();
-        //acu.jjtAccept(st, null);
+        // SymbolTableViewer st = new SymbolTableViewer();
+        // acu.jjtAccept(st, null);
     }
 
     @Test
@@ -225,10 +226,11 @@ public class ClassScopeTest extends STBBaseTst {
         for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : m.entrySet()) {
             assertEquals("baz", entry.getKey().getImage());
             if (entry.getKey().getNode().getBeginLine() == 2) {
-                // this is the public method declaration - it is not used anywhere
+                // this is the public method declaration - it is not used
+                // anywhere
                 assertEquals(0, entry.getValue().size());
             } else if (entry.getKey().getNode().getBeginLine() == 5) {
-                // this is the private (overloaded) method 
+                // this is the private (overloaded) method
                 assertEquals(1, entry.getValue().size());
                 // it's used once in line 3
                 assertEquals(3, entry.getValue().get(0).getLocation().getBeginLine());

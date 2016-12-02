@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java;
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +24,8 @@ public class SuppressWarningsTest extends RuleTst {
     private static class BarRule extends AbstractJavaRule {
         @Override
         public Object visit(ASTCompilationUnit cu, Object ctx) {
-            // Convoluted rule to make sure the violation is reported for the ASTCompilationUnit node
+            // Convoluted rule to make sure the violation is reported for the
+            // ASTCompilationUnit node
             for (ASTClassOrInterfaceDeclaration c : cu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class)) {
                 if (c.getImage().equalsIgnoreCase("bar")) {
                     addViolation(ctx, cu);

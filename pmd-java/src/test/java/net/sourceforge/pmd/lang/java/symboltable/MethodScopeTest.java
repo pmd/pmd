@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import static org.junit.Assert.assertEquals;

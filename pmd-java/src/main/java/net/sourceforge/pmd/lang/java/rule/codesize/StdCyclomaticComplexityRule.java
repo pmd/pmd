@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import java.util.ArrayDeque;
@@ -27,10 +28,10 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
- * Implements the standard cyclomatic complexity rule 
+ * Implements the standard cyclomatic complexity rule
  * <p>
- * Standard rules: +1 for each decision point, including case statements
- * but not including boolean operators unlike CyclomaticComplexityRule.
+ * Standard rules: +1 for each decision point, including case statements but not
+ * including boolean operators unlike CyclomaticComplexityRule.
  * 
  * @author Alan Hohn, based on work by Donald A. Leckie
  * 
@@ -128,7 +129,8 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
         for (int n = 0; n < lastIndex; n++) {
             Node childNode = node.jjtGetChild(n);
             if (childNode instanceof ASTSwitchLabel) {
-                // default is generally not considered a decision (same as "else")
+                // default is generally not considered a decision (same as
+                // "else")
                 ASTSwitchLabel sl = (ASTSwitchLabel) childNode;
                 if (!sl.isDefault()) {
                     childNode = node.jjtGetChild(n + 1);
@@ -170,7 +172,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
                 addViolation(data, node, new String[] { "class", node.getImage(),
-                        classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')' });
             }
         }
         return data;
@@ -203,7 +205,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
             if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
                 addViolation(data, node,
                         new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
-                                String.valueOf(methodEntry.decisionPoints) });
+                            String.valueOf(methodEntry.decisionPoints) });
             }
         }
         return data;
@@ -216,7 +218,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
         Entry classEntry = entryStack.pop();
         if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
             addViolation(data, node, new String[] { "class", node.getImage(),
-                    classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')' });
+                classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')' });
         }
         return data;
     }
@@ -236,7 +238,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
             }
             if (showMethodsComplexity && constructorEntry.decisionPoints >= reportLevel) {
                 addViolation(data, node, new String[] { "constructor", classEntry.node.getImage(),
-                        String.valueOf(constructorDecisionPointCount) });
+                    String.valueOf(constructorDecisionPointCount) });
             }
         }
         return data;

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -14,7 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 /**
  * @author Donald A. Leckie,
  *
- * @version $Revision: 5956 $, $Date: 2008-04-04 04:59:25 -0500 (Fri, 04 Apr 2008) $
+ * @version $Revision: 5956 $, $Date: 2008-04-04 04:59:25 -0500 (Fri, 04 Apr
+ *          2008) $
  * @since January 14, 2003
  */
 public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {

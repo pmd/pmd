@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -77,9 +78,11 @@ public class ImmutableFieldRule extends AbstractJavaRule {
                     if (inLoopOrTry(node)) {
                         continue;
                     }
-                    //Check for assigns in if-statements, which can depend on constructor
-                    //args or other runtime knowledge and can be a valid reason to instantiate
-                    //in one constructor only
+                    // Check for assigns in if-statements, which can depend on
+                    // constructor
+                    // args or other runtime knowledge and can be a valid reason
+                    // to instantiate
+                    // in one constructor only
                     if (node.getFirstParentOfType(ASTIfStatement.class) != null) {
                         methodInitCount++;
                     }

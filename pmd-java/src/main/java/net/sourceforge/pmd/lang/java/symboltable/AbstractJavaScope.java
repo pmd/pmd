@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Set;
@@ -12,7 +13,10 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 /**
  * Provides the basic java scope implementation
  * <p/>
- * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-6.html#jls-6.3">JLS 6.3</a>
+ * 
+ * @see <a href=
+ *      "http://docs.oracle.com/javase/specs/jls/se7/html/jls-6.html#jls-6.3">JLS
+ *      6.3</a>
  */
 public abstract class AbstractJavaScope extends AbstractScope {
 

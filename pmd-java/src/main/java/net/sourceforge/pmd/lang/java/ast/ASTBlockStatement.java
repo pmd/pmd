@@ -22,10 +22,10 @@ public class ASTBlockStatement extends AbstractJavaNode {
     }
 
     /**
-     * Tells if this BlockStatement is an allocation statement.
-     * This is done by
+     * Tells if this BlockStatement is an allocation statement. This is done by
      *
-     * @return the result of containsDescendantOfType(ASTAllocationExpression.class)
+     * @return the result of
+     *         containsDescendantOfType(ASTAllocationExpression.class)
      */
     public final boolean isAllocation() {
         return hasDescendantOfType(ASTAllocationExpression.class);

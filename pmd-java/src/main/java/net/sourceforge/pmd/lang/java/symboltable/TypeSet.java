@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.ArrayList;
@@ -34,7 +35,10 @@ public class TypeSet {
 
     /**
      * The {@link TypeSet} provides type resolution for the symbol facade.
-     * @param classLoader the class loader to use to search classes (could be an auxiliary class path)
+     * 
+     * @param classLoader
+     *            the class loader to use to search classes (could be an
+     *            auxiliary class path)
      */
     public TypeSet(ClassLoader classLoader) {
         ClassLoader cl = classLoader;
@@ -47,14 +51,17 @@ public class TypeSet {
 
     /**
      * Whether the classloader is using the auxclasspath or not.
-     * @return <code>true</code> if the classloader is using the auxclasspath feature
+     * 
+     * @return <code>true</code> if the classloader is using the auxclasspath
+     *         feature
      */
     public boolean hasAuxclasspath() {
         return hasAuxclasspath;
     }
 
     /**
-     * A resolver that can resolve a class by name. The name can be a simple name or a fully qualified name.
+     * A resolver that can resolve a class by name. The name can be a simple
+     * name or a fully qualified name.
      */
     // TODO should Resolver provide a canResolve() and a resolve()? Requiring 2
     // calls seems clunky... but so does this throwing an exception for flow
@@ -63,17 +70,21 @@ public class TypeSet {
         /**
          * Resolve the class by the given name
          *
-         * @param name the name of the class, might be fully classified or not.
+         * @param name
+         *            the name of the class, might be fully classified or not.
          * @return the class
-         * @throws ClassNotFoundException if the class couldn't be found
+         * @throws ClassNotFoundException
+         *             if the class couldn't be found
          */
         Class<?> resolve(String name) throws ClassNotFoundException;
 
         /**
-         * Checks if the given class could be resolved by this resolver.
-         * Notice, that a resolver's ability to resolve a class does not imply
-         * that the class will actually be found and resolved.
-         * @param name the name of the class, might be fully classified or not.
+         * Checks if the given class could be resolved by this resolver. Notice,
+         * that a resolver's ability to resolve a class does not imply that the
+         * class will actually be found and resolved.
+         * 
+         * @param name
+         *            the name of the class, might be fully classified or not.
          * @return whether the class can be resolved
          */
         boolean couldResolve(String name);
@@ -89,7 +100,9 @@ public class TypeSet {
 
         /**
          * Creates a new AbstractResolver that uses the given class loader.
-         * @param pmdClassLoader the class loader to use
+         * 
+         * @param pmdClassLoader
+         *            the class loader to use
          */
         public AbstractResolver(final PMDASMClassLoader pmdClassLoader) {
             this.pmdClassLoader = pmdClassLoader;
@@ -113,13 +126,17 @@ public class TypeSet {
 
         /**
          * Creates a new {@link ExplicitImportResolver}.
-         * @param pmdClassLoader the class loader to use.
-         * @param importStmts the import statements
+         * 
+         * @param pmdClassLoader
+         *            the class loader to use.
+         * @param importStmts
+         *            the import statements
          */
         public ExplicitImportResolver(PMDASMClassLoader pmdClassLoader, Set<String> importStmts) {
             super(pmdClassLoader);
 
-            // unfold imports, to store both FQ and unqualified names mapped to the FQ name
+            // unfold imports, to store both FQ and unqualified names mapped to
+            // the FQ name
             this.importStmts = new HashMap<>();
             for (final String stmt : importStmts) {
                 if (stmt.endsWith("*")) {
@@ -158,8 +175,11 @@ public class TypeSet {
 
         /**
          * Creates a new {@link CurrentPackageResolver}
-         * @param pmdClassLoader the class loader to use
-         * @param pkg the package name
+         * 
+         * @param pmdClassLoader
+         *            the class loader to use
+         * @param pkg
+         *            the package name
          */
         public CurrentPackageResolver(PMDASMClassLoader pmdClassLoader, String pkg) {
             super(pmdClassLoader);
@@ -178,20 +198,24 @@ public class TypeSet {
     }
 
     /**
-     * Resolver that resolves simple class names from the implicit import of <code>java.lang.*</code>.
+     * Resolver that resolves simple class names from the implicit import of
+     * <code>java.lang.*</code>.
      */
     // TODO cite the JLS section on implicit imports
     public static class ImplicitImportResolver extends AbstractResolver {
         /*
-         * They aren't so many to bother about memory, but are used all the time,
-         * so we worry about performance. On average, you can expect this cache to have ~90% hit ratio
-         * unless abusing star imports (import on demand)
+         * They aren't so many to bother about memory, but are used all the
+         * time, so we worry about performance. On average, you can expect this
+         * cache to have ~90% hit ratio unless abusing star imports (import on
+         * demand)
          */
         private static final ConcurrentHashMap<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
 
         /**
          * Creates a {@link ImplicitImportResolver}
-         * @param pmdClassLoader the class loader
+         * 
+         * @param pmdClassLoader
+         *            the class loader
          */
         public ImplicitImportResolver(PMDASMClassLoader pmdClassLoader) {
             super(pmdClassLoader);
@@ -228,8 +252,11 @@ public class TypeSet {
 
         /**
          * Creates a {@link ImportOnDemandResolver}
-         * @param pmdClassLoader the class loader to use
-         * @param importStmts the import statements
+         * 
+         * @param pmdClassLoader
+         *            the class loader to use
+         * @param importStmts
+         *            the import statements
          */
         public ImportOnDemandResolver(PMDASMClassLoader pmdClassLoader, Set<String> importStmts) {
             super(pmdClassLoader);
@@ -249,7 +276,8 @@ public class TypeSet {
                                 .replace(importStmt.length() - 1, importStmt.length(), name).toString();
                         return pmdClassLoader.loadClass(fqClassName);
                     } catch (ClassNotFoundException cnfe) {
-                        // ignored as the class could be imported with the next on demand import...
+                        // ignored as the class could be imported with the next
+                        // on demand import...
                     }
                 }
             }
@@ -327,13 +355,15 @@ public class TypeSet {
     }
 
     /**
-     * Resolver that simply loads the class by name. This only works if the class name
-     * is given as a fully qualified name.
+     * Resolver that simply loads the class by name. This only works if the
+     * class name is given as a fully qualified name.
      */
     public static class FullyQualifiedNameResolver extends AbstractResolver {
         /**
          * Creates a {@link FullyQualifiedNameResolver}
-         * @param pmdClassLoader the class loader to use
+         * 
+         * @param pmdClassLoader
+         *            the class loader to use
          */
         public FullyQualifiedNameResolver(PMDASMClassLoader pmdClassLoader) {
             super(pmdClassLoader);
@@ -358,7 +388,9 @@ public class TypeSet {
 
     /**
      * Adds a import to the list of imports
-     * @param importString the import to add
+     * 
+     * @param importString
+     *            the import to add
      */
     public void addImport(String importString) {
         imports.add(importString);
@@ -374,9 +406,13 @@ public class TypeSet {
 
     /**
      * Resolves a class by its name using all known resolvers.
-     * @param name the name of the class, can be a simple name or a fully qualified name.
+     * 
+     * @param name
+     *            the name of the class, can be a simple name or a fully
+     *            qualified name.
      * @return the class
-     * @throws ClassNotFoundException if there is no such class
+     * @throws ClassNotFoundException
+     *             if there is no such class
      */
     public Class<?> findClass(String name) throws ClassNotFoundException {
         // we don't build the resolvers until now since we first want to get all

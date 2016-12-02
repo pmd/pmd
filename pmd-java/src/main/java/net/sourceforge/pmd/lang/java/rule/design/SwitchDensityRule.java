@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -13,13 +14,12 @@ import net.sourceforge.pmd.stat.DataPoint;
  * @author David Dixon-Peugh
  *
  *         <p/>
- *         Switch Density - This is the number of statements over the
- *         number of cases within a switch.  The higher the value, the
- *         more work each case is doing.
+ *         Switch Density - This is the number of statements over the number of
+ *         cases within a switch. The higher the value, the more work each case
+ *         is doing.
  *         <p/>
- *         Its my theory, that when the Switch Density is high, you should
- *         start looking at Subclasses or State Pattern to alleviate the
- *         problem.
+ *         Its my theory, that when the Switch Density is high, you should start
+ *         looking at Subclasses or State Pattern to alleviate the problem.
  */
 public class SwitchDensityRule extends AbstractStatisticalJavaRule {
 

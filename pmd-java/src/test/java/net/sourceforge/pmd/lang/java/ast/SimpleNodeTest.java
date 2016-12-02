@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -209,27 +210,44 @@ public class SimpleNodeTest extends ParserTst {
         List<ASTFieldDeclaration> res = new ArrayList<>();
         c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
-        /*        String expectedXml = "<CompilationUnit BeginColumn=\"1\" BeginLine=\"5\" EndColumn=\"1\" EndLine=\"5\">" +
-                "<TypeDeclaration BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"1\" EndLine=\"5\">" +
-                "<ClassOrInterfaceDeclaration Abstract=\"false\" BeginColumn=\"8\" BeginLine=\"1\" EndColumn=\"1\" " +
-                "EndLine=\"5\" Final=\"false\" Image=\"Test\" Interface=\"false\" Native=\"false\" Nested=\"false\" PackagePrivate=\"false\" Private=\"false\" Protected=\"false\" Public=\"true\" Static=\"false\" Strictfp=\"false\" Synchronized=\"false\" Transient=\"false\" Volatile=\"false\">" +
-                "<ClassOrInterfaceBody BeginColumn=\"19\" BeginLine=\"1\" EndColumn=\"1\" EndLine=\"5\">" +
-                "<ClassOrInterfaceBodyDeclaration AnonymousInnerClass=\"false\" BeginColumn=\"3\" BeginLine=\"2\" EndColumn=\"3\" EndLine=\"4\">" +
-                "<ClassOrInterfaceDeclaration Abstract=\"false\" BeginColumn=\"10\" BeginLine=\"2\" EndColumn=\"3\" EndLine=\"4\" Final=\"false\" " +
-                "Image=\"Inner\" Interface=\"false\" Native=\"false\" Nested=\"true\" PackagePrivate=\"false\" Private=\"false\" Protected=\"false\" " +
-                "Public=\"true\" Static=\"false\" Strictfp=\"false\" Synchronized=\"false\" Transient=\"false\" Volatile=\"false\">" +
-                "<ClassOrInterfaceBody BeginColumn=\"22\" BeginLine=\"2\" EndColumn=\"3\" EndLine=\"4\">" +
-                "<ClassOrInterfaceBodyDeclaration AnonymousInnerClass=\"false\" BeginColumn=\"4\" BeginLine=\"3\" EndColumn=\"11\" EndLine=\"3\">" +
-                "<FieldDeclaration Abstract=\"false\" Array=\"false\" ArrayDepth=\"0\" BeginColumn=\"4\" BeginLine=\"3\" EndColumn=\"11\" EndLine=\"3\" Final=\"false\" Native=\"false\" PackagePrivate=\"true\" Private=\"false\" Protected=\"false\" Public=\"false\" Static=\"false\" Strictfp=\"false\" Synchronized=\"false\" Transient=\"false\" VariableName=\"foo\" Volatile=\"false\"><Type Array=\"false\" ArrayDepth=\"0\" BeginColumn=\"4\" BeginLine=\"3\" EndColumn=\"6\" EndLine=\"3\">" +
-                "<PrimitiveType Array=\"false\" ArrayDepth=\"0\" BeginColumn=\"4\" BeginLine=\"3\" Boolean=\"false\" EndColumn=\"6\" EndLine=\"3\" Image=\"int\"/>" +
-                "</Type>" +
-                "<VariableDeclarator BeginColumn=\"8\" BeginLine=\"3\" EndColumn=\"10\" EndLine=\"3\">" +
-                "<VariableDeclaratorId Array=\"false\" ArrayDepth=\"0\" BeginColumn=\"8\" BeginLine=\"3\" EndColumn=\"10\" EndLine=\"3\" ExceptionBlockParameter=\"false\" Image=\"foo\"/>" +
-                "</VariableDeclarator></FieldDeclaration></ClassOrInterfaceBodyDeclaration></ClassOrInterfaceBody>" +
-                "</ClassOrInterfaceDeclaration></ClassOrInterfaceBodyDeclaration></ClassOrInterfaceBody></ClassOrInterfaceDeclaration>" +
-                "</TypeDeclaration></CompilationUnit>";
-        assertEquals( expectedXml, getXmlString( c ) );
-        */ }
+        /*
+         * String expectedXml =
+         * "<CompilationUnit BeginColumn=\"1\" BeginLine=\"5\" EndColumn=\"1\" EndLine=\"5\">"
+         * +
+         * "<TypeDeclaration BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"1\" EndLine=\"5\">"
+         * +
+         * "<ClassOrInterfaceDeclaration Abstract=\"false\" BeginColumn=\"8\" BeginLine=\"1\" EndColumn=\"1\" "
+         * +
+         * "EndLine=\"5\" Final=\"false\" Image=\"Test\" Interface=\"false\" Native=\"false\" Nested=\"false\" PackagePrivate=\"false\" Private=\"false\" Protected=\"false\" Public=\"true\" Static=\"false\" Strictfp=\"false\" Synchronized=\"false\" Transient=\"false\" Volatile=\"false\">"
+         * +
+         * "<ClassOrInterfaceBody BeginColumn=\"19\" BeginLine=\"1\" EndColumn=\"1\" EndLine=\"5\">"
+         * +
+         * "<ClassOrInterfaceBodyDeclaration AnonymousInnerClass=\"false\" BeginColumn=\"3\" BeginLine=\"2\" EndColumn=\"3\" EndLine=\"4\">"
+         * +
+         * "<ClassOrInterfaceDeclaration Abstract=\"false\" BeginColumn=\"10\" BeginLine=\"2\" EndColumn=\"3\" EndLine=\"4\" Final=\"false\" "
+         * +
+         * "Image=\"Inner\" Interface=\"false\" Native=\"false\" Nested=\"true\" PackagePrivate=\"false\" Private=\"false\" Protected=\"false\" "
+         * +
+         * "Public=\"true\" Static=\"false\" Strictfp=\"false\" Synchronized=\"false\" Transient=\"false\" Volatile=\"false\">"
+         * +
+         * "<ClassOrInterfaceBody BeginColumn=\"22\" BeginLine=\"2\" EndColumn=\"3\" EndLine=\"4\">"
+         * +
+         * "<ClassOrInterfaceBodyDeclaration AnonymousInnerClass=\"false\" BeginColumn=\"4\" BeginLine=\"3\" EndColumn=\"11\" EndLine=\"3\">"
+         * +
+         * "<FieldDeclaration Abstract=\"false\" Array=\"false\" ArrayDepth=\"0\" BeginColumn=\"4\" BeginLine=\"3\" EndColumn=\"11\" EndLine=\"3\" Final=\"false\" Native=\"false\" PackagePrivate=\"true\" Private=\"false\" Protected=\"false\" Public=\"false\" Static=\"false\" Strictfp=\"false\" Synchronized=\"false\" Transient=\"false\" VariableName=\"foo\" Volatile=\"false\"><Type Array=\"false\" ArrayDepth=\"0\" BeginColumn=\"4\" BeginLine=\"3\" EndColumn=\"6\" EndLine=\"3\">"
+         * +
+         * "<PrimitiveType Array=\"false\" ArrayDepth=\"0\" BeginColumn=\"4\" BeginLine=\"3\" Boolean=\"false\" EndColumn=\"6\" EndLine=\"3\" Image=\"int\"/>"
+         * + "</Type>" +
+         * "<VariableDeclarator BeginColumn=\"8\" BeginLine=\"3\" EndColumn=\"10\" EndLine=\"3\">"
+         * +
+         * "<VariableDeclaratorId Array=\"false\" ArrayDepth=\"0\" BeginColumn=\"8\" BeginLine=\"3\" EndColumn=\"10\" EndLine=\"3\" ExceptionBlockParameter=\"false\" Image=\"foo\"/>"
+         * +
+         * "</VariableDeclarator></FieldDeclaration></ClassOrInterfaceBodyDeclaration></ClassOrInterfaceBody>"
+         * +
+         * "</ClassOrInterfaceDeclaration></ClassOrInterfaceBodyDeclaration></ClassOrInterfaceBody></ClassOrInterfaceDeclaration>"
+         * + "</TypeDeclaration></CompilationUnit>"; assertEquals( expectedXml,
+         * getXmlString( c ) );
+         */ }
 
     @Test
     public void testContainsNoInnerWithAnonInner() throws Throwable {

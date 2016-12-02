@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.HashSet;
@@ -15,7 +16,8 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * A Method Scope can have variable declarations and class declarations within it.
+ * A Method Scope can have variable declarations and class declarations within
+ * it.
  */
 public class MethodScope extends AbstractJavaScope {
 

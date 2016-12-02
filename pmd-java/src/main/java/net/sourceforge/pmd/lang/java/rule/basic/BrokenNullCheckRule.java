@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.util.ArrayList;
@@ -60,24 +61,25 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
         }
         ASTNullLiteral nullLiteral = equalityExpression.getFirstDescendantOfType(ASTNullLiteral.class);
         if (nullLiteral == null) {
-            return; //No null check
+            return; // No null check
         }
-        //If there is an assignment in the equalityExpression we give up, because things get too complex
+        // If there is an assignment in the equalityExpression we give up,
+        // because things get too complex
         if (conditionalExpression.hasDescendantOfType(ASTAssignmentOperator.class)) {
             return;
         }
 
-        //Find the expression used in the null compare
+        // Find the expression used in the null compare
         ASTPrimaryExpression nullCompareExpression = findNullCompareExpression(equalityExpression);
         if (nullCompareExpression == null) {
-            return; //No good null check
+            return; // No good null check
         }
 
-        //Now we find the expression to compare to and do the comparison
+        // Now we find the expression to compare to and do the comparison
         for (int i = 0; i < conditionalExpression.jjtGetNumChildren(); i++) {
             Node conditionalSubnode = conditionalExpression.jjtGetChild(i);
 
-            //We skip the null compare branch
+            // We skip the null compare branch
             ASTEqualityExpression nullEqualityExpression = nullLiteral
                     .getFirstParentOfType(ASTEqualityExpression.class);
             if (conditionalSubnode.equals(nullEqualityExpression)) {
@@ -87,12 +89,13 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
             if (conditionalSubnode instanceof ASTPrimaryExpression) {
                 conditionalPrimaryExpression = (ASTPrimaryExpression) conditionalSubnode;
             } else {
-                //The ASTPrimaryExpression is hidden (in a negation, braces or EqualityExpression)
+                // The ASTPrimaryExpression is hidden (in a negation, braces or
+                // EqualityExpression)
                 conditionalPrimaryExpression = conditionalSubnode.getFirstDescendantOfType(ASTPrimaryExpression.class);
             }
 
             if (primaryExpressionsAreEqual(nullCompareExpression, conditionalPrimaryExpression)) {
-                addViolation(data, node); //We have a match
+                addViolation(data, node); // We have a match
             }
 
         }
@@ -108,16 +111,20 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
 
         for (int i = 0; i < nullCompareNames.size(); i++) {
             if (expressionUsageNames.size() == i) {
-                return false; //The used expression is shorter than the null compare expression (and we don't want to crash below)
+                return false; // The used expression is shorter than the null
+                              // compare expression (and we don't want to crash
+                              // below)
             }
 
             String nullCompareExpressionName = nullCompareNames.get(i);
             String expressionUsageName = expressionUsageNames.get(i);
 
-            //Variablenames should match or the expressionUsage should have the variable with a method call (ie. var.equals())
+            // Variablenames should match or the expressionUsage should have the
+            // variable with a method call (ie. var.equals())
             if (!nullCompareExpressionName.equals(expressionUsageName)
                     && !expressionUsageName.startsWith(nullCompareExpressionName + ".")) {
-                return false; //Some other expression is being used after the null compare
+                return false; // Some other expression is being used after the
+                              // null compare
             }
         }
 
@@ -125,26 +132,31 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
     }
 
     /**
-     * Find the names of variables, methods and array arguments in a PrimaryExpression.
+     * Find the names of variables, methods and array arguments in a
+     * PrimaryExpression.
      */
     private void findExpressionNames(Node nullCompareVariable, List<String> results) {
         for (int i = 0; i < nullCompareVariable.jjtGetNumChildren(); i++) {
             Node child = nullCompareVariable.jjtGetChild(i);
 
-            if (child instanceof ASTName) { //Variable names and some method calls
+            if (child instanceof ASTName) { // Variable names and some method
+                                            // calls
                 results.add(((ASTName) child).getImage());
-            } else if (child instanceof ASTLiteral) { //Array arguments
+            } else if (child instanceof ASTLiteral) { // Array arguments
                 String literalImage = ((ASTLiteral) child).getImage();
-                //Skip other null checks
+                // Skip other null checks
                 if (literalImage != null) {
                     results.add(literalImage);
                 }
-            } else if (child instanceof ASTPrimarySuffix) { //More method calls
+            } else if (child instanceof ASTPrimarySuffix) { // More method calls
                 String name = ((ASTPrimarySuffix) child).getImage();
                 if (StringUtil.isNotEmpty(name)) {
                     results.add(name);
                 }
-            } else if (child instanceof ASTClassOrInterfaceType) { //A class can be an argument too
+            } else if (child instanceof ASTClassOrInterfaceType) { // A class
+                                                                   // can be an
+                                                                   // argument
+                                                                   // too
                 String name = ((ASTClassOrInterfaceType) child).getImage();
                 results.add(name);
             }
@@ -162,12 +174,12 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
             List<ASTPrimaryPrefix> primaryPrefixes = primaryExpression.findDescendantsOfType(ASTPrimaryPrefix.class);
             for (ASTPrimaryPrefix primaryPrefix : primaryPrefixes) {
                 if (primaryPrefix.hasDescendantOfType(ASTName.class)) {
-                    //We found the variable that is compared to null
+                    // We found the variable that is compared to null
                     return primaryExpression;
                 }
             }
         }
-        return null; //Nothing found
+        return null; // Nothing found
     }
 
 }

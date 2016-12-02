@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 public class SingularFieldRule extends AbstractLombokAwareRule {
 
     /**
-     * Restore old behavior by setting both properties to true, which will result in many false positives
+     * Restore old behavior by setting both properties to true, which will
+     * result in many false positives
      */
     private static final BooleanProperty CHECK_INNER_CLASSES = new BooleanProperty("checkInnerClasses",
             "Check inner classes", false, 1.0f);
@@ -63,19 +65,23 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                             .getFirstParentOfType(ASTPrimaryExpression.class);
                     if (ix == 0 && !disallowNotAssignment) {
                         if (primaryExpressionParent.getFirstParentOfType(ASTIfStatement.class) != null) {
-                            //the first usage is in an if, so it may be skipped on
-                            //later calls to the method. So this might be legit code
-                            //that simply stores an object for later use.
+                            // the first usage is in an if, so it may be skipped
+                            // on
+                            // later calls to the method. So this might be legit
+                            // code
+                            // that simply stores an object for later use.
                             violation = false;
-                            break; //Optimization
+                            break; // Optimization
                         }
 
-                        //Is the first usage in an assignment?
+                        // Is the first usage in an assignment?
                         Node potentialStatement = primaryExpressionParent.jjtGetParent();
-                        boolean assignmentToField = no.getImage().equals(location.getImage()); //Check the the assignment is not to a field inside the field object
+                        // Check that the assignment is not to a field inside
+                        // the field object
+                        boolean assignmentToField = no.getImage().equals(location.getImage());
                         if (!assignmentToField || !isInAssignment(potentialStatement)) {
                             violation = false;
-                            break; //Optimization
+                            break; // Optimization
                         } else {
                             if (usages.size() > ix + 1) {
                                 Node secondUsageLocation = usages.get(ix + 1).getLocation();
@@ -84,9 +90,10 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                                         .getParentsOfType(ASTStatementExpression.class);
                                 for (ASTStatementExpression statementExpression : parentStatements) {
                                     if (statementExpression != null && statementExpression.equals(potentialStatement)) {
-                                        //The second usage is in the assignment of the first usage, which is allowed
+                                        // The second usage is in the assignment
+                                        // of the first usage, which is allowed
                                         violation = false;
-                                        break; //Optimization
+                                        break; // Optimization
                                     }
                                 }
 
@@ -95,19 +102,21 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                     }
 
                     if (!checkInnerClasses) {
-                        //Skip inner classes because the field can be used in the outer class and checking this is too difficult
+                        // Skip inner classes because the field can be used in
+                        // the outer class and checking this is too difficult
                         ASTClassOrInterfaceDeclaration clazz = location
                                 .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
                         if (clazz != null && clazz.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) != null) {
                             violation = false;
-                            break; //Optimization
+                            break; // Optimization
                         }
                     }
 
                     if (primaryExpressionParent.jjtGetParent() instanceof ASTSynchronizedStatement) {
-                        //This usage is directly in an expression of a synchronized block
+                        // This usage is directly in an expression of a
+                        // synchronized block
                         violation = false;
-                        break; //Optimization
+                        break; // Optimization
                     }
 
                     Node method = location.getFirstParentOfType(ASTMethodDeclaration.class);
@@ -129,7 +138,7 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                             && decl.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == method
                                     .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)) {
                         violation = false;
-                        break; //Optimization
+                        break; // Optimization
                     }
 
                 }

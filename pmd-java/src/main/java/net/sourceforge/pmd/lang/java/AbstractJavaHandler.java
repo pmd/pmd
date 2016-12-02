@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java;
 
 import java.io.Writer;
@@ -29,8 +30,8 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sf.saxon.sxpath.IndependentContext;
 
 /**
- * Implementation of LanguageVersionHandler for the Java AST. It uses anonymous classes
- * as adapters of the visitors to the VisitorStarter interface.
+ * Implementation of LanguageVersionHandler for the Java AST. It uses anonymous
+ * classes as adapters of the visitors to the VisitorStarter interface.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */

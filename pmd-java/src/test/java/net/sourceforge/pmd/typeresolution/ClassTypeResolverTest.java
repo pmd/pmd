@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
@@ -131,8 +132,9 @@ public class ClassTypeResolverTest {
     }
 
     /**
-     * If we don't have the auxclasspath, we might not find the inner class. In that case,
-     * we'll need to search by name for a match.
+     * If we don't have the auxclasspath, we might not find the inner class. In
+     * that case, we'll need to search by name for a match.
+     * 
      * @throws Exception
      */
     @Test
@@ -553,8 +555,8 @@ public class ClassTypeResolverTest {
     }
 
     /**
-     * The type should be filled also on the ASTVariableDeclaratorId node,
-     * not only on the variable name declaration.
+     * The type should be filled also on the ASTVariableDeclaratorId node, not
+     * only on the variable name declaration.
      */
     @Test
     public void testFullyQualifiedType() {
@@ -586,8 +588,10 @@ public class ClassTypeResolverTest {
         return parseAndTypeResolveForClass(clazz, "1.5");
     }
 
-    // Note: If you're using Eclipse or some other IDE to run this test, you _must_ have the src/test/java folder in
-    // the classpath.  Normally the IDE doesn't put source directories themselves directly in the classpath, only
+    // Note: If you're using Eclipse or some other IDE to run this test, you
+    // _must_ have the src/test/java folder in
+    // the classpath. Normally the IDE doesn't put source directories themselves
+    // directly in the classpath, only
     // the output directories are in the classpath.
     private ASTCompilationUnit parseAndTypeResolveForClass(Class<?> clazz, String version) {
         String sourceFile = clazz.getName().replace('.', '/') + ".java";

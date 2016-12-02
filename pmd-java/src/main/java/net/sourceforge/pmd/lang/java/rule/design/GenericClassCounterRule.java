@@ -19,26 +19,29 @@ import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
- * <p>A generic rule that can be configured to "count" classes of certain
- * type based on either their name (full name, prefix, suffixes anything can
- * be matched with a regex), and/or
- * their type.</p>
+ * <p>
+ * A generic rule that can be configured to "count" classes of certain type
+ * based on either their name (full name, prefix, suffixes anything can be
+ * matched with a regex), and/or their type.
+ * </p>
  *
  * <p>Example of configurations:
- * 		<!-- Property order is MANDATORY !!! -->
- * 		<!-- Several regexes may be provided to ensure a match... -->
- * 		<property 	name="nameMatch" description="a regex on which to match"
- * 					value="^Abstract.*Bean*$,^*EJB*$"/>
- * 		<!-- An operand to refine match strategy TODO: Not implemented yet !!! -->
- * 		<property 	name"operand"	description=""
- * 					value="and"/> <!-- possible values are and/or -->
- * 		<!-- Must be a full name to ensure type control !!! -->
- * 		<property 	name="typeMatch" description="a regex to match on implements/extends classname"
- * 					value="javax.servlet.Filter"/>
- * 		<!-- Define after how many occurences one should log a violation -->
- * 		<property 	name="threshold"	description="Defines how many occurences are legal"
- * 					value="2"/>
- * 		<!-- TODO: Add a parameter to allow "ignore" pattern based on name -->
+ * <pre>
+ *     &lt;!-- Property order is MANDATORY !!! -->
+ *     &lt;!-- Several regexes may be provided to ensure a match... -->
+ *     &lt;property name="nameMatch" description="a regex on which to match"
+ *         value="^Abstract.*Bean*$,^*EJB*$"/>
+ *     &lt;!-- An operand to refine match strategy TODO: Not implemented yet !!! -->
+ *     &lt;property name"operand"	description=""
+ *         value="and"/> <!-- possible values are and/or -->
+ *     &lt;!-- Must be a full name to ensure type control !!! -->
+ *     &lt;property name="typeMatch" description="a regex to match on implements/extends classname"
+ *         value="javax.servlet.Filter"/>
+ *     &lt;!-- Define after how many occurences one should log a violation -->
+ *     &lt;property name="threshold"	description="Defines how many occurences are legal"
+ *         value="2"/>
+ *     &lt;!-- TODO: Add a parameter to allow "ignore" pattern based on name -->
+ * </pre>
  * </p>
  *
  * @author Ryan Gutafson, rgustav@users.sourceforge.net
@@ -66,7 +69,8 @@ public class GenericClassCounterRule extends AbstractJavaRule {
     private List<Node> matches = new ArrayList<>(0);
     private List<String> simpleClassname = new ArrayList<>(0);
 
-    @SuppressWarnings("PMD") // When the rule is finished, this field will be used.
+    // When the rule is finished, this field will be used.
+    @SuppressWarnings("PMD")
     private String operand;
     private int threshold;
 

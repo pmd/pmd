@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import static org.junit.Assert.assertEquals;
@@ -79,7 +80,7 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testFieldFinder() {
         parseCode(TEST_FIELD);
-        //        System.out.println(TEST_FIELD);
+        // System.out.println(TEST_FIELD);
 
         ASTVariableDeclaratorId declaration = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(1);
         assertEquals(3, declaration.getBeginLine());
@@ -88,13 +89,14 @@ public class AcceptanceTest extends STBBaseTst {
         NameOccurrence no = declaration.getUsages().get(0);
         Node location = no.getLocation();
         assertEquals(6, location.getBeginLine());
-        //        System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());
+        // System.out.println("variable " + declaration.getImage() + " is used
+        // here: " + location.getImage());
     }
 
     @Test
     public void testDemo() {
         parseCode(TEST_DEMO);
-        //        System.out.println(TEST_DEMO);
+        // System.out.println(TEST_DEMO);
         ASTMethodDeclaration node = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
         Map<NameDeclaration, List<NameOccurrence>> m = s.getDeclarations();
@@ -108,10 +110,10 @@ public class AcceptanceTest extends STBBaseTst {
             int beginLine = o.getLocation().getBeginLine();
             assertEquals(3, beginLine);
 
-            //            System.out.println("Variable: " + d.getImage());
-            //            System.out.println("Type: " + d.getTypeImage());
-            //            System.out.println("Usages: " + u.size());
-            //            System.out.println("Used in line " + beginLine);
+            // System.out.println("Variable: " + d.getImage());
+            // System.out.println("Type: " + d.getTypeImage());
+            // System.out.println("Usages: " + u.size());
+            // System.out.println("Used in line " + beginLine);
         }
     }
 
@@ -139,14 +141,18 @@ public class AcceptanceTest extends STBBaseTst {
     /**
      * Unit test for bug #1490
      *
-     * @see <a href="https://sourceforge.net/p/pmd/bugs/1490/">#1490 [java] PMD Error while processing - NullPointerException</a>
+     * @see <a href="https://sourceforge.net/p/pmd/bugs/1490/">#1490 [java] PMD
+     *      Error while processing - NullPointerException</a>
      */
     @Test
     public void testNullPointerEnumValueOfOverloaded() {
         parseCode("public enum EsmDcVoltageSensor {\n" + "    A;\n" + "    void bar(int ... args) {\n"
                 + "        int idx;\n" + "        int startIdx;\n"
                 + "        String name = EsmDcVoltageSensor.valueOf((byte) (idx - startIdx)).getName();\n" + "    }\n"
-                + "    public EsmDCVoltageSensor valueOf(byte b) {\n" // that's the overloaded method
+                + "    public EsmDCVoltageSensor valueOf(byte b) {\n" // that's
+                                                                      // the
+                                                                      // overloaded
+                                                                      // method
                 + "    }\n" + "}\n");
     }
 

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertTrue;
@@ -194,8 +195,8 @@ public class AcceptanceTest extends ParserTst {
         assertTrue(check(TEST30_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST30)));
     }
 
-    //  first dimension: the index of a node
-    //  second dimension: the indices of the children
+    // first dimension: the index of a node
+    // second dimension: the indices of the children
     private static final int[][] TEST1_NODES = { { 1 }, { 2 }, { 3 }, { 4, 6 }, { 5 }, { 6 }, {} };
 
     private static final String TEST1 = "class Foo {" + PMD.EOL + " void test_1() {" + PMD.EOL + "  int x = 0;"
@@ -245,7 +246,7 @@ public class AcceptanceTest extends ParserTst {
             + "  for (; ;) {" + PMD.EOL + "   int i = 0;" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL + " }";
 
     private static final int[][] TEST13_NODES = { { 1 }, { 2 }, { 3 }, { 5, 9 }, { 3 }, { 6 }, { 7, 8 }, { 8 }, { 4 },
-            {} };
+        {} };
     public static final String TEST13 = "public class Foo {" + PMD.EOL + " public void test_13() {" + PMD.EOL
             + "  for (int i = 0; i < 0; i++) {" + PMD.EOL + "   i = 9;" + PMD.EOL + "   if (i < 8) {" + PMD.EOL
             + "    i = 7;" + PMD.EOL + "   }" + PMD.EOL + "   i = 6;" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL
@@ -268,20 +269,20 @@ public class AcceptanceTest extends ParserTst {
             + " }";
 
     private static final int[][] TEST17_NODES = { { 1 }, { 2 }, { 3 }, { 5, 10 }, { 3 }, { 6, 7 }, { 4 }, { 8, 9 },
-            { 4 }, { 4 }, {} };
+        { 4 }, { 4 }, {} };
     public static final String TEST17 = "public class Foo {" + PMD.EOL + " public void test_17() {" + PMD.EOL
             + "  for (int i = 0; i < 0; i++) {" + PMD.EOL + "   if (i < 6) {" + PMD.EOL + "    i = 7;" + PMD.EOL
             + "   } else if (i > 8) {" + PMD.EOL + "    i = 9;" + PMD.EOL + "   } else {" + PMD.EOL + "    i = 10;"
             + PMD.EOL + "   }" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL + " }";
 
     private static final int[][] TEST18_NODES = { { 1 }, { 2 }, { 3 }, { 5, 9 }, { 3 }, { 6 }, { 8, 4 }, { 6 }, { 7 },
-            {} };
+        {} };
     public static final String TEST18 = "public class Foo {" + PMD.EOL + " public void test_18() {" + PMD.EOL
             + "  for (int i = 0; i < 0; i++) {" + PMD.EOL + "   for (int j = 0; j < 0; j++) {" + PMD.EOL + "    j++;"
             + PMD.EOL + "   }" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL + " }";
 
     private static final int[][] TEST19_NODES = { { 1 }, { 2 }, { 3 }, { 4, 5 }, { 10 }, { 6, 7 }, { 10 }, { 8, 9 },
-            { 10 }, { 10 }, {} };
+        { 10 }, { 10 }, {} };
     public static final String TEST19 = "public class Foo {" + PMD.EOL + " public void test_19() {" + PMD.EOL
             + "  int i = 0;" + PMD.EOL + "  if (i == 1) {" + PMD.EOL + "   i = 2;" + PMD.EOL + "  } else if (i == 3) {"
             + PMD.EOL + "   i = 4;" + PMD.EOL + "  } else if (i == 5) {" + PMD.EOL + "   i = 6;" + PMD.EOL
@@ -294,28 +295,28 @@ public class AcceptanceTest extends ParserTst {
             + PMD.EOL + " }";
 
     private static final int[][] TEST21_NODES = { { 1 }, { 2 }, { 3 }, { 4, 9 }, { 5 }, { 7, 8 }, { 5 }, { 6 }, { 11 },
-            { 10, 11 }, { 11 }, {} };
+        { 10, 11 }, { 11 }, {} };
     public static final String TEST21 = "public class Foo {" + PMD.EOL + " public void test_21() {" + PMD.EOL
             + "  int i = 0;" + PMD.EOL + "  if (i == 1) {" + PMD.EOL + "   for (i = 3; i < 4; i++) {" + PMD.EOL
             + "    i = 5;" + PMD.EOL + "   }" + PMD.EOL + "   i++;" + PMD.EOL + "  } else if (i < 6) {" + PMD.EOL
             + "   i = 7;" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL + " }";
 
     private static final int[][] TEST22_NODES = { { 1 }, { 2 }, { 3 }, { 4, 8 }, { 5 }, { 7, 9 }, { 5 }, { 6 }, { 9 },
-            {} };
+        {} };
     public static final String TEST22 = "public class Foo {" + PMD.EOL + " public void test_22() {" + PMD.EOL
             + "  int i = 0;" + PMD.EOL + "  if (i == 1) {" + PMD.EOL + "   for (i = 3; i < 4; i++) {" + PMD.EOL
             + "    i = 5;" + PMD.EOL + "   }" + PMD.EOL + "  } else {" + PMD.EOL + "   i = 7;" + PMD.EOL + "  }"
             + PMD.EOL + " }" + PMD.EOL + " }";
 
     private static final int[][] TEST23_NODES = { { 1 }, { 2 }, { 3 }, { 4, 8 }, { 5 }, { 7, 10 }, { 5 }, { 6 },
-            { 9, 10 }, { 10 }, {} };
+        { 9, 10 }, { 10 }, {} };
     public static final String TEST23 = "public class Foo {" + PMD.EOL + " public void test_23() {" + PMD.EOL
             + "  int i = 0;" + PMD.EOL + "  if (i == 1) {" + PMD.EOL + "   for (i = 3; i < 4; i++) {" + PMD.EOL
             + "    i = 5;" + PMD.EOL + "   }" + PMD.EOL + "  } else if (i < 6) {" + PMD.EOL + "   i = 7;" + PMD.EOL
             + "  }" + PMD.EOL + " }" + PMD.EOL + " }";
 
     private static final int[][] TEST24_NODES = { { 1 }, { 2 }, { 3 }, { 4, 9 }, { 5 }, { 7, 11 }, { 5 }, { 8, 6 },
-            { 6 }, { 10, 11 }, { 11 }, {} };
+        { 6 }, { 10, 11 }, { 11 }, {} };
     public static final String TEST24 = "public class Foo {" + PMD.EOL + " public void test_24() {" + PMD.EOL
             + "  int x = 0;" + PMD.EOL + "  if (x > 2) {" + PMD.EOL + "   for (int i = 0; i < 1; i++) {" + PMD.EOL
             + "    if (x > 3) {" + PMD.EOL + "     x++;" + PMD.EOL + "    }" + PMD.EOL + "   }" + PMD.EOL
@@ -327,20 +328,20 @@ public class AcceptanceTest extends ParserTst {
             + "  }" + PMD.EOL + " }" + PMD.EOL + " }";
 
     private static final int[][] TEST26_NODES = { { 1 }, { 2 }, { 3 }, { 4 }, { 5, 6 }, { 6 }, { 7 }, { 8, 3 }, { 9 },
-            {} };
+        {} };
     public static final String TEST26 = "public class Foo {" + PMD.EOL + " public void test_26() {" + PMD.EOL
             + "  int x = 0;" + PMD.EOL + "  do {" + PMD.EOL + "   if (x > 0) {" + PMD.EOL + "    x++;" + PMD.EOL
             + "   }" + PMD.EOL + "   x++;" + PMD.EOL + "  } while (x < 9);" + PMD.EOL + "  x++;" + PMD.EOL + " }"
             + PMD.EOL + " }";
 
     private static final int[][] TEST27_NODES = { { 1 }, { 2 }, { 3 }, { 5, 9 }, { 3 }, { 6 }, { 7 }, { 8 }, { 6, 4 },
-            {} };
+        {} };
     public static final String TEST27 = "public class Foo {" + PMD.EOL + " public void test_27() {" + PMD.EOL
             + "  for (int i = 0; i < 36; i++) {" + PMD.EOL + "   int x = 0;" + PMD.EOL + "   do {" + PMD.EOL
             + "    x++;" + PMD.EOL + "   } while (x < 9);" + PMD.EOL + "  }" + PMD.EOL + " }" + PMD.EOL + " }";
 
     private static final int[][] TEST28_NODES = { { 1 }, { 2 }, { 3 }, { 5, 14 }, { 3 }, { 6 }, { 7 }, { 8, 12 }, { 9 },
-            { 10, 12 }, { 11 }, { 12 }, { 13 }, { 6, 4 }, {} };
+        { 10, 12 }, { 11 }, { 12 }, { 13 }, { 6, 4 }, {} };
     public static final String TEST28 = "public class Foo {" + PMD.EOL + " private void test_28() {" + PMD.EOL
             + "  for (int i = 0; i < 36; i++) {" + PMD.EOL + "   int x = 0;" + PMD.EOL + "   do {" + PMD.EOL
             + "    if (x > 0) {" + PMD.EOL + "     x++;" + PMD.EOL + "     switch (i) {" + PMD.EOL + "      case 0:"

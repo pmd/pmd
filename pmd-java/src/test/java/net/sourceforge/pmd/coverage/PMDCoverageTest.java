@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.coverage;
 
 import static org.junit.Assert.fail;
@@ -50,8 +51,9 @@ public class PMDCoverageTest {
         } catch (IOException ioe) {
             fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
         } finally {
-            if (f != null)
+            if (f != null) {
                 f.delete();
+            }
         }
     }
 
@@ -87,9 +89,5 @@ public class PMDCoverageTest {
         } else {
             fail("Missing config file: " + PMD_CONFIG_FILE);
         }
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(PMDCoverageTest.class);
     }
 }

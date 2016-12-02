@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.util.List;
@@ -24,8 +25,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * Original rule was written with XPath, but didn't verify whether the two calls to append
- * would have been done on the same variable.
+ * Original rule was written with XPath, but didn't verify whether the two calls
+ * to append would have been done on the same variable.
  * 
  * <pre>
 //BlockStatement[./Statement/StatementExpression//PrimaryPrefix/Name[ends-with(@Image,'.append')]
@@ -47,7 +48,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
                                              ancestor::Block//LocalVariableDeclaration[./Type//ClassOrInterfaceType[@Image='StringBuilder']]//VariableDeclaratorId/@Image
                                          ]
                                       ]
-
+ * 
  * </pre>
  *
  */

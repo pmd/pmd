@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.util.ArrayList;
@@ -77,7 +78,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private static final Map<String, String> JAVA_LANG;
 
     static {
-        // Note: Assumption here that primitives come from same parent ClassLoader regardless of what ClassLoader we are passed
+        // Note: Assumption here that primitives come from same parent
+        // ClassLoader regardless of what ClassLoader we are passed
         Map<String, Class<?>> thePrimitiveTypes = new HashMap<>();
         thePrimitiveTypes.put("void", Void.TYPE);
         thePrimitiveTypes.put("boolean", Boolean.TYPE);
@@ -141,7 +143,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         pmdClassLoader = PMDASMClassLoader.getInstance(classLoader);
     }
 
-    // FUTURE ASTCompilationUnit should not be a TypeNode.  Clean this up accordingly.
+    // FUTURE ASTCompilationUnit should not be a TypeNode. Clean this up
+    // accordingly.
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         String className = null;
@@ -234,7 +237,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
          * not
          */
         if (node.getNameDeclaration() == null) {
-            // Skip these scenarios as there is no type to populate in these cases:
+            // Skip these scenarios as there is no type to populate in these
+            // cases:
             // 1) Parent is a PackageDeclaration, which is not a type
             // 2) Parent is a ImportDeclaration, this is handled elsewhere.
             if (!(node.jjtGetParent() instanceof ASTPackageDeclaration
@@ -443,7 +447,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.jjtGetNumChildren() == 1) {
             rollupTypeUnary(node);
         } else {
-            // TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+            // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
+            // and PrimarySuffix are all related.
         }
         return data;
     }
@@ -454,7 +459,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.getImage() == null) {
             rollupTypeUnary(node);
         } else {
-            // TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+            // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
+            // and PrimarySuffix are all related.
         }
         return data;
     }
@@ -462,7 +468,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTPrimarySuffix node, Object data) {
         super.visit(node, data);
-        // TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+        // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix and
+        // PrimarySuffix are all related.
         return data;
     }
 
@@ -510,22 +517,34 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTArrayDimsAndInits
                 || node.jjtGetNumChildren() >= 3 && node.jjtGetChild(2) instanceof ASTArrayDimsAndInits) {
             //
-            // Classes for Array types cannot be found directly using reflection.
-            // As far as I can tell you have to create an array instance of the necessary
-            // dimensionality, and then ask for the type from the instance.  OMFG that's ugly.
+            // Classes for Array types cannot be found directly using
+            // reflection.
+            // As far as I can tell you have to create an array instance of the
+            // necessary
+            // dimensionality, and then ask for the type from the instance. OMFG
+            // that's ugly.
             //
 
-            // TODO Need to create utility method to allow array type creation which will use
+            // TODO Need to create utility method to allow array type creation
+            // which will use
             // caching to avoid repeated object creation.
             // TODO Modify Parser to tell us array dimensions count.
-            // TODO Parser seems to do some work to handle arrays in certain case already.
-            // Examine those to figure out what's going on, make sure _all_ array scenarios
-            // are ultimately covered.  Appears to use a Dimensionable interface to handle
-            // only a part of the APIs (not bump), but is implemented several times, so
-            // look at refactoring to eliminate duplication.  Dimensionable is also used
-            // on AccessNodes for some scenarios, need to account for that.  Might be
-            // missing some TypeNode candidates we can add to the AST and have to deal
-            // with here (e.g. FormalParameter)?  Plus some existing usages may be
+            // TODO Parser seems to do some work to handle arrays in certain
+            // case already.
+            // Examine those to figure out what's going on, make sure _all_
+            // array scenarios
+            // are ultimately covered. Appears to use a Dimensionable interface
+            // to handle
+            // only a part of the APIs (not bump), but is implemented several
+            // times, so
+            // look at refactoring to eliminate duplication. Dimensionable is
+            // also used
+            // on AccessNodes for some scenarios, need to account for that.
+            // Might be
+            // missing some TypeNode candidates we can add to the AST and have
+            // to deal
+            // with here (e.g. FormalParameter)? Plus some existing usages may
+            // be
             // incorrect.
         } else {
             rollupTypeUnary(node);
@@ -572,7 +591,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
     }
 
-    // Roll up the type based on type of the first child node using Unary Numeric Promotion per JLS 5.6.1
+    // Roll up the type based on type of the first child node using Unary
+    // Numeric Promotion per JLS 5.6.1
     private void rollupTypeUnaryNumericPromotion(TypeNode typeNode) {
         Node node = typeNode;
         if (node.jjtGetNumChildren() >= 1) {
@@ -591,7 +611,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
     }
 
-    // Roll up the type based on type of the first and second child nodes using Binary Numeric Promotion per JLS 5.6.2
+    // Roll up the type based on type of the first and second child nodes using
+    // Binary Numeric Promotion per JLS 5.6.2
     private void rollupTypeBinaryNumericPromotion(TypeNode typeNode) {
         Node node = typeNode;
         if (node.jjtGetNumChildren() >= 2) {
@@ -601,7 +622,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 Class<?> type1 = ((TypeNode) child1).getType();
                 Class<?> type2 = ((TypeNode) child2).getType();
                 if (type1 != null && type2 != null) {
-                    // Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
+                    // Yeah, String is not numeric, but easiest place to handle
+                    // it, only affects ASTAdditiveExpression
                     if ("java.lang.String".equals(type1.getName()) || "java.lang.String".equals(type2.getName())) {
                         populateType(typeNode, "java.lang.String");
                     } else if ("boolean".equals(type1.getName()) || "boolean".equals(type2.getName())) {
@@ -616,8 +638,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         populateType(typeNode, "int");
                     }
                 } else if (type1 != null || type2 != null) {
-                    // If one side is known to be a String, then the result is a String
-                    // Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
+                    // If one side is known to be a String, then the result is a
+                    // String
+                    // Yeah, String is not numeric, but easiest place to handle
+                    // it, only affects ASTAdditiveExpression
                     if (type1 != null && "java.lang.String".equals(type1.getName())
                             || type2 != null && "java.lang.String".equals(type2.getName())) {
                         populateType(typeNode, "java.lang.String");
@@ -683,7 +707,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public boolean classNameExists(String fullyQualifiedClassName) {
         try {
             pmdClassLoader.loadClass(fullyQualifiedClassName);
-            return true; //Class found
+            return true; // Class found
         } catch (ClassNotFoundException e) {
             return false;
         } catch (NoClassDefFoundError e) {
@@ -712,7 +736,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private String getClassName(ASTCompilationUnit node) {
         ASTClassOrInterfaceDeclaration classDecl = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
         if (classDecl == null) {
-            return null; // Happens if this compilation unit only contains an enum
+            // Happens if this compilation unit only contains an enum
+            return null;
         }
         if (node.declarationsAreInDefaultPackage()) {
             return classDecl.getImage();

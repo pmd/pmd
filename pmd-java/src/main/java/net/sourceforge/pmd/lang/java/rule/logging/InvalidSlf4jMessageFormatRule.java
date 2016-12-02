@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.logging;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         }
 
         final ASTPrimaryExpression messageParam = params.get(0);
-        //remove the message parameter
+        // remove the message parameter
         params.remove(0);
         final int expectedArguments = expectedArguments(messageParam);
 
@@ -105,7 +106,8 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
     }
 
     private boolean isNewThrowable(ASTPrimaryExpression last) {
-        // in case a new exception is created or the exception class is mentioned.
+        // in case a new exception is created or the exception class is
+        // mentioned.
         ASTClassOrInterfaceType classOrInterface = last.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         if (classOrInterface != null && classOrInterface.getType() != null
                 && Throwable.class.isAssignableFrom(classOrInterface.getType())) {

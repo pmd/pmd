@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli;
 
 import java.io.ByteArrayOutputStream;
@@ -19,7 +20,7 @@ public class XPathCLITest {
 
         try {
             XPathCLI.main(new String[] { "-xpath", "//ClassOrInterfaceDeclaration", "-filename",
-                    "src/test/java/net/sourceforge/pmd/cli/XPathCLITest.java" });
+                "src/test/java/net/sourceforge/pmd/cli/XPathCLITest.java" });
             System.out.flush();
         } finally {
             System.setOut(oldOut);

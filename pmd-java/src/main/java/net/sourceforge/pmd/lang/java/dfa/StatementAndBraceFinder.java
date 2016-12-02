@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.dfa;
 
 import java.util.logging.Level;
@@ -39,8 +40,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  * @author raik
  *         <p/>
  *         Sublayer of DataFlowFacade. Finds all data flow nodes and stores the
- *         type information (@see StackObject). At last it uses this information to
- *         link the nodes.
+ *         type information (@see StackObject). At last it uses this information
+ *         to link the nodes.
  */
 public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     private static final Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());
@@ -65,7 +66,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         this.dataFlow.createEndNode(node.getEndLine());
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("DataFlow is " + this.dataFlow.dump()); // @TODO SRT Remove after development  
+            LOGGER.fine("DataFlow is " + this.dataFlow.dump()); // @TODO SRT
+                                                                // Remove after
+                                                                // development
         }
         Linker linker = new Linker(dataFlowHandler, dataFlow.getBraceStack(), dataFlow.getContinueBreakReturnStack());
         try {
@@ -194,8 +197,8 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
-    // 	----------------------------------------------------------------------------
-    //  BRANCH OUT
+    // ----------------------------------------------------------------------------
+    // BRANCH OUT
 
     @Override
     public Object visit(ASTStatement node, Object data) {
@@ -284,7 +287,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
-        //super.visit(node, data);
+        // super.visit(node, data);
         if (node.jjtGetNumChildren() == 0) {
             dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -364,7 +367,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     /*
      * The method handles the special "for" loop. It creates always an
      * expression node even if the loop looks like for(;;).
-     * */
+     */
     private void addForExpressionNode(Node node, Structure dataFlow) {
         ASTForStatement parent = (ASTForStatement) node.jjtGetParent();
         boolean hasExpressionChild = false;

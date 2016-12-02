@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.comments;
 
 import static org.junit.Assert.assertEquals;
@@ -24,11 +25,11 @@ import net.sourceforge.pmd.lang.java.ast.Token;
 
 public class AbstractCommentRuleTest {
 
-    private AbstractCommentRule testSubject = new AbstractCommentRule() {};
+    private AbstractCommentRule testSubject = new AbstractCommentRule() {
+    };
 
     /**
-     * Blank lines in comments should not raise an exception.
-     * See bug #1048.
+     * Blank lines in comments should not raise an exception. See bug #1048.
      */
     @Test
     public void testFilteredCommentIn() {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.ArrayDeque;
@@ -35,16 +36,14 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
- * Visitor for scope creation.
- * Visits all nodes of an AST and creates scope objects for nodes representing
- * syntactic entities which may contain declarations. For example, a block
- * may contain variable definitions (which are declarations) and
- * therefore needs a scope object where these declarations can be associated,
- * whereas an expression can't contain declarations and therefore doesn't need
- * a scope object.
- * With the exception of global scopes, each scope object is linked to its
- * parent scope, which is the scope object of the next embedding syntactic
- * entity that has a scope.
+ * Visitor for scope creation. Visits all nodes of an AST and creates scope
+ * objects for nodes representing syntactic entities which may contain
+ * declarations. For example, a block may contain variable definitions (which
+ * are declarations) and therefore needs a scope object where these declarations
+ * can be associated, whereas an expression can't contain declarations and
+ * therefore doesn't need a scope object. With the exception of global scopes,
+ * each scope object is linked to its parent scope, which is the scope object of
+ * the next embedding syntactic entity that has a scope.
  */
 public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
@@ -57,7 +56,8 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     private Deque<Scope> scopes = new ArrayDeque<>();
 
     /**
-     * Creates a new {@link ScopeAndDeclarationFinder} using the current class loader.
+     * Creates a new {@link ScopeAndDeclarationFinder} using the current class
+     * loader.
      */
     public ScopeAndDeclarationFinder() {
         this(ScopeAndDeclarationFinder.class.getClassLoader());
@@ -65,20 +65,26 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     /**
      * Creates a new {@link ScopeAndDeclarationFinder}.
-     * @param classLoader the class loader to use to resolve types, see {@link SourceFileScope} and {@link TypeSet}
+     * 
+     * @param classLoader
+     *            the class loader to use to resolve types, see
+     *            {@link SourceFileScope} and {@link TypeSet}
      */
     public ScopeAndDeclarationFinder(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     /**
-     * Sets the scope of a node and adjusts the scope stack accordingly.
-     * The scope on top of the stack is set as the parent of the given scope,
-     * which is then also stored on the scope stack.
+     * Sets the scope of a node and adjusts the scope stack accordingly. The
+     * scope on top of the stack is set as the parent of the given scope, which
+     * is then also stored on the scope stack.
      *
-     * @param newScope the scope for the node.
-     * @param node     the AST node for which the scope is to be set.
-     * @throws java.util.EmptyStackException if the scope stack is empty.
+     * @param newScope
+     *            the scope for the node.
+     * @param node
+     *            the AST node for which the scope is to be set.
+     * @throws java.util.EmptyStackException
+     *             if the scope stack is empty.
      */
     private void addScope(Scope newScope, JavaNode node) {
         newScope.setParent(scopes.peek());
@@ -87,36 +93,42 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     /**
-     * Creates a new local scope for an AST node.
-     * The scope on top of the stack is set as the parent of the new scope,
-     * which is then also stored on the scope stack.
+     * Creates a new local scope for an AST node. The scope on top of the stack
+     * is set as the parent of the new scope, which is then also stored on the
+     * scope stack.
      *
-     * @param node the AST node for which the scope has to be created.
-     * @throws java.util.EmptyStackException if the scope stack is empty.
+     * @param node
+     *            the AST node for which the scope has to be created.
+     * @throws java.util.EmptyStackException
+     *             if the scope stack is empty.
      */
     private void createLocalScope(JavaNode node) {
         addScope(new LocalScope(), node);
     }
 
     /**
-     * Creates a new method scope for an AST node.
-     * The scope on top of the stack is set as the parent of the new scope,
-     * which is then also stored on the scope stack.
+     * Creates a new method scope for an AST node. The scope on top of the stack
+     * is set as the parent of the new scope, which is then also stored on the
+     * scope stack.
      *
-     * @param node the AST node for which the scope has to be created.
-     * @throws java.util.EmptyStackException if the scope stack is empty.
+     * @param node
+     *            the AST node for which the scope has to be created.
+     * @throws java.util.EmptyStackException
+     *             if the scope stack is empty.
      */
     private void createMethodScope(JavaNode node) {
         addScope(new MethodScope(node), node);
     }
 
     /**
-     * Creates a new class scope for an AST node.
-     * The scope on top of the stack is set as the parent of the new scope,
-     * which is then also stored on the scope stack.
+     * Creates a new class scope for an AST node. The scope on top of the stack
+     * is set as the parent of the new scope, which is then also stored on the
+     * scope stack.
      *
-     * @param node the AST node for which the scope has to be created.
-     * @throws java.util.EmptyStackException if the scope stack is empty.
+     * @param node
+     *            the AST node for which the scope has to be created.
+     * @throws java.util.EmptyStackException
+     *             if the scope stack is empty.
      */
     private void createClassScope(JavaNode node) {
         if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
@@ -127,10 +139,11 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     /**
-     * Creates a new global scope for an AST node.
-     * The new scope is stored on the scope stack.
+     * Creates a new global scope for an AST node. The new scope is stored on
+     * the scope stack.
      *
-     * @param node the AST node for which the scope has to be created.
+     * @param node
+     *            the AST node for which the scope has to be created.
      */
     private void createSourceFileScope(ASTCompilationUnit node) {
         // When we do full symbol resolution, we'll need to add a truly
@@ -215,8 +228,8 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         /*
-         * Local variables declared inside the constructor need to
-         * be in a different scope so special handling is needed
+         * Local variables declared inside the constructor need to be in a
+         * different scope so special handling is needed
          */
         createMethodScope(node);
 

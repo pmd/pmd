@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import java.io.StringReader;
@@ -20,7 +21,8 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 public class StdCyclomaticComplexityRuleTest {
 
     /**
-     * Make sure the entry stack is empty, if show classes complexity is disabled.
+     * Make sure the entry stack is empty, if show classes complexity is
+     * disabled.
      *
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1501/">bug #1501</a>
      */

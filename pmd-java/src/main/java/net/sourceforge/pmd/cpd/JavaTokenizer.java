@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
@@ -93,11 +94,11 @@ public class JavaTokenizer implements Tokenizer {
 
     /**
      * The {@link TokenDiscarder} consumes token by token and maintains state.
-     * It can detect, whether the current token belongs to an annotation and whether
-     * the current token should be discarded by CPD.
+     * It can detect, whether the current token belongs to an annotation and
+     * whether the current token should be discarded by CPD.
      * <p>
-     * By default, it discards semicolons, package and import statements, and enables CPD suppression.
-     * Optionally, all annotations can be ignored, too.
+     * By default, it discards semicolons, package and import statements, and
+     * enables CPD suppression. Optionally, all annotations can be ignored, too.
      * </p>
      */
     private static class TokenDiscarder {
@@ -143,7 +144,7 @@ public class JavaTokenizer implements Tokenizer {
         }
 
         public void skipCPDSuppression(Token currentToken) {
-            //if processing an annotation, look for a CPD-START or CPD-END
+            // if processing an annotation, look for a CPD-START or CPD-END
             if (isAnnotation) {
                 if (!discardingSuppressing && currentToken.kind == JavaParserConstants.STRING_LITERAL
                         && CPD_START.equals(currentToken.image)) {
@@ -194,9 +195,10 @@ public class JavaTokenizer implements Tokenizer {
     }
 
     /**
-     * The {@link ConstructorDetector} consumes token by token and maintains state.
-     * It can detect, whether the current token belongs to a constructor method identifier
-     * and if so, is able to restore it when using ignoreIdentifiers.
+     * The {@link ConstructorDetector} consumes token by token and maintains
+     * state. It can detect, whether the current token belongs to a constructor
+     * method identifier and if so, is able to restore it when using
+     * ignoreIdentifiers.
      */
     private static class ConstructorDetector {
         private boolean ignoreIdentifiers;
@@ -221,7 +223,8 @@ public class JavaTokenizer implements Tokenizer {
             switch (currentToken.kind) {
             case JavaParserConstants.IDENTIFIER:
                 if ("enum".equals(currentToken.image)) {
-                    // If declaring an enum, add a new block nesting level at which constructors may exist
+                    // If declaring an enum, add a new block nesting level at
+                    // which constructors may exist
                     pushTypeDeclaration();
                 } else if (storeNextIdentifier) {
                     classMembersIndentations.peek().name = currentToken.image;
@@ -233,7 +236,8 @@ public class JavaTokenizer implements Tokenizer {
                 break;
 
             case JavaParserConstants.CLASS:
-                // If declaring a class, add a new block nesting level at which constructors may exist
+                // If declaring a class, add a new block nesting level at which
+                // constructors may exist
                 pushTypeDeclaration();
                 break;
 
@@ -264,7 +268,8 @@ public class JavaTokenizer implements Tokenizer {
             }
 
             if (currentToken.kind == JavaParserConstants.LPAREN) {
-                // was the previous token a constructor? If so, restore the identifier
+                // was the previous token a constructor? If so, restore the
+                // identifier
                 if (!classMembersIndentations.isEmpty()
                         && classMembersIndentations.peek().name.equals(prevIdentifier)) {
                     int lastTokenIndex = tokenEntries.size() - 1;

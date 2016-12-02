@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
@@ -66,7 +67,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
      * Determine if the given return statement has any embedded method calls.
      *
      * @param rtn
-     *          return statement to analyze
+     *            return statement to analyze
      * @return true if any method calls are made within the given return
      */
     private boolean isMethodCall(ASTReturnStatement rtn) {

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertEquals;

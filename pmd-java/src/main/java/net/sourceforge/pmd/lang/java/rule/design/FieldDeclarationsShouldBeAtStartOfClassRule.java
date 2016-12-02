@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,9 +17,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
- * Detects fields that are declared after methods, constructors, etc.
- * It was a XPath rule, but the Java version is much faster.
- * The XPath rule for reference:
+ * Detects fields that are declared after methods, constructors, etc. It was a
+ * XPath rule, but the Java version is much faster. The XPath rule for
+ * reference:
+ * 
  * <pre>
 //ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
@@ -81,7 +83,9 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     /**
      * Ignore all annotations, until anything, that is not an annotation and
      * return this node
-     * @param child the node from where to start the search
+     * 
+     * @param child
+     *            the node from where to start the search
      * @return the first child or the first child after annotations
      */
     private Node skipAnnotations(Node child) {

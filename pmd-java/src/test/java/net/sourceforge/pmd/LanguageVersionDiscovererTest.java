@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;

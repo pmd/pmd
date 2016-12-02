@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.regex.Pattern;
@@ -10,12 +11,13 @@ import net.sourceforge.pmd.lang.java.rule.regex.RegexHelper;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
- * This class allow to match a Literal (most likely a String) with a regex pattern.
- * Obviously, there are many applications of it (such as basic.xml/AvoidUsingHardCodedIP).
+ * This class allow to match a Literal (most likely a String) with a regex
+ * pattern. Obviously, there are many applications of it (such as
+ * basic.xml/AvoidUsingHardCodedIP).
  *
  * @author Romain PELISSE, belaran@gmail.com
  */
-//FUTURE This is not referenced by any RuleSet?
+// FUTURE This is not referenced by any RuleSet?
 public class GenericLiteralCheckerRule extends AbstractJavaRule {
 
     private Pattern pattern;
@@ -31,7 +33,7 @@ public class GenericLiteralCheckerRule extends AbstractJavaRule {
 
     private void init() {
         if (pattern == null) {
-            // Retrieve the regex pattern set by user			
+            // Retrieve the regex pattern set by user
             String stringPattern = super.getProperty(REGEX_PROPERTY);
             // Compile the pattern only once
             if (stringPattern != null && stringPattern.length() > 0) {
@@ -43,7 +45,8 @@ public class GenericLiteralCheckerRule extends AbstractJavaRule {
     }
 
     /**
-     * This method checks if the Literal matches the pattern. If it does, a violation is logged.
+     * This method checks if the Literal matches the pattern. If it does, a
+     * violation is logged.
      */
     @Override
     public Object visit(ASTLiteral node, Object data) {

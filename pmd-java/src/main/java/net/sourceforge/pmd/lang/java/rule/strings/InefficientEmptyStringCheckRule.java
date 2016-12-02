@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -15,8 +16,10 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
  *         if(str.trim().length()==0){....
  * </pre>
  * 
- * <p/> is quite inefficient as trim() causes a new String to be created.
- * Smarter code to check for an empty string would be: <p/>
+ * <p/>
+ * is quite inefficient as trim() causes a new String to be created. Smarter
+ * code to check for an empty string would be:
+ * <p/>
  * 
  * <pre>
  * Character.isWhitespace(str.charAt(i));

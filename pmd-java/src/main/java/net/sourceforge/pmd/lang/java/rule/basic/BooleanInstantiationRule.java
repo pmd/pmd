@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -33,8 +34,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 public class BooleanInstantiationRule extends AbstractJavaRule {
 
     /*
-     *  see bug 1744065 : If somebody create it owns Boolean, the rule should not be triggered
-     *   Therefore, we use this boolean to flag if the source code contains such an import
+     * see bug 1744065 : If somebody create it owns Boolean, the rule should not
+     * be triggered Therefore, we use this boolean to flag if the source code
+     * contains such an import
      *
      */
     private boolean customBoolean;
@@ -49,7 +51,8 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImportDeclaration decl, Object data) {
-        // If the import actually import a Boolean class that overrides java.lang.Boolean
+        // If the import actually import a Boolean class that overrides
+        // java.lang.Boolean
         if (decl.getImportedName().endsWith("Boolean") && !decl.getImportedName().equals("java.lang")) {
             customBoolean = true;
         }

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -35,7 +36,7 @@ public class ASTFormalParameterTest extends ParserTst {
             }
         }
 
-        //Ensure that both possibilities are tested
+        // Ensure that both possibilities are tested
         assertEquals(1, nrOfVarArgs);
         assertEquals(1, nrOfNoVarArgs);
     }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli;
 
 import static org.junit.Assert.assertTrue;
@@ -39,7 +40,7 @@ public class CLITest extends BaseCLITest {
     @Test
     public void changeJavaVersion() {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "java-design", "-version", "1.5", "-language",
-                "java", "-debug" };
+            "java", "-debug" };
         String resultFilename = runTest(args, "chgJavaVersion");
         assertTrue("Invalid Java version",
                 FileUtil.findPatternInFile(new File(resultFilename), "Using Java version: Java 1.5"));

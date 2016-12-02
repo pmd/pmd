@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.imports;
 
 import java.util.HashSet;
@@ -27,11 +28,11 @@ public class UnusedImportsRule extends AbstractJavaRule {
     /*
      * Patterns to match the following constructs:
      *
-     * @see  package.class#member(param, param)  label
-     * {@linkplain  package.class#member(param, param)  label}
-     * {@link  package.class#member(param, param)  label}
-     * {@link  package.class#field}
-     * {@value  package.class#field}
+     * @see package.class#member(param, param) label {@linkplain
+     * package.class#member(param, param) label} {@link
+     * package.class#member(param, param) label} {@link package.class#field}
+     * {@value package.class#field}
+     * 
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
@@ -52,9 +53,10 @@ public class UnusedImportsRule extends AbstractJavaRule {
         super.visit(node, data);
         visitComments(node);
 
-        /* special handling for Bug 2606609 : False "UnusedImports" positive in package-info.java
-         * package annotations are processed before the import clauses so they need to be examined
-         * again later on.
+        /*
+         * special handling for Bug 2606609 : False "UnusedImports" positive in
+         * package-info.java package annotations are processed before the import
+         * clauses so they need to be examined again later on.
          */
         if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTPackageDeclaration) {
             visit((ASTPackageDeclaration) node.jjtGetChild(0), data);

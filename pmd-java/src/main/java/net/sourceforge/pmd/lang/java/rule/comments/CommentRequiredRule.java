@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.comments;
 
 import java.util.Arrays;
@@ -21,9 +22,7 @@ import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 public class CommentRequiredRule extends AbstractCommentRule {
 
     enum CommentRequirement {
-        Required("Required"),
-        Ignored("Ignored"),
-        Unwanted("Unwanted");
+        Required("Required"), Ignored("Ignored"), Unwanted("Unwanted");
 
         private final String label;
 

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class ASTAnnotation extends AbstractJavaNode {
 
     private static List<String> unusedRules = Arrays.asList(new String[] { "UnusedPrivateField", "UnusedLocalVariable",
-            "UnusedPrivateMethod", "UnusedFormalParameter" });
+        "UnusedPrivateMethod", "UnusedFormalParameter" });
 
     private static List<String> serialRules = Arrays
             .asList(new String[] { "BeanMembersShouldSerialize", "MissingSerialVersionUID" });

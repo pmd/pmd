@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution.visitors;
 
 import java.util.ArrayList;
@@ -62,7 +63,8 @@ public class PMDASMVisitor extends ClassVisitor {
         packages.put(className, name);
         n = className.indexOf('$');
         if (n > -1) {
-            //TODO I don't think the first one, with Class$Inner is needed - come back and check
+            // TODO I don't think the first one, with Class$Inner is needed -
+            // come back and check
             packages.put(className.substring(n + 1), name);
             packages.put(className.replace('$', '.'), name);
         }
@@ -131,7 +133,8 @@ public class PMDASMVisitor extends ClassVisitor {
     @Override
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
         if (!this.outerName.replace('.', '/').equals(outerName)) {
-            // do not consider the inner class if it is not a member of our outer class
+            // do not consider the inner class if it is not a member of our
+            // outer class
             return;
         }
 
@@ -371,9 +374,9 @@ public class PMDASMVisitor extends ClassVisitor {
         }
 
         /**
-         * the constant to be loaded on the stack. This parameter must be a non null
-         * Integer, a Float, a Long, a Double a String (or a Type for .class
-         * constants, for classes whose version is 49.0 or more).
+         * the constant to be loaded on the stack. This parameter must be a non
+         * null Integer, a Float, a Long, a Double a String (or a Type for
+         * .class constants, for classes whose version is 49.0 or more).
          *
          * @see org.objectweb.asm.MethodVisitor#visitLdcInsn(java.lang.Object)
          */

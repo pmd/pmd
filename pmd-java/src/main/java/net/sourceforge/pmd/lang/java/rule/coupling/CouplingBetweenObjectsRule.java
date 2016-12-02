@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.coupling;
 
 import java.util.HashSet;
@@ -22,10 +23,10 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
- * CouplingBetweenObjects attempts to capture all unique Class attributes,
- * local variables, and return types to determine how many objects a class is
- * coupled to. This is only a gauge and isn't a hard and fast rule. The threshold
- * value is configurable and should be determined accordingly
+ * CouplingBetweenObjects attempts to capture all unique Class attributes, local
+ * variables, and return types to determine how many objects a class is coupled
+ * to. This is only a gauge and isn't a hard and fast rule. The threshold value
+ * is configurable and should be determined accordingly
  *
  * @author aglover
  * @since Feb 20, 2003
@@ -110,8 +111,8 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * convience method to handle hierarchy. This is probably too much
-     * work and will go away once I figure out the framework
+     * convience method to handle hierarchy. This is probably too much work and
+     * will go away once I figure out the framework
      */
     private void handleASTTypeChildren(Node node) {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
@@ -127,15 +128,16 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * performs a check on the variable and updates the counter. Counter is
      * instance for a class and is reset upon new class scan.
      *
-     * @param variableType The variable type.
+     * @param variableType
+     *            The variable type.
      */
     private void checkVariableType(Node nameNode, String variableType) {
         // TODO - move this into the symbol table somehow?
         if (nameNode.getParentsOfType(ASTClassOrInterfaceDeclaration.class).isEmpty()) {
             return;
         }
-        //if the field is of any type other than the class type
-        //increment the count
+        // if the field is of any type other than the class type
+        // increment the count
         ClassScope clzScope = ((JavaNode) nameNode).getScope().getEnclosingScope(ClassScope.class);
         if (!clzScope.getClassName().equals(variableType) && !this.filterTypes(variableType)
                 && !this.typesFoundSoFar.contains(variableType)) {
@@ -146,9 +148,11 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     /**
      * Filters variable type - we don't want primatives, wrappers, strings, etc.
-     * This needs more work. I'd like to filter out super types and perhaps interfaces
+     * This needs more work. I'd like to filter out super types and perhaps
+     * interfaces
      *
-     * @param variableType The variable type.
+     * @param variableType
+     *            The variable type.
      * @return boolean true if variableType is not what we care about
      */
     private boolean filterTypes(String variableType) {
@@ -157,7 +161,8 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * @param variableType The variable type.
+     * @param variableType
+     *            The variable type.
      * @return boolean true if variableType is a primitive or wrapper
      */
     private boolean filterPrimitivesAndWrappers(String variableType) {

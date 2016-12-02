@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.xpath;
 
 import java.util.List;
@@ -17,9 +18,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 
 /**
- * The XPath query "//VariableDeclarator[contains(getCommentOn(), '//password')]" 
- * will find all variables declared that are annotated with the password comment.
- *  
+ * The XPath query "//VariableDeclarator[contains(getCommentOn(),
+ * '//password')]" will find all variables declared that are annotated with the
+ * password comment.
+ * 
  * @author Andy Throgmorton
  */
 public class GetCommentOnFunction implements Function {

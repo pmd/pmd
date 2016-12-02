@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty(
             "IgnoreJUnitCompletely", "Allow all methods in a JUnit testcase to throw Exceptions", false, 1.0f);
 
-    //Set to true when the class is determined to be a JUnit testcase
+    // Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;
 
     public SignatureDeclareThrowsException() {
@@ -145,9 +146,11 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     /**
-     * Checks all exceptions for possible violation on the exception declaration.
+     * Checks all exceptions for possible violation on the exception
+     * declaration.
      *
-     * @param exceptionList containing all exception for declaration
+     * @param exceptionList
+     *            containing all exception for declaration
      * @param context
      */
     private void evaluateExceptions(List<ASTName> exceptionList, Object context) {
@@ -159,10 +162,11 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     /**
-     * Checks if the given value is defined as <code>Exception</code> and the parent is either
-     * a method or constructor declaration.
+     * Checks if the given value is defined as <code>Exception</code> and the
+     * parent is either a method or constructor declaration.
      *
-     * @param exception to evaluate
+     * @param exception
+     *            to evaluate
      * @return true if <code>Exception</code> is declared and has proper parents
      */
     private boolean hasDeclaredExceptionInSignature(ASTName exception) {
@@ -170,7 +174,8 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     /**
-     * @param exception to evaluate
+     * @param exception
+     *            to evaluate
      * @return true if parent node is either a method or constructor declaration
      */
     private boolean isParentSignatureDeclaration(ASTName exception) {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.dfa;
 
 import org.junit.Test;
@@ -18,7 +19,7 @@ public class DAAPathFinderTest extends ParserTst implements Executable {
     public void testTwoUpdateDefs() throws Throwable {
         ASTMethodDeclarator meth = getOrderedNodes(ASTMethodDeclarator.class, TWO_UPDATE_DEFS).get(0);
         DAAPathFinder a = new DAAPathFinder(meth.getDataFlowNode().getFlow().get(0), this);
-        //        a.run();
+        // a.run();
     }
 
     public void execute(CurrentPath path) {

@@ -1,16 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
- * Implements the modified cyclomatic complexity rule 
+ * Implements the modified cyclomatic complexity rule
  * <p>
- * Modified rules: Same as standard cyclomatic complexity, but
- * switch statement plus all cases count as 1.
+ * Modified rules: Same as standard cyclomatic complexity, but switch statement
+ * plus all cases count as 1.
  * 
  * @author Alan Hohn, based on work by Donald A. Leckie
  * 

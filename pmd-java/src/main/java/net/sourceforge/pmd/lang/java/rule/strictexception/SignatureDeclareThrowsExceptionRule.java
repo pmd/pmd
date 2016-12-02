@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strictexception;
 
 import java.util.Collections;
@@ -73,9 +74,11 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     }
 
     /**
-     * Checks all exceptions for possible violation on the exception declaration.
+     * Checks all exceptions for possible violation on the exception
+     * declaration.
      *
-     * @param exceptionList containing all exception for declaration
+     * @param exceptionList
+     *            containing all exception for declaration
      * @param context
      */
     private void evaluateExceptions(List<ASTName> exceptionList, Object context) {
@@ -87,10 +90,11 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     }
 
     /**
-     * Checks if the given value is defined as <code>Exception</code> and the parent is either
-     * a method or constructor declaration.
+     * Checks if the given value is defined as <code>Exception</code> and the
+     * parent is either a method or constructor declaration.
      *
-     * @param exception to evaluate
+     * @param exception
+     *            to evaluate
      * @return true if <code>Exception</code> is declared and has proper parents
      */
     private boolean hasDeclaredExceptionInSignature(ASTName exception) {
@@ -100,7 +104,9 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     /**
      * Checks if the given exception is declared in the method or constructor
      * signature.
-     * @param exception to evaluate
+     * 
+     * @param exception
+     *            to evaluate
      * @return true if parent node is either a method or constructor declaration
      */
     private boolean isParentSignatureDeclaration(ASTName exception) {

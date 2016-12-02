@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
 import java.util.AbstractList;

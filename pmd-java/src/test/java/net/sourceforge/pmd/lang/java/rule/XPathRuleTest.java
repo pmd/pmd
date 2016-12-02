@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.Assert.assertEquals;
@@ -83,8 +84,11 @@ public class XPathRuleTest extends RuleTst {
     }
 
     /**
-     * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work in some cases in xpath 2.0
-     * @throws Exception any error
+     * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work
+     * in some cases in xpath 2.0
+     * 
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testImageOfPrimarySuffix() throws Exception {
@@ -127,7 +131,9 @@ public class XPathRuleTest extends RuleTst {
 
     /**
      * Following sibling check: See https://sourceforge.net/p/pmd/bugs/1209/
-     * @throws Exception any error
+     * 
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testFollowingSibling() throws Exception {

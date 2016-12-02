@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.sunsecure;
 
 import java.util.List;
@@ -25,8 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 
 /**
  * Implementation note: this rule currently ignores return types of y.x.z,
- * currently it handles only local type fields.
- * Created on Jan 17, 2005
+ * currently it handles only local type fields. Created on Jan 17, 2005
  *
  * @author mgriffa
  */

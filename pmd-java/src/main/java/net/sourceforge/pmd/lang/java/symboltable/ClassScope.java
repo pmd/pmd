@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.ArrayList;
@@ -262,11 +263,13 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     /**
-     * Creates a fake method name declaration for built-in methods from Java like
-     * the Enum Method "valueOf".
+     * Creates a fake method name declaration for built-in methods from Java
+     * like the Enum Method "valueOf".
      *
-     * @param methodName the method name
-     * @param parameterTypes the reference types of each parameter of the method
+     * @param methodName
+     *            the method name
+     * @param parameterTypes
+     *            the reference types of each parameter of the method
      * @return a method name declaration
      */
     private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName,
@@ -427,7 +430,8 @@ public class ClassScope extends AbstractJavaScope {
                         Map<VariableNameDeclaration, List<NameOccurrence>> vars = s
                                 .getDeclarations(VariableNameDeclaration.class);
                         for (VariableNameDeclaration d : vars.keySet()) {
-                            // in case of simple lambda expression, the type might be unknown
+                            // in case of simple lambda expression, the type
+                            // might be unknown
                             if (d.getImage().equals(name.getImage()) && d.getTypeImage() != null) {
                                 String typeName = d.getTypeImage();
                                 typeName = qualifyTypeName(typeName);
@@ -588,7 +592,8 @@ public class ClassScope extends AbstractJavaScope {
                         return this.getEnclosingScope(SourceFileScope.class).resolveType(bound.getImage());
                     }
                 } else {
-                    return Object.class; // type parameter found, but no binding.
+                    // type parameter found, but no binding.
+                    return Object.class;
                 }
             }
         }

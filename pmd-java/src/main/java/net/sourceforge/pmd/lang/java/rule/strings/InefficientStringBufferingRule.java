@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.util.Iterator;
@@ -26,11 +27,9 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
- * How this rule works:
- * find additive expressions: +
- * check that the addition is between anything other than two literals
- * if true and also the parent is StringBuffer constructor or append,
- * report a violation.
+ * How this rule works: find additive expressions: + check that the addition is
+ * between anything other than two literals if true and also the parent is
+ * StringBuffer constructor or append, report a violation.
  *
  * @author mgriffa
  */
@@ -93,7 +92,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
                 if (!name.getImage().endsWith("length")) {
                     break;
                 } else if (!iterator.hasNext()) {
-                    return data; //All names end with length
+                    return data; // All names end with length
                 }
             }
 
@@ -173,7 +172,8 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         if (ao == null) {
             return false;
         }
-        // note that the child can be an ArrayDimsAndInits, for example, from java.lang.FloatingDecimal:  t = new int[ nWords+wordcount+1 ];
+        // note that the child can be an ArrayDimsAndInits, for example, from
+        // java.lang.FloatingDecimal: t = new int[ nWords+wordcount+1 ];
         ASTClassOrInterfaceType an = ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
         return an != null && TypeHelper.isEither(an, StringBuffer.class, StringBuilder.class);
     }

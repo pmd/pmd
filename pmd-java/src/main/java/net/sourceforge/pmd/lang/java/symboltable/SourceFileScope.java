@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Collections;
@@ -17,8 +18,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
- * This scope is the outer most scope of a Java file.
- * A Source File can contain one ore more classes.
+ * This scope is the outer most scope of a Java file. A Source File can contain
+ * one ore more classes.
  */
 public class SourceFileScope extends AbstractJavaScope {
 
@@ -35,8 +36,11 @@ public class SourceFileScope extends AbstractJavaScope {
 
     /**
      * Configures the type resolution for the symbol table.
-     * @param classLoader the class loader to use to find additional classes
-     * @param imports the import declarations
+     * 
+     * @param classLoader
+     *            the class loader to use to find additional classes
+     * @param imports
+     *            the import declarations
      */
     public void configureImports(ClassLoader classLoader, List<ASTImportDeclaration> imports) {
         this.types = new TypeSet(classLoader);
@@ -51,14 +55,16 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     public Set<String> getExplicitImports() {
-        return types != null ? types.getExplicitImports() : Collections.<String> emptySet();
+        return types != null ? types.getExplicitImports() : Collections.<String>emptySet();
     }
 
     /**
-     * Whether an auxclasspath has been configured or not.
-     * This can be used to enable/disable more detailed symbol table analysis and type resolution
+     * Whether an auxclasspath has been configured or not. This can be used to
+     * enable/disable more detailed symbol table analysis and type resolution
      * can be used - or to fall back to more simple implementation.
-     * @return <code>true</code> if the auxclasspath is configured and types can be resolved reliably.
+     * 
+     * @return <code>true</code> if the auxclasspath is configured and types can
+     *         be resolved reliably.
      * @see #resolveType(String)
      */
     public boolean hasAuxclasspath() {
@@ -67,7 +73,9 @@ public class SourceFileScope extends AbstractJavaScope {
 
     /**
      * Tries to resolve a class by name.
-     * @param name the name of the class
+     * 
+     * @param name
+     *            the name of the class
      * @return the class or <code>null</code> if no class could be found
      */
     public Class<?> resolveType(String name) {
@@ -84,7 +92,9 @@ public class SourceFileScope extends AbstractJavaScope {
 
     /**
      * {@inheritDoc}
-     * @throws IllegalArgumentException if declaration is not a {@link ClassNameDeclaration}
+     * 
+     * @throws IllegalArgumentException
+     *             if declaration is not a {@link ClassNameDeclaration}
      */
     @Override
     public void addDeclaration(NameDeclaration declaration) {
@@ -95,7 +105,9 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     /**
-     * Convenience method that casts the declarations to {@link ClassNameDeclaration}s.
+     * Convenience method that casts the declarations to
+     * {@link ClassNameDeclaration}s.
+     * 
      * @see #getDeclarations()
      * @return all class name declarations
      */
@@ -124,8 +136,9 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     /**
-     * Returns a set of all types defined within this source file.
-     * This includes all top-level types and nested types.
+     * Returns a set of all types defined within this source file. This includes
+     * all top-level types and nested types.
+     * 
      * @return set of all types in this source file.
      */
     public Map<String, Node> getQualifiedTypeNames() {

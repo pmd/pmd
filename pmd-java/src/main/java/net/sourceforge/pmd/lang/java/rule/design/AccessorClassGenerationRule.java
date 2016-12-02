@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -307,7 +308,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         String returnValue;
         int index = value.indexOf(remove);
         if (index != -1) { // if the package name can start anywhere but 0
-                               // please inform the author because this will break
+                           // please inform the author because this will break
             returnValue = value.substring(0, index) + value.substring(index + remove.length());
         } else {
             returnValue = value;

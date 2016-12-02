@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -140,8 +141,7 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     /**
-     * Assert it the occurrence is a self assignment such as:
-     * <code>
+     * Assert it the occurrence is a self assignment such as: <code>
      * 		i += 3;
      * </code>
      *

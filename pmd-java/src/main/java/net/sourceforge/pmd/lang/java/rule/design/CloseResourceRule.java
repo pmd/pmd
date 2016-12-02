@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -47,10 +48,10 @@ import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
  *  } finally {
  *   c.close();
  *  }
+ * </pre>
  * 
  *  @author original author unknown
  *  @author Contribution from Pierre Mathien
- * </pre>
  */
 public class CloseResourceRule extends AbstractJavaRule {
 
@@ -185,9 +186,9 @@ public class CloseResourceRule extends AbstractJavaRule {
             // variable declaration and
             // the beginning of the try block.
             ASTBlockStatement tryBlock = t.getFirstParentOfType(ASTBlockStatement.class);
-            if (!hasNullInitializer(var) // no need to check for critical statements, if
-                    // the variable has been initialized with null
-                    && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
+            // no need to check for critical statements, if
+            // the variable has been initialized with null
+            if (!hasNullInitializer(var) && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
 
                 List<ASTBlockStatement> blocks = parentBlock.jjtGetParent().findChildrenOfType(ASTBlockStatement.class);
                 int parentBlockIndex = blocks.indexOf(parentBlock);

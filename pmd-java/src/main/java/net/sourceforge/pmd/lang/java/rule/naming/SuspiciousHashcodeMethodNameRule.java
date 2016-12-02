@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.naming;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -13,14 +14,11 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class SuspiciousHashcodeMethodNameRule extends AbstractJavaRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        /* original XPath rule was
-         //MethodDeclaration
-        [ResultType
-        //PrimitiveType
-        [@Image='int']
-        [//MethodDeclarator
-        [@Image='hashcode' or @Image='HashCode' or @Image='Hashcode']
-        [not(FormalParameters/*)]]]
+        /*
+         * original XPath rule was //MethodDeclaration [ResultType
+         * //PrimitiveType [@Image='int'] [//MethodDeclarator [@Image='hashcode'
+         * or @Image='HashCode' or @Image='Hashcode']
+         * [not(FormalParameters/*)]]]
          */
 
         ASTResultType type = node.getResultType();

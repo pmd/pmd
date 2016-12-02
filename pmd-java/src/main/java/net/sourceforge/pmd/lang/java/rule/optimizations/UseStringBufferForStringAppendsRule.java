@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -47,7 +48,8 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             ASTConditionalExpression conditional = name.getFirstParentOfType(ASTConditionalExpression.class);
             if (conditional != null && name.jjtGetParent().jjtGetParent().jjtGetParent() == conditional
                     && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
-                // is used in ternary as only option (not appendend to other string)
+                // is used in ternary as only option (not appendend to other
+                // string)
                 continue;
             }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0) instanceof ASTPrimaryExpression) {

@@ -3,6 +3,7 @@
  *
  * $Id$
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;

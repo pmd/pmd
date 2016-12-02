@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.typeresolution;
 
 import java.util.ArrayList;

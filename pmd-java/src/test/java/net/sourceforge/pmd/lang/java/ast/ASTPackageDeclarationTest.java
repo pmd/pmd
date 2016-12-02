@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +20,9 @@ public class ASTPackageDeclarationTest extends ParserTst {
 
     /**
      * Regression test for bug 3524607.
-     * @throws Throwable any error
+     * 
+     * @throws Throwable
+     *             any error
      */
     @Test
     public void testPackageName() throws Throwable {

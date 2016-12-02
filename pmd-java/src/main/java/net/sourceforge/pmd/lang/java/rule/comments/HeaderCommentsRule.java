@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.comments;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -58,7 +59,8 @@ public class HeaderCommentsRule extends AbstractCommentRule {
     @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
 
-        //		SortedMap<Integer, Object> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
+        // SortedMap<Integer, Object> itemsByLineNumber =
+        // orderedCommentsAndDeclarations(cUnit);
 
         return super.visit(cUnit, data);
     }

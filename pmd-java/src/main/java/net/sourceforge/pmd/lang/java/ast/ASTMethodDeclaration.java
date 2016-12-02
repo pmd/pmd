@@ -98,7 +98,8 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
                 break;
             }
         }
-        // the throws declaration is immediately followed by the MethodDeclarator
+        // the throws declaration is immediately followed by the
+        // MethodDeclarator
         if (jjtGetNumChildren() > declaratorIndex + 1) {
             Node n = jjtGetChild(declaratorIndex + 1);
             if (n instanceof ASTNameList) {

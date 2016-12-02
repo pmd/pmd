@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.io.BufferedReader;
@@ -146,7 +147,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                 ASTLiteral first = occurrences.get(0);
                 String rawImage = first.getEscapedStringLiteral();
                 Object[] args = new Object[] { rawImage, Integer.valueOf(occurrences.size()),
-                        Integer.valueOf(first.getBeginLine()) };
+                    Integer.valueOf(first.getBeginLine()) };
                 addViolation(data, first, args);
             }
         }

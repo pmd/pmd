@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
@@ -42,7 +43,9 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
         boolean initInConstructor = false;
 
         for (NameOccurrence occ : usages) {
-            if (((JavaNameOccurrence) occ).isOnLeftHandSide()) { // specifically omitting prefix and postfix operators as there are legitimate usages of these with static fields, e.g. typesafe enum pattern.
+            // specifically omitting prefix and postfix operators as there are
+            // legitimate usages of these with static fields, e.g. typesafe enum pattern.
+            if (((JavaNameOccurrence) occ).isOnLeftHandSide()) {
                 Node node = occ.getLocation();
                 Node constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {

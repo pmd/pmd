@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unusedcode;
 
 import java.util.HashSet;
@@ -22,14 +23,18 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * This rule detects private methods, that are not used and can therefore be deleted.
+ * This rule detects private methods, that are not used and can therefore be
+ * deleted.
  */
 public class UnusedPrivateMethodRule extends AbstractJavaRule {
 
     /**
      * Visit each method declaration.
-     * @param node the method declaration
-     * @param data data - rule context
+     * 
+     * @param node
+     *            the method declaration
+     * @param data
+     *            data - rule context
      * @return data
      */
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {

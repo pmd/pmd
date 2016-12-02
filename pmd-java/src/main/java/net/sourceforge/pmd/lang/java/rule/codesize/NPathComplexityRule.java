@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import java.util.ArrayList;
@@ -229,7 +230,8 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
      * <p>
      * Note that this calculation applies to Cyclomatic Complexity as well.
      * 
-     * @param expr control structure expression
+     * @param expr
+     *            control structure expression
      * @return complexity of the boolean expression
      */
     public static int sumExpressionComplexity(ASTExpression expr) {
@@ -258,6 +260,6 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
     @Override
     public Object[] getViolationParameters(DataPoint point) {
         return new String[] { ((ASTMethodDeclaration) point.getNode()).getMethodName(),
-                String.valueOf((int) point.getScore()) };
+            String.valueOf((int) point.getScore()) };
     }
 }

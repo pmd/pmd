@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
@@ -56,7 +57,8 @@ public class PMDASMClassLoaderTest {
     /**
      * Unit test for bug 3546093.
      *
-     * @throws Exception any error
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testCachingOfNotFoundClasses() throws Exception {
@@ -91,9 +93,11 @@ public class PMDASMClassLoaderTest {
     }
 
     /**
-     * With this test you can verify, how much memory could be consumed
-     * by the dontBother cache.
-     * @throws Exception any error
+     * With this test you can verify, how much memory could be consumed by the
+     * dontBother cache.
+     * 
+     * @throws Exception
+     *             any error
      */
     @Ignore
     @Test

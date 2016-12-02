@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertNotNull;
@@ -30,9 +31,11 @@ public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
     }
 
     /**
-     * Makes sure that the internal dogfood.xml ruleset is valid and doesn't reference any
-     * unknown rules.
-     * @throws RuleSetNotFoundException if dogfood couldn't be found at all
+     * Makes sure that the internal dogfood.xml ruleset is valid and doesn't
+     * reference any unknown rules.
+     * 
+     * @throws RuleSetNotFoundException
+     *             if dogfood couldn't be found at all
      */
     @Test
     public void testDogfoodRuleset() throws RuleSetNotFoundException {

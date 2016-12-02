@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * This rule finds StringBuffers which may have been pre-sized incorrectly
  *
  * See http://sourceforge.net/forum/forum.php?thread_id=1438119&forum_id=188194
+ * 
  * @author Allan Caplan
  */
 public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
@@ -50,7 +52,9 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTSwitchStatement.class);
     }
 
-    public static final int DEFAULT_BUFFER_SIZE = 16; // as specified in StringBuffer & StringBuilder
+    public static final int DEFAULT_BUFFER_SIZE = 16; // as specified in
+                                                      // StringBuffer &
+                                                      // StringBuilder
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -205,7 +209,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                                     && parentNode.getFirstChildOfType(ASTType.class).getType() == char.class) {
                                 anticipatedLength += 1;
                             } else {
-                                // e.g. 0xdeadbeef -> will be converted to a base 10 integer string: 3735928559
+                                // e.g. 0xdeadbeef -> will be converted to a
+                                // base 10 integer string: 3735928559
                                 anticipatedLength += String.valueOf(Long.parseLong(str.substring(2), 16)).length();
                             }
                         } else {
@@ -234,7 +239,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             }
         }
 
-        //if there is any addition/subtraction going on then just use the default.
+        // if there is any addition/subtraction going on then just use the
+        // default.
         ASTAdditiveExpression exp = block.getFirstDescendantOfType(ASTAdditiveExpression.class);
         if (exp != null) {
             return DEFAULT_BUFFER_SIZE;
@@ -247,7 +253,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         List<ASTLiteral> literals;
         ASTAllocationExpression constructorCall = block.getFirstDescendantOfType(ASTAllocationExpression.class);
         if (constructorCall != null) {
-            // if this is a constructor call, only consider the literals within it.
+            // if this is a constructor call, only consider the literals within
+            // it.
             literals = constructorCall.findDescendantsOfType(ASTLiteral.class);
         } else {
             // otherwise it might be a setLength call...
@@ -267,7 +274,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 // since it's not taken into account
                 // anywhere. only count the extra 16
                 // characters
-                iConstructorLength = 14 + str.length(); // don't add the constructor's length,
+                iConstructorLength = 14 + str.length(); // don't add the
+                                                        // constructor's length,
             } else if (literal.isIntLiteral() && str.startsWith("0x")) {
                 // bug 3516101 - the string could be a hex number
                 iConstructorLength = Integer.parseInt(str.substring(2), 16);
@@ -335,7 +343,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     private boolean isAdditive(Node n) {
         ASTAdditiveExpression add = n.getFirstDescendantOfType(ASTAdditiveExpression.class);
         // if the first descendant additive expression is deeper than 4 levels,
-        // it belongs to a nested method call and not anymore to the append argument.
+        // it belongs to a nested method call and not anymore to the append
+        // argument.
         return add != null && add.getNthParent(4) == n;
     }
 

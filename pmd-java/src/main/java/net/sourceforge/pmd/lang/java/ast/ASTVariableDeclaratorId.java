@@ -84,6 +84,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
     /**
      * Determines the type node of this variable id.
+     * 
      * @return the type node or <code>null</code> if there is no explicit type.
      */
     public ASTType getTypeNode() {

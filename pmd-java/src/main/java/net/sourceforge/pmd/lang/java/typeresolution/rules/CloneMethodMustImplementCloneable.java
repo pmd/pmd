@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
 import java.util.Arrays;
@@ -87,7 +88,8 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
     public Object visit(ASTMethodDeclaration node, Object data) {
         ASTClassOrInterfaceDeclaration classOrInterface = node
                 .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (classOrInterface != null && //Don't analyze enums, which cannot subclass clone()
+        if (classOrInterface != null && // Don't analyze enums, which cannot
+                                        // subclass clone()
                 (node.isFinal() || classOrInterface.isFinal())) {
             if (node.findDescendantsOfType(ASTBlock.class).size() == 1) {
                 List<ASTBlockStatement> blocks = node.findDescendantsOfType(ASTBlockStatement.class);
@@ -105,7 +107,8 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
             }
         }
 
-        // Now check other whether implemented or extended classes are defined inside the same file
+        // Now check other whether implemented or extended classes are defined
+        // inside the same file
         if (classOrInterface != null) {
             Set<String> classesNames = determineTopLevelCloneableClasses(classOrInterface);
 
@@ -132,9 +135,12 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
     }
 
     /**
-     * Determines all the class/interface declarations inside this compilation unit,
-     * which implement Cloneable
-     * @param currentClass the node of the class, that is currently analyzed (inside this compilation unit)
+     * Determines all the class/interface declarations inside this compilation
+     * unit, which implement Cloneable
+     * 
+     * @param currentClass
+     *            the node of the class, that is currently analyzed (inside this
+     *            compilation unit)
      * @return a Set of class/interface names
      */
     private Set<String> determineTopLevelCloneableClasses(ASTClassOrInterfaceDeclaration currentClass) {

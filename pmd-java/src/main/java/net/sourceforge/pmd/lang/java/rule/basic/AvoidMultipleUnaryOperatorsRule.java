@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -38,7 +39,8 @@ public class AvoidMultipleUnaryOperatorsRule extends AbstractJavaRule {
                 match = true;
             } else if (child instanceof ASTPrimaryExpression) {
                 Node primaryExpression = child;
-                // Skip down PrimaryExpression/PrimaryPrefix/Expression chains created by parentheses
+                // Skip down PrimaryExpression/PrimaryPrefix/Expression chains
+                // created by parentheses
                 while (true) {
                     if (primaryExpression.jjtGetNumChildren() == 1
                             && primaryExpression.jjtGetChild(0) instanceof ASTPrimaryPrefix

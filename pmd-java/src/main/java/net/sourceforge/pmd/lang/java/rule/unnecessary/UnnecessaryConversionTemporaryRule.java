@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unnecessary;
 
 import java.util.Set;
@@ -26,7 +27,8 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
                 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
             return super.visit(node, data);
         }
-        // TODO... hmmm... is this inPrimaryExpressionContext gibberish necessary?
+        // TODO... hmmm... is this inPrimaryExpressionContext gibberish
+        // necessary?
         inPrimaryExpressionContext = true;
         primary = node;
         super.visit(node, data);

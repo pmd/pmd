@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.util.HashSet;
@@ -107,7 +108,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
                 JavaNameOccurrence jno = (JavaNameOccurrence) no;
                 Node n = jno.getLocation();
 
-                // skip the declarations/usages, that deal with a different variable
+                // skip the declarations/usages, that deal with a different
+                // variable
                 if (!node.getImage().equals(jno.getImage())) {
                     continue;
                 }
@@ -202,7 +204,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         for (int i = 0; i < primary.jjtGetNumChildren(); i++) {
             Node child = primary.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0 && child.jjtGetChild(0) instanceof ASTAllocationExpression) {
-                continue; // skip the constructor call, that has already been checked
+                continue; // skip the constructor call, that has already been
+                          // checked
             }
             if (child instanceof ASTPrimarySuffix) {
                 ASTPrimarySuffix suffix = (ASTPrimarySuffix) child;
@@ -215,8 +218,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
                     if (literal != null && literal.isStringLiteral()) {
                         result++;
                     } else {
-                        // if it was not a String literal that was appended, then we don't
-                        // have a consecutive literal string append anymore and we can skip
+                        // if it was not a String literal that was appended,
+                        // then we don't
+                        // have a consecutive literal string append anymore and
+                        // we can skip
                         // checking the remainder of the initializer
                         break;
                     }

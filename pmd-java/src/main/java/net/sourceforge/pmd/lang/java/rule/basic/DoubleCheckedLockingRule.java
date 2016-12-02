@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.util.ArrayList;
@@ -110,7 +111,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         if (returnVariableName == null || this.volatileFields.contains(returnVariableName)) {
             return super.visit(node, data);
         }
-        // if the return variable is local and only written with the volatile field, then it's ok, too
+        // if the return variable is local and only written with the volatile
+        // field, then it's ok, too
         if (checkLocalVariableUsage(node, returnVariableName)) {
             return super.visit(node, data);
         }
@@ -130,7 +132,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                             if (sel.size() == 1) {
                                 ASTStatementExpression se = sel.get(0);
                                 if (se.jjtGetNumChildren() == 3) { // primaryExpression,
-                                                                       // AssignmentOperator,
+                                                                   // AssignmentOperator,
                                                                    // Expression
                                     if (se.jjtGetChild(0) instanceof ASTPrimaryExpression) {
                                         ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
