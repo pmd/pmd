@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.matlab;
 
 import java.io.Reader;
@@ -17,7 +18,9 @@ public class MatlabTokenManager implements TokenManager {
 
     /**
      * Creates a new Matlab Token Manager from the given source code.
-     * @param source the source code
+     * 
+     * @param source
+     *            the source code
      */
     public MatlabTokenManager(Reader source) {
         tokenManager = new MatlabParserTokenManager(new SimpleCharStream(source));
