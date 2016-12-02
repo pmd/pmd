@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.xml.ast;
 
 import java.util.regex.Matcher;
@@ -23,15 +24,16 @@ class DOMLineNumbers {
     private String xmlString;
     private SourceCodePositioner sourceCodePositioner;
 
-    public DOMLineNumbers(Document document, String xmlString) {
+    DOMLineNumbers(Document document, String xmlString) {
         this.document = document;
         this.xmlString = xmlString;
         this.sourceCodePositioner = new SourceCodePositioner(xmlString);
     }
-    
+
     public void determine() {
         determineLocation(document, 0);
     }
+
     private int determineLocation(Node n, int index) {
         int nextIndex = index;
         if (n.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
@@ -43,7 +45,7 @@ class DOMLineNumbers {
         } else if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
             nextIndex = xmlString.indexOf("<![CDATA[", nextIndex);
         } else if (n.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-            ProcessingInstruction pi = (ProcessingInstruction)n;
+            ProcessingInstruction pi = (ProcessingInstruction) n;
             nextIndex = xmlString.indexOf("<?" + pi.getTarget(), nextIndex);
         } else if (n.getNodeType() == Node.TEXT_NODE) {
             String te = unexpandEntities(n, n.getNodeValue());
@@ -81,7 +83,7 @@ class DOMLineNumbers {
         } else if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
             nextIndex += "<![CDATA[".length() + n.getNodeValue().length() + "]]>".length();
         } else if (n.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-            ProcessingInstruction pi = (ProcessingInstruction)n;
+            ProcessingInstruction pi = (ProcessingInstruction) n;
             nextIndex += "<?".length() + pi.getTarget().length() + "?>".length() + pi.getData().length();
         }
         setEndLocation(n, nextIndex - 1);
@@ -109,9 +111,12 @@ class DOMLineNumbers {
                 String entityName = item.getNodeName();
                 Node firstChild = item.getFirstChild();
                 if (firstChild != null) {
-                    result = result.replaceAll(Matcher.quoteReplacement(firstChild.getNodeValue()), "&" + entityName + ";");
+                    result = result.replaceAll(Matcher.quoteReplacement(firstChild.getNodeValue()),
+                            "&" + entityName + ";");
                 } else {
-                    Matcher m = Pattern.compile(Matcher.quoteReplacement("<!ENTITY " + entityName + " ") + "[']([^']*)[']>").matcher(internalSubset);
+                    Matcher m = Pattern
+                            .compile(Matcher.quoteReplacement("<!ENTITY " + entityName + " ") + "[']([^']*)[']>")
+                            .matcher(internalSubset);
                     if (m.find()) {
                         result = result.replaceAll(Matcher.quoteReplacement(m.group(1)), "&" + entityName + ";");
                     }
@@ -120,6 +125,7 @@ class DOMLineNumbers {
         }
         return result;
     }
+
     private void setBeginLocation(Node n, int index) {
         if (n != null) {
             int line = sourceCodePositioner.lineNumberFromOffset(index);
@@ -128,6 +134,7 @@ class DOMLineNumbers {
             n.setUserData(XmlNode.BEGIN_COLUMN, column, null);
         }
     }
+
     private void setEndLocation(Node n, int index) {
         if (n != null) {
             int line = sourceCodePositioner.lineNumberFromOffset(index);
