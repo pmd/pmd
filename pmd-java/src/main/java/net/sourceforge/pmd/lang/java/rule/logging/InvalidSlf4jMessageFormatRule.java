@@ -91,6 +91,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
         if (expectedArguments == 0) {
             // ignore if we are not expecting arguments to format the message
+            // or if we couldn't analyze the message parameter
             return super.visit(node, data);
         }
 
@@ -202,6 +203,11 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
     }
 
     private int countPlaceholders(final AbstractJavaTypeNode node) {
-        return StringUtils.countMatches(node.getFirstDescendantOfType(ASTLiteral.class).getImage(), "{}");
+        int result = 0; // zero means, no placeholders, or we could not analyze the message parameter
+        ASTLiteral stringLiteral = node.getFirstDescendantOfType(ASTLiteral.class);
+        if (stringLiteral != null) {
+            result = StringUtils.countMatches(stringLiteral.getImage(), "{}");
+        }
+        return result;
     }
 }
