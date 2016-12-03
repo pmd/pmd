@@ -95,7 +95,10 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         }
 
         // Remove throwable param, since it is shown separately.
-        removeThrowableParam(params);
+        // But only, if it is not used as a placeholder argument
+        if (params.size() > expectedArguments) {
+            removeThrowableParam(params);
+        }
 
         if (params.size() < expectedArguments) {
             addViolationWithMessage(data, node, "Missing arguments," + getExpectedMessage(params, expectedArguments));
