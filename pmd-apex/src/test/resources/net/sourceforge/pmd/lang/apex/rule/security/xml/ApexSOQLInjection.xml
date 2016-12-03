@@ -1,7 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
+	<test-code>
+		<description>Potentially unsafe SOQL on concatenation of variables 1
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String field1 = getSomeID(); 
+		String field2 = 'SELECT Id FROM Account WHERE Id =';
+		Database.query(field2 + field1);
+	}		
+}
+		]]></code>
+	</test-code>
 
+	<test-code>
+		<description>Potentially unsafe SOQL on concatenation of variables 2
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String field1 = getSomeID(); 
+		String field2 = 'SELECT Id FROM Account WHERE Id =' + field1;
+		Database.query(field2);
+	}		
+}
+		]]></code>
+	</test-code>
+	<test-code>
+		<description>Safe SOQL concatenation of hardcoded
+			variables
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String field1 = 'someIDhere'; 
+		String field2 = 'SELECT Id FROM Account WHERE Id =';
+		Database.query(field2 + field1);
+	}		
+}
+		]]></code>
+	</test-code>
+	<test-code>
+		<description>Safe SOQL on concatenation of variables</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String field1 = String.escapeSingleQuotes('yo'); 
+		String field2 = 'SELECT Id FROM Account WHERE Id =' + field1;
+		Database.query(field2);
+	}		
+}
+		]]></code>
+	</test-code>
 	<test-code>
 		<description>Safe SOQL + merged variable from a literal</description>
 		<expected-problems>0</expected-problems>
@@ -53,9 +109,10 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
-		<description>Potentially unsafe SOQL with multiple variable concatenation
+		<description>Potentially unsafe SOQL with multiple variable
+			concatenation
 		</description>
 		<expected-problems>2</expected-problems>
 		<code><![CDATA[
@@ -66,7 +123,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Safe SOQL with List concatenation
 		</description>
@@ -94,7 +151,7 @@ public class Foo {
 		]]></code>
 	</test-code>
 	<test-code>
-		<description>SOQL with merged with field variable 
+		<description>SOQL with merged with field variable
 		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
@@ -132,5 +189,4 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-
 </test-data>
