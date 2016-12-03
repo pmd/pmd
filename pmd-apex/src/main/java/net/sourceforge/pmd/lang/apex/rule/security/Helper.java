@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
+import apex.jorje.semantic.ast.expression.VariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
 public final class Helper {
@@ -116,4 +118,19 @@ public final class Helper {
 		return false;
 	}
 
+	static String getFQVariableName(final ASTVariableExpression variable) {
+		final ASTReferenceExpression ref = variable.getFirstChildOfType(ASTReferenceExpression.class);
+		String objectName = "";
+		if (ref != null) {
+			if (ref.getNode().getJadtIdentifiers().size() == 1) {
+				objectName = ref.getNode().getJadtIdentifiers().get(0).value + ".";
+			}
+		}
+
+		VariableExpression n = variable.getNode();
+		StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":").append(objectName)
+				.append(n.getIdentifier().value);
+		return sb.toString();
+	}
+	
 }
