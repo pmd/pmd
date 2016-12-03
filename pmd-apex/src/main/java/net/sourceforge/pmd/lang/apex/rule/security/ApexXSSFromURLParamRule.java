@@ -88,10 +88,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 		List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
 
 		for (ASTVariableExpression varExpression : nodes) {
-			StringBuilder sb = new StringBuilder().append(varExpression.getNode().getDefiningType().getApexName())
-					.append(":").append(varExpression.getNode().getIdentifier().value);
-
-			if (urlParameterString.contains(sb.toString())) {
+			if (urlParameterString.contains(Helper.getFQVariableName(varExpression))) {
 				addViolation(data, nodes.get(0));
 			}
 		}
@@ -133,10 +130,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 				ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
 
 				if (left != null) {
-					VariableExpression n = left.getNode();
-					StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
-							.append(n.getIdentifier().value);
-					urlParameterString.add(sb.toString());
+					urlParameterString.add(Helper.getFQVariableName(left));
 				}
 			}
 
@@ -150,7 +144,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 			processEscapingMethodCalls(nestedCall, data);
 		}
 
-		ASTVariableExpression variable = methodNode.getFirstChildOfType(ASTVariableExpression.class);
+		final ASTVariableExpression variable = methodNode.getFirstChildOfType(ASTVariableExpression.class);
 
 		if (variable != null) {
 
@@ -160,10 +154,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 				return;
 			}
 
-			VariableExpression n = variable.getNode();
-			StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
-					.append(n.getIdentifier().value);
-			if (urlParameterString.contains(sb.toString())) {
+			if (urlParameterString.contains(Helper.getFQVariableName(variable))) {
 				if (!isEscapingMethod(methodNode)) {
 					addViolation(data, variable);
 				}
@@ -195,18 +186,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 		case 2: {
 			// Look for: foo = bar;
 			final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
-			final ASTReferenceExpression ref = right.getFirstChildOfType(ASTReferenceExpression.class);
-			String objectName = "";
-			if (ref != null) {
-				if (ref.getNode().getJadtIdentifiers().size() == 1) {
-					objectName = ref.getNode().getJadtIdentifiers().get(0).value + ".";
-				}
-			}
 
-			StringBuilder sb = new StringBuilder().append(right.getNode().getDefiningType()).append(":")
-					.append(objectName).append(right.getNode().getIdentifier().value);
-
-			if (urlParameterString.contains(sb.toString())) {
+			if (urlParameterString.contains(Helper.getFQVariableName(right))) {
 				addViolation(data, right);
 			}
 		}
@@ -230,11 +211,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
 		final List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
 		for (ASTVariableExpression n : nodes) {
-			final VariableExpression expression = n.getNode();
-			StringBuilder sb = new StringBuilder().append(expression.getDefiningType().getApexName()).append(":")
-					.append(expression.getIdentifier().value);
 
-			if (urlParameterString.contains(sb.toString())) {
+			if (urlParameterString.contains(Helper.getFQVariableName(n))) {
 				addViolation(data, n);
 			}
 		}
