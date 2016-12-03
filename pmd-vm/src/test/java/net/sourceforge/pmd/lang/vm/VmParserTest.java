@@ -1,17 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm;
 
 import java.io.StringReader;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Unit test for VM parsing.
@@ -20,9 +21,9 @@ import org.junit.Test;
 public class VmParserTest {
 
     private static final String VM_SRC = "<HTML><BODY>Hello $customer.Name <table> "
-            + "#foreach($mud in $mudsOnSpecial)" + "  #if ( $customer.hasPurchased($mud) )" + "     <tr>"
-            + "      <td>" + "       $flogger.getPromo( $mud )" + "    </td>" + "  </tr>"
-            + " #elseif ($customer.broke) do stuff #end" + "\n " + "#end " + "</table>";
+            + "#foreach($mud in $mudsOnSpecial)" + "  #if ( $customer.hasPurchased($mud) )" + "     <tr>" + "      <td>"
+            + "       $flogger.getPromo( $mud )" + "    </td>" + "  </tr>" + " #elseif ($customer.broke) do stuff #end"
+            + "\n " + "#end " + "</table>";
 
     private static final String SRC2 = "#macro(tablerows $color $values ) " + "#foreach( $value in $values ) "
             + "<tr><td bgcolor=$color>$value</td></tr> " + "#end " + "#end "
@@ -31,7 +32,8 @@ public class VmParserTest {
 
     private static final String SRC3 = "#if ( $c1 ) #if ( $c2)#end #end";
 
-    // private static final String VM_SRC = "#if( $mud == 1 ) blah #if ($dirt == 2) stuff #end #end";
+    // private static final String VM_SRC = "#if( $mud == 1 ) blah #if ($dirt ==
+    // 2) stuff #end #end";
 
     @Test
     public void testParser() {
@@ -52,7 +54,8 @@ public class VmParserTest {
     }
 
     private Node parse(final String code) {
-        final LanguageVersionHandler vmLang = LanguageRegistry.getLanguage(VmLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        final LanguageVersionHandler vmLang = LanguageRegistry.getLanguage(VmLanguageModule.NAME).getDefaultVersion()
+                .getLanguageVersionHandler();
         final Parser parser = vmLang.getParser(vmLang.getDefaultParserOptions());
         final Node node = parser.parse(null, new StringReader(code));
         return node;

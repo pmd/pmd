@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.matlab;
 
 import java.io.Reader;
@@ -20,7 +21,9 @@ public class MatlabParser extends AbstractParser {
 
     /**
      * Creates a new Matlab Parser.
-     * @param parserOptions the options
+     * 
+     * @param parserOptions
+     *            the options
      */
     public MatlabParser(ParserOptions parserOptions) {
         super(parserOptions);

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -12,7 +13,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Defines a property that supports multiple class types, even for primitive
  * values!
- * 
+ *
  * TODO - untested for array types
  *
  * @author Brian Remedios
@@ -22,6 +23,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeMultiProperty>(
             Class[].class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public TypeMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new TypeMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
@@ -31,12 +33,17 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     /**
      * Constructor for TypeProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefaults Class[]
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefaults
+     *            Class[]
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
@@ -47,12 +54,17 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     /**
      * Constructor for TypeProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param theTypeDefaults String
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theTypeDefaults
+     *            String
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, String[] legalPackageNames,
@@ -63,12 +75,17 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     /**
      * Constructor for TypeProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param theTypeDefaults String
-     * @param otherParams Map<String, String>
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theTypeDefaults
+     *            String
+     * @param otherParams
+     *            Map<String, String>
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
@@ -77,7 +94,8 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     }
 
     /**
-     * @param classesStr String
+     * @param classesStr
+     *            String
      * @return Class[]
      */
     public static Class<?>[] typesFrom(String classesStr) {
@@ -91,7 +109,8 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     }
 
     /**
-     * @param item Object
+     * @param item
+     *            Object
      * @return String
      */
     @Override
@@ -103,6 +122,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Class[]> type() {
         return Class[].class;
     }
@@ -116,7 +136,8 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     @Override
@@ -125,10 +146,12 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Class<?>[] valueFrom(String valueString) {
         return typesFrom(valueString);
     }

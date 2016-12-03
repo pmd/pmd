@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql;
 
 import java.io.Writer;
-import net.sf.saxon.sxpath.IndependentContext;
+
+import org.jaxen.Navigator;
 
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.DataFlowHandler;
@@ -23,23 +25,23 @@ import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import org.jaxen.Navigator;
+
+import net.sf.saxon.sxpath.IndependentContext;
 
 /**
- * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous classes
- * as adapters of the visitors to the VisitorStarter interface.
+ * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous
+ * classes as adapters of the visitors to the VisitorStarter interface.
  *
  * @author sturton - PLDoc - pldoc.sourceforge.net
  */
-        public class PLSQLHandler extends AbstractLanguageVersionHandler {
+public class PLSQLHandler extends AbstractLanguageVersionHandler {
 
-	
     public Parser getParser(ParserOptions parserOptions) {
         return new PLSQLParser(parserOptions);
     }
 
     public RuleViolationFactory getRuleViolationFactory() {
-	return PLSQLRuleViolationFactory.INSTANCE;
+        return PLSQLRuleViolationFactory.INSTANCE;
     }
 
     @Override
@@ -49,52 +51,51 @@ import org.jaxen.Navigator;
 
     @Override
     public DataFlowHandler getDataFlowHandler() {
-	return new PLSQLDataFlowHandler();
+        return new PLSQLDataFlowHandler();
     }
 
     @Override
     public VisitorStarter getDataFlowFacade() {
-	return new VisitorStarter() {
-	    public void start(Node rootNode) {
-		new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTInput) rootNode);
-	    }
-	};
+        return new VisitorStarter() {
+            public void start(Node rootNode) {
+                new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTInput) rootNode);
+            }
+        };
     }
 
     @Override
     public VisitorStarter getSymbolFacade() {
-	return new VisitorStarter() {
-	    public void start(Node rootNode) {
-		new SymbolFacade().initializeWith((ASTInput) rootNode);
-	    }
-	};
+        return new VisitorStarter() {
+            public void start(Node rootNode) {
+                new SymbolFacade().initializeWith((ASTInput) rootNode);
+            }
+        };
     }
 
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-	return new VisitorStarter() {
-	    public void start(Node rootNode) {
-		new DumpFacade().initializeWith(writer, prefix, recurse, (PLSQLNode) rootNode);
-	    }
-	};
+        return new VisitorStarter() {
+            public void start(Node rootNode) {
+                new DumpFacade().initializeWith(writer, prefix, recurse, (PLSQLNode) rootNode);
+            }
+        };
     }
-    
-    
+
     @Override
     /**
      * Return minimal XPathHandler to cope with Jaxen XPath Rules.
      */
     public XPathHandler getXPathHandler() {
-	return new XPathHandler() {
-	    public void initialize() {
-	    }
+        return new XPathHandler() {
+            public void initialize() {
+            }
 
-	    public void initialize(IndependentContext context) {
-	    }
+            public void initialize(IndependentContext context) {
+            }
 
-	    public Navigator getNavigator() {
-		return new DocumentNavigator();
-	    }
-	};
+            public Navigator getNavigator() {
+                return new DocumentNavigator();
+            }
+        };
     }
 }

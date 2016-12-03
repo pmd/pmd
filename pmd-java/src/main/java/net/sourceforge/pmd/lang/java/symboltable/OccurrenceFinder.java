@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.HashSet;
@@ -38,9 +39,11 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
             } else {
                 Set<NameDeclaration> additionalDeclarations = new HashSet<>();
                 for (NameDeclaration decl : declarations) {
-                    // now we've got a scope we're starting with, so work from there
+                    // now we've got a scope we're starting with, so work from
+                    // there
                     Scope startingScope = decl.getScope();
-                    // in case the previous found declaration is a class reference
+                    // in case the previous found declaration is a class
+                    // reference
                     // for a class inside the same source file
                     // we need to search this class
                     // e.g. the list of name occurrence could come from
@@ -59,13 +62,16 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
                     if (result.isEmpty()) {
                         // nothing found
                         // This seems to be a lack of type resolution here.
-                        // Theoretically we have the previous declaration node and
+                        // Theoretically we have the previous declaration node
+                        // and
                         // know from there the Type of
-                        // the variable. The current occurrence (occ) should then be
+                        // the variable. The current occurrence (occ) should
+                        // then be
                         // found in the declaration of
-                        // this type. The type however may or may not be known to
+                        // this type. The type however may or may not be known
+                        // to
                         // PMD (see aux classpath).
-    
+
                         // we can't find it, so just give up
                         // when we decide to do full symbol resolution
                         // force this to either find a symbol or throw a

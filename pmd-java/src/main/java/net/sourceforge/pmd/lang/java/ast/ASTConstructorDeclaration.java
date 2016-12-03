@@ -18,7 +18,7 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode {
     }
 
     public ASTFormalParameters getParameters() {
-        return (ASTFormalParameters) (jjtGetChild(0) instanceof ASTFormalParameters?jjtGetChild(0):jjtGetChild(1));
+        return (ASTFormalParameters) (jjtGetChild(0) instanceof ASTFormalParameters ? jjtGetChild(0) : jjtGetChild(1));
     }
 
     public int getParameterCount() {

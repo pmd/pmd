@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.coupling;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -9,10 +10,10 @@ import net.sourceforge.pmd.lang.java.rule.design.ExcessiveNodeCountRule;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
- * ExcessiveImports attempts to count all unique imports a class
- * contains. This rule will count a "import com.something.*;" as a single
- * import. This is a unqiue situation and I'd like to create an audit type
- * rule that captures those.
+ * ExcessiveImports attempts to count all unique imports a class contains. This
+ * rule will count a "import com.something.*;" as a single import. This is a
+ * unqiue situation and I'd like to create an audit type rule that captures
+ * those.
  *
  * @author aglover
  * @since Feb 21, 2003

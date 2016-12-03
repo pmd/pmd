@@ -28,7 +28,8 @@ public class ASTJspDirective extends AbstractJspNode {
     }
 
     /**
-     * @param name The name to set.
+     * @param name
+     *            The name to set.
      */
     public void setName(String name) {
         this.name = name;

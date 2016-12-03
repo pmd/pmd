@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp.ast;
 
 /**
@@ -11,8 +12,7 @@ public class StartAndEndTagMismatchException extends SyntaxErrorException {
 
     private static final long serialVersionUID = 5434485938487458692L;
 
-    public static final String START_END_TAG_MISMATCH_RULE_NAME
-            = "Start and End Tags of an XML Element must match.";
+    public static final String START_END_TAG_MISMATCH_RULE_NAME = "Start and End Tags of an XML Element must match.";
 
     private final int startLine;
     private final int endLine;
@@ -31,8 +31,8 @@ public class StartAndEndTagMismatchException extends SyntaxErrorException {
      * @param endColumn
      * @param endTagName
      */
-    public StartAndEndTagMismatchException(int startLine, int startColumn, String startTagName,
-                                           int endLine, int endColumn, String endTagName) {
+    public StartAndEndTagMismatchException(int startLine, int startColumn, String startTagName, int endLine,
+            int endColumn, String endTagName) {
         super(endLine, START_END_TAG_MISMATCH_RULE_NAME);
         this.startLine = startLine;
         this.startColumn = startColumn;
@@ -42,7 +42,6 @@ public class StartAndEndTagMismatchException extends SyntaxErrorException {
         this.endColumn = endColumn;
         this.endTagName = endTagName;
     }
-
 
     /**
      * @return Returns the endColumn.
@@ -72,15 +71,15 @@ public class StartAndEndTagMismatchException extends SyntaxErrorException {
         return startLine;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Throwable#getMessage()
      */
     @Override
     public String getMessage() {
-        return "The start-tag of element \"" + startTagName + "\" (line "
-                + startLine + ", column " + startColumn
-                + ") does not correspond to the end-tag found: \""
-                + endTagName + "\" (line " + endLine
-                + ", column " + endColumn + ").";
+        return "The start-tag of element \"" + startTagName + "\" (line " + startLine + ", column " + startColumn
+                + ") does not correspond to the end-tag found: \"" + endTagName + "\" (line " + endLine + ", column "
+                + endColumn + ").";
     }
 }

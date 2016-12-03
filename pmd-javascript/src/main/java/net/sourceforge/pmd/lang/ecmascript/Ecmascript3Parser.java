@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript;
 
 import java.io.Reader;
@@ -21,7 +22,8 @@ public class Ecmascript3Parser extends AbstractParser {
 
     public Ecmascript3Parser(ParserOptions parserOptions) {
         super(parserOptions);
-        ecmascriptParser = new net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser((EcmascriptParserOptions)parserOptions);
+        ecmascriptParser = new net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser(
+                (EcmascriptParserOptions) parserOptions);
     }
 
     @Override

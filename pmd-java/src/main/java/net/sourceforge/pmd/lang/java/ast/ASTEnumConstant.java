@@ -14,7 +14,6 @@ public class ASTEnumConstant extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

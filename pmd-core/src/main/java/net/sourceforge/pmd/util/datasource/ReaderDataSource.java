@@ -1,27 +1,30 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.datasource;
 
-import java.io.Reader;
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.commons.io.input.ReaderInputStream;
+import java.io.Reader;
 
+import org.apache.commons.io.input.ReaderInputStream;
 
 /**
  * DataSource implementation to read data from a Reader.
  */
 public class ReaderDataSource implements DataSource {
     /**
-     * Reader 
+     * Reader
      */
     private Reader reader;
 
     /**
      * Real or pseudo filename or path name.
-     * 
-     * <p>Including a file suffix mapped to the correct language helps assign the correct parser.
+     *
+     * <p>
+     * Including a file suffix mapped to the correct language helps assign the
+     * correct parser.
      * </p>
      */
     private String dataSourceName;
@@ -35,13 +38,13 @@ public class ReaderDataSource implements DataSource {
     }
 
     /**
-     *  Convert the Reader into an InputStream.
-     *  <p>
-     *  <strong>Note:</strong> This uses the default encoding.
-     *  </p>
-     * 
+     * Convert the Reader into an InputStream.
+     * <p>
+     * <strong>Note:</strong> This uses the default encoding.
+     * </p>
+     *
      * @return Derived InputStream
-     * @throws IOException 
+     * @throws IOException
      */
     @Override
     public InputStream getInputStream() throws IOException {
@@ -50,19 +53,21 @@ public class ReaderDataSource implements DataSource {
 
     /**
      * Return the dataSourceName via the {@link DataSource} Interface method.
-     * 
-     * <p>Both the parameters are ignored
+     *
+     * <p>
+     * Both the parameters are ignored
      * </p>
-     * 
-     * @param shortNames ignored 
-     * @param inputFileName ignored 
-     * @return 
+     *
+     * @param shortNames
+     *            ignored
+     * @param inputFileName
+     *            ignored
+     * @return
      */
     @Override
     public String getNiceFileName(boolean shortNames, String inputFileName) {
-        return getDataSourceName() ;
+        return getDataSourceName();
     }
-
 
     /**
      * @return the dataSourceName
@@ -72,7 +77,8 @@ public class ReaderDataSource implements DataSource {
     }
 
     /**
-     * @param dataSourceName the dataSourceName to set
+     * @param dataSourceName
+     *            the dataSourceName to set
      */
     public void setDataSourceName(String dataSourceName) {
         this.dataSourceName = dataSourceName;

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.xml.ast;
 
 import static net.sourceforge.pmd.lang.xml.ast.XmlNode.BEGIN_COLUMN;
@@ -9,20 +10,21 @@ import static net.sourceforge.pmd.lang.xml.ast.XmlNode.END_COLUMN;
 import static net.sourceforge.pmd.lang.xml.ast.XmlNode.END_LINE;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.util.CompoundIterator;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.util.CompoundIterator;
 
 public class XmlNodeInvocationHandler implements InvocationHandler {
     private final Node node;
@@ -34,7 +36,8 @@ public class XmlNodeInvocationHandler implements InvocationHandler {
         this.node = node;
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         // XmlNode method?
         if (method.getDeclaringClass().isAssignableFrom(XmlNode.class)
                 && !"java.lang.Object".equals(method.getDeclaringClass().getName())) {
@@ -78,8 +81,8 @@ public class XmlNodeInvocationHandler implements InvocationHandler {
 
                     public Attribute next() {
                         Node attributeNode = attributes.item(index++);
-                        return new Attribute(parser.createProxy(node), attributeNode.getNodeName(), attributeNode
-                                .getNodeValue());
+                        return new Attribute(parser.createProxy(node), attributeNode.getNodeName(),
+                                attributeNode.getNodeValue());
                     }
 
                     public void remove() {
@@ -91,8 +94,8 @@ public class XmlNodeInvocationHandler implements InvocationHandler {
                 // AST Nodes
                 if (proxy instanceof Text) {
                     iterators.add(Collections.singletonList(
-                            new Attribute((net.sourceforge.pmd.lang.ast.Node) proxy, "Image", ((Text) proxy)
-                                    .getData())).iterator());
+                            new Attribute((net.sourceforge.pmd.lang.ast.Node) proxy, "Image", ((Text) proxy).getData()))
+                            .iterator());
                 }
 
                 // Expose Java Attributes
@@ -120,14 +123,13 @@ public class XmlNodeInvocationHandler implements InvocationHandler {
                 return false;
             }
             throw new UnsupportedOperationException("Method not supported for XmlNode: " + method);
-        }
-        // Delegate method
-        else {
+        } else {
             if ("toString".equals(method.getName())) {
                 String s = node.getNodeName();
                 s = s.replace("#", "");
                 return s;
             }
+            // Delegate method
             Object result = method.invoke(node, args);
             return result;
         }

@@ -1,17 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.jaxen;
 
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
-import org.junit.Test;
-public class AttributeTest{
+public class AttributeTest {
 
     @Test
     public void testConstructor() {

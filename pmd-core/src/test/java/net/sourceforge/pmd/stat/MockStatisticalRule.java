@@ -1,4 +1,7 @@
 /**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+/**
  * <copyright>
  *  Copyright 1997-2002 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
@@ -20,6 +23,7 @@
  *
  * Created on Aug 26, 2002
  */
+
 package net.sourceforge.pmd.stat;
 
 import java.util.List;
@@ -33,7 +37,7 @@ import net.sourceforge.pmd.lang.rule.stat.StatisticalRuleHelper;
 public class MockStatisticalRule extends FooRule implements StatisticalRule {
 
     private StatisticalRuleHelper helper;
-    
+
     public MockStatisticalRule() {
         helper = new StatisticalRuleHelper(this);
     }

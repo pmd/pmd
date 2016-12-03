@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.HashMap;
@@ -85,7 +86,8 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
                     ASTStatementExpression expr = (ASTStatementExpression) oper.jjtGetParent();
                     if (expr.jjtGetChild(0) instanceof ASTPrimaryExpression
                             && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetNumChildren() == 1
-                            && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0) instanceof ASTPrimaryPrefix) {
+                            && ((ASTPrimaryExpression) expr.jjtGetChild(0))
+                                    .jjtGetChild(0) instanceof ASTPrimaryPrefix) {
                         ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0))
                                 .jjtGetChild(0);
                         String name = null;

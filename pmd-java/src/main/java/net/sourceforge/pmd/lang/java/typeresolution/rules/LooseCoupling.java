@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -22,17 +23,17 @@ public class LooseCoupling extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-    if (methodHasOverride(node)) {
+        if (methodHasOverride(node)) {
+            return data;
+        }
+        Node parent = node.getNthParent(3);
+        Class<?> clazzType = node.getType();
+        boolean isType = CollectionUtil.isCollectionType(clazzType, false);
+        if (isType && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter
+                || parent instanceof ASTResultType)) {
+            addViolation(data, node, node.getImage());
+        }
         return data;
-    }
-	Node parent = node.getNthParent(3);
-	Class<?> clazzType = node.getType();
-	boolean isType = CollectionUtil.isCollectionType(clazzType, false);
-	if (isType
-		&& (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter || parent instanceof ASTResultType)) {
-	    addViolation(data, node, node.getImage());
-	}
-	return data;
     }
 
     private boolean methodHasOverride(Node node) {

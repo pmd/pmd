@@ -25,7 +25,6 @@ public class ASTSwitchLabel extends AbstractJavaNode {
         return isDefault;
     }
 
-
     /**
      * Accept the visitor. *
      */

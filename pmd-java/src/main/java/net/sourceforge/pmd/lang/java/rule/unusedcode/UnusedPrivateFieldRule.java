@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unusedcode;
 
 import java.util.ArrayList;
@@ -30,12 +31,13 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         boolean classHasLombok = hasLombokAnnotation(node);
 
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(
-                VariableNameDeclaration.class);
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (!accessNodeParent.isPrivate() || isOK(decl.getImage()) || classHasLombok || hasLombokAnnotation(accessNodeParent)) {
+            if (!accessNodeParent.isPrivate() || isOK(decl.getImage()) || classHasLombok
+                    || hasLombokAnnotation(accessNodeParent)) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
@@ -64,7 +66,8 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
     private boolean usedInOuterClass(ASTClassOrInterfaceDeclaration node, NameDeclaration decl) {
         List<ASTClassOrInterfaceDeclaration> outerClasses = node.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
         for (ASTClassOrInterfaceDeclaration outerClass : outerClasses) {
-            ASTClassOrInterfaceBody classOrInterfaceBody = outerClass.getFirstChildOfType(ASTClassOrInterfaceBody.class);
+            ASTClassOrInterfaceBody classOrInterfaceBody = outerClass
+                    .getFirstChildOfType(ASTClassOrInterfaceBody.class);
             if (usedInOuter(decl, classOrInterfaceBody)) {
                 return true;
             }
@@ -75,8 +78,7 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
     private boolean usedInOuter(NameDeclaration decl, JavaNode body) {
         List<ASTClassOrInterfaceBodyDeclaration> classOrInterfaceBodyDeclarations = body
                 .findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        List<ASTEnumConstant> enumConstants = body
-                .findChildrenOfType(ASTEnumConstant.class);
+        List<ASTEnumConstant> enumConstants = body.findChildrenOfType(ASTEnumConstant.class);
         List<JavaNode> nodes = new ArrayList<>();
         nodes.addAll(classOrInterfaceBodyDeclarations);
         nodes.addAll(enumConstants);

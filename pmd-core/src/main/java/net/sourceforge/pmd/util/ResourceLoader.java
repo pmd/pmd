@@ -1,9 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.util;
 
-import net.sourceforge.pmd.RuleSetNotFoundException;
+package net.sourceforge.pmd.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,11 +11,14 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import net.sourceforge.pmd.RuleSetNotFoundException;
+
 /**
  */
 public final class ResourceLoader {
 
     public static final int TIMEOUT;
+
     static {
         int timeoutProperty = 5000;
         try {
@@ -35,26 +37,32 @@ public final class ResourceLoader {
     }
 
     /**
-     * Method to find a file, first by finding it as a file
-     * (either by the absolute or relative path), then as
-     * a URL, and then finally seeing if it is on the classpath.
-     * @param name String
+     * Method to find a file, first by finding it as a file (either by the
+     * absolute or relative path), then as a URL, and then finally seeing if it
+     * is on the classpath.
+     *
+     * @param name
+     *            String
      * @return InputStream
      * @throws RuleSetNotFoundException
      */
     public static InputStream loadResourceAsStream(String name) throws RuleSetNotFoundException {
         InputStream stream = loadResourceAsStream(name, ResourceLoader.class.getClassLoader());
         if (stream == null) {
-            throw new RuleSetNotFoundException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
+            throw new RuleSetNotFoundException("Can't find resource " + name
+                    + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
         }
         return stream;
     }
 
     /**
-     * Uses the ClassLoader passed in to attempt to load the
-     * resource if it's not a File or a URL
-     * @param name String
-     * @param loader ClassLoader
+     * Uses the ClassLoader passed in to attempt to load the resource if it's
+     * not a File or a URL
+     *
+     * @param name
+     *            String
+     * @param loader
+     *            ClassLoader
      * @return InputStream
      * @throws RuleSetNotFoundException
      */
@@ -68,7 +76,7 @@ public final class ResourceLoader {
             }
         } else {
             try {
-                HttpURLConnection connection = (HttpURLConnection)new URL(name).openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new URL(name).openConnection();
                 connection.setConnectTimeout(TIMEOUT);
                 connection.setReadTimeout(TIMEOUT);
                 return connection.getInputStream();
@@ -76,6 +84,7 @@ public final class ResourceLoader {
                 return loader.getResourceAsStream(name);
             }
         }
-        throw new RuleSetNotFoundException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
+        throw new RuleSetNotFoundException("Can't find resource " + name
+                + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
     }
 }

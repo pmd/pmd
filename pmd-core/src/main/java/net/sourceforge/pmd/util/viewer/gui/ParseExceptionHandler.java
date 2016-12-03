@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer.gui;
 
 import java.awt.BorderLayout;
@@ -18,7 +19,6 @@ import javax.swing.JTextArea;
 
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-
 /**
  * handles parsing exceptions
  *
@@ -33,8 +33,10 @@ public class ParseExceptionHandler extends JDialog implements ActionListener {
     /**
      * creates the dialog
      *
-     * @param parent dialog's parent
-     * @param exc    exception to be handled
+     * @param parent
+     *            dialog's parent
+     * @param exc
+     *            exception to be handled
      */
     public ParseExceptionHandler(JFrame parent, Exception exc) {
         super(parent, NLS.nls("COMPILE_ERROR.DIALOG.TITLE"), true);
@@ -43,14 +45,13 @@ public class ParseExceptionHandler extends JDialog implements ActionListener {
     }
 
     private void init() {
-    	JTextArea errorArea = new JTextArea();
+        JTextArea errorArea = new JTextArea();
         errorArea.setEditable(false);
         errorArea.setText(exc.getMessage() + "\n");
         getContentPane().setLayout(new BorderLayout());
         JPanel messagePanel = new JPanel(new BorderLayout());
-        messagePanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(),
-                BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                        NLS.nls("COMPILE_ERROR.PANEL.TITLE"))));
+        messagePanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(), BorderFactory
+                .createTitledBorder(BorderFactory.createEtchedBorder(), NLS.nls("COMPILE_ERROR.PANEL.TITLE"))));
         messagePanel.add(new JScrollPane(errorArea), BorderLayout.CENTER);
         getContentPane().add(messagePanel, BorderLayout.CENTER);
         JPanel btnPane = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -67,6 +68,7 @@ public class ParseExceptionHandler extends JDialog implements ActionListener {
     /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == okBtn) {
             dispose();

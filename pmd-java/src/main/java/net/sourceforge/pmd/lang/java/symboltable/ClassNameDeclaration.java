@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -35,10 +36,10 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Typ
     }
 
     public String getTypeImage() {
-        return ((ASTClassOrInterfaceDeclaration)node).getImage();
+        return ((ASTClassOrInterfaceDeclaration) node).getImage();
     }
 
     public Class<?> getType() {
-        return ((ASTClassOrInterfaceDeclaration)node).getType();
+        return ((ASTClassOrInterfaceDeclaration) node).getType();
     }
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import java.util.Stack;
@@ -34,7 +35,8 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 /**
  * @author Donald A. Leckie,
  *
- * @version $Revision: 5956 $, $Date: 2008-04-04 04:59:25 -0500 (Fri, 04 Apr 2008) $
+ * @version $Revision: 5956 $, $Date: 2008-04-04 04:59:25 -0500 (Fri, 04 Apr
+ *          2008) $
  * @since January 14, 2003
  */
 public class CyclomaticComplexityRule extends AbstractPLSQLRule {
@@ -42,385 +44,362 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     private static final String CLASS_NAME = CyclomaticComplexityRule.class.getName();
 
     public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty("reportLevel",
-	    "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
+            "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
 
-    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showClassesComplexity",
-	"Add class average violations to the report", true, 2.0f);
+    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
+            "showClassesComplexity", "Add class average violations to the report", true, 2.0f);
 
-    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showMethodsComplexity",
-	"Add method average violations to the report", true, 3.0f);
+    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
+            "showMethodsComplexity", "Add method average violations to the report", true, 3.0f);
 
-  private int reportLevel;
-  private boolean showClassesComplexity = true;
-  private boolean showMethodsComplexity = true;
+    private int reportLevel;
+    private boolean showClassesComplexity = true;
+    private boolean showMethodsComplexity = true;
 
-  private static class Entry {
-    private Node node;
-    private int decisionPoints = 1;
-    public int highestDecisionPoints;
-    public int methodCount;
+    private static class Entry {
+        private Node node;
+        private int decisionPoints = 1;
+        public int highestDecisionPoints;
+        public int methodCount;
 
-    private Entry(Node node) {
-      this.node = node;
+        private Entry(Node node) {
+            this.node = node;
+        }
+
+        public void bumpDecisionPoints() {
+            decisionPoints++;
+        }
+
+        public void bumpDecisionPoints(int size) {
+            decisionPoints += size;
+        }
+
+        public int getComplexityAverage() {
+            return (double) methodCount == 0 ? 1 : (int) Math.rint((double) decisionPoints / (double) methodCount);
+        }
     }
 
-    public void bumpDecisionPoints() {
-      decisionPoints++;
+    private Stack<Entry> entryStack = new Stack<>();
+
+    public CyclomaticComplexityRule() {
+        definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
+        definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
+        definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
     }
 
-    public void bumpDecisionPoints(int size) {
-      decisionPoints += size;
+    @Override
+    public Object visit(ASTInput node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTInput)");
+        reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
+        showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
+        showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
+        super.visit(node, data);
+        LOGGER.exiting(CLASS_NAME, "visit(ASTInput)");
+        return data;
     }
 
-    public int getComplexityAverage() {
-      return (double) methodCount == 0 ? 1
-          : (int) Math.rint( (double) decisionPoints / (double) methodCount );
+    @Override
+    public Object visit(ASTElsifClause node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTElsifClause)");
+        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        // If statement always has a complexity of at least 1
+        boolCompIf++;
+
+        entryStack.peek().bumpDecisionPoints(boolCompIf);
+        super.visit(node, data);
+        LOGGER.exiting(CLASS_NAME, "visit(ASTElsifClause)");
+        return data;
     }
-  }
 
-  private Stack<Entry> entryStack = new Stack<>();
+    @Override
+    public Object visit(ASTIfStatement node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTIfClause)");
+        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        // If statement always has a complexity of at least 1
+        boolCompIf++;
 
-  public CyclomaticComplexityRule() {
-      definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
-      definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
-      definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
-  }
-
-  @Override
-public Object visit(ASTInput node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTInput)");
-    reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
-    showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
-    showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
-    super.visit( node, data );
-    LOGGER.exiting(CLASS_NAME,"visit(ASTInput)");
-    return data;
-  }
-
-
-  @Override
-public Object visit(ASTElsifClause node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTElsifClause)");
-    int boolCompIf = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
-    // If statement always has a complexity of at least 1
-    boolCompIf++;
-
-    entryStack.peek().bumpDecisionPoints( boolCompIf );
-    super.visit( node, data );
-    LOGGER.exiting(CLASS_NAME,"visit(ASTElsifClause)");
-    return data;
-  }
-
-  @Override
-public Object visit(ASTIfStatement node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTIfClause)");
-    int boolCompIf = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
-    // If statement always has a complexity of at least 1
-    boolCompIf++;
-
-    entryStack.peek().bumpDecisionPoints( boolCompIf );
-    LOGGER.exiting(CLASS_NAME,"visit(ASTIfClause)");
-    super.visit( node, data );
-    return data;
-  }
-
-  @Override
-public Object visit(ASTExceptionHandler node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTExceptionHandler)");
-    entryStack.peek().bumpDecisionPoints();
-    LOGGER.exiting(CLASS_NAME,"visit(ASTExceptionHandler)");
-    super.visit( node, data );
-    return data;
-  }
-
-  @Override
-public Object visit(ASTForStatement node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTForStatement)");
-    int boolCompFor = NPathComplexityRule.sumExpressionComplexity( node.getFirstDescendantOfType( ASTExpression.class ) );
-    // For statement always has a complexity of at least 1
-    boolCompFor++;
-
-    entryStack.peek().bumpDecisionPoints( boolCompFor );
-    super.visit( node, data );
-    LOGGER.exiting(CLASS_NAME,"visit(ASTForStatement)");
-    return data;
-  }
-
-  @Override
-public Object visit(ASTLoopStatement node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTLoopStatement)");
-    int boolCompDo = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
-    // Do statement always has a complexity of at least 1
-    boolCompDo++;
-
-    entryStack.peek().bumpDecisionPoints( boolCompDo );
-    super.visit( node, data );
-    LOGGER.exiting(CLASS_NAME,"visit(ASTLoopStatement)");
-    return data;
-  }
-
-  @Override
-public Object visit(ASTCaseStatement node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTCaseStatement)");
-    Entry entry = entryStack.peek();
-
-    int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
-    entry.bumpDecisionPoints( boolCompSwitch );
-
-    super.visit( node, data );
-    LOGGER.exiting(CLASS_NAME,"visit(ASTCaseStatement)");
-    return data;
-  }
-
-  @Override
-public Object visit(ASTCaseWhenClause node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTCaseWhenClause)");
-    Entry entry = entryStack.peek();
-
-    entry.bumpDecisionPoints();
-    super.visit( node, data );
-    LOGGER.exiting(CLASS_NAME,"visit(ASTCaseWhenClause)");
-    return data;
-  }
-
-@Override
-public Object visit(ASTWhileStatement node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTWhileStatement)");
-    int boolCompWhile = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
-    // While statement always has a complexity of at least 1
-    boolCompWhile++;
-
-    entryStack.peek().bumpDecisionPoints( boolCompWhile );
-    super.visit( node, data );
-    LOGGER.exiting(CLASS_NAME,"visit(ASTWhileStatement)");
-    return data;
-  }
-
-  @Override
-public Object visit(ASTConditionalOrExpression node, Object data) {
-    return data;
-  }
-
-  @Override
-public Object visit(ASTPackageSpecification node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTPackageSpecification)");
-    //Treat Package Specification like an Interface
-    LOGGER.exiting(CLASS_NAME,"visit(ASTPackageSpecification)");
-    return data;
-  }
-
-  @Override
-public Object visit(ASTTypeSpecification node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTTypeSpecification)");
-    //Treat Type Specification like an Interface
-    LOGGER.exiting(CLASS_NAME,"visit(ASTTypeSpecification)");
-    return data;
-  }
-
-  @Override
-public Object visit(ASTPackageBody node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTPackageBody)");
-
-    entryStack.push( new Entry( node ) );
-    super.visit( node, data );
-    Entry classEntry = entryStack.pop();
-    if (LOGGER.isLoggable(Level.FINEST)) {
-    LOGGER.finest("ASTPackageBody: ComplexityAverage==" + classEntry.getComplexityAverage() 
-                   +", highestDecisionPoint=" 
-                   + classEntry.highestDecisionPoints
-                 );
+        entryStack.peek().bumpDecisionPoints(boolCompIf);
+        LOGGER.exiting(CLASS_NAME, "visit(ASTIfClause)");
+        super.visit(node, data);
+        return data;
     }
-    if ( showClassesComplexity ) {
-	    if ( classEntry.getComplexityAverage() >= reportLevel
-	        || classEntry.highestDecisionPoints >= reportLevel ) {
-	      addViolation( data, node, new String[] {
-	          "class",
-	          node.getImage(),
-	          classEntry.getComplexityAverage() + " (Highest = "
-	              + classEntry.highestDecisionPoints + ')' } );
-	    }
-    }
-    LOGGER.exiting(CLASS_NAME,"visit(ASTPackageBody)");
-    return data;
-  }
 
-  @Override
-public Object visit(ASTTriggerUnit node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTTriggerUnit)");
-
-    entryStack.push( new Entry( node ) );
-    super.visit( node, data );
-    Entry classEntry = entryStack.pop();
-    if (LOGGER.isLoggable(Level.FINEST)) {
-    LOGGER.finest("ASTTriggerUnit: ComplexityAverage==" + classEntry.getComplexityAverage() 
-                   +", highestDecisionPoint=" 
-                   + classEntry.highestDecisionPoints
-                 );
+    @Override
+    public Object visit(ASTExceptionHandler node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTExceptionHandler)");
+        entryStack.peek().bumpDecisionPoints();
+        LOGGER.exiting(CLASS_NAME, "visit(ASTExceptionHandler)");
+        super.visit(node, data);
+        return data;
     }
-    if ( showClassesComplexity ) {
-	    if ( classEntry.getComplexityAverage() >= reportLevel
-	        || classEntry.highestDecisionPoints >= reportLevel ) {
-	      addViolation( data, node, new String[] {
-	          "class",
-	          node.getImage(),
-	          classEntry.getComplexityAverage() + " (Highest = "
-	              + classEntry.highestDecisionPoints + ')' } );
-	    }
-    }
-    LOGGER.exiting(CLASS_NAME,"visit(ASTTriggerUnit)");
-    return data;
-  }
 
-@Override
-public Object visit(ASTProgramUnit node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTProgramUnit)");
-    entryStack.push( new Entry( node ) );
-    super.visit( node, data );
-    Entry methodEntry = entryStack.pop();
-    if (LOGGER.isLoggable(Level.FINEST)) {
-    LOGGER.finest("ASTProgramUnit: ComplexityAverage==" + methodEntry.getComplexityAverage() 
-                   +", highestDecisionPoint=" 
-                   + methodEntry.highestDecisionPoints
-                 );
-    }
-    if ( showMethodsComplexity ) {
-	    //Entry methodEntry = entryStack.pop();
-	    int methodDecisionPoints = methodEntry.decisionPoints;
-            if ( 
-                    null != node.getFirstParentOfType(ASTPackageBody.class) //PackageBody (including Object Type Body)
-                    || null != node.getFirstParentOfType(ASTTriggerUnit.class) //Trigger of any form
-                    //@TODO || null != node.getFirstParentOfType(ASTProgramUnit.class) //Another Procedure
-                    //@TODO || null != node.getFirstParentOfType(ASTTypeMethod.class) //Another Type method
-               )
-            {
-              /* @TODO This does not cope with nested methods 
-               * We need the outer most 
-               * ASTPackageBody
-               * ASTTriggerUni
-               * ASTProgramUnit
-               * ASTTypeMethod
-               * 
-               */
-              Entry classEntry = entryStack.peek();
-              classEntry.methodCount++;
-              classEntry.bumpDecisionPoints( methodDecisionPoints );
+    @Override
+    public Object visit(ASTForStatement node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTForStatement)");
+        int boolCompFor = NPathComplexityRule
+                .sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+        // For statement always has a complexity of at least 1
+        boolCompFor++;
 
-              if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
-                classEntry.highestDecisionPoints = methodDecisionPoints;
-              }
+        entryStack.peek().bumpDecisionPoints(boolCompFor);
+        super.visit(node, data);
+        LOGGER.exiting(CLASS_NAME, "visit(ASTForStatement)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTLoopStatement node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTLoopStatement)");
+        int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        // Do statement always has a complexity of at least 1
+        boolCompDo++;
+
+        entryStack.peek().bumpDecisionPoints(boolCompDo);
+        super.visit(node, data);
+        LOGGER.exiting(CLASS_NAME, "visit(ASTLoopStatement)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTCaseStatement node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTCaseStatement)");
+        Entry entry = entryStack.peek();
+
+        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        entry.bumpDecisionPoints(boolCompSwitch);
+
+        super.visit(node, data);
+        LOGGER.exiting(CLASS_NAME, "visit(ASTCaseStatement)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTCaseWhenClause node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTCaseWhenClause)");
+        Entry entry = entryStack.peek();
+
+        entry.bumpDecisionPoints();
+        super.visit(node, data);
+        LOGGER.exiting(CLASS_NAME, "visit(ASTCaseWhenClause)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTWhileStatement node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTWhileStatement)");
+        int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        // While statement always has a complexity of at least 1
+        boolCompWhile++;
+
+        entryStack.peek().bumpDecisionPoints(boolCompWhile);
+        super.visit(node, data);
+        LOGGER.exiting(CLASS_NAME, "visit(ASTWhileStatement)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTConditionalOrExpression node, Object data) {
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTPackageSpecification node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTPackageSpecification)");
+        // Treat Package Specification like an Interface
+        LOGGER.exiting(CLASS_NAME, "visit(ASTPackageSpecification)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTypeSpecification node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTTypeSpecification)");
+        // Treat Type Specification like an Interface
+        LOGGER.exiting(CLASS_NAME, "visit(ASTTypeSpecification)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTPackageBody node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTPackageBody)");
+
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry classEntry = entryStack.pop();
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("ASTPackageBody: ComplexityAverage==" + classEntry.getComplexityAverage()
+                    + ", highestDecisionPoint=" + classEntry.highestDecisionPoints);
+        }
+        if (showClassesComplexity) {
+            if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
+                addViolation(data, node, new String[] { "class", node.getImage(),
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
+            }
+        }
+        LOGGER.exiting(CLASS_NAME, "visit(ASTPackageBody)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTriggerUnit node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTTriggerUnit)");
+
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry classEntry = entryStack.pop();
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("ASTTriggerUnit: ComplexityAverage==" + classEntry.getComplexityAverage()
+                    + ", highestDecisionPoint=" + classEntry.highestDecisionPoints);
+        }
+        if (showClassesComplexity) {
+            if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
+                addViolation(data, node, new String[] { "class", node.getImage(),
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
+            }
+        }
+        LOGGER.exiting(CLASS_NAME, "visit(ASTTriggerUnit)");
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTProgramUnit node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTProgramUnit)");
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry methodEntry = entryStack.pop();
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("ASTProgramUnit: ComplexityAverage==" + methodEntry.getComplexityAverage()
+                    + ", highestDecisionPoint=" + methodEntry.highestDecisionPoints);
+        }
+        if (showMethodsComplexity) {
+            // Entry methodEntry = entryStack.pop();
+            int methodDecisionPoints = methodEntry.decisionPoints;
+            // PackageBody (including Object Type Body)
+            if (null != node.getFirstParentOfType(ASTPackageBody.class)
+                    // Trigger of any form
+                    || null != node.getFirstParentOfType(ASTTriggerUnit.class)
+            // TODO || null != node.getFirstParentOfType(ASTProgramUnit.class)
+            // //Another Procedure
+            // TODO || null != node.getFirstParentOfType(ASTTypeMethod.class)
+            // //Another Type method
+            ) {
+                /*
+                 * TODO This does not cope with nested methods We need the
+                 * outer most ASTPackageBody ASTTriggerUni ASTProgramUnit
+                 * ASTTypeMethod
+                 * 
+                 */
+                Entry classEntry = entryStack.peek();
+                classEntry.methodCount++;
+                classEntry.bumpDecisionPoints(methodDecisionPoints);
+
+                if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+                    classEntry.highestDecisionPoints = methodDecisionPoints;
+                }
             }
 
-	    ASTMethodDeclarator methodDeclarator = null;
-	    for ( int n = 0; n < node.jjtGetNumChildren(); n++ ) {
-	      Node childNode = node.jjtGetChild( n );
-	      if ( childNode instanceof ASTMethodDeclarator ) {
-	        methodDeclarator = (ASTMethodDeclarator) childNode;
-	        break;
-	      }
-	    }
-
-	    if ( methodEntry.decisionPoints >= reportLevel ) {
-	        addViolation( data, node, new String[] { "method",
-	            methodDeclarator == null ? "" : methodDeclarator.getImage(),
-	            String.valueOf( methodEntry.decisionPoints ) } );
-	      }
-    }
-    LOGGER.exiting(CLASS_NAME,"visit(ASTProgramUnit)");
-    return data;
-  }
-
-@Override
-public Object visit(ASTTypeMethod node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTTypeMethod)");
-    entryStack.push( new Entry( node ) );
-    super.visit( node, data );
-    Entry methodEntry = entryStack.pop();
-    if (LOGGER.isLoggable(Level.FINEST)) {
-    LOGGER.finest("ASTProgramUnit: ComplexityAverage==" + methodEntry.getComplexityAverage() 
-                   +", highestDecisionPoint=" 
-                   + methodEntry.highestDecisionPoints
-                 );
-    }
-    if ( showMethodsComplexity ) {
-	    //Entry methodEntry = entryStack.pop();
-	    int methodDecisionPoints = methodEntry.decisionPoints;
-            if ( 
-               null != node.getFirstParentOfType(ASTPackageBody.class) //PackageBody (including Object Type Body)
-               )
-            {
-              /* @TODO This does not cope with nested methods 
-               * We need the outer most 
-               * ASTPackageBody
-               */
-              Entry classEntry = entryStack.peek();
-              classEntry.methodCount++;
-              classEntry.bumpDecisionPoints( methodDecisionPoints );
-
-              if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
-                classEntry.highestDecisionPoints = methodDecisionPoints;
-              }
+            ASTMethodDeclarator methodDeclarator = null;
+            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
+                Node childNode = node.jjtGetChild(n);
+                if (childNode instanceof ASTMethodDeclarator) {
+                    methodDeclarator = (ASTMethodDeclarator) childNode;
+                    break;
+                }
             }
 
-	    ASTMethodDeclarator methodDeclarator = null;
-	    for ( int n = 0; n < node.jjtGetNumChildren(); n++ ) {
-	      Node childNode = node.jjtGetChild( n );
-	      if ( childNode instanceof ASTMethodDeclarator ) {
-	        methodDeclarator = (ASTMethodDeclarator) childNode;
-	        break;
-	      }
-	    }
-
-	    if ( methodEntry.decisionPoints >= reportLevel ) {
-	        addViolation( data, node, new String[] { "method",
-	            methodDeclarator == null ? "" : methodDeclarator.getImage(),
-	            String.valueOf( methodEntry.decisionPoints ) } );
-	      }
+            if (methodEntry.decisionPoints >= reportLevel) {
+                addViolation(data, node,
+                        new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
+                            String.valueOf(methodEntry.decisionPoints), });
+            }
+        }
+        LOGGER.exiting(CLASS_NAME, "visit(ASTProgramUnit)");
+        return data;
     }
-    LOGGER.exiting(CLASS_NAME,"visit(ASTTypeMethod)");
-    return data;
-  }
 
+    @Override
+    public Object visit(ASTTypeMethod node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTTypeMethod)");
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry methodEntry = entryStack.pop();
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("ASTProgramUnit: ComplexityAverage==" + methodEntry.getComplexityAverage()
+                    + ", highestDecisionPoint=" + methodEntry.highestDecisionPoints);
+        }
+        if (showMethodsComplexity) {
+            // Entry methodEntry = entryStack.pop();
+            int methodDecisionPoints = methodEntry.decisionPoints;
+            // PAckageBody (including Object Type Body)
+            if (null != node.getFirstParentOfType(ASTPackageBody.class)) {
+                /*
+                 * TODO This does not cope with nested methods We need the
+                 * outer most ASTPackageBody
+                 */
+                Entry classEntry = entryStack.peek();
+                classEntry.methodCount++;
+                classEntry.bumpDecisionPoints(methodDecisionPoints);
 
-  @Override
-public Object visit(ASTTriggerTimingPointSection node, Object data) {
-    LOGGER.entering(CLASS_NAME,"visit(ASTTriggerTimingPointSection)");
-    entryStack.push( new Entry( node ) );
-    super.visit( node, data );
-    Entry methodEntry = entryStack.pop();
-    if (LOGGER.isLoggable(Level.FINE)) {
-    LOGGER.fine("ASTTriggerTimingPointSection: ComplexityAverage==" + methodEntry.getComplexityAverage() 
-                   +", highestDecisionPoint=" 
-                   + methodEntry.highestDecisionPoints
-                 );
+                if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+                    classEntry.highestDecisionPoints = methodDecisionPoints;
+                }
+            }
+
+            ASTMethodDeclarator methodDeclarator = null;
+            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
+                Node childNode = node.jjtGetChild(n);
+                if (childNode instanceof ASTMethodDeclarator) {
+                    methodDeclarator = (ASTMethodDeclarator) childNode;
+                    break;
+                }
+            }
+
+            if (methodEntry.decisionPoints >= reportLevel) {
+                addViolation(data, node,
+                        new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
+                            String.valueOf(methodEntry.decisionPoints), });
+            }
+        }
+        LOGGER.exiting(CLASS_NAME, "visit(ASTTypeMethod)");
+        return data;
     }
-    if ( showMethodsComplexity ) {
-	    int methodDecisionPoints = methodEntry.decisionPoints;
-	    Entry classEntry = entryStack.peek();
-	    classEntry.methodCount++;
-	    classEntry.bumpDecisionPoints( methodDecisionPoints );
 
-	    if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
-	      classEntry.highestDecisionPoints = methodDecisionPoints;
-	    }
+    @Override
+    public Object visit(ASTTriggerTimingPointSection node, Object data) {
+        LOGGER.entering(CLASS_NAME, "visit(ASTTriggerTimingPointSection)");
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry methodEntry = entryStack.pop();
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("ASTTriggerTimingPointSection: ComplexityAverage==" + methodEntry.getComplexityAverage()
+                    + ", highestDecisionPoint=" + methodEntry.highestDecisionPoints);
+        }
+        if (showMethodsComplexity) {
+            int methodDecisionPoints = methodEntry.decisionPoints;
+            Entry classEntry = entryStack.peek();
+            classEntry.methodCount++;
+            classEntry.bumpDecisionPoints(methodDecisionPoints);
 
-	    ASTMethodDeclarator methodDeclarator = null;
-	    for ( int n = 0; n < node.jjtGetNumChildren(); n++ ) {
-	      Node childNode = node.jjtGetChild( n );
-	      if ( childNode instanceof ASTMethodDeclarator ) {
-	        methodDeclarator = (ASTMethodDeclarator) childNode;
-	        break;
-	      }
-	    }
+            if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+                classEntry.highestDecisionPoints = methodDecisionPoints;
+            }
 
-	    if ( methodEntry.decisionPoints >= reportLevel ) {
-	        addViolation( data, node, new String[] { "method",
-	            methodDeclarator == null ? "" : methodDeclarator.getImage(),
-	            String.valueOf( methodEntry.decisionPoints ) } );
-	      }
+            ASTMethodDeclarator methodDeclarator = null;
+            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
+                Node childNode = node.jjtGetChild(n);
+                if (childNode instanceof ASTMethodDeclarator) {
+                    methodDeclarator = (ASTMethodDeclarator) childNode;
+                    break;
+                }
+            }
+
+            if (methodEntry.decisionPoints >= reportLevel) {
+                addViolation(data, node,
+                        new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
+                            String.valueOf(methodEntry.decisionPoints), });
+            }
+        }
+        LOGGER.exiting(CLASS_NAME, "visit(ASTTriggerTimingPointSection)");
+        return data;
     }
-    LOGGER.exiting(CLASS_NAME,"visit(ASTTriggerTimingPointSection)");
-    return data;
-  }
-
 
 }

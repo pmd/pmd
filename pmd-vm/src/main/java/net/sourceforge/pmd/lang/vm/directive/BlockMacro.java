@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -19,14 +20,15 @@ package net.sourceforge.pmd.lang.vm.directive;
  * under the License.    
  */
 
-
 /**
- * BlockMacro directive is used to invoke Velocity macros with normal parameters and a macro body.
+ * BlockMacro directive is used to invoke Velocity macros with normal parameters
+ * and a macro body.
  * <p>
- * The macro can then refer to the passed body AST. This directive can be used as a 
- * "decorator". Body AST can contain any valid Velocity syntax.
+ * The macro can then refer to the passed body AST. This directive can be used
+ * as a "decorator". Body AST can contain any valid Velocity syntax.
  *
  * An example:
+ * 
  * <pre>
  * #set($foobar = "yeah!")
  * 
@@ -38,7 +40,9 @@ package net.sourceforge.pmd.lang.vm.directive;
  * &lt;u&gt;This text is underlined and bold&lt;/u&gt;
  * #end
  * </pre>
+ * 
  * Will print:
+ * 
  * <pre>
  * &lt;strong&gt;&lt;u&gt;This text is underlined and bold&lt;u&gt;&lt;/strong&gt; yeah!
  * </pre>
@@ -49,29 +53,23 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @since 1.7
  * @version $Id$
  */
-public class BlockMacro extends Block
-{
+public class BlockMacro extends Block {
     private String name;
 
-    public BlockMacro(String name)
-    {
+    public BlockMacro(String name) {
         this.name = name;
     }
-    
-    public String getName()
-    {
+
+    public String getName() {
         return key;
     }
 
     /**
-     * Override to use the macro name, since it is within an
-     * #@myMacro() ... #end block that the scope in question
-     * would be used.
+     * Override to use the macro name, since it is within an #@myMacro() ...
+     * #end block that the scope in question would be used.
      */
-    public String getScopeName()
-    {
+    public String getScopeName() {
         return name;
     }
-
 
 }

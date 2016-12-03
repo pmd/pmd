@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
@@ -11,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
@@ -20,8 +23,6 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
-import org.junit.Test;
-
 public class AbstractRuleTest {
 
     private static class MyRule extends AbstractRule {
@@ -29,7 +30,7 @@ public class AbstractRuleTest {
 
         private static final StringProperty xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
 
-        public MyRule() {
+        MyRule() {
             definePropertyDescriptor(pd);
             definePropertyDescriptor(xpath);
             setName("MyRule");
@@ -46,7 +47,7 @@ public class AbstractRuleTest {
     private static class MyOtherRule extends AbstractRule {
         private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
-        public MyOtherRule() {
+        MyOtherRule() {
             definePropertyDescriptor(pd);
             setName("MyOtherRule");
             setMessage("my other rule");

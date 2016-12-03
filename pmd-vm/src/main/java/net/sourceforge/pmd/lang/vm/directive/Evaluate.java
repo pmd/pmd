@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -20,31 +21,29 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 
 /**
- * Evaluates the directive argument as a VTL string, using the existing
- * context.
+ * Evaluates the directive argument as a VTL string, using the existing context.
  *
  * @author <a href="mailto:wglass@apache.org">Will Glass-Husain</a>
  * @version $Id: Evaluate.java 898032 2010-01-11 19:51:03Z nbubna $
  * @since 1.6
  */
-public class Evaluate extends Directive
-{
+public class Evaluate extends Directive {
 
     /**
      * Return name of this directive.
+     * 
      * @return The name of this directive.
      */
-    public String getName()
-    {
+    public String getName() {
         return "evaluate";
     }
 
     /**
      * Return type of this directive.
+     * 
      * @return The type of this directive.
      */
-    public int getType()
-    {
+    public int getType() {
         return LINE;
     }
 

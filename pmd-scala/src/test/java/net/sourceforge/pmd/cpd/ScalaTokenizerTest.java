@@ -1,12 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.IOException;
-
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -15,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sonar.plugins.scala.cpd.ScalaTokenizer;
 
+import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 public class ScalaTokenizerTest extends AbstractTokenizerTest {
 

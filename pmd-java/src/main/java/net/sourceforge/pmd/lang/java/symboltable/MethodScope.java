@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.HashSet;
@@ -15,7 +16,8 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * A Method Scope can have variable declarations and class declarations within it.
+ * A Method Scope can have variable declarations and class declarations within
+ * it.
  */
 public class MethodScope extends AbstractJavaScope {
 
@@ -30,7 +32,7 @@ public class MethodScope extends AbstractJavaScope {
     }
 
     public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
-        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence)occurrence;
+        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence) occurrence;
         Set<NameDeclaration> declarations = findVariableHere(javaOccurrence);
         if (!declarations.isEmpty() && !javaOccurrence.isThisOrSuper()) {
             for (NameDeclaration decl : declarations) {
@@ -46,7 +48,8 @@ public class MethodScope extends AbstractJavaScope {
 
     public void addDeclaration(NameDeclaration variableDecl) {
         if (!(variableDecl instanceof VariableNameDeclaration || variableDecl instanceof ClassNameDeclaration)) {
-            throw new IllegalArgumentException("A MethodScope can contain only VariableNameDeclarations or ClassNameDeclarations");
+            throw new IllegalArgumentException(
+                    "A MethodScope can contain only VariableNameDeclarations or ClassNameDeclarations");
         }
         super.addDeclaration(variableDecl);
     }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
@@ -33,11 +34,11 @@ public class SequenceChecker {
         private int type;
         private boolean lastStep;
 
-        public Status(int type) {
+        Status(int type) {
             this(type, false);
         }
 
-        public Status(int type, boolean lastStep) {
+        Status(int type, boolean lastStep) {
             this.type = type;
             this.lastStep = lastStep;
         }
@@ -47,8 +48,9 @@ public class SequenceChecker {
         }
 
         /**
-         * 
-         * @param type candidate
+         *
+         * @param type
+         *            candidate
          * @return valid Status or null if NodeType is not a valid transition
          *         NodeType
          */
@@ -178,7 +180,7 @@ public class SequenceChecker {
         /*
          * Walk through the bracesList attempting to identify the first
          * contiguous graph of Nodes from the initial Status to a final Status.
-         * 
+         *
          * There are 2 loop indexes:- i which ranges through the bracesList:
          * this may be reset l serves as a control to cope with invalid lists of
          * StackObjects, preventing infinite loops within the SequenceChecker.
@@ -209,9 +211,8 @@ public class SequenceChecker {
                     LOGGER.finer("aktStatus is NULL (lookAhead): Invalid transition");
                     LOGGER.exiting(this.getClass().getCanonicalName(), "run", false);
                     return false;
-                }
-                // Cope with incorrect bracesList contents
-                else if (l > maximumIterations) {
+                } else if (l > maximumIterations) {
+                    // Cope with incorrect bracesList contents
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.severe("aktStatus is NULL: maximum Iterations exceeded, abort " + i);
                     }
@@ -227,10 +228,10 @@ public class SequenceChecker {
                     }
                     continue;
                 }
-            } else { // This NodeType _is_ a valid transition from the previous
-                     // State
-                if (aktStatus.isLastStep() && !aktStatus.hasMoreSteps()) { // Terminal
-                                                                           // State
+            } else {
+                // This NodeType _is_ a valid transition from the previous State
+                if (aktStatus.isLastStep() && !aktStatus.hasMoreSteps()) {
+                    // Terminal State
                     this.lastIndex = i;
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.finest("aktStatus is NOT NULL: lastStep reached and no moreSteps - firstIndex="

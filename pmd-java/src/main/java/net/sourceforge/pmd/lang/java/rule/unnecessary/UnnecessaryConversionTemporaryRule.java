@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unnecessary;
 
 import java.util.Set;
@@ -17,16 +18,17 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
     private boolean inPrimaryExpressionContext;
     private ASTPrimaryExpression primary;
     private boolean usingPrimitiveWrapperAllocation;
-    
-    private static final Set<String> PRIMITIVE_WRAPPERS = CollectionUtil.asSet(
-    	new String[] {"Integer", "Boolean", "Double", "Long", "Short", "Byte", "Float"}
-    	);
+
+    private static final Set<String> PRIMITIVE_WRAPPERS = CollectionUtil
+            .asSet(new String[] { "Integer", "Boolean", "Double", "Long", "Short", "Byte", "Float" });
 
     public Object visit(ASTPrimaryExpression node, Object data) {
-        if (node.jjtGetNumChildren() == 0 || (node.jjtGetChild(0)).jjtGetNumChildren() == 0 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
+        if (node.jjtGetNumChildren() == 0 || (node.jjtGetChild(0)).jjtGetNumChildren() == 0
+                || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {
             return super.visit(node, data);
         }
-        // TODO... hmmm... is this inPrimaryExpressionContext gibberish necessary?
+        // TODO... hmmm... is this inPrimaryExpressionContext gibberish
+        // necessary?
         inPrimaryExpressionContext = true;
         primary = node;
         super.visit(node, data);

@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -6,51 +10,51 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ParserTst;
-
-import org.junit.Test;
 
 public class ASTLiteralTest extends ParserTst {
 
     @Test
-    public void testIsStringLiteral() throws Throwable {
+    public void testIsStringLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST1);
         assertTrue((literals.iterator().next()).isStringLiteral());
     }
 
     @Test
-    public void testIsNotStringLiteral() throws Throwable {
+    public void testIsNotStringLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST2);
         assertFalse((literals.iterator().next()).isStringLiteral());
     }
 
     @Test
-    public void testIsIntIntLiteral() throws Throwable {
+    public void testIsIntIntLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST3);
         assertTrue((literals.iterator().next()).isIntLiteral());
     }
 
     @Test
-    public void testIsIntLongLiteral() throws Throwable {
+    public void testIsIntLongLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST4);
         assertTrue((literals.iterator().next()).isLongLiteral());
     }
 
     @Test
-    public void testIsFloatFloatLiteral() throws Throwable {
+    public void testIsFloatFloatLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST5);
         assertTrue((literals.iterator().next()).isFloatLiteral());
     }
 
     @Test
-    public void testIsFloatDoubleLiteral() throws Throwable {
+    public void testIsFloatDoubleLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST6);
         assertTrue((literals.iterator().next()).isDoubleLiteral());
     }
 
     @Test
-    public void testIsCharLiteral() throws Throwable {
+    public void testIsCharLiteral() {
         Set<ASTLiteral> literals = getNodes(ASTLiteral.class, TEST7);
         assertTrue((literals.iterator().next()).isCharLiteral());
     }
@@ -99,38 +103,17 @@ public class ASTLiteralTest extends ParserTst {
         assertEquals("0", literal.getImage());
     }
 
-    private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    "  String x = \"foo\";" + PMD.EOL +
-    "}";
+    private static final String TEST1 = "public class Foo {" + PMD.EOL + "  String x = \"foo\";" + PMD.EOL + "}";
 
-    private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    "  int x = 42;" + PMD.EOL +
-    "}";
+    private static final String TEST2 = "public class Foo {" + PMD.EOL + "  int x = 42;" + PMD.EOL + "}";
 
-    private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    "  int x = 42;" + PMD.EOL +
-    "}";
+    private static final String TEST3 = "public class Foo {" + PMD.EOL + "  int x = 42;" + PMD.EOL + "}";
 
-    private static final String TEST4 =
-    "public class Foo {" + PMD.EOL +
-    "  long x = 42L;" + PMD.EOL +
-    "}";
+    private static final String TEST4 = "public class Foo {" + PMD.EOL + "  long x = 42L;" + PMD.EOL + "}";
 
-    private static final String TEST5 =
-    "public class Foo {" + PMD.EOL +
-    "  float x = 3.14159f;" + PMD.EOL +
-    "}";
+    private static final String TEST5 = "public class Foo {" + PMD.EOL + "  float x = 3.14159f;" + PMD.EOL + "}";
 
-    private static final String TEST6 =
-    "public class Foo {" + PMD.EOL +
-    "  double x = 3.14159;" + PMD.EOL +
-    "}";
+    private static final String TEST6 = "public class Foo {" + PMD.EOL + "  double x = 3.14159;" + PMD.EOL + "}";
 
-    private static final String TEST7 =
-    "public class Foo {" + PMD.EOL +
-    "  char x = 'x';" + PMD.EOL +
-    "}";
+    private static final String TEST7 = "public class Foo {" + PMD.EOL + "  char x = 'x';" + PMD.EOL + "}";
 }

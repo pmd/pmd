@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unusedcode;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class UnusedLocalVariableRule extends AbstractJavaRule {
     }
 
     private boolean actuallyUsed(List<NameOccurrence> usages) {
-        for (NameOccurrence occ: usages) {
-            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+        for (NameOccurrence occ : usages) {
+            JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             if (jocc.isOnLeftHandSide()) {
                 continue;
             } else {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
@@ -25,7 +26,9 @@ public class SourceFileScope extends AbstractScope {
 
     /**
      * {@inheritDoc}
-     * @throws IllegalArgumentException if declaration is not a {@link ClassNameDeclaration}
+     * 
+     * @throws IllegalArgumentException
+     *             if declaration is not a {@link ClassNameDeclaration}
      */
     @Override
     public void addDeclaration(NameDeclaration declaration) {

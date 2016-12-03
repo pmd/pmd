@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.HashSet;
@@ -15,8 +16,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 
 /**
- * Base class for rules, that should ignore classes/fields that
- * are annotated with Lombok annotations.
+ * Base class for rules, that should ignore classes/fields that are annotated
+ * with Lombok annotations.
  *
  * @author Andreas Dangel
  */
@@ -26,6 +27,7 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
     private boolean classHasLombokAnnotation = false;
     private static final String LOMBOK_PACKAGE = "lombok";
     private static final Set<String> LOMBOK_ANNOTATIONS = new HashSet<>();
+
     static {
         LOMBOK_ANNOTATIONS.add("Data");
         LOMBOK_ANNOTATIONS.add("Getter");
@@ -59,8 +61,11 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
 
     /**
      * Returns whether there have been class level Lombok annotations found.
-     * Note: this can only be queried after the class declaration node has been processed.
-     * @return <code>true</code> if a lombok annotation at the class level has been found
+     * Note: this can only be queried after the class declaration node has been
+     * processed.
+     * 
+     * @return <code>true</code> if a lombok annotation at the class level has
+     *         been found
      */
     protected boolean hasClassLombokAnnotation() {
         return classHasLombokAnnotation;
@@ -69,7 +74,9 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
     /**
      * Checks whether the given node is annotated with any lombok annotation.
      * The node can be any node, e.g. class declaration or field declaration.
-     * @param node the node to check
+     * 
+     * @param node
+     *            the node to check
      * @return <code>true</code> if a lombok annotation has been found
      */
     protected boolean hasLombokAnnotation(Node node) {

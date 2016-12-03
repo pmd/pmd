@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -128,8 +129,9 @@ public class PLSQLNameOccurrence implements NameOccurrence {
      */
 
     /**
-     * Assert it the occurrence is a self assignment such as: <code>
-     * 		i += 3;
+     * Assert it the occurrence is a self assignment such as:
+     * <code>
+     * i += 3;
      * </code>
      *
      * @return true, if the occurrence is self-assignment, false, otherwise.

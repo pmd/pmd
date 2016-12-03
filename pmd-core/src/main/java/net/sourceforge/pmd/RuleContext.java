@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.io.File;
@@ -45,7 +46,7 @@ public class RuleContext {
     /**
      * Constructor which shares attributes and report listeners with the given
      * RuleContext.
-     * 
+     *
      * @param ruleContext
      *            the context from which the values are shared
      */
@@ -56,7 +57,7 @@ public class RuleContext {
 
     /**
      * Get the Report to which Rule Violations are sent.
-     * 
+     *
      * @return The Report.
      */
     public Report getReport() {
@@ -65,7 +66,7 @@ public class RuleContext {
 
     /**
      * Set the Report to which Rule Violations are sent.
-     * 
+     *
      * @param report
      *            The Report.
      */
@@ -75,7 +76,7 @@ public class RuleContext {
 
     /**
      * Get the File associated with the current source file.
-     * 
+     *
      * @return The File.
      */
     public File getSourceCodeFile() {
@@ -86,7 +87,7 @@ public class RuleContext {
      * Set the File associated with the current source file. While this may be
      * set to <code>null</code>, the exclude/include facilities will not work
      * properly without a File.
-     * 
+     *
      * @param sourceCodeFile
      *            The File.
      */
@@ -96,7 +97,7 @@ public class RuleContext {
 
     /**
      * Get the file name associated with the current source file.
-     * 
+     *
      * @return The file name.
      */
     public String getSourceCodeFilename() {
@@ -105,7 +106,7 @@ public class RuleContext {
 
     /**
      * Set the file name associated with the current source file.
-     * 
+     *
      * @param filename
      *            The file name.
      */
@@ -115,7 +116,7 @@ public class RuleContext {
 
     /**
      * Get the LanguageVersion associated with the current source file.
-     * 
+     *
      * @return The LanguageVersion, <code>null</code> if unknown.
      */
     public LanguageVersion getLanguageVersion() {
@@ -216,7 +217,7 @@ public class RuleContext {
      * If set to <code>false</code> then the processing will be aborted with the
      * exception. This is especially useful during unit tests, in order to not
      * oversee any exceptions.
-     * 
+     *
      * @param ignoreExceptions
      *            if <code>true</code> simply skip failing rules (default).
      */
@@ -228,7 +229,7 @@ public class RuleContext {
      * Gets the configuration whether to skip failing rules (<code>true</code>)
      * or whether to throw a a RuntimeException and abort the processing for the
      * first failing rule.
-     * 
+     *
      * @return <code>true</code> when failing rules are skipped,
      *         <code>false</code> otherwise.
      */

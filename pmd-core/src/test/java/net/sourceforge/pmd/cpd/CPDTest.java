@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import org.junit.Test;
 public class CPDTest {
 
     private static final String BASE_TEST_RESOURCE_PATH;
+
     static {
         if (new File("target/clover/test-classes").exists()) {
             BASE_TEST_RESOURCE_PATH = "target/clover/test-classes/net/sourceforge/pmd/cpd/files/";
@@ -23,6 +25,7 @@ public class CPDTest {
             BASE_TEST_RESOURCE_PATH = "target/test-classes/net/sourceforge/pmd/cpd/files/";
         }
     }
+
     private CPD cpd;
 
     private boolean canTestSymLinks = false;
@@ -33,7 +36,8 @@ public class CPDTest {
         theConfiguration.postContruct();
         cpd = new CPD(theConfiguration);
 
-        // Symlinks are not well supported under Windows - so the tests are simply not executed here.
+        // Symlinks are not well supported under Windows - so the tests are
+        // simply not executed here.
         canTestSymLinks = SystemUtils.IS_OS_UNIX;
         prepareSymLinks();
 
@@ -43,27 +47,32 @@ public class CPDTest {
     }
 
     /**
-     * As java doesn't support symlinks in zip files, maven does not, too.
-     * So, we are creating the symlinks manually here before the test.
-     * @throws Exception any error
+     * As java doesn't support symlinks in zip files, maven does not, too. So,
+     * we are creating the symlinks manually here before the test.
+     *
+     * @throws Exception
+     *             any error
      */
     private void prepareSymLinks() throws Exception {
         if (canTestSymLinks) {
             Runtime runtime = Runtime.getRuntime();
             if (!new File(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt").exists()) {
-                runtime.exec(new String[] {"ln", "-s", "real-file.txt",
-                        BASE_TEST_RESOURCE_PATH + "symlink-for-real-file.txt"}).waitFor();
+                runtime.exec(new String[] { "ln", "-s", "real-file.txt",
+                    BASE_TEST_RESOURCE_PATH + "symlink-for-real-file.txt", }).waitFor();
             }
             if (!new File(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test").exists()) {
-                runtime.exec(new String[] {"ln", "-s", "broken-sym-link",
-                        BASE_TEST_RESOURCE_PATH + "this-is-a-broken-sym-link-for-test"}).waitFor();
+                runtime.exec(new String[] { "ln", "-s", "broken-sym-link",
+                    BASE_TEST_RESOURCE_PATH + "this-is-a-broken-sym-link-for-test", }).waitFor();
             }
         }
     }
 
     /**
-     * A broken symlink (which is basically a not existing file), should be skipped.
-     * @throws Exception any error
+     * A broken symlink (which is basically a not existing file), should be
+     * skipped.
+     *
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testFileSectionWithBrokenSymlinks() throws Exception {
@@ -77,8 +86,11 @@ public class CPDTest {
     }
 
     /**
-     * A file should be added only once - even if it was found twice, because of a sym link.
-     * @throws Exception any error
+     * A file should be added only once - even if it was found twice, because of
+     * a sym link.
+     *
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testFileAddedAsSymlinkAndReal() throws Exception {
@@ -93,8 +105,11 @@ public class CPDTest {
     }
 
     /**
-     * Add a file with a relative path - should still be added and not be detected as a sym link.
-     * @throws Exception any error
+     * Add a file with a relative path - should still be added and not be
+     * detected as a sym link.
+     *
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testFileAddedWithRelativePath() throws Exception {
@@ -111,19 +126,25 @@ public class CPDTest {
     private static class NoFileAssertListener implements CPDListener {
         private int expectedFilesCount;
         private int files;
-        public NoFileAssertListener(int expectedFilesCount) {
+
+        NoFileAssertListener(int expectedFilesCount) {
             this.expectedFilesCount = expectedFilesCount;
             this.files = 0;
         }
+
+        @Override
         public void addedFile(int fileCount, File file) {
             files++;
             if (files > expectedFilesCount) {
                 Assert.fail("File was added! - " + file);
             }
         }
+
+        @Override
         public void phaseUpdate(int phase) {
             // not needed for this test
         }
+
         public void verify() {
             Assert.assertEquals("Expected " + expectedFilesCount + " files, but " + files + " have been added.",
                     expectedFilesCount, files);

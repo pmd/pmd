@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public abstract class BaseLanguageModule implements Language {
     protected Map<String, LanguageVersion> versions;
     protected LanguageVersion defaultVersion;
 
-    public BaseLanguageModule(String name, String shortName, String terseName, Class<?> ruleChainVisitorClass, String... extensions) {
+    public BaseLanguageModule(String name, String shortName, String terseName, Class<?> ruleChainVisitorClass,
+            String... extensions) {
         this.name = name;
         this.shortName = shortName;
         this.terseName = terseName;
@@ -32,12 +34,12 @@ public abstract class BaseLanguageModule implements Language {
     }
 
     protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault) {
-        if(versions == null) {
+        if (versions == null) {
             versions = new HashMap<>();
         }
         LanguageVersion languageVersion = new LanguageVersion(this, version, languageVersionHandler);
         versions.put(version, languageVersion);
-        if(isDefault) {
+        if (isDefault) {
             defaultVersion = languageVersion;
         }
     }
@@ -60,7 +62,7 @@ public abstract class BaseLanguageModule implements Language {
     @Override
     public Class<?> getRuleChainVisitorClass() {
         return ruleChainVisitorClass;
-   }
+    }
 
     @Override
     public List<String> getExtensions() {
@@ -82,8 +84,9 @@ public abstract class BaseLanguageModule implements Language {
         return versions != null && versions.containsKey(version);
     }
 
+    @Override
     public LanguageVersion getVersion(String versionName) {
-        if(versions != null) {
+        if (versions != null) {
             return versions.get(versionName);
         }
         return null;
@@ -106,9 +109,13 @@ public abstract class BaseLanguageModule implements Language {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (!(obj instanceof BaseLanguageModule)) return false;
-        BaseLanguageModule other = (BaseLanguageModule)obj;
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof BaseLanguageModule)) {
+            return false;
+        }
+        BaseLanguageModule other = (BaseLanguageModule) obj;
         return name.equals(other.name);
     }
 

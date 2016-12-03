@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class MatchAlgorithm {
         matches = matchCollector.getMatches();
 
         for (Match match : matches) {
-        	for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
+            for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
                 Mark mark = occurrences.next();
                 TokenEntry token = mark.getToken();
                 int lineCount = tokens.getLineCount(token, match);
@@ -99,7 +100,8 @@ public class MatchAlgorithm {
                 token.setHashCode(lastHash);
                 Object o = markGroups.get(token);
 
-                // Note that this insertion method is worthwhile since the vast majority
+                // Note that this insertion method is worthwhile since the vast
+                // majority
                 // markGroup keys will have only one value.
                 if (o == null) {
                     markGroups.put(token, token);

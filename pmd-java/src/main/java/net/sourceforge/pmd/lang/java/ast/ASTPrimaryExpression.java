@@ -14,7 +14,6 @@ public class ASTPrimaryExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

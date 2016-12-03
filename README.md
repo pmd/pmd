@@ -47,6 +47,13 @@ We are using Sourceforge for bug tracking. Please file your bugs at <https://sou
 
 Pull requests are always welcome: <https://github.com/pmd/pmd/pulls>
 
+### Code Style
+
+PMD uses checkstyle to enforce a common code style.
+
+See [pmd-checkstyle-config.xml](https://github.com/pmd/build-tools/blob/master/config/src/main/resources/net/sourceforge/pmd/pmd-checkstyle-config.xml) for the configuration and
+[the eclipse configuration files](https://github.com/pmd/build-tools/tree/master/config/eclipse) that can
+be imported into a fresh workspace.
 
 ## News and Website
 
