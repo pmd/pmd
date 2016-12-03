@@ -180,12 +180,9 @@ public class DBMSMetadata {
      *
      * <p>
      * This constructor is reliant on database username and password embedded in
-     * the JDBC URL or defaulted from the {@link DBURI}'s {@link DriverType}.
+     * the JDBC URL or defaulted from the {@link DBURI}'s <code>DriverType</code>.
+     * </p>
      *
-     * @param user
-     *            Database username
-     * @param password
-     *            Database password
      * @param dbURI
      *            {@link DBURI } containing JDBC connection plus parameters to
      *            specify source code.
@@ -245,8 +242,7 @@ public class DBMSMetadata {
     /**
      * Return source code text from the database.
      *
-     * @param source
-     *            object
+     * @param sourceObject object
      * @return source code
      * @throws SQLException
      */
@@ -321,7 +317,8 @@ public class DBMSMetadata {
      * <p>
      * Each parameter may be null and the appropriate field from any related
      * DBURI is assigned, defaulting to the normal SQL wildcard expression
-     * ("%"). </.>
+     * ("%").
+     * </p>
      *
      * @param languages
      *            Optional list of languages to search for

@@ -27,7 +27,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * For an external RuleSet, referring to the entire RuleSet, the format is
  * <i>ruleSetName</i>, where the RuleSet name is either a resource file path to
- * a RuleSet that ends with <code>'.xml'</code>.</li>, or a simple RuleSet name.
+ * a RuleSet that ends with <code>'.xml'</code>, or a simple RuleSet name.
  *
  * A simple RuleSet name, is one which contains no path separators, and either
  * contains a '-' or is entirely numeric release number. A simple name of the

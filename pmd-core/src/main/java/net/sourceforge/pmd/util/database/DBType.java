@@ -257,7 +257,7 @@ public class DBType {
      */
 
     /**
-     * Convert <code>resourceBundle</code> to usable {@Properties}.
+     * Convert <code>resourceBundle</code> to usable {@link Properties}.
      *
      * @param resourceBundle
      *            ResourceBundle

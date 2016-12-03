@@ -980,6 +980,26 @@
                 </pluginManagement>
             </build>
         </profile>
+
+        <profile>
+            <id>doclint</id>
+            <properties>
+                <java.version>1.8</java.version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <configuration>
+                                <additionalparam>-Xdoclint:all</additionalparam>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
     </profiles>
 
     <modules>

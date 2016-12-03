@@ -29,13 +29,17 @@ import java.util.logging.Logger;
  * A DBURI is a <i>faux</i>-URI: it does not have a formal specification and
  * comprises a JDBC(-ish) URL and an optional query, e.g.
  * <code>jdbc : subprotocol  [ : subname ] : connection details [ query ] </code>.
+ * </p>
  *
+ * <p>
  * The subprotocol and optional subname parts should be a valid DBType
  * JDBC(-ish) URL jdbc:oracle:thin:username/password@//192.168.100.21:1521/ORCL
  * JDBC(-ish) URL jdbc:thin:username/password@//192.168.100.21:1521/ORCL
+ * </p>
  *
  * <p>
- * The query includes one or more of these:-
+ * The query includes one or more of these:
+ * </p>
  * <dl>
  * <dt>characterset</dt>
  * <dd>utf8</dd>
@@ -48,9 +52,8 @@ import java.util.logging.Logger;
  * <dt>sourcecodenames</dt>
  * <dd>comma-separated list of database source code names</dd>
  * </dl>
- * </p>
  *
- * @see http://docs.oracle.com/javase/7/docs/api/java/net/URI.html
+ * @see URI
  * @author sturton
  */
 public class DBURI {
@@ -124,29 +127,28 @@ public class DBURI {
      * Create DBURI from a string, combining a JDBC URL and query parameters.
      *
      * <p>
-     * From the JDBC URL component, infer:-
+     * From the JDBC URL component, infer:
+     * </p>
      * <ul>
      * <li>JDBC driver class</li>
      * <li>supported languages</li>
      * <li>default source code types</li>
      * <li>default schemas</li>
      * </ul>
-     * </p>
      *
      * <p>
-     * From the query component, define these values, overriding any defaults:-
+     * From the query component, define these values, overriding any defaults:
+     * </p>
      * <ul>
      * <li>parsing language</li>
      * <li>source code types</li>
      * <li>schemas</li>
      * <li>source code</li>
      * </ul>
-     * </p>
      *
      * @param string
      *            URL string
      * @throws URISyntaxException
-     * @throws Exception
      */
     public DBURI(String string) throws URISyntaxException {
         /*
@@ -226,24 +228,24 @@ public class DBURI {
      * Create a DBURI from standard individual {@link URI} components.
      *
      * <p>
-     * From the JDBC URL components, infer:-
+     * From the JDBC URL components, infer:
+     * </p>
      * <ul>
      * <li>JDBC driver class</li>
      * <li>supported languages</li>
      * <li>default source code types</li>
      * <li>default schemas</li>
      * </ul>
-     * </p>
      *
      * <p>
-     * From the query component, define these values, overriding any defaults:-
+     * From the query component, define these values, overriding any defaults:
+     * </p>
      * <ul>
      * <li>parsing language</li>
      * <li>source code types</li>
      * <li>schemas</li>
      * <li>source code</li>
      * </ul>
-     * </p>
      *
      * @param scheme
      * @param userInfo
@@ -424,7 +426,7 @@ public class DBURI {
     }
 
     /**
-     * @param url
+     * @param jdbcURL
      *            the url to set
      */
     public void setURL(String jdbcURL) {

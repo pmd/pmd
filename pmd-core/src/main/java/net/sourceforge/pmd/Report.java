@@ -258,7 +258,7 @@ public class Report implements Iterable<RuleViolation> {
     /**
      * Calculate a summary of violations per rule.
      *
-     * @return a Map summarizing the Report: String (rule name) ->Integer (count
+     * @return a Map summarizing the Report: String (rule name) -&gt; Integer (count
      *         of violations)
      */
     public Map<String, Integer> getSummary() {

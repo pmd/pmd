@@ -17,19 +17,15 @@ import net.sourceforge.pmd.RuleViolation;
  * <a href="http://www.textpad.com">TextPad</a> is a text editor by Helios
  * Software Solutions.
  * </p>
- * <p/>
  * <p>
  * Output lines are in the form:
  * </p>
- * <p/>
  * <p>
  * <CODE>pathtojavafile(line#, NameOfRule):&nbsp; Specific rule violation message</CODE>
  * </p>
- * <p/>
  * <p>
  * For example:
  * </p>
- * <p/>
  * <p>
  * <CODE>D:\java\pmd\src\src\net\sourceforge\pmd\renderers\TextPadRenderer.java(24, AtLeastOneConstructor):&nbsp; Each class should declare at least one constructor
  * <br>D:\java\pmd\src\src\net\sourceforge\pmd\renderers\TextPadRenderer.java(26, VariableNamingConventionsRule):&nbsp; Variables should start with a lowercase character

@@ -16,7 +16,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 /**
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 public class PMDCommandLineInterface {

@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  * <p>
  * A console renderer with optional color support under *nix systems.
  * </p>
- * <p/>
  *
  * <pre>
  * * file: ./src/gilot/Test.java
@@ -32,22 +31,19 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  *     rule: AtLeastOneConstructor
  *     msg:  Each class should declare at least one constructor
  *     code: public class Test
- * <p/>
+ *
  * * file: ./src/gilot/log/format/LogInterpreter.java
  *     src:  LogInterpreter.java:317
  *     rule: AvoidDuplicateLiterals
  *     msg:  The same String literal appears 4 times in this file; the first occurrence is on line 317
  *     code: logger.error( "missing attribute 'app_arg' in rule '" + ((Element)element.getParent()).getAttributeValue( "name" ) + "'" );
- * <p/>
+ *
  *     src:  LogInterpreter.java:317
  *     rule: AvoidDuplicateLiterals
  *     msg:  The same String literal appears 5 times in this file; the first occurrence is on line 317
  *     code: logger.error( "missing attribute 'app_arg' in rule '" + ((Element)element.getParent()).getAttributeValue( "name" ) + "'" );
- * <p/>
  * * warnings: 3
- * <p/>
  * </pre>
- * <p/>
  * <p>
  * Colorization is turned on by supplying -D<b>pmd.color</b> - any value other
  * than '0' or 'false', enables color - including an empty value (''). <b>Nota

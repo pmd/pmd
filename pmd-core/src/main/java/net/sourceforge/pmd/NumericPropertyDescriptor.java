@@ -10,7 +10,7 @@ package net.sourceforge.pmd;
  *
  * @author Brian Remedios
  *
- * @param <T>
+ * @param <T> type of the property value
  */
 public interface NumericPropertyDescriptor<T extends Object> extends PropertyDescriptor<T> {
 

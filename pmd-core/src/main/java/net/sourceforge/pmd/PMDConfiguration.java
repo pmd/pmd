@@ -68,6 +68,7 @@ import net.sourceforge.pmd.util.IOUtil;
  * <li>An indicator of whether to show suppressed Rule violations in Reports.
  * {@link #isShowSuppressedViolations()}</li>
  * </ul>
+ * </p>
  * <p>
  * The aspects related to special PMD behavior are:
  * <ul>
@@ -78,6 +79,7 @@ import net.sourceforge.pmd.util.IOUtil;
  * <li>An indicator of whether PMD should log benchmarking information.
  * {@link #isBenchmark()}</li>
  * </ul>
+ * </p>
  */
 public class PMDConfiguration extends AbstractConfiguration {
 
@@ -232,9 +234,10 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Get the LanguageVersion of the source file with given name. This depends
      * on the fileName extension, and the java version.
-     * <p/>
+     * <p>
      * For compatibility with older code that does not always pass in a correct
      * filename, unrecognized files are assumed to be java files.
+     * </p>
      *
      * @param fileName
      *            Name of the file, can be absolute, or simple.
