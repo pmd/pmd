@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.renderers;
 
@@ -72,9 +75,5 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
     @Override
     public String getExpectedError(ProcessingError error) {
         return getExpected();
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(YAHTMLRendererTest.class);
     }
 }

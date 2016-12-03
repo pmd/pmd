@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
@@ -35,9 +38,5 @@ public class VariableUsageFinderFunctionTest {
         Applier.apply(f, vars.iterator());
         Map<NameDeclaration, List<NameOccurrence>> p = f.getUsed();
         assertEquals(1, p.size());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(VariableUsageFinderFunctionTest.class);
     }
 }

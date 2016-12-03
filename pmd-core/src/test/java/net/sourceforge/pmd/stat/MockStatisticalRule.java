@@ -1,4 +1,7 @@
 /**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+/**
  * <copyright>
  *  Copyright 1997-2002 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.ast;
 
@@ -22,9 +25,5 @@ public class ASTBlockStatementTest extends ParserTst {
         ASTBlockStatement bs = new ASTBlockStatement(0);
         bs.jjtAddChild(new ASTAssertStatement(1), 0);
         assertFalse(bs.isAllocation());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTBlockStatementTest.class);
     }
 }

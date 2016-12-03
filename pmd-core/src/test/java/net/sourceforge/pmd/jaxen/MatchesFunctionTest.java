@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.jaxen;
 
@@ -61,7 +64,7 @@ public class MatchesFunctionTest {
         list.add(attrs);
         list.add(exp);
         Context c = new Context(null);
-        c.setNodeSet(new ArrayList());
+        c.setNodeSet(new ArrayList<>());
         return function.call(c, list);
     }
 

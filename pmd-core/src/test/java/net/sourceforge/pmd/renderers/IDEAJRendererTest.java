@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.renderers;
 
@@ -28,9 +31,5 @@ public class IDEAJRendererTest extends AbstractRendererTst {
     public String getExpectedMultiple() {
         return "blah" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL + "blah" + PMD.EOL
                 + " at Foo <init>(Foo.java:1)" + PMD.EOL;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(IDEAJRendererTest.class);
     }
 }

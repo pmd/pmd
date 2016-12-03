@@ -59,7 +59,7 @@ public class MultiThreadProcessor extends AbstractPMDProcessor {
 
     }
 
-    private void processReports(final List<Renderer> renderers, List<Future<Report>> tasks) throws Error {
+    private void processReports(final List<Renderer> renderers, List<Future<Report>> tasks) {
 
         while (!tasks.isEmpty()) {
             Future<Report> future = tasks.remove(0);

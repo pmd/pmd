@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.dfa;
 
@@ -19,9 +22,5 @@ public class VariableAccessTest {
         assertEquals("foobar", va.getVariableName());
         va = new VariableAccess(VariableAccess.DEFINITION, "foobar");
         assertEquals("foobar", va.getVariableName());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(VariableAccessTest.class);
     }
 }

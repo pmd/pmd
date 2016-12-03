@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
@@ -46,8 +49,4 @@ public class MethodScopeTest extends STBBaseTst {
     private static final String TEST_GENERICS = "public class Tree {" + PMD.EOL + "  private List<Object> subForest;"
             + PMD.EOL + "  public <B> Tree<B> fmap(final F<B> f) { return Tree.<B>foo(); }" + PMD.EOL
             + "  public List<Object> subForest() { return null; }" + PMD.EOL + "}" + PMD.EOL;
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MethodScopeTest.class);
-    }
 }

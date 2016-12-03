@@ -346,12 +346,8 @@ public class ClassScopeTest extends STBBaseTst {
             + PMD.EOL + "}";
 
     private static final String IMPORT_NESTED_CLASSES =
-            "import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass.EnumTest;" + PMD.EOL +
-            "public class Foo {" + PMD.EOL +
-            " public EnumTest e;" + PMD.EOL +
-            "}" + PMD.EOL;
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ClassScopeTest.class);
-    }
+            "import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass.EnumTest;" + PMD.EOL
+            + "public class Foo {" + PMD.EOL
+            + " public EnumTest e;" + PMD.EOL
+            + "}" + PMD.EOL;
 }

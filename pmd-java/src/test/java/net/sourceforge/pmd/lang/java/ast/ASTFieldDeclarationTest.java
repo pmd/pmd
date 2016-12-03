@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.ast;
 
@@ -70,9 +73,5 @@ public class ASTFieldDeclarationTest extends ParserTst {
 
         assertEquals("foo", n.getVariableName());
 
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTFieldDeclarationTest.class);
     }
 }

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd;
 
@@ -11,8 +14,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-
-import junit.framework.JUnit4TestAdapter;
 
 public class LanguageVersionDiscovererTest {
 
@@ -55,9 +56,5 @@ public class LanguageVersionDiscovererTest {
         assertEquals("Modified Java version", LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"),
                 languageVersionDiscoverer
                         .getDefaultLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)));
-    }
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(LanguageVersionDiscovererTest.class);
     }
 }

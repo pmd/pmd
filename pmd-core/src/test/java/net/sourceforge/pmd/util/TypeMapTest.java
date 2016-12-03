@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.util;
 
@@ -7,9 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.Assert;
 
 /**
  * Evaluates all major functionality of the TypeMap class.
@@ -79,9 +81,4 @@ public class TypeMapTest {
 
         Assert.assertTrue(map.size() == 6);
     }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TypeMapTest.class);
-    }
-
 }

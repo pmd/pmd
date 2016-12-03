@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
@@ -956,8 +959,4 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     private static final String TEST_UNCLOSED_END_OF_DOC = "<tag:x> <tag:y>";
 
     private static final String TEST_UNCLOSED_NO_QUOTE_ATTR = "<tag:someTag> <tag:if someting=x > </tag:someTag>";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(JspDocStyleTest.class);
-    }
 }

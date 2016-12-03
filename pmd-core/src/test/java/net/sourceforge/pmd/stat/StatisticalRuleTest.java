@@ -1,4 +1,7 @@
 /**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+/**
  * <copyright>
  *  Copyright 1997-2002 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
@@ -860,9 +863,5 @@ public class StatisticalRuleTest {
         IUT.apply(list, ctx);
 
         return report;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(StatisticalRuleTest.class);
     }
 }

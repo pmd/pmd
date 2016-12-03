@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.jsp;
 
@@ -16,5 +19,4 @@ public class JspLanguageModule extends BaseLanguageModule {
         super(NAME, "JSP", TERSE_NAME, JspRuleChainVisitor.class, "jsp");
         addVersion("", new JspHandler(), true);
     }
-
 }

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.typeresolution;
 
@@ -121,9 +124,5 @@ public class PMDASMClassLoaderTest {
         long usedBytesAfter = runtime.totalMemory() - runtime.freeMemory();
 
         System.out.println((usedBytesAfter - usedBytesBefore) / (1024.0 * 1024.0) + " mb needed");
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(PMDASMClassLoaderTest.class);
     }
 }

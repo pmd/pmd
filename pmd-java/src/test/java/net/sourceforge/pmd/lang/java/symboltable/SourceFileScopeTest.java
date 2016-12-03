@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
@@ -55,8 +58,4 @@ public class SourceFileScopeTest extends STBBaseTst {
 
     private static final String TEST3 = "public class Foo {" + PMD.EOL + " public class Bar {" + PMD.EOL + " }"
             + PMD.EOL + "}" + PMD.EOL;
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(SourceFileScopeTest.class);
-    }
 }

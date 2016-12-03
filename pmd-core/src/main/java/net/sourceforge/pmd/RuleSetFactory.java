@@ -244,7 +244,7 @@ public class RuleSetFactory {
     private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId,
                                      boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
         try (
-            final CheckedInputStream inputStream = new CheckedInputStream(
+            CheckedInputStream inputStream = new CheckedInputStream(
                     ruleSetReferenceId.getInputStream(this.classLoader), new Adler32());
         ) {
             if (!ruleSetReferenceId.isExternal()) {

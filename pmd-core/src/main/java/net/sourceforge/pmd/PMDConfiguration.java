@@ -566,7 +566,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @return The currently used analysis cache. Never null.
      */
     public AnalysisCache getAnalysisCache() {
-        return analysisCache ;
+        return analysisCache;
     }
     
     /**

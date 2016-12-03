@@ -364,7 +364,7 @@ public class XmlParserTest {
 
     private Node parseXml(String xml) {
         LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
-        XmlParserOptions options = (XmlParserOptions)xmlVersionHandler.getDefaultParserOptions();
+        XmlParserOptions options = (XmlParserOptions) xmlVersionHandler.getDefaultParserOptions();
         Parser parser = xmlVersionHandler.getParser(options);
         Node document = parser.parse(null, new StringReader(xml));
         return document;

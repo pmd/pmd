@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd;
 
@@ -12,8 +15,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 
-import junit.framework.JUnit4TestAdapter;
-
 public class LanguageVersionDiscovererTest {
 
     /**
@@ -26,9 +27,5 @@ public class LanguageVersionDiscovererTest {
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(jspFile);
         assertEquals("LanguageVersion must be JSP!",
                 LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion(), languageVersion);
-    }
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(LanguageVersionDiscovererTest.class);
     }
 }

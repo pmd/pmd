@@ -1,4 +1,7 @@
 /**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+/**
  * <copyright>
  *  Copyright 1997-2002 BBNT Solutions, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency (DARPA).
@@ -83,9 +86,5 @@ public class MetricTest {
         double stdev = random.nextDouble();
         Metric IUT = new Metric(testName, 0, 0.0, 0.0, 0.0, 0.0, stdev);
         assertEquals(stdev, IUT.getStandardDeviation(), 0.05);
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MetricTest.class);
     }
 }

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.renderers;
 
@@ -51,9 +54,5 @@ public class HTMLRendererTest extends AbstractRendererTst {
                 + PMD.EOL + "<th>File</th><th>Problem</th></tr>" + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL
                 + "<td>file</td>" + PMD.EOL + "<td>Error</td>" + PMD.EOL + "</tr>" + PMD.EOL + "</table></body></html>"
                 + PMD.EOL;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(HTMLRendererTest.class);
     }
 }

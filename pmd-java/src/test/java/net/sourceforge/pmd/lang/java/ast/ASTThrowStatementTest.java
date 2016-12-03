@@ -1,7 +1,5 @@
-/*
- * Created on Jan 19, 2005 
- *
- * $Id$
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.ast;
@@ -15,6 +13,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ParserTst;
 
 /**
+ * Created on Jan 19, 2005 
  * @author mgriffa
  */
 public class ASTThrowStatementTest extends ParserTst {

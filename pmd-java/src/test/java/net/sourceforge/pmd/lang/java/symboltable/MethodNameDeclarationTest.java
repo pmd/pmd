@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
@@ -29,8 +32,4 @@ public class MethodNameDeclarationTest extends STBBaseTst {
     private static final String SIMILAR = "public class Foo {" + PMD.EOL + " public void bar() {" + PMD.EOL
             + "  bar(x, y);" + PMD.EOL + " }" + PMD.EOL + " private void bar(int x, int y) {}" + PMD.EOL
             + " private void bar(int x, int... y) {}" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MethodNameDeclarationTest.class);
-    }
 }

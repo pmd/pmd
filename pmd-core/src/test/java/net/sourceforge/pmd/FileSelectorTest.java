@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd;
 
@@ -58,9 +61,5 @@ public class FileSelectorTest {
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
         assertEquals("Unwanted java file must not be selected!", false, selected);
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(FileSelectorTest.class);
     }
 }

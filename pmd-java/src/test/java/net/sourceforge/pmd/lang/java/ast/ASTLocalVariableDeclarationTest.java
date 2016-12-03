@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
 package net.sourceforge.pmd.lang.java.ast;
 
@@ -36,8 +39,4 @@ public class ASTLocalVariableDeclarationTest extends ParserTst {
     private static final String TEST2 = "class Foo {" + PMD.EOL + " void bar() {int x[][] = null;}" + PMD.EOL + "}";
 
     private static final String TEST3 = "class Foo {" + PMD.EOL + " void bar() {int[] x[][] = null;}" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTLocalVariableDeclarationTest.class);
-    }
 }
