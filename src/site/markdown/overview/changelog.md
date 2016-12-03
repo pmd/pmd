@@ -36,6 +36,7 @@
 *   [#134](https://github.com/pmd/pmd/pull/134): \[java] Symbol table can now handle inner classes
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
 *   [#137](https://github.com/pmd/pmd/pull/137): \[apex] Adjusted remediation points
+*   [#138](https://github.com/pmd/pmd/pull/138): \[java] Make ClasspathClassLoader parallel capable
 *   [#146](https://github.com/pmd/pmd/pull/146): \[apex] Detection of missing Apex CRUD checks for SOQL/DML operations
 *   [#147](https://github.com/pmd/pmd/pull/147): \[apex] Adding XSS detection to return statements
 *   [#148](https://github.com/pmd/pmd/pull/148): \[apex] Improving detection of SOQL injection

@@ -29,6 +29,10 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     private static final Logger LOG = Logger.getLogger(ClasspathClassLoader.class.getName());
 
+    static {
+        registerAsParallelCapable();
+    }
+
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(initURLs(classpath), parent);
     }
