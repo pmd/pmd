@@ -194,14 +194,20 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 			break;
 		case 2: {
 			// Look for: foo = bar;
-			final ASTVariableExpression r = reverseOrder ? nodes.get(0) : nodes.get(1);
-			final VariableExpression n = r.getNode();
+			final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
+			final ASTReferenceExpression ref = right.getFirstChildOfType(ASTReferenceExpression.class);
+			String objectName = "";
+			if (ref != null) {
+				if (ref.getNode().getJadtIdentifiers().size() == 1) {
+					objectName = ref.getNode().getJadtIdentifiers().get(0).value + ".";
+				}
+			}
 
-			StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
-					.append(n.getIdentifier().value);
+			StringBuilder sb = new StringBuilder().append(right.getNode().getDefiningType()).append(":")
+					.append(objectName).append(right.getNode().getIdentifier().value);
 
 			if (urlParameterString.contains(sb.toString())) {
-				addViolation(data, r);
+				addViolation(data, right);
 			}
 		}
 			break;
