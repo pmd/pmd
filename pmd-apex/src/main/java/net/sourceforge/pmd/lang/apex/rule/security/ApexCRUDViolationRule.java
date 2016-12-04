@@ -145,17 +145,17 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 		checkForCRUD(node, data, IS_MERGEABLE);
 		return data;
 	}
-	
+
 	@Override
 	public Object visit(final ASTAssignmentExpression node, Object data) {
 		final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
 		if (soql != null) {
 			checkForAccessibility(soql, data);
 		}
-		
+
 		return data;
 	}
-	
+
 	@Override
 	public Object visit(final ASTVariableDeclaration node, Object data) {
 		final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
@@ -250,10 +250,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
 		final ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
 		if (variable != null) {
-			StringBuilder sb = new StringBuilder().append(node.getNode().getDefiningType().getApexName()).append(":")
-					.append(variable.getNode().getIdentifier().value);
-
-			final String type = varToTypeMapping.get(sb.toString());
+			final String type = varToTypeMapping.get(Helper.getFQVariableName(variable));
 			if (type != null) {
 				StringBuilder typeCheck = new StringBuilder().append(node.getNode().getDefiningType()).append(":")
 						.append(type);
@@ -344,16 +341,12 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 		final ASTAssignmentExpression assignment = node.getFirstParentOfType(ASTAssignmentExpression.class);
 		if (assignment != null) {
 			final ASTVariableExpression variable = assignment.getFirstChildOfType(ASTVariableExpression.class);
-
-			StringBuilder variableWithClass = new StringBuilder()
-					.append(variable.getNode().getDefiningType().getApexName()).append(":")
-					.append(variable.getNode().getIdentifier().value);
-
-			if (varToTypeMapping.containsKey(variableWithClass.toString())) {
-				String type = varToTypeMapping.get(variableWithClass.toString());
-
-				validateCRUDCheckPresent(node, data, ANY, type);
-
+			if (variable != null) {
+				String variableWithClass = Helper.getFQVariableName(variable);
+				if (varToTypeMapping.containsKey(variableWithClass)) {
+					String type = varToTypeMapping.get(variableWithClass);
+					validateCRUDCheckPresent(node, data, ANY, type);
+				}
 			}
 
 		}

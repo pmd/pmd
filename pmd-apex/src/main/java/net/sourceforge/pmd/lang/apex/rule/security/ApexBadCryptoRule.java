@@ -67,9 +67,9 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 		ASTMethodCallExpression methodCall = var.getFirstChildOfType(ASTMethodCallExpression.class);
 		if (methodCall != null && Helper.isMethodName(methodCall, BLOB, VALUE_OF)) {
 			ASTVariableExpression variable = var.getFirstChildOfType(ASTVariableExpression.class);
-			StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
-					.append(variable.getNode().getIdentifier().value);
-			potentiallyStaticBlob.add(sb.toString());
+			if (variable != null) {
+				potentiallyStaticBlob.add(Helper.getFQVariableName(variable));
+			}
 		}
 	}
 
@@ -98,12 +98,9 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 	private void reportIfHardCoded(Object data, Object potentialIV) {
 		if (potentialIV instanceof ASTVariableExpression) {
 			ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
-			StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
-					.append(variable.getNode().getIdentifier().value);
-			if (potentiallyStaticBlob.contains(sb.toString())) {
+			if (potentiallyStaticBlob.contains(Helper.getFQVariableName(variable))) {
 				addViolation(data, variable);
 			}
 		}
 	}
-
 }
