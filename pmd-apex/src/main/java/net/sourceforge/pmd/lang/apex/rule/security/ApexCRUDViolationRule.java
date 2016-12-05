@@ -57,6 +57,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 	private static final String S_OBJECT_TYPE = "sObjectType";
 	private static final String GET_DESCRIBE = "getDescribe";
 
+	private static final Pattern IS_STRING_OR_VOID_PATTERN = Pattern.compile("^(string|void)$",
+			Pattern.CASE_INSENSITIVE);
+
 	// ESAPI.accessController().isAuthorizedToView(Lead.sObject, fields)
 	private static final String[] ESAPI_ISAUTHORIZED_TO_VIEW = new String[] { "ESAPI", "accessController",
 			"isAuthorizedToView" };
@@ -397,9 +400,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 	}
 
 	private boolean isMethodAGetter(final ASTMethod method) {
-		final Pattern p = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
 		final boolean startsWithGet = method.getNode().getMethodInfo().getCanonicalName().startsWith("get");
-		final boolean voidOrString = p
+		final boolean voidOrString = IS_STRING_OR_VOID_PATTERN
 				.matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
 
 		return (startsWithGet && !voidOrString);
