@@ -947,7 +947,7 @@ may indicate problematic behaviour. Empty cases are ignored as these indicate an
  + count(BlockStatement//Statement/ThrowStatement)
  + count(BlockStatement//Statement/IfStatement[@Else='true' and Statement[2][ReturnStatement|ThrowStatement]]/Statement[1][ReturnStatement|ThrowStatement])
  + count(SwitchLabel[name(following-sibling::node()) = 'SwitchLabel'])
- + count(SwitchLabel[count(following-sibling::node()) = 0])
+ + count(SwitchLabel[not(following-sibling::SwitchLabel)])
   < count (SwitchLabel))]
     ]]>
               </value>

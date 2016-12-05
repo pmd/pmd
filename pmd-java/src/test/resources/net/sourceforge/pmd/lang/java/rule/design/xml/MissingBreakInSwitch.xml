@@ -115,7 +115,6 @@ public class Foo {
         break;
       default :
         s2 = (short)(s + 2);
-        // and missing break here!
     }
   }
 }
@@ -191,6 +190,24 @@ public class Foo {
         }
       }
     }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description>MissingBreakInSwitch - break not required in last case block</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MissingBreakLastCaseBlock {
+	public void method() {
+		switch (2) {
+		case 1:
+			break;
+		case 2:
+			break;
+		default:
+			String var = "Do not complain about missing break in last case block";
+		}
+	}
 }
     ]]></code>
   </test-code>
