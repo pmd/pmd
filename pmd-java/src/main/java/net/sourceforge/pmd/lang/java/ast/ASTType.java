@@ -31,15 +31,16 @@ public class ASTType extends AbstractJavaTypeNode {
     }
 
     public int getArrayDepth() {
-        if (jjtGetNumChildren() != 0 && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
+        if (jjtGetNumChildren() != 0
+                && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
             return ((Dimensionable) jjtGetChild(0)).getArrayDepth();
         }
-        throw new RuntimeException("ASTType.getArrayDepth called, but first child (of " + jjtGetNumChildren() + " total children) is neither a primitive nor a reference type.");
+        throw new RuntimeException("ASTType.getArrayDepth called, but first child (of " + jjtGetNumChildren()
+                + " total children) is neither a primitive nor a reference type.");
     }
 
     public boolean isArray() {
         return getArrayDepth() > 0;
     }
-
 
 }

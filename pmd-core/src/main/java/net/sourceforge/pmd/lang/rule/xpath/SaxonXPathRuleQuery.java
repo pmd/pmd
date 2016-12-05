@@ -1,12 +1,25 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
+import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.lang.xpath.Initializer;
 
 import net.sf.saxon.om.ValueRepresentation;
 import net.sf.saxon.sxpath.AbstractStaticContext;
@@ -20,17 +33,6 @@ import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.BooleanValue;
 import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.StringValue;
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.saxon.DocumentNode;
-import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import net.sourceforge.pmd.lang.xpath.Initializer;
 
 /**
  * This is a Saxon based XPathRule query.

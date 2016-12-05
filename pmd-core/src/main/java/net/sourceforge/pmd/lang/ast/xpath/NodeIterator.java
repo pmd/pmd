@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.util.Iterator;
@@ -19,10 +20,12 @@ public abstract class NodeIterator implements Iterator<Node> {
         this.node = getFirstNode(contextNode);
     }
 
+    @Override
     public boolean hasNext() {
         return node != null;
     }
 
+    @Override
     public Node next() {
         if (node == null) {
             throw new NoSuchElementException();
@@ -32,6 +35,7 @@ public abstract class NodeIterator implements Iterator<Node> {
         return ret;
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }

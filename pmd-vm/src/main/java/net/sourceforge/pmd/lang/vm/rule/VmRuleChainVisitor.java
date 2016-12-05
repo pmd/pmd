@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm.rule;
 
 import java.util.List;
@@ -40,8 +41,7 @@ public class VmRuleChainVisitor extends AbstractRuleChainVisitor {
         // Rule better either be a VmParserVisitor, or a XPathRule
         if (rule instanceof VmParserVisitor) {
             ((AbstractVmNode) node).jjtAccept((VmParserVisitor) rule, ctx);
-        }
-        else {
+        } else {
             ((XPathRule) rule).evaluate(node, ctx);
         }
     }

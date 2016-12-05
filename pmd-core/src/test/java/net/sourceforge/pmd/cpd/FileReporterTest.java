@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
@@ -20,8 +21,8 @@ public class FileReporterTest {
 
     @Test
     public void testCreation() {
-        new FileReporter((String)null);
-        new FileReporter((File)null);
+        new FileReporter((String) null);
+        new FileReporter((File) null);
     }
 
     @Test
@@ -67,8 +68,9 @@ public class FileReporterTest {
             }
             return buffer.toString();
         } finally {
-            if (reader != null)
+            if (reader != null) {
                 reader.close();
+            }
         }
     }
 

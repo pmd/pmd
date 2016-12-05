@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cache;
 
 import java.io.BufferedInputStream;
@@ -41,7 +42,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     private void loadFromFile(final File cacheFile) {
         if (cacheFile.exists()) {
             try (
-                final DataInputStream inputStream = new DataInputStream(
+                DataInputStream inputStream = new DataInputStream(
                     new BufferedInputStream(new FileInputStream(cacheFile)));
             ) {
                 final String cacheVersion = inputStream.readUTF();
@@ -74,7 +75,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     @Override
     public void persist() {
         try (
-            final DataOutputStream outputStream = new DataOutputStream(
+            DataOutputStream outputStream = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(cacheFile)));
         ) {
             outputStream.writeUTF(pmdVersion);

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule;
 
 import java.util.List;
@@ -13,19 +14,19 @@ import net.sourceforge.pmd.stat.DataPoint;
 
 public abstract class AbstractStatisticalApexRule extends AbstractApexRule implements StatisticalRule {
 
-	private final StatisticalRuleHelper helper = new StatisticalRuleHelper(this);
+    private final StatisticalRuleHelper helper = new StatisticalRuleHelper(this);
 
-	public void addDataPoint(DataPoint point) {
-		helper.addDataPoint(point);
-	}
+    public void addDataPoint(DataPoint point) {
+        helper.addDataPoint(point);
+    }
 
-	public Object[] getViolationParameters(DataPoint point) {
-		return null;
-	}
+    public Object[] getViolationParameters(DataPoint point) {
+        return null;
+    }
 
-	@Override
-	public void apply(List<? extends Node> nodes, RuleContext ctx) {
-		super.apply(nodes, ctx);
-		helper.apply(ctx);
-	}
+    @Override
+    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        super.apply(nodes, ctx);
+        helper.apply(ctx);
+    }
 }

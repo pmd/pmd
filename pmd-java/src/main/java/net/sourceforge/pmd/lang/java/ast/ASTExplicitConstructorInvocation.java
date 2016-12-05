@@ -17,7 +17,6 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */
@@ -27,11 +26,11 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
     }
 
     public int getArgumentCount() {
-    	if (this.jjtGetNumChildren() == 1) {
-    		return ((ASTArguments) this.jjtGetChild(0)).getArgumentCount();
-    	} else {
-    		return ((ASTArguments) this.jjtGetChild(1)).getArgumentCount();
-    	}
+        if (this.jjtGetNumChildren() == 1) {
+            return ((ASTArguments) this.jjtGetChild(0)).getArgumentCount();
+        } else {
+            return ((ASTArguments) this.jjtGetChild(1)).getArgumentCount();
+        }
     }
 
     public void setIsThis() {

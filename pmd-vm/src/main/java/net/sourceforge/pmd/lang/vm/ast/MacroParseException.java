@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 /*
@@ -68,11 +69,9 @@ public class MacroParseException extends ParseException {
     public int getLineNumber() {
         if (currentToken != null && currentToken.next != null) {
             return currentToken.next.beginLine;
-        }
-        else if (currentToken != null) {
+        } else if (currentToken != null) {
             return currentToken.beginLine;
-        }
-        else {
+        } else {
             return -1;
         }
     }
@@ -86,21 +85,21 @@ public class MacroParseException extends ParseException {
     public int getColumnNumber() {
         if (currentToken != null && currentToken.next != null) {
             return currentToken.next.beginColumn;
-        }
-        else if (currentToken != null) {
+        } else if (currentToken != null) {
             return currentToken.beginColumn;
-        }
-        else {
+        } else {
             return -1;
         }
     }
 
     /**
-     * This method has the standard behavior when this object has been created using the standard constructors.
-     * Otherwise, it uses "currentToken" and "expectedTokenSequences" to generate a parse error message and returns it.
-     * If this object has been created due to a parse error, and you do not catch it (it gets thrown from the parser),
-     * then this method is called during the printing of the final stack trace, and hence the correct error message gets
-     * displayed.
+     * This method has the standard behavior when this object has been created
+     * using the standard constructors. Otherwise, it uses "currentToken" and
+     * "expectedTokenSequences" to generate a parse error message and returns
+     * it. If this object has been created due to a parse error, and you do not
+     * catch it (it gets thrown from the parser), then this method is called
+     * during the printing of the final stack trace, and hence the correct error
+     * message gets displayed.
      * 
      * @return the current message.
      * @since 1.5

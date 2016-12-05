@@ -1,28 +1,29 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
 
     private static final Set<String> PREFIX_SET = CollectionUtil.asSet(new String[] { "Byte.valueOf", "Short.valueOf",
-            "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf" });
+        "Integer.valueOf", "Long.valueOf", "Float.valueOf", "Double.valueOf", "Character.valueOf", });
 
     private static final Set<String> SUFFIX_SET = CollectionUtil.asSet(new String[] { "toString", "byteValue",
-            "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue" });
+        "shortValue", "intValue", "longValue", "floatValue", "doubleValue", "charValue", });
 
     public Object visit(ASTPrimaryPrefix node, Object data) {
         if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
@@ -34,8 +35,8 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
             image = image.substring(10);
         }
 
-        boolean checkBoolean = ((RuleContext) data).getLanguageVersion().compareTo(
-                LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
+        boolean checkBoolean = ((RuleContext) data).getLanguageVersion()
+                .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
 
         if (PREFIX_SET.contains(image) || checkBoolean && "Boolean.valueOf".equals(image)) {
             ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();

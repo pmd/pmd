@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util;
 
 import java.util.ArrayList;
@@ -16,7 +17,8 @@ import java.util.List;
 public final class StringUtil {
 
     private static final String[] EMPTY_STRINGS = new String[0];
-    private static final boolean SUPPORTS_UTF8 = "yes".equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
+    private static final boolean SUPPORTS_UTF8 = "yes"
+            .equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
 
     private StringUtil() {
     }
@@ -103,7 +105,8 @@ public final class StringUtil {
 
     /**
      *
-     * @param value String
+     * @param value
+     *            String
      * @return boolean
      */
     public static boolean isNotEmpty(String value) {
@@ -132,9 +135,12 @@ public final class StringUtil {
 
     /**
      *
-     * @param original String
-     * @param oldChar char
-     * @param newString String
+     * @param original
+     *            String
+     * @param oldChar
+     *            char
+     * @param newString
+     *            String
      * @return String
      */
     public static String replaceString(final String original, char oldChar, final String newString) {
@@ -158,9 +164,12 @@ public final class StringUtil {
 
     /**
      *
-     * @param original String
-     * @param oldString String
-     * @param newString String
+     * @param original
+     *            String
+     * @param oldString
+     *            String
+     * @param newString
+     *            String
      * @return String
      */
     public static String replaceString(final String original, final String oldString, final String newString) {
@@ -186,10 +195,13 @@ public final class StringUtil {
      * Appends to a StringBuilder the String src where non-ASCII and XML special
      * chars are escaped.
      *
-     * @param buf The destination XML stream
-     * @param src The String to append to the stream
+     * @param buf
+     *            The destination XML stream
+     * @param src
+     *            The String to append to the stream
      *
-     * @deprecated use {@link #appendXmlEscaped(StringBuilder, String, boolean)} instead
+     * @deprecated use {@link #appendXmlEscaped(StringBuilder, String, boolean)}
+     *             instead
      */
     @Deprecated
     public static void appendXmlEscaped(StringBuilder buf, String src) {
@@ -198,7 +210,7 @@ public final class StringUtil {
 
     /**
      * Replace some whitespace characters so they are visually apparent.
-     * 
+     *
      * @param o
      * @return String
      */
@@ -216,7 +228,8 @@ public final class StringUtil {
 
     /**
      *
-     * @param string String
+     * @param string
+     *            String
      * @return String
      */
     public static String htmlEncode(String string) {
@@ -229,10 +242,10 @@ public final class StringUtil {
      *
      * @param buf
      * @param src
-     * @param supportUTF8 override the default setting, whether special
-     *            characters should be replaced with entities (
-     *            <code>false</code>) or should be included as is (
-     *            <code>true</code>).
+     * @param supportUTF8
+     *            override the default setting, whether special characters
+     *            should be replaced with entities ( <code>false</code>) or
+     *            should be included as is ( <code>true</code>).
      * @see #appendXmlEscaped(StringBuilder, String)
      *
      *      TODO - unify the method above with the one below
@@ -242,16 +255,17 @@ public final class StringUtil {
      */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
-        for (int i = 0; i < src.length(); i++) {
-            c = src.charAt(i);
-            if (c > '~') {// 126
+        int i = 0;
+        while (i < src.length()) {
+            c = src.charAt(i++);
+            if (c > '~') {
+                // 126
                 if (!supportUTF8) {
                     int codepoint = c;
                     // surrogate characters are not allowed in XML
                     if (Character.isHighSurrogate(c)) {
-                        char low = src.charAt(i + 1);
+                        char low = src.charAt(i++);
                         codepoint = Character.toCodePoint(c, low);
-                        i += 1;
                     }
                     buf.append("&#x").append(Integer.toHexString(codepoint)).append(';');
                 } else {
@@ -279,8 +293,10 @@ public final class StringUtil {
      *
      * FIXME - we're on JDK 1.4 now, can we replace this with String.split?
      *
-     * @param source String
-     * @param delimiter char
+     * @param source
+     *            String
+     * @param delimiter
+     *            char
      * @return String[]
      */
     public static String[] substringsOf(String source, char delimiter) {
@@ -323,8 +339,10 @@ public final class StringUtil {
     /**
      * Much more efficient than StringTokenizer.
      *
-     * @param str String
-     * @param separator char
+     * @param str
+     *            String
+     * @param separator
+     *            char
      * @return String[]
      */
     public static String[] substringsOf(String str, String separator) {
@@ -354,9 +372,12 @@ public final class StringUtil {
      * Copies the elements returned by the iterator onto the string buffer each
      * delimited by the separator.
      *
-     * @param sb StringBuffer
-     * @param iter Iterator
-     * @param separator String
+     * @param sb
+     *            StringBuffer
+     * @param iter
+     *            Iterator
+     * @param separator
+     *            String
      */
     public static void asStringOn(StringBuffer sb, Iterator<?> iter, String separator) {
 
@@ -376,9 +397,12 @@ public final class StringUtil {
      * Copies the array items onto the string builder each delimited by the
      * separator. Does nothing if the array is null or empty.
      *
-     * @param sb StringBuilder
-     * @param items Object[]
-     * @param separator String
+     * @param sb
+     *            StringBuilder
+     * @param items
+     *            Object[]
+     * @param separator
+     *            String
      */
     public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
 
@@ -398,7 +422,8 @@ public final class StringUtil {
      * Return the length of the shortest string in the array. If the collection
      * is empty or any one of them is null then it returns 0.
      *
-     * @param strings String[]
+     * @param strings
+     *            String[]
      * @return int
      */
     public static int lengthOfShortestIn(String[] strings) {
@@ -425,7 +450,8 @@ public final class StringUtil {
      * leading characters can be removed to shift all the text in the strings to
      * the left without misaligning them.
      *
-     * @param strings String[]
+     * @param strings
+     *            String[]
      * @return int
      */
     public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
@@ -477,9 +503,11 @@ public final class StringUtil {
 
     /**
      * Left pads a string.
-     * 
-     * @param s The String to pad
-     * @param length The desired minimum length of the resulting padded String
+     *
+     * @param s
+     *            The String to pad
+     * @param length
+     *            The desired minimum length of the resulting padded String
      * @return The resulting left padded String
      */
     public static String lpad(String s, int length) {
@@ -498,17 +526,23 @@ public final class StringUtil {
      * The Strings can be have embedded whitespace standardized before
      * comparing. Two null values are treated as equal.
      *
-     * @param s1 The first String.
-     * @param s2 The second String.
-     * @param trim Indicates if the Strings should be trimmed before comparison.
-     * @param ignoreCase Indicates if the case of the Strings should ignored
-     *            during comparison.
-     * @param standardizeWhitespace Indicates if the embedded whitespace should
-     *            be standardized before comparison.
+     * @param s1
+     *            The first String.
+     * @param s2
+     *            The second String.
+     * @param trim
+     *            Indicates if the Strings should be trimmed before comparison.
+     * @param ignoreCase
+     *            Indicates if the case of the Strings should ignored during
+     *            comparison.
+     * @param standardizeWhitespace
+     *            Indicates if the embedded whitespace should be standardized
+     *            before comparison.
      * @return <code>true</code> if the Strings are the same, <code>false</code>
      *         otherwise.
      */
-    public static boolean isSame(String s1, String s2, boolean trim, boolean ignoreCase, boolean standardizeWhitespace) {
+    public static boolean isSame(String s1, String s2, boolean trim, boolean ignoreCase,
+            boolean standardizeWhitespace) {
         if (s1 == null && s2 == null) {
             return true;
         } else if (s1 == null || s2 == null) {
@@ -532,8 +566,10 @@ public final class StringUtil {
      * Formats all items onto a string with separators if more than one exists,
      * return an empty string if the items are null or empty.
      *
-     * @param items Object[]
-     * @param separator String
+     * @param items
+     *            Object[]
+     * @param separator
+     *            String
      * @return String
      */
     public static String asString(Object[] items, String separator) {
@@ -552,9 +588,10 @@ public final class StringUtil {
 
         return sb.toString();
     }
-    
+
     /**
      * Returns an empty array of string
+     *
      * @return String
      */
     public static String[] getEmptyStrings() {

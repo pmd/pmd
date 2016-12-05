@@ -1,12 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.dfa;
 
+package net.sourceforge.pmd.lang.dfa;
 
 public class StackObject {
 
-    //@TODO make NodeType
+    // @TODO make NodeType
     private int type;
     private DataFlowNode node;
 
@@ -23,9 +23,9 @@ public class StackObject {
         return this.type;
     }
 
-    public String toString()
-    {
-     return ( "StackObject: type="  + NodeType.stringFromType(type)+ "(" +type + "), node=" + node.toString() );
+    @Override
+    public String toString() {
+        return ("StackObject: type=" + NodeType.stringFromType(type) + "(" + type + "), node=" + node.toString());
 
     }
 }

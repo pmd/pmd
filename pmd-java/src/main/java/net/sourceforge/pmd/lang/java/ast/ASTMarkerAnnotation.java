@@ -14,7 +14,6 @@ public class ASTMarkerAnnotation extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

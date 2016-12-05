@@ -1,15 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.DummyNode;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.ast.DummyNode;
 
 /**
  * Unit test for {@link AttributeAxisIterator}

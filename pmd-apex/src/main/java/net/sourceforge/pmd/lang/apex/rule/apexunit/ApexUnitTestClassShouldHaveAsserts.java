@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.apexunit;
 
 import java.util.ArrayList;
@@ -22,18 +23,19 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule {
 
     private static final Set<String> ASSERT_METHODS = new HashSet<>();
+
     static {
         ASSERT_METHODS.add("system.assert");
         ASSERT_METHODS.add("system.assertequals");
         ASSERT_METHODS.add("system.assertnotequals");
     }
-    
+
     @Override
     public Object visit(ASTMethod node, Object data) {
         if (!isTestMethodOrClass(node)) {
             return data;
         }
-        
+
         return checkForAssertStatements(node, data);
     }
 
@@ -46,18 +48,18 @@ public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule
             methodCalls.addAll(blockStatement.findDescendantsOfType(ASTMethodCallExpression.class));
         }
         boolean isAssertFound = false;
-        
+
         for (final ASTMethodCallExpression methodCallExpression : methodCalls) {
             if (ASSERT_METHODS.contains(methodCallExpression.getFullMethodName().toLowerCase())) {
                 isAssertFound = true;
                 break;
             }
         }
-        
+
         if (!isAssertFound) {
             addViolation(data, node);
         }
-        
+
         return data;
     }
 }

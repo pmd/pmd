@@ -14,7 +14,6 @@ public class ASTNullLiteral extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

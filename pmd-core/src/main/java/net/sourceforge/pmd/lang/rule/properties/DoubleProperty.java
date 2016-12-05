@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a property type that support single double-type property values
  * within an upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class DoubleProperty extends AbstractNumericProperty<Double> {
@@ -19,6 +20,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<DoubleProperty>(
             Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public DoubleProperty createWith(Map<String, String> valuesById) {
             final String[] minMax = minMaxFrom(valuesById);
             return new DoubleProperty(nameIn(valuesById), descriptionIn(valuesById), Double.valueOf(minMax[0]),
@@ -28,13 +30,19 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
 
     /**
      * Constructor for DoubleProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param min double
-     * @param max double
-     * @param theDefault double
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            double
+     * @param max
+     *            double
+     * @param theDefault
+     *            double
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
@@ -44,13 +52,19 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
 
     /**
      * Constructor for DoubleProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param minStr String
-     * @param maxStr String
-     * @param defaultStr String
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param minStr
+     *            String
+     * @param maxStr
+     *            String
+     * @param defaultStr
+     *            String
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public DoubleProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
@@ -59,7 +73,8 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     }
 
     /**
-     * @param numberString String
+     * @param numberString
+     *            String
      * @return Double
      */
     public static Double doubleFrom(String numberString) {
@@ -70,16 +85,19 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Double> type() {
         return Double.class;
     }
 
     /**
      * Deserializes a string into its Double form.
-     * 
-     * @param value String
+     *
+     * @param value
+     *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return doubleFrom(value);
     }

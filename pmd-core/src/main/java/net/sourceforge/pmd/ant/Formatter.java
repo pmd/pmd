@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant;
 
 import java.io.BufferedWriter;
@@ -48,7 +49,7 @@ public class Formatter {
     }
 
     public void addConfiguredParam(Parameter parameter) {
-	this.parameters.add(parameter);
+        this.parameters.add(parameter);
     }
 
     public Renderer getRenderer() {
@@ -95,19 +96,18 @@ public class Formatter {
     }
 
     private static String[] validRendererCodes() {
-        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet().toArray(new String[RendererFactory.REPORT_FORMAT_TO_RENDERER.size()]);
+        return RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()
+                .toArray(new String[RendererFactory.REPORT_FORMAT_TO_RENDERER.size()]);
     }
 
     private static String unknownRendererMessage(String userSpecifiedType) {
         String[] typeCodes = validRendererCodes();
-    	StringBuilder sb = new StringBuilder(100);
-        sb.append("Formatter type must be one of: '")
-          .append(typeCodes[0]);
+        StringBuilder sb = new StringBuilder(100);
+        sb.append("Formatter type must be one of: '").append(typeCodes[0]);
         for (int i = 1; i < typeCodes.length; i++) {
             sb.append("', '").append(typeCodes[i]);
         }
-        sb.append("', or a class name; you specified: ")
-          .append(userSpecifiedType);
+        sb.append("', or a class name; you specified: ").append(userSpecifiedType);
         return sb.toString();
     }
 
@@ -124,16 +124,17 @@ public class Formatter {
     }
 
     private Properties createProperties() {
-	Properties properties = new Properties();
-	for (Parameter parameter : parameters) {
-	    properties.put(parameter.getName(), parameter.getValue());
-	}
-	return properties;
+        Properties properties = new Properties();
+        for (Parameter parameter : parameters) {
+            properties.put(parameter.getName(), parameter.getValue());
+        }
+        return properties;
     }
 
     private Writer getToFileWriter(String baseDir) throws IOException {
         if (!toFile.isAbsolute()) {
-            return new BufferedWriter(new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
+            return new BufferedWriter(
+                    new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
         }
         return new BufferedWriter(new FileWriter(toFile));
     }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.util.List;
@@ -36,7 +37,9 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
             }
             addViolation(data, nodeFound);
         }
-        implementsComparable = containsEquals = containsHashCode = false;
+        implementsComparable = false;
+        containsEquals = false;
+        containsHashCode = false;
         nodeFound = null;
         return data;
     }

@@ -1,14 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.xpath;
 
 import java.util.List;
-
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.Comment;
 
 import org.jaxen.Context;
 import org.jaxen.Function;
@@ -16,17 +12,24 @@ import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.Comment;
+
 /**
- * The XPath query "//VariableDeclarator[contains(getCommentOn(), '//password')]" 
- * will find all variables declared that are annotated with the password comment.
- *  
+ * The XPath query "//VariableDeclarator[contains(getCommentOn(),
+ * '//password')]" will find all variables declared that are annotated with the
+ * password comment.
+ * 
  * @author Andy Throgmorton
  */
 public class GetCommentOnFunction implements Function {
 
     public static void registerSelfInSimpleContext() {
         // see http://jaxen.org/extensions.html
-        ((SimpleFunctionContext) XPathFunctionContext.getInstance()).registerFunction(null, "getCommentOn", new GetCommentOnFunction());
+        ((SimpleFunctionContext) XPathFunctionContext.getInstance()).registerFunction(null, "getCommentOn",
+                new GetCommentOnFunction());
     }
 
     public Object call(Context context, List args) throws FunctionCallException {
@@ -38,7 +41,7 @@ public class GetCommentOnFunction implements Function {
             int codeBeginLine = ((AbstractNode) n).getBeginLine();
             int codeEndLine = ((AbstractNode) n).getEndLine();
 
-            List<Comment> commentList = ((AbstractNode)n).getFirstParentOfType(ASTCompilationUnit.class).getComments();
+            List<Comment> commentList = ((AbstractNode) n).getFirstParentOfType(ASTCompilationUnit.class).getComments();
             for (Comment comment : commentList) {
                 if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
                     return comment.getImage();

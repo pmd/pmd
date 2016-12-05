@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -39,7 +40,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         StringBuilder sb = new StringBuilder("(");
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
         // TODO - this can be optimized - add [0] then ,[n] in a loop.
-        //        no need to trim at the end
+        // no need to trim at the end
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
             sb.append(p.getTypeNode().getTypeImage());
@@ -68,8 +69,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             return false;
         }
 
-        // compare parameter count - this catches the case where there are no params, too
-        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
+        // compare parameter count - this catches the case where there are no
+        // params, too
+        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node)
+                .getParameterCount()) {
             return false;
         }
 
@@ -111,7 +114,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
                 return false;
             }
 
-            // if type is ASTPrimitiveType and is an array, make sure the other one is also
+            // if type is ASTPrimitiveType and is an array, make sure the other
+            // one is also
         }
         return true;
     }
@@ -140,6 +144,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     @Override
     public String toString() {
-        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
+        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = "
+                + ((ASTMethodDeclarator) node).getParameterCount();
     }
 }

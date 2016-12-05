@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -41,10 +42,13 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
 
     /**
      * Method selectionsIn.
-     * 
-     * @param items String[]
-     * @param selectionIndices int[]
-     * @param isMulti boolean
+     *
+     * @param items
+     *            String[]
+     * @param selectionIndices
+     *            int[]
+     * @param isMulti
+     *            boolean
      * @return Object
      */
     private static Object selectionsIn(String[] items, int[] selectionIndices, boolean isMulti) {
@@ -62,6 +66,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
 
         return isMultiValue() ? (String) defaultValue() : asDelimitedString(defaultValue(), '|');
@@ -69,8 +74,9 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
 
     /**
      * Method nonLegalValueMsgFor.
-     * 
-     * @param value Object
+     *
+     * @param value
+     *            Object
      * @return String
      */
     protected String nonLegalValueMsgFor(Object value) {
@@ -79,8 +85,9 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
 
     /**
      * Method choiceFrom.
-     * 
-     * @param label String
+     *
+     * @param label
+     *            String
      * @return E
      */
     protected E choiceFrom(String label) {
@@ -94,6 +101,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
     /**
      * @see net.sourceforge.pmd.PropertyDescriptor#choices()
      */
+    @Override
     public Object[][] choices() {
 
         if (choices != null) {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.math.BigDecimal;
@@ -19,8 +20,9 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
- * Rule that marks instantiations of new {@link BigInteger} or {@link BigDecimal} objects,
- * when there is a well-known constant available, such as {@link BigInteger#ZERO}.
+ * Rule that marks instantiations of new {@link BigInteger} or
+ * {@link BigDecimal} objects, when there is a well-known constant available,
+ * such as {@link BigInteger#ZERO}.
  */
 public class BigIntegerInstantiationRule extends AbstractJavaRule {
 
@@ -32,14 +34,16 @@ public class BigIntegerInstantiationRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        boolean jdk15 = ((RuleContext) data).getLanguageVersion().compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
-        if ((TypeHelper.isA((ASTClassOrInterfaceType) type, BigInteger.class) || jdk15 && TypeHelper.isA((ASTClassOrInterfaceType) type, BigDecimal.class)) &&
-                !node.hasDescendantOfType(ASTArrayDimsAndInits.class)
-        ) {
+        boolean jdk15 = ((RuleContext) data).getLanguageVersion()
+                .compareTo(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5")) >= 0;
+        if ((TypeHelper.isA((ASTClassOrInterfaceType) type, BigInteger.class)
+                || jdk15 && TypeHelper.isA((ASTClassOrInterfaceType) type, BigDecimal.class))
+                && !node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
             ASTArguments args = node.getFirstChildOfType(ASTArguments.class);
             if (args.getArgumentCount() == 1) {
                 ASTLiteral literal = node.getFirstDescendantOfType(ASTLiteral.class);
-                if (literal == null || literal.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() != args) {
+                if (literal == null
+                        || literal.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() != args) {
                     return super.visit(node, data);
                 }
 

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import java.util.ArrayList;
@@ -44,8 +45,8 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
 
         // is it part of a for-loop declaration?
         if (node.jjtGetParent() instanceof ASTForInit) {
-            return visit((AbstractJavaNode) node, data); // yes, those don't
-                                                         // count
+            // yes, those don't count
+            return visit((AbstractJavaNode) node, data);
         }
 
         String varName = varNameIn(node);
@@ -122,7 +123,7 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
         for (int i = 0; i < exitBlocks.size(); i++) {
             Node exitNode = (Node) exitBlocks.get(i);
             if (!hasAsParentBetween(exitNode, ASTMethodDeclaration.class, block)
-                && !hasAsParentBetween(exitNode, ASTLambdaExpression.class, block)) {
+                    && !hasAsParentBetween(exitNode, ASTLambdaExpression.class, block)) {
                 result = true;
                 break;
             }

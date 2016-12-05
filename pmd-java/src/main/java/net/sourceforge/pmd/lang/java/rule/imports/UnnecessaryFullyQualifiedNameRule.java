@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.imports;
 
 import java.lang.reflect.Method;
@@ -145,15 +146,18 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             for (final ASTImportDeclaration importDeclaration : imports) {
                 if (importDeclaration != firstMatch && importDeclaration.isStatic()) {
                     if (importDeclaration.getImportedName().startsWith(firstMatch.getImportedName())
-                            && importDeclaration.getImportedName().lastIndexOf('.') == firstMatch.getImportedName().length()) {
-                        // A conflict against the same class is not an excuse, ie:
+                            && importDeclaration.getImportedName().lastIndexOf('.') == firstMatch.getImportedName()
+                                    .length()) {
+                        // A conflict against the same class is not an excuse,
+                        // ie:
                         // import java.util.Arrays;
                         // import static java.util.Arrays.asList;
                         continue;
                     }
 
                     if (importDeclaration.isImportOnDemand()) {
-                        // We need type resolution to make sure there is a conflicting method
+                        // We need type resolution to make sure there is a
+                        // conflicting method
                         if (importDeclaration.getType() != null) {
                             for (final Method m : importDeclaration.getType().getMethods()) {
                                 if (m.getName().equals(methodCalled)) {
@@ -176,7 +180,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         private String importStr;
         private String importType;
 
-        public PotentialViolation(JavaNode node, String importStr, String importType) {
+        PotentialViolation(JavaNode node, String importStr, String importType) {
             this.node = node;
             this.importStr = importStr;
             this.importType = importType;

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -10,7 +11,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 
 /**
  * Defines a property type that supports single Character values.
- * 
+ *
  * @author Brian Remedios
  */
 public class CharacterProperty extends AbstractProperty<Character> {
@@ -18,19 +19,25 @@ public class CharacterProperty extends AbstractProperty<Character> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterProperty>(
             Character.class) {
 
+        @Override
         public CharacterProperty createWith(Map<String, String> valuesById) {
             return new CharacterProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    defaultValueIn(valuesById) != null ? new Character(defaultValueIn(valuesById).charAt(0)) : null, 0f);
+                    defaultValueIn(valuesById) != null ? new Character(defaultValueIn(valuesById).charAt(0)) : null,
+                    0f);
         }
     };
 
     /**
      * Constructor for CharacterProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefault Character
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefault
+     *            Character
+     * @param theUIOrder
+     *            float
      */
     public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
@@ -38,11 +45,15 @@ public class CharacterProperty extends AbstractProperty<Character> {
 
     /**
      * Constructor for CharacterProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param defaultStr String
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param defaultStr
+     *            String
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public CharacterProperty(String theName, String theDescription, String defaultStr, float theUIOrder) {
@@ -50,7 +61,8 @@ public class CharacterProperty extends AbstractProperty<Character> {
     }
 
     /**
-     * @param charStr String
+     * @param charStr
+     *            String
      * @return Character
      */
     public static Character charFrom(String charStr) {
@@ -65,25 +77,29 @@ public class CharacterProperty extends AbstractProperty<Character> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Character> type() {
         return Character.class;
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Character valueFrom(String valueString) throws IllegalArgumentException {
         return charFrom(valueString);
     }
 
     /**
      * Method defaultAsString.
-     * 
+     *
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return Character.toString(defaultValue());
     }

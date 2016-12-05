@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.lang.reflect.Array;
@@ -45,11 +46,16 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName String
-     * @param theDescription String
-     * @param theDefault Method
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefault
+     *            Method
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
@@ -60,11 +66,16 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName String
-     * @param theDescription String
-     * @param defaultMethodStr String
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param defaultMethodStr
+     *            String
+     * @param legalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames,
@@ -75,11 +86,16 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     /**
      * Constructor for MethodProperty.
      *
-     * @param theName String
-     * @param theDescription String
-     * @param defaultMethodStr String
-     * @param otherParams Map<String, String>
-     * @param theUIOrder float
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param defaultMethodStr
+     *            String
+     * @param otherParams
+     *            Map<String, String>
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public MethodProperty(String theName, String theDescription, String defaultMethodStr,
@@ -88,7 +104,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * @param cls Class<?>
+     * @param cls
+     *            Class<?>
      * @return String
      */
     private static String shortestNameFor(Class<?> cls) {
@@ -100,7 +117,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
      * Return the value of `method' as a string that can be easily recognized
      * and parsed when we see it again.
      *
-     * @param method the method to convert
+     * @param method
+     *            the method to convert
      * @return the string value
      */
     public static String asStringFor(Method method) {
@@ -118,8 +136,10 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * @param type Class<?>
-     * @param sb StringBuilder
+     * @param type
+     *            Class<?>
+     * @param sb
+     *            StringBuilder
      */
     private static void serializedTypeIdOn(Class<?> type, StringBuilder sb) {
 
@@ -134,8 +154,10 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     /**
      * Serializes the method signature onto the specified buffer.
      *
-     * @param method Method
-     * @param sb StringBuilder
+     * @param method
+     *            Method
+     * @param sb
+     *            StringBuilder
      */
     public static void asStringOn(Method method, StringBuilder sb) {
 
@@ -162,7 +184,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * @param typeName String
+     * @param typeName
+     *            String
      * @return Class<?>
      */
     private static Class<?> typeFor(String typeName) {
@@ -173,8 +196,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
             String arrayTypeName = typeName.substring(0, typeName.length() - ARRAY_FLAG.length());
             type = typeFor(arrayTypeName); // recurse
             return Array.newInstance(type, 0).getClass(); // TODO is there a
-                                                          // better way to get
-                                                          // an array type?
+            // better way to get
+            // an array type?
         }
 
         type = ClassUtil.getTypeFor(typeName); // try shortcut first
@@ -263,7 +286,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * @param methodStr String
+     * @param methodStr
+     *            String
      * @return Method
      */
     public static Method methodFrom(String methodStr) {
@@ -274,7 +298,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
      * Return the value as a string that can be easily recognized and parsed
      * when we see it again.
      *
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
     @Override
@@ -283,7 +308,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * @param item Object
+     * @param item
+     *            Object
      * @return String
      */
     @Override
@@ -311,7 +337,8 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)

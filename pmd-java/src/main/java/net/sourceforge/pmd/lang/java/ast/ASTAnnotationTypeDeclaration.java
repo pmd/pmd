@@ -14,7 +14,6 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

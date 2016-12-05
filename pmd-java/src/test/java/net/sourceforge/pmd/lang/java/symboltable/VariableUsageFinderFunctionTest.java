@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import static org.junit.Assert.assertEquals;
@@ -7,16 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
-import net.sourceforge.pmd.lang.java.symboltable.Applier;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableUsageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-import org.junit.Test;
 public class VariableUsageFinderFunctionTest {
 
     @Test
@@ -37,9 +38,5 @@ public class VariableUsageFinderFunctionTest {
         Applier.apply(f, vars.iterator());
         Map<NameDeclaration, List<NameOccurrence>> p = f.getUsed();
         assertEquals(1, p.size());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(VariableUsageFinderFunctionTest.class);
     }
 }

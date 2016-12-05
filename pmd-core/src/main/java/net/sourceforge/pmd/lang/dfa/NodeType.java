@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.dfa;
 
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class NodeType {
 
     // Poor Man's Enum until we convert the class to real enum
     private static final Map<Integer, String> TYPE_MAP = new HashMap<>();
+
     static {
         TYPE_MAP.put(NodeType.IF_EXPR, "IF_EXPR");
         TYPE_MAP.put(NodeType.IF_LAST_STATEMENT, "IF_LAST_STATEMENT");

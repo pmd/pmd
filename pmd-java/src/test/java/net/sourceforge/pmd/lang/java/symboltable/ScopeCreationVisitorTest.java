@@ -1,14 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.symboltable.LocalScope;
 
 import org.junit.Test;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 
 public class ScopeCreationVisitorTest extends STBBaseTst {
 
@@ -19,12 +20,8 @@ public class ScopeCreationVisitorTest extends STBBaseTst {
         assertTrue(n.getScope() instanceof LocalScope);
     }
 
-    private static final String TEST1 =
-            "public class Foo {" + PMD.EOL +
-            " void foo() {" + PMD.EOL +
-            "  if (x>2) {}" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}" + PMD.EOL;
+    private static final String TEST1 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL + "  if (x>2) {}"
+            + PMD.EOL + " }" + PMD.EOL + "}" + PMD.EOL;
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(ScopeCreationVisitorTest.class);

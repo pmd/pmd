@@ -1,11 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
@@ -18,12 +25,6 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 public class XMLRendererTest extends AbstractRendererTst {
 
     @Override
@@ -33,14 +34,8 @@ public class XMLRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + PMD.EOL
-                + "<pmd version=\""
-                + PMD.VERSION
-                + "\" timestamp=\"2014-10-06T19:30:51.262\">"
-                + PMD.EOL
-                + "<file name=\"n/a\">"
-                + PMD.EOL
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
+                + "\" timestamp=\"2014-10-06T19:30:51.262\">" + PMD.EOL + "<file name=\"n/a\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL + "</file>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
@@ -53,20 +48,10 @@ public class XMLRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                + PMD.EOL
-                + "<pmd version=\""
-                + PMD.VERSION
-                + "\" timestamp=\"2014-10-06T19:30:51.239\">"
-                + PMD.EOL
-                + "<file name=\"n/a\">"
-                + PMD.EOL
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
+                + "\" timestamp=\"2014-10-06T19:30:51.239\">" + PMD.EOL + "<file name=\"n/a\">" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
-                + PMD.EOL
-                + "blah"
-                + PMD.EOL
-                + "</violation>"
-                + PMD.EOL
+                + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL + "</file>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
@@ -102,11 +87,11 @@ public class XMLRendererTest extends AbstractRendererTst {
         report.addRuleViolation(createRuleViolation(msg));
         String actual = ReportTest.render(renderer, report);
         Assert.assertTrue(actual.contains(shouldContain));
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(actual)));
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new InputSource(new StringReader(actual)));
         NodeList violations = doc.getElementsByTagName("violation");
         Assert.assertEquals(1, violations.getLength());
-        Assert.assertEquals(msg,
-                violations.item(0).getTextContent().trim());
+        Assert.assertEquals(msg, violations.item(0).getTextContent().trim());
     }
 
     @Test

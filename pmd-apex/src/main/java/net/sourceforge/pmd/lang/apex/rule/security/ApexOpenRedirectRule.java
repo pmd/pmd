@@ -1,11 +1,13 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import apex.jorje.data.ast.Identifier;
-import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
@@ -15,6 +17,9 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+
+import apex.jorje.data.ast.Identifier;
+import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 
 /**
  * Looking for potential Open redirect via PageReference variable input
@@ -100,5 +105,4 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 			getObjectValue(z, data);
 		}
 	}
-
 }

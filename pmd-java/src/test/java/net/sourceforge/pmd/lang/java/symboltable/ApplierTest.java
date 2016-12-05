@@ -1,16 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
+
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.symboltable.Applier;
-import net.sourceforge.pmd.util.UnaryFunction;
-
 import org.junit.Test;
+
+import net.sourceforge.pmd.util.UnaryFunction;
 
 public class ApplierTest {
 

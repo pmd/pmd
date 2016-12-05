@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -31,6 +32,6 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
     public Object[] getViolationParameters(DataPoint point) {
         // TODO need to put class name or constructor ID in string
         return new String[] { String.valueOf(((ASTConstructorDeclaration) point.getNode()).getParameterCount()),
-                String.valueOf((int) point.getScore()) };
+            String.valueOf((int) point.getScore()), };
     }
 }

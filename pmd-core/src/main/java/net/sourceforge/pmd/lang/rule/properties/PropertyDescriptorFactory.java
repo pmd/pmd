@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -15,12 +16,8 @@ public class PropertyDescriptorFactory {
     public static String getPropertyDescriptorType(PropertyDescriptor<?> propertyDescriptor) {
         Class<?> type = propertyDescriptor.type();
         String typeName = null;
-        if (propertyDescriptor instanceof EnumeratedProperty || propertyDescriptor instanceof MethodProperty // TODO
-                                                                                                             // -
-                                                                                                             // yes
-                                                                                                             // we
-                                                                                                             // can,
-                                                                                                             // investigate
+        // TODO - yes we can, investigate
+        if (propertyDescriptor instanceof EnumeratedProperty || propertyDescriptor instanceof MethodProperty
                 || propertyDescriptor instanceof TypeProperty) {
             // Cannot serialize these kinds of PropertyDescriptors
         } else if ("java.lang".equals(type.getPackage().getName())) {
@@ -34,8 +31,8 @@ public class PropertyDescriptorFactory {
 
     public static PropertyDescriptor<?> createPropertyDescriptor(String name, String description, String type,
             String delimiter, String min, String max, String value) {
-        return new PropertyDescriptorWrapper(createRawPropertyDescriptor(name, description, type, delimiter, min, max,
-                value));
+        return new PropertyDescriptorWrapper(
+                createRawPropertyDescriptor(name, description, type, delimiter, min, max, value));
     }
 
     private static PropertyDescriptor<?> createRawPropertyDescriptor(String name, String description, String type,
@@ -66,8 +63,8 @@ public class PropertyDescriptorFactory {
         } else if ("Float[]".equals(type)) {
             checkMinMax(name, type, min, max);
             FloatMultiProperty property = new FloatMultiProperty(name, description, 0f, 0f, null, 0.0f);
-            return new FloatMultiProperty(name, description, FloatProperty.floatFrom(min),
-                    FloatProperty.floatFrom(max), property.valueFrom(value), 0.0f);
+            return new FloatMultiProperty(name, description, FloatProperty.floatFrom(min), FloatProperty.floatFrom(max),
+                    property.valueFrom(value), 0.0f);
         } else if ("Integer".equals(type)) {
             checkMinMax(name, type, min, max);
             return new IntegerProperty(name, description, min, max, value, 0.0f);
@@ -109,19 +106,19 @@ public class PropertyDescriptorFactory {
 
     private static void checkDelimiter(String name, String type, String delimiter) {
         if (delimiter == null || delimiter.length() == 0) {
-            throw new IllegalArgumentException("Delimiter must be provided to create PropertyDescriptor for " + name
-                    + " of type " + type + ".");
+            throw new IllegalArgumentException(
+                    "Delimiter must be provided to create PropertyDescriptor for " + name + " of type " + type + ".");
         }
     }
 
     private static void checkMinMax(String name, String type, String min, String max) {
         if (StringUtil.isEmpty(min)) {
-            throw new IllegalArgumentException("Min must be provided to create PropertyDescriptor for " + name
-                    + " of type " + type + ".");
+            throw new IllegalArgumentException(
+                    "Min must be provided to create PropertyDescriptor for " + name + " of type " + type + ".");
         }
         if (StringUtil.isEmpty(max)) {
-            throw new IllegalArgumentException("Max must be provided to create PropertyDescriptor for " + name
-                    + " of type " + type + ".");
+            throw new IllegalArgumentException(
+                    "Max must be provided to create PropertyDescriptor for " + name + " of type " + type + ".");
         }
     }
 }

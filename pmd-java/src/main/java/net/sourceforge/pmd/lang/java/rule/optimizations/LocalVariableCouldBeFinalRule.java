@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
         }
         Scope s = node.getScope();
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = s.getDeclarations(VariableNameDeclaration.class);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: decls.entrySet()) {
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
             VariableNameDeclaration var = entry.getKey();
             if (var.getAccessNodeParent() != node) {
                 continue;

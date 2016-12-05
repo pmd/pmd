@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Enumeration;
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * pair of maps. While the values are not serialized out, the labels are and
  * serve as keys to obtain the values. The choices() method provides the ordered
  * selections to be used in an editor widget.
- * 
+ *
  * @author Brian Remedios
  * @param <E>
  */
@@ -23,6 +24,7 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<EnumeratedProperty>(
             Enumeration.class) {
 
+        @Override
         public EnumeratedProperty createWith(Map<String, String> valuesById) {
 
             return new EnumeratedProperty(nameIn(valuesById), descriptionIn(valuesById), labelsIn(valuesById),
@@ -32,13 +34,19 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
 
     /**
      * Constructor for EnumeratedProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param theLabels String[]
-     * @param theChoices E[]
-     * @param defaultIndex int
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theLabels
+     *            String[]
+     * @param theChoices
+     *            E[]
+     * @param defaultIndex
+     *            int
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
@@ -50,12 +58,14 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Object> type() {
         return Object.class;
     }
 
     /**
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      * @see net.sourceforge.pmd.PropertyDescriptor#errorFor(Object)
      */
@@ -65,18 +75,21 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Object valueFrom(String value) throws IllegalArgumentException {
         return choiceFrom(value);
     }
 
     /**
      *
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)
      */

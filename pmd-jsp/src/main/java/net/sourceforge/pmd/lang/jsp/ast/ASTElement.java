@@ -16,10 +16,10 @@ public class ASTElement extends AbstractJspNode {
      * Flag indicating that the element consists of one tag ("<... />").
      */
     private boolean empty; //
-    
+
     /**
-     * Flag indicating that the parser did not find a proper ending marker 
-     * or ending tag for this element
+     * Flag indicating that the parser did not find a proper ending marker or
+     * ending tag for this element
      */
     private boolean unclosed;
 
@@ -31,32 +31,31 @@ public class ASTElement extends AbstractJspNode {
         super(p, id);
     }
 
-	/**
-     * @return boolean - true if the element has a namespace-prefix, false otherwise
+    /**
+     * @return boolean - true if the element has a namespace-prefix, false
+     *         otherwise
      */
     public boolean isHasNamespacePrefix() {
         return name.indexOf(':') >= 0;
     }
 
     /**
-     * @return String - the part of the name that is before the (first) colon (":")
+     * @return String - the part of the name that is before the (first) colon
+     *         (":")
      */
     public String getNamespacePrefix() {
         int colonIndex = name.indexOf(':');
-        return colonIndex >= 0
-                ? name.substring(0, colonIndex)
-                : "";
+        return colonIndex >= 0 ? name.substring(0, colonIndex) : "";
     }
 
     /**
-     * @return String - The part of the name that is after the first colon (":").
-     *         If the name does not contain a colon, the full name is returned.
+     * @return String - The part of the name that is after the first colon
+     *         (":"). If the name does not contain a colon, the full name is
+     *         returned.
      */
     public String getLocalName() {
         int colonIndex = name.indexOf(':');
-        return colonIndex >= 0
-                ? name.substring(colonIndex + 1)
-                : name;
+        return colonIndex >= 0 ? name.substring(colonIndex + 1) : name;
     }
 
     /**
@@ -67,7 +66,8 @@ public class ASTElement extends AbstractJspNode {
     }
 
     /**
-     * @param name The name to set.
+     * @param name
+     *            The name to set.
      */
     public void setName(String name) {
         this.name = name;
@@ -81,15 +81,16 @@ public class ASTElement extends AbstractJspNode {
     }
 
     public boolean isUnclosed() {
-		return unclosed;
-	}
+        return unclosed;
+    }
 
-	public void setUnclosed(boolean unclosed) {
-		this.unclosed = unclosed;
-	}
+    public void setUnclosed(boolean unclosed) {
+        this.unclosed = unclosed;
+    }
 
     /**
-     * @param empty The empty to set.
+     * @param empty
+     *            The empty to set.
      */
     public void setEmpty(boolean empty) {
         this.empty = empty;

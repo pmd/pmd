@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
@@ -10,6 +11,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 /**
  * This rule finds the following:
  * <p/>
+ * 
  * <pre>
  *         StringBuffer.append(&quot;c&quot;); // appends a
  *         single character

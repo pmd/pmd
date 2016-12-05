@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.xml;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
@@ -15,5 +19,4 @@ public class XmlLanguageModule extends BaseLanguageModule {
         super(NAME, null, TERSE_NAME, XmlRuleChainVisitor.class, "xml");
         addVersion("", new XmlHandler(), true);
     }
-
 }

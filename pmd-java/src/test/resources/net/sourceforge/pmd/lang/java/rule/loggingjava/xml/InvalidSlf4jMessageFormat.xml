@@ -155,4 +155,50 @@ public class InvalidSlf4jExceptionTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1541 [java] InvalidSlf4jMessageFormat: False positive with placeholder and exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class InvalidSl4jExceptionBug1541 {
+    private static final Logger log = LoggerFactory.getLogger(InvalidSl4jExceptionBug1541.class);
+
+    public static void main(String[] args) {
+        try {
+            // ...
+        } catch (Exception e) {
+            log.error("Arg1 = {}. Exception: {}", "arg1Value", e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1551 [java] InvalidSlf4jMessageFormat: fails with NPE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TestBug1551
+{
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestBug1551.class);
+
+    public void test()
+    {
+        String message = generateMessage();
+        LOGGER.info(message);
+    }
+
+    private String generateMessage()
+    {
+        return "message";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

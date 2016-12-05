@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util;
 
 import java.io.BufferedReader;
@@ -19,8 +20,8 @@ import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Create a ClassLoader which loads classes using a CLASSPATH like String.
- * If the String looks like a URL to a file (e.g. starts with <code>file://</code>)
+ * Create a ClassLoader which loads classes using a CLASSPATH like String. If
+ * the String looks like a URL to a file (e.g. starts with <code>file://</code>)
  * the file will be read with each line representing an path on the classpath.
  *
  * @author Edwin Chan
@@ -28,6 +29,10 @@ import org.apache.commons.io.IOUtils;
 public class ClasspathClassLoader extends URLClassLoader {
 
     private static final Logger LOG = Logger.getLogger(ClasspathClassLoader.class.getName());
+
+    static {
+        registerAsParallelCapable();
+    }
 
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(initURLs(classpath), parent);
@@ -88,9 +93,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         sb.append("[[");
         StringUtil.asStringOn(sb, getURLs(), ":");
-        sb.append("] parent: ")
-          .append(getParent())
-          .append(']');
+        sb.append("] parent: ").append(getParent()).append(']');
 
         return sb.toString();
     }

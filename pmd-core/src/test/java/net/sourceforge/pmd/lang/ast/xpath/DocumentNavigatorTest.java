@@ -1,16 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-
-import org.junit.Test;
 
 /**
  * Unit test for {@link DocumentNavigator}
@@ -18,7 +20,7 @@ import org.junit.Test;
 public class DocumentNavigatorTest {
 
     private static class DummyRootNode extends DummyNode implements RootNode {
-        public DummyRootNode(int id) {
+        DummyRootNode(int id) {
             super(id);
         }
     }
@@ -26,7 +28,7 @@ public class DocumentNavigatorTest {
     @Test
     public void getDocumentNode() {
         DocumentNavigator nav = new DocumentNavigator();
-        
+
         try {
             nav.getDocumentNode(null);
             fail();

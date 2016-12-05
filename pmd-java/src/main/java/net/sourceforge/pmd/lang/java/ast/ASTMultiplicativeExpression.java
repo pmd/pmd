@@ -14,7 +14,6 @@ public class ASTMultiplicativeExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

@@ -14,7 +14,6 @@ public class ASTAndExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

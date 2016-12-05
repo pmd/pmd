@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
@@ -17,6 +18,7 @@ public class ViolationNode extends AbstractReportNode {
         return ruleViolation;
     }
 
+    @Override
     public boolean equalsNode(AbstractReportNode arg0) {
         if (!(arg0 instanceof ViolationNode)) {
             return false;
@@ -24,12 +26,12 @@ public class ViolationNode extends AbstractReportNode {
 
         RuleViolation rv = ((ViolationNode) arg0).getRuleViolation();
 
-        return rv.getFilename().equals(getRuleViolation().getFilename()) &&
-        	rv.getBeginLine() == getRuleViolation().getBeginLine() &&
-        	rv.getBeginColumn() == getRuleViolation().getBeginColumn() &&
-        	rv.getEndLine() == getRuleViolation().getEndLine() &&
-        	rv.getEndColumn()== getRuleViolation().getEndColumn() &&
-        	rv.getVariableName().equals(getRuleViolation().getVariableName());
+        return rv.getFilename().equals(getRuleViolation().getFilename())
+                && rv.getBeginLine() == getRuleViolation().getBeginLine()
+                && rv.getBeginColumn() == getRuleViolation().getBeginColumn()
+                && rv.getEndLine() == getRuleViolation().getEndLine()
+                && rv.getEndColumn() == getRuleViolation().getEndColumn()
+                && rv.getVariableName().equals(getRuleViolation().getVariableName());
     }
 
 }

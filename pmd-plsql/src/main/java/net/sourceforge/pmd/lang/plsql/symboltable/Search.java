@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.HashSet;
@@ -19,7 +20,8 @@ public class Search {
 
     public Search(PLSQLNameOccurrence occ) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
+            LOGGER.finest(
+                    "new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
         }
         this.occ = occ;
     }

@@ -77,9 +77,10 @@ public class ASTFormalParameter extends AbstractJavaAccessNode implements Dimens
 
     protected ASTVariableDeclaratorId getDecl() {
         try {
-            return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren()-1);
+            return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1);
         } catch (ClassCastException c) {
-            System.out.println("CLASS CAST: " + this.getBeginLine() + ":" + this.getBeginColumn() + " " + this.toString());
+            System.out.println(
+                    "CLASS CAST: " + this.getBeginLine() + ":" + this.getBeginColumn() + " " + this.toString());
             return null;
         }
     }

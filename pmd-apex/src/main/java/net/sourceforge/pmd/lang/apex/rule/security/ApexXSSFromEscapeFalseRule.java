@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.List;
@@ -15,13 +19,13 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  *
  */
 public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
-	private static final String ADD_ERROR = "addError";
+    private static final String ADD_ERROR = "addError";
 
-	public ApexXSSFromEscapeFalseRule() {
-		setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
-		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-	}
+    public ApexXSSFromEscapeFalseRule() {
+        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
+        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+    }
 
 	@Override
 	public Object visit(ASTUserClass node, Object data) {
@@ -38,28 +42,28 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
 		return data;
 	}
 
-	private void validateBooleanParameter(ASTMethodCallExpression methodCall, Object data) {
-		int numberOfChildren = methodCall.jjtGetNumChildren();
-		if (numberOfChildren == 3) { // addError('',false)
-			Object potentialLiteral = methodCall.jjtGetChild(2);
-			if (potentialLiteral instanceof ASTLiteralExpression) {
-				ASTLiteralExpression parameter = (ASTLiteralExpression) potentialLiteral;
-				Object o = parameter.getNode().getLiteral();
-				if (o instanceof Boolean) {
-					Boolean paramValue = (Boolean) o;
-					if (paramValue.equals(Boolean.FALSE)) {
-						validateLiteralPresence(methodCall, data);
-					}
-				}
-			}
-		}
-	}
+    private void validateBooleanParameter(ASTMethodCallExpression methodCall, Object data) {
+        int numberOfChildren = methodCall.jjtGetNumChildren();
+        if (numberOfChildren == 3) { // addError('',false)
+            Object potentialLiteral = methodCall.jjtGetChild(2);
+            if (potentialLiteral instanceof ASTLiteralExpression) {
+                ASTLiteralExpression parameter = (ASTLiteralExpression) potentialLiteral;
+                Object o = parameter.getNode().getLiteral();
+                if (o instanceof Boolean) {
+                    Boolean paramValue = (Boolean) o;
+                    if (paramValue.equals(Boolean.FALSE)) {
+                        validateLiteralPresence(methodCall, data);
+                    }
+                }
+            }
+        }
+    }
 
-	private void validateLiteralPresence(ASTMethodCallExpression methodCall, Object data) {
-		List<ASTVariableExpression> variables = methodCall.findDescendantsOfType(ASTVariableExpression.class);
-		for (ASTVariableExpression v : variables) {
-			addViolation(data, v);
-		}
-	}
+    private void validateLiteralPresence(ASTMethodCallExpression methodCall, Object data) {
+        List<ASTVariableExpression> variables = methodCall.findDescendantsOfType(ASTVariableExpression.class);
+        for (ASTVariableExpression v : variables) {
+            addViolation(data, v);
+        }
+    }
 
 }

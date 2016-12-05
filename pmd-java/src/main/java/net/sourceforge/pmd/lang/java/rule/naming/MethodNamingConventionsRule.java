@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.naming;
 
 import java.util.List;
@@ -51,7 +52,8 @@ public class MethodNamingConventionsRule extends AbstractJavaRule {
     }
 
     private boolean isOverriddenMethod(ASTMethodDeclarator node) {
-        ASTClassOrInterfaceBodyDeclaration declaration = node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        ASTClassOrInterfaceBodyDeclaration declaration = node
+                .getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
         List<ASTMarkerAnnotation> annotations = declaration.findDescendantsOfType(ASTMarkerAnnotation.class);
         for (ASTMarkerAnnotation ann : annotations) {
             ASTName name = ann.getFirstChildOfType(ASTName.class);

@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.Arrays;
@@ -16,6 +20,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+
+import apex.jorje.semantic.ast.expression.VariableExpression;
 
 /**
  * Detects potential XSS when controller extracts a variable from URL query and

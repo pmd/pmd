@@ -59,7 +59,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     }
 
     private ASTVariableDeclaratorId getDecl() {
-        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren()-1).jjtGetChild(0);
+        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1).jjtGetChild(0);
     }
 
     private int checkDecl() {
@@ -67,8 +67,9 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     }
 
     /**
-     * Gets the variable name of this field.
-     * This method searches the first VariableDeclartorId node and returns it's image or <code>null</code> if the child node is not found.
+     * Gets the variable name of this field. This method searches the first
+     * VariableDeclartorId node and returns it's image or <code>null</code> if
+     * the child node is not found.
      *
      * @return a String representing the name of the variable
      */

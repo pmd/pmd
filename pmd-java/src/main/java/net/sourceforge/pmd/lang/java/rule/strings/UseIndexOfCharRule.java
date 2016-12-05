@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,6 +17,7 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
 
     /**
      * Method targetTypeName.
+     * 
      * @return String
      */
     @Override
@@ -25,6 +27,7 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
 
     /**
      * Method methodNames.
+     * 
      * @return String[]
      */
     @Override

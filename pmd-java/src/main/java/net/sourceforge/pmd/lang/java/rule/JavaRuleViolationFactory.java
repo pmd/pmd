@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
 
 import net.sourceforge.pmd.Rule;
@@ -13,19 +14,20 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 public final class JavaRuleViolationFactory extends AbstractRuleViolationFactory {
 
-	public static final RuleViolationFactory INSTANCE = new JavaRuleViolationFactory();
+    public static final RuleViolationFactory INSTANCE = new JavaRuleViolationFactory();
 
-	private JavaRuleViolationFactory() {
-	}
+    private JavaRuleViolationFactory() {
+    }
 
-	@Override
-	protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-		return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message);
-	}
+    @Override
+    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
+        return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message);
+    }
 
-	@Override
-	protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {
-		return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message, beginLine, endLine);
-	}
+    @Override
+    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
+            int beginLine, int endLine) {
+        return new JavaRuleViolation(rule, ruleContext, (JavaNode) node, message, beginLine, endLine);
+    }
 
 }

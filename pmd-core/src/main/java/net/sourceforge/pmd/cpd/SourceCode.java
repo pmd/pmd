@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
@@ -70,12 +71,11 @@ public class SourceCode {
 
         @Override
         public Reader getReader() throws Exception {
-            BOMInputStream inputStream = 
-                new BOMInputStream(new FileInputStream(file),
-                        ByteOrderMark.UTF_8, ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
+            BOMInputStream inputStream = new BOMInputStream(new FileInputStream(file), ByteOrderMark.UTF_8,
+                    ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
 
             if (inputStream.hasBOM()) {
-               encoding = inputStream.getBOMCharsetName();
+                encoding = inputStream.getBOMCharsetName();
             }
             return new InputStreamReader(inputStream, encoding);
         }

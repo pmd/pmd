@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public final class LanguageRegistry {
 
     /**
      * A utility method to find the Languages which have Rule support.
-     * 
+     *
      * @return A List of Languages with Rule support.
      */
     public static List<Language> findWithRuleSupport() {

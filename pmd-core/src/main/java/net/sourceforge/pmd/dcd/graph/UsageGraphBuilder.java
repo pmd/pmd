@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.dcd.graph;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ import net.sourceforge.pmd.util.filter.Filter;
 public class UsageGraphBuilder {
 
     /**
-     * Should trace level logging be enabled.  This is a development debugging
+     * Should trace level logging be enabled. This is a development debugging
      * option.
      */
     private static final boolean TRACE = false;
@@ -51,8 +52,8 @@ public class UsageGraphBuilder {
             if (classFilter.filter(className)) {
                 if (!usageGraph.isClass(className)) {
                     usageGraph.defineClass(className);
-                    InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(
-                            classResourceName + ".class");
+                    InputStream inputStream = this.getClass().getClassLoader()
+                            .getResourceAsStream(classResourceName + ".class");
                     ClassReader classReader = new ClassReader(inputStream);
                     try {
                         classReader.accept(getNewClassVisitor(), 0);
@@ -79,7 +80,7 @@ public class UsageGraphBuilder {
         private final PrintVisitor p;
         private String className;
 
-        public MyClassVisitor() {
+        MyClassVisitor() {
             super(Opcodes.ASM5);
             p = new PrintVisitor();
         }
@@ -93,7 +94,8 @@ public class UsageGraphBuilder {
         }
 
         @Override
-        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        public void visit(int version, int access, String name, String signature, String superName,
+                String[] interfaces) {
             if (TRACE) {
                 println("visit:");
                 printlnIndent("version: " + version);
@@ -422,8 +424,7 @@ public class UsageGraphBuilder {
         }
 
         @Override
-        public void visitTableSwitchInsn(int min, int max, Label dflt,
-                Label... labels) {
+        public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels) {
             if (TRACE) {
                 println("visitTableSwitchInsn:");
                 printlnIndent("min: " + min);

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -20,9 +21,8 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 
 /**
- * Directive that puts an unrendered AST block in the context
- * under the specified key, postponing rendering until the
- * reference is used and rendered.
+ * Directive that puts an unrendered AST block in the context under the
+ * specified key, postponing rendering until the reference is used and rendered.
  *
  * @author Andrew Tetlaw
  * @author Nathan Bubna
@@ -30,16 +30,14 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @since 1.7
  * @version $Id: Block.java 686842 2008-08-18 18:29:31Z nbubna $
  */
-public abstract class Block extends Directive
-{
+public abstract class Block extends Directive {
     protected String key;
 
     /**
      * Return type of this directive.
      */
-    public int getType()
-    {
+    public int getType() {
         return BLOCK;
     }
-    
+
 }
