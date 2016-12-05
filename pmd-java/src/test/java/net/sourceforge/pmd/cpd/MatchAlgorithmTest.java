@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
@@ -10,9 +11,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.sourceforge.pmd.PMD;
-
 import org.junit.Test;
+
+import net.sourceforge.pmd.PMD;
 
 public class MatchAlgorithmTest {
 
@@ -26,19 +27,12 @@ public class MatchAlgorithmTest {
     private static final String LINE_8 = "}";
 
     private static String getSampleCode() {
-        return
-                LINE_1 + PMD.EOL +
-                LINE_2 + PMD.EOL +
-                LINE_3 + PMD.EOL +
-                LINE_4 + PMD.EOL +
-                LINE_5 + PMD.EOL +
-                LINE_6 + PMD.EOL +
-                LINE_7 + PMD.EOL +
-                LINE_8;
+        return LINE_1 + PMD.EOL + LINE_2 + PMD.EOL + LINE_3 + PMD.EOL + LINE_4 + PMD.EOL + LINE_5 + PMD.EOL + LINE_6
+                + PMD.EOL + LINE_7 + PMD.EOL + LINE_8;
     }
 
     @Test
-    public void testSimple() throws Throwable {
+    public void testSimple() {
         JavaTokenizer tokenizer = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
         Tokens tokens = new Tokens();
@@ -69,7 +63,7 @@ public class MatchAlgorithmTest {
     }
 
     @Test
-    public void testIgnore() throws Throwable {
+    public void testIgnore() {
         JavaTokenizer tokenizer = new JavaTokenizer();
         tokenizer.setIgnoreLiterals(true);
         tokenizer.setIgnoreIdentifiers(true);

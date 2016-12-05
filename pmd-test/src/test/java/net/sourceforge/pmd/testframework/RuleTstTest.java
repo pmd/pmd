@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.testframework;
 
 import static org.mockito.Matchers.any;
@@ -23,7 +24,8 @@ public class RuleTstTest {
 
     @Test
     public void shouldCallStartAndEnd() {
-        RuleTst ruleTester = new RuleTst() {};
+        RuleTst ruleTester = new RuleTst() {
+        };
         LanguageVersion languageVersion = LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion();
         Report report = new Report();
         Rule rule = mock(Rule.class);

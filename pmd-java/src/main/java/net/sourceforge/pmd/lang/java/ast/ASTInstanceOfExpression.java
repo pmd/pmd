@@ -14,7 +14,6 @@ public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

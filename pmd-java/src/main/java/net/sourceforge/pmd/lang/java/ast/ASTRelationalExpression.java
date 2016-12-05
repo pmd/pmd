@@ -14,7 +14,6 @@ public class ASTRelationalExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

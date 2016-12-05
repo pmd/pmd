@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.properties;
 
 import static org.junit.Assert.assertNotNull;
@@ -6,29 +10,29 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.MethodMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
 import net.sourceforge.pmd.util.ClassUtil;
-
-import org.junit.Test;
 
 /**
  * Evaluates the functionality of the MethodProperty descriptor by testing its
  * ability to catch creation errors (illegal args), flag invalid methods per the
  * allowable packages, and serialize/deserialize groups of methods onto/from a
  * string buffer.
- * 
+ *
  * We're using methods from java.lang classes for 'normal' constructors and
  * applying ones from java.util types as ones we expect to fail.
- * 
+ *
  * @author Brian Remedios
  */
 public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
     private static final String[] methodSignatures = new String[] { "String#indexOf(int)", "String#substring(int,int)",
-            "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
-            "HashMap#containsKey(Object)" };
+        "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
+        "HashMap#containsKey(Object)", };
 
     public MethodPropertyTest() {
         super("Method");
@@ -60,10 +64,8 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
         String translatedMethod = null;
         for (int i = 0; i < methods.length; i++) {
             translatedMethod = MethodProperty.asStringFor(methods[i]);
-            assertTrue(
-                    "Translated method does not match",
-                    ClassUtil.withoutPackageName(methodSignatures[i]).equals(
-                            ClassUtil.withoutPackageName(translatedMethod)));
+            assertTrue("Translated method does not match", ClassUtil.withoutPackageName(methodSignatures[i])
+                    .equals(ClassUtil.withoutPackageName(translatedMethod)));
         }
     }
 
@@ -72,9 +74,10 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
         Method[] methods = String.class.getDeclaredMethods();
 
-        return multiValue ? new MethodMultiProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] },
-                new String[] { "java.util" }, 1.0f) : new MethodProperty("methodProperty", "asdf", methods[1],
-                new String[] { "java.util" }, 1.0f);
+        return multiValue
+                ? new MethodMultiProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] },
+                        new String[] { "java.util" }, 1.0f)
+                : new MethodProperty("methodProperty", "asdf", methods[1], new String[] { "java.util" }, 1.0f);
     }
 
     @Override
@@ -83,7 +86,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
         Method[] allMethods = HashMap.class.getDeclaredMethods();
 
         if (count == 1) {
-            return (Method) randomChoice(allMethods);
+            return randomChoice(allMethods);
         }
 
         Method[] methods = new Method[count];
@@ -99,9 +102,10 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
         Method[] methods = String.class.getDeclaredMethods();
 
-        return multiValue ? new MethodMultiProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] },
-                new String[] { "java.lang" }, 1.0f) : new MethodProperty("methodProperty", "asdf", methods[1],
-                new String[] { "java.lang" }, 1.0f);
+        return multiValue
+                ? new MethodMultiProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] },
+                        new String[] { "java.lang" }, 1.0f)
+                : new MethodProperty("methodProperty", "asdf", methods[1], new String[] { "java.lang" }, 1.0f);
     }
 
     @Override
@@ -110,7 +114,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
         Method[] allMethods = String.class.getDeclaredMethods();
 
         if (count == 1) {
-            return (Method) randomChoice(allMethods);
+            return randomChoice(allMethods);
         }
 
         Method[] methods = new Method[count];

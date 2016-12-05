@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Collections;
@@ -19,7 +20,8 @@ public class Search {
 
     public Search(JavaNameOccurrence occ) {
         if (TRACE) {
-            System.out.println("new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
+            System.out.println(
+                    "new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
         }
         this.occ = occ;
     }

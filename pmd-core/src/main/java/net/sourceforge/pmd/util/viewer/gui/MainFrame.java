@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer.gui;
 
 import java.awt.BorderLayout;
@@ -18,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -28,16 +30,13 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-
 /**
  * viewer's main frame
  *
  * @author Boris Gruschko ( boris at gruschko.org )
  */
 
-public class MainFrame
-        extends JFrame
-        implements ActionListener, ViewerModelListener {
+public class MainFrame extends JFrame implements ActionListener, ViewerModelListener {
     private ViewerModel model;
     private SourceCodePanel sourcePanel;
     private XPathPanel xPathPanel;
@@ -45,10 +44,10 @@ public class MainFrame
     private JLabel statusLbl;
     private JRadioButtonMenuItem jdk13MenuItem;
     private JRadioButtonMenuItem jdk14MenuItem;
-    private JRadioButtonMenuItem jdk15MenuItem;	//NOPMD
+    private JRadioButtonMenuItem jdk15MenuItem; // NOPMD
     private JRadioButtonMenuItem jdk16MenuItem;
     private JRadioButtonMenuItem jdk17MenuItem;
-    private JRadioButtonMenuItem plsqlMenuItem; 
+    private JRadioButtonMenuItem plsqlMenuItem;
 
     /**
      * constructs and shows the frame
@@ -109,7 +108,7 @@ public class MainFrame
         jdk17MenuItem.setSelected(false);
         group.add(jdk17MenuItem);
         menu.add(jdk17MenuItem);
-	//PLSQL
+        // PLSQL
         plsqlMenuItem = new JRadioButtonMenuItem("PLSQL");
         plsqlMenuItem.setSelected(false);
         group.add(plsqlMenuItem);
@@ -117,7 +116,7 @@ public class MainFrame
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
         setSize(800, 600);
         setVisible(true);
@@ -145,6 +144,7 @@ public class MainFrame
     /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         long t0;
@@ -152,7 +152,7 @@ public class MainFrame
         if (ActionCommands.COMPILE_ACTION.equals(command)) {
             try {
                 t0 = System.currentTimeMillis();
-                model.commitSource(sourcePanel.getSourceCode(), getLanguageVersion() );
+                model.commitSource(sourcePanel.getSourceCode(), getLanguageVersion());
                 t1 = System.currentTimeMillis();
                 setStatus(NLS.nls("MAIN.FRAME.COMPILATION.TOOK") + " " + (t1 - t0) + " ms");
             } catch (ParseException exc) {
@@ -175,7 +175,9 @@ public class MainFrame
     /**
      * Sets the status bar message
      *
-     * @param string the new status, the empty string will be set if the value is <code>null</code>
+     * @param string
+     *            the new status, the empty string will be set if the value is
+     *            <code>null</code>
      */
     private void setStatus(String string) {
         statusLbl.setText(string == null ? "" : string);
@@ -184,6 +186,7 @@ public class MainFrame
     /**
      * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
+    @Override
     public void viewerModelChanged(ViewerModelEvent e) {
         evalBtn.setEnabled(model.hasCompiledTree());
     }

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -20,45 +21,41 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 
 /**
- * A very simple directive that leverages the Node.literal()
- * to grab the literal rendition of a node. We basically
- * grab the literal value on init(), then repeatedly use
- * that during render().  <em>This is deprecated and will be
- * removed in Velocity 2.0; please use #[[unparsed content]]#
- * instead.</em>
+ * A very simple directive that leverages the Node.literal() to grab the literal
+ * rendition of a node. We basically grab the literal value on init(), then
+ * repeatedly use that during render(). <em>This is deprecated and will be
+ * removed in Velocity 2.0; please use #[[unparsed content]]# instead.</em>
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @version $Id: Literal.java 746438 2009-02-21 05:41:24Z nbubna $
  * @deprecated Use the #[[unparsed content]]# syntax instead.
  */
-public class Literal extends Directive
-{
+public class Literal extends Directive {
     String literalText;
 
     /**
      * Return name of this directive.
+     * 
      * @return The name of this directive.
      */
-    public String getName()
-    {
+    public String getName() {
         return "literal";
     }
 
     /**
      * Return type of this directive.
+     * 
      * @return The type of this directive.
      */
-    public int getType()
-    {
+    public int getType() {
         return BLOCK;
     }
 
     /**
-     * Since there is no processing of content,
-     * there is never a need for an internal scope.
+     * Since there is no processing of content, there is never a need for an
+     * internal scope.
      */
-    public boolean isScopeProvided()
-    {
+    public boolean isScopeProvided() {
         return false;
     }
 

@@ -14,7 +14,6 @@ public class ASTStatement extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

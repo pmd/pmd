@@ -25,7 +25,6 @@ public class ASTBooleanLiteral extends AbstractJavaTypeNode {
         return this.isTrue;
     }
 
-
     /**
      * Accept the visitor. *
      */

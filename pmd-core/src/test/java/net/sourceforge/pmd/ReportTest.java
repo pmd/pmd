@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
@@ -12,6 +13,8 @@ import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
@@ -20,18 +23,17 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
 
-import org.junit.Test;
-
-
 public class ReportTest implements ReportListener {
 
     private boolean violationSemaphore;
     private boolean metricSemaphore;
 
+    @Override
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         violationSemaphore = true;
     }
 
+    @Override
     public void metricAdded(Metric metric) {
         metricSemaphore = true;
     }
@@ -163,8 +165,8 @@ public class ReportTest implements ReportListener {
         }
         assertEquals(2, treeCount);
     }
-    
-    private static Node getNode(int line, int column){
+
+    private static Node getNode(int line, int column) {
         DummyNode s = new DummyNode(2);
         DummyNode parent = new DummyNode(1);
         parent.testingOnly__setBeginLine(line);
@@ -176,7 +178,7 @@ public class ReportTest implements ReportListener {
     }
 
     private static Node getNode(int line, int column, boolean nextLine) {
-        DummyNode s = (DummyNode)getNode(line, column);
+        DummyNode s = (DummyNode) getNode(line, column);
         if (nextLine) {
             s.testingOnly__setBeginLine(line + 1);
             s.testingOnly__setBeginColumn(column + 4);

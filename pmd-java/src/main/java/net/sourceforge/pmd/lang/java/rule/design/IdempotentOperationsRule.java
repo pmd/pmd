@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
@@ -18,14 +19,12 @@ public class IdempotentOperationsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTStatementExpression node, Object data) {
-        if (node.jjtGetNumChildren() != 3
-                || !(node.jjtGetChild(0) instanceof ASTPrimaryExpression)
+        if (node.jjtGetNumChildren() != 3 || !(node.jjtGetChild(0) instanceof ASTPrimaryExpression)
                 || !(node.jjtGetChild(1) instanceof ASTAssignmentOperator)
                 || ((ASTAssignmentOperator) node.jjtGetChild(1)).isCompound()
                 || !(node.jjtGetChild(2) instanceof ASTExpression)
                 || node.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0
-                || node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0
-        ) {
+                || node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0) {
             return super.visit(node, data);
         }
 
@@ -52,17 +51,21 @@ public class IdempotentOperationsRule extends AbstractJavaRule {
 
         if (rhs.jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
             Node n = rhs.jjtGetParent().jjtGetParent().jjtGetChild(1);
-            if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) n).isArguments() || ((ASTPrimarySuffix) n).isArrayDereference()) {
+            if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) n).isArguments()
+                    || ((ASTPrimarySuffix) n).isArrayDereference()) {
                 return super.visit(node, data);
             }
         }
 
-        if (lhs.findDescendantsOfType(ASTPrimarySuffix.class).size() != rhs.findDescendantsOfType(ASTPrimarySuffix.class).size()) {
+        if (lhs.findDescendantsOfType(ASTPrimarySuffix.class).size() != rhs
+                .findDescendantsOfType(ASTPrimarySuffix.class).size()) {
             return super.visit(node, data);
         }
 
-        List<ASTPrimarySuffix> lhsSuffixes = lhs.jjtGetParent().jjtGetParent().findDescendantsOfType(ASTPrimarySuffix.class);
-        List<ASTPrimarySuffix> rhsSuffixes = rhs.jjtGetParent().jjtGetParent().findDescendantsOfType(ASTPrimarySuffix.class);
+        List<ASTPrimarySuffix> lhsSuffixes = lhs.jjtGetParent().jjtGetParent()
+                .findDescendantsOfType(ASTPrimarySuffix.class);
+        List<ASTPrimarySuffix> rhsSuffixes = rhs.jjtGetParent().jjtGetParent()
+                .findDescendantsOfType(ASTPrimarySuffix.class);
         if (lhsSuffixes.size() != rhsSuffixes.size()) {
             return super.visit(node, data);
         }

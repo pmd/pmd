@@ -1,10 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * 
+ *
  * @author Brian Remedios
  * @param <T>
  */
@@ -14,12 +15,17 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractPackagedP
 
     /**
      * Constructor for AbstractMultiPackagedProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefault T
-     * @param theLegalPackageNames String[]
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefault
+     *            T
+     * @param theLegalPackageNames
+     *            String[]
+     * @param theUIOrder
+     *            float
      */
     protected AbstractMultiPackagedProperty(String theName, String theDescription, T theDefault,
             String[] theLegalPackageNames, float theUIOrder) {
@@ -38,6 +44,7 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractPackagedP
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return asDelimitedString(defaultValue());
     }

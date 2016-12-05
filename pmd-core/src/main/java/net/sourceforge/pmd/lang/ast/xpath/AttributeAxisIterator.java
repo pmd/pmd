@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.Method;
@@ -18,7 +19,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         public Method method;
         public String name;
 
-        public MethodWrapper(Method m) {
+        MethodWrapper(Method m) {
             this.method = m;
             this.name = truncateMethodName(m.getName());
         }
@@ -69,6 +70,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         this.currObj = getNextAttribute();
     }
 
+    @Override
     public Attribute next() {
         if (currObj == null) {
             throw new IndexOutOfBoundsException();
@@ -78,10 +80,12 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         return ret;
     }
 
+    @Override
     public boolean hasNext() {
         return currObj != null;
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }
@@ -101,14 +105,10 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
         return !deprecated
                 && (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
-                || Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
-                && method.getParameterTypes().length == 0
-                && Void.TYPE != method.getReturnType()
-                && !methodName.startsWith("jjt")
-                && !methodName.equals("toString")
-                && !methodName.equals("getScope")
-                && !methodName.equals("getClass")
-                && !methodName.equals("getTypeNameNode")
+                        || Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
+                && method.getParameterTypes().length == 0 && Void.TYPE != method.getReturnType()
+                && !methodName.startsWith("jjt") && !methodName.equals("toString") && !methodName.equals("getScope")
+                && !methodName.equals("getClass") && !methodName.equals("getTypeNameNode")
                 && !methodName.equals("getImportedNameNode") && !methodName.equals("hashCode");
     }
 }

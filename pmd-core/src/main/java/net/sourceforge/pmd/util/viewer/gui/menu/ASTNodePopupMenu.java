@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer.gui.menu;
 
 import javax.swing.JPopupMenu;

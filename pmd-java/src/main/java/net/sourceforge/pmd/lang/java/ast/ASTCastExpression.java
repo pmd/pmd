@@ -19,6 +19,7 @@ public class ASTCastExpression extends AbstractJavaTypeNode {
     public void setIntersectionTypes(boolean intersectionTypes) {
         this.intersectionTypes = intersectionTypes;
     }
+
     public boolean hasIntersectionTypes() {
         return intersectionTypes;
     }

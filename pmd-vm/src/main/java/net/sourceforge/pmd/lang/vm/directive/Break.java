@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -26,35 +27,32 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author Nathan Bubna
  * @version $Id$
  */
-public class Break extends Directive
-{
+public class Break extends Directive {
 
     /**
      * Return name of this directive.
+     * 
      * @return The name of this directive.
      */
-    public String getName()
-    {
+    public String getName() {
         return "break";
     }
 
     /**
      * Return type of this directive.
+     * 
      * @return The type of this directive.
      */
-    public int getType()
-    {
+    public int getType() {
         return LINE;
     }
 
     /**
-     * Since there is no processing of content,
-     * there is never a need for an internal scope.
+     * Since there is no processing of content, there is never a need for an
+     * internal scope.
      */
-    public boolean isScopeProvided()
-    {
+    public boolean isScopeProvided() {
         return false;
     }
-
 
 }

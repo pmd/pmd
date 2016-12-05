@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -28,8 +29,8 @@ import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
- * Abstract superclass for NCSS counting methods. Counts tokens according to <a
- * href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
+ * Abstract superclass for NCSS counting methods. Counts tokens according to
+ * <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
  * 
  * @author Jason Bennett
  */
@@ -40,7 +41,8 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule 
     /**
      * Count the nodes of the given type using NCSS rules.
      * 
-     * @param nodeClass class of node to count
+     * @param nodeClass
+     *            class of node to count
      */
     protected AbstractNcssCountRule(Class<?> nodeClass) {
         this.nodeClass = nodeClass;
@@ -73,8 +75,10 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule 
      * Count the number of children of the given Java node. Adds one to count
      * the node itself.
      * 
-     * @param node java node having children counted
-     * @param data node data
+     * @param node
+     *            java node having children counted
+     * @param data
+     *            node data
      * @return count of the number of children of the node, plus one
      */
     protected Integer countNodeChildren(Node node, Object data) {

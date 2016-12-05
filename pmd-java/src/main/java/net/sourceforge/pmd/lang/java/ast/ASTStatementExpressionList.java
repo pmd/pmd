@@ -14,7 +14,6 @@ public class ASTStatementExpressionList extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

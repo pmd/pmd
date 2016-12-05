@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.UnaryFunction;
 
 public class VariableUsageFinderFunction implements UnaryFunction<NameDeclaration> {
-    
+
     private Map<NameDeclaration, List<NameOccurrence>> results = new HashMap<>();
 
     private Map<NameDeclaration, List<NameOccurrence>> decls;

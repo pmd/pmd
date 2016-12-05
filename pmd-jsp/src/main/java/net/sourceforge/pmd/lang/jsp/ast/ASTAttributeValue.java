@@ -14,7 +14,6 @@ public class ASTAttributeValue extends AbstractJspNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

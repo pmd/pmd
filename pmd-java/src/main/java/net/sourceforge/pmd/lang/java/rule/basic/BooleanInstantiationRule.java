@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -32,80 +33,81 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  */
 public class BooleanInstantiationRule extends AbstractJavaRule {
 
-	/*
-	 *  see bug 1744065 : If somebody create it owns Boolean, the rule should not be triggered
-	 *   Therefore, we use this boolean to flag if the source code contains such an import
-	 *
-	 */
-	private boolean customBoolean;
+    /*
+     * see bug 1744065 : If somebody create it owns Boolean, the rule should not
+     * be triggered Therefore, we use this boolean to flag if the source code
+     * contains such an import
+     *
+     */
+    private boolean customBoolean;
 
     @Override
-    public Object visit(ASTCompilationUnit decl,Object data) {
+    public Object visit(ASTCompilationUnit decl, Object data) {
         // customBoolean needs to be reset for each new file
         customBoolean = false;
 
         return super.visit(decl, data);
     }
 
-	@Override
-	public Object visit(ASTImportDeclaration decl,Object data) {
-		// If the import actually import a Boolean class that overrides java.lang.Boolean
-		if ( decl.getImportedName().endsWith("Boolean") && ! decl.getImportedName().equals("java.lang"))
-		{
-			customBoolean = true;
-		}
-		return super.visit(decl, data);
-	}
+    @Override
+    public Object visit(ASTImportDeclaration decl, Object data) {
+        // If the import actually import a Boolean class that overrides
+        // java.lang.Boolean
+        if (decl.getImportedName().endsWith("Boolean") && !decl.getImportedName().equals("java.lang")) {
+            customBoolean = true;
+        }
+        return super.visit(decl, data);
+    }
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
 
-    	if ( ! customBoolean ) {
-	        if (node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
-	            return super.visit(node, data);
-	        }
-	        
-	        Node n1 = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
-	    	if (TypeHelper.isA((ASTClassOrInterfaceType) n1, Boolean.class)) {
+        if (!customBoolean) {
+            if (node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
+                return super.visit(node, data);
+            }
+
+            Node n1 = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
+            if (TypeHelper.isA((ASTClassOrInterfaceType) n1, Boolean.class)) {
                 super.addViolation(data, node);
                 return data;
             }
-    	}
+        }
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
 
-    	if ( ! customBoolean )
-    	{
-	        if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
-	            return super.visit(node, data);
-	        }
+        if (!customBoolean) {
+            if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
+                return super.visit(node, data);
+            }
 
-	        if ("Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())
-	                || "java.lang.Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())) {
-	            ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
-	            ASTPrimarySuffix suffix = parent.getFirstDescendantOfType(ASTPrimarySuffix.class);
-	            if (suffix == null) {
-	                return super.visit(node, data);
-	            }
-	            ASTPrimaryPrefix prefix = suffix.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-	            if (prefix == null) {
-	                return super.visit(node, data);
-	            }
+            if ("Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())
+                    || "java.lang.Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())) {
+                ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
+                ASTPrimarySuffix suffix = parent.getFirstDescendantOfType(ASTPrimarySuffix.class);
+                if (suffix == null) {
+                    return super.visit(node, data);
+                }
+                ASTPrimaryPrefix prefix = suffix.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+                if (prefix == null) {
+                    return super.visit(node, data);
+                }
 
-	            if (prefix.hasDescendantOfType(ASTBooleanLiteral.class)) {
-	                super.addViolation(data, node);
-	                return data;
-	            }
-	            ASTLiteral literal = prefix.getFirstDescendantOfType(ASTLiteral.class);
-	            if (literal != null && ("\"true\"".equals(literal.getImage()) || "\"false\"".equals(literal.getImage()))) {
-	                super.addViolation(data, node);
-	                return data;
-	            }
-	        }
-    	}
+                if (prefix.hasDescendantOfType(ASTBooleanLiteral.class)) {
+                    super.addViolation(data, node);
+                    return data;
+                }
+                ASTLiteral literal = prefix.getFirstDescendantOfType(ASTLiteral.class);
+                if (literal != null
+                        && ("\"true\"".equals(literal.getImage()) || "\"false\"".equals(literal.getImage()))) {
+                    super.addViolation(data, node);
+                    return data;
+                }
+            }
+        }
         return super.visit(node, data);
     }
 }

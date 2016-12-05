@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
@@ -15,7 +16,6 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-
 /**
  * @author Eric Olander
  * @since Created on October 24, 2004, 8:56 AM
@@ -23,10 +23,11 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(VariableNameDeclaration.class);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
-            AccessNode accessNodeParent = (AccessNode)decl.getAccessNodeParent();
+            AccessNode accessNodeParent = (AccessNode) decl.getAccessNodeParent();
             if (!accessNodeParent.isStatic() || accessNodeParent.isFinal()) {
                 continue;
             }
@@ -41,10 +42,12 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
     private boolean initializedInConstructor(List<NameOccurrence> usages) {
         boolean initInConstructor = false;
 
-        for (NameOccurrence occ: usages) {
-            if (((JavaNameOccurrence)occ).isOnLeftHandSide()) { // specifically omitting prefix and postfix operators as there are legitimate usages of these with static fields, e.g. typesafe enum pattern.
-        	Node node = occ.getLocation();
-        	Node constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
+        for (NameOccurrence occ : usages) {
+            // specifically omitting prefix and postfix operators as there are
+            // legitimate usages of these with static fields, e.g. typesafe enum pattern.
+            if (((JavaNameOccurrence) occ).isOnLeftHandSide()) {
+                Node node = occ.getLocation();
+                Node constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     initInConstructor = true;
                 }

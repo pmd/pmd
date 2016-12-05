@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +25,7 @@ public abstract class AbstractJspNodesTst {
      *
      * @param clazz
      * @param source
-     * @return Set 
+     * @return Set
      */
     public <T extends JspNode> Set<T> getNodes(Class<T> clazz, String source) {
         JspParser parser = new JspParser(new JavaCharStream(new StringReader(source)));
@@ -35,35 +36,35 @@ public abstract class AbstractJspNodesTst {
     }
 
     /**
-     * Return a subset of allNodes, containing the items in allNodes
-     * that are of the given type.
+     * Return a subset of allNodes, containing the items in allNodes that are of
+     * the given type.
      *
      * @param clazz
      * @param allNodes
-     * @return Set 
+     * @return Set
      */
     public <T extends JspNode> Set<T> getNodesOfType(Class<T> clazz, Set<JspNode> allNodes) {
         Set<T> result = new HashSet<>();
-        for (Node node: allNodes) {
+        for (Node node : allNodes) {
             if (clazz.equals(node.getClass())) {
-                result.add((T)node);
+                result.add((T) node);
             }
         }
         return result;
     }
 
     /**
-     * Add the given node and its subnodes to the set of nodes. If clazz is not null, only
-     * nodes of the given class are put in the set of nodes.
+     * Add the given node and its subnodes to the set of nodes. If clazz is not
+     * null, only nodes of the given class are put in the set of nodes.
      */
     private <T extends JspNode> void addNodeAndSubnodes(Node node, Set<T> nodes, Class<T> clazz) {
         if (null != node) {
             if ((null == clazz) || (clazz.equals(node.getClass()))) {
-                nodes.add((T)node);
+                nodes.add((T) node);
             }
-	        for (int i=0; i < node.jjtGetNumChildren(); i++) {
-	            addNodeAndSubnodes(node.jjtGetChild(i), nodes, clazz);
-	        }
+            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+                addNodeAndSubnodes(node.jjtGetChild(i), nodes, clazz);
+            }
         }
     }
 

@@ -14,7 +14,6 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

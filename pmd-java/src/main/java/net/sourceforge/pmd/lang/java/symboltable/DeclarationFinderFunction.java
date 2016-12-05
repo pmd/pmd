@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -24,8 +25,7 @@ public class DeclarationFinderFunction implements UnaryFunction<NameDeclaration>
 
     private boolean isDeclaredBefore(NameDeclaration nameDeclaration) {
         if (nameDeclaration.getNode() != null && occurrence.getLocation() != null) {
-            return nameDeclaration.getNode().getBeginLine() <=
-                    occurrence.getLocation().getBeginLine();
+            return nameDeclaration.getNode().getBeginLine() <= occurrence.getLocation().getBeginLine();
         }
 
         return true;

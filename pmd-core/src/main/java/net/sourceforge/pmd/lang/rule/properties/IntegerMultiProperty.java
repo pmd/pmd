@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a datatype that supports multiple Integer property values within an
  * upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]> {
@@ -19,6 +20,7 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<IntegerMultiProperty>(
             Integer[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public IntegerMultiProperty createWith(Map<String, String> valuesById) {
             String[] minMax = minMaxFrom(valuesById);
             char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
@@ -30,13 +32,19 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
 
     /**
      * Constructor for IntegerProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param min Integer
-     * @param max Integer
-     * @param theDefaults Integer[]
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            Integer
+     * @param max
+     *            Integer
+     * @param theDefaults
+     *            Integer[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max, Integer[] theDefaults,
@@ -48,22 +56,27 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Integer[]> type() {
         return Integer[].class;
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return Integer.valueOf(value);
     }
 
     /**
-     * @param size int
+     * @param size
+     *            int
      * @return Object[]
      */
+    @Override
     protected Object[] arrayFor(int size) {
         return new Integer[size];
     }

@@ -1,15 +1,17 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import apex.jorje.data.ast.Identifier;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
@@ -29,6 +31,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+
+import apex.jorje.data.ast.Identifier;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  * Finding missed CRUD checks for SOQL and DML operations.

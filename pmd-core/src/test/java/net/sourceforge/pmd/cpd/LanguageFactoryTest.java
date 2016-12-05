@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
 public class LanguageFactoryTest {
 
     @Test

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -20,16 +21,16 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 
 /**
- * Base class for directives which do input operations
- * (e.g. <code>#include()</code>, <code>#parse()</code>, etc.).
+ * Base class for directives which do input operations (e.g.
+ * <code>#include()</code>, <code>#parse()</code>, etc.).
  *
  * @author <a href="mailto:dlr@finemaltcoding.com">Daniel Rall</a>
  * @since 1.4
  */
-public abstract class InputBase extends Directive
-{
+public abstract class InputBase extends Directive {
     /**
      * Return name of this directive.
+     * 
      * @return The name of this directive.
      */
     public abstract String getName();

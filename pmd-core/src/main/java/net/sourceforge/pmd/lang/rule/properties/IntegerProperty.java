@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a datatype that supports single Integer property values within an
  * upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class IntegerProperty extends AbstractNumericProperty<Integer> {
@@ -19,6 +20,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<IntegerProperty>(
             Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public IntegerProperty createWith(Map<String, String> valuesById) {
             final String[] minMax = minMaxFrom(valuesById);
             return new IntegerProperty(nameIn(valuesById), descriptionIn(valuesById), Integer.valueOf(minMax[0]),
@@ -29,13 +31,19 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     /**
      * Constructor for IntegerProperty that limits itself to a single value
      * within the specified limits.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param min Integer
-     * @param max Integer
-     * @param theDefault Integer
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            Integer
+     * @param max
+     *            Integer
+     * @param theDefault
+     *            Integer
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
@@ -47,12 +55,17 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      * Constructor for IntegerProperty that limits itself to a single value
      * within the specified limits. Converts string arguments into the Float
      * values.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param minStr String
-     * @param maxStr String
-     * @param defaultStr String
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param minStr
+     *            String
+     * @param maxStr
+     *            String
+     * @param defaultStr
+     *            String
      * @param theUIOrder
      * @throws IllegalArgumentException
      */
@@ -62,7 +75,8 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
     /**
-     * @param numberString String
+     * @param numberString
+     *            String
      * @return Integer
      */
     public static Integer intFrom(String numberString) {
@@ -73,14 +87,17 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Integer> type() {
         return Integer.class;
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return intFrom(value);
     }

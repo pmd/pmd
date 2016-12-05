@@ -42,6 +42,7 @@
 *   [#134](https://github.com/pmd/pmd/pull/134): \[java] Symbol table can now handle inner classes
 *   [#135](https://github.com/pmd/pmd/pull/135): \[apex] New ruleset for Apex security
 *   [#137](https://github.com/pmd/pmd/pull/137): \[apex] Adjusted remediation points
+*   [#138](https://github.com/pmd/pmd/pull/138): \[java] Make ClasspathClassLoader parallel capable
 *   [#146](https://github.com/pmd/pmd/pull/146): \[apex] Detection of missing Apex CRUD checks for SOQL/DML operations
 *   [#147](https://github.com/pmd/pmd/pull/147): \[apex] Adding XSS detection to return statements
 *   [#148](https://github.com/pmd/pmd/pull/148): \[apex] Improving detection of SOQL injection
@@ -57,6 +58,9 @@
     *   [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
 *   java-imports
     *   [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
+*   java-logging-java
+    *   [#1541](https://sourceforge.net/p/pmd/bugs/1541/): \[java] InvalidSlf4jMessageFormat: False positive with placeholder and exception
+    *   [#1551](https://sourceforge.net/p/pmd/bugs/1551/): \[java] InvalidSlf4jMessageFormat: fails with NPE
 *   XML
     *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
 *   psql

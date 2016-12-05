@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 /*
@@ -23,7 +24,8 @@ package net.sourceforge.pmd.lang.vm.ast;
  * Handles number division of nodes<br>
  * <br>
  * 
- * Please look at the Parser.jjt file which is what controls the generation of this class.
+ * Please look at the Parser.jjt file which is what controls the generation of
+ * this class.
  * 
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
  * @author <a href="mailto:pero@antaramusic.de">Peter Romianowski</a>
@@ -49,6 +51,6 @@ public class ASTDivNode extends ASTMathNode {
 
     /** Accept the visitor. **/
     public Object jjtAccept(VmParserVisitor visitor, Object data) {
-      return visitor.visit(this, data);
+        return visitor.visit(this, data);
     }
 }

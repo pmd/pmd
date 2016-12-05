@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -38,12 +39,14 @@ public class ImmutableFieldRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(VariableNameDeclaration.class);
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
         List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
-        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration field = entry.getKey();
             AccessNode accessNodeParent = field.getAccessNodeParent();
-            if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal() || accessNodeParent.isVolatile()) {
+            if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal()
+                    || accessNodeParent.isVolatile()) {
                 continue;
             }
 
@@ -59,15 +62,15 @@ public class ImmutableFieldRule extends AbstractJavaRule {
     }
 
     private boolean initializedWhenDeclared(VariableNameDeclaration field) {
-        return ((Node)field.getAccessNodeParent()).hasDescendantOfType(ASTVariableInitializer.class);
+        return ((Node) field.getAccessNodeParent()).hasDescendantOfType(ASTVariableInitializer.class);
     }
 
     private int initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
         int result = MUTABLE;
         int methodInitCount = 0;
         Set<Node> consSet = new HashSet<>();
-        for (NameOccurrence occ: usages) {
-            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
+        for (NameOccurrence occ : usages) {
+            JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
             if (jocc.isOnLeftHandSide() || jocc.isSelfAssignment()) {
                 Node node = jocc.getLocation();
                 ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
@@ -75,11 +78,13 @@ public class ImmutableFieldRule extends AbstractJavaRule {
                     if (inLoopOrTry(node)) {
                         continue;
                     }
-                    //Check for assigns in if-statements, which can depend on constructor
-                    //args or other runtime knowledge and can be a valid reason to instantiate
-                    //in one constructor only
+                    // Check for assigns in if-statements, which can depend on
+                    // constructor
+                    // args or other runtime knowledge and can be a valid reason
+                    // to instantiate
+                    // in one constructor only
                     if (node.getFirstParentOfType(ASTIfStatement.class) != null) {
-                    	methodInitCount++;
+                        methodInitCount++;
                     }
                     if (inAnonymousInnerClass(node)) {
                         methodInitCount++;
@@ -105,10 +110,10 @@ public class ImmutableFieldRule extends AbstractJavaRule {
     }
 
     private boolean inLoopOrTry(Node node) {
-        return node.getFirstParentOfType(ASTTryStatement.class) != null ||
-                node.getFirstParentOfType(ASTForStatement.class) != null ||
-                node.getFirstParentOfType(ASTWhileStatement.class) != null ||
-                node.getFirstParentOfType(ASTDoStatement.class) != null;
+        return node.getFirstParentOfType(ASTTryStatement.class) != null
+                || node.getFirstParentOfType(ASTForStatement.class) != null
+                || node.getFirstParentOfType(ASTWhileStatement.class) != null
+                || node.getFirstParentOfType(ASTDoStatement.class) != null;
     }
 
     private boolean inAnonymousInnerClass(Node node) {
@@ -118,8 +123,8 @@ public class ImmutableFieldRule extends AbstractJavaRule {
 
     private List<ASTConstructorDeclaration> findAllConstructors(ASTClassOrInterfaceDeclaration node) {
         List<ASTConstructorDeclaration> cons = new ArrayList<>();
-        node.getFirstChildOfType(ASTClassOrInterfaceBody.class)
-            .findDescendantsOfType(ASTConstructorDeclaration.class, cons, false);
+        node.getFirstChildOfType(ASTClassOrInterfaceBody.class).findDescendantsOfType(ASTConstructorDeclaration.class,
+                cons, false);
         return cons;
     }
 }

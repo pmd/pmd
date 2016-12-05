@@ -14,7 +14,6 @@ public class ASTElExpression extends AbstractJspNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

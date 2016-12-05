@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.logging;
 
 import java.util.List;
@@ -11,37 +12,35 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
 public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
 
-	private static final String GUARD_METHOD_NAME = "isLoggable";
+    private static final String GUARD_METHOD_NAME = "isLoggable";
 
-	private static String extendedXPath = "//PrimaryPrefix[ends-with(Name/@Image, '.log')]\n" + 
-	        "[following-sibling::PrimarySuffix\n" + 
-	        "    [ends-with(.//PrimaryPrefix/Name/@Image, 'LOG_LEVEL_UPPERCASE')]\n" + 
-	        "    [count(../descendant::AdditiveExpression) > 0]\n" + 
-	        "]\n" + 
-	        "[count(ancestor::IfStatement/Expression/descendant::PrimaryExpression\n" + 
-	        "    [ends-with(descendant::PrimaryPrefix[1]/Name/@Image,'GUARD')]) = 0\n" + 
-	        "or\n" + 
-	        "count(ancestor::IfStatement/Expression/descendant::PrimaryExpression\n" + 
-	        "    [ends-with(descendant::PrimaryPrefix[2]/Name/@Image,'LOG_LEVEL_UPPERCASE')]) = 0]";
-	
-	@Override
-	public Object visit(ASTCompilationUnit unit, Object data) {
-	    if (isSlf4jOrLog4jImported(unit)) {
-	        return data;
-	    }
+    private static String extendedXPath = "//PrimaryPrefix[ends-with(Name/@Image, '.log')]\n"
+            + "[following-sibling::PrimarySuffix\n"
+            + "    [ends-with(.//PrimaryPrefix/Name/@Image, 'LOG_LEVEL_UPPERCASE')]\n"
+            + "    [count(../descendant::AdditiveExpression) > 0]\n" + "]\n"
+            + "[count(ancestor::IfStatement/Expression/descendant::PrimaryExpression\n"
+            + "    [ends-with(descendant::PrimaryPrefix[1]/Name/@Image,'GUARD')]) = 0\n" + "or\n"
+            + "count(ancestor::IfStatement/Expression/descendant::PrimaryExpression\n"
+            + "    [ends-with(descendant::PrimaryPrefix[2]/Name/@Image,'LOG_LEVEL_UPPERCASE')]) = 0]";
 
-	    String[] logLevels = getProperty(LOG_LEVELS);
-	    String[] guardMethods = getProperty(GUARD_METHODS);
+    @Override
+    public Object visit(ASTCompilationUnit unit, Object data) {
+        if (isSlf4jOrLog4jImported(unit)) {
+            return data;
+        }
+
+        String[] logLevels = getProperty(LOG_LEVELS);
+        String[] guardMethods = getProperty(GUARD_METHODS);
 
         if (super.guardStmtByLogLevel.isEmpty() && logLevels.length > 0 && guardMethods.length > 0) {
             configureGuards(logLevels, guardMethods);
-        } else if ( super.guardStmtByLogLevel.isEmpty() ) {
+        } else if (super.guardStmtByLogLevel.isEmpty()) {
             configureDefaultGuards();
         }
 
         findViolationForEachLogStatement(unit, data, extendedXPath);
-		return super.visit(unit,data);
-	}
+        return super.visit(unit, data);
+    }
 
     private boolean isSlf4jOrLog4jImported(ASTCompilationUnit unit) {
         List<ASTImportDeclaration> imports = unit.findChildrenOfType(ASTImportDeclaration.class);
@@ -76,7 +75,7 @@ public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
         super.guardStmtByLogLevel.put(formatLogLevelString(Level.SEVERE), GUARD_METHOD_NAME);
     }
 
-	private String formatLogLevelString(Level logLevel) {
-		return "." + logLevel.toString().toLowerCase();
-	}
+    private String formatLogLevelString(Level logLevel) {
+        return "." + logLevel.toString().toLowerCase();
+    }
 }

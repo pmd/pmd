@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -16,9 +20,5 @@ public class ASTMethodDeclarationTest {
         md.jjtAddChild(de, 0);
 
         assertEquals("foo", md.getMethodName());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ASTMethodDeclarationTest.class);
     }
 }

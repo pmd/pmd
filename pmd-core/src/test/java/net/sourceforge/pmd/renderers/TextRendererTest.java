@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
@@ -28,9 +32,5 @@ public class TextRendererTest extends AbstractRendererTst {
     @Override
     public String getExpectedError(ProcessingError error) {
         return "file\t-\tError" + PMD.EOL;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TextRendererTest.class);
     }
 }

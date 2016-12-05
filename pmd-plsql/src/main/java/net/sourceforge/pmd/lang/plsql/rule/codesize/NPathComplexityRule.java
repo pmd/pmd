@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import java.util.ArrayList;
@@ -435,6 +436,6 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
     @Override
     public Object[] getViolationParameters(DataPoint point) {
         return new String[] { ((ExecutableCode) point.getNode()).getMethodName(),
-                String.valueOf((int) point.getScore()) };
+            String.valueOf((int) point.getScore()), };
     }
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.xml.rule;
 
 import java.util.List;
@@ -19,8 +20,8 @@ import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 /**
  * This is a base class for XML Java bases rules. Subclasses should override
- * {@link #visit(XmlNode, RuleContext)} and can call <code>super</code>
- * to visit children.
+ * {@link #visit(XmlNode, RuleContext)} and can call <code>super</code> to visit
+ * children.
  */
 public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
 
@@ -33,46 +34,46 @@ public class AbstractXmlRule extends AbstractRule implements ImmutableLanguage {
     public static final BooleanProperty XINCLUDE_AWARE_DESCRIPTOR = XmlParserOptions.XINCLUDE_AWARE_DESCRIPTOR;
 
     public AbstractXmlRule() {
-	super.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
-	defineProperties();
+        super.setLanguage(LanguageRegistry.getLanguage(XmlLanguageModule.NAME));
+        defineProperties();
     }
-    
+
     protected AbstractXmlRule(Language language) {
-	super.setLanguage(language);
-	defineProperties();
+        super.setLanguage(language);
+        defineProperties();
     }
-    
+
     private void defineProperties() {
-	definePropertyDescriptor(COALESCING_DESCRIPTOR);
-	definePropertyDescriptor(EXPAND_ENTITY_REFERENCES_DESCRIPTOR);
-	definePropertyDescriptor(IGNORING_COMMENTS_DESCRIPTOR);
-	definePropertyDescriptor(IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR);
-	definePropertyDescriptor(NAMESPACE_AWARE_DESCRIPTOR);
-	definePropertyDescriptor(VALIDATING_DESCRIPTOR);
-	definePropertyDescriptor(XINCLUDE_AWARE_DESCRIPTOR);
+        definePropertyDescriptor(COALESCING_DESCRIPTOR);
+        definePropertyDescriptor(EXPAND_ENTITY_REFERENCES_DESCRIPTOR);
+        definePropertyDescriptor(IGNORING_COMMENTS_DESCRIPTOR);
+        definePropertyDescriptor(IGNORING_ELEMENT_CONTENT_WHITESPACE_DESCRIPTOR);
+        definePropertyDescriptor(NAMESPACE_AWARE_DESCRIPTOR);
+        definePropertyDescriptor(VALIDATING_DESCRIPTOR);
+        definePropertyDescriptor(XINCLUDE_AWARE_DESCRIPTOR);
     }
 
     @Override
     public ParserOptions getParserOptions() {
-	return new XmlParserOptions(this);
+        return new XmlParserOptions(this);
     }
 
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
-	visitAll(nodes, ctx);
+        visitAll(nodes, ctx);
     }
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-	for (Object element : nodes) {
-	    XmlNode node = (XmlNode) element;
-	    visit(node, ctx);
-	}
+        for (Object element : nodes) {
+            XmlNode node = (XmlNode) element;
+            visit(node, ctx);
+        }
     }
 
     protected void visit(XmlNode node, RuleContext ctx) {
-	final int numChildren = node.jjtGetNumChildren();
-	for (int i = 0; i < numChildren; i++) {
-	    XmlNode child = (XmlNode) node.jjtGetChild(i);
-	    visit(child, ctx);
-	}
+        final int numChildren = node.jjtGetNumChildren();
+        for (int i = 0; i < numChildren; i++) {
+            XmlNode child = (XmlNode) node.jjtGetChild(i);
+            visit(child, ctx);
+        }
     }
 }

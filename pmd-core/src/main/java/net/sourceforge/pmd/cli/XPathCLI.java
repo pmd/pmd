@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli;
 
 import java.io.File;
@@ -23,13 +24,10 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * To use this, do this:
  *
- * $ cat ~/tmp/Test.java
- * package foo;
- * public class Test {
- *  private int x;
- * }
- * $ java net.sourceforge.pmd.util.XPathTest -xpath "//FieldDeclaration" -filename "/home/tom/tmp/Test.java"
- * Match at line 3 column 11; package name 'foo'; variable name 'x'
+ * $ cat ~/tmp/Test.java package foo; public class Test { private int x; } $
+ * java net.sourceforge.pmd.util.XPathTest -xpath "//FieldDeclaration" -filename
+ * "/home/tom/tmp/Test.java" Match at line 3 column 11; package name 'foo';
+ * variable name 'x'
  */
 public class XPathCLI {
 
@@ -39,13 +37,14 @@ public class XPathCLI {
         if (args.length != 4) {
             System.err.println("Wrong arguments.\n");
             System.err.println("Example:");
-            System.err.println("java " + XPathCLI.class.getName() + " -xpath \"//FieldDeclaration\" -filename \"/home/user/Test.java\"");
+            System.err.println("java " + XPathCLI.class.getName()
+                    + " -xpath \"//FieldDeclaration\" -filename \"/home/user/Test.java\"");
             System.exit(1);
         }
 
         String xpath = args[0].equals("-xpath") ? args[1] : args[3];
         String filename = args[0].equals("-file") ? args[1] : args[3];
-        
+
         Rule rule = new XPathRule(xpath);
         rule.setMessage("Got one!");
         rule.setLanguage(LANGUAGE);
@@ -56,14 +55,13 @@ public class XPathCLI {
 
         PMDConfiguration config = new PMDConfiguration();
         config.setDefaultLanguageVersion(LANGUAGE.getDefaultVersion());
-        
+
         new SourceCodeProcessor(config).processSourceCode(new FileReader(filename), new RuleSets(ruleSet), ctx);
 
         for (Iterator<RuleViolation> i = ctx.getReport().iterator(); i.hasNext();) {
             RuleViolation rv = i.next();
-            StringBuilder sb = new StringBuilder(60)
-                .append("Match at line ").append(rv.getBeginLine())
-                .append(" column ").append(rv.getBeginColumn());
+            StringBuilder sb = new StringBuilder(60).append("Match at line ").append(rv.getBeginLine())
+                    .append(" column ").append(rv.getBeginColumn());
             if (StringUtil.isNotEmpty(rv.getPackageName())) {
                 sb.append("; package name '" + rv.getPackageName() + "'");
             }

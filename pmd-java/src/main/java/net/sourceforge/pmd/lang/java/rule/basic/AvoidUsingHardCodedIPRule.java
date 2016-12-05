@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -112,7 +114,8 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         }
     }
 
-    protected boolean isIPv6(final char firstChar, String s, final boolean checkIPv6, final boolean checkIPv4MappedIPv6) {
+    protected boolean isIPv6(final char firstChar, String s, final boolean checkIPv6,
+            final boolean checkIPv4MappedIPv6) {
         // Quick check before using Regular Expression
         // 1) At least 3 characters
         // 2) 1st must be a Hex number or a : (colon)

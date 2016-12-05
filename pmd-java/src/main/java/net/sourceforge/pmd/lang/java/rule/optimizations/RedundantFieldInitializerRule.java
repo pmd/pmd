@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import java.math.BigInteger;
@@ -68,7 +69,8 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
                             }
                         } else {
                             // Primitive type
-                            if (literal.jjtGetNumChildren() == 1 && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                            if (literal.jjtGetNumChildren() == 1
+                                    && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
                                 // boolean type
                                 ASTBooleanLiteral booleanLiteral = (ASTBooleanLiteral) literal.jjtGetChild(0);
                                 if (!booleanLiteral.isTrue()) {

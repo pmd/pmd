@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.xml;
 
 import static org.junit.Assert.assertNotNull;
@@ -30,58 +31,33 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class XmlParserTest {
 
-    private static final String XML_TEST =
-            "<?xml version=\"1.0\"?>\n" +
-            "<!DOCTYPE rootElement\n" +
-            "[\n" +
-            "<!ELEMENT rootElement (child1,child2)>\n" +
-            "<!ELEMENT child1 (#PCDATA)>\n" +
-            "<!ATTLIST child1 test CDATA #REQUIRED>\n" +
-            "<!ELEMENT child2 (#PCDATA)>\n" +
-            "\n" +
-            "<!ENTITY pmd \"Copyright: PMD\">\n" +
-            "]\n" +
-            ">\n" +
-            "<rootElement>\n" +
-            "    <!-- that's a comment -->\n" +
-            "    <child1 test=\"1\">entity: &pmd;\n" +
-            "    </child1>\n" +
-            "    <child2>\n" +
-            "      <![CDATA[ cdata section ]]>\n" +
-            "    </child2>\n" +
-            "</rootElement>";
+    private static final String XML_TEST = "<?xml version=\"1.0\"?>\n" + "<!DOCTYPE rootElement\n" + "[\n"
+            + "<!ELEMENT rootElement (child1,child2)>\n" + "<!ELEMENT child1 (#PCDATA)>\n"
+            + "<!ATTLIST child1 test CDATA #REQUIRED>\n" + "<!ELEMENT child2 (#PCDATA)>\n" + "\n"
+            + "<!ENTITY pmd \"Copyright: PMD\">\n" + "]\n" + ">\n" + "<rootElement>\n"
+            + "    <!-- that's a comment -->\n" + "    <child1 test=\"1\">entity: &pmd;\n" + "    </child1>\n"
+            + "    <child2>\n" + "      <![CDATA[ cdata section ]]>\n" + "    </child2>\n" + "</rootElement>";
 
-    private static final String XML_NAMESPACE_TEST =
-            "<?xml version=\"1.0\"?>\n" + 
-            "<pmd:rootElement xmlns:pmd=\"http://pmd.sf.net\">\n" + 
-            "    <!-- that's a comment -->\n" + 
-            "    <pmd:child1 test=\"1\">entity: &amp;\n" + 
-            "    </pmd:child1>\n" + 
-            "    <pmd:child2>\n" + 
-            "      <![CDATA[ cdata section ]]>\n" + 
-            "    </pmd:child2>\n" + 
-            "</pmd:rootElement>";
+    private static final String XML_NAMESPACE_TEST = "<?xml version=\"1.0\"?>\n"
+            + "<pmd:rootElement xmlns:pmd=\"http://pmd.sf.net\">\n" + "    <!-- that's a comment -->\n"
+            + "    <pmd:child1 test=\"1\">entity: &amp;\n" + "    </pmd:child1>\n" + "    <pmd:child2>\n"
+            + "      <![CDATA[ cdata section ]]>\n" + "    </pmd:child2>\n" + "</pmd:rootElement>";
 
-    private static final String XML_INVALID_WITH_DTD =
-            "<?xml version=\"1.0\"?>\n" +
-            "<!DOCTYPE rootElement\n" +
-            "[\n" +
-            "<!ELEMENT rootElement (child)>\n" +
-            "<!ELEMENT child (#PCDATA)>\n" +
-            "]\n" +
-            ">\n" +
-            "<rootElement>\n" +
-            "  <invalidChild></invalidChild>\n" +
-            "</rootElement>";
+    private static final String XML_INVALID_WITH_DTD = "<?xml version=\"1.0\"?>\n" + "<!DOCTYPE rootElement\n" + "[\n"
+            + "<!ELEMENT rootElement (child)>\n" + "<!ELEMENT child (#PCDATA)>\n" + "]\n" + ">\n" + "<rootElement>\n"
+            + "  <invalidChild></invalidChild>\n" + "</rootElement>";
 
     /**
-     * See bug #1054:
-     * XML Rules ever report a line -1 and not the line/column where the error occurs
-     * @throws Exception any error
+     * See bug #1054: XML Rules ever report a line -1 and not the line/column
+     * where the error occurs
+     * 
+     * @throws Exception
+     *             any error
      */
     @Test
     public void testLineNumbers() throws Exception {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
         Node document = parser.parse(null, new StringReader(XML_TEST));
 
@@ -124,7 +100,8 @@ public class XmlParserTest {
      */
     @Test
     public void testDefaultParsing() {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
         Node document = parser.parse(null, new StringReader(XML_TEST));
 
@@ -153,7 +130,8 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingCoalescingEnabled() {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setCoalescing(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -178,11 +156,13 @@ public class XmlParserTest {
     }
 
     /**
-     * Verifies the parsing behavior of the XML parser if entities are not expanded.
+     * Verifies the parsing behavior of the XML parser if entities are not
+     * expanded.
      */
     @Test
     public void testParsingDoNotExpandEntities() {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setExpandEntityReferences(false);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -215,7 +195,8 @@ public class XmlParserTest {
      */
     @Test
     public void testParsingIgnoreComments() {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setIgnoringComments(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -240,11 +221,13 @@ public class XmlParserTest {
     }
 
     /**
-     * Verifies the parsing behavior of the XML parser if ignoring whitespaces in elements.
+     * Verifies the parsing behavior of the XML parser if ignoring whitespaces
+     * in elements.
      */
     @Test
     public void testParsingIgnoreElementContentWhitespace() {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setIgnoringElementContentWhitespace(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -271,17 +254,18 @@ public class XmlParserTest {
      */
     @Test
     public void testDefaultParsingNamespaces() {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         Parser parser = xmlVersionHandler.getParser(xmlVersionHandler.getDefaultParserOptions());
         Node document = parser.parse(null, new StringReader(XML_NAMESPACE_TEST));
 
         assertNode(document, "document", 1);
         Node rootElement = document.jjtGetChild(0);
         assertNode(rootElement, "pmd:rootElement", 7, "xmlns:pmd", "http://pmd.sf.net");
-        Assert.assertEquals("http://pmd.sf.net", ((XmlNode)rootElement).getNode().getNamespaceURI());
-        Assert.assertEquals("pmd", ((XmlNode)rootElement).getNode().getPrefix());
-        Assert.assertEquals("rootElement", ((XmlNode)rootElement).getNode().getLocalName());
-        Assert.assertEquals("pmd:rootElement", ((XmlNode)rootElement).getNode().getNodeName());
+        Assert.assertEquals("http://pmd.sf.net", ((XmlNode) rootElement).getNode().getNamespaceURI());
+        Assert.assertEquals("pmd", ((XmlNode) rootElement).getNode().getPrefix());
+        Assert.assertEquals("rootElement", ((XmlNode) rootElement).getNode().getLocalName());
+        Assert.assertEquals("pmd:rootElement", ((XmlNode) rootElement).getNode().getNodeName());
         assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
         assertNode(rootElement.jjtGetChild(1), "comment", 0);
         assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
@@ -298,11 +282,13 @@ public class XmlParserTest {
     }
 
     /**
-     * Verifies the default parsing behavior of the XML parser with namespaces but not namespace aware.
+     * Verifies the default parsing behavior of the XML parser with namespaces
+     * but not namespace aware.
      */
     @Test
     public void testParsingNotNamespaceAware() {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setNamespaceAware(false);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -311,10 +297,10 @@ public class XmlParserTest {
         assertNode(document, "document", 1);
         Node rootElement = document.jjtGetChild(0);
         assertNode(rootElement, "pmd:rootElement", 7, "xmlns:pmd", "http://pmd.sf.net");
-        Assert.assertNull(((XmlNode)rootElement).getNode().getNamespaceURI());
-        Assert.assertNull(((XmlNode)rootElement).getNode().getPrefix());
-        Assert.assertNull(((XmlNode)rootElement).getNode().getLocalName());
-        Assert.assertEquals("pmd:rootElement", ((XmlNode)rootElement).getNode().getNodeName());
+        Assert.assertNull(((XmlNode) rootElement).getNode().getNamespaceURI());
+        Assert.assertNull(((XmlNode) rootElement).getNode().getPrefix());
+        Assert.assertNull(((XmlNode) rootElement).getNode().getLocalName());
+        Assert.assertEquals("pmd:rootElement", ((XmlNode) rootElement).getNode().getNodeName());
         assertTextNode(rootElement.jjtGetChild(0), "\\n    ");
         assertNode(rootElement.jjtGetChild(1), "comment", 0);
         assertTextNode(rootElement.jjtGetChild(2), "\\n    ");
@@ -332,11 +318,14 @@ public class XmlParserTest {
 
     /**
      * Verifies the parsing behavior of the XML parser with validation on.
-     * @throws UnsupportedEncodingException error
+     * 
+     * @throws UnsupportedEncodingException
+     *             error
      */
     @Test
     public void testParsingWithValidation() throws UnsupportedEncodingException {
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
         XmlParserOptions parserOptions = new XmlParserOptions();
         parserOptions.setValidating(true);
         Parser parser = xmlVersionHandler.getParser(parserOptions);
@@ -362,8 +351,9 @@ public class XmlParserTest {
     @Test
     public void testWithProcessingInstructions() {
         String xml = "<?xml version=\"1.0\"?><?mypi?><!DOCTYPE testDoc [<!ENTITY myentity \"e\">]><!--Comment--><foo abc=\"abc\"><bar>TEXT</bar><![CDATA[cdata!]]>&gt;&myentity;&lt;</foo>";
-        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
-        XmlParserOptions options = (XmlParserOptions)xmlVersionHandler.getDefaultParserOptions();
+        LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
+        XmlParserOptions options = (XmlParserOptions) xmlVersionHandler.getDefaultParserOptions();
         options.setExpandEntityReferences(false);
         Parser parser = xmlVersionHandler.getParser(options);
         Node document = parser.parse(null, new StringReader(xml));
@@ -374,7 +364,7 @@ public class XmlParserTest {
 
     private Node parseXml(String xml) {
         LanguageVersionHandler xmlVersionHandler = LanguageRegistry.getLanguage(XmlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
-        XmlParserOptions options = (XmlParserOptions)xmlVersionHandler.getDefaultParserOptions();
+        XmlParserOptions options = (XmlParserOptions) xmlVersionHandler.getDefaultParserOptions();
         Parser parser = xmlVersionHandler.getParser(options);
         Node document = parser.parse(null, new StringReader(xml));
         return document;
@@ -389,15 +379,21 @@ public class XmlParserTest {
 
     /**
      * Asserts a single node inclusive attributes.
-     * @param node the node
-     * @param toString the to String representation to expect
-     * @param childs number of childs
-     * @param atts attributes - each object pair forms one attribute: first name, then value.
+     * 
+     * @param node
+     *            the node
+     * @param toString
+     *            the to String representation to expect
+     * @param childs
+     *            number of childs
+     * @param atts
+     *            attributes - each object pair forms one attribute: first name,
+     *            then value.
      */
-    private void assertNode(Node node, String toString, int childs, Object ... atts) {
+    private void assertNode(Node node, String toString, int childs, Object... atts) {
         Assert.assertEquals(toString, String.valueOf(node));
         Assert.assertEquals(childs, node.jjtGetNumChildren());
-        Iterator<Attribute> attributeIterator = ((XmlNode)node).getAttributeIterator();
+        Iterator<Attribute> attributeIterator = ((XmlNode) node).getAttributeIterator();
         if (atts != null) {
             for (int i = 0; i < atts.length; i += 2) {
                 Assert.assertTrue(attributeIterator.hasNext());
@@ -413,8 +409,11 @@ public class XmlParserTest {
 
     /**
      * Assert a single text node.
-     * @param node the node to check
-     * @param text the text to expect
+     * 
+     * @param node
+     *            the node to check
+     * @param text
+     *            the text to expect
      */
     private void assertTextNode(Node node, String text) {
         assertTextNode(node, text, "text");
@@ -423,15 +422,18 @@ public class XmlParserTest {
     /**
      * Assert a single text node.
      *
-     * @param node the node to check
-     * @param text the text to expect
-     * @param toString the to string representation
+     * @param node
+     *            the node to check
+     * @param text
+     *            the text to expect
+     * @param toString
+     *            the to string representation
      */
     private void assertTextNode(Node node, String text, String toString) {
         Assert.assertEquals(toString, String.valueOf(node));
         Assert.assertEquals(0, node.jjtGetNumChildren());
         Assert.assertEquals(text, StringUtil.escapeWhitespace(node.getImage()));
-        Iterator<Attribute> attributeIterator = ((XmlNode)node).getAttributeIterator();
+        Iterator<Attribute> attributeIterator = ((XmlNode) node).getAttributeIterator();
         Assert.assertTrue(attributeIterator.hasNext());
         Attribute attribute = attributeIterator.next();
         Assert.assertEquals("Image", attribute.getName());
@@ -442,11 +444,16 @@ public class XmlParserTest {
     /**
      * Assert the line numbers of a node.
      *
-     * @param node the node
-     * @param beginLine the begin line
-     * @param beginColumn the begin column
-     * @param endLine the end line
-     * @param endColumn the end column
+     * @param node
+     *            the node
+     * @param beginLine
+     *            the begin line
+     * @param beginColumn
+     *            the begin column
+     * @param endLine
+     *            the end line
+     * @param endColumn
+     *            the end column
      */
     private void assertLineNumbers(Node node, int beginLine, int beginColumn, int endLine, int endColumn) {
         Assert.assertEquals("begin line wrong", beginLine, node.getBeginLine());

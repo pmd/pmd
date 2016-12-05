@@ -1,8 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.cpd;
 
+package net.sourceforge.pmd.cpd;
 
 /**
  * Defines the Language module for Python
@@ -10,7 +10,8 @@ package net.sourceforge.pmd.cpd;
 public class PythonLanguage extends AbstractLanguage {
 
     /**
-     * Creates a new instance of {@link PythonLanguage} with the default extensions for python files.
+     * Creates a new instance of {@link PythonLanguage} with the default
+     * extensions for python files.
      */
     public PythonLanguage() {
         super("Python", "python", new PythonTokenizer(), ".py");

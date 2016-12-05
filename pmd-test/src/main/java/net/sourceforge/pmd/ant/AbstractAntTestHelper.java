@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant;
 
 import static java.io.File.separator;
@@ -15,8 +16,8 @@ import org.junit.Rule;
 
 /**
  * Quite an ugly classe, arguably useful for just 2 units test - nevertheless as
- * there is a workaround that must be shared by both tests (PMD and CPD's) I felt
- * compelled to move it to a single classes.
+ * there is a workaround that must be shared by both tests (PMD and CPD's) I
+ * felt compelled to move it to a single classes.
  *
  * @author Romain Pelisse <belaran@gmail.com>
  *

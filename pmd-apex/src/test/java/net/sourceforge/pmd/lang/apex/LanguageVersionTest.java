@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex;
 
 import java.util.Arrays;
@@ -19,9 +20,8 @@ public class LanguageVersionTest extends AbstractLanguageVersionTest {
     }
 
     @Parameters
-    public static Collection data() {
-        return Arrays.asList(new Object[][] {
-            {ApexLanguageModule.NAME, ApexLanguageModule.TERSE_NAME, "35", LanguageRegistry.getLanguage("Apex").getVersion("35")}
-        });
+    public static Collection<?> data() {
+        return Arrays.asList(new Object[][] { { ApexLanguageModule.NAME, ApexLanguageModule.TERSE_NAME, "35",
+            LanguageRegistry.getLanguage("Apex").getVersion("35"), }, });
     }
 }

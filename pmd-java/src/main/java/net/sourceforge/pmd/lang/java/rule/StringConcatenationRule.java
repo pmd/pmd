@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -21,7 +22,6 @@ public class StringConcatenationRule extends AbstractJavaRule {
         if (forLoopStmt == null) {
             return data;
         }
-
 
         return data;
     }

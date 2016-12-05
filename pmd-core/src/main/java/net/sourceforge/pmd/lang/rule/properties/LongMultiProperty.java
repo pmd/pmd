@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Defines a datatype that supports multiple Long property values within an
  * upper and lower boundary.
- * 
+ *
  * @author Brian Remedios
  */
 public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
@@ -19,6 +20,7 @@ public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<LongMultiProperty>(
             Long[].class, NUMBER_FIELD_TYPES_BY_KEY) {
 
+        @Override
         public LongMultiProperty createWith(Map<String, String> valuesById) {
             String[] minMax = minMaxFrom(valuesById);
             char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
@@ -30,13 +32,19 @@ public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
 
     /**
      * Constructor for LongProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param min Long
-     * @param max Long
-     * @param theDefaults Long[]
-     * @param theUIOrder float
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param min
+     *            Long
+     * @param max
+     *            Long
+     * @param theDefaults
+     *            Long[]
+     * @param theUIOrder
+     *            float
      * @throws IllegalArgumentException
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max, Long[] theDefaults,
@@ -48,24 +56,29 @@ public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Long[]> type() {
         return Long[].class;
     }
 
     /**
-     * @param value String
+     * @param value
+     *            String
      * @return Object
      */
+    @Override
     protected Object createFrom(String value) {
         return Long.valueOf(value);
     }
 
     /**
      * Returns an array of the correct type for the receiver.
-     * 
-     * @param size int
+     *
+     * @param size
+     *            int
      * @return Object[]
      */
+    @Override
     protected Object[] arrayFor(int size) {
         return new Long[size];
     }

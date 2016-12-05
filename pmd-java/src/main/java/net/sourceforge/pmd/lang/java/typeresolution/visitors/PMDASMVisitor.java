@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution.visitors;
 
 import java.util.ArrayList;
@@ -62,7 +63,8 @@ public class PMDASMVisitor extends ClassVisitor {
         packages.put(className, name);
         n = className.indexOf('$');
         if (n > -1) {
-            //TODO I don't think the first one, with Class$Inner is needed - come back and check
+            // TODO I don't think the first one, with Class$Inner is needed -
+            // come back and check
             packages.put(className.substring(n + 1), name);
             packages.put(className.replace('$', '.'), name);
         }
@@ -84,7 +86,7 @@ public class PMDASMVisitor extends ClassVisitor {
         }
     }
 
-	/* Start ClassVisitor implementations */
+    /* Start ClassVisitor implementations */
 
     @Override
     public void visit(int version, int access, String name, String sig, String superName, String[] interfaces) {
@@ -131,7 +133,8 @@ public class PMDASMVisitor extends ClassVisitor {
     @Override
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
         if (!this.outerName.replace('.', '/').equals(outerName)) {
-            // do not consider the inner class if it is not a member of our outer class
+            // do not consider the inner class if it is not a member of our
+            // outer class
             return;
         }
 
@@ -166,15 +169,15 @@ public class PMDASMVisitor extends ClassVisitor {
 
     private void addType(Type t) {
         switch (t.getSort()) {
-            case Type.ARRAY:
-                addType(t.getElementType());
-                break;
-            case Type.OBJECT:
-                parseClassName(t.getClassName().replace('.', '/'));
-                break;
-            default:
-                // Do nothing
-                break;
+        case Type.ARRAY:
+            addType(t.getElementType());
+            break;
+        case Type.OBJECT:
+            parseClassName(t.getClassName().replace('.', '/'));
+            break;
+        default:
+            // Do nothing
+            break;
         }
     }
 
@@ -182,15 +185,15 @@ public class PMDASMVisitor extends ClassVisitor {
     public void visitAttribute(Attribute attr) {
     }
 
-	/*
+    /*
      * Start visitors
-	 */
+     */
 
     private static class PMDFieldVisitor extends FieldVisitor {
 
         private PMDASMVisitor parent;
 
-        public PMDFieldVisitor(PMDASMVisitor visitor) {
+        PMDFieldVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             parent = visitor;
         }
@@ -213,7 +216,7 @@ public class PMDASMVisitor extends ClassVisitor {
     private static class PMDAnnotationVisitor extends AnnotationVisitor {
         private PMDASMVisitor parent;
 
-        public PMDAnnotationVisitor(PMDASMVisitor visitor) {
+        PMDAnnotationVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             parent = visitor;
         }
@@ -249,7 +252,7 @@ public class PMDASMVisitor extends ClassVisitor {
     private static class PMDSignatureVisitor extends SignatureVisitor {
         private PMDASMVisitor parent;
 
-        public PMDSignatureVisitor(PMDASMVisitor visitor) {
+        PMDSignatureVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             this.parent = visitor;
         }
@@ -333,7 +336,7 @@ public class PMDASMVisitor extends ClassVisitor {
     private static class PMDMethodVisitor extends MethodVisitor {
         private PMDASMVisitor parent;
 
-        public PMDMethodVisitor(PMDASMVisitor visitor) {
+        PMDMethodVisitor(PMDASMVisitor visitor) {
             super(Opcodes.ASM5);
             parent = visitor;
         }
@@ -371,9 +374,9 @@ public class PMDASMVisitor extends ClassVisitor {
         }
 
         /**
-         * the constant to be loaded on the stack. This parameter must be a non null
-         * Integer, a Float, a Long, a Double a String (or a Type for .class
-         * constants, for classes whose version is 49.0 or more).
+         * the constant to be loaded on the stack. This parameter must be a non
+         * null Integer, a Float, a Long, a Double a String (or a Type for
+         * .class constants, for classes whose version is 49.0 or more).
          *
          * @see org.objectweb.asm.MethodVisitor#visitLdcInsn(java.lang.Object)
          */
