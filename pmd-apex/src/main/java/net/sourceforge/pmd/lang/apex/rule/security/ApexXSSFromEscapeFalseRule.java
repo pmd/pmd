@@ -27,20 +27,20 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
-    @Override
-    public Object visit(ASTUserClass node, Object data) {
-        if (Helper.isTestMethodOrClass(node)) {
-            return data;
-        }
+	@Override
+	public Object visit(ASTUserClass node, Object data) {
+		if (Helper.isTestMethodOrClass(node)) {
+			return data;
+		}
 
-        List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);
-        for (ASTMethodCallExpression methodCall : methodCalls) {
-            if (Helper.isMethodName(methodCall, ADD_ERROR)) {
-                validateBooleanParameter(methodCall, data);
-            }
-        }
-        return data;
-    }
+		List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);
+		for (ASTMethodCallExpression methodCall : methodCalls) {
+			if (Helper.isMethodName(methodCall, ADD_ERROR)) {
+				validateBooleanParameter(methodCall, data);
+			}
+		}
+		return data;
+	}
 
     private void validateBooleanParameter(ASTMethodCallExpression methodCall, Object data) {
         int numberOfChildren = methodCall.jjtGetNumChildren();
