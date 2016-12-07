@@ -19,11 +19,14 @@
 *   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
 *   [#130](https://github.com/pmd/pmd/pull/130); \[core] Reduce thread contention
 *   [#133](https://github.com/pmd/pmd/pull/133): \[java] UnnecessaryFullyQualifiedName can detect conflicts
+*   [#152](https://github.com/pmd/pmd/pull/152): \[java] fixes #1552 continue does not require break
 
 **Bugfixes:**
 
+*   java-design
+    *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
 *   java-imports
-    *    [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
+    *   [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
 *   XML
     *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
 *   psql
