@@ -41,6 +41,7 @@
 *   [#147](https://github.com/pmd/pmd/pull/147): \[apex] Adding XSS detection to return statements
 *   [#148](https://github.com/pmd/pmd/pull/148): \[apex] Improving detection of SOQL injection
 *   [#149](https://github.com/pmd/pmd/pull/149): \[apex] Whitelisting String.isEmpty and casting
+*   [#152](https://github.com/pmd/pmd/pull/152): \[java] fixes #1552 continue does not require break
 
 **Bugfixes:**
 
@@ -50,6 +51,8 @@
     *   [#1543](https://sourceforge.net/p/pmd/bugs/1543/): \[apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive
 *   Java
     *   [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
+*   java-design
+    *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
 *   java-imports
     *   [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
 *   java-logging-java
