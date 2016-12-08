@@ -1431,42 +1431,6 @@ public Foo() {
       </example>
     </rule>
 
-<rule name="AvoidConstantsInterface"
-   		language="java"
-      since="3.5"
-      message="An Interface should be used only to model a behaviour; consider converting this to a class."
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidConstantsInterface">
-      <description>
-An interface should be used only to characterize the external behaviour of an
-implementing class: using an interface as a container of constants is a poor 
-usage pattern and not recommended.
-      </description>
-      <priority>3</priority>
-      <properties>
-        <property name="xpath">
-        <value>
-    <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface="true"]
-    [
-     count(.//MethodDeclaration)=0
-     and
-     count(.//FieldDeclaration)>0
-    ]
-    ]]>
-        </value>
-        </property>
-      </properties>
-      <example>
-    <![CDATA[
-public interface ConstantsInterface {
-   public static final int CONSTANT1=0;
-   public static final String CONSTANT2="1";
-}
-    ]]>
-      </example>
-    </rule>
-
   <rule name="UnsynchronizedStaticDateFormatter"
       since="3.6"
       message="Static DateFormatter objects should be accessed in a synchronized manner"

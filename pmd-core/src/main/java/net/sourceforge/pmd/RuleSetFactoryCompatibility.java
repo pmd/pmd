@@ -61,6 +61,9 @@ public class RuleSetFactoryCompatibility {
         addFilterRuleMoved("java", "basic", "unnecessary", "UselessOperationOnImmutable");
         addFilterRuleMoved("java", "basic", "unnecessary", "UnusedNullCheckInEquals");
         addFilterRuleMoved("java", "basic", "unnecessary", "UselessParentheses");
+        
+        // PMD 5.6.0
+        addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {
