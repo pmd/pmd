@@ -26,98 +26,98 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  *
  */
 public class ApexInsecureEndpointRule extends AbstractApexRule {
-	private static final String SET_ENDPOINT = "setEndpoint";
-	private static final Pattern PATTERN = Pattern.compile("^http://.+?$", Pattern.CASE_INSENSITIVE);
+    private static final String SET_ENDPOINT = "setEndpoint";
+    private static final Pattern PATTERN = Pattern.compile("^http://.+?$", Pattern.CASE_INSENSITIVE);
 
-	private static final Set<String> httpEndpointStrings = new HashSet<>();
+    private static final Set<String> httpEndpointStrings = new HashSet<>();
 
-	public ApexInsecureEndpointRule() {
-		setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
-		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-	}
+    public ApexInsecureEndpointRule() {
+        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
+        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+    }
 
-	@Override
-	public Object visit(ASTAssignmentExpression node, Object data) {
-		findInsecureEndpoints(node, data);
-		return data;
-	}
+    @Override
+    public Object visit(ASTAssignmentExpression node, Object data) {
+        findInsecureEndpoints(node, data);
+        return data;
+    }
 
-	@Override
-	public Object visit(ASTVariableDeclaration node, Object data) {
-		findInsecureEndpoints(node, data);
-		return data;
-	}
+    @Override
+    public Object visit(ASTVariableDeclaration node, Object data) {
+        findInsecureEndpoints(node, data);
+        return data;
+    }
 
-	@Override
-	public Object visit(ASTFieldDeclaration node, Object data) {
-		findInsecureEndpoints(node, data);
-		return data;
-	}
+    @Override
+    public Object visit(ASTFieldDeclaration node, Object data) {
+        findInsecureEndpoints(node, data);
+        return data;
+    }
 
-	private void findInsecureEndpoints(AbstractApexNode<?> node, Object data) {
-		ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
-		findInnerInsecureEndpoints(node, variableNode);
+    private void findInsecureEndpoints(AbstractApexNode<?> node, Object data) {
+        ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
+        findInnerInsecureEndpoints(node, variableNode);
 
-		ASTBinaryExpression binaryNode = node.getFirstChildOfType(ASTBinaryExpression.class);
-		if (binaryNode != null) {
-			findInnerInsecureEndpoints(binaryNode, variableNode);
-		}
+        ASTBinaryExpression binaryNode = node.getFirstChildOfType(ASTBinaryExpression.class);
+        if (binaryNode != null) {
+            findInnerInsecureEndpoints(binaryNode, variableNode);
+        }
 
-	}
+    }
 
-	private void findInnerInsecureEndpoints(AbstractApexNode<?> node, ASTVariableExpression variableNode) {
-		ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
+    private void findInnerInsecureEndpoints(AbstractApexNode<?> node, ASTVariableExpression variableNode) {
+        ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
 
-		if (literalNode != null && variableNode != null) {
-			Object o = literalNode.getNode().getLiteral();
-			if (o instanceof String) {
-				String literal = (String) o;
-				if (PATTERN.matcher(literal).matches()) {
-					httpEndpointStrings.add(Helper.getFQVariableName(variableNode));
-				}
-			}
-		}
-	}
+        if (literalNode != null && variableNode != null) {
+            Object o = literalNode.getNode().getLiteral();
+            if (o instanceof String) {
+                String literal = (String) o;
+                if (PATTERN.matcher(literal).matches()) {
+                    httpEndpointStrings.add(Helper.getFQVariableName(variableNode));
+                }
+            }
+        }
+    }
 
-	@Override
-	public Object visit(ASTMethodCallExpression node, Object data) {
-		processInsecureEndpoint(node, data);
-		return data;
-	}
+    @Override
+    public Object visit(ASTMethodCallExpression node, Object data) {
+        processInsecureEndpoint(node, data);
+        return data;
+    }
 
-	private void processInsecureEndpoint(ASTMethodCallExpression node, Object data) {
-		if (!Helper.isMethodName(node, SET_ENDPOINT)) {
-			return;
-		}
+    private void processInsecureEndpoint(ASTMethodCallExpression node, Object data) {
+        if (!Helper.isMethodName(node, SET_ENDPOINT)) {
+            return;
+        }
 
-		ASTBinaryExpression binaryNode = node.getFirstChildOfType(ASTBinaryExpression.class);
-		if (binaryNode != null) {
-			runChecks(binaryNode, data);
-		}
+        ASTBinaryExpression binaryNode = node.getFirstChildOfType(ASTBinaryExpression.class);
+        if (binaryNode != null) {
+            runChecks(binaryNode, data);
+        }
 
-		runChecks(node, data);
+        runChecks(node, data);
 
-	}
+    }
 
-	private void runChecks(AbstractApexNode<?> node, Object data) {
-		ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
-		if (literalNode != null) {
-			Object o = literalNode.getNode().getLiteral();
-			if (o instanceof String) {
-				String literal = (String) o;
-				if (PATTERN.matcher(literal).matches()) {
-					addViolation(data, literalNode);
-				}
-			}
-		}
+    private void runChecks(AbstractApexNode<?> node, Object data) {
+        ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
+        if (literalNode != null) {
+            Object o = literalNode.getNode().getLiteral();
+            if (o instanceof String) {
+                String literal = (String) o;
+                if (PATTERN.matcher(literal).matches()) {
+                    addViolation(data, literalNode);
+                }
+            }
+        }
 
-		ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
-		if (variableNode != null) {
-			if (httpEndpointStrings.contains(Helper.getFQVariableName(variableNode))) {
-				addViolation(data, variableNode);
-			}
+        ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
+        if (variableNode != null) {
+            if (httpEndpointStrings.contains(Helper.getFQVariableName(variableNode))) {
+                addViolation(data, variableNode);
+            }
 
-		}
-	}
+        }
+    }
 }
