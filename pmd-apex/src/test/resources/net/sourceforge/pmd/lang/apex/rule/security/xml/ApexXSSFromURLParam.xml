@@ -333,4 +333,21 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
+
+	<test-code>
+		<description>URL parameter var not getting confused with member var
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1(Object obj) {
+		String baz, bas;
+		bas = ApexPages.currentPage().getParameters().get('foo');
+		baz = obj.bas;
+	}		
+}
+		]]></code>
+	</test-code>
+
+
 </test-data>

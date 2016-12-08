@@ -21,8 +21,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-import apex.jorje.semantic.ast.expression.VariableExpression;
-
 /**
  * Detects potential XSS when controller extracts a variable from URL query and
  * uses it without escaping first
@@ -93,10 +91,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
 
         for (ASTVariableExpression varExpression : nodes) {
-            StringBuilder sb = new StringBuilder().append(varExpression.getNode().getDefiningType().getApexName())
-                    .append(":").append(varExpression.getNode().getIdentifier().value);
-
-            if (urlParameterString.contains(sb.toString())) {
+            if (urlParameterString.contains(Helper.getFQVariableName(varExpression))) {
                 addViolation(data, nodes.get(0));
             }
         }
@@ -138,10 +133,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
 
                 if (left != null) {
-                    VariableExpression n = left.getNode();
-                    StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
-                            .append(n.getIdentifier().value);
-                    urlParameterString.add(sb.toString());
+                    urlParameterString.add(Helper.getFQVariableName(left));
                 }
             }
 
@@ -155,7 +147,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             processEscapingMethodCalls(nestedCall, data);
         }
 
-        ASTVariableExpression variable = methodNode.getFirstChildOfType(ASTVariableExpression.class);
+        final ASTVariableExpression variable = methodNode.getFirstChildOfType(ASTVariableExpression.class);
 
         if (variable != null) {
 
@@ -165,10 +157,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 return;
             }
 
-            VariableExpression n = variable.getNode();
-            StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
-                    .append(n.getIdentifier().value);
-            if (urlParameterString.contains(sb.toString())) {
+            if (urlParameterString.contains(Helper.getFQVariableName(variable))) {
                 if (!isEscapingMethod(methodNode)) {
                     addViolation(data, variable);
                 }
@@ -199,14 +188,10 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             break;
         case 2: {
             // Look for: foo = bar;
-            final ASTVariableExpression r = reverseOrder ? nodes.get(0) : nodes.get(1);
-            final VariableExpression n = r.getNode();
+            final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
 
-            StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
-                    .append(n.getIdentifier().value);
-
-            if (urlParameterString.contains(sb.toString())) {
-                addViolation(data, r);
+            if (urlParameterString.contains(Helper.getFQVariableName(right))) {
+                addViolation(data, right);
             }
         }
             break;
@@ -229,11 +214,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
         final List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
         for (ASTVariableExpression n : nodes) {
-            final VariableExpression expression = n.getNode();
-            StringBuilder sb = new StringBuilder().append(expression.getDefiningType().getApexName()).append(":")
-                    .append(expression.getIdentifier().value);
 
-            if (urlParameterString.contains(sb.toString())) {
+            if (urlParameterString.contains(Helper.getFQVariableName(n))) {
                 addViolation(data, n);
             }
         }

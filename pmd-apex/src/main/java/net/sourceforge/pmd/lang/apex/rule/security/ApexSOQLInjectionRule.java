@@ -20,8 +20,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-import apex.jorje.semantic.ast.expression.VariableExpression;
-
 /**
  * Detects if variables in Database.query(variable) is escaped with
  * String.escapeSingleQuotes
@@ -94,15 +92,12 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         // look for String a = 'b';
         if (literal != null) {
             if (left != null) {
-                final VariableExpression l = left.getNode();
-                StringBuilder sb = new StringBuilder().append(l.getDefiningType()).append(":")
-                        .append(l.getIdentifier().value);
                 Object o = literal.getNode().getLiteral();
                 if (o instanceof String) {
                     if (pattern.matcher((String) o).matches()) {
-                        selectContainingVariables.put(sb.toString(), Boolean.TRUE);
+                        selectContainingVariables.put(Helper.getFQVariableName(left), Boolean.TRUE);
                     } else {
-                        safeVariables.add(sb.toString());
+                        safeVariables.add(Helper.getFQVariableName(left));
                     }
                 }
             }
@@ -112,10 +107,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         if (right != null) {
             if (Helper.isMethodName(right, STRING, ESCAPE_SINGLE_QUOTES)) {
                 if (left != null) {
-                    final VariableExpression var = left.getNode();
-                    StringBuilder sb = new StringBuilder().append(var.getDefiningType().getApexName()).append(":")
-                            .append(var.getIdentifier().value);
-                    safeVariables.add(sb.toString());
+                    safeVariables.add(Helper.getFQVariableName(left));
                 }
             }
         }
@@ -139,9 +131,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         boolean isSafeVariable = false;
 
         if (concatenatedVar != null) {
-            StringBuilder sb = new StringBuilder().append(concatenatedVar.getNode().getDefiningType().getApexName())
-                    .append(":").append(concatenatedVar.getNode().getIdentifier().value);
-            if (safeVariables.contains(sb.toString())) {
+            if (safeVariables.contains(Helper.getFQVariableName(concatenatedVar))) {
                 isSafeVariable = true;
             }
         }
@@ -152,11 +142,9 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             Object o = literal.getNode().getLiteral();
             if (o instanceof String) {
                 if (pattern.matcher((String) o).matches()) {
-                    StringBuilder sb = new StringBuilder().append(var.getNode().getDefiningType().getApexName())
-                            .append(":").append(var.getNode().getIdentifier().value);
                     if (!isSafeVariable) {
                         // select literal + other unsafe vars
-                        selectContainingVariables.put(sb.toString(), Boolean.FALSE);
+                        selectContainingVariables.put(Helper.getFQVariableName(var), Boolean.FALSE);
                     }
                 }
             }
@@ -168,18 +156,16 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         for (ASTBinaryExpression b : binaryExpr) {
             List<ASTVariableExpression> vars = b.findDescendantsOfType(ASTVariableExpression.class);
             for (ASTVariableExpression v : vars) {
-                final VariableExpression var = v.getNode();
-                StringBuilder sb = new StringBuilder().append(var.getDefiningType().getApexName()).append(":")
-                        .append(var.getIdentifier().value);
+                String fqName = Helper.getFQVariableName(v);
 
-                if (selectContainingVariables.containsKey(sb.toString())) {
-                    boolean isLiteral = selectContainingVariables.get(sb.toString());
+                if (selectContainingVariables.containsKey(fqName)) {
+                    boolean isLiteral = selectContainingVariables.get(fqName);
                     if (isLiteral) {
                         continue;
                     }
                 }
 
-                if (safeVariables.contains(sb.toString())) {
+                if (safeVariables.contains(fqName)) {
                     continue;
                 }
 
@@ -197,10 +183,9 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private void reportVariables(final ASTMethodCallExpression m, Object data) {
         final ASTVariableExpression var = m.getFirstChildOfType(ASTVariableExpression.class);
         if (var != null) {
-            StringBuilder sb = new StringBuilder().append(var.getNode().getDefiningType().getApexName()).append(":")
-                    .append(var.getNode().getIdentifier().value);
-            if (selectContainingVariables.containsKey(sb.toString())) {
-                boolean isLiteral = selectContainingVariables.get(sb.toString());
+            String nameFQ = Helper.getFQVariableName(var);
+            if (selectContainingVariables.containsKey(nameFQ)) {
+                boolean isLiteral = selectContainingVariables.get(nameFQ);
                 if (!isLiteral) {
                     addViolation(data, var);
                 }

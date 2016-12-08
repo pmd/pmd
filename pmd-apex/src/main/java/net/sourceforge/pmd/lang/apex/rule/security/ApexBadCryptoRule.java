@@ -71,9 +71,9 @@ public class ApexBadCryptoRule extends AbstractApexRule {
         ASTMethodCallExpression methodCall = var.getFirstChildOfType(ASTMethodCallExpression.class);
         if (methodCall != null && Helper.isMethodName(methodCall, BLOB, VALUE_OF)) {
             ASTVariableExpression variable = var.getFirstChildOfType(ASTVariableExpression.class);
-            StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
-                    .append(variable.getNode().getIdentifier().value);
-            potentiallyStaticBlob.add(sb.toString());
+            if (variable != null) {
+                potentiallyStaticBlob.add(Helper.getFQVariableName(variable));
+            }
         }
     }
 
@@ -85,13 +85,14 @@ public class ApexBadCryptoRule extends AbstractApexRule {
         case 5:
             Object potentialIV = methodCall.jjtGetChild(3);
             reportIfHardCoded(data, potentialIV);
-            // no break on purpose
-
-            // matching signature to encryptWithManagedIV(
-            // fallthrough
-        case 4:
             Object potentialKey = methodCall.jjtGetChild(2);
             reportIfHardCoded(data, potentialKey);
+            break;
+
+        // matching signature to encryptWithManagedIV(
+        case 4:
+            Object key = methodCall.jjtGetChild(2);
+            reportIfHardCoded(data, key);
             break;
 
         default:
@@ -103,12 +104,9 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     private void reportIfHardCoded(Object data, Object potentialIV) {
         if (potentialIV instanceof ASTVariableExpression) {
             ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
-            StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
-                    .append(variable.getNode().getIdentifier().value);
-            if (potentiallyStaticBlob.contains(sb.toString())) {
+            if (potentiallyStaticBlob.contains(Helper.getFQVariableName(variable))) {
                 addViolation(data, variable);
             }
         }
     }
-
 }

@@ -18,8 +18,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-import apex.jorje.semantic.ast.expression.VariableExpression;
-
 /**
  * Insecure HTTP endpoints passed to (req.setEndpoint)
  * req.setHeader('Authorization') should use named credentials
@@ -63,7 +61,6 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
         ASTBinaryExpression binaryNode = node.getFirstChildOfType(ASTBinaryExpression.class);
         if (binaryNode != null) {
-
             findInnerInsecureEndpoints(binaryNode, variableNode);
         }
 
@@ -77,10 +74,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
             if (o instanceof String) {
                 String literal = (String) o;
                 if (PATTERN.matcher(literal).matches()) {
-                    VariableExpression varExpression = variableNode.getNode();
-                    StringBuilder sb = new StringBuilder().append(varExpression.getDefiningType()).append(":")
-                            .append(varExpression.getIdentifier().value);
-                    httpEndpointStrings.add(sb.toString());
+                    httpEndpointStrings.add(Helper.getFQVariableName(variableNode));
                 }
             }
         }
@@ -120,14 +114,10 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
         ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
         if (variableNode != null) {
-            VariableExpression varExpression = variableNode.getNode();
-            StringBuffer sb = new StringBuffer().append(varExpression.getDefiningType()).append(":")
-                    .append(varExpression.getIdentifier().value);
-            if (httpEndpointStrings.contains(sb.toString())) {
+            if (httpEndpointStrings.contains(Helper.getFQVariableName(variableNode))) {
                 addViolation(data, variableNode);
             }
 
         }
     }
-
 }
