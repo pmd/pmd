@@ -362,8 +362,9 @@ public class ClassScope extends AbstractJavaScope {
         }
 
         Set<String> qualifiedNames = new LinkedHashSet<>();
-        qualifiedNames.addAll(this.getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().keySet());
-        qualifiedNames.addAll(this.getEnclosingScope(SourceFileScope.class).getExplicitImports());
+        final SourceFileScope fileScope = getEnclosingScope(SourceFileScope.class);
+        qualifiedNames.addAll(fileScope.getQualifiedTypeNames().keySet());
+        qualifiedNames.addAll(fileScope.getExplicitImports());
 
         int nameLength = typeImage.length();
 
