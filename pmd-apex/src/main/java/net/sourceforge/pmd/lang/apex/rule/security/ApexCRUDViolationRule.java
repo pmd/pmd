@@ -40,6 +40,8 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  *
  */
 public class ApexCRUDViolationRule extends AbstractApexRule {
+    private static final Pattern p = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
+
     private final HashMap<String, String> varToTypeMapping = new HashMap<>();
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
     private final HashMap<String, String> checkedTypeToDMLOperationViaESAPI = new HashMap<>();
@@ -369,7 +371,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 String variableWithClass = Helper.getFQVariableName(variable);
                 if (varToTypeMapping.containsKey(variableWithClass)) {
                     String type = varToTypeMapping.get(variableWithClass);
-                    validateCRUDCheckPresent(node, data, ANY, type);
+                    if (!isGetter) {
+                        validateCRUDCheckPresent(node, data, ANY, type);
+                    }
                 }
             }
 
@@ -389,7 +393,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isMethodAGetter(final ASTMethod method) {
-        final Pattern p = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
         final boolean startsWithGet = method.getNode().getMethodInfo().getCanonicalName().startsWith("get");
         final boolean voidOrString = p
                 .matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
