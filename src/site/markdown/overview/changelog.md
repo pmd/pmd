@@ -19,6 +19,7 @@
 *   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
 *   [#130](https://github.com/pmd/pmd/pull/130); \[core] Reduce thread contention
 *   [#133](https://github.com/pmd/pmd/pull/133): \[java] UnnecessaryFullyQualifiedName can detect conflicts
+*   [#140](https://github.com/pmd/pmd/pull/140): \[java] Make CloneMethodMustImplementCloneable over 500x faster
 *   [#152](https://github.com/pmd/pmd/pull/152): \[java] fixes #1552 continue does not require break
 *   [#154](https://github.com/pmd/pmd/pull/154): \[java] Fix #1547: UnusedImports: Adjust regex to support underscores
 
