@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ public abstract class AbstractScope implements Scope {
         @SuppressWarnings("unchecked")
         Map<T, List<NameOccurrence>> result = (Map<T, List<NameOccurrence>>) nameDeclarations.get(clazz);
         if (result == null) {
-            result = new LinkedHashMap<>();
+            result = Collections.emptyMap();
         }
         return result;
     }
