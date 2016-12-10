@@ -11,7 +11,7 @@
 *   Core
     *   [#1538](https://sourceforge.net/p/pmd/bugs/1538/): \[core] Incremental analysis - All PMD analysis can now run
         incrementally using a local file cache. This can greatly reduce the analysis time when running from CLI or tools
-        such as Ant, Maven or Gradle. New CLI and tasks `cache` argument i exposed.
+        such as Ant, Maven or Gradle. New CLI and tasks `cache` argument is exposed.
 
 **New/Modified/Deprecated Rules:**
 
@@ -47,6 +47,7 @@
 *   [#140](https://github.com/pmd/pmd/pull/140): \[java] Make CloneMethodMustImplementCloneable over 500x faster
 *   [#141](https://github.com/pmd/pmd/pull/141): \[java] Speedup PreserveStackTraceRule by over 7X
 *   [#143](https://github.com/pmd/pmd/pull/143): \[core] Add documentation on analysis cache usage
+*   [#144](https://github.com/pmd/pmd/pull/144): \[core] Create missing intermediate directories for cache
 *   [#146](https://github.com/pmd/pmd/pull/146): \[apex] Detection of missing Apex CRUD checks for SOQL/DML operations
 *   [#147](https://github.com/pmd/pmd/pull/147): \[apex] Adding XSS detection to return statements
 *   [#148](https://github.com/pmd/pmd/pull/148): \[apex] Improving detection of SOQL injection
