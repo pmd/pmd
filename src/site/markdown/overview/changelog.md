@@ -38,6 +38,7 @@
 *   [#137](https://github.com/pmd/pmd/pull/137): \[apex] Adjusted remediation points
 *   [#138](https://github.com/pmd/pmd/pull/138): \[java] Make ClasspathClassLoader parallel capable
 *   [#140](https://github.com/pmd/pmd/pull/140): \[java] Make CloneMethodMustImplementCloneable over 500x faster
+*   [#141](https://github.com/pmd/pmd/pull/141): \[java] Speedup PreserveStackTraceRule by over 7X
 *   [#146](https://github.com/pmd/pmd/pull/146): \[apex] Detection of missing Apex CRUD checks for SOQL/DML operations
 *   [#147](https://github.com/pmd/pmd/pull/147): \[apex] Adding XSS detection to return statements
 *   [#148](https://github.com/pmd/pmd/pull/148): \[apex] Improving detection of SOQL injection
