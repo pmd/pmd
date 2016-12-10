@@ -10,7 +10,7 @@
 
 ### Description
 
-Runs a set of static code analysis rules on some Java source code files and generates a list of problems found.
+Runs a set of static code analysis rules on some source code files and generates a list of problems found.
 
 ### Parameters
 
@@ -68,6 +68,15 @@ Runs a set of static code analysis rules on some Java source code files and gene
       <td>
         Whether or not to fail the build if PMD finds more than the value of this attribute.
         Note that setting this attribute does not require to set the failOnRuleViolation to true.
+      </td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>cacheLocation</td>
+      <td>
+        The location of the analysis cache file to be used.
+        The cache can greatly improve analysis time without loosing analysis quality.
+        <b>It's use is strongly recommended.</b>
       </td>
       <td>No</td>
     </tr>
@@ -170,13 +179,13 @@ Then, after the end of the PMD task, do this:
 
 ### Examples
 
-Running one ruleset to produce a HTML report (and printing the report to the console as well)
+Running one ruleset to produce a HTML report (and printing the report to the console as well) using a file cache
 
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="java-imports">
+        <pmd rulesetfiles="java-imports" cacheLocation="build/pmd/pmd.cache">
             <formatter type="html" toFile="pmd_report.html" toConsole="true"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
                 <include name="**/*.java"/>
@@ -184,13 +193,13 @@ Running one ruleset to produce a HTML report (and printing the report to the con
         </pmd>
     </target>
 
-Running multiple rulesets to produce an XML report
+Running multiple rulesets to produce an XML report with the same analysis cache
 
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode">
+        <pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode" cacheLocation="build/pmd/pmd.cache">
             <formatter type="xml" toFile="c:\pmd_report.xml"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
                 <include name="**/*.java"/>
