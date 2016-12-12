@@ -189,4 +189,23 @@ public class Foo {
         </example>
 	</rule>
 
+	<rule name="ApexDangerousMethods" since="5.5.3"
+		message="Calling potentially dangerous method"
+		class="net.sourceforge.pmd.lang.apex.rule.security.ApexDangerousMethodsRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexDangerousMethodsRule">
+		<description>
+            Calling potentially dangerous method
+        </description>
+		<priority>3</priority>
+		<example>
+            <![CDATA[
+public class Foo {
+	public Foo() {
+		Configuration.disableTriggerCRUDSecurity();
+	}	
+}
+    ]]>
+        </example>
+	</rule>
+
 </ruleset>
