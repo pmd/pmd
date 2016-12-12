@@ -19,29 +19,29 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  *
  */
 public class ApexDangerousMethodsRule extends AbstractApexRule {
-	private static final String DISABLE_CRUD = "disableTriggerCRUDSecurity";
-	private static final String CONFIGURATION = "Configuration";
+    private static final String DISABLE_CRUD = "disableTriggerCRUDSecurity";
+    private static final String CONFIGURATION = "Configuration";
 
-	public ApexDangerousMethodsRule() {
-		setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
-		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+    public ApexDangerousMethodsRule() {
+        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
+        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 
-	}
+    }
 
-	public Object visit(ASTUserClass node, Object data) {
-		if (Helper.isTestMethodOrClass(node)) {
-			return data;
-		}
+    public Object visit(ASTUserClass node, Object data) {
+        if (Helper.isTestMethodOrClass(node)) {
+            return data;
+        }
 
-		List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);
-		for (ASTMethodCallExpression methodCall : methodCalls) {
-			if (Helper.isMethodName(methodCall, CONFIGURATION, DISABLE_CRUD)) {
-				addViolation(data, methodCall);
-			}
-		}
+        List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);
+        for (ASTMethodCallExpression methodCall : methodCalls) {
+            if (Helper.isMethodName(methodCall, CONFIGURATION, DISABLE_CRUD)) {
+                addViolation(data, methodCall);
+            }
+        }
 
-		return data;
-	}
+        return data;
+    }
 
 }
