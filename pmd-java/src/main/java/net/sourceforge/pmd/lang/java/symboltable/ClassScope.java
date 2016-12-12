@@ -36,6 +36,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaParserTreeConstants;
+import net.sourceforge.pmd.lang.symboltable.Applier;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
