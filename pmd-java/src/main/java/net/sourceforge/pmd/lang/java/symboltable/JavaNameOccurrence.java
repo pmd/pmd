@@ -196,7 +196,7 @@ public class JavaNameOccurrence implements NameOccurrence {
      * @return return true if image equal to 'this' or 'super'.
      */
     public boolean isThisOrSuper() {
-        return image != null && (image.equals(THIS) || image.equals(SUPER));
+        return THIS.equals(image) || SUPER.equals(image);
     }
 
     /**
