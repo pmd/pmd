@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class ApexDangerousMethodsRule extends AbstractApexRule {
     private static final String BOOLEAN = "boolean";
 
-    private static final Pattern regexp = Pattern.compile("^.*?(pass|pwd|crypt|auth|session|token|saml).*?$",
+    private static final Pattern regexp = Pattern.compile("^.*?(pass|pwd|crypt|auth|session|token|saml)(?!id|user).*?$",
             Pattern.CASE_INSENSITIVE);
 
     private static final String DISABLE_CRUD = "disableTriggerCRUDSecurity";
