@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,9 +56,9 @@ public class LocalScope extends AbstractJavaScope {
         DeclarationFinderFunction finder = new DeclarationFinderFunction(occurrence);
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         if (finder.getDecl() != null) {
-            result.add(finder.getDecl());
+            return Collections.singleton(finder.getDecl());
         }
-        return result;
+        return Collections.emptySet();
     }
 
     public String toString() {
