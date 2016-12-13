@@ -16,6 +16,7 @@
         *   ApexBadCrypto
         *   ApexCRUDViolation
         *   ApexCSRF
+        *   ApexDangerousMethods
         *   ApexInsecureEndpoint
         *   ApexOpenRedirect
         *   ApexSharingViolations
@@ -46,6 +47,7 @@
 *   [#152](https://github.com/pmd/pmd/pull/152): \[java] fixes #1552 continue does not require break
 *   [#154](https://github.com/pmd/pmd/pull/154): \[java] Fix #1547: UnusedImports: Adjust regex to support underscores
 *   [#158](https://github.com/pmd/pmd/pull/158): \[apex] Reducing FPs in SOQL with VF getter methods
+*   [#160](https://github.com/pmd/pmd/pull/160): \[apex] Flagging of dangerous method call
 
 **Bugfixes:**
 
