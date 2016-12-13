@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data>
+
+	<test-code>
+		<description>Apex dangerous FileForce method</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo extends fflib_SObjectDomain {
+	public Foo() {
+		Configuration.disableTriggerCRUDSecurity();
+	}	
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Apex non FileForce method</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public Foo() {
+		Configurations.disableTriggerCRUDSecurity();
+	}	
+}
+		]]></code>
+	</test-code>
+
+</test-data>

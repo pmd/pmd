@@ -261,5 +261,14 @@
          <property name="cc_remediation_points_multiplier" value="150"/>
          <property name="cc_block_highlighting" value="false"/>
       </properties>
-   </rule>	
+   </rule>
+   <rule ref="rulesets/apex/security.xml/ApexDangerousMethods" message="Calling potentially dangerous method">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security"/>
+         <property name="cc_remediation_points_multiplier" value="50"/>
+         <property name="cc_block_highlighting" value="false"/>
+      </properties>
+   </rule>		
 </ruleset>
