@@ -14,16 +14,20 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 import apex.jorje.semantic.ast.expression.VariableExpression;
+import apex.jorje.semantic.ast.member.Field;
+import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 /**
  * Helper methods
@@ -141,6 +145,20 @@ public final class Helper {
         VariableExpression n = variable.getNode();
         StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":").append(objectName)
                 .append(n.getIdentifier().value);
+        return sb.toString();
+    }
+
+    static String getFQVariableName(final ASTVariableDeclaration variable) {
+        VariableDeclaration n = variable.getNode();
+        StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
+                .append(n.getLocalInfo().getName());
+        return sb.toString();
+    }
+
+    static String getFQVariableName(final ASTField variable) {
+        Field n = variable.getNode();
+        StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
+                .append(n.getFieldInfo().getName());
         return sb.toString();
     }
 
