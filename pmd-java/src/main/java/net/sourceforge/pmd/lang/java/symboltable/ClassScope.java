@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -252,7 +251,7 @@ public class ClassScope extends AbstractJavaScope {
         Map<ClassNameDeclaration, List<NameOccurrence>> classDeclarations = getClassDeclarations();
         if (result.isEmpty() && !classDeclarations.isEmpty()) {
             for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
-                Applier.apply(finder, innerClass.getScope().getDeclarations().keySet().iterator());
+                Applier.apply(finder, innerClass.getScope().getDeclarations(VariableNameDeclaration.class).keySet().iterator());
                 if (finder.getDecl() != null) {
                     result.add(finder.getDecl());
                 }
@@ -289,20 +288,24 @@ public class ClassScope extends AbstractJavaScope {
         methodDeclarator.jjtAddChild(formalParameters, 0);
         formalParameters.jjtSetParent(methodDeclarator);
 
-        for (int i = 0; i < parameterTypes.length; i++) {
+        /*
+         * jjtAddChild resizes it's child node list according to known indexes.
+         * Going backwards makes sure the first time it gets the right size avoiding copies.
+         */
+        for (int i = parameterTypes.length - 1; i >= 0; i--) {
             ASTFormalParameter formalParameter = new ASTFormalParameter(JavaParserTreeConstants.JJTFORMALPARAMETER);
             formalParameters.jjtAddChild(formalParameter, i);
             formalParameter.jjtSetParent(formalParameters);
-
-            ASTType type = new ASTType(JavaParserTreeConstants.JJTTYPE);
-            formalParameter.jjtAddChild(type, 0);
-            type.jjtSetParent(formalParameter);
 
             ASTVariableDeclaratorId variableDeclaratorId = new ASTVariableDeclaratorId(
                     JavaParserTreeConstants.JJTVARIABLEDECLARATORID);
             variableDeclaratorId.setImage("arg" + i);
             formalParameter.jjtAddChild(variableDeclaratorId, 1);
             variableDeclaratorId.jjtSetParent(formalParameter);
+            
+            ASTType type = new ASTType(JavaParserTreeConstants.JJTTYPE);
+            formalParameter.jjtAddChild(type, 0);
+            type.jjtSetParent(formalParameter);
 
             if (PRIMITIVE_TYPES.contains(parameterTypes[i])) {
                 ASTPrimitiveType primitiveType = new ASTPrimitiveType(JavaParserTreeConstants.JJTPRIMITIVETYPE);
@@ -361,21 +364,34 @@ public class ClassScope extends AbstractJavaScope {
             return null;
         }
 
-        Set<String> qualifiedNames = new LinkedHashSet<>();
         final SourceFileScope fileScope = getEnclosingScope(SourceFileScope.class);
-        qualifiedNames.addAll(fileScope.getQualifiedTypeNames().keySet());
-        qualifiedNames.addAll(fileScope.getExplicitImports());
 
+        // Is it an inner class being accessed?
+        String qualified = findQualifiedName(typeImage, fileScope.getQualifiedTypeNames().keySet());
+        if (qualified != null) {
+            return qualified;
+        }
+
+        // Is it an explicit import?
+        qualified = findQualifiedName(typeImage, fileScope.getExplicitImports());
+        if (qualified != null) {
+            return qualified;
+        }
+
+        return typeImage;
+    }
+
+    private String findQualifiedName(String typeImage, Set<String> candidates) {
         int nameLength = typeImage.length();
-
-        for (String qualified : qualifiedNames) {
+        for (String qualified : candidates) {
             int fullLength = qualified.length();
             if (qualified.endsWith(typeImage)
                     && (fullLength == nameLength || qualified.charAt(fullLength - nameLength - 1) == '.')) {
                 return qualified;
             }
         }
-        return typeImage;
+
+        return null;
     }
 
     /**

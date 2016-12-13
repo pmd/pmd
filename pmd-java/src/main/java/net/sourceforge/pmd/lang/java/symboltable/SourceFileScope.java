@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -121,13 +121,12 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occ) {
-        Set<NameDeclaration> result = new HashSet<>();
         ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
         Applier.apply(finder, getDeclarations().keySet().iterator());
         if (finder.getDecl() != null) {
-            result.add(finder.getDecl());
+            return Collections.singleton(finder.getDecl());
         }
-        return result;
+        return Collections.emptySet();
     }
 
     /**
@@ -141,8 +140,13 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     private Map<String, Node> getSubTypes(String qualifyingName, Scope subType) {
-        Map<String, Node> types = new HashMap<>();
-        for (ClassNameDeclaration c : subType.getDeclarations(ClassNameDeclaration.class).keySet()) {
+        Set<ClassNameDeclaration> classDeclarations = subType.getDeclarations(ClassNameDeclaration.class).keySet();
+        if (classDeclarations.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, Node> types = new HashMap<>((int) (classDeclarations.size() / 0.75f) + 1);
+        for (ClassNameDeclaration c : classDeclarations) {
             String typeName = c.getName();
             if (qualifyingName != null) {
                 typeName = qualifyingName + "." + typeName;

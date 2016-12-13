@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,16 +49,15 @@ public class LocalScope extends AbstractJavaScope {
     }
 
     public Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
-        Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
-            return result;
+            return Collections.emptySet();
         }
         DeclarationFinderFunction finder = new DeclarationFinderFunction(occurrence);
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
         if (finder.getDecl() != null) {
-            result.add(finder.getDecl());
+            return Collections.singleton(finder.getDecl());
         }
-        return result;
+        return Collections.emptySet();
     }
 
     public String toString() {

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,15 +14,15 @@ import net.sourceforge.pmd.util.UnaryFunction;
 
 public class ImageFinderFunction implements UnaryFunction<NameDeclaration> {
 
-    private Set<String> images = new HashSet<>();
+    private final Set<String> images;
     private NameDeclaration decl;
 
     public ImageFinderFunction(String img) {
-        images.add(img);
+        images = Collections.singleton(img);
     }
 
     public ImageFinderFunction(List<String> imageList) {
-        images.addAll(imageList);
+        images = new HashSet<>(imageList);
     }
 
     public void applyTo(NameDeclaration nameDeclaration) {
