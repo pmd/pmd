@@ -44,16 +44,20 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             return data;
         }
 
+        List<ASTVariableDeclaration> variableDecls = node.findDescendantsOfType(ASTVariableDeclaration.class);
+        for (ASTVariableDeclaration varDecl : variableDecls) {
+            findSafeLiterals(varDecl);
+        }
+
+        List<ASTFieldDeclaration> fieldDecl = node.findDescendantsOfType(ASTFieldDeclaration.class);
+        for (ASTFieldDeclaration fDecl : fieldDecl) {
+            findSafeLiterals(fDecl);
+        }
+
         List<ASTNewObjectExpression> newObjects = node.findDescendantsOfType(ASTNewObjectExpression.class);
         for (ASTNewObjectExpression newObj : newObjects) {
             checkNewObjects(newObj, data);
         }
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTVariableDeclaration node, Object data) {
-        findSafeLiterals(node);
         return data;
     }
 
@@ -65,12 +69,6 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
                 listOfStringLiteralVariables.add(Helper.getFQVariableName(variable));
             }
         }
-    }
-
-    @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        findSafeLiterals(node);
-        return data;
     }
 
     /**
