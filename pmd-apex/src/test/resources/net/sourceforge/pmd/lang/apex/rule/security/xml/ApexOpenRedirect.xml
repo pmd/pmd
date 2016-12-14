@@ -15,7 +15,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-
+	
 	<test-code>
 		<description>PageReference open redirect with variable</description>
 		<expected-problems>1</expected-problems>
@@ -84,5 +84,30 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-
+	
+	<test-code>
+		<description>PageReference redirect in test class should be ignored</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+@isTest
+public class Foo {
+	public PageReference redirect() {
+	    return new PageReference(test);
+	}
+}
+		]]></code>
+	</test-code> 
+	
+	<test-code>
+		<description>PageReference redirect in test method should be ignored</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	static testMethod void redirect() {
+	    PageReference pr = new PageReference(test1 + 'something later');
+	}
+}
+		]]></code>
+	</test-code>
+	
 </test-data>

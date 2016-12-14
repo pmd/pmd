@@ -11,7 +11,9 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
@@ -37,15 +39,21 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTNewObjectExpression node, Object data) {
-        checkNewObjects(node, data);
+    public Object visit(ASTUserClass node, Object data) {
+        if (Helper.isTestMethodOrClass(node)) {
+            return data;
+        }
+
+        List<ASTNewObjectExpression> newObjects = node.findDescendantsOfType(ASTNewObjectExpression.class);
+        for (ASTNewObjectExpression newObj : newObjects) {
+            checkNewObjects(newObj, data);
+        }
         return data;
     }
 
     @Override
     public Object visit(ASTVariableDeclaration node, Object data) {
         findSafeLiterals(node);
-
         return data;
     }
 
@@ -72,6 +80,12 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
      * @param data
      */
     private void checkNewObjects(ASTNewObjectExpression node, Object data) {
+
+        ASTMethod method = node.getFirstParentOfType(ASTMethod.class);
+        if (method != null && Helper.isTestMethodOrClass(method)) {
+            return;
+        }
+
         ClassTypeRef classRef = (ClassTypeRef) node.getNode().getTypeRef();
         Identifier identifier = classRef.className.get(0);
 
@@ -92,9 +106,8 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         // PageReference(foo);
         final List<ASTVariableExpression> variableExpressions = node.findChildrenOfType(ASTVariableExpression.class);
         for (ASTVariableExpression variable : variableExpressions) {
-            StringBuilder sb = new StringBuilder().append(variable.getNode().getDefiningType()).append(":")
-                    .append(variable.getNode().getIdentifier().value);
-            if (variable.jjtGetChildIndex() == 0 && !listOfStringLiteralVariables.contains(sb.toString())) {
+            if (variable.jjtGetChildIndex() == 0
+                    && !listOfStringLiteralVariables.contains(Helper.getFQVariableName(variable))) {
                 addViolation(data, variable);
             }
         }
