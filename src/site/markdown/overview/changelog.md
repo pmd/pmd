@@ -98,9 +98,14 @@ public class Foo {
 
 ##### ApexDangerousMethods
 
-Checks against calling dangerous methods. For the time being, it only reports against
-`FinancialForce`'s `Configuration.disableTriggerCRUDSecurity()`. Disabling CRUD security
+Checks against calling dangerous methods.
+
+For the time being, it reports:
+
+* Against `FinancialForce`'s `Configuration.disableTriggerCRUDSecurity()`. Disabling CRUD security
 opens the door to several attacks and requires manual validation, which is unreliable.
+* Calling `System.debug` passing sensible data as parameter, which could lead to exposure
+of private data.
 
 ##### ApexInsecureEndpoint
 
@@ -194,4 +199,5 @@ to avoid XSS attacks.
 *   [#154](https://github.com/pmd/pmd/pull/154): \[java] Fix #1547: UnusedImports: Adjust regex to support underscores
 *   [#158](https://github.com/pmd/pmd/pull/158): \[apex] Reducing FPs in SOQL with VF getter methods
 *   [#160](https://github.com/pmd/pmd/pull/160): \[apex] Flagging of dangerous method call
+*   [#163](https://github.com/pmd/pmd/pull/163): \[apex] Flagging of System.debug
 
