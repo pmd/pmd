@@ -63,6 +63,8 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
             }
         }
 
+        whiteListedVariables.clear();
+
         return data;
     }
 
