@@ -35,7 +35,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
     private static final String SYSTEM = "System";
     private static final String DEBUG = "debug";
 
-    private static final HashSet<String> whiteListedVariables = new HashSet<>();
+    private final HashSet<String> whiteListedVariables = new HashSet<>();
 
     public ApexDangerousMethodsRule() {
         super.addRuleChainVisit(ASTUserClass.class);
