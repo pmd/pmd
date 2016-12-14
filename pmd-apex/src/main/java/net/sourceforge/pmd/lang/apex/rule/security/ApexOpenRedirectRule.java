@@ -30,7 +30,7 @@ import apex.jorje.data.ast.TypeRef.ClassTypeRef;
  */
 public class ApexOpenRedirectRule extends AbstractApexRule {
     private static final String PAGEREFERENCE = "PageReference";
-    private static final Set<String> listOfStringLiteralVariables = new HashSet<>();
+    private final Set<String> listOfStringLiteralVariables = new HashSet<>();
 
     public ApexOpenRedirectRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
