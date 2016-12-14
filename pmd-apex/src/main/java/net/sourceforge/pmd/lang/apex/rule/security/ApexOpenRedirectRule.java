@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  */
 public class ApexOpenRedirectRule extends AbstractApexRule {
     private static final String PAGEREFERENCE = "PageReference";
-    private final Set<String> listOfStringLiteralVariables = new HashSet<>();
+    private static final Set<String> listOfStringLiteralVariables = new HashSet<>();
 
     public ApexOpenRedirectRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
@@ -56,6 +56,9 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         for (ASTNewObjectExpression newObj : newObjects) {
             checkNewObjects(newObj, data);
         }
+        
+        listOfStringLiteralVariables.clear();
+        
         return data;
     }
 
