@@ -29,7 +29,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     private static final String SET_ENDPOINT = "setEndpoint";
     private static final Pattern PATTERN = Pattern.compile("^http://.+?$", Pattern.CASE_INSENSITIVE);
 
-    private static final Set<String> httpEndpointStrings = new HashSet<>();
+    private final Set<String> httpEndpointStrings = new HashSet<>();
 
     public ApexInsecureEndpointRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });

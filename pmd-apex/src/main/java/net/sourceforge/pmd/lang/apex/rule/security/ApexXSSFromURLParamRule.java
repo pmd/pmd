@@ -40,7 +40,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private static final String[] DOUBLE_VALUEOF = new String[] { "Double", "valueOf" };
     private static final String[] STRING_ISEMPTY = new String[] { "String", "isEmpty" };
 
-    private static final Set<String> urlParameterString = new HashSet<>();
+    private final Set<String> urlParameterString = new HashSet<>();
 
     public ApexXSSFromURLParamRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
