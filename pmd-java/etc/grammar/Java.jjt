@@ -1604,14 +1604,12 @@ void Name() :
  * by a ".*" when used in the context of an "ImportDeclaration".
  */
 {
-  StringBuffer s = new StringBuffer();
+  StringBuilder s = new StringBuilder();
   Token t;
 }
 {
   t=<IDENTIFIER>
   {
-    jjtThis.testingOnly__setBeginLine( t.beginLine);
-    jjtThis.testingOnly__setBeginColumn( t.beginColumn);
     s.append(t.image);
   }
   ( LOOKAHEAD(2) "." t=<IDENTIFIER>

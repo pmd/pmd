@@ -31,6 +31,8 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class XPathCLI {
 
+    private XPathCLI() {}
+
     private static final Language LANGUAGE = LanguageRegistry.getLanguage("Java");
 
     public static void main(String[] args) throws Exception {

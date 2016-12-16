@@ -51,147 +51,147 @@ public class AcceptanceTest extends ParserTst {
     }
 
     @Test
-    public void test_1() {
+    public void test1() {
         assertTrue(check(TEST1_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST1)));
     }
 
     @Test
-    public void test_2() {
+    public void test2() {
         assertTrue(check(TEST2_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST2)));
     }
 
     @Test
-    public void test_3() {
+    public void test3() {
         assertTrue(check(TEST3_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST3)));
     }
 
     @Test
-    public void test_4() {
+    public void test4() {
         assertTrue(check(TEST4_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST4)));
     }
 
     @Test
-    public void test_6() {
+    public void test6() {
         assertTrue(check(TEST5_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST6)));
     }
 
     @Test
-    public void test_7() {
+    public void test7() {
         assertTrue(check(TEST5_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST7)));
     }
 
     @Test
-    public void test_8() {
+    public void test8() {
         assertTrue(check(TEST8_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST8)));
     }
 
     @Test
-    public void test_9() {
+    public void test9() {
         assertTrue(check(TEST5_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST9)));
     }
 
     @Test
-    public void test_10() {
+    public void test10() {
         assertTrue(check(TEST8_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST10)));
     }
 
     @Test
-    public void test_11() {
+    public void test11() {
         assertTrue(check(TEST8_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST11)));
     }
 
     @Test
-    public void test_12() {
+    public void test12() {
         assertTrue(check(TEST12_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST12)));
     }
 
     @Test
-    public void test_13() {
+    public void test13() {
         assertTrue(check(TEST13_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST13)));
     }
 
     @Test
-    public void test_14() {
+    public void test14() {
         assertTrue(check(TEST14_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST14)));
     }
 
     @Test
-    public void test_15() {
+    public void test15() {
         assertTrue(check(TEST15_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST15)));
     }
 
     @Test
-    public void test_16() {
+    public void test16() {
         assertTrue(check(TEST16_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST16)));
     }
 
     @Test
-    public void test_17() {
+    public void test17() {
         assertTrue(check(TEST17_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST17)));
     }
 
     @Test
-    public void test_18() {
+    public void test18() {
         assertTrue(check(TEST18_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST18)));
     }
 
     @Test
-    public void test_19() {
+    public void test19() {
         assertTrue(check(TEST19_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST19)));
     }
 
     @Test
-    public void test_20() {
+    public void test20() {
         assertTrue(check(TEST20_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST20)));
     }
 
     @Test
-    public void test_21() {
+    public void test21() {
         assertTrue(check(TEST21_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST21)));
     }
 
     @Test
-    public void test_22() {
+    public void test22() {
         assertTrue(check(TEST22_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST22)));
     }
 
     @Test
-    public void test_23() {
+    public void test23() {
         assertTrue(check(TEST23_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST23)));
     }
 
     @Test
-    public void test_24() {
+    public void test24() {
         assertTrue(check(TEST24_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST24)));
     }
 
     @Test
-    public void test_25() {
+    public void test25() {
         assertTrue(check(TEST25_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST25)));
     }
 
     @Test
-    public void test_26() {
+    public void test26() {
         assertTrue(check(TEST26_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST26)));
     }
 
     @Test
-    public void test_27() {
+    public void test27() {
         assertTrue(check(TEST27_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST27)));
     }
 
     @Test
-    public void test_28() {
+    public void test28() {
         assertTrue(check(TEST28_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST28)));
     }
 
     @Test
-    public void test_29() {
+    public void test29() {
         assertTrue(check(TEST29_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST29)));
     }
 
     @Test
-    public void test_30() {
+    public void test30() {
         assertTrue(check(TEST30_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST30)));
     }
 

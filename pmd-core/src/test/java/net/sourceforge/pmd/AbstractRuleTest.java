@@ -26,17 +26,17 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 public class AbstractRuleTest {
 
     private static class MyRule extends AbstractRule {
-        private static final StringProperty pd = new StringProperty("foo", "foo property", "x", 1.0f);
+        private static final StringProperty FOO_PROPERTY = new StringProperty("foo", "foo property", "x", 1.0f);
 
-        private static final StringProperty xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
+        private static final StringProperty XPATH_PROPERTY = new StringProperty("xpath", "xpath property", "", 2.0f);
 
         MyRule() {
-            definePropertyDescriptor(pd);
-            definePropertyDescriptor(xpath);
+            definePropertyDescriptor(FOO_PROPERTY);
+            definePropertyDescriptor(XPATH_PROPERTY);
             setName("MyRule");
             setMessage("my rule msg");
             setPriority(RulePriority.MEDIUM);
-            setProperty(pd, "value");
+            setProperty(FOO_PROPERTY, "value");
         }
 
         @Override
@@ -45,14 +45,14 @@ public class AbstractRuleTest {
     }
 
     private static class MyOtherRule extends AbstractRule {
-        private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
+        private static final PropertyDescriptor FOO_PROPERTY = new StringProperty("foo", "foo property", "x", 1.0f);
 
         MyOtherRule() {
-            definePropertyDescriptor(pd);
+            definePropertyDescriptor(FOO_PROPERTY);
             setName("MyOtherRule");
             setMessage("my other rule");
             setPriority(RulePriority.MEDIUM);
-            setProperty(pd, "value");
+            setProperty(FOO_PROPERTY, "value");
         }
 
         @Override
@@ -67,8 +67,8 @@ public class AbstractRuleTest {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         DummyNode s = new DummyNode(1);
-        s.testingOnly__setBeginColumn(5);
-        s.testingOnly__setBeginLine(5);
+        s.testingOnlySetBeginColumn(5);
+        s.testingOnlySetBeginLine(5);
         RuleViolation rv = new ParametricRuleViolation(r, ctx, s, r.getMessage());
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
@@ -83,8 +83,8 @@ public class AbstractRuleTest {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
         DummyNode s = new DummyNode(1);
-        s.testingOnly__setBeginColumn(5);
-        s.testingOnly__setBeginLine(5);
+        s.testingOnlySetBeginColumn(5);
+        s.testingOnlySetBeginLine(5);
         RuleViolation rv = new ParametricRuleViolation(r, ctx, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
@@ -102,8 +102,8 @@ public class AbstractRuleTest {
         ctx.setReport(new Report());
         ctx.setSourceCodeFilename("filename");
         DummyNode s = new DummyNode(1);
-        s.testingOnly__setBeginColumn(5);
-        s.testingOnly__setBeginLine(5);
+        s.testingOnlySetBeginColumn(5);
+        s.testingOnlySetBeginLine(5);
         s.setImage("TestImage");
         r.addViolation(ctx, s);
         RuleViolation rv = ctx.getReport().getViolationTree().iterator().next();
@@ -120,8 +120,8 @@ public class AbstractRuleTest {
         ctx.getReport().suppress(m);
         ctx.setSourceCodeFilename("filename");
         DummyNode n = new DummyNode(1);
-        n.testingOnly__setBeginColumn(5);
-        n.testingOnly__setBeginLine(5);
+        n.testingOnlySetBeginColumn(5);
+        n.testingOnlySetBeginLine(5);
         RuleViolation rv = new ParametricRuleViolation(r, ctx, n, "specificdescription");
         ctx.getReport().addRuleViolation(rv);
         assertTrue(ctx.getReport().isEmpty());
@@ -179,9 +179,9 @@ public class AbstractRuleTest {
     @Test
     public void testEquals8() {
         MyRule r1 = new MyRule();
-        r1.setProperty(MyRule.xpath, "something");
+        r1.setProperty(MyRule.XPATH_PROPERTY, "something");
         MyRule r2 = new MyRule();
-        r2.setProperty(MyRule.xpath, "something else");
+        r2.setProperty(MyRule.XPATH_PROPERTY, "something else");
         assertFalse("Rules with different properties values cannot be equal", r1.equals(r2));
     }
 
@@ -189,7 +189,7 @@ public class AbstractRuleTest {
     public void testEquals9() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
-        r2.setProperty(MyRule.xpath, "something else");
+        r2.setProperty(MyRule.XPATH_PROPERTY, "something else");
         assertFalse("Rules with different properties cannot be equal", r1.equals(r2));
     }
 

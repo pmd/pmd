@@ -19,6 +19,8 @@ public class NLS {
         BUNDLE = ResourceBundle.getBundle("net.sourceforge.pmd.util.viewer.resources.viewer_strings");
     }
 
+    private NLS() { }
+
     /**
      * translates the given key to the message
      *

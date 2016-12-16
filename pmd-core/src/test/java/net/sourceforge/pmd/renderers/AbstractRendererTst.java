@@ -68,10 +68,10 @@ public abstract class AbstractRendererTst {
 
     private static DummyNode createNode(int endColumn) {
         DummyNode node = new DummyNode(1);
-        node.testingOnly__setBeginLine(1);
-        node.testingOnly__setBeginColumn(1);
-        node.testingOnly__setEndLine(1);
-        node.testingOnly__setEndColumn(endColumn);
+        node.testingOnlySetBeginLine(1);
+        node.testingOnlySetBeginColumn(1);
+        node.testingOnlySetEndLine(1);
+        node.testingOnlySetEndColumn(endColumn);
         return node;
     }
 

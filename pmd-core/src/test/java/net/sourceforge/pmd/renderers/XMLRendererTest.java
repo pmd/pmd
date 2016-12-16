@@ -71,10 +71,10 @@ public class XMLRendererTest extends AbstractRendererTst {
 
     private static RuleViolation createRuleViolation(String description) {
         DummyNode node = new DummyNode(1);
-        node.testingOnly__setBeginLine(1);
-        node.testingOnly__setBeginColumn(1);
-        node.testingOnly__setEndLine(1);
-        node.testingOnly__setEndColumn(1);
+        node.testingOnlySetBeginLine(1);
+        node.testingOnlySetBeginColumn(1);
+        node.testingOnlySetEndLine(1);
+        node.testingOnlySetEndColumn(1);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("n/a");
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, description);

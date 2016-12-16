@@ -47,7 +47,7 @@ public class JDKVersionTest extends ParserTst {
 
     // assert keyword/identifier
     @Test
-    public void testAssertAsKeywordVariantsSucceedWith1_4() {
+    public void testAssertAsKeywordVariantsSucceedWith14() {
         parseJava14(loadSource("assert_test1.java"));
         parseJava14(loadSource("assert_test2.java"));
         parseJava14(loadSource("assert_test3.java"));
@@ -55,22 +55,22 @@ public class JDKVersionTest extends ParserTst {
     }
 
     @Test(expected = ParseException.class)
-    public void testAssertAsVariableDeclIdentifierFailsWith1_4() {
+    public void testAssertAsVariableDeclIdentifierFailsWith14() {
         parseJava14(loadSource("assert_test5.java"));
     }
 
     @Test(expected = ParseException.class)
-    public void testAssertAsMethodNameIdentifierFailsWith1_4() {
+    public void testAssertAsMethodNameIdentifierFailsWith14() {
         parseJava14(loadSource("assert_test7.java"));
     }
 
     @Test
-    public void testAssertAsIdentifierSucceedsWith1_3() {
+    public void testAssertAsIdentifierSucceedsWith13() {
         parseJava13(loadSource("assert_test5.java"));
     }
 
     @Test(expected = ParseException.class)
-    public void testAssertAsKeywordFailsWith1_3() {
+    public void testAssertAsKeywordFailsWith13() {
         parseJava13(loadSource("assert_test6.java"));
     }
     // assert keyword/identifier
@@ -154,7 +154,7 @@ public class JDKVersionTest extends ParserTst {
     }
 
     @Test
-    public void testAssertAsIdentifierSucceedsWith1_3_test2() {
+    public void testAssertAsIdentifierSucceedsWith13Test2() {
         parseJava13(loadSource("assert_test5_a.java"));
     }
 

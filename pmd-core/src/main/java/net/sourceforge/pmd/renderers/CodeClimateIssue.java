@@ -12,13 +12,13 @@ import net.sourceforge.pmd.PMD;
  */
 public class CodeClimateIssue {
     public final String type = "issue";
-    public String check_name;
+    public String check_name; // SUPPRESS CHECKSTYLE underscore is required per codeclimate format
     public String description;
     public Content content;
     public String[] categories;
     public Location location;
     public String severity;
-    public int remediation_points;
+    public int remediation_points; // SUPPRESS CHECKSTYLE underscore is required per codeclimate format
 
     /**
      * Location structure

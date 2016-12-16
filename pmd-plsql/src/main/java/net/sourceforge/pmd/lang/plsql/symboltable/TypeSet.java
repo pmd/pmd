@@ -107,7 +107,7 @@ public class TypeSet {
 
     public static class VoidResolver implements Resolver {
         public Class<?> resolve(String name) throws ClassNotFoundException {
-            if (name.equals("void")) {
+            if ("void".equals(name)) {
                 return void.class;
             }
             throw new ClassNotFoundException();

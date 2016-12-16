@@ -108,7 +108,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     }
 
     private boolean isPropertyEnabled(String property) {
-        return property != null && !(property.equals("0") || property.equalsIgnoreCase("false"));
+        return property != null && !("0".equals(property) || "false".equalsIgnoreCase(property));
     }
 
     /**

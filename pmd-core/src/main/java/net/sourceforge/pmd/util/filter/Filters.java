@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class Filters {
 
+    private Filters() { }
+
     /**
      * Filter a given Collection.
      *

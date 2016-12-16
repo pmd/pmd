@@ -79,8 +79,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
                     DummyNode node = new DummyNode(1);
-                    node.testingOnly__setBeginLine(1);
-                    node.testingOnly__setBeginColumn(1);
+                    node.testingOnlySetBeginLine(1);
+                    node.testingOnlySetBeginColumn(1);
                     node.setImage("Foo");
                     return node;
                 }

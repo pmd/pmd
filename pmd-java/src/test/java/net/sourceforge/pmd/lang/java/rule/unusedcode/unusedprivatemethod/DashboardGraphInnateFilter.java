@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.unusedcode.unusedprivatemethod;
 /**
  * Sample class
  */
-public class DashboardInnateFilter_o {
-    // yes, this class is empty. It is the base class for
-    // DashboardGraphInnateFilter_o
+public class DashboardGraphInnateFilter extends DashboardInnateFilter {
+    // yes, this is empty, it just need to be a subclass.
 }

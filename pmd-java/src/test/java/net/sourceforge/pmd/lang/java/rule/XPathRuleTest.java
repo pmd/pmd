@@ -93,7 +93,7 @@ public class XPathRuleTest extends RuleTst {
      */
     @Test
     public void testImageOfPrimarySuffix() throws Exception {
-        String SUFFIX = "import java.io.File;\n" + "\n" + "public class TestSuffix {\n"
+        final String SUFFIX = "import java.io.File;\n" + "\n" + "public class TestSuffix {\n"
                 + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"
                 + "    }\n" + "}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
@@ -138,7 +138,7 @@ public class XPathRuleTest extends RuleTst {
      */
     @Test
     public void testFollowingSibling() throws Exception {
-        String SOURCE = "public class dummy {\n" + "  public String toString() {\n"
+        final String SOURCE = "public class dummy {\n" + "  public String toString() {\n"
                 + "    String test = \"bad example\";\n" + "    test = \"a\";\n" + "    return test;\n" + "  }\n" + "}";
         LanguageVersion language = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
         ParserOptions parserOptions = language.getLanguageVersionHandler().getDefaultParserOptions();

@@ -64,8 +64,8 @@ public class ASTLiteralTest extends ParserTst {
         ASTLiteral literal = new ASTLiteral(1);
         literal.setStringLiteral();
         literal.setImage("abcüabc");
-        literal.testingOnly__setBeginColumn(1);
-        literal.testingOnly__setEndColumn(7);
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(7);
         assertEquals("abcüabc", literal.getEscapedStringLiteral());
         assertEquals("abcüabc", literal.getImage());
     }
@@ -75,8 +75,8 @@ public class ASTLiteralTest extends ParserTst {
         ASTLiteral literal = new ASTLiteral(1);
         literal.setStringLiteral();
         literal.setImage("abc\\uXYZAabc");
-        literal.testingOnly__setBeginColumn(1);
-        literal.testingOnly__setEndColumn(12);
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(12);
         assertEquals("abc\\uXYZAabc", literal.getEscapedStringLiteral());
         assertEquals("abc\\uXYZAabc", literal.getImage());
     }
@@ -86,8 +86,8 @@ public class ASTLiteralTest extends ParserTst {
         ASTLiteral literal = new ASTLiteral(1);
         literal.setStringLiteral();
         literal.setImage("abc\u1234abc");
-        literal.testingOnly__setBeginColumn(1);
-        literal.testingOnly__setEndColumn(12);
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(12);
         assertEquals("abc\\u1234abc", literal.getEscapedStringLiteral());
         assertEquals("abcሴabc", literal.getImage());
     }
@@ -97,8 +97,8 @@ public class ASTLiteralTest extends ParserTst {
         ASTLiteral literal = new ASTLiteral(1);
         literal.setCharLiteral();
         literal.setImage("\u0030");
-        literal.testingOnly__setBeginColumn(1);
-        literal.testingOnly__setEndColumn(6);
+        literal.testingOnlySetBeginColumn(1);
+        literal.testingOnlySetEndColumn(6);
         assertEquals("\\u0030", literal.getEscapedStringLiteral());
         assertEquals("0", literal.getImage());
     }

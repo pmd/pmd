@@ -18,9 +18,9 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  */
 public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 
-    private static final int maxStringLength = 52;
-    private static final char delimiter = '|';
-    private static final char[] charSet = filter(allChars.toCharArray(), delimiter);
+    private static final int MAX_STRING_LENGTH = 52;
+    private static final char DELIMITER = '|';
+    private static final char[] CHARSET = filter(ALL_CHARS.toCharArray(), DELIMITER);
 
     public StringPropertyTest() {
         super("String");
@@ -75,11 +75,11 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
      */
     private String newString() {
 
-        int strLength = randomInt(0, maxStringLength);
+        int strLength = randomInt(0, MAX_STRING_LENGTH);
 
         char[] chars = new char[strLength];
         for (int i = 0; i < chars.length; i++) {
-            chars[i] = randomCharIn(charSet);
+            chars[i] = randomCharIn(CHARSET);
         }
         return new String(chars);
     }
@@ -105,7 +105,7 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
     @Override
     protected PropertyDescriptor createProperty(boolean multiValue) {
         return multiValue ? new StringMultiProperty("testString", "Test string property",
-                new String[] { "hello", "world" }, 1.0f, delimiter)
+                new String[] { "hello", "world" }, 1.0f, DELIMITER)
                 : new StringProperty("testString", "Test string property", "brian", 1.0f);
     }
 
@@ -120,7 +120,7 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
         return multiValue
                 ? new StringMultiProperty("testString", "Test string property",
-                        new String[] { "hello", "world", "a" + delimiter + "b" }, 1.0f, delimiter)
+                        new String[] { "hello", "world", "a" + DELIMITER + "b" }, 1.0f, DELIMITER)
                 : new StringProperty("", "Test string property", "brian", 1.0f);
     }
 }

@@ -80,6 +80,8 @@ public class DCD {
     // allocate those references to the interface/super-class.
     //
 
+    private DCD() { }
+
     public static void dump(UsageGraph usageGraph, boolean verbose) {
         usageGraph.accept(new DumpNodeVisitor(), Boolean.valueOf(verbose));
     }

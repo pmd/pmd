@@ -107,8 +107,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                 && (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType()
                         || Double.TYPE == method.getReturnType() || String.class == method.getReturnType())
                 && method.getParameterTypes().length == 0 && Void.TYPE != method.getReturnType()
-                && !methodName.startsWith("jjt") && !methodName.equals("toString") && !methodName.equals("getScope")
-                && !methodName.equals("getClass") && !methodName.equals("getTypeNameNode")
-                && !methodName.equals("getImportedNameNode") && !methodName.equals("hashCode");
+                && !methodName.startsWith("jjt") && !"toString".equals(methodName) && !"getScope".equals(methodName)
+                && !"getClass".equals(methodName) && !"getTypeNameNode".equals(methodName)
+                && !"getImportedNameNode".equals(methodName) && !"hashCode".equals(methodName);
     }
 }

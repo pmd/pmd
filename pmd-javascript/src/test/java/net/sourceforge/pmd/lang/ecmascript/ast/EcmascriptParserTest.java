@@ -31,7 +31,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testLineNumbers() {
-        String SOURCE_CODE = "function a() {" + PMD.EOL + "  alert('hello');" + PMD.EOL + "}" + PMD.EOL;
+        final String SOURCE_CODE = "function a() {" + PMD.EOL + "  alert('hello');" + PMD.EOL + "}" + PMD.EOL;
         EcmascriptNode<AstRoot> node = parse(SOURCE_CODE);
         assertEquals(1, node.getBeginLine());
         assertEquals(1, node.getBeginColumn());

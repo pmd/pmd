@@ -36,14 +36,14 @@ public abstract class AbstractPropertyDescriptorTester {
 
     protected final String typeName;
 
-    private static final int multiValueCount = 10;
+    private static final int MULTI_VALUE_COUNT = 10;
 
-    public static final String punctuationChars = "!@#$%^&*()_-+=[]{}\\|;:'\",.<>/?`~";
-    public static final String whitespaceChars = " \t\n";
-    public static final String digitChars = "0123456789";
-    public static final String alphaChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmniopqrstuvwxyz";
-    public static final String alphaNumericChars = digitChars + alphaChars;
-    public static final String allChars = punctuationChars + whitespaceChars + alphaNumericChars;
+    public static final String PUNCTUATION_CHARS = "!@#$%^&*()_-+=[]{}\\|;:'\",.<>/?`~";
+    public static final String WHITESPACE_CHARS = " \t\n";
+    public static final String DIGIST_CHARS = "0123456789";
+    public static final String ALPHA_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmniopqrstuvwxyz";
+    public static final String ALPHA_NUMERIC_CHARS = DIGIST_CHARS + ALPHA_CHARS;
+    public static final String ALL_CHARS = PUNCTUATION_CHARS + WHITESPACE_CHARS + ALPHA_NUMERIC_CHARS;
 
     /**
      * Return a legal value(s) per the general scope of the descriptor.
@@ -115,7 +115,7 @@ public abstract class AbstractPropertyDescriptorTester {
     public void testFactoryMultiValueDefaultDelimiter() {
         PropertyDescriptorFactory multiFactory = getMultiFactory();
         PropertyDescriptor prop = multiFactory.createWith(getPropertyDescriptorValues());
-        Object originalValue = createValue(multiValueCount);
+        Object originalValue = createValue(MULTI_VALUE_COUNT);
         String asDelimitedString = prop.asDelimitedString(originalValue);
         Object value2 = prop.valueFrom(asDelimitedString);
         Assert.assertArrayEquals((Object[]) originalValue, (Object[]) value2);
@@ -126,10 +126,10 @@ public abstract class AbstractPropertyDescriptorTester {
         PropertyDescriptorFactory multiFactory = getMultiFactory();
         Map<String, String> valuesById = getPropertyDescriptorValues();
         String customDelimiter = "ä";
-        Assert.assertFalse(allChars.contains(customDelimiter));
+        Assert.assertFalse(ALL_CHARS.contains(customDelimiter));
         valuesById.put(PropertyDescriptorFields.DELIMITER, customDelimiter);
         PropertyDescriptor prop = multiFactory.createWith(valuesById);
-        Object originalValue = createValue(multiValueCount);
+        Object originalValue = createValue(MULTI_VALUE_COUNT);
         String asDelimitedString = prop.asDelimitedString(originalValue);
         Object value2 = prop.valueFrom(asDelimitedString);
         Assert.assertEquals(Arrays.toString((Object[]) originalValue), Arrays.toString((Object[]) value2));
@@ -155,7 +155,7 @@ public abstract class AbstractPropertyDescriptorTester {
     @Test
     public void testAsDelimitedString() {
 
-        Object testValue = createValue(multiValueCount);
+        Object testValue = createValue(MULTI_VALUE_COUNT);
         PropertyDescriptor pmdProp = createProperty(true);
 
         String storeValue = pmdProp.asDelimitedString(testValue);
@@ -189,7 +189,7 @@ public abstract class AbstractPropertyDescriptorTester {
         String errorMsg = pmdProp.errorFor(testValue);
         assertNull(errorMsg, errorMsg);
 
-        testValue = createValue(multiValueCount); // multi-value property, all
+        testValue = createValue(MULTI_VALUE_COUNT); // multi-value property, all
         // valid test values
         pmdProp = createProperty(true);
         errorMsg = pmdProp.errorFor(testValue);
@@ -208,7 +208,7 @@ public abstract class AbstractPropertyDescriptorTester {
             Assert.fail("uncaught bad value: " + testValue);
         }
 
-        testValue = createBadValue(multiValueCount); // multi-value prop,
+        testValue = createBadValue(MULTI_VALUE_COUNT); // multi-value prop,
         // several bad values
         pmdProp = createProperty(true);
         errorMsg = pmdProp.errorFor(testValue);
@@ -260,7 +260,7 @@ public abstract class AbstractPropertyDescriptorTester {
 
     public static String randomString(int length) {
 
-        final char[] chars = alphaChars.toCharArray();
+        final char[] chars = ALPHA_CHARS.toCharArray();
 
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

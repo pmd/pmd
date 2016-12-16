@@ -18,7 +18,7 @@ public class AttributeTest {
     @Test
     public void testConstructor() {
         DummyNode p = new DummyNode(1);
-        p.testingOnly__setBeginLine(5);
+        p.testingOnlySetBeginLine(5);
         Method[] methods = p.getClass().getMethods();
         Method m = null;
         for (int i = 0; i < methods.length; i++) {

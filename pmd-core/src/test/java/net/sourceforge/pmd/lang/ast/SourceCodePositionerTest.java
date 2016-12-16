@@ -13,7 +13,7 @@ import org.junit.Test;
  */
 public class SourceCodePositionerTest {
 
-    private final String SOURCE_CODE = "abcd\ndefghi\n\njklmn\nopq";
+    private static final String SOURCE_CODE = "abcd\ndefghi\n\njklmn\nopq";
 
     /**
      * Tests whether the lines and columns are calculated correctly.

@@ -55,13 +55,13 @@ public class CPPTokenizerTest {
     }
 
     @Test
-    public void testContinuation_IntraToken() {
+    public void testContinuationIntraToken() {
         Tokens tokens = parse(TEST5);
         assertEquals(7, tokens.size());
     }
 
     @Test
-    public void testContinuation_InterToken() {
+    public void testContinuationInterToken() {
         Tokens tokens = parse(TEST6);
         assertEquals(17, tokens.size());
     }
@@ -172,8 +172,4 @@ public class CPPTokenizerTest {
 
     private static final String TEST7 = "asm void eSPI_boot()" + PMD.EOL + "{" + PMD.EOL + "  // setup stack pointer"
             + PMD.EOL + "  lis r1, _stack_addr@h" + PMD.EOL + "  ori r1, r1, _stack_addr@l" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(CPPTokenizerTest.class);
-    }
 }

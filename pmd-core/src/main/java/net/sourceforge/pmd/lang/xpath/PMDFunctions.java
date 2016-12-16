@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.xpath;
 
 public class PMDFunctions {
+    private PMDFunctions() { }
+
     public static boolean matches(String s, String pattern1) {
         return MatchesFunction.matches(s, pattern1);
     }

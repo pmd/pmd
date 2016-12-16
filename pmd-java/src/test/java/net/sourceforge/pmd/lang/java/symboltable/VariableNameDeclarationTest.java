@@ -33,7 +33,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
     @Test
     public void testExceptionBlkParam() {
         ASTVariableDeclaratorId id = new ASTVariableDeclaratorId(3);
-        id.testingOnly__setBeginLine(10);
+        id.testingOnlySetBeginLine(10);
         id.setImage("foo");
         ASTFormalParameter param = new ASTFormalParameter(2);
         id.jjtSetParent(param);

@@ -29,6 +29,8 @@ public class PMDCommandLineInterface {
     public static final int ERROR_STATUS = 1;
     public static final int VIOLATIONS_FOUND = 4;
 
+    private PMDCommandLineInterface() { }
+
     public static PMDParameters extractParameters(PMDParameters arguments, String[] args, String progName) {
         JCommander jcommander = new JCommander(arguments);
         jcommander.setProgramName(progName);
