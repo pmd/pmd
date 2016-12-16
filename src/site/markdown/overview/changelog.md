@@ -76,16 +76,16 @@ to detect most common security problems.
 ##### ApexBadCrypto
 
 The rule makes sure you are using randomly generated IVs and keys for `Crypto` calls.
-Hard-wiring these values greatly compromise the security of encrypted data.
+Hard-wiring these values greatly compromises the security of encrypted data.
 
 For instance, it would report violations on code such as:
 
 ```
 public class without sharing Foo {
     Blob hardCodedIV = Blob.valueOf('Hardcoded IV 123');
-    Blob key = Crypto.generateAesKey(128);
+    Blob hardCodedKey = Blob.valueOf('0000000000000000');
     Blob data = Blob.valueOf('Data to be encrypted');
-    Blob encrypted = Crypto.encrypt('AES128', key, hardCodedIV, data);
+    Blob encrypted = Crypto.encrypt('AES128', hardCodedKey, hardCodedIV, data);
 }
 
 ```
@@ -93,8 +93,8 @@ public class without sharing Foo {
 ##### ApexCRUDViolation
 
 The rule validates you are checking for access permissions before a SOQL/SOSL/DML operation.
-Not having proper permissions will produce runtime errors. This check forces you to handle
-such scenarios.
+Since Apex runs in system mode not having proper permissions checks results in escalation of 
+privilege and may produce runtime errors. This check forces you to handle such scenarios.
 
 For example, the following code is considered valid:
 
@@ -142,7 +142,7 @@ For the time being, it reports:
 
 * Against `FinancialForce`'s `Configuration.disableTriggerCRUDSecurity()`. Disabling CRUD security
 opens the door to several attacks and requires manual validation, which is unreliable.
-* Calling `System.debug` passing sensible data as parameter, which could lead to exposure
+* Calling `System.debug` passing sensitive data as parameter, which could lead to exposure
 of private data.
 
 ##### ApexInsecureEndpoint
@@ -168,7 +168,7 @@ public class without sharing Foo {
 
 ##### ApexSharingViolations
 
-Detect classes declared with no explicit sharing mode if DML methods are used. This
+Detect classes declared without explicit sharing mode if DML methods are used. This
 forces the developer to take access restrictions into account before modifying objects.
 
 ##### ApexSOQLInjection
@@ -187,7 +187,7 @@ public class Foo {
 
 ##### ApexXSSFromEscapeFalse
 
-Reports on calls to `addError` disabling escaping. The message passed to `addError`
+Reports on calls to `addError` with disabled escaping. The message passed to `addError`
 will be displayed directly to the user in the UI, making it prime ground for XSS
 attacks if unescaped.
 
