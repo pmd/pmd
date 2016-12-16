@@ -239,4 +239,5 @@ to avoid XSS attacks.
 *   [#160](https://github.com/pmd/pmd/pull/160): \[apex] Flagging of dangerous method call
 *   [#163](https://github.com/pmd/pmd/pull/163): \[apex] Flagging of System.debug
 *   [#165](https://github.com/pmd/pmd/pull/165): \[apex] Improving open redirect rule to avoid test classes/methods
+*   [#168](https://github.com/pmd/pmd/pull/167): \[apex] GC and thread safety changes
 
