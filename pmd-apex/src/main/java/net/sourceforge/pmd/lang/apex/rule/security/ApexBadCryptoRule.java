@@ -64,6 +64,9 @@ public class ApexBadCryptoRule extends AbstractApexRule {
                 validateStaticIVorKey(methodCall, data);
             }
         }
+        
+        potentiallyStaticBlob.clear();
+        
         return data;
     }
 
