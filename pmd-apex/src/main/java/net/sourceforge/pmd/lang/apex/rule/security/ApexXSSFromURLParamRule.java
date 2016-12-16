@@ -37,7 +37,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private static final String[] DOUBLE_VALUEOF = new String[] { "Double", "valueOf" };
     private static final String[] STRING_ISEMPTY = new String[] { "String", "isEmpty" };
 
-    private static final Set<String> URL_PARAMETER_STRINGS = new HashSet<>();
+    private final Set<String> urlParameterStrings = new HashSet<>();
 
     public ApexXSSFromURLParamRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
@@ -88,7 +88,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
 
         for (ASTVariableExpression varExpression : nodes) {
-            if (URL_PARAMETER_STRINGS.contains(Helper.getFQVariableName(varExpression))) {
+            if (urlParameterStrings.contains(Helper.getFQVariableName(varExpression))) {
                 addViolation(data, nodes.get(0));
             }
         }
@@ -133,7 +133,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
 
                 if (left != null) {
-                    URL_PARAMETER_STRINGS.add(Helper.getFQVariableName(left));
+                    urlParameterStrings.add(Helper.getFQVariableName(left));
                 }
             }
 
@@ -159,7 +159,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 return;
             }
 
-            if (URL_PARAMETER_STRINGS.contains(Helper.getFQVariableName(variable))) {
+            if (urlParameterStrings.contains(Helper.getFQVariableName(variable))) {
                 if (!isEscapingMethod(methodNode)) {
                     addViolation(data, variable);
                 }
@@ -192,7 +192,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             // Look for: foo = bar;
             final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
 
-            if (URL_PARAMETER_STRINGS.contains(Helper.getFQVariableName(right))) {
+            if (urlParameterStrings.contains(Helper.getFQVariableName(right))) {
                 addViolation(data, right);
             }
         }
@@ -217,7 +217,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         final List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
         for (ASTVariableExpression n : nodes) {
 
-            if (URL_PARAMETER_STRINGS.contains(Helper.getFQVariableName(n))) {
+            if (urlParameterStrings.contains(Helper.getFQVariableName(n))) {
                 addViolation(data, n);
             }
         }
