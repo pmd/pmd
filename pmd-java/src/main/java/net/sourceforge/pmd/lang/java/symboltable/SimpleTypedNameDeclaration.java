@@ -155,22 +155,22 @@ public class SimpleTypedNameDeclaration implements TypedNameDeclaration {
                 if (primitiveTypes.contains(lcType) && primitiveTypes.contains(otherLcType)) {
                     if (lcType.equals(otherLcType)) {
                         return true;
-                    } else if ((lcType.equals("char") || lcType.equals("character"))
-                            && (otherLcType.equals("char") || otherLcType.equals("character"))) {
+                    } else if (("char".equals(lcType) || "character".equals(lcType))
+                            && ("char".equals(otherLcType) || "character".equals(otherLcType))) {
                         return true;
-                    } else if ((lcType.equals("int") || lcType.equals("integer"))
-                            && (otherLcType.equals("int") || otherLcType.equals("integer")
-                                    || otherLcType.equals("short") || otherLcType.equals("char")
-                                    || otherLcType.equals("character") || otherLcType.equals("byte"))) {
+                    } else if (("int".equals(lcType) || "integer".equals(lcType))
+                            && ("int".equals(otherLcType) || "integer".equals(otherLcType)
+                                    || "short".equals(otherLcType) || "char".equals(otherLcType)
+                                    || "character".equals(otherLcType) || "byte".equals(otherLcType))) {
                         return true;
-                    } else if (lcType.equals("double") && (otherLcType.equals("float") || otherLcType.equals("int")
-                            || otherLcType.equals("integer") || otherLcType.equals("long"))) {
+                    } else if ("double".equals(lcType) && ("float".equals(otherLcType) || "int".equals(otherLcType)
+                            || "integer".equals(otherLcType) || "long".equals(otherLcType))) {
                         return true;
-                    } else if (lcType.equals("float") && (otherLcType.equals("int") || otherLcType.equals("integer")
-                            || otherLcType.equals("long"))) {
+                    } else if ("float".equals(lcType) && ("int".equals(otherLcType) || "integer".equals(otherLcType)
+                            || "long".equals(otherLcType))) {
                         return true;
-                    } else if (lcType.equals("long") && (otherLcType.equals("int") || otherLcType.equals("integer")
-                            || otherLcType.equals("char") || otherLcType.equals("character"))) {
+                    } else if ("long".equals(lcType) && ("int".equals(otherLcType) || "integer".equals(otherLcType)
+                            || "char".equals(otherLcType) || "character".equals(otherLcType))) {
                         return true;
                     }
                 }

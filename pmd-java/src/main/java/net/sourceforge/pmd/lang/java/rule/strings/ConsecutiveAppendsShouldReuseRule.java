@@ -113,7 +113,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
                                 .getFirstDescendantOfType(ASTPrimarySuffix.class);
                         if (primarySuffix != null) {
                             final String name = primarySuffix.getImage();
-                            if (name != null && name.equals("append")) {
+                            if ("append".equals(name)) {
                                 final ASTPrimaryExpression pExp = stmtExp
                                         .getFirstDescendantOfType(ASTPrimaryExpression.class);
                                 if (pExp != null) {
@@ -140,7 +140,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
                 ASTPrimarySuffix primarySuffix = exp.getFirstDescendantOfType(ASTPrimarySuffix.class);
                 if (primarySuffix != null) {
                     final String name = primarySuffix.getImage();
-                    if (name != null && name.equals("append")) {
+                    if ("append".equals(name)) {
                         String variable = vdId.getImage();
                         if (isAStringBuilderBuffer(primarySuffix, variable)) {
                             return variable;

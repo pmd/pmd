@@ -170,7 +170,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         String varName = variableDeclaratorId.getImage();
 
         // Skip serialVersionUID
-        if (varName.equals("serialVersionUID")) {
+        if ("serialVersionUID".equals(varName)) {
             return data;
         }
 
