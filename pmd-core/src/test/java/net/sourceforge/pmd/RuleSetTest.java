@@ -30,8 +30,6 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 
 public class RuleSetTest {
 
-    private String javaCode = "public class Test { }";
-
     @Test
     public void testNoDFA() {
         RuleSet rs = new RuleSet();
@@ -80,18 +78,18 @@ public class RuleSetTest {
 
     @Test
     public void testRuleList() {
-        RuleSet IUT = new RuleSet();
+        RuleSet ruleset = new RuleSet();
 
-        assertEquals("Size of RuleSet isn't zero.", 0, IUT.size());
+        assertEquals("Size of RuleSet isn't zero.", 0, ruleset.size());
 
         MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        IUT.addRule(rule);
+        ruleset.addRule(rule);
 
-        assertEquals("Size of RuleSet isn't one.", 1, IUT.size());
+        assertEquals("Size of RuleSet isn't one.", 1, ruleset.size());
 
-        Collection rules = IUT.getRules();
+        Collection<Rule> rules = ruleset.getRules();
 
-        Iterator i = rules.iterator();
+        Iterator<Rule> i = rules.iterator();
         assertTrue("Empty Set", i.hasNext());
         assertEquals("Returned set of wrong size.", 1, rules.size());
         assertEquals("Rule isn't in ruleset.", rule, i.next());
@@ -152,8 +150,8 @@ public class RuleSetTest {
 
     @Test
     public void testApply0Rules() {
-        RuleSet IUT = new RuleSet();
-        verifyRuleSet(IUT, 0, new HashSet());
+        RuleSet ruleset = new RuleSet();
+        verifyRuleSet(ruleset, 0, new HashSet<RuleViolation>());
     }
 
     @Test
@@ -406,16 +404,16 @@ public class RuleSetTest {
         assertEquals("Violations", 1, r.size());
     }
 
-    private void verifyRuleSet(RuleSet IUT, int size, Set values) {
+    private void verifyRuleSet(RuleSet ruleset, int size, Set<RuleViolation> values) {
 
         RuleContext context = new RuleContext();
         Set<RuleViolation> reportedValues = new HashSet<>();
         context.setReport(new Report());
-        IUT.apply(makeCompilationUnits(), context);
+        ruleset.apply(makeCompilationUnits(), context);
 
         assertEquals("Invalid number of Violations Reported", size, context.getReport().size());
 
-        Iterator violations = context.getReport().iterator();
+        Iterator<RuleViolation> violations = context.getReport().iterator();
         while (violations.hasNext()) {
             RuleViolation violation = (RuleViolation) violations.next();
 
@@ -423,7 +421,7 @@ public class RuleSetTest {
             assertTrue("Unexpected Violation Returned: " + violation, values.contains(violation));
         }
 
-        Iterator expected = values.iterator();
+        Iterator<RuleViolation> expected = values.iterator();
         while (expected.hasNext()) {
             RuleViolation violation = (RuleViolation) expected.next();
             assertTrue("Expected Violation not Returned: " + violation, reportedValues.contains(violation));
@@ -431,12 +429,12 @@ public class RuleSetTest {
     }
 
     private List<Node> makeCompilationUnits() {
-        List<Node> RC = new ArrayList<>();
+        List<Node> nodes = new ArrayList<>();
         DummyNode node = new DummyNode(1);
-        node.testingOnly__setBeginLine(1);
-        node.testingOnly__setBeginColumn(1);
+        node.testingOnlySetBeginLine(1);
+        node.testingOnlySetBeginColumn(1);
         node.setImage("Foo");
-        RC.add(node);
-        return RC;
+        nodes.add(node);
+        return nodes;
     }
 }

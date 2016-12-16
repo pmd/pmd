@@ -74,6 +74,8 @@ public class NodeType {
         TYPE_MAP.put(NodeType.THROW_STATEMENT, "THROW_STATEMENT");
     }
 
+    private NodeType() { }
+
     public static Map<Integer, String> getTypeMap() {
         return TYPE_MAP;
     }

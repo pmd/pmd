@@ -86,7 +86,7 @@ public class StatisticalRuleTest {
     private static final int POINTS = 100;
 
     private DataPoint[] points = new DataPoint[POINTS];
-    private MockStatisticalRule IUT = null;
+    private MockStatisticalRule ruleUnderTest = null;
     // FIXME - why/when was this added. It was never set.
     private String testName = "";
     private Random random = new Random();
@@ -106,30 +106,30 @@ public class StatisticalRuleTest {
 
     @Before
     public void setUp() {
-        IUT = new MockStatisticalRule();
+        ruleUnderTest = new MockStatisticalRule();
         if (testName.endsWith("0")) {
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
                 DummyNode s = new DummyNode(1);
-                s.testingOnly__setBeginLine(i);
-                s.testingOnly__setBeginColumn(1);
+                s.testingOnlySetBeginLine(i);
+                s.testingOnlySetBeginColumn(1);
                 points[i].setNode(s);
                 points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
 
-                IUT.addDataPoint(points[i]);
+                ruleUnderTest.addDataPoint(points[i]);
             }
         } else if (testName.endsWith("1")) {
             for (int i = POINTS - 1; i >= 0; i--) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
                 DummyNode s = new DummyNode(1);
-                s.testingOnly__setBeginLine(i);
-                s.testingOnly__setBeginColumn(1);
+                s.testingOnlySetBeginLine(i);
+                s.testingOnlySetBeginColumn(1);
                 points[i].setNode(s);
                 points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
 
-                IUT.addDataPoint(points[i]);
+                ruleUnderTest.addDataPoint(points[i]);
             }
         } else {
             List<DataPoint> lPoints = new ArrayList<>();
@@ -137,9 +137,9 @@ public class StatisticalRuleTest {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
                 DummyNode s = new DummyNode(1);
-                s.testingOnly__setBeginLine(i);
-                s.testingOnly__setBeginColumn(1);
-                s.testingOnly__setBeginColumn(1);
+                s.testingOnlySetBeginLine(i);
+                s.testingOnlySetBeginColumn(1);
+                s.testingOnlySetBeginColumn(1);
                 points[i].setNode(s);
                 points[i].setMessage("DataPoint[" + Integer.toString(i) + "]");
 
@@ -148,7 +148,7 @@ public class StatisticalRuleTest {
 
             Collections.shuffle(lPoints);
             for (int i = 0; i < POINTS; i++) {
-                IUT.addDataPoint(lPoints.get(i));
+                ruleUnderTest.addDataPoint(lPoints.get(i));
             }
         }
 
@@ -160,7 +160,7 @@ public class StatisticalRuleTest {
      */
     @Test
     public void testMetrics() {
-        Report report = makeReport(IUT);
+        Report report = makeReport(ruleUnderTest);
         Iterator<Metric> metrics = report.metrics();
 
         assertTrue(metrics.hasNext());
@@ -272,21 +272,21 @@ public class StatisticalRuleTest {
     // Test Single Datapoint
     @Test
     public void testSingleDatapoint() {
-        StatisticalRule IUT = new MockStatisticalRule();
+        StatisticalRule rule = new MockStatisticalRule();
 
         DataPoint point = new DataPoint();
         point.setScore(POINTS + 1.0);
         DummyNode s = new DummyNode(1);
-        s.testingOnly__setBeginLine(POINTS + 1);
-        s.testingOnly__setBeginColumn(1);
+        s.testingOnlySetBeginLine(POINTS + 1);
+        s.testingOnlySetBeginColumn(1);
         point.setNode(s);
         point.setMessage("SingleDataPoint");
 
-        IUT.setProperty(MINIMUM_DESCRIPTOR, (double) POINTS);
+        rule.setProperty(MINIMUM_DESCRIPTOR, (double) POINTS);
 
-        IUT.addDataPoint(point);
+        rule.addDataPoint(point);
 
-        Report report = makeReport(IUT);
+        Report report = makeReport(rule);
 
         assertEquals("Expecting only one result", 1, report.size());
     }
@@ -803,18 +803,18 @@ public class StatisticalRuleTest {
         try {
             setUp();
             if (sigma >= 0) {
-                IUT.setProperty(SIGMA_DESCRIPTOR, sigma);
+                ruleUnderTest.setProperty(SIGMA_DESCRIPTOR, sigma);
             }
 
             if (minimum >= 0) {
-                IUT.setProperty(MINIMUM_DESCRIPTOR, minimum);
+                ruleUnderTest.setProperty(MINIMUM_DESCRIPTOR, minimum);
             }
 
             if (topScore >= 0) {
-                IUT.setProperty(TOP_SCORE_DESCRIPTOR, topScore);
+                ruleUnderTest.setProperty(TOP_SCORE_DESCRIPTOR, topScore);
             }
 
-            Report report = makeReport(IUT);
+            Report report = makeReport(ruleUnderTest);
             if (delta == 0) {
                 assertEquals(
                         "Unexpected number of results: sigma= " + Double.toString(sigma) + " min= "
@@ -851,7 +851,7 @@ public class StatisticalRuleTest {
         }
     }
 
-    public Report makeReport(Rule IUT) {
+    public Report makeReport(Rule rule) {
         List<Node> list = new ArrayList<>();
         Report report = new Report();
 
@@ -860,7 +860,7 @@ public class StatisticalRuleTest {
         ctx.setSourceCodeFilename(testName);
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
 
-        IUT.apply(list, ctx);
+        rule.apply(list, ctx);
 
         return report;
     }

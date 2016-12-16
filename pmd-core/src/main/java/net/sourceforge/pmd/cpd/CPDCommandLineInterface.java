@@ -29,6 +29,8 @@ public class CPDCommandLineInterface {
 
     private static final String PROGRAM_NAME = "cpd";
 
+    private CPDCommandLineInterface() { }
+
     public static void setStatusCodeOrExit(int status) {
         if (isExitAfterRunSet()) {
             System.exit(status);

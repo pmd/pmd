@@ -117,13 +117,13 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
 
     private int getRemediationPoints() {
-        int remediation_points = REMEDIATION_POINTS_DEFAULT;
+        int remediationPoints = REMEDIATION_POINTS_DEFAULT;
 
         if (rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
-            remediation_points *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
+            remediationPoints *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
         }
 
-        return remediation_points;
+        return remediationPoints;
     }
 
     private String[] getCategories() {

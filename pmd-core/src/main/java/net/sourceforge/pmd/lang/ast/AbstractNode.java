@@ -140,7 +140,7 @@ public abstract class AbstractNode implements Node {
         return beginLine;
     }
 
-    public void testingOnly__setBeginLine(int i) {
+    public void testingOnlySetBeginLine(int i) {
         this.beginLine = i;
     }
 
@@ -157,7 +157,7 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-    public void testingOnly__setBeginColumn(int i) {
+    public void testingOnlySetBeginColumn(int i) {
         this.beginColumn = i;
     }
 
@@ -166,7 +166,7 @@ public abstract class AbstractNode implements Node {
         return endLine;
     }
 
-    public void testingOnly__setEndLine(int i) {
+    public void testingOnlySetEndLine(int i) {
         this.endLine = i;
     }
 
@@ -175,7 +175,7 @@ public abstract class AbstractNode implements Node {
         return endColumn;
     }
 
-    public void testingOnly__setEndColumn(int i) {
+    public void testingOnlySetEndColumn(int i) {
         this.endColumn = i;
     }
 

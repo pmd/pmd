@@ -272,7 +272,7 @@ public class DBURI {
         Map<String, String> map = new HashMap<>();
         String query = dburi.getRawQuery();
         LOGGER.log(Level.FINEST, "dburi,getQuery()={0}", query);
-        if (null != query && !query.equals("")) {
+        if (null != query && !"".equals(query)) {
             String[] params = query.split("&");
             for (String param : params) {
                 String[] splits = param.split("=");
@@ -303,7 +303,7 @@ public class DBURI {
         LOGGER.fine(dumpString);
 
         String query = dburi.getQuery();
-        if (null != query && !query.equals("")) {
+        if (null != query && !"".equals(query)) {
             String[] params = query.split("&");
             Map<String, String> map = new HashMap<>();
             for (String param : params) {

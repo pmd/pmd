@@ -8,6 +8,9 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class PropertyDescriptorFactory {
+
+    private PropertyDescriptorFactory() { }
+
     /**
      * Returns the String type of the PropertyDescriptor for use in XML
      * serialization. If the value is <code>null</code> the type cannot be

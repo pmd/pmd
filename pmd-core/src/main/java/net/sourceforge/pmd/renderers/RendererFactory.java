@@ -45,6 +45,8 @@ public class RendererFactory {
         REPORT_FORMAT_TO_RENDERER = Collections.unmodifiableMap(map);
     }
 
+    private RendererFactory() { }
+
     /**
      * Construct an instance of a Renderer based on report format name.
      *

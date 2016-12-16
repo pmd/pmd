@@ -19,6 +19,8 @@ import net.sf.saxon.sxpath.IndependentContext;
  */
 public class Initializer {
 
+    private Initializer() { }
+
     /**
      * Perform all initialization.
      */

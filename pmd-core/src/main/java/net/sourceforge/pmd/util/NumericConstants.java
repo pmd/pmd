@@ -12,4 +12,5 @@ public class NumericConstants {
 
     public static final Float FLOAT_ZERO = new Float(0.0f);
 
+    private NumericConstants() { }
 }

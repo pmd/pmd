@@ -189,11 +189,11 @@ public class StatementAndBraceFinderTest extends AbstractPLSQLParserTst {
         StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME)
                 .getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
         PLSQLNode node = new ASTMethodDeclaration(1);
-        ((AbstractNode) node).testingOnly__setBeginColumn(1);
+        ((AbstractNode) node).testingOnlySetBeginColumn(1);
         sbf.buildDataFlowFor(node);
         // sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
         node = new ASTProgramUnit(1);
-        ((AbstractNode) node).testingOnly__setBeginColumn(1);
+        ((AbstractNode) node).testingOnlySetBeginColumn(1);
         sbf.buildDataFlowFor(node);
     }
 

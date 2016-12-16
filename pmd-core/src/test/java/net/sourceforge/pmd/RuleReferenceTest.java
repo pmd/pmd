@@ -18,8 +18,6 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
-import junit.framework.JUnit4TestAdapter;
-
 public class RuleReferenceTest {
 
     @Test
@@ -32,7 +30,7 @@ public class RuleReferenceTest {
 
     @Test
     public void testOverride() {
-        StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+        final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
         rule.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME));
@@ -44,7 +42,7 @@ public class RuleReferenceTest {
         rule.setExternalInfoUrl("externalInfoUrl1");
         rule.setPriority(RulePriority.HIGH);
 
-        StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
+        final StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRule(rule);
         ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
@@ -120,7 +118,7 @@ public class RuleReferenceTest {
 
     @Test
     public void testNotOverride() {
-        StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+        final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
         MockRule rule = new MockRule();
         rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
         rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
@@ -185,9 +183,5 @@ public class RuleReferenceTest {
 
         assertEquals("Override failed", RulePriority.HIGH, ruleReference.getPriority());
         assertNull("Override failed", ruleReference.getOverriddenPriority());
-    }
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(RuleReferenceTest.class);
     }
 }

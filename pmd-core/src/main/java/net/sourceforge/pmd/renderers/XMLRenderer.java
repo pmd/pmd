@@ -48,7 +48,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
-        if (encoding.equalsIgnoreCase("utf-8")) {
+        if ("utf-8".equalsIgnoreCase(encoding)) {
             useUTF8 = true;
         }
 

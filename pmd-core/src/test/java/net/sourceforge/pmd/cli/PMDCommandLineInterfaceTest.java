@@ -49,14 +49,14 @@ public class PMDCommandLineInterfaceTest {
     }
 
     @Test
-    public void testSetStatusCodeOrExit_DoExit() {
+    public void testSetStatusCodeOrExitDoExit() {
         exit.expectSystemExitWithStatus(0);
 
         PMDCommandLineInterface.setStatusCodeOrExit(0);
     }
 
     @Test
-    public void testSetStatusCodeOrExit_SetStatus() {
+    public void testSetStatusCodeOrExitSetStatus() {
         System.setProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN, "1");
 
         PMDCommandLineInterface.setStatusCodeOrExit(0);

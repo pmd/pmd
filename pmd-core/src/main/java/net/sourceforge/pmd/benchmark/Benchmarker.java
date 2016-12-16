@@ -43,6 +43,8 @@ public class Benchmarker {
 
     private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
 
+    private Benchmarker() { }
+
     /**
      * @param args
      *            String[]

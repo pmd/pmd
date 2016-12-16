@@ -23,9 +23,9 @@ import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
  */
 public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 
-    private static final String[] keys = new String[] { "map", "emptyArray", "list", "string", };
+    private static final String[] KEYS = new String[] { "map", "emptyArray", "list", "string", };
 
-    private static final Object[] values = new Object[] { new HashMap(), new Object[0], new ArrayList(),
+    private static final Object[] VALUES = new Object[] { new HashMap(), new Object[0], new ArrayList(),
         "Hello World!", };
 
     public EnumeratedPropertyTest() {
@@ -43,7 +43,7 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
     protected Object createValue(int count) {
 
         if (count == 1) {
-            return randomChoice(values);
+            return randomChoice(VALUES);
         }
 
         Object[] values = new Object[count];
@@ -86,9 +86,9 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
         return multiValue
-                ? new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with complex types", keys,
-                        values, new int[] { 0, 1 }, 1.0f)
-                : new EnumeratedProperty<>("testEnumerations", "Test enumerations with complex types", keys, values, 0,
+                ? new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with complex types", KEYS,
+                        VALUES, new int[] { 0, 1 }, 1.0f)
+                : new EnumeratedProperty<>("testEnumerations", "Test enumerations with complex types", KEYS, VALUES, 0,
                         1.0f);
     }
 
@@ -103,10 +103,10 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
         return multiValue
-                ? new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with complex types", keys,
+                ? new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with complex types", KEYS,
                         new Object[0], new int[] { 99 }, 1.0f)
                 : new EnumeratedProperty<>("testEnumerations", "Test enumerations with complex types", new String[0],
-                        values, -1, 1.0f);
+                        VALUES, -1, 1.0f);
     }
 
     @Override

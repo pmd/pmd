@@ -27,9 +27,9 @@ import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
  */
 public class TypePropertyTest extends AbstractPropertyDescriptorTester {
 
-    private static final Class[] javaLangClasses = new Class[] { String.class, Integer.class, Thread.class,
+    private static final Class[] JAVA_LANG_CLASSES = new Class[] { String.class, Integer.class, Thread.class,
         Object.class, Runtime.class, };
-    private static final Class[] javaUtilTypes = new Class[] { HashMap.class, Map.class, Comparator.class, Set.class,
+    private static final Class[] JAVA_UTIL_CLASSES = new Class[] { HashMap.class, Map.class, Comparator.class, Set.class,
         Observer.class, };
 
     public TypePropertyTest() {
@@ -47,7 +47,7 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
     protected Object createValue(int count) {
 
         if (count == 1) {
-            return randomChoice(javaLangClasses);
+            return randomChoice(JAVA_LANG_CLASSES);
         }
 
         Object[] values = new Object[count];
@@ -68,7 +68,7 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
     protected Object createBadValue(int count) {
 
         if (count == 1) {
-            return randomChoice(javaUtilTypes);
+            return randomChoice(JAVA_UTIL_CLASSES);
         }
 
         Object[] values = new Object[count];
@@ -89,9 +89,9 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
         return multiValue
-                ? new TypeMultiProperty("testType", "Test type property", javaLangClasses, new String[] { "java.lang" },
+                ? new TypeMultiProperty("testType", "Test type property", JAVA_LANG_CLASSES, new String[] { "java.lang" },
                         1.0f)
-                : new TypeProperty("testType", "Test type property", javaLangClasses[0], new String[] { "java.lang" },
+                : new TypeProperty("testType", "Test type property", JAVA_LANG_CLASSES[0], new String[] { "java.lang" },
                         1.0f);
     }
 
@@ -108,7 +108,7 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
         return multiValue
                 ? new TypeMultiProperty("testType", "Test type property", new Class[] { Set.class },
                         new String[] { "java.lang" }, 1.0f)
-                : new TypeProperty("testType", "Test type property", javaLangClasses[0], new String[] { "java.util" },
+                : new TypeProperty("testType", "Test type property", JAVA_LANG_CLASSES[0], new String[] { "java.util" },
                         1.0f);
     }
 

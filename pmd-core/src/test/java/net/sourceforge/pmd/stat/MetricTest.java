@@ -41,50 +41,49 @@ public class MetricTest {
 
     @Test
     public void testGetMetricName() {
-        Metric IUT = new Metric(testName, 0, 0.0, 0.0, 0.0, 0.0, 0.0);
-
-        assertEquals(testName, IUT.getMetricName());
+        Metric metric = new Metric(testName, 0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        assertEquals(testName, metric.getMetricName());
     }
 
     @Test
     public void testGetCount() {
         int count = random.nextInt();
-        Metric IUT = new Metric(testName, count, 0.0, 0.0, 0.0, 0.0, 0.0);
-        assertEquals(count, IUT.getCount());
+        Metric metric = new Metric(testName, count, 0.0, 0.0, 0.0, 0.0, 0.0);
+        assertEquals(count, metric.getCount());
     }
 
     @Test
     public void testGetTotal() {
         double total = random.nextDouble();
-        Metric IUT = new Metric(testName, 0, total, 0.0, 0.0, 0.0, 0.0);
-        assertEquals(total, IUT.getTotal(), 0.05);
+        Metric metric = new Metric(testName, 0, total, 0.0, 0.0, 0.0, 0.0);
+        assertEquals(total, metric.getTotal(), 0.05);
     }
 
     @Test
     public void testGetLowValue() {
         double low = random.nextDouble();
-        Metric IUT = new Metric(testName, 0, 0.0, low, 0.0, 0.0, 0.0);
-        assertEquals(low, IUT.getLowValue(), 0.05);
+        Metric metric = new Metric(testName, 0, 0.0, low, 0.0, 0.0, 0.0);
+        assertEquals(low, metric.getLowValue(), 0.05);
     }
 
     @Test
     public void testGetHighValue() {
         double high = random.nextDouble();
-        Metric IUT = new Metric(testName, 0, 0.0, 0.0, high, 0.0, 0.0);
-        assertEquals(high, IUT.getHighValue(), 0.05);
+        Metric metric = new Metric(testName, 0, 0.0, 0.0, high, 0.0, 0.0);
+        assertEquals(high, metric.getHighValue(), 0.05);
     }
 
     @Test
     public void testGetAverage() {
         double mean = random.nextDouble();
-        Metric IUT = new Metric(testName, 0, 0.0, 0.0, 0.0, mean, 0.0);
-        assertEquals(mean, IUT.getAverage(), 0.05);
+        Metric metric = new Metric(testName, 0, 0.0, 0.0, 0.0, mean, 0.0);
+        assertEquals(mean, metric.getAverage(), 0.05);
     }
 
     @Test
     public void testGetStandardDeviation() {
         double stdev = random.nextDouble();
-        Metric IUT = new Metric(testName, 0, 0.0, 0.0, 0.0, 0.0, stdev);
-        assertEquals(stdev, IUT.getStandardDeviation(), 0.05);
+        Metric metric = new Metric(testName, 0, 0.0, 0.0, 0.0, 0.0, stdev);
+        assertEquals(stdev, metric.getStandardDeviation(), 0.05);
     }
 }

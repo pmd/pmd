@@ -491,13 +491,13 @@ public class RuleSetFactory {
                 continue;
             }
             String nodeName = node.getNodeName();
-            if (nodeName.equals(DESCRIPTION)) {
+            if (DESCRIPTION.equals(nodeName)) {
                 rule.setDescription(parseTextNode(node));
-            } else if (nodeName.equals("example")) {
+            } else if ("example".equals(nodeName)) {
                 rule.addExample(parseTextNode(node));
-            } else if (nodeName.equals(PRIORITY)) {
+            } else if (PRIORITY.equals(nodeName)) {
                 rule.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node).trim())));
-            } else if (nodeName.equals("properties")) {
+            } else if ("properties".equals(nodeName)) {
                 parsePropertiesNode(rule, node);
             } else {
                 throw new IllegalArgumentException(UNEXPECTED_ELEMENT + nodeName

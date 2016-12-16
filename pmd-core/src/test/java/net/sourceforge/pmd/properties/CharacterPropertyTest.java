@@ -19,8 +19,8 @@ import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
  */
 public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 
-    private static final char delimiter = '|';
-    private static final char[] charSet = filter(allChars.toCharArray(), delimiter);
+    private static final char DELIMITER = '|';
+    private static final char[] CHARSET = filter(ALL_CHARS.toCharArray(), DELIMITER);
 
     public CharacterPropertyTest() {
         super("Character");
@@ -37,7 +37,7 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
     protected Object createValue(int count) {
 
         if (count == 1) {
-            return new Character(randomChar(charSet));
+            return new Character(randomChar(CHARSET));
         }
 
         Character[] values = new Character[count];
@@ -85,7 +85,7 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 
         return multiValue
                 ? new CharacterMultiProperty("testCharacter", "Test character property",
-                        new Character[] { 'a', 'b', 'c' }, 1.0f, delimiter)
+                        new Character[] { 'a', 'b', 'c' }, 1.0f, DELIMITER)
                 : new CharacterProperty("testCharacter", "Test character property", 'a', 1.0f);
     }
 
@@ -102,7 +102,7 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 
         return multiValue
                 ? new CharacterMultiProperty("testCharacter", "Test character property",
-                        new Character[] { 'a', 'b', 'c' }, 1.0f, delimiter)
+                        new Character[] { 'a', 'b', 'c' }, 1.0f, DELIMITER)
                 : new CharacterProperty("", "Test character property", 'a', 1.0f);
     }
 }

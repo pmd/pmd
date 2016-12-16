@@ -81,6 +81,8 @@ public class PropertyDescriptorUtil {
         DESCRIPTOR_FACTORIES_BY_TYPE = Collections.unmodifiableMap(temp);
     }
 
+    private PropertyDescriptorUtil() { }
+
     public static PropertyDescriptorFactory factoryFor(String typeId) {
         return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);
     }
