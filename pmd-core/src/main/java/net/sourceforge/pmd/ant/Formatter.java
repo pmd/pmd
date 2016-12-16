@@ -1,19 +1,21 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.ant;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Parameter;
 
@@ -57,12 +59,27 @@ public class Formatter {
     }
 
     public void start(String baseDir) {
+
+        Properties properties = createProperties();
+        
+        Charset charset;
+        {
+            String s = (String) properties.get("encoding");
+            if (null == s) {
+                charset = Charset.forName("UTF-8");
+                properties.put("encoding", charset.name());
+            }
+            else {
+                charset = Charset.forName(s);
+            }
+        }
+
         try {
             if (toConsole) {
-                writer = new BufferedWriter(new OutputStreamWriter(System.out));
+                writer = new BufferedWriter(new OutputStreamWriter(System.out, charset));
             }
             if (toFile != null) {
-                writer = getToFileWriter(baseDir);
+                writer = getToFileWriter(baseDir, toFile, charset);
             }
             renderer = createRenderer();
             renderer.setWriter(writer);
@@ -131,11 +148,29 @@ public class Formatter {
         return properties;
     }
 
-    private Writer getToFileWriter(String baseDir) throws IOException {
-        if (!toFile.isAbsolute()) {
-            return new BufferedWriter(
-                    new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
+    private static final Writer getToFileWriter(String baseDir, File toFile, Charset charset) throws IOException {
+        final File file;
+        if (toFile.isAbsolute()) {
+            file = toFile;
         }
-        return new BufferedWriter(new FileWriter(toFile));
+        else {
+            file = new File(baseDir + System.getProperty("file.separator") + toFile.getPath());
+        }
+
+        OutputStream output = null;
+        Writer writer = null;
+        boolean isOnError = true;
+        try {
+            output = new FileOutputStream(file);
+            writer = new OutputStreamWriter(output, charset);
+            writer = new BufferedWriter(writer);
+            isOnError = false;
+        }
+        finally {
+            if (isOnError) {
+                IOUtils.closeQuietly(output, writer);
+            }
+        }
+        return writer;
     }
 }
