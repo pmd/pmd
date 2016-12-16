@@ -80,6 +80,9 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                 reportVariables(m, data);
             }
         }
+        
+        safeVariables.clear();
+        selectContainingVariables.clear();
 
         return data;
     }
