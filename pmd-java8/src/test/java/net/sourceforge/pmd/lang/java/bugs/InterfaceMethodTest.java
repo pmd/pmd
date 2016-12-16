@@ -20,7 +20,7 @@ import net.sourceforge.pmd.typeresolution.testdata.UsesJavaStreams;
 public class InterfaceMethodTest {
 
     @Test
-    public void should_not_fail() {
+    public void shouldNotFail() {
         ASTCompilationUnit acu = parseAndTypeResolveForClass(UsesJavaStreams.class);
     }
 

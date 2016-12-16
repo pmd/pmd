@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class ApexDangerousMethodsRule extends AbstractApexRule {
     private static final String BOOLEAN = "boolean";
 
-    private static final Pattern regexp = Pattern.compile("^.*?(pass|pwd|crypt|auth|session|token|saml)(?!id|user).*?$",
+    private static final Pattern REGEXP = Pattern.compile("^.*?(pass|pwd|crypt|auth|session|token|saml)(?!id|user).*?$",
             Pattern.CASE_INSENSITIVE);
 
     private static final String DISABLE_CRUD = "disableTriggerCRUDSecurity";
@@ -89,7 +89,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
     private void validateParameters(ASTMethodCallExpression methodCall, Object data) {
         List<ASTVariableExpression> variables = methodCall.findDescendantsOfType(ASTVariableExpression.class);
         for (ASTVariableExpression var : variables) {
-            if (regexp.matcher(var.getNode().getIdentifier().value).matches()) {
+            if (REGEXP.matcher(var.getNode().getIdentifier().value).matches()) {
                 if (!whiteListedVariables.contains(Helper.getFQVariableName(var))) {
                     addViolation(data, methodCall);
                 }

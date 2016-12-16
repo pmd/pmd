@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import apex.jorje.semantic.ast.compilation.Compilation;
 
 public class ApexParserTestHelpers {
+    private ApexParserTestHelpers() { }
+
     public static ApexNode<Compilation> parse(String code) {
         ApexParser parser = new ApexParser(new ApexParserOptions());
         Reader reader = new StringReader(code);

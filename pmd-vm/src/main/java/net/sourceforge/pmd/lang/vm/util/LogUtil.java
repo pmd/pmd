@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.vm.directive.Directive;
  * @since 1.5
  */
 public class LogUtil {
+    private LogUtil() { }
 
     /**
      * Creates a string that formats the template filename with line number and
@@ -65,7 +66,7 @@ public class LogUtil {
      *            Column number withing the file at linenum
      */
     public static final String formatFileString(String template, final int linenum, final int colnum) {
-        if (template == null || template.equals("")) {
+        if (template == null || "".equals(template)) {
             template = "<unknown template>";
         }
         return template + "[line " + linenum + ", column " + colnum + "]";

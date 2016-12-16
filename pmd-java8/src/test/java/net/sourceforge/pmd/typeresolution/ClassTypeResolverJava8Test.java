@@ -19,17 +19,13 @@ import net.sourceforge.pmd.typeresolution.testdata.UsesRepeatableAnnotations;
 public class ClassTypeResolverJava8Test {
 
     @Test
-    public void interface_method_should_be_parseable() {
+    public void interfaceMethodShouldBeParseable() {
         ASTCompilationUnit acu = parseAndTypeResolveForClass18(UsesJavaStreams.class);
     }
 
     @Test
-    public void repeatable_annotations_method_should_be_parseable() {
+    public void repeatableAnnotationsMethodShouldBeParseable() {
         ASTCompilationUnit acu = parseAndTypeResolveForClass18(UsesRepeatableAnnotations.class);
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(ClassTypeResolverJava8Test.class);
     }
 
     private ASTCompilationUnit parseAndTypeResolveForClass18(Class<?> clazz) {

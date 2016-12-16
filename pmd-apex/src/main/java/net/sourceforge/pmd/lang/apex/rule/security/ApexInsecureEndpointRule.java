@@ -29,7 +29,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     private static final String SET_ENDPOINT = "setEndpoint";
     private static final Pattern PATTERN = Pattern.compile("^http://.+?$", Pattern.CASE_INSENSITIVE);
 
-    private static final Set<String> httpEndpointStrings = new HashSet<>();
+    private static final Set<String> HTTP_ENDPOINT_STRINGS = new HashSet<>();
 
     public ApexInsecureEndpointRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
@@ -74,7 +74,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
             if (o instanceof String) {
                 String literal = (String) o;
                 if (PATTERN.matcher(literal).matches()) {
-                    httpEndpointStrings.add(Helper.getFQVariableName(variableNode));
+                    HTTP_ENDPOINT_STRINGS.add(Helper.getFQVariableName(variableNode));
                 }
             }
         }
@@ -114,7 +114,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
         ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
         if (variableNode != null) {
-            if (httpEndpointStrings.contains(Helper.getFQVariableName(variableNode))) {
+            if (HTTP_ENDPOINT_STRINGS.contains(Helper.getFQVariableName(variableNode))) {
                 addViolation(data, variableNode);
             }
 
