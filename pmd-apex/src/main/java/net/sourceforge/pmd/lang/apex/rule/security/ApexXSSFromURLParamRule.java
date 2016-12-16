@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,10 +10,8 @@ import java.util.Set;
 import apex.jorje.semantic.ast.expression.VariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
@@ -100,10 +97,13 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     }
 
     private boolean isEscapingMethod(ASTMethodCallExpression methodNode) {
-        return isMethodCallChain(methodNode, HTML_ESCAPING) || isMethodCallChain(methodNode, JS_ESCAPING)
-                || isMethodCallChain(methodNode, JSINHTML_ESCAPING) || isMethodCallChain(methodNode, URL_ESCAPING)
-                || isMethodCallChain(methodNode, INTEGER_VALUEOF) || isMethodCallChain(methodNode, DOUBLE_VALUEOF)
-                || isMethodCallChain(methodNode, STRING_ISEMPTY) || isMethodCallChain(methodNode, ID_VALUEOF);
+        return Helper.isMethodCallChain(methodNode, HTML_ESCAPING) || Helper.isMethodCallChain(methodNode, JS_ESCAPING)
+                || Helper.isMethodCallChain(methodNode, JSINHTML_ESCAPING)
+                || Helper.isMethodCallChain(methodNode, URL_ESCAPING)
+                || Helper.isMethodCallChain(methodNode, INTEGER_VALUEOF)
+                || Helper.isMethodCallChain(methodNode, DOUBLE_VALUEOF)
+                || Helper.isMethodCallChain(methodNode, STRING_ISEMPTY)
+                || Helper.isMethodCallChain(methodNode, ID_VALUEOF);
     }
 
     private void processInlineMethodCalls(ASTMethodCallExpression methodNode, Object data, final boolean isNested) {
@@ -115,7 +115,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             }
         }
 
-        if (isMethodCallChain(methodNode, URL_PARAMETER_METHOD)) {
+        if (Helper.isMethodCallChain(methodNode, URL_PARAMETER_METHOD)) {
             if (isNested) {
                 addViolation(data, methodNode);
             }
@@ -129,7 +129,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         // ApexPages.currentPage().getParameters().get(..)
 
         if (right != null) {
-            if (isMethodCallChain(right, URL_PARAMETER_METHOD)) {
+            if (Helper.isMethodCallChain(right, URL_PARAMETER_METHOD)) {
                 ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
 
                 if (left != null) {
@@ -152,8 +152,10 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         if (variable != null) {
 
             // safe method
-            if (isMethodCallChain(methodNode, INTEGER_VALUEOF) || isMethodCallChain(methodNode, ID_VALUEOF)
-                    || isMethodCallChain(methodNode, DOUBLE_VALUEOF) || isMethodCallChain(methodNode, STRING_ISEMPTY)) {
+            if (Helper.isMethodCallChain(methodNode, INTEGER_VALUEOF)
+                    || Helper.isMethodCallChain(methodNode, ID_VALUEOF)
+                    || Helper.isMethodCallChain(methodNode, DOUBLE_VALUEOF)
+                    || Helper.isMethodCallChain(methodNode, STRING_ISEMPTY)) {
                 return;
             }
 
@@ -221,29 +223,4 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         }
     }
 
-    private boolean isMethodCallChain(ASTMethodCallExpression methodNode, final String... methodNames) {
-        String methodName = methodNames[methodNames.length - 1];
-        if (Helper.isMethodName(methodNode, methodName)) {
-            ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-            if (reference != null) {
-                ASTDottedExpression dottedExpression = reference.getFirstChildOfType(ASTDottedExpression.class);
-                if (dottedExpression != null) {
-                    ASTMethodCallExpression nestedMethod = dottedExpression
-                            .getFirstChildOfType(ASTMethodCallExpression.class);
-                    if (nestedMethod != null) {
-                        String[] newMethodNames = Arrays.copyOf(methodNames, methodNames.length - 1);
-                        return isMethodCallChain(nestedMethod, newMethodNames);
-                    } else {
-                        String[] newClassName = Arrays.copyOf(methodNames, methodNames.length - 1);
-                        if (newClassName.length == 1) {
-                            return Helper.isMethodName(methodNode, newClassName[0], methodName);
-                        }
-                    }
-                }
-
-            }
-        }
-
-        return false;
-    }
 }
