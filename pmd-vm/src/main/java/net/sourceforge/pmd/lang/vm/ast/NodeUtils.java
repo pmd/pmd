@@ -30,6 +30,7 @@ import org.apache.commons.lang3.text.StrBuilder;
  * @version $Id: NodeUtils.java 687386 2008-08-20 16:57:07Z nbubna $
  */
 public class NodeUtils {
+    private NodeUtils() { }
 
     /**
      * Collect all the <SPECIAL_TOKEN>s that are carried along with a token.

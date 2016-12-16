@@ -74,7 +74,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
             if (o instanceof String) {
                 String literal = (String) o;
                 if (PATTERN.matcher(literal).matches()) {
-                    httpEndpointStrings.add(Helper.getFQVariableName(variableNode));
+                    HTTP_ENDPOINT_STRINGS.add(Helper.getFQVariableName(variableNode));
                 }
             }
         }
@@ -114,7 +114,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
         ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
         if (variableNode != null) {
-            if (httpEndpointStrings.contains(Helper.getFQVariableName(variableNode))) {
+            if (HTTP_ENDPOINT_STRINGS.contains(Helper.getFQVariableName(variableNode))) {
                 addViolation(data, variableNode);
             }
 

@@ -18,6 +18,8 @@ public class ClassLoaderUtil {
 
     public static final String INIT = "<init>";
 
+    private ClassLoaderUtil() { }
+
     public static String fromInternalForm(String internalForm) {
         return internalForm.replace('/', '.');
     }

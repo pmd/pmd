@@ -31,7 +31,7 @@ public class AnyTokenizer implements Tokenizer {
                 try {
                     String token = tokenizer.nextToken();
                     while (token != null) {
-                        if (!token.equals(" ") && !token.equals("\t")) {
+                        if (!" ".equals(token) && !"\t".equals(token)) {
                             tokenEntries.add(new TokenEntry(token, sourceCode.getFileName(), lineNumber));
                         }
                         token = tokenizer.nextToken();

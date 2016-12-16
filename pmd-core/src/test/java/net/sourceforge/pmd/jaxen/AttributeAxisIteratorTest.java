@@ -14,8 +14,8 @@ public class AttributeAxisIteratorTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testRemove() {
         DummyNode n = new DummyNode(0);
-        n.testingOnly__setBeginColumn(1);
-        n.testingOnly__setBeginLine(1);
+        n.testingOnlySetBeginColumn(1);
+        n.testingOnlySetBeginLine(1);
         AttributeAxisIterator iter = new AttributeAxisIterator(n);
         iter.remove();
     }

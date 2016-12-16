@@ -52,9 +52,9 @@ public class TokenMgrError extends RuntimeException {
         errorCode = reason;
     }
 
-    public TokenMgrError(final boolean EOFSeen, final int lexState, final int errorLine, final int errorColumn,
+    public TokenMgrError(final boolean eofSeen, final int lexState, final int errorLine, final int errorColumn,
             final String errorAfter, final char curChar, final int reason) {
-        this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
+        this(lexicalError(eofSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
     }
 
     /**
@@ -115,10 +115,10 @@ public class TokenMgrError extends RuntimeException {
      * before this error occured curchar : the offending character Note: You can
      * customize the lexical error message by modifying this method.
      */
-    protected static String LexicalError(final boolean EOFSeen, final int lexState, final int errorLine,
+    protected static String lexicalError(final boolean eofSeen, final int lexState, final int errorLine,
             final int errorColumn, final String errorAfter, final char curChar) {
         return ("Lexical error at line " + errorLine + ", column " + errorColumn + ".  Encountered: "
-                + (EOFSeen ? "<EOF> "
+                + (eofSeen ? "<EOF> "
                         : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ")
                 + "after : \"" + addEscapes(errorAfter) + "\"");
     }

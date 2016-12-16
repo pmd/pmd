@@ -33,22 +33,22 @@ public class PropertyAccessorTest {
 
     @Test
     public void testIntegers() {
-        rule.setProperty(NonRuleWithAllPropertyTypes.singleInt, NumericConstants.ZERO);
-        assertSame(rule.getProperty(NonRuleWithAllPropertyTypes.singleInt), 0);
+        rule.setProperty(NonRuleWithAllPropertyTypes.SINGLE_INT, NumericConstants.ZERO);
+        assertSame(rule.getProperty(NonRuleWithAllPropertyTypes.SINGLE_INT), 0);
 
-        rule.setProperty(NonRuleWithAllPropertyTypes.multiInt,
+        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_INT,
                 new Integer[] { NumericConstants.ZERO, NumericConstants.ONE });
-        assertArrayEquals(rule.getProperty(NonRuleWithAllPropertyTypes.multiInt), new Integer[] { 0, 1 });
+        assertArrayEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_INT), new Integer[] { 0, 1 });
     }
 
     @Test
     public void testBooleans() {
 
-        rule.setProperty(NonRuleWithAllPropertyTypes.singleBool, Boolean.FALSE);
-        assertFalse(rule.getProperty(NonRuleWithAllPropertyTypes.singleBool));
+        rule.setProperty(NonRuleWithAllPropertyTypes.SINGLE_BOOL, Boolean.FALSE);
+        assertFalse(rule.getProperty(NonRuleWithAllPropertyTypes.SINGLE_BOOL));
 
-        rule.setProperty(NonRuleWithAllPropertyTypes.multiBool, new Boolean[] { Boolean.TRUE, Boolean.FALSE });
-        assertArrayEquals(rule.getProperty(NonRuleWithAllPropertyTypes.multiBool), new Boolean[] { true, false });
+        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_BOOL, new Boolean[] { Boolean.TRUE, Boolean.FALSE });
+        assertArrayEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_BOOL), new Boolean[] { true, false });
     }
 
     @Ignore
@@ -76,11 +76,11 @@ public class PropertyAccessorTest {
 
     @Test
     public void testStrings() {
-        rule.setProperty(NonRuleWithAllPropertyTypes.singleStr, "brian");
-        assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.singleStr), "brian");
+        rule.setProperty(NonRuleWithAllPropertyTypes.SINGLE_STR, "brian");
+        assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.SINGLE_STR), "brian");
 
-        rule.setProperty(NonRuleWithAllPropertyTypes.multiStr, new String[] { "hello", "world" });
-        assertTrue(CollectionUtil.arraysAreEqual(rule.getProperty(NonRuleWithAllPropertyTypes.multiStr),
+        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_STR, new String[] { "hello", "world" });
+        assertTrue(CollectionUtil.arraysAreEqual(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_STR),
                 new String[] { "hello", "world" }));
     }
 }

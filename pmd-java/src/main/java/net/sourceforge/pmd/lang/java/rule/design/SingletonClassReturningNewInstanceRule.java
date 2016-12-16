@@ -60,10 +60,10 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
              * return m_instance; } }
              */
 
-            List<ASTBlockStatement> ASTBlockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
+            List<ASTBlockStatement> astBlockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
             returnVariableName = getReturnVariableName(node);
-            if (ASTBlockStatements.size() != 0) {
-                for (ASTBlockStatement blockStatement : ASTBlockStatements) {
+            if (astBlockStatements.size() != 0) {
+                for (ASTBlockStatement blockStatement : astBlockStatements) {
                     if (blockStatement.hasDescendantOfType(ASTLocalVariableDeclaration.class)) {
                         List<ASTLocalVariableDeclaration> lVarList = blockStatement
                                 .findDescendantsOfType(ASTLocalVariableDeclaration.class);

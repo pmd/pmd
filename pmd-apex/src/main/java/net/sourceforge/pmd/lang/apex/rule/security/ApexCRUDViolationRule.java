@@ -43,7 +43,7 @@ import com.google.common.collect.ListMultimap;
  *
  */
 public class ApexCRUDViolationRule extends AbstractApexRule {
-    private static final Pattern p = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern VOID_OR_STRING_PATTERN = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
 
     private final HashMap<String, String> varToTypeMapping = new HashMap<>();
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
@@ -258,7 +258,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String CRUDMethod) {
+    private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String crudMethod) {
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
@@ -274,7 +274,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 StringBuilder typeCheck = new StringBuilder().append(node.getNode().getDefiningType()).append(":")
                         .append(type);
 
-                validateCRUDCheckPresent(node, data, CRUDMethod, typeCheck.toString());
+                validateCRUDCheckPresent(node, data, crudMethod, typeCheck.toString());
             }
         }
     }
@@ -310,10 +310,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     }
 
-    private void validateCRUDCheckPresent(final AbstractApexNode<?> node, final Object data, final String CRUDMethod,
+    private void validateCRUDCheckPresent(final AbstractApexNode<?> node, final Object data, final String crudMethod,
             final String typeCheck) {
         if (!typeToDMLOperationMapping.containsKey(typeCheck)) {
-            if (!isProperESAPICheckForDML(typeCheck, CRUDMethod)) {
+            if (!isProperESAPICheckForDML(typeCheck, crudMethod)) {
                 addViolation(data, node);
             }
         } else {
@@ -321,11 +321,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
             List<String> dmlOperationsChecked = typeToDMLOperationMapping.get(typeCheck);
             for (String dmlOp : dmlOperationsChecked) {
-                if (dmlOp.equalsIgnoreCase(CRUDMethod)) {
+                if (dmlOp.equalsIgnoreCase(crudMethod)) {
                     properChecksHappened = true;
                     break;
                 }
-                if (CRUDMethod.equals(ANY)) {
+                if (crudMethod.equals(ANY)) {
                     properChecksHappened = true;
                     break;
                 }
@@ -397,7 +397,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private boolean isMethodAGetter(final ASTMethod method) {
         final boolean startsWithGet = method.getNode().getMethodInfo().getCanonicalName().startsWith("get");
-        final boolean voidOrString = p
+        final boolean voidOrString = VOID_OR_STRING_PATTERN
                 .matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
 
         return (startsWithGet && !voidOrString);

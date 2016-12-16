@@ -23,8 +23,8 @@ public class AttributeAxisIteratorTest {
     @Test
     public void testAttributeAxisIterator() {
         DummyNode dummyNode = new DummyNode(1);
-        dummyNode.testingOnly__setBeginLine(1);
-        dummyNode.testingOnly__setBeginColumn(1);
+        dummyNode.testingOnlySetBeginLine(1);
+        dummyNode.testingOnlySetBeginColumn(1);
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = new HashMap<>();

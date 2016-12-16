@@ -33,9 +33,9 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private static final String STRING = "String";
     private static final String DATABASE = "Database";
     private static final String QUERY = "query";
+    private static final Pattern SELECT_PATTERN = Pattern.compile("^select[\\s]+?.+?$", Pattern.CASE_INSENSITIVE);
     private final HashSet<String> safeVariables = new HashSet<>();
     private final HashMap<String, Boolean> selectContainingVariables = new HashMap<>();
-    private static final Pattern pattern = Pattern.compile("^select[\\s]+?.+?$", Pattern.CASE_INSENSITIVE);
 
     public ApexSOQLInjectionRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
@@ -97,7 +97,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             if (left != null) {
                 Object o = literal.getNode().getLiteral();
                 if (o instanceof String) {
-                    if (pattern.matcher((String) o).matches()) {
+                    if (SELECT_PATTERN.matcher((String) o).matches()) {
                         selectContainingVariables.put(Helper.getFQVariableName(left), Boolean.TRUE);
                     } else {
                         safeVariables.add(Helper.getFQVariableName(left));
@@ -144,7 +144,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 
             Object o = literal.getNode().getLiteral();
             if (o instanceof String) {
-                if (pattern.matcher((String) o).matches()) {
+                if (SELECT_PATTERN.matcher((String) o).matches()) {
                     if (!isSafeVariable) {
                         // select literal + other unsafe vars
                         selectContainingVariables.put(Helper.getFQVariableName(var), Boolean.FALSE);

@@ -108,7 +108,7 @@ public final class VelocityCharStream implements CharStream {
         this(dstream, startline, startcolumn, 4096);
     }
 
-    private void ExpandBuff(boolean wrapAround) {
+    private void expandBuff(boolean wrapAround) {
         char[] newbuffer = new char[bufsize + nextBufExpand];
         int[] newbufline = new int[bufsize + nextBufExpand];
         int[] newbufcolumn = new int[bufsize + nextBufExpand];
@@ -152,7 +152,7 @@ public final class VelocityCharStream implements CharStream {
         tokenBegin = 0;
     }
 
-    private void FillBuff() throws java.io.IOException {
+    private void fillBuff() throws java.io.IOException {
         if (maxNextCharInd == available) {
             if (available == bufsize) {
                 if (tokenBegin > nextBufExpand) {
@@ -163,12 +163,12 @@ public final class VelocityCharStream implements CharStream {
                     bufpos = 0;
                     maxNextCharInd = 0;
                 } else {
-                    ExpandBuff(false);
+                    expandBuff(false);
                 }
             } else if (available > tokenBegin) {
                 available = bufsize;
             } else if ((tokenBegin - available) < nextBufExpand) {
-                ExpandBuff(true);
+                expandBuff(true);
             } else {
                 available = tokenBegin;
             }
@@ -206,7 +206,7 @@ public final class VelocityCharStream implements CharStream {
         return c;
     }
 
-    private void UpdateLineColumn(char c) {
+    private void updateLineColumn(char c) {
         column++;
 
         if (prevCharIsLF) {
@@ -264,7 +264,7 @@ public final class VelocityCharStream implements CharStream {
 
         bufpos++;
         if (bufpos >= maxNextCharInd) {
-            FillBuff();
+            fillBuff();
         }
 
         /*
@@ -272,7 +272,7 @@ public final class VelocityCharStream implements CharStream {
          */
         char c = buffer[bufpos];
 
-        UpdateLineColumn(c);
+        updateLineColumn(c);
         return c;
     }
 
@@ -347,7 +347,7 @@ public final class VelocityCharStream implements CharStream {
      * @param startcolumn
      * @param buffersize
      */
-    public void ReInit(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
+    public void reInit(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
         inputStream = dstream;
         line = startline;
         column = startcolumn - 1;
@@ -373,8 +373,8 @@ public final class VelocityCharStream implements CharStream {
      * @param startline
      * @param startcolumn
      */
-    public void ReInit(java.io.Reader dstream, int startline, int startcolumn) {
-        ReInit(dstream, startline, startcolumn, 4096);
+    public void reInit(java.io.Reader dstream, int startline, int startcolumn) {
+        reInit(dstream, startline, startcolumn, 4096);
     }
 
     /**
@@ -383,8 +383,8 @@ public final class VelocityCharStream implements CharStream {
      * @param startcolumn
      * @param buffersize
      */
-    public void ReInit(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
-        ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
+    public void reInit(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
+        reInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
     }
 
     /**
@@ -392,8 +392,8 @@ public final class VelocityCharStream implements CharStream {
      * @param startline
      * @param startcolumn
      */
-    public void ReInit(java.io.InputStream dstream, int startline, int startcolumn) {
-        ReInit(dstream, startline, startcolumn, 4096);
+    public void reInit(java.io.InputStream dstream, int startline, int startcolumn) {
+        reInit(dstream, startline, startcolumn, 4096);
     }
 
     /**

@@ -30,7 +30,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
-    private static final String[] methodSignatures = new String[] { "String#indexOf(int)", "String#substring(int,int)",
+    private static final String[] METHOD_SIGNATURES = new String[] { "String#indexOf(int)", "String#substring(int,int)",
         "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
         "HashMap#containsKey(Object)", };
 
@@ -43,28 +43,28 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
         Method method = null;
 
-        for (int i = 0; i < methodSignatures.length; i++) {
-            method = MethodProperty.methodFrom(methodSignatures[i], MethodProperty.CLASS_METHOD_DELIMITER,
+        for (int i = 0; i < METHOD_SIGNATURES.length; i++) {
+            method = MethodProperty.methodFrom(METHOD_SIGNATURES[i], MethodProperty.CLASS_METHOD_DELIMITER,
                     MethodProperty.METHOD_ARG_DELIMITER);
-            assertNotNull("Unable to identify method: " + methodSignatures[i], method);
+            assertNotNull("Unable to identify method: " + METHOD_SIGNATURES[i], method);
         }
     }
 
     @Test
     public void testAsMethodOn() {
 
-        Method[] methods = new Method[methodSignatures.length];
+        Method[] methods = new Method[METHOD_SIGNATURES.length];
 
-        for (int i = 0; i < methodSignatures.length; i++) {
-            methods[i] = MethodProperty.methodFrom(methodSignatures[i], MethodProperty.CLASS_METHOD_DELIMITER,
+        for (int i = 0; i < METHOD_SIGNATURES.length; i++) {
+            methods[i] = MethodProperty.methodFrom(METHOD_SIGNATURES[i], MethodProperty.CLASS_METHOD_DELIMITER,
                     MethodProperty.METHOD_ARG_DELIMITER);
-            assertNotNull("Unable to identify method: " + methodSignatures[i], methods[i]);
+            assertNotNull("Unable to identify method: " + METHOD_SIGNATURES[i], methods[i]);
         }
 
         String translatedMethod = null;
         for (int i = 0; i < methods.length; i++) {
             translatedMethod = MethodProperty.asStringFor(methods[i]);
-            assertTrue("Translated method does not match", ClassUtil.withoutPackageName(methodSignatures[i])
+            assertTrue("Translated method does not match", ClassUtil.withoutPackageName(METHOD_SIGNATURES[i])
                     .equals(ClassUtil.withoutPackageName(translatedMethod)));
         }
     }

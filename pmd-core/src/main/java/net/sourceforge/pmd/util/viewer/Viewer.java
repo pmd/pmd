@@ -14,6 +14,9 @@ import net.sourceforge.pmd.util.viewer.gui.MainFrame;
  * @version $Id$
  */
 public class Viewer {
+
+    private Viewer() { }
+
     public static void main(String[] args) {
         Initializer.initialize();
         new MainFrame();

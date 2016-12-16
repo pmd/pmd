@@ -88,7 +88,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
 
         for (ASTVariableExpression varExpression : nodes) {
-            if (urlParameterString.contains(Helper.getFQVariableName(varExpression))) {
+            if (URL_PARAMETER_STRINGS.contains(Helper.getFQVariableName(varExpression))) {
                 addViolation(data, nodes.get(0));
             }
         }
@@ -133,7 +133,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
 
                 if (left != null) {
-                    urlParameterString.add(Helper.getFQVariableName(left));
+                    URL_PARAMETER_STRINGS.add(Helper.getFQVariableName(left));
                 }
             }
 
@@ -159,7 +159,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 return;
             }
 
-            if (urlParameterString.contains(Helper.getFQVariableName(variable))) {
+            if (URL_PARAMETER_STRINGS.contains(Helper.getFQVariableName(variable))) {
                 if (!isEscapingMethod(methodNode)) {
                     addViolation(data, variable);
                 }
@@ -192,7 +192,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             // Look for: foo = bar;
             final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
 
-            if (urlParameterString.contains(Helper.getFQVariableName(right))) {
+            if (URL_PARAMETER_STRINGS.contains(Helper.getFQVariableName(right))) {
                 addViolation(data, right);
             }
         }
@@ -217,7 +217,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         final List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
         for (ASTVariableExpression n : nodes) {
 
-            if (urlParameterString.contains(Helper.getFQVariableName(n))) {
+            if (URL_PARAMETER_STRINGS.contains(Helper.getFQVariableName(n))) {
                 addViolation(data, n);
             }
         }

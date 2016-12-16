@@ -68,7 +68,7 @@ public class ReportTest implements ReportListener {
 
     // Files are grouped together now.
     @Test
-    public void testSortedReport_File() throws IOException {
+    public void testSortedReportFile() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
@@ -85,7 +85,7 @@ public class ReportTest implements ReportListener {
     }
 
     @Test
-    public void testSortedReport_Line() throws IOException {
+    public void testSortedReportLine() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
@@ -169,19 +169,19 @@ public class ReportTest implements ReportListener {
     private static Node getNode(int line, int column) {
         DummyNode s = new DummyNode(2);
         DummyNode parent = new DummyNode(1);
-        parent.testingOnly__setBeginLine(line);
-        parent.testingOnly__setBeginColumn(column);
+        parent.testingOnlySetBeginLine(line);
+        parent.testingOnlySetBeginColumn(column);
         s.jjtSetParent(parent);
-        s.testingOnly__setBeginLine(10);
-        s.testingOnly__setBeginColumn(5);
+        s.testingOnlySetBeginLine(10);
+        s.testingOnlySetBeginColumn(5);
         return s;
     }
 
     private static Node getNode(int line, int column, boolean nextLine) {
         DummyNode s = (DummyNode) getNode(line, column);
         if (nextLine) {
-            s.testingOnly__setBeginLine(line + 1);
-            s.testingOnly__setBeginColumn(column + 4);
+            s.testingOnlySetBeginLine(line + 1);
+            s.testingOnlySetBeginColumn(column + 4);
         }
         return s;
     }

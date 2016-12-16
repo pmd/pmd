@@ -15,6 +15,8 @@ import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 public class AttributeToolkit {
 
+    private AttributeToolkit() { }
+
     /**
      * formats a value for its usage in XPath expressions
      *

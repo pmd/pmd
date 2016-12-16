@@ -31,7 +31,7 @@ public class DBType {
     /**
      * The names of the properties
      */
-    public enum property {
+    public enum Property {
         USER("user", "Name of the connecting database user"),
         PASSWORD("password", "The connecting database user's password"),
         DRIVER("driver", "JDBC driver classname"),
@@ -48,7 +48,7 @@ public class DBType {
         private String name;
         private String description;
 
-        property(String name, String description) {
+        Property(String name, String description) {
             this.name = name;
             this.description = description;
         }

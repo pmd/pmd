@@ -23,8 +23,8 @@ public class XSLTRendererTest {
         XSLTRenderer renderer = new XSLTRenderer();
         Report report = new Report();
         DummyNode node = new DummyNode(1);
-        node.testingOnly__setBeginLine(1);
-        node.testingOnly__setBeginColumn(1);
+        node.testingOnlySetBeginLine(1);
+        node.testingOnlySetBeginColumn(1);
         RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), new RuleContext(), node,
                 "violation message");
         report.addRuleViolation(rv);

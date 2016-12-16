@@ -119,6 +119,6 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
     }
 
     private boolean isOK(String image) {
-        return image.equals("serialVersionUID") || image.equals("serialPersistentFields") || image.equals("IDENT");
+        return "serialVersionUID".equals(image) || "serialPersistentFields".equals(image) || "IDENT".equals(image);
     }
 }

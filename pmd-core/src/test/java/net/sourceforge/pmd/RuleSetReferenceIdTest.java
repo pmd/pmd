@@ -97,7 +97,7 @@ public class RuleSetReferenceIdTest {
     }
 
     @Test
-    public void constructor_GivenHttpUrlId_SucceedsAndProcessesIdCorrectly() {
+    public void testConstructorGivenHttpUrlIdSucceedsAndProcessesIdCorrectly() {
 
         final String sonarRulesetUrlId = "http://localhost:54321/profiles/export?format=pmd&language=java&name=Sonar%2520way";
 
@@ -109,7 +109,7 @@ public class RuleSetReferenceIdTest {
     public WireMockRule wireMockRule = new WireMockRule(0);
 
     @Test
-    public void constructor_GivenHttpUrl_InputStream() throws Exception {
+    public void testConstructorGivenHttpUrlInputStream() throws Exception {
         String path = "/profiles/export?format=pmd&language=java&name=Sonar%2520way";
         String rulesetUrl = "http://localhost:" + wireMockRule.port() + path;
         stubFor(head(urlEqualTo(path)).willReturn(aResponse().withStatus(200)));
@@ -131,7 +131,7 @@ public class RuleSetReferenceIdTest {
     }
 
     @Test
-    public void constructor_GivenHttpUrl_SingleRule_InputStream() throws Exception {
+    public void testConstructorGivenHttpUrlSingleRuleInputStream() throws Exception {
         String path = "/profiles/export?format=pmd&language=java&name=Sonar%2520way";
         String completePath = path + "/DummyBasicMockRule";
         String hostpart = "http://localhost:" + wireMockRule.port();
