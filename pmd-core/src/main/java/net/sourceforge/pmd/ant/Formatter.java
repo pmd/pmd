@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant;
 
 import java.io.BufferedWriter;
@@ -69,8 +70,7 @@ public class Formatter {
             if (null == s) {
                 charset = StandardCharsets.UTF_8;
                 properties.put("encoding", charset.name());
-            }
-            else {
+            } else {
                 charset = Charset.forName(s);
             }
         }
@@ -149,12 +149,11 @@ public class Formatter {
         return properties;
     }
 
-    private static final Writer getToFileWriter(String baseDir, File toFile, Charset charset) throws IOException {
+    private static Writer getToFileWriter(String baseDir, File toFile, Charset charset) throws IOException {
         final File file;
         if (toFile.isAbsolute()) {
             file = toFile;
-        }
-        else {
+        } else {
             file = new File(baseDir + System.getProperty("file.separator") + toFile.getPath());
         }
 
@@ -166,8 +165,7 @@ public class Formatter {
             writer = new OutputStreamWriter(output, charset);
             writer = new BufferedWriter(writer);
             isOnError = false;
-        }
-        finally {
+        } finally {
             if (isOnError) {
                 IOUtils.closeQuietly(output);
                 IOUtils.closeQuietly(writer);                
