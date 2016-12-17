@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -68,7 +69,7 @@ public class Formatter {
         {
             String s = (String) properties.get("encoding");
             if (null == s) {
-                charset = Charset.forName("UTF-8");
+                charset = StandardCharsets.UTF_8;
                 properties.put("encoding", charset.name());
             }
             else {
@@ -171,7 +172,8 @@ public class Formatter {
         }
         finally {
             if (isOnError) {
-                IOUtils.closeQuietly(output, writer);
+                IOUtils.closeQuietly(output);
+                IOUtils.closeQuietly(writer);                
             }
         }
         return writer;
