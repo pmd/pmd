@@ -41,4 +41,33 @@ public class NotAnActivity {
 }
     ]]></code>
   </test-code>
+  <test-code>
+    <description><![CDATA[
+Success
+    ]]></description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class MyActivity extends AppCompatActivity {
+  @Override
+  protected void onDestroy() {
+    foo();
+    super.onDestroy();
+  }
+}
+    ]]></code>
+  </test-code>
+  <test-code>
+    <description><![CDATA[
+Failure
+    ]]></description>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+public class MyActivity extends AppCompatActivity {
+  @Override
+  protected void onDestroy() {
+    foo();
+  }
+}
+    ]]></code>
+  </test-code>
 </test-data>
