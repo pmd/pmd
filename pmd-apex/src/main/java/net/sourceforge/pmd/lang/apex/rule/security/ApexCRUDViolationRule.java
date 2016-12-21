@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
@@ -52,7 +53,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final String IS_MERGEABLE = "isMergeable";
     private static final String IS_ACCESSIBLE = "isAccessible";
     private static final String ANY = "ANY";
-
     private static final String S_OBJECT_TYPE = "sObjectType";
     private static final String GET_DESCRIBE = "getDescribe";
 
@@ -66,7 +66,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final String[] ESAPI_ISAUTHORIZED_TO_DELETE = new String[] { "ESAPI", "accessController",
         "isAuthorizedToDelete", };
 
-    private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE };
+    private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
 
     public ApexCRUDViolationRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
@@ -255,7 +255,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String CRUDMethod) {
+    private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String crudMethod) {
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
@@ -264,14 +264,20 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return;
         }
 
+        final ASTNewNameValueObjectExpression newObj = node.getFirstChildOfType(ASTNewNameValueObjectExpression.class);
+        if (newObj != null) {
+            final String type = Helper.getFQVariableName(newObj);
+            validateCRUDCheckPresent(node, data, crudMethod, type);
+        }
+
         final ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
         if (variable != null) {
             final String type = varToTypeMapping.get(Helper.getFQVariableName(variable));
             if (type != null) {
-                StringBuilder typeCheck = new StringBuilder().append(node.getNode().getDefiningType()).append(":")
+                StringBuilder typeCheck = new StringBuilder().append(node.getNode().getDefiningType().getApexName()).append(":")
                         .append(type);
 
-                validateCRUDCheckPresent(node, data, CRUDMethod, typeCheck.toString());
+                validateCRUDCheckPresent(node, data, crudMethod, typeCheck.toString());
             }
         }
     }
