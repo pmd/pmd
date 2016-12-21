@@ -255,7 +255,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String CRUDMethod) {
+    private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String crudMethod) {
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
@@ -277,7 +277,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 StringBuilder typeCheck = new StringBuilder().append(node.getNode().getDefiningType().getApexName()).append(":")
                         .append(type);
 
-                validateCRUDCheckPresent(node, data, CRUDMethod, typeCheck.toString());
+                validateCRUDCheckPresent(node, data, crudMethod, typeCheck.toString());
             }
         }
     }
