@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
+
+	<test-code>
+		<description>Proper CRUD,FLS via upsert</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+		if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
+			upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		}
+	} 
+} ]]></code>
+	</test-code>
+
+	<test-code>
+		<description>No CRUD check for inline upsert</description>
+		<expected-problems>2</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void foo() {
+		upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+	}
+}
+		]]></code>
+	</test-code>
+
 	<test-code>
 		<description>VF built-in CRUD checks via getter</description>
 		<expected-problems>0</expected-problems>

@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
@@ -24,7 +25,9 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
+import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
+import apex.jorje.semantic.ast.expression.NewNameValueObjectExpression;
 import apex.jorje.semantic.ast.expression.VariableExpression;
 import apex.jorje.semantic.ast.member.Field;
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
@@ -143,22 +146,38 @@ public final class Helper {
         }
 
         VariableExpression n = variable.getNode();
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":").append(objectName)
+        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(objectName)
                 .append(n.getIdentifier().value);
         return sb.toString();
     }
 
     static String getFQVariableName(final ASTVariableDeclaration variable) {
         VariableDeclaration n = variable.getNode();
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
+        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":")
                 .append(n.getLocalInfo().getName());
         return sb.toString();
     }
 
     static String getFQVariableName(final ASTField variable) {
         Field n = variable.getNode();
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
+        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":")
                 .append(n.getFieldInfo().getName());
+        return sb.toString();
+    }
+
+    static String getFQVariableName(final ASTNewNameValueObjectExpression variable) {
+        NewNameValueObjectExpression n = variable.getNode();
+        String objType = "";
+        try {
+            // no other way to get this field, Apex Jorje does not expose it
+            java.lang.reflect.Field f = n.getClass().getDeclaredField("typeRef");
+            f.setAccessible(true);
+            ClassTypeRef hiddenField = (ClassTypeRef) f.get(n);
+            objType = hiddenField.className.get(0).value;
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+        }
+
+        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(objType);
         return sb.toString();
     }
 
