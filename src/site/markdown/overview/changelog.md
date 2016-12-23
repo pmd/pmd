@@ -223,6 +223,8 @@ to avoid XSS attacks.
 *   `net.sourceforge.pmd.RuleSetFactory` is now immutable and its behavior cannot be changed anymore.
     It provides constructors to create new adjusted instances. This allows to avoid synchronization in RuleSetFactory.
     See [PR #131](https://github.com/pmd/pmd/pull/131).
+*   `net.sourceforge.pmd.RuleSet` is now immutable, too, and can only be created via `RuleSetFactory`.
+    See [PR #145](https://github.com/pmd/pmd/pull/145).
 
 ### External Contributions
 
