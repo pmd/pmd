@@ -43,7 +43,8 @@ public class RuleTstTest {
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
         verify(rule).apply(anyList(), any(RuleContext.class));
-        verify(rule).getName();
+        verify(rule, times(2)).getName();
+        verify(rule).getPropertiesByPropertyDescriptor();
         verifyNoMoreInteractions(rule);
     }
 }

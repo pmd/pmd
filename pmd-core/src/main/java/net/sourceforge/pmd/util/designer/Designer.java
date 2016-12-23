@@ -102,6 +102,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -563,25 +564,22 @@ public class Designer implements ClipboardOwner {
 
             LanguageVersion languageVersion = getLanguageVersion();
             DFAGraphRule dfaGraphRule = languageVersion.getLanguageVersionHandler().getDFAGraphRule();
-            RuleSet rs = new RuleSet();
             if (dfaGraphRule != null) {
-                rs.addRule(dfaGraphRule);
-            }
-            RuleContext ctx = new RuleContext();
-            ctx.setSourceCodeFilename("[no filename]." + languageVersion.getLanguage().getExtensions().get(0));
-            StringReader reader = new StringReader(codeEditorPane.getText());
-            PMDConfiguration config = new PMDConfiguration();
-            config.setDefaultLanguageVersion(languageVersion);
+                final RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(dfaGraphRule);
+                RuleContext ctx = new RuleContext();
+                ctx.setSourceCodeFilename("[no filename]." + languageVersion.getLanguage().getExtensions().get(0));
+                StringReader reader = new StringReader(codeEditorPane.getText());
+                PMDConfiguration config = new PMDConfiguration();
+                config.setDefaultLanguageVersion(languageVersion);
 
-            try {
-                new SourceCodeProcessor(config).processSourceCode(reader, new RuleSets(rs), ctx);
-                // } catch (PMDException pmde) {
-                // loadTreeData(new ExceptionNode(pmde));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                try {
+                    new SourceCodeProcessor(config).processSourceCode(reader, new RuleSets(rs), ctx);
+                    // } catch (PMDException pmde) {
+                    // loadTreeData(new ExceptionNode(pmde));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            if (dfaGraphRule != null) {
                 List<DFAGraphMethod> methods = dfaGraphRule.getMethods();
                 if (methods != null && !methods.isEmpty()) {
                     dfaPanel.resetTo(methods, codeEditorPane);
@@ -614,8 +612,7 @@ public class Designer implements ClipboardOwner {
                 xpathRule.setXPath(xpathQueryArea.getText());
                 xpathRule.setVersion(xpathVersionButtonGroup.getSelection().getActionCommand());
 
-                RuleSet ruleSet = new RuleSet();
-                ruleSet.addRule(xpathRule);
+                final RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(xpathRule);
 
                 RuleSets ruleSets = new RuleSets(ruleSet);
 
