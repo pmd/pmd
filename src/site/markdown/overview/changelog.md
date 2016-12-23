@@ -225,6 +225,7 @@ to avoid XSS attacks.
     See [PR #131](https://github.com/pmd/pmd/pull/131).
 *   `net.sourceforge.pmd.RuleSet` is now immutable, too, and can only be created via `RuleSetFactory`.
     See [PR #145](https://github.com/pmd/pmd/pull/145).
+*   `net.sourceforge.pmd.cli.XPathCLI` has been removed. It's functionality is fully covered by the Designer.
 
 ### External Contributions
 
