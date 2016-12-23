@@ -16,6 +16,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -34,8 +35,7 @@ public class XPathJspRuleTest extends RuleTst {
         Rule rule = new XPathRule(XPATH_EXPRESSION);
         rule.setMessage("Test");
         rule.setLanguage(LanguageRegistry.getLanguage(JspLanguageModule.NAME));
-        RuleSet rules = new RuleSet();
-        rules.addRule(rule);
+        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
 
         RuleContext ctx = new RuleContext();
         Report report = new Report();

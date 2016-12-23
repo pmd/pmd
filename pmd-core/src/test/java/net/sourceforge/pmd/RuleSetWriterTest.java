@@ -5,12 +5,14 @@
 package net.sourceforge.pmd;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Random;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 
 /**
@@ -49,9 +51,10 @@ public class RuleSetWriterTest {
      */
     @Test
     public void testWrite() throws Exception {
-        RuleSet ruleSet = new RuleSet();
         RuleSet braces = new RuleSetFactory().createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
-        ruleSet.addRuleSetByReference(braces, true, "MockRule2");
+        RuleSet ruleSet = new RuleSetBuilder(new Random().nextLong())
+                .addRuleSetByReference(braces, true, "MockRule2")
+                .build();
 
         writer.write(ruleSet);
 
@@ -76,8 +79,7 @@ public class RuleSetWriterTest {
         ruleRef.setRuleSetReference(ruleSetReference);
         ruleRef.setName("Foo"); // override the name
 
-        RuleSet ruleSet = new RuleSet();
-        ruleSet.addRule(ruleRef);
+        RuleSet ruleSet = ruleSetFactory.createSingleRuleRuleSet(ruleRef);
 
         writer.write(ruleSet);
 
