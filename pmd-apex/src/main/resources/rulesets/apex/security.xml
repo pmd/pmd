@@ -207,5 +207,27 @@ public class Foo {
     ]]>
         </example>
 	</rule>
+	
+		<rule name="ApexSuggestUsingNamedCred" since="5.5.3"
+		message="Suggest named credentials for authentication"
+		class="net.sourceforge.pmd.lang.apex.rule.security.ApexSuggestUsingNamedCredRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/apex/security.html#ApexSuggestUsingNamedCredRule">
+		<description>
+            Consider using named credentials for authenticated callouts 
+        </description>
+		<priority>3</priority>
+		<example>
+            <![CDATA[
+public class Foo {
+	public void foo(String username, String password) {
+		Blob headerValue = Blob.valueOf(username + ':' + password);
+		String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
+		req.setHeader('Authorization', authorizationHeader);  
+	}	
+}
+    ]]>
+        </example>
+	</rule>
+	
 
 </ruleset>

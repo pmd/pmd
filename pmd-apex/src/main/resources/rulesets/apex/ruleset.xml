@@ -271,4 +271,15 @@
          <property name="cc_block_highlighting" value="false"/>
       </properties>
    </rule>		
+   <rule ref="rulesets/apex/security.xml/ApexSuggestUsingNamedCred" message="Consider using named credentials for authenticated callouts">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Security"/>
+         <property name="cc_remediation_points_multiplier" value="20"/>
+         <property name="cc_block_highlighting" value="false"/>
+      </properties>
+   </rule>
+   
+   
 </ruleset>

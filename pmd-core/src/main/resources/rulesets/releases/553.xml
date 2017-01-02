@@ -18,6 +18,7 @@ This ruleset contains links to rules that are new in PMD v5.5.3
     <rule ref="rulesets/apex/security.xml/ApexSOQLInjection"/>
     <rule ref="rulesets/apex/security.xml/ApexCRUDViolation"/>
     <rule ref="rulesets/apex/security.xml/ApexDangerousMethods"/>
+    <rule ref="rulesets/apex/security.xml/ApexSuggestUsingNamedCred"/>
 
 </ruleset>
 

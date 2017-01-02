@@ -22,5 +22,6 @@ public class SecurityRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ApexInsecureEndpoint");
         addRule(RULESET, "ApexCRUDViolation");
         addRule(RULESET, "ApexDangerousMethods");
+        addRule(RULESET, "ApexSuggestUsingNamedCred");
     }
 }
