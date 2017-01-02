@@ -10,7 +10,7 @@ import java.util.Set;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
@@ -31,6 +31,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     private final Set<String> listOfStringLiteralVariables = new HashSet<>();
 
     public ApexOpenRedirectRule() {
+        super.addRuleChainVisit(ASTUserClass.class);
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
@@ -47,8 +48,8 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             findSafeLiterals(varDecl);
         }
 
-        List<ASTFieldDeclaration> fieldDecl = node.findDescendantsOfType(ASTFieldDeclaration.class);
-        for (ASTFieldDeclaration fDecl : fieldDecl) {
+        List<ASTField> fieldDecl = node.findDescendantsOfType(ASTField.class);
+        for (ASTField fDecl : fieldDecl) {
             findSafeLiterals(fDecl);
         }
 
@@ -56,9 +57,9 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         for (ASTNewObjectExpression newObj : newObjects) {
             checkNewObjects(newObj, data);
         }
-        
+
         listOfStringLiteralVariables.clear();
-        
+
         return data;
     }
 
