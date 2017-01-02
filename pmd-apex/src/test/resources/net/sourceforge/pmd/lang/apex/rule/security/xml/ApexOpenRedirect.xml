@@ -110,4 +110,34 @@ public class Foo {
 		]]></code>
 	</test-code>
 	
+	<test-code>
+		<description>PageReference as a field</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	String test1 = '';
+    PageReference pr = new PageReference(test1);
+
+	static PageReference redirect() {
+	    return pr;
+	}
+}
+		]]></code>
+	</test-code>
+	
+	<test-code>
+		<description>Safe pageReference as a field</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	String test1 = '';
+    PageReference pr = new PageReference('/' + test1);
+
+	static PageReference redirect() {
+	    return pr;
+	}
+}
+		]]></code>
+	</test-code>
+	
 </test-data>
