@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.imports;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -15,12 +16,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     private List<ASTImportDeclaration> imports = new ArrayList<>();
     private List<ASTImportDeclaration> matches = new ArrayList<>();
-    private List<PotentialViolation> violations = new ArrayList<>();
 
     public UnnecessaryFullyQualifiedNameRule() {
         super.addRuleChainVisit(ASTCompilationUnit.class);
@@ -32,11 +33,6 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
-        violations.clear();
-
-        super.visit(node, data);
-
-        reportViolations(data);
         return data;
     }
 
@@ -48,7 +44,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-        checkImports(node);
+        checkImports(node, data);
         return data;
     }
 
@@ -56,12 +52,12 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     public Object visit(ASTName node, Object data) {
         if (!(node.jjtGetParent() instanceof ASTImportDeclaration)
                 && !(node.jjtGetParent() instanceof ASTPackageDeclaration)) {
-            checkImports(node);
+            checkImports(node, data);
         }
         return data;
     }
 
-    private void checkImports(JavaNode node) {
+    private void checkImports(JavaNode node, Object data) {
         String name = node.getImage();
         matches.clear();
 
@@ -126,19 +122,20 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             ASTImportDeclaration firstMatch = matches.get(0);
 
             // Could this done to avoid a conflict?
-            if (!isAvoidingConflict(name, firstMatch)) {
+            if (!isAvoidingConflict(node, name, firstMatch)) {
                 String importStr = firstMatch.getImportedName() + (firstMatch.isImportOnDemand() ? ".*" : "");
                 String type = firstMatch.isStatic() ? "static " : "";
 
-                PotentialViolation v = new PotentialViolation(node, importStr, type);
-                violations.add(v);
+                addViolation(data, node, new Object[] { node.getImage(), importStr, type });
             }
         }
 
         matches.clear();
     }
 
-    private boolean isAvoidingConflict(final String name, final ASTImportDeclaration firstMatch) {
+    private boolean isAvoidingConflict(final JavaNode node, final String name,
+            final ASTImportDeclaration firstMatch) {
+        // is it a conflict between different imports?
         if (firstMatch.isImportOnDemand() && firstMatch.isStatic() && name.indexOf('.') != -1) {
             final String methodCalled = name.substring(name.indexOf('.') + 1);
 
@@ -172,28 +169,19 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             }
         }
 
+        // Is it a conflict with a class in the same file?
+        final String unqualifiedName = name.substring(name.lastIndexOf('.') + 1);
+        final int unqualifiedNameLength = unqualifiedName.length();
+        final Set<String> qualifiedTypes = node.getScope().getEnclosingScope(SourceFileScope.class)
+                .getQualifiedTypeNames().keySet();
+        for (final String qualified : qualifiedTypes) {
+            int fullLength = qualified.length();
+            if (qualified.endsWith(unqualifiedName)
+                    && (fullLength == unqualifiedNameLength || qualified.charAt(fullLength - unqualifiedNameLength - 1) == '.')) {
+                return true;
+            }
+        }
+
         return false;
-    }
-
-    private static class PotentialViolation {
-        private JavaNode node;
-        private String importStr;
-        private String importType;
-
-        PotentialViolation(JavaNode node, String importStr, String importType) {
-            this.node = node;
-            this.importStr = importStr;
-            this.importType = importType;
-        }
-
-        public void addViolation(UnnecessaryFullyQualifiedNameRule rule, Object data) {
-            rule.addViolation(data, node, new Object[] { node.getImage(), importStr, importType });
-        }
-    }
-
-    private void reportViolations(Object data) {
-        for (PotentialViolation v : violations) {
-            v.addViolation(this, data);
-        }
     }
 }
