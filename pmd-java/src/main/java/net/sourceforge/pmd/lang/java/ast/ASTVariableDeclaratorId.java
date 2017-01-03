@@ -42,7 +42,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     }
 
     public List<NameOccurrence> getUsages() {
-        return getScope().getDeclarations().get(nameDeclaration);
+        return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
     }
 
     public void bumpArrayDepth() {

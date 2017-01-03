@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.symboltable.ImageFinderFunction;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 import org.junit.Test;
