@@ -61,4 +61,26 @@ public interface SomeInterfaceName {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>clear rule violation (from AvoidConstantsInInterface)</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public static final int FOO = 2;
+ public static final String BAR = "bar";
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok (from AvoidConstantsInInterface)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public static final int FOO = 2;
+ public void buz();
+}
+     ]]></code>
+    </test-code>
 </test-data>
