@@ -30,6 +30,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "CloseResource");
         addRule(RULESET, "CompareObjectsWithEquals");
         addRule(RULESET, "ConfusingTernary");
+        addRule(RULESET, "ConstantsInInterface");
         addRule(RULESET, "ConstructorCallsOverridableMethod");
         addRule(RULESET, "DefaultLabelNotLastInSwitchStmt");
         addRule(RULESET, "EmptyMethodInAbstractClassShouldBeAbstract");
@@ -73,6 +74,5 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseNotifyAllInsteadOfNotify");
         addRule(RULESET, "UseUtilityClass");
         addRule(RULESET, "UseVarargs");
-        addRule(RULESET, "ConstantsInInterface");
     }
 }
