@@ -182,15 +182,14 @@ public class ClassScope extends AbstractJavaScope {
 
         Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isMethodOrConstructorInvocation()) {
+            final boolean hasAuxclasspath = getEnclosingScope(SourceFileScope.class).hasAuxclasspath();
             for (MethodNameDeclaration mnd : methodDeclarations.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
                     List<TypedNameDeclaration> parameterTypes = determineParameterTypes(mnd);
                     List<TypedNameDeclaration> argumentTypes = determineArgumentTypes(occurrence, parameterTypes);
 
-                    if (!mnd.isVarargs()
-                            && occurrence.getArgumentCount() == mnd.getParameterCount()
-                            && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath() || parameterTypes
-                                    .equals(argumentTypes))) {
+                    if (!mnd.isVarargs() && occurrence.getArgumentCount() == mnd.getParameterCount()
+                            && (!hasAuxclasspath || parameterTypes.equals(argumentTypes))) {
                         result.add(mnd);
                     } else if (mnd.isVarargs()) {
                         int varArgIndex = parameterTypes.size() - 1;
@@ -201,11 +200,12 @@ public class ClassScope extends AbstractJavaScope {
                         // or the calling method has enough arguments to fill in
                         // the parameters before the vararg
                         if ((varArgIndex == 0 || argumentTypes.size() >= varArgIndex)
-                                && (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath() || parameterTypes
+                                && (!hasAuxclasspath || parameterTypes
                                         .subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex)))) {
 
-                            if (!getEnclosingScope(SourceFileScope.class).hasAuxclasspath()) {
+                            if (!hasAuxclasspath) {
                                 result.add(mnd);
+                                continue;
                             }
 
                             boolean sameType = true;
@@ -319,8 +319,7 @@ public class ClassScope extends AbstractJavaScope {
             }
         }
 
-        MethodNameDeclaration mnd = new MethodNameDeclaration(methodDeclarator);
-        return mnd;
+        return new MethodNameDeclaration(methodDeclarator);
     }
 
     /**
@@ -332,9 +331,16 @@ public class ClassScope extends AbstractJavaScope {
      * @return List of types
      */
     private List<TypedNameDeclaration> determineParameterTypes(MethodNameDeclaration mnd) {
-        List<TypedNameDeclaration> parameterTypes = new ArrayList<>();
-        List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode().findDescendantsOfType(
-                ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode()
+                .findDescendantsOfType(ASTFormalParameter.class);
+        if (parameters.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<TypedNameDeclaration> parameterTypes = new ArrayList<>(parameters.size());
+        SourceFileScope fileScope = getEnclosingScope(SourceFileScope.class);
+        Map<String, Node> qualifiedTypeNames = fileScope.getQualifiedTypeNames();
+
         for (ASTFormalParameter p : parameters) {
             String typeImage = p.getTypeNode().getTypeImage();
             // typeImage might be qualified/unqualified. If it refers to a type,
@@ -342,8 +348,8 @@ public class ClassScope extends AbstractJavaScope {
             // we should normalize the name here.
             // It might also refer to a type, that is imported.
             typeImage = qualifyTypeName(typeImage);
-            Node declaringNode = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames().get(typeImage);
-            Class<?> resolvedType = this.getEnclosingScope(SourceFileScope.class).resolveType(typeImage);
+            Node declaringNode = qualifiedTypeNames.get(typeImage);
+            Class<?> resolvedType = fileScope.resolveType(typeImage);
             if (resolvedType == null) {
                 resolvedType = resolveGenericType(p, typeImage);
             }
@@ -388,107 +394,110 @@ public class ClassScope extends AbstractJavaScope {
      */
     private List<TypedNameDeclaration> determineArgumentTypes(JavaNameOccurrence occurrence,
             List<TypedNameDeclaration> parameterTypes) {
-        List<TypedNameDeclaration> argumentTypes = new ArrayList<>();
-        Map<String, Node> qualifiedTypeNames = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames();
         ASTArgumentList arguments = null;
-        Node nextSibling = null;
+        Node nextSibling;
         if (occurrence.getLocation() instanceof ASTPrimarySuffix) {
             nextSibling = getNextSibling(occurrence.getLocation());
         } else {
             nextSibling = getNextSibling(occurrence.getLocation().jjtGetParent());
         }
+
         if (nextSibling != null) {
             arguments = nextSibling.getFirstDescendantOfType(ASTArgumentList.class);
         }
 
-        if (arguments != null) {
-            for (int i = 0; i < arguments.jjtGetNumChildren(); i++) {
-                Node argument = arguments.jjtGetChild(i);
-                Node child = null;
-                boolean isMethodCall = false;
-                if (argument.jjtGetNumChildren() > 0 && argument.jjtGetChild(0).jjtGetNumChildren() > 0
-                        && argument.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0) {
-                    child = argument.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
-                    isMethodCall = argument.jjtGetChild(0).jjtGetNumChildren() > 1;
+        if (arguments == null) {
+            return Collections.emptyList();
+        }
+
+        List<TypedNameDeclaration> argumentTypes = new ArrayList<>(arguments.jjtGetNumChildren());
+        Map<String, Node> qualifiedTypeNames = getEnclosingScope(SourceFileScope.class).getQualifiedTypeNames();
+
+        for (int i = 0; i < arguments.jjtGetNumChildren(); i++) {
+            Node argument = arguments.jjtGetChild(i);
+            Node child = null;
+            boolean isMethodCall = false;
+            if (argument.jjtGetNumChildren() > 0 && argument.jjtGetChild(0).jjtGetNumChildren() > 0
+                    && argument.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0) {
+                child = argument.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+                isMethodCall = argument.jjtGetChild(0).jjtGetNumChildren() > 1;
+            }
+            TypedNameDeclaration type = null;
+            if (child instanceof ASTName && !isMethodCall) {
+                ASTName name = (ASTName) child;
+                Scope s = name.getScope();
+                final JavaNameOccurrence nameOccurrence = new JavaNameOccurrence(name, name.getImage());
+                while (s != null) {
+                    if (s.contains(nameOccurrence)) {
+                        break;
+                    }
+                    s = s.getParent();
                 }
-                TypedNameDeclaration type = null;
-                if (child instanceof ASTName && !isMethodCall) {
-                    ASTName name = (ASTName) child;
-                    Scope s = name.getScope();
-                    final JavaNameOccurrence nameOccurrence = new JavaNameOccurrence(name, name.getImage());
-                    while (s != null) {
-                        if (s.contains(nameOccurrence)) {
+                if (s != null) {
+                    Map<VariableNameDeclaration, List<NameOccurrence>> vars = s
+                            .getDeclarations(VariableNameDeclaration.class);
+                    for (VariableNameDeclaration d : vars.keySet()) {
+                        // in case of simple lambda expression, the type
+                        // might be unknown
+                        if (d.getImage().equals(name.getImage()) && d.getTypeImage() != null) {
+                            String typeName = d.getTypeImage();
+                            typeName = qualifyTypeName(typeName);
+                            Node declaringNode = qualifiedTypeNames.get(typeName);
+                            type = new SimpleTypedNameDeclaration(typeName,
+                                    this.getEnclosingScope(SourceFileScope.class).resolveType(typeName),
+                                    determineSuper(declaringNode));
                             break;
                         }
-                        s = s.getParent();
-                    }
-                    if (s != null) {
-                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = s
-                                .getDeclarations(VariableNameDeclaration.class);
-                        for (VariableNameDeclaration d : vars.keySet()) {
-                            // in case of simple lambda expression, the type might be unknown
-                            if (d.getImage().equals(name.getImage()) && d.getTypeImage() != null) {
-                                String typeName = d.getTypeImage();
-                                typeName = qualifyTypeName(typeName);
-                                Node declaringNode = qualifiedTypeNames.get(typeName);
-                                type = new SimpleTypedNameDeclaration(typeName, this.getEnclosingScope(
-                                        SourceFileScope.class).resolveType(typeName), determineSuper(declaringNode));
-                                break;
-                            }
-                        }
-                    }
-                } else if (child instanceof ASTLiteral) {
-                    ASTLiteral literal = (ASTLiteral) child;
-                    if (literal.isCharLiteral()) {
-                        type = new SimpleTypedNameDeclaration("char", literal.getType());
-                    } else if (literal.isStringLiteral()) {
-                        type = new SimpleTypedNameDeclaration("String", literal.getType());
-                    } else if (literal.isFloatLiteral()) {
-                        type = new SimpleTypedNameDeclaration("float", literal.getType());
-                    } else if (literal.isDoubleLiteral()) {
-                        type = new SimpleTypedNameDeclaration("double", literal.getType());
-                    } else if (literal.isIntLiteral()) {
-                        type = new SimpleTypedNameDeclaration("int", literal.getType());
-                    } else if (literal.isLongLiteral()) {
-                        type = new SimpleTypedNameDeclaration("long", literal.getType());
-                    } else if (literal.jjtGetNumChildren() == 1 && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
-                        type = new SimpleTypedNameDeclaration("boolean", Boolean.TYPE);
-                    }
-                } else if (child instanceof ASTAllocationExpression
-                        && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                    ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType) child.jjtGetChild(0);
-                    type = convertToSimpleType(classInterface);
-                }
-                if (type == null && !parameterTypes.isEmpty()) {
-                    // replace the unknown type with the correct parameter type
-                    // of the method.
-                    // in case the argument is itself a method call, we can't
-                    // determine the result type of the called
-                    // method. Therefore the parameter type is used.
-                    // This might cause confusion, if method overloading is
-                    // used.
-
-                    // the method might be vararg, so, there might be more
-                    // arguments than parameterTypes
-                    if (parameterTypes.size() > i) {
-                        type = parameterTypes.get(i);
-                    } else {
-                        type = parameterTypes.get(parameterTypes.size() - 1); // last
-                                                                              // parameter
-                                                                              // is
-                                                                              // the
-                                                                              // vararg
-                                                                              // type
                     }
                 }
-                if (type != null && type.getType() == null) {
-                    Class<?> typeBound = resolveGenericType(argument, type.getTypeImage());
-                    if (typeBound != null) {
-                        type = new SimpleTypedNameDeclaration(type.getTypeImage(), typeBound);
-                    }
+            } else if (child instanceof ASTLiteral) {
+                ASTLiteral literal = (ASTLiteral) child;
+                if (literal.isCharLiteral()) {
+                    type = new SimpleTypedNameDeclaration("char", literal.getType());
+                } else if (literal.isStringLiteral()) {
+                    type = new SimpleTypedNameDeclaration("String", literal.getType());
+                } else if (literal.isFloatLiteral()) {
+                    type = new SimpleTypedNameDeclaration("float", literal.getType());
+                } else if (literal.isDoubleLiteral()) {
+                    type = new SimpleTypedNameDeclaration("double", literal.getType());
+                } else if (literal.isIntLiteral()) {
+                    type = new SimpleTypedNameDeclaration("int", literal.getType());
+                } else if (literal.isLongLiteral()) {
+                    type = new SimpleTypedNameDeclaration("long", literal.getType());
+                } else if (literal.jjtGetNumChildren() == 1
+                        && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                    type = new SimpleTypedNameDeclaration("boolean", Boolean.TYPE);
                 }
-                argumentTypes.add(type);
+            } else if (child instanceof ASTAllocationExpression
+                    && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
+                ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType) child.jjtGetChild(0);
+                type = convertToSimpleType(classInterface);
             }
+            if (type == null && !parameterTypes.isEmpty()) {
+                // replace the unknown type with the correct parameter type
+                // of the method.
+                // in case the argument is itself a method call, we can't
+                // determine the result type of the called
+                // method. Therefore the parameter type is used.
+                // This might cause confusion, if method overloading is
+                // used.
+
+                // the method might be vararg, so, there might be more
+                // arguments than parameterTypes
+                if (parameterTypes.size() > i) {
+                    type = parameterTypes.get(i);
+                } else {
+                    // last parameter is the vararg type
+                    type = parameterTypes.get(parameterTypes.size() - 1);
+                }
+            }
+            if (type != null && type.getType() == null) {
+                Class<?> typeBound = resolveGenericType(argument, type.getTypeImage());
+                if (typeBound != null) {
+                    type = new SimpleTypedNameDeclaration(type.getTypeImage(), typeBound);
+                }
+            }
+            argumentTypes.add(type);
         }
         return argumentTypes;
     }
