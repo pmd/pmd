@@ -331,7 +331,12 @@ public class TypeSet {
          */
         public ImportOnDemandResolver(PMDASMClassLoader pmdClassLoader, Set<String> importStmts) {
             super(pmdClassLoader);
-            this.importStmts = importStmts;
+            this.importStmts = new HashSet<>();
+            for (final String stmt : importStmts) {
+                if (stmt.endsWith("*")) {
+                    this.importStmts.add(stmt);
+                }
+            }
         }
 
         @Override
@@ -341,13 +346,11 @@ public class TypeSet {
             }
 
             for (String importStmt : importStmts) {
-                if (importStmt.endsWith("*")) {
-                    final String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
-                            .replace(importStmt.length() - 1, importStmt.length(), name).toString();
-                    final Class<?> c = resolveMaybeInner(name, fqClassName);
-                    if (c != null) {
-                        return c;
-                    }
+                final String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
+                        .replace(importStmt.length() - 1, importStmt.length(), name).toString();
+                final Class<?> c = resolveMaybeInner(name, fqClassName);
+                if (c != null) {
+                    return c;
                 }
             }
 
@@ -357,13 +360,11 @@ public class TypeSet {
         @Override
         public boolean couldResolve(String name) {
             for (String importStmt : importStmts) {
-                if (importStmt.endsWith("*")) {
-                    final String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
-                            .replace(importStmt.length() - 1, importStmt.length(), name).toString();
-                    // can any class be resolved / was never attempted?
-                    if (super.couldResolve(fqClassName)) {
-                        return true;
-                    }
+                final String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
+                        .replace(importStmt.length() - 1, importStmt.length(), name).toString();
+                // can any class be resolved / was never attempted?
+                if (super.couldResolve(fqClassName)) {
+                    return true;
                 }
             }
 

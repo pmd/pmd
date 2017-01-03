@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
+import net.sourceforge.pmd.lang.symboltable.Applier;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
