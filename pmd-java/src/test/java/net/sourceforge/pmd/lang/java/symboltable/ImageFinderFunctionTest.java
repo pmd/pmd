@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class ImageFinderFunctionTest {

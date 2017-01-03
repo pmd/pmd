@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.util.UnaryFunction;
+import net.sourceforge.pmd.util.SearchFunction;
 
-public class DeclarationFinderFunction implements UnaryFunction<NameDeclaration> {
+public class DeclarationFinderFunction implements SearchFunction<NameDeclaration> {
 
     private NameOccurrence occurrence;
     private NameDeclaration decl;
@@ -17,10 +17,13 @@ public class DeclarationFinderFunction implements UnaryFunction<NameDeclaration>
         this.occurrence = occurrence;
     }
 
-    public void applyTo(NameDeclaration nameDeclaration) {
+    @Override
+    public boolean applyTo(NameDeclaration nameDeclaration) {
         if (isDeclaredBefore(nameDeclaration) && isSameName(nameDeclaration)) {
             decl = nameDeclaration;
+            return false;
         }
+        return true;
     }
 
     private boolean isDeclaredBefore(NameDeclaration nameDeclaration) {
