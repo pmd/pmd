@@ -14,12 +14,17 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class OccurrenceFinder extends JavaParserVisitorAdapter {
 
+    // Maybe do some sort of State pattern thingy for when NameDeclaration
+    // is empty/not empty?
+    private final Set<NameDeclaration> declarations = new HashSet<>();
+
+    private final Set<NameDeclaration> additionalDeclarations = new HashSet<>();
+
     public Object visit(ASTPrimaryExpression node, Object data) {
         NameFinder nameFinder = new NameFinder(node);
 
-        // Maybe do some sort of State pattern thingy for when NameDeclaration
-        // is empty/not empty?
-        Set<NameDeclaration> declarations = new HashSet<>();
+        declarations.clear();
+        additionalDeclarations.clear();
 
         List<JavaNameOccurrence> names = nameFinder.getNames();
         for (JavaNameOccurrence occ : names) {
@@ -36,7 +41,6 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
                     break;
                 }
             } else {
-                Set<NameDeclaration> additionalDeclarations = new HashSet<>();
                 for (NameDeclaration decl : declarations) {
                     // now we've got a scope we're starting with, so work from there
                     Scope startingScope = decl.getScope();
