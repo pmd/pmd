@@ -349,5 +349,34 @@ public class Foo {
 		]]></code>
 	</test-code>
 
+	<test-code>
+		<description>Casting applied to a variable
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String bas;
+		bas = ApexPages.currentPage().getParameters().get('foo');
+		ID baz = ID.valueOf(bas);
+		Boolean jj = Boolean.valueOf(bas);
+	}		
+}
+		]]></code>
+	</test-code>
+
+<test-code>
+		<description>Casting applied to a method call
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		ID baz = ID.valueOf(ApexPages.currentPage().getParameters().get('foo'));
+		Boolean jj = Boolean.valueOf(ApexPages.currentPage().getParameters().get('foo'));
+	}		
+}
+		]]></code>
+	</test-code>
 
 </test-data>

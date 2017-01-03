@@ -35,7 +35,9 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private static final String[] INTEGER_VALUEOF = new String[] { "Integer", "valueOf" };
     private static final String[] ID_VALUEOF = new String[] { "ID", "valueOf" };
     private static final String[] DOUBLE_VALUEOF = new String[] { "Double", "valueOf" };
+    private static final String[] BOOLEAN_VALUEOF = new String[] { "Boolean", "valueOf" };
     private static final String[] STRING_ISEMPTY = new String[] { "String", "isEmpty" };
+    private static final String[] STRING_ISBLANK = new String[] { "String", "isBlank" };
 
     private final Set<String> urlParameterStrings = new HashSet<>();
 
@@ -102,7 +104,9 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 || Helper.isMethodCallChain(methodNode, URL_ESCAPING)
                 || Helper.isMethodCallChain(methodNode, INTEGER_VALUEOF)
                 || Helper.isMethodCallChain(methodNode, DOUBLE_VALUEOF)
+                || Helper.isMethodCallChain(methodNode, BOOLEAN_VALUEOF)
                 || Helper.isMethodCallChain(methodNode, STRING_ISEMPTY)
+                || Helper.isMethodCallChain(methodNode, STRING_ISBLANK)
                 || Helper.isMethodCallChain(methodNode, ID_VALUEOF);
     }
 
@@ -150,15 +154,6 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         final ASTVariableExpression variable = methodNode.getFirstChildOfType(ASTVariableExpression.class);
 
         if (variable != null) {
-
-            // safe method
-            if (Helper.isMethodCallChain(methodNode, INTEGER_VALUEOF)
-                    || Helper.isMethodCallChain(methodNode, ID_VALUEOF)
-                    || Helper.isMethodCallChain(methodNode, DOUBLE_VALUEOF)
-                    || Helper.isMethodCallChain(methodNode, STRING_ISEMPTY)) {
-                return;
-            }
-
             if (urlParameterStrings.contains(Helper.getFQVariableName(variable))) {
                 if (!isEscapingMethod(methodNode)) {
                     addViolation(data, variable);
