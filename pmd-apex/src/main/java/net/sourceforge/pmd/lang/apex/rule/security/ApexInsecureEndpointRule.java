@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import apex.jorje.semantic.ast.expression.VariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
@@ -29,7 +28,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     private static final String SET_ENDPOINT = "setEndpoint";
     private static final Pattern PATTERN = Pattern.compile("^http://.+?$", Pattern.CASE_INSENSITIVE);
 
-    private static final Set<String> httpEndpointStrings = new HashSet<>();
+    private final Set<String> httpEndpointStrings = new HashSet<>();
 
     public ApexInsecureEndpointRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
