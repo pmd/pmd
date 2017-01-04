@@ -180,7 +180,7 @@ For instance, it would report on:
 ```
 public class Foo {
     public void test1(String t1) {
-        Database.query('SELECT Id FROM Account' + t1);          
+        Database.query('SELECT Id FROM Account' + t1);
     }
 }
 ```
@@ -260,7 +260,8 @@ to avoid XSS attacks.
 *   [#160](https://github.com/pmd/pmd/pull/160): \[apex] Flagging of dangerous method call
 *   [#163](https://github.com/pmd/pmd/pull/163): \[apex] Flagging of System.debug
 *   [#165](https://github.com/pmd/pmd/pull/165): \[apex] Improving open redirect rule to avoid test classes/methods
-*   [#168](https://github.com/pmd/pmd/pull/167): \[apex] GC and thread safety changes
+*   [#167](https://github.com/pmd/pmd/pull/167): \[apex] GC and thread safety changes
 *   [#169](https://github.com/pmd/pmd/pull/169): \[apex] Improving detection for DML with inline new object
 *   [#172](https://github.com/pmd/pmd/pull/172): \[apex] Bug fix, detects both Apex fields and class members
+*   [#175](https://github.com/pmd/pmd/pull/175): \[apex] ApexXSSFromURLParam: Adding missing casting methods
 
