@@ -142,7 +142,7 @@ For instance, it would report on:
 ```
 public class Foo {
     public void test1(String t1) {
-        Database.query('SELECT Id FROM Account' + t1);          
+        Database.query('SELECT Id FROM Account' + t1);
     }
 }
 ```
