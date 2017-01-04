@@ -66,12 +66,30 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     }
 
     private void findSafeLiterals(AbstractApexNode<?> node) {
+        ASTBinaryExpression binaryExp = node.getFirstChildOfType(ASTBinaryExpression.class);
+        if (binaryExp != null) {
+            findSafeLiterals(binaryExp);
+        }
+
         ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
         if (literal != null) {
-            ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
-            if (variable != null) {
-                listOfStringLiteralVariables.add(Helper.getFQVariableName(variable));
+            int index = literal.jjtGetChildIndex();
+            if (index == 0) {
+                if (node instanceof ASTVariableDeclaration) {
+                    addVariable(node);
+                } else {
+                    ASTVariableDeclaration parent = node.getFirstParentOfType(ASTVariableDeclaration.class);
+                    addVariable(parent);
+
+                }
             }
+        }
+    }
+
+    private void addVariable(AbstractApexNode<?> node) {
+        ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
+        if (variable != null) {
+            listOfStringLiteralVariables.add(Helper.getFQVariableName(variable));
         }
     }
 

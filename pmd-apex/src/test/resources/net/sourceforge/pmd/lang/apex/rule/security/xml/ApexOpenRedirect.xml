@@ -138,6 +138,37 @@ public class Foo {
 	}
 }
 		]]></code>
+	</test-code> 
+	
+	<test-code>
+		<description>Unsafe pageReference object</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+
+	static PageReference redirect(String otherStuff) {
+		String test1 = otherStuff + '/';
+    	PageReference pr = new PageReference(test1);
+	    return pr;
+	}
+}
+		]]></code>
 	</test-code>
+	
+	<test-code>
+		<description>Safe pageReference object</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+
+	static PageReference redirect(String otherStuff) {
+		String test1 = '/' + otherStuff;
+    	PageReference pr = new PageReference(test1);
+	    return pr;
+	}
+}
+		]]></code>
+	</test-code>
+
 	
 </test-data>
