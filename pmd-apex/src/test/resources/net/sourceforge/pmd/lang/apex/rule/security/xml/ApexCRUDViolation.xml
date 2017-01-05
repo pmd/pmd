@@ -468,4 +468,16 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
+	
+		<test-code>
+		<description>No issues found in test classes</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class FooTest {
+	public void foo() {
+		upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+	}
+}
+		]]></code>
+	</test-code>
 </test-data>
