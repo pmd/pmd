@@ -48,11 +48,11 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 
 /**
+ * Sublayer of DataFlowFacade. Finds all data flow nodes and stores the
+ * type information (@see StackObject). At last it uses this information
+ * to link the nodes.
+ *
  * @author raik
- *         <p/>
- *         Sublayer of DataFlowFacade. Finds all data flow nodes and stores the
- *         type information (@see StackObject). At last it uses this information
- *         to link the nodes.
  */
 public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
     private static final Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());

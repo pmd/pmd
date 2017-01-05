@@ -30,10 +30,10 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
+ * Searches for special nodes and computes based on the sequence, the
+ * type of access of a variable.
+ *
  * @author raik, Sven Jacob
- *         <p/>
- *         Searches for special nodes and computes based on the sequence, the
- *         type of access of a variable.
  */
 public class VariableAccessVisitor extends PLSQLParserVisitorAdapter {
 

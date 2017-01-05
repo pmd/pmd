@@ -18,10 +18,10 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 
 /**
+ * TODO What about initializers? This only processes methods and
+ * constructors.
+ *
  * @author raik
- *         <p/>
- *         TODO What about initializers? This only processes methods and
- *         constructors
  */
 public class DataFlowFacade extends PLSQLParserVisitorAdapter {
     private static final String CLASS_PATH = DataFlowFacade.class.getCanonicalName();
