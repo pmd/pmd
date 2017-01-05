@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import net.sourceforge.pmd.PMD;
 
 /**
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 public abstract class BaseCLITest {

@@ -19,7 +19,7 @@ import org.junit.Rule;
  * there is a workaround that must be shared by both tests (PMD and CPD's) I
  * felt compelled to move it to a single classes.
  *
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 public abstract class AbstractAntTestHelper {
