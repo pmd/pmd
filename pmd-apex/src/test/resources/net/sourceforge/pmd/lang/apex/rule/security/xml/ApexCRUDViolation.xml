@@ -2,7 +2,7 @@
 
 <test-data>
 
-	<test-code>
+<!-- 	<test-code>
 		<description>Proper CRUD,FLS via upsert</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
@@ -467,5 +467,19 @@ public class Foo {
 	}
 }
 		]]></code>
+	</test-code> -->
+	
+	<test-code>
+		<description>No CRUD check for delete</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class FooTest {
+	public void bar(String contactId) {
+			Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+			delete toDelete;			
+	}
+}
+		]]></code>
 	</test-code>
+	
 </test-data>

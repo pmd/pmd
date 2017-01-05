@@ -53,7 +53,7 @@ public final class Helper {
 
         final String className = node.getNode().getDefiningType().getApexName();
         if (className.endsWith("Test")) {
-            return false;
+            return true;
         }
 
         return false;
