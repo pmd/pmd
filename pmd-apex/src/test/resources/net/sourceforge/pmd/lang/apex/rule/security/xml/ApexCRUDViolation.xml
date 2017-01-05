@@ -2,7 +2,7 @@
 
 <test-data>
 
-<!-- 	<test-code>
+	<test-code>
 		<description>Proper CRUD,FLS via upsert</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
@@ -467,10 +467,10 @@ public class Foo {
 	}
 }
 		]]></code>
-	</test-code> -->
+	</test-code>
 	
 	<test-code>
-		<description>No CRUD check for delete</description>
+		<description>Test method should yield no issues</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class FooTest {
