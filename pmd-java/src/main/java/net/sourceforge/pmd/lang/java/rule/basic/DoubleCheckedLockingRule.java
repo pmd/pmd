@@ -32,21 +32,27 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
+ * <pre>
  * void method() {
- * if(x == null) {
- * synchronized(this){
- * if(x == null) {
- * x = new | method();
+ *   if (x == null) {
+ *     synchronized(this){
+ *       if (x == null) {
+ *         x = new | method();
+ *       }
+ *     }
+ *   }
  * }
- * }
- * }
- * 1.  The error is when one uses the value assigned within a synchronized
- * section, outside of a synchronized section.
- * if(x == null) is outside of synchronized section
- * x = new | method();
- * <p/>
- * <p/>
- * Very very specific check for double checked locking.
+ * </pre>
+ *
+ * <p>The error is when one uses the value assigned within a synchronized
+ * section, outside of a synchronized section.</p>
+ * 
+ * <pre>
+ * if (x == null) // is outside of synchronized section
+ *   x = new | method();
+ * </pre>
+ *
+ * <p>Very very specific check for double checked locking.</p>
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */

@@ -40,8 +40,6 @@ public class SourceFileScope extends AbstractJavaScope {
     /**
      * Configures the type resolution for the symbol table.
      * 
-     * @param classLoader
-     *            the class loader to use to find additional classes
      * @param imports
      *            the import declarations
      */

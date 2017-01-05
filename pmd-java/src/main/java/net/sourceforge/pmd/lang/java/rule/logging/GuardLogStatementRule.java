@@ -24,8 +24,8 @@ import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
  * Check that log.debug, log.trace, log.error, etc... statements are guarded by
  * some test expression on log.isDebugEnabled() or log.isTraceEnabled().
  * 
- * @author Romain Pelisse - <belaran@gmail.com>
- * @author Heiko Rupp - <hwr@pilhuhn.de>
+ * @author Romain Pelisse - &lt;belaran@gmail.com&gt;
+ * @author Heiko Rupp - &lt;hwr@pilhuhn.de&gt;
  * @author Tammo van Lessen - provided original XPath expression
  * 
  */

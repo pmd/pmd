@@ -22,11 +22,10 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  * This is a rule, that detects unnecessary casts when using Java 1.5 generics
  * and collections.
  *
- * <p>
- * Example:
+ * <p>Example:</p>
  * 
  * <pre>
- * List<Double> list = new ArrayList<Double>();
+ * List&lt;Double&gt; list = new ArrayList&lt;Double&gt;();
  * ...
  * Double d = (Double) list.get(0); //The cast is unnecessary on this typed array.
  * </pre>

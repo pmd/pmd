@@ -37,27 +37,25 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 /**
  * This rule finds concurrent calls to StringBuffer/Builder.append where String
  * literals are used It would be much better to make these calls using one call
- * to .append
- * <p/>
- * example:
- * <p/>
+ * to <code>.append</code>
+ * 
+ * <p>Example:</p>
  * 
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello&quot;);
  * buf.append(&quot; &quot;).append(&quot;World&quot;);
  * </pre>
- * <p/>
- * This would be more eloquently put as:
- * <p/>
+ * 
+ * <p>This would be more eloquently put as:</p>
  * 
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello World&quot;);
  * </pre>
- * <p/>
- * The rule takes one parameter, threshold, which defines the lower limit of
- * consecutive appends before a violation is created. The default is 1.
+ *
+ * <p>The rule takes one parameter, threshold, which defines the lower limit of
+ * consecutive appends before a violation is created. The default is 1.</p>
  */
 public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 

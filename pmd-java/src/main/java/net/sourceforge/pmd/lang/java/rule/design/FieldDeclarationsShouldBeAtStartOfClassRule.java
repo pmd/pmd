@@ -25,11 +25,11 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 //ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
 [../preceding-sibling::ClassOrInterfaceBodyDeclaration
-    [  count(ClassOrInterfaceDeclaration) > 0
-    or count(ConstructorDeclaration) > 0
-    or count(MethodDeclaration) > 0
-    or count(AnnotationTypeDeclaration) > 0
-    or ($ignoreEnumDeclarations = 'false' and count(EnumDeclaration) > 0)
+    [  count(ClassOrInterfaceDeclaration) &gt; 0
+    or count(ConstructorDeclaration) &gt; 0
+    or count(MethodDeclaration) &gt; 0
+    or count(AnnotationTypeDeclaration) &gt; 0
+    or ($ignoreEnumDeclarations = 'false' and count(EnumDeclaration) &gt; 0)
     ]
 ]
  * </pre>

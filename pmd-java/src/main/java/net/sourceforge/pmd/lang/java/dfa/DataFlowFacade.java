@@ -11,10 +11,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
+ * TODO What about initializers? This only processes methods and
+ * constructors.
+ *
  * @author raik
- *         <p/>
- *         TODO What about initializers? This only processes methods and
- *         constructors
  */
 public class DataFlowFacade extends JavaParserVisitorAdapter {
 

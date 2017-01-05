@@ -17,9 +17,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
- * <p/>
  *
- * @author <a mailto:trondandersen@c2i.net>Trond Andersen</a>
+ * @author <a href="mailto:trondandersen@c2i.net">Trond Andersen</a>
  * @version 1.0
  * @since 1.2
  */

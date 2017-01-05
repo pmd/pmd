@@ -36,11 +36,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * This rule finds StringBuffers which may have been pre-sized incorrectly
+ * This rule finds StringBuffers which may have been pre-sized incorrectly.
  *
- * See http://sourceforge.net/forum/forum.php?thread_id=1438119&forum_id=188194
- * 
  * @author Allan Caplan
+ * @see <a href="https://sourceforge.net/p/pmd/discussion/188194/thread/aba9dae7/">Check StringBuffer sizes against usage </a>
  */
 public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
