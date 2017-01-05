@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * This rule checks that no "style" elements (like <B>, <FONT>, ...) are used,
+ * This rule checks that no "style" elements (like &lt;B&gt;, &lt;FONT&gt;, ...) are used,
  * and that no "style" attributes (like "font", "size", "align") are used.
  *
  * @author pieter_van_raemdonck
