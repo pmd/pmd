@@ -134,6 +134,13 @@ Summary
         <td>N/A</td>
         <td>Kevin Conaway</td>
     </tr>
+
+    <tr>
+        <td><a href="#Codacy">Codacy</a></td>
+        <td></td>
+        <td><a class="externalLink" href="https://github.com/codacy/codacy-pmdjava">github: codacy/codacy-pmdjava</a></td>
+        <td>Codacy</td>
+    </tr>
 </table>
 
 General comments
@@ -453,4 +460,11 @@ WebLogic Workshop 8.1.x
 -----------------------
 
 Please see [the WebLogic Workshop plugin project home page](http://pmdwlw.sf.net/) for more information.
+
+
+Codacy
+------
+
+Although it is not an IDE, with [Codacy](https://www.codacy.com/) you have PMDJava analysis out-of-the-box,
+and it is free for open source projects.
 
