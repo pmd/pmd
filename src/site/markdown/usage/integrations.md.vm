@@ -61,13 +61,13 @@ Summary
     <tr>
         <td><a href="#IDEA">IntelliJ IDEA</a></td>
         <td></td>
-        <td>N/A</td>
-        <td>Amit Dev, <a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
+        <td><a href="https://github.com/amitdev/PMD-Intellij">github: amitdev/PMD-Intellij</a></td>
+        <td>Amit Dev</td>
     </tr>
 
     <tr>
         <td><a href="#IDEA_-_QAPlug">IntelliJ IDEA - QAPlug</a></td>
-        <td></td>
+        <td><a href="http://qaplug.com/">http://qaplug.com/</a></td>
         <td>N/A</td>
         <td>Jakub Sławiński</td>
     </tr>
@@ -116,8 +116,8 @@ Summary
 
     <tr>
         <td><a href="#NetBeans">NetBeans</a></td>
-        <td></td>
         <td><a href="http://kenai.com/projects/sqe/">SQE</a></td>
+        <td><a href="https://github.com/sqe-team/sqe">github: sqe-team/sqe</a></td>
         <td>N/A</td>
     </tr>
 
@@ -191,7 +191,7 @@ To install the PMD plugin for Eclipse:
 *   Start Eclipse and open a project
 *   Select "Help"->"Software Updates"->"Find and Install"
 *   Click "Next", then click "New remote site"
-*   Enter "PMD" into the Name field and <http://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/> into the URL field
+*   Enter "PMD" into the Name field and <https://sourceforge.net/projects/pmd/files/pmd-eclipse/update-site/> into the URL field
 *   Click through the rest of the dialog boxes to install the plugin
 
 Alternatively, you can download the latest zip file and follow the above procedures
@@ -249,7 +249,7 @@ IDEA
 You can use an integrated plugin or just use it as an IDEA "External Tool".
 
 Amit Dev wrote an integrated plugin for IDEA; you can download that
-[from the IntelliJ plugins site](http://plugins.intellij.net/plugin/?id=1137).
+[from the IntelliJ plugins site](http://plugins.jetbrains.com/idea/plugin/1137-pmdplugin).
 
 Here's how to set it up as an "External Tool":
 
@@ -279,15 +279,15 @@ QAPlug is an Intellij IDEA plugin to manage code quality.  It integrates no less
 
 The plugin is available at <http://www.qaplug.com/>.
 
-Also available at the JetBrains site, [QAPlug-PMD](http://plugins.intellij.net/plugin/?idea_ce&amp;id=4596)
-and [QAPlug](http://plugins.intellij.net/plugin/?idea_ce&amp;id=4594).
+Also available at the JetBrains site, [QAPlug-PMD](http://plugins.jetbrains.com/idea/plugin/4596-qaplug--pmd)
+and [QAPlug](http://plugins.jetbrains.com/idea/plugin/4594-qaplug).
 
 JBuilder
 --------
 
 To enable this OpenTool in JBuilder:
 
-*   Download the [latest binary release](http://sourceforge.net/projects/pmd/files/pmd/)
+*   Download the [latest binary release](https://sourceforge.net/projects/pmd/files/pmd-jbuilder/)
 *   Unzip it into your `jbuilder/lib/ext/` directory
 *   Restart JBuilder
 
