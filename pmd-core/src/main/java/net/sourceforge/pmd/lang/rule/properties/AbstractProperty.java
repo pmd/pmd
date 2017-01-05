@@ -429,9 +429,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         return value.equals(otherValue);
     }
 
-    /**
-     * @return Map<String,String>
-     */
     @Override
     public Map<String, String> attributeValuesById() {
 
@@ -440,10 +437,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         return values;
     }
 
-    /**
-     * @param attributes
-     *            Map<String,String>
-     */
     protected void addAttributesTo(Map<String, String> attributes) {
         attributes.put(NAME, name);
         attributes.put(DESCRIPTION, description);

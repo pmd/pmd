@@ -20,18 +20,25 @@ import org.apache.tools.ant.types.FileSet;
 
 /**
  * CPDTask
- * <p/>
- * Runs the CPD utility via ant. The ant task looks like this:
- * <p/>
- * <project name="CPDProj" default="main" basedir=".">
- * <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
- * <target name="main">
- * <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true"
- * ignoreLiterals="true" ignoreAnnotations="true" minimumTokenCount="100"
- * outputFile="c:\cpdrun.txt"> <fileset dir="/path/to/my/src">
- * <include name="*.java"/> </fileset> </cpd> </target> </project>
- * <p/>
- * Required: minimumTokenCount, outputFile, and at least one file
+ * 
+ * <p>Runs the CPD utility via ant. The ant task looks like this:</p>
+ * 
+ * <pre>
+ * &lt;project name="CPDProj" default="main" basedir="."&gt;
+ *   &lt;taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" /&gt;
+ *   &lt;target name="main"&gt;
+ *     &lt;cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true"
+ *          ignoreLiterals="true" ignoreAnnotations="true" minimumTokenCount="100"
+ *          outputFile="c:\cpdrun.txt"&gt;
+ *       &lt;fileset dir="/path/to/my/src"&gt;
+ *         &lt;include name="*.java"/&gt;
+ *       &lt;/fileset&gt;
+ *     &lt;/cpd&gt;
+ *   &lt;/target&gt;
+ * &lt;/project&gt;
+ * </pre>
+ * 
+ * <p>Required: minimumTokenCount, outputFile, and at least one file</p>
  */
 public class CPDTask extends Task {
 

@@ -16,14 +16,14 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * Uses the generated result tree instead of the result list. The
+ * visitor traverses the tree and creates several html files. The
+ * "package view" file (index.html) displays an overview of packages,
+ * classes and the number of * rule violations they contain. All the
+ * other html files represent a class * and show detailed information
+ * about the violations.
+ *
  * @author raik
- *         <p/>
- *         * Uses the generated result tree instead of the result list. The
- *         visitor * traverses the tree and creates several html files. The
- *         "package view" file * (index.html) displays an overview of packages,
- *         classes and the number of * rule violations they contain. All the
- *         other html files represent a class * and show detailed information
- *         about the violations.
  */
 public class ReportHTMLPrintVisitor extends ReportVisitor {
 

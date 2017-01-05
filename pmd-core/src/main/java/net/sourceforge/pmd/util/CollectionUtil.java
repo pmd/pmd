@@ -147,7 +147,7 @@ public final class CollectionUtil {
     }
 
     /**
-     * Returns a map based on the source but with the key & values swapped.
+     * Returns a map based on the source but with the key &amp; values swapped.
      *
      * @param source
      *            Map

@@ -143,7 +143,7 @@ public final class ClassUtil {
      * Return the methods as a map keyed by their common declaration types.
      *
      * @param methods
-     * @return Map<String, List<Method>>
+     * @return methods grouped by declaring type name
      */
     public static Map<String, List<Method>> asMethodGroupsByTypeName(Method[] methods) {
 

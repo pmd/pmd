@@ -22,7 +22,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
- * <p/>
+ * 
  * This rule needs a "xpath" property value in order to function.
  */
 public class XPathRule extends AbstractRule {

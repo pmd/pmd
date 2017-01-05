@@ -18,7 +18,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 public abstract class AbstractPMDProcessor {
@@ -52,8 +52,7 @@ public abstract class AbstractPMDProcessor {
      * Create instances for each rule defined in the ruleset(s) in the
      * configuration. Please note, that the returned instances <strong>must
      * not</strong> be used by different threads. Each thread must create its
-     * own copy of the rules (see
-     * {@link PmdRunnable.PmdThread#getRuleSets(String)}).
+     * own copy of the rules.
      *
      * @param factory
      * @return the rules within a rulesets

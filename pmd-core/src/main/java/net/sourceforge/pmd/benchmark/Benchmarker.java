@@ -252,10 +252,6 @@ public class Benchmarker {
         BENCHMARKS_BY_NAME.clear();
     }
 
-    /**
-     *
-     * @return Map<String,BenchmarkResult>
-     */
     public static Map<String, BenchmarkResult> values() {
         return BENCHMARKS_BY_NAME;
     }

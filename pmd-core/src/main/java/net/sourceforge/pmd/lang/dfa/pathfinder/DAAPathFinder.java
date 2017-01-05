@@ -10,11 +10,11 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 
 /**
- * Finds all paths of a data flow. Each loop will be 0 or 2 times traversed -> 2
+ * Finds all paths of a data flow. Each loop will be 0 or 2 times traversed -&gt; 2
  * paths. This is special to the data flow anomaly analysis.
  *
- * @since Created on 09.08.2004
  * @author raik
+ * @since Created on 09.08.2004
  */
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;

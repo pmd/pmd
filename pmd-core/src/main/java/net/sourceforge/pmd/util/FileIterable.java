@@ -18,7 +18,7 @@ import java.util.Iterator;
  * loop.
  * </p>
  *
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 public class FileIterable implements Iterable<String> {

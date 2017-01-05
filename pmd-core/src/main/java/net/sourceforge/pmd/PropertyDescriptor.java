@@ -13,7 +13,7 @@ import java.util.Map;
  * serialization, and default values for any specific datatypes.
  *
  * @author Brian Remedios
- * @param <T>
+ * @param <T> type of the property's value
  */
 public interface PropertyDescriptor<T extends Object> extends Comparable<PropertyDescriptor<?>> {
     /**
@@ -42,10 +42,10 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
     /**
      * Returns whether the property is multi-valued, i.e. an array of strings,
      *
-     * As unary property rule properties will return a value of one, you must
+     * <p>As unary property rule properties will return a value of one, you must
      * use the get/setProperty accessors when working with the actual values.
      * When working with multi-value properties then the get/setProperties
-     * accessors must be used.
+     * accessors must be used.</p>
      *
      * @return boolean
      */

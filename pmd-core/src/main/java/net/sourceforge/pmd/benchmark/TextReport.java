@@ -27,12 +27,10 @@ public class TextReport implements BenchmarkReport {
 
     /**
      *
-     * @param stressResults
-     *            Set<Result>
+     * @param stressResults the durations from the stress test run
      * @param out
      *            PrintStream
-     * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Set<Result>,
-     *      PrintStream)
+     * @see BenchmarkReport#generate(Set, PrintStream)
      */
     @Override
     public void generate(Set<RuleDuration> stressResults, PrintStream out) {
@@ -53,11 +51,6 @@ public class TextReport implements BenchmarkReport {
         out.println("=========================================================");
     }
 
-    /**
-     *
-     * @param benchmarksByName
-     *            Map<String,BenchmarkResult>
-     */
     public void report(Map<String, BenchmarkResult> benchmarksByName) {
         generate(benchmarksByName, System.out);
     }
@@ -65,11 +58,9 @@ public class TextReport implements BenchmarkReport {
     /**
      *
      * @param benchmarksByName
-     *            Map<String,BenchmarkResult>
      * @param out
      *            PrintStream
-     * @see net.sourceforge.pmd.benchmark.BenchmarkReport#generate(Map<String,BenchmarkResult>,
-     *      PrintStream)
+     * @see BenchmarkReport#generate(Map, PrintStream)
      */
     @Override
     public void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream out) {

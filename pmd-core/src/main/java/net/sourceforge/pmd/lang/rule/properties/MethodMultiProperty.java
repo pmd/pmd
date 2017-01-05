@@ -74,21 +74,6 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]>
         super(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder);
     }
 
-    /**
-     * Constructor for MethodProperty.
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param methodDefaults
-     *            String
-     * @param otherParams
-     *            Map<String, String>
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
-     */
     public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
             Map<String, String> otherParams, float theUIOrder) {
         this(theName, theDescription, methodsFrom(methodDefaults), packageNamesIn(otherParams), theUIOrder);

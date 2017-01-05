@@ -12,9 +12,9 @@ import java.util.StringTokenizer;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
+ * Each data flow contains a set of DataFlowNodes.
+ *
  * @author raik
- *         <p/>
- *         Each data flow contains a set of DataFlowNodes.
  */
 public abstract class AbstractDataFlowNode implements DataFlowNode {
 

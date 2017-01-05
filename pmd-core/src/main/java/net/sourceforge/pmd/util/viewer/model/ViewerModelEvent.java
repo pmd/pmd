@@ -5,18 +5,11 @@
 package net.sourceforge.pmd.util.viewer.model;
 
 /**
- * The event which will be sent every time the model changes
- * <p/>
- * <p/>
- * <p/>
- * <p/>
- * <p/>
- * Note: the instances will be immutable
- * <p/>
- * </p>
+ * The event which will be sent every time the model changes.
+ *
+ * <p>Note: the instances will be immutable</p>
  *
  * @author Boris Gruschko ( boris at gruschko.org )
- * @version $Id$
  */
 public class ViewerModelEvent {
     /**
