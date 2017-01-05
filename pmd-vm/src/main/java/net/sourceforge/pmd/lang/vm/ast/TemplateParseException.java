@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.vm.util.LogUtil;
 /**
  * This is an extension of the ParseException, which also takes a template name.
  * 
- * @see org.apache.velocity.runtime.parser.ParseException
+ * <p>see also the original <code>org.apache.velocity.runtime.parser.ParseException</code></p>
  * 
  * @author <a href="hps@intermeta.de">Henning P. Schmiedehausen</a>
  * @version $Id: TemplateParseException.java 703544 2008-10-10 18:15:53Z nbubna
@@ -67,7 +67,7 @@ public class TemplateParseException extends ParseException {
      * true to indicate that this constructor was used to create this object.
      * This constructor calls its super class with the empty string to force the
      * "toString" method of parent class "Throwable" to print the error message
-     * in the form: ParseException: <result of getMessage>
+     * in the form: ParseException: &lt;result of getMessage&gt;
      * 
      * @param currentTokenVal
      * @param expectedTokenSequencesVal

@@ -102,7 +102,7 @@ public abstract class Directive implements Cloneable {
     }
 
     /**
-     * @returns the name to be used when a scope control is provided for this
+     * @return the name to be used when a scope control is provided for this
      *          directive.
      */
     public String getScopeName() {

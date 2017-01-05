@@ -71,9 +71,6 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
         templateName = parser.currentTemplateName;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#jjtOpen()
-     */
     @Override
     public void jjtOpen() {
         first = parser.getToken(1); // added
@@ -83,9 +80,6 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
         }
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#jjtClose()
-     */
     @Override
     public void jjtClose() {
         last = parser.getToken(0); // added
@@ -106,32 +100,18 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
         this.first = t;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#getFirstToken()
-     */
     public Token getFirstToken() {
         return first;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#getLastToken()
-     */
     public Token getLastToken() {
         return last;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#jjtAccept(org.apache.velocity.runtime.parser.node.VmParserVisitor,
-     *      java.lang.Object)
-     */
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#childrenAccept(org.apache.velocity.runtime.parser.node.VmParserVisitor,
-     *      java.lang.Object)
-     */
     public Object childrenAccept(final VmParserVisitor visitor, final Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
@@ -181,8 +161,8 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
 
     // All additional methods
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#literal()
+    /*
+     * see org.apache.velocity.runtime.parser.node.Node#literal()
      */
     public String literal() {
         // if we have only one string, just return it and avoid
@@ -200,50 +180,50 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
         return sb.toString();
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#getType()
+    /*
+     * see org.apache.velocity.runtime.parser.node.Node#getType()
      */
     public int getType() {
         return id;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#setInfo(int)
+    /*
+     * see org.apache.velocity.runtime.parser.node.Node#setInfo(int)
      */
     public void setInfo(final int info) {
         this.info = info;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#getInfo()
+    /*
+     * see org.apache.velocity.runtime.parser.node.Node#getInfo()
      */
     public int getInfo() {
         return info;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#setInvalid()
+    /*
+     * see org.apache.velocity.runtime.parser.node.Node#setInvalid()
      */
     public void setInvalid() {
         invalid = true;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#isInvalid()
+    /*
+     * see org.apache.velocity.runtime.parser.node.Node#isInvalid()
      */
     public boolean isInvalid() {
         return invalid;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#getLine()
+    /*
+     * see org.apache.velocity.runtime.parser.node.Node#getLine()
      */
     public int getLine() {
         return first.beginLine;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.Node#getColumn()
+    /*
+     * see org.apache.velocity.runtime.parser.node.Node#getColumn()
      */
     public int getColumn() {
         return first.beginColumn;
