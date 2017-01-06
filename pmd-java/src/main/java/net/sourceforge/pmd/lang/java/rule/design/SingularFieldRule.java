@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -115,6 +116,12 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
                     if (primaryExpressionParent.jjtGetParent() instanceof ASTSynchronizedStatement) {
                         // This usage is directly in an expression of a
                         // synchronized block
+                        violation = false;
+                        break; // Optimization
+                    }
+
+                    if (location.getFirstParentOfType(ASTLambdaExpression.class) != null) {
+                        // This usage is inside a lambda expression
                         violation = false;
                         break; // Optimization
                     }
