@@ -572,7 +572,7 @@ public class MyClass {
 
 
     <test-code>
-        <description>lambda failure</description>
+        <description>#177 [java] SingularField with lambdas as final fields</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /** Dummy class. */
