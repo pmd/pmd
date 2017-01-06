@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -146,6 +147,12 @@ public class SingularFieldRule extends AbstractJavaRule {
                     	//This usage is directly in an expression of a synchronized block
                     	violation = false;
                     	break;			//Optimization
+                    }
+
+                    if (location.getFirstParentOfType(ASTLambdaExpression.class) != null) {
+                        // This usage is inside a lambda expression
+                        violation = false;
+                        break; // Optimization
                     }
 
                     Node method = location.getFirstParentOfType(ASTMethodDeclaration.class);

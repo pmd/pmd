@@ -35,6 +35,7 @@ This is a bug fixing release, no major changes were introduced.
 
 *   java-design
     *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
+    *   [#177](https://github.com/pmd/pmd/issues/177): \[java] SingularField with lambdas as final fields
 *   java-imports
     *   [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
     *   [#1547](https://sourceforge.net/p/pmd/bugs/1547/): \[java] UnusedImportRule - False Positive for only usage in Javadoc - {@link ClassName#CONSTANT}
