@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 public class CPDTaskTest {

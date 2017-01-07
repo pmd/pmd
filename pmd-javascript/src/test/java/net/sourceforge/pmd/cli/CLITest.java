@@ -13,7 +13,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.util.FileUtil;
 
 /**
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  * 
  */
 public class CLITest extends BaseCLITest {

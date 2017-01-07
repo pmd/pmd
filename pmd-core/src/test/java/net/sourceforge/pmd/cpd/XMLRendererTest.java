@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * @author Philippe T'Seyen
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 public class XMLRendererTest {
