@@ -70,7 +70,7 @@ public class Formatter {
             if (null == s) {
 
                 if (toConsole) {
-                    if(null == System.console()) {
+                    if (null == System.console()) {
                         // pipe or redirect, no interactive console.
                         s = System.getProperty("file.encoding");
                     } else {
@@ -89,8 +89,7 @@ public class Formatter {
                 parameter.setName("encoding");
                 parameter.setValue(charset.name());
                 parameters.add(parameter);
-            }
-            else {
+            } else {
                 charset = Charset.forName(s);
             }
         }
