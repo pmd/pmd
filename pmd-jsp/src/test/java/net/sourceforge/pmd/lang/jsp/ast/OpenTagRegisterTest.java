@@ -22,7 +22,7 @@ public class OpenTagRegisterTest {
     }
 
     /**
-     * <a> <b> </a>
+     * &lt;a&gt; &lt;b&gt; &lt;/a&gt;
      */
     @Test
     public void testSimpleNesting() {
@@ -38,7 +38,7 @@ public class OpenTagRegisterTest {
     }
 
     /**
-     * <a> <b> <b> </a>
+     * &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/a&gt;
      */
     @Test
     public void doubleNesting() {
@@ -57,7 +57,7 @@ public class OpenTagRegisterTest {
     }
 
     /**
-     * <x> <a> <b> <b> </x> </a> </x>
+     * &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/x&gt; &lt;/a&gt; &lt;/x&gt;
      */
     @Test
     public void unopenedTags() {
@@ -82,7 +82,7 @@ public class OpenTagRegisterTest {
     }
 
     /**
-     * <x> <a> <b> <b> </z> </a> </x>
+     * &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
      * 
      */
     @Test
@@ -109,7 +109,7 @@ public class OpenTagRegisterTest {
     }
 
     /**
-     * <a> <x> <a> <b> <b> </z> </a> </x>
+     * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
      */
     @Test
     public void openedIsolatedTag() {

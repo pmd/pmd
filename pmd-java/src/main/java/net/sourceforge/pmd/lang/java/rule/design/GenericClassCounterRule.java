@@ -26,24 +26,24 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  * matched with a regex), and/or their type.
  * </p>
  *
- * <p>Example of configurations:
+ * <p>Example of configurations:</p>
+ *
  * <pre>
- *     &lt;!-- Property order is MANDATORY !!! -->
- *     &lt;!-- Several regexes may be provided to ensure a match... -->
+ *     &lt;!-- Property order is MANDATORY !!! --&gt;
+ *     &lt;!-- Several regexes may be provided to ensure a match... --&gt;
  *     &lt;property name="nameMatch" description="a regex on which to match"
- *         value="^Abstract.*Bean*$,^*EJB*$"/>
- *     &lt;!-- An operand to refine match strategy TODO: Not implemented yet !!! -->
+ *         value="^Abstract.*Bean*$,^*EJB*$"/&gt;
+ *     &lt;!-- An operand to refine match strategy TODO: Not implemented yet !!! --&gt;
  *     &lt;property name"operand" description=""
- *         value="and"/> <!-- possible values are and/or -->
- *     &lt;!-- Must be a full name to ensure type control !!! -->
+ *         value="and"/&gt; &lt;!-- possible values are and/or --&gt;
+ *     &lt;!-- Must be a full name to ensure type control !!! --&gt;
  *     &lt;property name="typeMatch" description="a regex to match on implements/extends classname"
- *         value="javax.servlet.Filter"/>
- *     &lt;!-- Define after how many occurences one should log a violation -->
+ *         value="javax.servlet.Filter"/&gt;
+ *     &lt;!-- Define after how many occurences one should log a violation --&gt;
  *     &lt;property name="threshold" description="Defines how many occurences are legal"
- *         value="2"/>
- *     &lt;!-- TODO: Add a parameter to allow "ignore" pattern based on name -->
+ *         value="2"/&gt;
+ *     &lt;!-- TODO: Add a parameter to allow "ignore" pattern based on name --&gt;
  * </pre>
- * </p>
  *
  * @author Ryan Gutafson, rgustav@users.sourceforge.net
  * @author Romain PELISSE, belaran@gmail.com

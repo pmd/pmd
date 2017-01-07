@@ -506,9 +506,7 @@ public class TypeSet {
      * @param name
      *            the name of the class, can be a simple name or a fully
      *            qualified name.
-     * @return the class
-     * @throws ClassNotFoundException
-     *             if there is no such class
+     * @return the class or <code>null</code> if none found
      */
     public Class<?> findClass(String name) {
         // we don't build the resolvers until now since we first want to get all

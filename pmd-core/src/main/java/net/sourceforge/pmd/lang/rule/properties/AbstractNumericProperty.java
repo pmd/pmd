@@ -109,12 +109,6 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
         return null;
     }
 
-    /**
-     * Method addAttributesTo.
-     *
-     * @param attributes
-     *            Map<String,String>
-     */
     @Override
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);

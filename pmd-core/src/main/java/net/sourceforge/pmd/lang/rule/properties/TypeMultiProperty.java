@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
@@ -73,21 +74,6 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     }
 
-    /**
-     * Constructor for TypeProperty.
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theTypeDefaults
-     *            String
-     * @param otherParams
-     *            Map<String, String>
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
-     */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
             Map<String, String> otherParams, float theUIOrder) {
         this(theName, theDescription, typesFrom(theTypeDefaults), packageNamesIn(otherParams), theUIOrder);
@@ -120,7 +106,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     /**
      * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
+     * @see PropertyDescriptor#type()
      */
     @Override
     public Class<Class[]> type() {
@@ -149,7 +135,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
      * @param valueString
      *            String
      * @return Object
-     * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
+     * @see PropertyDescriptor#valueFrom(String)
      */
     @Override
     public Class<?>[] valueFrom(String valueString) {

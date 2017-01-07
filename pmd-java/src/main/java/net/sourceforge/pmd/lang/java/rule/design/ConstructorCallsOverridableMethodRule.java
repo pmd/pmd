@@ -883,14 +883,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * evaluation. Non-private constructor's calls on private constructors are
      * added to a list for later safety evaluation. Private constructors are
      * added to a list so their safety to be called can be later evaluated.
-     * <p/>
-     * Note: We are not checking private constructor's calls on non-private
+     *
+     * <p>Note: We are not checking private constructor's calls on non-private
      * constructors because all non-private constructors will be evaluated for
      * safety anyway. This means we wont flag a private constructor as unsafe
      * just because it calls an unsafe public constructor. We want to show only
-     * 1 instance of an error, and this would be 2 instances of the same error.
+     * 1 instance of an error, and this would be 2 instances of the same error.</p>
      *
-     * TODO eliminate the redundancy
+     * <p>TODO eliminate the redundancy</p>
      */
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {

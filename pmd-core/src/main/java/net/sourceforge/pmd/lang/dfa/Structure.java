@@ -14,10 +14,10 @@ import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
+ * Structure contains only raw data. A set of nodes which represent a
+ * data flow and 2 stacks to link the nodes to each other.
+ *
  * @author raik
- *         <p/>
- *         Structure contains only raw data. A set of nodes which represent a
- *         data flow and 2 stacks to link the nodes to each other.
  */
 public class Structure {
     private static final Logger LOGGER = Logger.getLogger(Structure.class.getName());

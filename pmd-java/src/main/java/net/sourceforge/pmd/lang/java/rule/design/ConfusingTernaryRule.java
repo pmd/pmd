@@ -18,10 +18,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
- * if (x != y) { diff(); } else { same(); } and<br>
- * (!x ? diff() : same());.
- * <p/>
- * XPath can handle the easy cases, e.g.:
+ * <code>if (x != y) { diff(); } else { same(); }</code> and<br>
+ * <code>(!x ? diff() : same());</code>
+ * 
+ * <p>XPath can handle the easy cases, e.g.:</p>
  * 
  * <pre>
  *    //IfStatement[
@@ -31,16 +31,16 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  *        UnaryExpressionNotPlusMinus[@Image="!"]]]
  * </pre>
  * 
- * but "&amp;&amp;" and "||" are difficult, since we need a match for <i>all</i>
+ * <p>But "&amp;&amp;" and "||" are difficult, since we need a match for <i>all</i>
  * children instead of just one. This can be done by using a double-negative,
- * e.g.:
+ * e.g.:</p>
  * 
  * <pre>
  *    not(*[not(<i>matchme</i>)])
  * </pre>
  * 
- * Still, XPath is unable to handle arbitrarily nested cases, since it lacks
- * recursion, e.g.:
+ * <p>Still, XPath is unable to handle arbitrarily nested cases, since it lacks
+ * recursion, e.g.:</p>
  * 
  * <pre>
  * if (((x != !y)) || !(x)) {

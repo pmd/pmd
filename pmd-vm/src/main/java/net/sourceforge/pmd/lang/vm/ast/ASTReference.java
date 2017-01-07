@@ -29,7 +29,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author <a href="mailto:Christoph.Reck@dlr.de">Christoph Reck</a>
- * @author <a href="mailto:kjohnson@transparent.com>Kent Johnson</a>
+ * @author <a href="mailto:kjohnson@transparent.com">Kent Johnson</a>
  * @version $Id: ASTReference.java 806597 2009-08-21 15:21:44Z nbubna $
  */
 public class ASTReference extends AbstractVmNode {
@@ -66,10 +66,6 @@ public class ASTReference extends AbstractVmNode {
         super(p, id);
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.SimpleNode#jjtAccept(org.apache.velocity.runtime.parser.node.VmParserVisitor,
-     *      java.lang.Object)
-     */
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);
@@ -107,7 +103,7 @@ public class ASTReference extends AbstractVmNode {
 
     /**
      * Override of the SimpleNode method literal() Returns the literal
-     * representation of the node. Should be something like $<token>.
+     * representation of the node. Should be something like $&lt;token&gt;.
      * 
      * @return A literal string.
      */

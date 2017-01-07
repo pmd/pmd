@@ -21,10 +21,7 @@ public class ParserCornersTest extends ParserTst {
 
     /**
      * #1107 PMD 5.0.4 couldn't parse call of parent outer java class method
-     * from inner class
-     * 
-     * @throws Exception
-     *             any error
+     * from inner class.
      */
     @Test
     public void testInnerOuterClass() {

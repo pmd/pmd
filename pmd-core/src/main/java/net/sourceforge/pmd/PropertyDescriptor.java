@@ -7,13 +7,13 @@ package net.sourceforge.pmd;
 import java.util.Map;
 
 /**
- * Property value descriptor that defines the use & requirements for setting
+ * Property value descriptor that defines the use &amp; requirements for setting
  * property values for use within PMD and any associated GUIs. While concrete
  * descriptor instances are static and immutable they provide validation,
  * serialization, and default values for any specific datatypes.
  *
  * @author Brian Remedios
- * @param <T>
+ * @param <T> type of the property's value
  */
 public interface PropertyDescriptor<T extends Object> extends Comparable<PropertyDescriptor<?>> {
     /**
@@ -42,10 +42,10 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
     /**
      * Returns whether the property is multi-valued, i.e. an array of strings,
      *
-     * As unary property rule properties will return a value of one, you must
+     * <p>As unary property rule properties will return a value of one, you must
      * use the get/setProperty accessors when working with the actual values.
      * When working with multi-value properties then the get/setProperties
-     * accessors must be used.
+     * accessors must be used.</p>
      *
      * @return boolean
      */
@@ -81,13 +81,14 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * Denotes the relative order the property field should occupy if we are
      * using an auto-generated UI to display and edit property values. If the
      * value returned has a non-zero fractional part then this is can be used to
-     * place adjacent fields on the same row. Example:
+     * place adjacent fields on the same row.
+     * 
+     * <p>Example:<br>
+     * name -&gt; 0.0 description 1.0 minValue -&gt; 2.0 maxValue -&gt; 2.1
+     * </p>
+     * ..would have their fields placed like:<br>
      *
-     * name -> 0.0 description 1.0 minValue -> 2.0 maxValue -> 2.1
-     *
-     * ..would have their fields placed like:
-     *
-     * name: [ ] description: [ ] minimum: [ ] maximum: [ ]
+     * <code>name: [ ] description: [ ] minimum: [ ] maximum: [ ]</code>
      *
      * @return float
      */
@@ -156,7 +157,7 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * Returns a map representing all the property attributes of the receiver in
      * string form.
      *
-     * @return Map<String, String>
+     * @return map
      */
     Map<String, String> attributeValuesById();
 }

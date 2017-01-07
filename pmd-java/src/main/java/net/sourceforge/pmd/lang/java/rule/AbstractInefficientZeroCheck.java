@@ -85,7 +85,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @param location
      *            the node location to report
      * @param expr
-     *            the ==, <, > expression
+     *            the ==, &lt;, &gt; expression
      */
     protected void checkNodeAndReport(Object data, Node location, Node expr) {
         if ((expr instanceof ASTEqualityExpression

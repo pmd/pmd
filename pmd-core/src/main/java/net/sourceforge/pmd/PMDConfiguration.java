@@ -24,8 +24,8 @@ import net.sourceforge.pmd.util.IOUtil;
 /**
  * This class contains the details for the runtime configuration of PMD. There
  * are several aspects to the configuration of PMD.
- * <p>
- * The aspects related to generic PMD behavior:
+ *
+ * <p>The aspects related to generic PMD behavior:</p>
  * <ul>
  * <li>Suppress marker is used in source files to suppress a RuleViolation,
  * defaults to {@link PMD#SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
@@ -42,8 +42,8 @@ import net.sourceforge.pmd.util.IOUtil;
  * LanguageVersion for each Language.
  * {@link #getLanguageVersionDiscoverer()}</li>
  * </ul>
- * <p>
- * The aspects related to Rules and Source files are:
+ *
+ * <p>The aspects related to Rules and Source files are:</p>
  * <ul>
  * <li>A comma separated list of RuleSets URIs. {@link #getRuleSets()}</li>
  * <li>A minimum priority threshold when loading Rules from RuleSets, defaults
@@ -57,7 +57,7 @@ import net.sourceforge.pmd.util.IOUtil;
  * <li>A flag which controls, whether {@link RuleSetFactoryCompatibility} filter
  * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
- * <p>
+ *
  * <ul>
  * <li>The renderer format to use for Reports. {@link #getReportFormat()}</li>
  * <li>The file to which the Report should render. {@link #getReportFile()}</li>
@@ -68,8 +68,8 @@ import net.sourceforge.pmd.util.IOUtil;
  * <li>An indicator of whether to show suppressed Rule violations in Reports.
  * {@link #isShowSuppressedViolations()}</li>
  * </ul>
- * <p>
- * The aspects related to special PMD behavior are:
+ *
+ * <p>The aspects related to special PMD behavior are:</p>
  * <ul>
  * <li>An indicator of whether PMD should log debug information.
  * {@link #isDebug()}</li>
@@ -175,10 +175,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      * the configuration. If no ClassLoader is currently configured, the
      * ClassLoader used to load the {@link PMDConfiguration} class will be used
      * as the parent ClassLoader of the created ClassLoader.
-     * <p>
-     * If the classpath String looks like a URL to a file (i.e. starts with
+     *
+     * <p>If the classpath String looks like a URL to a file (i.e. starts with
      * <code>file://</code>) the file will be read with each line representing
-     * an entry on the classpath.
+     * an entry on the classpath.</p>
      *
      * @param classpath
      *            The prepended classpath.
@@ -232,9 +232,10 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Get the LanguageVersion of the source file with given name. This depends
      * on the fileName extension, and the java version.
-     * <p/>
+     * <p>
      * For compatibility with older code that does not always pass in a correct
      * filename, unrecognized files are assumed to be java files.
+     * </p>
      *
      * @param fileName
      *            Name of the file, can be absolute, or simple.

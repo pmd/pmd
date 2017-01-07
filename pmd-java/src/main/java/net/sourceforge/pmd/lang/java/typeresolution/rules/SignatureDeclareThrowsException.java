@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  * type resolution facilities, and can detect if the class implements or extends
  * TestCase class
  *
- * @author <a mailto:trondandersen@c2i.net>Trond Andersen</a>
+ * @author <a href="mailto:trondandersen@c2i.net">Trond Andersen</a>
  * @author acaplan
  * @author Wouter Zelle
  */

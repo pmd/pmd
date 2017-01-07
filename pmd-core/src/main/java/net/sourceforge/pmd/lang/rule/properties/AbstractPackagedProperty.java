@@ -53,10 +53,6 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
         return null;
     }
 
-    /**
-     * @param attributes
-     *            Map<String,String>
-     */
     @Override
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);

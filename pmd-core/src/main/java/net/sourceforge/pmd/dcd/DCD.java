@@ -20,10 +20,11 @@ import net.sourceforge.pmd.util.filter.Filters;
  * The Dead Code Detector is used to find dead code. What is dead code? Dead
  * code is code which is not used by other code? It exists, but it not used.
  * Unused code is clutter, which can generally be a candidate for removal.
- * <p>
- * When performing dead code detection, there are various sets of files/classes
+ *
+ * <p>When performing dead code detection, there are various sets of files/classes
  * which must be identified. An analogy of the dead code analysis as a <em>foot
- * race</em> is used to help clarify each of these sets:
+ * race</em> is used to help clarify each of these sets:</p>
+ *
  * <ol>
  * <li>The <em>direct users</em> is the set of Classes which will always be
  * parsed to determine what code they use. This set is the starting point of the
@@ -35,15 +36,15 @@ import net.sourceforge.pmd.util.filter.Filters;
  * focus of the dead code detection. This set is the finish line of the
  * race.</li>
  * </ol>
- * <p>
- * Typically there is intersection between the set of <em>direct users</em>,
+ *
+ * <p>Typically there is intersection between the set of <em>direct users</em>,
  * <em>indirect users</em> and <em>dead code candidates</em>, although it is not
  * required. If the sets are defined too tightly, there the potential for a lot
  * of code to be considered as dead code. You may need to expand the <em>direct
  * users</em> or <em>indirect users</em> sets, or explore using different
- * options.
+ * options.</p>
  *
- * @author Ryan Gustafson <ryan.gustafson@gmail.com>,
+ * @author Ryan Gustafson &lt;ryan.gustafson@gmail.com&gt;
  */
 public class DCD {
     //

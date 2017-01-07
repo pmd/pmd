@@ -36,7 +36,7 @@ public class ViewerModel {
     }
 
     /**
-     * commits source code to the model. all existing source will be replaced
+     * Commits source code to the model. all existing source will be replaced.
      */
     public void commitSource(String source, LanguageVersion languageVersion) {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
@@ -47,7 +47,7 @@ public class ViewerModel {
     }
 
     /**
-     * determines whether the model has a compiled tree at it's disposal
+     * Determines whether the model has a compiled tree at it's disposal.
      *
      * @return true if there is an AST, false otherwise
      */
@@ -56,7 +56,7 @@ public class ViewerModel {
     }
 
     /**
-     * evaluates the given XPath expression against the current tree
+     * Evaluates the given XPath expression against the current tree.
      *
      * @param xPath
      *            XPath expression to be evaluated
@@ -91,10 +91,9 @@ public class ViewerModel {
     }
 
     /**
-     * retrieves the results of last evaluation
+     * Retrieves the results of last evaluation.
      *
      * @return a list containing the nodes selected by the last XPath expression
-     *         <p/>
      *         evaluation
      */
     public List<Node> getLastEvaluationResults() {
@@ -102,7 +101,7 @@ public class ViewerModel {
     }
 
     /**
-     * selects the given node in the AST
+     * Selects the given node in the AST.
      *
      * @param node
      *            node to be selected
@@ -114,7 +113,7 @@ public class ViewerModel {
     }
 
     /**
-     * appends the given fragment to the XPath expression
+     * Appends the given fragment to the XPath expression.
      *
      * @param pathFragment
      *            fragment to be added

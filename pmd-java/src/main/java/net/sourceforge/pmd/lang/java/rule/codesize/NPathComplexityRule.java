@@ -224,11 +224,11 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
 
     /**
      * Calculate the boolean complexity of the given expression. NPath boolean
-     * complexity is the sum of && and || tokens. This is calculated by summing
-     * the number of children of the &&'s (minus one) and the children of the
+     * complexity is the sum of &amp;&amp; and || tokens. This is calculated by summing
+     * the number of children of the &amp;&amp;'s (minus one) and the children of the
      * ||'s (minus one).
-     * <p>
-     * Note that this calculation applies to Cyclomatic Complexity as well.
+     * 
+     * <p>Note that this calculation applies to Cyclomatic Complexity as well.</p>
      * 
      * @param expr
      *            control structure expression

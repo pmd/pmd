@@ -376,11 +376,11 @@ public class PMD {
      * @param ruleSetFactory
      *            RuleSetFactory
      * @param files
-     *            List<DataSource>
+     *            List of {@link DataSource}s
      * @param ctx
      *            RuleContext
      * @param renderers
-     *            List<Renderer>
+     *            List of {@link Renderer}s
      */
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
             final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
@@ -437,7 +437,7 @@ public class PMD {
      *            load the files
      * @param languages
      *            used to filter by file extension
-     * @return List<DataSource> of files
+     * @return List of {@link DataSource} of files
      */
     public static List<DataSource> getApplicableFiles(PMDConfiguration configuration, Set<Language> languages) {
         long startFiles = System.nanoTime();

@@ -10,16 +10,13 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 
 /**
  * This rule finds code which inefficiently determines empty strings. This code
- * <p/>
  * 
  * <pre>
  *         if(str.trim().length()==0){....
  * </pre>
  * 
- * <p/>
- * is quite inefficient as trim() causes a new String to be created. Smarter
- * code to check for an empty string would be:
- * <p/>
+ * <p>is quite inefficient as trim() causes a new String to be created. Smarter
+ * code to check for an empty string would be:</p>
  * 
  * <pre>
  * Character.isWhitespace(str.charAt(i));

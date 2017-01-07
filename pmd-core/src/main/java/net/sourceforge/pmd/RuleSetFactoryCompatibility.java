@@ -83,9 +83,9 @@ public class RuleSetFactoryCompatibility {
      * resulting reader will contain the original ruleset modified by the
      * filters.
      *
-     * @param stream
-     * @return
-     * @throws IOException
+     * @param stream the original ruleset file input stream
+     * @return a reader, from which the filtered ruleset can be read
+     * @throws IOException if the stream couldn't be read
      */
     public Reader filterRuleSetFile(InputStream stream) throws IOException {
         byte[] bytes = IOUtils.toByteArray(stream);

@@ -79,11 +79,11 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     /**
-     * This is only for anonymous inner classes
-     * <p/>
-     * FIXME - should have name like Foo$1, not Anonymous$1 to get this working
+     * This is only for anonymous inner classes.
+     *
+     * <p>FIXME - should have name like Foo$1, not Anonymous$1 to get this working
      * right, the parent scope needs to be passed in when instantiating a
-     * ClassScope
+     * ClassScope</p>
      */
     public ClassScope() {
         // this.className = getParent().getEnclosingClassScope().getClassName()

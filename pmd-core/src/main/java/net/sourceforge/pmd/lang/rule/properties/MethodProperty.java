@@ -17,9 +17,9 @@ import net.sourceforge.pmd.util.StringUtil;
  * Defines a property type that can specify a single method to use as part of a
  * rule.
  *
- * Rule developers can limit the rules to those within designated packages per
+ * <p>Rule developers can limit the rules to those within designated packages per
  * the 'legalPackages' argument in the constructor which can be an array of
- * partial package names, i.e., ["java.lang", "com.mycompany" ].
+ * partial package names, i.e., ["java.lang", "com.mycompany" ].</p>
  *
  * @author Brian Remedios
  */
@@ -83,31 +83,11 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         super(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder);
     }
 
-    /**
-     * Constructor for MethodProperty.
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultMethodStr
-     *            String
-     * @param otherParams
-     *            Map<String, String>
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
-     */
     public MethodProperty(String theName, String theDescription, String defaultMethodStr,
             Map<String, String> otherParams, float theUIOrder) {
         this(theName, theDescription, methodFrom(defaultMethodStr), packageNamesIn(otherParams), theUIOrder);
     }
 
-    /**
-     * @param cls
-     *            Class<?>
-     * @return String
-     */
     private static String shortestNameFor(Class<?> cls) {
         String compactName = TYPE_SHORTCUTS.get(cls);
         return compactName == null ? cls.getName() : compactName;
@@ -135,12 +115,6 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         return asStringFor(defaultValue());
     }
 
-    /**
-     * @param type
-     *            Class<?>
-     * @param sb
-     *            StringBuilder
-     */
     private static void serializedTypeIdOn(Class<?> type, StringBuilder sb) {
 
         Class<?> arrayType = type.getComponentType();
@@ -183,11 +157,6 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         sb.append(METHOD_GROUP_DELIMITERS[1]);
     }
 
-    /**
-     * @param typeName
-     *            String
-     * @return Class<?>
-     */
     private static Class<?> typeFor(String typeName) {
 
         Class<?> type = null;

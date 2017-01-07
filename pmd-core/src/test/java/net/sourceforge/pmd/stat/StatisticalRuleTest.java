@@ -55,31 +55,31 @@ import junit.framework.AssertionFailedError;
 
 /**
  * This class tests the Statistical Rules in PMD.
- * <p/>
- * The idea is, that we fill up 999 datapoints into the Stat Rule, and then
- * throw random parameters at it.
- * <p/>
- * The three parameters which are checked are: sigma - # Sigmas over the mean.
+ *
+ * <p>The idea is, that we fill up 999 datapoints into the Stat Rule, and then
+ * throw random parameters at it.</p>
+ *
+ * <p>The three parameters which are checked are: sigma - # Sigmas over the mean.
  * topscore - Only the top 5 or so items. minimum - Only things of score 10 or
- * better
- * <p/>
- * When more than one parameter is lumped together, then we expect the one which
- * would return the fewest to determine what gets sent back.
- * <p/>
- * So, we throw each collection of parameters, where each one is a different
+ * better</p>
+ *
+ * <p>When more than one parameter is lumped together, then we expect the one which
+ * would return the fewest to determine what gets sent back.</p>
+ *
+ * <p>So, we throw each collection of parameters, where each one is a different
  * order into the system. We check the results off of what the smallest value
- * should be.
- * <p/>
- * If you are going to work with StatisticalRule any, please bump the
+ * should be.</p>
+ *
+ * <p>If you are going to work with StatisticalRule any, please bump the
  * "NUM_TESTS" number up to something like 128. That way you are more likely to
  * identify problems. It is set low now to make building and running tests
- * easier (when we aren't touching the file.)
- * <p/>
- * Note also, that when verifying the Sigma, I wasn't quite able to determine
+ * easier (when we aren't touching the file.)</p>
+ *
+ * <p>Note also, that when verifying the Sigma, I wasn't quite able to determine
  * how many results it would return (it would vary from -2 to 2 of what I
  * expected.) That is what the delta parameter on the verify method takes. If
  * you can figure it out exactly, (without stealing code from the StatRule) then
- * feel free to change it and tighten the deltas.
+ * feel free to change it and tighten the deltas.</p>
  */
 public class StatisticalRuleTest {
 
@@ -226,9 +226,9 @@ public class StatisticalRuleTest {
 
     /**
      * This returns the expected number of reports.
-     * <p/>
-     * If the Minimum comes in at 521.569 then we expect 522, 523, ... 999 will
-     * pass.
+     *
+     * <p>If the Minimum comes in at 521.569 then we expect 522, 523, ... 999 will
+     * pass.</p>
      */
     public int expectedMinimum(double minimum) {
         Double d = Double.valueOf(minimum);

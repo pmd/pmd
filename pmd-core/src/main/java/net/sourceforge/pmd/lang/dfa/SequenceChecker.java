@@ -10,14 +10,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Computes the first sequence in a list.
+ *
+ * <p>e.g. IF_START 0 WHILE_EXPR 1 WHILE_END 2 IF_END 3</p>
+ *
+ * <p>The first sequence is WHILE_EXPR and WHILE_END. It returns always the
+ * first inner nested scope.
+ * </p>
+ *
  * @author raik
- *         <p/>
- *         Computes the first sequence in a list.
- *         <p/>
- *         e.g. IF_START 0 WHILE_EXPR 1 WHILE_END 2 IF_END 3
- *         <p/>
- *         The first sequence is WHILE_EXPR and WHILE_END. It returns always the
- *         first inner nested scope.
  */
 public class SequenceChecker {
     private static final Logger LOGGER = Logger.getLogger(SequenceChecker.class.getName());
@@ -167,7 +168,7 @@ public class SequenceChecker {
     }
 
     /**
-     * Finds the first innermost sequence e.g IFStart & IFEnd. If the list has
+     * Finds the first innermost sequence e.g IFStart &amp; IFEnd. If the list has
      * been exhausted (firstIndex==lastIndex) the method returns true.
      */
     public boolean run() {

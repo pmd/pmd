@@ -71,20 +71,6 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
         this(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder);
     }
 
-    /**
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultTypeStr
-     *            String
-     * @param otherParams
-     *            Map<String, String>
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
-     */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<String, String> otherParams,
             float theUIOrder) {
         this(theName, theDescription, classFrom(defaultTypeStr), packageNamesIn(otherParams), theUIOrder);

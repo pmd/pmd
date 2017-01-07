@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * 
  * <pre>
  * &#64;Parameters
- *     public static Collection<Object[]> data() {
+ *     public static Collection&lt;Object[]&gt; data() {
  *       return Arrays.asList(new Object[][] {
  *            { MyLanguageModule.NAME, MyLanguageModule.TERSE_NAME, "1.1",
  *              LanguageRegistry.getLanguage(MyLanguageModule.NAME).getVersion("1.1") },
@@ -39,8 +39,8 @@ import net.sourceforge.pmd.util.ResourceLoader;
  *       });
  * </pre>
  * 
- * For the parameters, see the constructor
- * {@link #AbstractLanguageVersionTest(String, String, String, LanguageVersion)}.
+ * <p>For the parameters, see the constructor
+ * {@link #AbstractLanguageVersionTest(String, String, String, LanguageVersion)}.</p>
  */
 @RunWith(Parameterized.class)
 public class AbstractLanguageVersionTest {

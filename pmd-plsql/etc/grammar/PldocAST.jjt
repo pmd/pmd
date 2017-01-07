@@ -1096,13 +1096,15 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 /**
  * 2011-05-15 - SRT - Added to cope with wrapped objects
   A wrapped function looks like this (always terminated by one or more equals signs "="):-
+  
+  <pre>
   "  CREATE OR REPLACE FUNCTION "TESTUSER"."GET_DATE_STRING"
 / ** Return SYSDATE formatted using the provided template.
  *
  *
- *  @param p_date_format normal TO_CHARE/TO_DATE date template
- *  @return formatted datestring
- *  @see http://www.oracle-base.com/articles/10g/WrapAndDBMS_DDL_10gR2.php#dbms_ddl
+ *  &#64;param p_date_format normal TO_CHARE/TO_DATE date template
+ *  &#64;return formatted datestring
+ *  &#64;see http://www.oracle-base.com/articles/10g/WrapAndDBMS_DDL_10gR2.php#dbms_ddl
  * /
 wrapped
 a000000
@@ -1128,6 +1130,7 @@ abcd
 v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 3qPVuL6SvhZTmEBnRtaErHpzaDuIpqZ0G4s=
   "
+  </pre>
  */
 
 
@@ -1159,7 +1162,7 @@ void WrappedObject()  :
 // ============================================================================
 
 /**
- * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at <LOOP>
+ * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at &lt;LOOP&gt;
  */
 ASTUnlabelledStatement UnlabelledStatement()  :
 {}
@@ -2263,7 +2266,7 @@ ASTNumericLiteral NumericLiteral() :
 	}
 }
 
-/** This cannot be a token because these are valid labels '<< next_msg >>", '<<"OUTER LOOP">>'  
+/** This cannot be a token because these are valid labels '&lt;&lt; next_msg &gt;&gt;", '&lt;&lt;"OUTER LOOP"&gt;&gt;'
 */
 ASTLabel Label() :
 { 
@@ -4951,7 +4954,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 
 //SRT 2011-04-17 - END  */
 /**
- * 2006-05-20 - Matthias Hendler - added <OLD> and <PARENT>  
+ * 2006-05-20 - Matthias Hendler - added &lt;OLD&gt; and &lt;PARENT&gt;
  */
 ASTID ID(): {}
 {
@@ -5152,7 +5155,7 @@ ASTID ID(): {}
 }
 
 /**
- * 2006-05-20 - Matthias Hendler - added <OLD>, <NEW>, <LOOP>, <INT>
+ * 2006-05-20 - Matthias Hendler - added &lt;OLD&gt;, &lt;NEW&gt;, &lt;LOOP&gt;, &lt;INT&gt;
  */
 ASTUnqualifiedID UnqualifiedID(): {}
 {
@@ -5185,7 +5188,7 @@ ASTUnqualifiedID UnqualifiedID(): {}
 }
 
 /**
- * 2006-05-20 - Matthias Hendler - added <LIMIT>
+ * 2006-05-20 - Matthias Hendler - added &lt;LIMIT&gt;
  */
 ASTQualifiedID QualifiedID(): {}
 {

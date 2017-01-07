@@ -31,7 +31,7 @@ import com.beust.jcommander.converters.FileConverter;
 /**
  *
  * @author Brian Remedios
- * @author Romain Pelisse - <belaran@gmail.com>
+ * @author Romain Pelisse - &lt;belaran@gmail.com&gt;
  */
 public class CPDConfiguration extends AbstractConfiguration {
 

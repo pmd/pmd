@@ -109,6 +109,7 @@ public class PmdRunnable extends PMD implements Callable<Report> {
         public RuleSets getRuleSets(String rsList) {
             if (rulesets == null) {
                 try {
+                    // this creates an own copy of the ruleset for this thread
                     rulesets = ruleSetFactory.createRuleSets(rsList);
                 } catch (Exception e) {
                     e.printStackTrace();

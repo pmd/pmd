@@ -110,6 +110,8 @@ public class RuleSetFactory {
      * "rulesets.properties" resource for each Language with Rule support.
      *
      * @return An Iterator of RuleSet objects.
+     * 
+     * @throws RuleSetNotFoundException if the ruleset file could not be found
      */
     public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
         String rulesetsProperties = null;

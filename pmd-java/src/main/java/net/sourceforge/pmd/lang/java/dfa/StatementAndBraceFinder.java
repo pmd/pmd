@@ -37,11 +37,11 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
+ * Sublayer of DataFlowFacade. Finds all data flow nodes and stores the
+ * type information (@see StackObject). At last it uses this information
+ * to link the nodes.
+ *
  * @author raik
- *         <p/>
- *         Sublayer of DataFlowFacade. Finds all data flow nodes and stores the
- *         type information (@see StackObject). At last it uses this information
- *         to link the nodes.
  */
 public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     private static final Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());

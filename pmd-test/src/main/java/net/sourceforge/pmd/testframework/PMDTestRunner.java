@@ -25,13 +25,12 @@ import org.junit.runners.model.TestClass;
 import net.sourceforge.pmd.Rule;
 
 /**
- * A test runner for rule tests. Unlike
- * {@link SimpleAggregatorTst.CustomXmlTestClassMethodsRunner} it also reports
+ * A test runner for rule tests. It reports
  * the successful executed tests and allows to selectively execute single test
  * cases (it is {@link Filterable}).
- * <p>
- * In order to use it, you'll need to subclass {@link SimpleAggregatorTst} and
- * annotate your test class with RunWith:
+ *
+ * <p>In order to use it, you'll need to subclass {@link SimpleAggregatorTst} and
+ * annotate your test class with RunWith:</p>
  * 
  * <pre>
  * {@code @}RunWith(PMDTestRunner.class)
@@ -39,7 +38,6 @@ import net.sourceforge.pmd.Rule;
  * ...
  * }
  * </pre>
- * </p>
  */
 public class PMDTestRunner extends Runner implements Filterable {
     private final Description desc;

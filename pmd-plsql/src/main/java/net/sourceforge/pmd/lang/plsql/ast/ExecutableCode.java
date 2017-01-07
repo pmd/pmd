@@ -13,7 +13,7 @@ public interface ExecutableCode extends Node {
 
     /**
      * Gets the name of the executable: named thus to match
-     * {@link net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration}.
+     * {@link ASTMethodDeclaration}.
      *
      * @return a String representing the name of the method
      */
