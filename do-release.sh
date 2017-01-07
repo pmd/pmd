@@ -113,6 +113,13 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+echo "Running doclint..."
+mvn -Pdoclint javadoc:javadoc javadoc:test-javadoc
+if [ $? -ne 0 ]; then
+    echo "Failure during doclint...."
+    exit 1
+fi
+
 (
     cd pmd-dist/target
     unzip pmd-bin-${RELEASE_VERSION}-SNAPSHOT.zip
