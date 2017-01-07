@@ -68,9 +68,29 @@ public class Formatter {
         {
             String s = (String) properties.get("encoding");
             if (null == s) {
-                charset = StandardCharsets.UTF_8;
-                properties.put("encoding", charset.name());
-            } else {
+
+                if (toConsole) {
+                    if(null == System.console()) {
+                        // pipe or redirect, no interactive console.
+                        s = System.getProperty("file.encoding");
+                    } else {
+                        s = System.getProperty("sun.stdout.encoding");
+                    }
+                }
+
+                if (null == s) {
+                    charset = StandardCharsets.UTF_8;
+                } else {
+                    charset = Charset.forName(s);
+                }
+
+                // Configures the encoding for the renderer.
+                final Parameter parameter = new Parameter();
+                parameter.setName("encoding");
+                parameter.setValue(charset.name());
+                parameters.add(parameter);
+            }
+            else {
                 charset = Charset.forName(s);
             }
         }
