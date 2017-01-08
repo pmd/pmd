@@ -723,18 +723,19 @@ have unusual conventions, i.e. Turkish.
           <property name="xpath">
             <value>
                 <![CDATA[
-//PrimaryExpression[not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
+//PrimaryExpression
 [
 PrimaryPrefix
+[Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]]
 [following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
-/Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
 
 or
 
 PrimarySuffix
-[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
 [ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
 ]
+[not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
 ]]>
             </value>
           </property>
