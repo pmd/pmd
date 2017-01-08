@@ -709,8 +709,8 @@ public class Foo {
     </rule>
 
     <rule name="UseLocaleWithCaseConversions"
-   		language="java"
-    		 since="2.0"
+          language="java"
+          since="2.0"
           message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseLocaleWithCaseConversions">
@@ -724,12 +724,19 @@ have unusual conventions, i.e. Turkish.
             <value>
                 <![CDATA[
 //PrimaryExpression
-[PrimaryPrefix/Name
- [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
-'toUpperCase')]
- ]
-[PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
-     ]]>
+[
+PrimaryPrefix
+[Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+
+or
+
+PrimarySuffix
+[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+]
+[not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
+]]>
             </value>
           </property>
         </properties>
