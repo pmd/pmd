@@ -266,4 +266,5 @@ to avoid XSS attacks.
 *   [#172](https://github.com/pmd/pmd/pull/172): \[apex] Bug fix, detects both Apex fields and class members
 *   [#175](https://github.com/pmd/pmd/pull/175): \[apex] ApexXSSFromURLParam: Adding missing casting methods
 *   [#176](https://github.com/pmd/pmd/pull/176): \[apex] Bug fix for FP: open redirect for strings prefixed with / is safe
+*   [#179](https://github.com/pmd/pmd/pull/179): \[apex] Legacy test class declaration support
 
