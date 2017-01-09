@@ -76,7 +76,6 @@ public class Formatter {
                 if (toConsole) {
                     s = getConsoleEncoding();
                     if (null == s) {
-                        // highly unlikely.
                         s = System.getProperty("file.encoding");
                     }
                 }
@@ -212,8 +211,9 @@ public class Formatter {
             } catch (IllegalAccessException e) {
                 // fall-through
             }
+            return getNativeConsoleEncoding();
         }
-        return getNativeConsoleEncoding();
+        return null;
     }
 
     private static String getNativeConsoleEncoding() {
