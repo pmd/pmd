@@ -4,15 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
@@ -49,6 +54,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private final HashMap<String, String> varToTypeMapping = new HashMap<>();
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
     private final HashMap<String, String> checkedTypeToDMLOperationViaESAPI = new HashMap<>();
+    private final WeakHashMap<String, ASTMethod> classMethods = new WeakHashMap<>();
 
     private static final String IS_CREATEABLE = "isCreateable";
     private static final String IS_DELETABLE = "isDeletable";
@@ -78,49 +84,21 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
+    public Object visit(ASTUserClass node, Object data) {
+        for (ASTMethod n : node.findDescendantsOfType(ASTMethod.class)) {
+            StringBuilder sb = new StringBuilder().append(n.getNode().getDefiningType().getApexName()).append(":")
+                    .append(n.getNode().getMethodInfo().getCanonicalName()).append(":")
+                    .append(n.getNode().getMethodInfo().getParameterTypes().size());
+            classMethods.put(sb.toString(), n);
+        }
+
+        node.childrenAccept(this, data);
+        return data;
+    }
+
+    @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
-        final String method = node.getNode().getMethodName();
-        final ASTReferenceExpression ref = node.getFirstChildOfType(ASTReferenceExpression.class);
-        if (ref == null) {
-            return data;
-        }
-
-        List<Identifier> a = ref.getNode().getJadtIdentifiers();
-        if (!a.isEmpty()) {
-            extractObjectAndFields(a, method, node.getNode().getDefiningType().getApexName());
-        } else {
-            // see if ESAPI
-            if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_VIEW)) {
-                extractObjectTypeFromESAPI(node, IS_ACCESSIBLE);
-            }
-
-            if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_CREATE)) {
-                extractObjectTypeFromESAPI(node, IS_CREATEABLE);
-            }
-
-            if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_UPDATE)) {
-                extractObjectTypeFromESAPI(node, IS_UPDATEABLE);
-            }
-
-            if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_DELETE)) {
-                extractObjectTypeFromESAPI(node, IS_DELETABLE);
-            }
-
-            // see if getDescribe()
-            final ASTDottedExpression dottedExpr = ref.getFirstChildOfType(ASTDottedExpression.class);
-            if (dottedExpr != null) {
-                final ASTMethodCallExpression nestedMethodCall = dottedExpr
-                        .getFirstChildOfType(ASTMethodCallExpression.class);
-                if (nestedMethodCall != null) {
-                    if (isLastMethodName(nestedMethodCall, S_OBJECT_TYPE, GET_DESCRIBE)) {
-                        String resolvedType = getType(nestedMethodCall);
-                        typeToDMLOperationMapping.put(resolvedType, method);
-                    }
-                }
-            }
-
-        }
-
+        performMethodLevelChecks(node);
         return data;
     }
 
@@ -173,9 +151,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
 
         String type = node.getNode().getLocalInfo().getType().getApexName();
-        StringBuilder sb = new StringBuilder().append(node.getNode().getDefiningType().getApexName()).append(":")
-                .append(node.getNode().getLocalInfo().getName());
-        addVariableToMapping(sb.toString(), type);
+        addVariableToMapping(Helper.getFQVariableName(node), type);
 
         return data;
 
@@ -211,18 +187,56 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     public Object visit(final ASTProperty node, Object data) {
         ASTField field = node.getFirstChildOfType(ASTField.class);
         if (field != null) {
-            String fieldName = field.getNode().getFieldInfo().getName();
             String fieldType = field.getNode().getFieldInfo().getType().getApexName();
-
-            StringBuilder sb = new StringBuilder().append(field.getNode().getDefiningType().getApexName()).append(":")
-                    .append(fieldName);
-
-            addVariableToMapping(sb.toString(), fieldType);
-
+            addVariableToMapping(Helper.getFQVariableName(field), fieldType);
         }
 
         return data;
 
+    }
+
+    private void performMethodLevelChecks(final ASTMethodCallExpression node) {
+        final String method = node.getNode().getMethodName();
+        final ASTReferenceExpression ref = node.getFirstChildOfType(ASTReferenceExpression.class);
+        if (ref == null) {
+            return;
+        }
+
+        List<Identifier> a = ref.getNode().getJadtIdentifiers();
+        if (!a.isEmpty()) {
+            extractObjectAndFields(a, method, node.getNode().getDefiningType().getApexName());
+        } else {
+            // see if ESAPI
+            if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_VIEW)) {
+                extractObjectTypeFromESAPI(node, IS_ACCESSIBLE);
+            }
+
+            if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_CREATE)) {
+                extractObjectTypeFromESAPI(node, IS_CREATEABLE);
+            }
+
+            if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_UPDATE)) {
+                extractObjectTypeFromESAPI(node, IS_UPDATEABLE);
+            }
+
+            if (Helper.isMethodCallChain(node, ESAPI_ISAUTHORIZED_TO_DELETE)) {
+                extractObjectTypeFromESAPI(node, IS_DELETABLE);
+            }
+
+            // see if getDescribe()
+            final ASTDottedExpression dottedExpr = ref.getFirstChildOfType(ASTDottedExpression.class);
+            if (dottedExpr != null) {
+                final ASTMethodCallExpression nestedMethodCall = dottedExpr
+                        .getFirstChildOfType(ASTMethodCallExpression.class);
+                if (nestedMethodCall != null) {
+                    if (isLastMethodName(nestedMethodCall, S_OBJECT_TYPE, GET_DESCRIBE)) {
+                        String resolvedType = getType(nestedMethodCall);
+                        typeToDMLOperationMapping.put(resolvedType, method);
+                    }
+                }
+            }
+
+        }
     }
 
     private boolean isLastMethodName(final ASTMethodCallExpression methodNode, final String className,
@@ -259,6 +273,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String crudMethod) {
+        final HashSet<ASTMethodCallExpression> prevCalls = getPreviousCalls(node);
+        for (ASTMethodCallExpression prevCall : prevCalls) {
+            performMethodLevelChecks(prevCall);
+        }
+
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
@@ -277,12 +296,67 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         if (variable != null) {
             final String type = varToTypeMapping.get(Helper.getFQVariableName(variable));
             if (type != null) {
-                StringBuilder typeCheck = new StringBuilder().append(node.getNode().getDefiningType().getApexName()).append(":")
-                        .append(type);
+                StringBuilder typeCheck = new StringBuilder().append(node.getNode().getDefiningType().getApexName())
+                        .append(":").append(type);
 
                 validateCRUDCheckPresent(node, data, crudMethod, typeCheck.toString());
             }
         }
+    }
+
+    private HashSet<ASTMethodCallExpression> getPreviousCalls(final AbstractApexNode<?> self) {
+        final HashSet<ASTMethodCallExpression> innerMethodCalls = new HashSet<>();
+
+        final ASTBlockStatement blockStatement = self.getFirstParentOfType(ASTBlockStatement.class);
+        if (blockStatement != null) {
+
+            List<ASTMethodCallExpression> nodes = blockStatement.findDescendantsOfType(ASTMethodCallExpression.class);
+            mapCallToMethodDecl(self, innerMethodCalls, nodes);
+
+        }
+
+        final List<ASTMethod> specialMethods = findSpecialMethods(self);
+        for (ASTMethod method : specialMethods) {
+            innerMethodCalls.addAll(method.findDescendantsOfType(ASTMethodCallExpression.class));
+        }
+
+        // some methods might be within this class
+        mapCallToMethodDecl(self, innerMethodCalls, new ArrayList<ASTMethodCallExpression>(innerMethodCalls));
+
+        return innerMethodCalls;
+    }
+
+    private void mapCallToMethodDecl(final AbstractApexNode<?> self,
+            final HashSet<ASTMethodCallExpression> innerMethodCalls, final List<ASTMethodCallExpression> nodes) {
+        for (ASTMethodCallExpression node : nodes) {
+            if (node == self) {
+                break;
+            }
+
+            final ASTMethod methodBody = resolveMethodCalls(node);
+            if (methodBody != null) {
+                innerMethodCalls.addAll(methodBody.findDescendantsOfType(ASTMethodCallExpression.class));
+            }
+
+        }
+    }
+
+    private List<ASTMethod> findSpecialMethods(final AbstractApexNode<?> node) {
+        final ArrayList<ASTMethod> ret = new ArrayList<>();
+        final Set<String> constructors = classMethods.keySet().stream()
+                .filter(p -> (p.contains("<init>") || p.contains("<clinit>"))).collect(Collectors.toSet());
+
+        for (String c : constructors) {
+            ret.add(classMethods.get(c));
+        }
+
+        return ret;
+    }
+
+    private ASTMethod resolveMethodCalls(final ASTMethodCallExpression node) {
+        StringBuilder sb = new StringBuilder().append(node.getNode().getDefiningType().getApexName()).append(":")
+                .append(node.getNode().getMethodName()).append(":").append(node.getNode().getInputParameters().size());
+        return classMethods.get(sb.toString());
     }
 
     private boolean isProperESAPICheckForDML(final String typeToCheck, final String dmlOperation) {

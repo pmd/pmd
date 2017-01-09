@@ -480,4 +480,66 @@ public class FooTest {
 }
 		]]></code>
 	</test-code>
+	
+	<test-code>
+		<description>Control flow based CRUD,FLS check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+			doChecks();
+			upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		
+	} 
+	
+	public void doChecks() {
+		if (!Contact.sObjectType.getDescribe().isCreateable() && !Contact.sObjectType.getDescribe().isUpdateable()) {
+			throw new NoAccessException();
+		}
+	}
+	
+} ]]></code>
+	</test-code> 
+	<test-code>
+		<description>Control flow based CRUD,FLS check recursive</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+			doChecks();
+			insert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		
+	} 
+	
+	public void doChecks() {
+		anotherLevelHere("yolo");
+	}
+	
+	private void anotherLevelHere(String s) {
+		if (!Contact.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+	
+} ]]></code>
+	</test-code>
+ 	<test-code>
+		<description>Control flow constructor based CRUD,FLS check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+
+	public void foo(String newName, String tempID) { 
+			upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		
+	} 
+	
+	public Foo() {
+		if (!Contact.sObjectType.getDescribe().isCreateable() && !Contact.sObjectType.getDescribe().isUpdateable()) {
+			throw new NoAccessException();
+		}
+	}
+	
+} ]]></code>
+	</test-code> 
 </test-data>
