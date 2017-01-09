@@ -203,10 +203,10 @@ public class Formatter {
             try {
                 Field f = Console.class.getDeclaredField("cs");
                 f.setAccessible(true);
-                    Object res = f.get(console);
-                    if (res instanceof Charset) {
-                        return ((Charset) res).name();
-                    }
+                Object res = f.get(console);
+                if (res instanceof Charset) {
+                    return ((Charset) res).name();
+                }
             } catch (NoSuchFieldException e) {
                 // fall-through
             } catch (IllegalAccessException e) {
