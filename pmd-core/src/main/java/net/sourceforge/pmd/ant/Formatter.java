@@ -5,12 +5,16 @@
 package net.sourceforge.pmd.ant;
 
 import java.io.BufferedWriter;
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -63,18 +67,17 @@ public class Formatter {
     public void start(String baseDir) {
 
         Properties properties = createProperties();
-        
+
         Charset charset;
         {
             String s = (String) properties.get("encoding");
             if (null == s) {
 
                 if (toConsole) {
-                    if (null == System.console()) {
-                        // pipe or redirect, no interactive console.
+                    s = getConsoleEncoding();
+                    if (null == s) {
+                        // highly unlikely.
                         s = System.getProperty("file.encoding");
-                    } else {
-                        s = System.getProperty("sun.stdout.encoding");
                     }
                 }
 
@@ -187,9 +190,47 @@ public class Formatter {
         } finally {
             if (isOnError) {
                 IOUtils.closeQuietly(output);
-                IOUtils.closeQuietly(writer);                
+                IOUtils.closeQuietly(writer);
             }
         }
         return writer;
+    }
+
+    private static String getConsoleEncoding() {
+        Console console = System.console();
+        // in case of pipe or redirect, no interactive console.
+        if (console != null) {
+            try {
+                Field f = Console.class.getDeclaredField("cs");
+                f.setAccessible(true);
+                    Object res = f.get(console);
+                    if (res instanceof Charset) {
+                        return ((Charset) res).name();
+                    }
+            } catch (NoSuchFieldException e) {
+                // fall-through
+            } catch (IllegalAccessException e) {
+                // fall-through
+            }
+        }
+        return getNativeConsoleEncoding();
+    }
+
+    private static String getNativeConsoleEncoding() {
+        try {
+            Method m = Console.class.getDeclaredMethod("encoding");
+            m.setAccessible(true);
+            Object res = m.invoke(null);
+            if (res instanceof String) {
+                return (String) res;
+            }
+        } catch (NoSuchMethodException e) {
+            // fall-through
+        } catch (InvocationTargetException e) {
+            // fall-through
+        } catch (IllegalAccessException e) {
+            // fall-through
+        }
+        return null;
     }
 }
