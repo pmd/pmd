@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef.ClassTypeRef;
+import apex.jorje.semantic.symbol.member.variable.StandardFieldInfo;
 
 /**
  * Looking for potential Open redirect via PageReference variable input
@@ -76,17 +78,42 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             int index = literal.jjtGetChildIndex();
             if (index == 0) {
                 if (node instanceof ASTVariableDeclaration) {
-                    addVariable(node);
+                    addVariable((ASTVariableDeclaration) node);
                 } else {
                     ASTVariableDeclaration parent = node.getFirstParentOfType(ASTVariableDeclaration.class);
                     addVariable(parent);
 
                 }
             }
+        } else {
+            if (node instanceof ASTField) {
+                try {
+                    final Field f = node.getNode().getClass().getDeclaredField("fieldInfo");
+                    f.setAccessible(true);
+                    final StandardFieldInfo fieldInfo = (StandardFieldInfo) f.get(node.getNode());
+                    if (fieldInfo.getType().getApexName().equalsIgnoreCase("String")) {
+                        if (fieldInfo.getValue() != null) {
+                            addVariable(fieldInfo);
+                        }
+                    }
+
+                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
+                        | IllegalAccessException e) {
+                    // preventing exceptions from this code
+                }
+            }
         }
+
     }
 
-    private void addVariable(AbstractApexNode<?> node) {
+    private void addVariable(StandardFieldInfo fieldInfo) {
+        StringBuilder sb = new StringBuilder().append(fieldInfo.getDefiningType().getApexName()).append(":")
+                .append(fieldInfo.getName());
+        listOfStringLiteralVariables.add(sb.toString());
+
+    }
+
+    private void addVariable(ASTVariableDeclaration node) {
         ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
         if (variable != null) {
             listOfStringLiteralVariables.add(Helper.getFQVariableName(variable));
