@@ -542,4 +542,64 @@ public class Foo {
 	
 } ]]></code>
 	</test-code> 
+	
+	<test-code>
+		<description>Control flow accessibility CRUD check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Contact justGiveMeFoo() {
+		checkPerms(); 
+		
+		String tempID = 'someID';
+	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
+	} 
+	
+	private void checkPerms() {
+		if (!Contact.sObjectType.getDescribe().isAccessible()) {
+			throw new NoAccessException();
+		}
+	}
+} 
+]]></code>
+	</test-code> 
+	
+	<test-code>
+		<description>Control flow substitute CRUD check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Contact justGiveMeFoo() {
+		checkPerms();
+		String tempID = 'someID';
+	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
+	} 
+	
+	private void checkPerms() {
+		if (!Contact.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+} 
+]]></code>
+	</test-code>
+	
+	<test-code>
+		<description>Forgot to call the CRUD check</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Contact justGiveMeFoo() {
+		String tempID = 'someID';
+	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
+	} 
+	
+	private void checkPerms() {
+		if (!Contact.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+} 
+]]></code>
+	</test-code>
 </test-data>
