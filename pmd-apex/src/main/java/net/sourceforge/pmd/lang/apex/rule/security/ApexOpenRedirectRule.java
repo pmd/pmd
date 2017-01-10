@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
@@ -47,6 +48,11 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             return data;
         }
 
+        List<ASTAssignmentExpression> assignmentExprs = node.findDescendantsOfType(ASTAssignmentExpression.class);
+        for (ASTAssignmentExpression assignment : assignmentExprs) {
+            findSafeLiterals(assignment);
+        }
+
         List<ASTVariableDeclaration> variableDecls = node.findDescendantsOfType(ASTVariableDeclaration.class);
         for (ASTVariableDeclaration varDecl : variableDecls) {
             findSafeLiterals(varDecl);
@@ -79,9 +85,18 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             if (index == 0) {
                 if (node instanceof ASTVariableDeclaration) {
                     addVariable((ASTVariableDeclaration) node);
-                } else {
+                } else if (node instanceof ASTBinaryExpression) {
                     ASTVariableDeclaration parent = node.getFirstParentOfType(ASTVariableDeclaration.class);
-                    addVariable(parent);
+                    if (parent != null) {
+                        addVariable(parent);
+                    }
+                    ASTAssignmentExpression assignment = node.getFirstParentOfType(ASTAssignmentExpression.class);
+                    if (assignment != null) {
+                        ASTVariableExpression var = assignment.getFirstChildOfType(ASTVariableExpression.class);
+                        if (var != null) {
+                            addVariable(var);
+                        }
+                    }
 
                 }
             }
@@ -115,8 +130,12 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 
     private void addVariable(ASTVariableDeclaration node) {
         ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
-        if (variable != null) {
-            listOfStringLiteralVariables.add(Helper.getFQVariableName(variable));
+        addVariable(variable);
+    }
+
+    private void addVariable(ASTVariableExpression node) {
+        if (node != null) {
+            listOfStringLiteralVariables.add(Helper.getFQVariableName(node));
         }
     }
 
