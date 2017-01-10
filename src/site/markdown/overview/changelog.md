@@ -52,4 +52,5 @@ This is a bug fixing release, no major changes were introduced.
 *   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
 *   [#152](https://github.com/pmd/pmd/pull/152): \[java] fixes #1552 continue does not require break
 *   [#154](https://github.com/pmd/pmd/pull/154): \[java] Fix #1547: UnusedImports: Adjust regex to support underscores
+*   [#170](https://github.com/pmd/pmd/pull/170): \[core] Ant Task Formatter encoding issue with XMLRenderer
 
