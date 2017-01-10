@@ -95,7 +95,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
-        performMethodLevelChecks(node);
+        collectCRUDMethodLevelChecks(node);
         return data;
     }
 
@@ -192,7 +192,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     }
 
-    private void performMethodLevelChecks(final ASTMethodCallExpression node) {
+    private void collectCRUDMethodLevelChecks(final ASTMethodCallExpression node) {
         final String method = node.getNode().getMethodName();
         final ASTReferenceExpression ref = node.getFirstChildOfType(ASTReferenceExpression.class);
         if (ref == null) {
@@ -270,9 +270,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkForCRUD(final AbstractApexNode<?> node, final Object data, final String crudMethod) {
-        final HashSet<ASTMethodCallExpression> prevCalls = getPreviousCalls(node);
+        final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
-            performMethodLevelChecks(prevCall);
+            collectCRUDMethodLevelChecks(prevCall);
         }
 
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
@@ -301,7 +301,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private HashSet<ASTMethodCallExpression> getPreviousCalls(final AbstractApexNode<?> self) {
+    private HashSet<ASTMethodCallExpression> getPreviousMethodCalls(final AbstractApexNode<?> self) {
         final HashSet<ASTMethodCallExpression> innerMethodCalls = new HashSet<>();
 
         final ASTBlockStatement blockStatement = self.getFirstParentOfType(ASTBlockStatement.class);
@@ -414,7 +414,12 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private void checkForAccessibility(final AbstractApexNode<?> node, Object data) {
+    private void checkForAccessibility(final ASTSoqlExpression node, Object data) {
+        final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
+        for (ASTMethodCallExpression prevCall : prevCalls) {
+            collectCRUDMethodLevelChecks(prevCall);
+        }
+
         boolean isGetter = false;
         String returnType = null;
 
