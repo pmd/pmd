@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
@@ -322,24 +323,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTMethod outerMethod = self.getFirstParentOfType(ASTMethod.class);
         if (outerMethod != null) {
             final ASTBlockStatement blockStatement = outerMethod.getFirstChildOfType(ASTBlockStatement.class);
-            if (blockStatement != null) {
-                int numberOfStatements = blockStatement.jjtGetNumChildren();
-                for (int i = 0; i < numberOfStatements; i++) {
-                    Node n = blockStatement.jjtGetChild(i);
-                    AbstractApexNode<?> match = n.getFirstDescendantOfType(self.getClass());
-                    if (match == self) {
-                        break;
-                    }
-                    ASTMethodCallExpression methodCall = n.getFirstDescendantOfType(ASTMethodCallExpression.class);
-                    if (methodCall != null) {
-                        mapCallToMethodDecl(self, innerMethodCalls, Arrays.asList(methodCall));
-                    }
-                }
+            recursivelyEvaluateCRUDMethodCalls(self, innerMethodCalls, blockStatement);
 
-            }
-
-            final List<ASTMethod> specialMethods = findSpecialMethods(self);
-            for (ASTMethod method : specialMethods) {
+            final List<ASTMethod> constructorMethods = findConstructorlMethods(self);
+            for (ASTMethod method : constructorMethods) {
                 innerMethodCalls.addAll(method.findDescendantsOfType(ASTMethodCallExpression.class));
             }
 
@@ -348,6 +335,31 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
 
         return innerMethodCalls;
+    }
+
+    private void recursivelyEvaluateCRUDMethodCalls(final AbstractApexNode<?> self,
+            final HashSet<ASTMethodCallExpression> innerMethodCalls, final ASTBlockStatement blockStatement) {
+        if (blockStatement != null) {
+            int numberOfStatements = blockStatement.jjtGetNumChildren();
+            for (int i = 0; i < numberOfStatements; i++) {
+                Node n = blockStatement.jjtGetChild(i);
+
+                if (n instanceof ASTIfElseBlockStatement) {
+                    ASTBlockStatement innerBlock = n.getFirstDescendantOfType(ASTBlockStatement.class);
+                    recursivelyEvaluateCRUDMethodCalls(self, innerMethodCalls, innerBlock);
+                }
+
+                AbstractApexNode<?> match = n.getFirstDescendantOfType(self.getClass());
+                if (match == self) {
+                    break;
+                }
+                ASTMethodCallExpression methodCall = n.getFirstDescendantOfType(ASTMethodCallExpression.class);
+                if (methodCall != null) {
+                    mapCallToMethodDecl(self, innerMethodCalls, Arrays.asList(methodCall));
+                }
+            }
+
+        }
     }
 
     private void mapCallToMethodDecl(final AbstractApexNode<?> self,
@@ -365,7 +377,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private List<ASTMethod> findSpecialMethods(final AbstractApexNode<?> node) {
+    private List<ASTMethod> findConstructorlMethods(final AbstractApexNode<?> node) {
         final ArrayList<ASTMethod> ret = new ArrayList<>();
         final Set<String> constructors = classMethods.keySet().stream()
                 .filter(p -> (p.contains("<init>") || p.contains("<clinit>"))).collect(Collectors.toSet());
