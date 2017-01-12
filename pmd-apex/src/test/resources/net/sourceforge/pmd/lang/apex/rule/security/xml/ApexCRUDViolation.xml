@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
-
+ 
 	<test-code>
 		<description>Proper CRUD,FLS via upsert</description>
 		<expected-problems>0</expected-problems>
@@ -619,5 +619,30 @@ public class Foo {
 	}
 } 
 ]]></code>
-	</test-code>
+	</test-code> 
+
+	<test-code>
+		<description>Control flow with nested statementsL</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	private void bar() {
+		if (whatever()) {
+			checkPerms();
+			if (something()) {
+				List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+			}
+		}
+	}
+
+	private void checkPerms() {
+		if (!Profile.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+}
+	
+]]></code>
+	</test-code>	
+
 </test-data>
