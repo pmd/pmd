@@ -220,6 +220,7 @@ to avoid XSS attacks.
 *   [#165](https://github.com/pmd/pmd/pull/165): \[apex] Improving open redirect rule to avoid test classes/methods
 *   [#167](https://github.com/pmd/pmd/pull/167): \[apex] GC and thread safety changes
 *   [#169](https://github.com/pmd/pmd/pull/169): \[apex] Improving detection for DML with inline new object
+*   [#170](https://github.com/pmd/pmd/pull/170): \[core] Ant Task Formatter encoding issue with XMLRenderer
 *   [#172](https://github.com/pmd/pmd/pull/172): \[apex] Bug fix, detects both Apex fields and class members
 *   [#175](https://github.com/pmd/pmd/pull/175): \[apex] ApexXSSFromURLParam: Adding missing casting methods
 

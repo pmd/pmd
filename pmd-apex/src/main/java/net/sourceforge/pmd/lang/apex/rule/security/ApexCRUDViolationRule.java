@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
@@ -38,6 +39,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Finding missed CRUD checks for SOQL and DML operations.
@@ -142,13 +144,24 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(final ASTVariableDeclaration node, Object data) {
+        String type = node.getNode().getLocalInfo().getType().getApexName();
+        addVariableToMapping(Helper.getFQVariableName(node), type);
+
         final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
         if (soql != null) {
             checkForAccessibility(soql, data);
         }
 
-        String type = node.getNode().getLocalInfo().getType().getApexName();
-        addVariableToMapping(Helper.getFQVariableName(node), type);
+        return data;
+
+    }
+
+    @Override
+    public Object visit(final ASTFieldDeclaration node, Object data) {
+        final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
+        if (soql != null) {
+            checkForAccessibility(soql, data);
+        }
 
         return data;
 
@@ -303,22 +316,33 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private HashSet<ASTMethodCallExpression> getPreviousMethodCalls(final AbstractApexNode<?> self) {
         final HashSet<ASTMethodCallExpression> innerMethodCalls = new HashSet<>();
+        final ASTMethod outerMethod = self.getFirstParentOfType(ASTMethod.class);
+        if (outerMethod != null) {
+            final ASTBlockStatement blockStatement = outerMethod.getFirstChildOfType(ASTBlockStatement.class);
+            if (blockStatement != null) {
+                int numberOfStatements = blockStatement.jjtGetNumChildren();
+                for (int i = 0; i < numberOfStatements; i++) {
+                    Node n = blockStatement.jjtGetChild(i);
+                    AbstractApexNode<?> match = n.getFirstDescendantOfType(self.getClass());
+                    if (match == self) {
+                        break;
+                    }
+                    ASTMethodCallExpression methodCall = n.getFirstDescendantOfType(ASTMethodCallExpression.class);
+                    if (methodCall != null) {
+                        mapCallToMethodDecl(self, innerMethodCalls, Arrays.asList(methodCall));
+                    }
+                }
 
-        final ASTBlockStatement blockStatement = self.getFirstParentOfType(ASTBlockStatement.class);
-        if (blockStatement != null) {
+            }
 
-            List<ASTMethodCallExpression> nodes = blockStatement.findDescendantsOfType(ASTMethodCallExpression.class);
-            mapCallToMethodDecl(self, innerMethodCalls, nodes);
+            final List<ASTMethod> specialMethods = findSpecialMethods(self);
+            for (ASTMethod method : specialMethods) {
+                innerMethodCalls.addAll(method.findDescendantsOfType(ASTMethodCallExpression.class));
+            }
 
+            // some methods might be within this class
+            mapCallToMethodDecl(self, innerMethodCalls, new ArrayList<ASTMethodCallExpression>(innerMethodCalls));
         }
-
-        final List<ASTMethod> specialMethods = findSpecialMethods(self);
-        for (ASTMethod method : specialMethods) {
-            innerMethodCalls.addAll(method.findDescendantsOfType(ASTMethodCallExpression.class));
-        }
-
-        // some methods might be within this class
-        mapCallToMethodDecl(self, innerMethodCalls, new ArrayList<ASTMethodCallExpression>(innerMethodCalls));
 
         return innerMethodCalls;
     }

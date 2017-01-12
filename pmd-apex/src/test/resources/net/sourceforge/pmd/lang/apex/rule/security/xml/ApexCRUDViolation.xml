@@ -602,4 +602,22 @@ public class Foo {
 } 
 ]]></code>
 	</test-code>
+	<test-code>
+		<description>Control flow substitute CRUD check should fail when check follows SOQL</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	private void bar() {
+		List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+		checkPerms();
+	}
+
+	private void checkPerms() {
+		if (!Profile.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+} 
+]]></code>
+	</test-code>
 </test-data>
