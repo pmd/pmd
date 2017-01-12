@@ -342,8 +342,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 Node n = blockStatement.jjtGetChild(i);
 
                 if (n instanceof ASTIfElseBlockStatement) {
-                    ASTBlockStatement innerBlock = n.getFirstDescendantOfType(ASTBlockStatement.class);
-                    recursivelyEvaluateCRUDMethodCalls(self, innerMethodCalls, innerBlock);
+                    List<ASTBlockStatement> innerBlocks = n.findDescendantsOfType(ASTBlockStatement.class);
+                    for (ASTBlockStatement innerBlock : innerBlocks) {
+                        recursivelyEvaluateCRUDMethodCalls(self, innerMethodCalls, innerBlock);
+                    }
                 }
 
                 AbstractApexNode<?> match = n.getFirstDescendantOfType(self.getClass());
