@@ -107,6 +107,8 @@ Runs a set of static code analysis rules on some source code files and generates
    <td colspan="2">
        <p>The <code>formatter</code> element can contain nested <code>param</code> elements to configure the formatter in detail, e.g.</p>
        <dl>
+       <dt>encoding</dt>
+       <dd>Specifies the encoding to be used in the generated report (only honored when used with `toFile`). When rendering `toConsole` PMD will automatically detect the terminal's encoding and use it, unless the output is being redirected / piped, in which case `file.encoding` is used. See example below.</dd>
        <dt>linkPrefix</dt>
        <dd>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html">this</a>).  See example below.</dd>
        <dt>linePrefix</dt>
@@ -171,7 +173,9 @@ Several folks (most recently, Wouter Zelle) have written XSLT scripts
 which you can use to transform the XML report into nifty HTML.  To do this,
 make sure you use the XML formatter in the PMD task invocation, i.e.:
 
-    <formatter type="xml" toFile="${tempbuild}/$report_pmd.xml"/>
+    <formatter type="xml" toFile="${tempbuild}/$report_pmd.xml">
+        <param name="encoding" value="UTF-8" /> <!-- enforce UTF-8 encoding for the XML -->
+    </formatter>
 
 Then, after the end of the PMD task, do this:
 
