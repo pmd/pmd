@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
@@ -22,6 +24,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef.ClassTypeRef;
+import apex.jorje.semantic.symbol.member.variable.StandardFieldInfo;
 
 /**
  * Looking for potential Open redirect via PageReference variable input
@@ -43,6 +46,11 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node)) {
             return data;
+        }
+
+        List<ASTAssignmentExpression> assignmentExprs = node.findDescendantsOfType(ASTAssignmentExpression.class);
+        for (ASTAssignmentExpression assignment : assignmentExprs) {
+            findSafeLiterals(assignment);
         }
 
         List<ASTVariableDeclaration> variableDecls = node.findDescendantsOfType(ASTVariableDeclaration.class);
@@ -76,13 +84,63 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             int index = literal.jjtGetChildIndex();
             if (index == 0) {
                 if (node instanceof ASTVariableDeclaration) {
-                    addVariable(node);
-                } else {
+                    addVariable((ASTVariableDeclaration) node);
+                } else if (node instanceof ASTBinaryExpression) {
                     ASTVariableDeclaration parent = node.getFirstParentOfType(ASTVariableDeclaration.class);
-                    addVariable(parent);
+                    if (parent != null) {
+                        addVariable(parent);
+                    }
+                    ASTAssignmentExpression assignment = node.getFirstParentOfType(ASTAssignmentExpression.class);
+                    if (assignment != null) {
+                        ASTVariableExpression var = assignment.getFirstChildOfType(ASTVariableExpression.class);
+                        if (var != null) {
+                            addVariable(var);
+                        }
+                    }
 
                 }
             }
+        } else {
+            if (node instanceof ASTField) {
+                /* sergey.gorbaty: 
+                 * Apex Jorje parser is returning a null from Field.getFieldInfo(), but the info is available from an inner field. 
+                 * DO NOT attempt to optimize this block without checking that Jorje parser actually fixed its bug.
+                 * 
+                 */
+                try {
+                    final Field f = node.getNode().getClass().getDeclaredField("fieldInfo");
+                    f.setAccessible(true);
+                    final StandardFieldInfo fieldInfo = (StandardFieldInfo) f.get(node.getNode());
+                    if (fieldInfo.getType().getApexName().equalsIgnoreCase("String")) {
+                        if (fieldInfo.getValue() != null) {
+                            addVariable(fieldInfo);
+                        }
+                    }
+
+                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
+                        | IllegalAccessException e) {
+                    // preventing exceptions from this code
+                }
+            }
+        }
+
+    }
+
+    private void addVariable(StandardFieldInfo fieldInfo) {
+        StringBuilder sb = new StringBuilder().append(fieldInfo.getDefiningType().getApexName()).append(":")
+                .append(fieldInfo.getName());
+        listOfStringLiteralVariables.add(sb.toString());
+
+    }
+
+    private void addVariable(ASTVariableDeclaration node) {
+        ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
+        addVariable(variable);
+    }
+
+    private void addVariable(ASTVariableExpression node) {
+        if (node != null) {
+            listOfStringLiteralVariables.add(Helper.getFQVariableName(node));
         }
     }
 
