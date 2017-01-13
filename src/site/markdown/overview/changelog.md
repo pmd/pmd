@@ -269,4 +269,5 @@ to avoid XSS attacks.
 *   [#175](https://github.com/pmd/pmd/pull/175): \[apex] ApexXSSFromURLParam: Adding missing casting methods
 *   [#176](https://github.com/pmd/pmd/pull/176): \[apex] Bug fix for FP: open redirect for strings prefixed with / is safe
 *   [#179](https://github.com/pmd/pmd/pull/179): \[apex] Legacy test class declaration support
+*   [#181](https://github.com/pmd/pmd/pull/181): \[apex] Control flow based CRUD rule checking
 
