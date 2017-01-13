@@ -8,9 +8,11 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -22,15 +24,14 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public abstract class AbstractPMDProcessor {
 
-	protected final PMDConfiguration configuration;
+    protected final PMDConfiguration configuration;
 
-	public AbstractPMDProcessor(PMDConfiguration configuration) {
-		this.configuration = configuration;
-	}
+    public AbstractPMDProcessor(PMDConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
-	public void renderReports(final List<Renderer> renderers, final Report report) {
-		
-		long start = System.nanoTime();
+    public void renderReports(final List<Renderer> renderers, final Report report) {
+        long start = System.nanoTime();
 
 		try {	
 			for (Renderer r : renderers) {
@@ -62,5 +63,22 @@ public abstract class AbstractPMDProcessor {
 	protected RuleSets createRuleSets(RuleSetFactory factory) {
 		return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
 	}
-	
+
+    public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
+            List<Renderer> renderers) {
+        SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
+
+        for (DataSource dataSource : files) {
+            String niceFileName = filenameFrom(dataSource);
+
+            runAnalysis(new PmdRunnable(configuration, dataSource, niceFileName, renderers,
+                    ctx, ruleSetFactory, processor));
+        }
+
+        collectReports(renderers);
+    }
+
+    protected abstract void runAnalysis(PmdRunnable runnable);
+
+    protected abstract void collectReports(List<Renderer> renderers);
 }

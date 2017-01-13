@@ -10,14 +10,18 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
-import net.sourceforge.pmd.lang.*;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.xpath.Initializer;
-
-import org.apache.commons.io.IOUtils;
 
 public class SourceCodeProcessor {
 
@@ -64,25 +68,26 @@ public class SourceCodeProcessor {
      *                      not be parsed, or other error is encountered.
      */
     public void processSourceCode(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) throws PMDException {
-    	determineLanguage(ctx);
+        determineLanguage(ctx);
 
-		// make sure custom XPath functions are initialized
-		Initializer.initialize();
+        // make sure custom XPath functions are initialized
+        Initializer.initialize();
 
-	    // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
-		 if (ruleSets.applies(ctx.getSourceCodeFile())) {
+        // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
+        if (ruleSets.applies(ctx.getSourceCodeFile())) {
 
-		try {
-			processSource(sourceCode, ruleSets,ctx);
-
-		} catch (ParseException pe) {
-		    throw new PMDException("Error while parsing " + ctx.getSourceCodeFilename(), pe);
-		} catch (Exception e) {
-		    throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
-		} finally {
-		    IOUtils.closeQuietly(sourceCode);
-		}
-		}
+            try {
+                ruleSets.start(ctx);
+                processSource(sourceCode, ruleSets, ctx);
+            } catch (ParseException pe) {
+                throw new PMDException("Error while parsing " + ctx.getSourceCodeFilename(), pe);
+            } catch (Exception e) {
+                throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
+            } finally {
+                IOUtils.closeQuietly(sourceCode);
+                ruleSets.end(ctx);
+            }
+        }
     }
 
     
