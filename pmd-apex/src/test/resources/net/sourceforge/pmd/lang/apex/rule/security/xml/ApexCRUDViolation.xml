@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
-
+ 
 	<test-code>
 		<description>Proper CRUD,FLS via upsert</description>
 		<expected-problems>0</expected-problems>
@@ -480,4 +480,169 @@ public class FooTest {
 }
 		]]></code>
 	</test-code>
+	
+	<test-code>
+		<description>Control flow based CRUD,FLS check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+			doChecks();
+			upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		
+	} 
+	
+	public void doChecks() {
+		if (!Contact.sObjectType.getDescribe().isCreateable() && !Contact.sObjectType.getDescribe().isUpdateable()) {
+			throw new NoAccessException();
+		}
+	}
+	
+} ]]></code>
+	</test-code> 
+	<test-code>
+		<description>Control flow based CRUD,FLS check recursive</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+	public void foo(String newName, String tempID) { 
+			doChecks();
+			insert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		
+	} 
+	
+	public void doChecks() {
+		anotherLevelHere("yolo");
+	}
+	
+	private void anotherLevelHere(String s) {
+		if (!Contact.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+	
+} ]]></code>
+	</test-code>
+ 	<test-code>
+		<description>Control flow constructor based CRUD,FLS check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 
+
+	public void foo(String newName, String tempID) { 
+			upsert new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+		
+	} 
+	
+	public Foo() {
+		if (!Contact.sObjectType.getDescribe().isCreateable() && !Contact.sObjectType.getDescribe().isUpdateable()) {
+			throw new NoAccessException();
+		}
+	}
+	
+} ]]></code>
+	</test-code> 
+	
+	<test-code>
+		<description>Control flow accessibility CRUD check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Contact justGiveMeFoo() {
+		checkPerms(); 
+		
+		String tempID = 'someID';
+	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
+	} 
+	
+	private void checkPerms() {
+		if (!Contact.sObjectType.getDescribe().isAccessible()) {
+			throw new NoAccessException();
+		}
+	}
+} 
+]]></code>
+	</test-code> 
+	
+	<test-code>
+		<description>Control flow substitute CRUD check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Contact justGiveMeFoo() {
+		checkPerms();
+		String tempID = 'someID';
+	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
+	} 
+	
+	private void checkPerms() {
+		if (!Contact.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+} 
+]]></code>
+	</test-code>
+	
+	<test-code>
+		<description>Forgot to call the CRUD check</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Contact justGiveMeFoo() {
+		String tempID = 'someID';
+	 	return [SELECT Name FROM Contact WHERE Id=:tempID];
+	} 
+	
+	private void checkPerms() {
+		if (!Contact.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+} 
+]]></code>
+	</test-code>
+	<test-code>
+		<description>Control flow substitute CRUD check should fail when check follows SOQL</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	private void bar() {
+		List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+		checkPerms();
+	}
+
+	private void checkPerms() {
+		if (!Profile.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+} 
+]]></code>
+	</test-code> 
+
+	<test-code>
+		<description>Control flow with nested statementsL</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	private void bar() {
+		if (whatever()) {
+			checkPerms();
+			if (something()) {
+				List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
+			}
+		}
+	}
+
+	private void checkPerms() {
+		if (!Profile.sObjectType.getDescribe().isCreateable()) {
+			throw new NoAccessException();
+		}
+	}
+}
+	
+]]></code>
+	</test-code>	
+
 </test-data>
