@@ -33,7 +33,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private static final String STRING = "String";
     private static final String DATABASE = "Database";
     private static final String QUERY = "query";
-    private static final Pattern SELECT_PATTERN = Pattern.compile("^select[\\s]+?.+?$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SELECT_PATTERN = Pattern.compile("^select[\\s]+?.*?$", Pattern.CASE_INSENSITIVE);
     private final HashSet<String> safeVariables = new HashSet<>();
     private final HashMap<String, Boolean> selectContainingVariables = new HashMap<>();
 
@@ -50,13 +50,6 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             return data;
         }
 
-        // baz = String.escapeSignleQuotes(...);
-        final List<ASTAssignmentExpression> assignmentCalls = node.findDescendantsOfType(ASTAssignmentExpression.class);
-        for (ASTAssignmentExpression a : assignmentCalls) {
-            findSanitizedVariables(a);
-            findSelectContainingVariables(a);
-        }
-
         final List<ASTFieldDeclaration> fieldExpr = node.findDescendantsOfType(ASTFieldDeclaration.class);
         for (ASTFieldDeclaration a : fieldExpr) {
             findSanitizedVariables(a);
@@ -66,6 +59,13 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         // String foo = String.escapeSignleQuotes(...);
         final List<ASTVariableDeclaration> variableDecl = node.findDescendantsOfType(ASTVariableDeclaration.class);
         for (ASTVariableDeclaration a : variableDecl) {
+            findSanitizedVariables(a);
+            findSelectContainingVariables(a);
+        }
+
+        // baz = String.escapeSignleQuotes(...);
+        final List<ASTAssignmentExpression> assignmentCalls = node.findDescendantsOfType(ASTAssignmentExpression.class);
+        for (ASTAssignmentExpression a : assignmentCalls) {
             findSanitizedVariables(a);
             findSelectContainingVariables(a);
         }
@@ -80,7 +80,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                 reportVariables(m, data);
             }
         }
-        
+
         safeVariables.clear();
         selectContainingVariables.clear();
 
@@ -151,7 +151,12 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                     }
                 }
             }
+        } else {
+            if (!isSafeVariable) {
+                selectContainingVariables.put(Helper.getFQVariableName(var), Boolean.FALSE);
+            }
         }
+
     }
 
     private void reportStrings(ASTMethodCallExpression m, Object data) {
