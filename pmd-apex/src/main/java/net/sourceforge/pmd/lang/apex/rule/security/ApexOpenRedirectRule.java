@@ -144,13 +144,6 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         }
     }
 
-    private void addVariable(AbstractApexNode<?> node) {
-        ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
-        if (variable != null) {
-            listOfStringLiteralVariables.add(Helper.getFQVariableName(variable));
-        }
-    }
-
     /**
      * Traverses all new declarations to find PageReferences
      * 
