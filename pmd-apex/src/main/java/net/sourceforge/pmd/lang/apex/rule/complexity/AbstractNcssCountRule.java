@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalApexRule;
@@ -159,12 +158,7 @@ public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule 
     }
 
     @Override
-    public Object visit(ASTVariableDeclaration node, Object data) {
-        return countNodeChildren(node, data);
-    }
-
-    @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
-        return countNodeChildren(node, data);
+        return NumericConstants.ONE;
     }
 }
