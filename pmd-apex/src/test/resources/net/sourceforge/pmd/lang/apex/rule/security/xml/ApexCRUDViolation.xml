@@ -461,7 +461,7 @@ public class Foo {
 		if (Contact.sObjectType.getDescribe().isAccessible()) {
 			List<Contact> contacts = [SELECT Id FROM Contact];		
 			if (Contact.sObjectType.getDescribe().isDeletable()) {
-				delete toDelete;
+				delete contacts;
 			}	
 		}
 	}
