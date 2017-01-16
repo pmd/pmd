@@ -102,9 +102,11 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             }
         } else {
             if (node instanceof ASTField) {
-                /* sergey.gorbaty: 
-                 * Apex Jorje parser is returning a null from Field.getFieldInfo(), but the info is available from an inner field. 
-                 * DO NOT attempt to optimize this block without checking that Jorje parser actually fixed its bug.
+                /*
+                 * sergey.gorbaty: Apex Jorje parser is returning a null from
+                 * Field.getFieldInfo(), but the info is available from an inner
+                 * field. DO NOT attempt to optimize this block without checking
+                 * that Jorje parser actually fixed its bug.
                  * 
                  */
                 try {
@@ -141,13 +143,6 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     private void addVariable(ASTVariableExpression node) {
         if (node != null) {
             listOfStringLiteralVariables.add(Helper.getFQVariableName(node));
-        }
-    }
-
-    private void addVariable(AbstractApexNode<?> node) {
-        ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
-        if (variable != null) {
-            listOfStringLiteralVariables.add(Helper.getFQVariableName(variable));
         }
     }
 
