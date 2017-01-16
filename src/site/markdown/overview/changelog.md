@@ -231,4 +231,5 @@ to avoid XSS attacks.
 *   [#179](https://github.com/pmd/pmd/pull/179): \[apex] Legacy test class declaration support
 *   [#181](https://github.com/pmd/pmd/pull/181): \[apex] Control flow based CRUD rule checking
 *   [#184](https://github.com/pmd/pmd/pull/184): \[apex] Improving open redirect detection for static fields & assignment operations
+*   [#191](https://github.com/pmd/pmd/pull/191): \[apex] Detection of sharing violation when Database. methods are used
 
