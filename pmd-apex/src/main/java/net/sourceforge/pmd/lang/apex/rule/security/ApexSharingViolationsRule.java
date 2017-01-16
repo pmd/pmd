@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.util.List;
+
+import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -27,9 +30,29 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     @Override
     public Object visit(ASTUserClass node, Object data) {
         if (!Helper.isTestMethodOrClass(node)) {
-            checkForSharingDeclaration(node, data);
+            boolean sharingFound = isSharingPresent(node);
+            checkForSharingDeclaration(node, data, sharingFound);
+            checkForDatabaseMethods(node, data, sharingFound);
         }
         return data;
+    }
+
+    /**
+     * Check if class contains any Database.query / Database.insert [ Database.*
+     * ] methods
+     * 
+     * @param node
+     * @param data
+     */
+    private void checkForDatabaseMethods(ASTUserClass node, Object data, boolean sharingFound) {
+        List<ASTMethodCallExpression> calls = node.findDescendantsOfType(ASTMethodCallExpression.class);
+        for (ASTMethodCallExpression call : calls) {
+            if (Helper.isMethodName(call, "Database", Helper.ANY_METHOD)) {
+                if (!sharingFound) {
+                    addViolation(data, node);
+                }
+            }
+        }
     }
 
     /**
@@ -38,8 +61,20 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
      * @param node
      * @param data
      */
-    private void checkForSharingDeclaration(ApexNode<?> node, Object data) {
+    private void checkForSharingDeclaration(ApexNode<?> node, Object data, boolean sharingFound) {
         final boolean foundAnyDMLorSOQL = Helper.foundAnyDML(node) && Helper.foundAnySOQLorSOSL(node);
+        if (!sharingFound && !Helper.isTestMethodOrClass(node) && foundAnyDMLorSOQL) {
+            addViolation(data, node);
+        }
+    }
+
+    /**
+     * Does class have sharing keyword declared?
+     * 
+     * @param node
+     * @return
+     */
+    private boolean isSharingPresent(ApexNode<?> node) {
         boolean sharingFound = false;
 
         for (ModifierOrAnnotationTypeInfo type : node.getNode().getDefiningType().getModifiers().all()) {
@@ -51,10 +86,7 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
             }
 
         }
-
-        if (!sharingFound && !Helper.isTestMethodOrClass(node) && foundAnyDMLorSOQL) {
-            addViolation(data, node);
-        }
+        return sharingFound;
     }
 
 }

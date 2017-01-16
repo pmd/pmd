@@ -39,6 +39,8 @@ import apex.jorje.semantic.ast.statement.VariableDeclaration;
  *
  */
 public final class Helper {
+    protected static final String ANY_METHOD = "*";
+
     private Helper() {
         throw new AssertionError("Can't instantiate helper classes");
     }
@@ -99,13 +101,15 @@ public final class Helper {
             final String methodName) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
         if (reference.getNode().getJadtIdentifiers().size() == 1) {
-            if (reference.getNode().getJadtIdentifiers().get(0).value.equalsIgnoreCase(className)
-                    && isMethodName(methodNode, methodName)) {
-                return true;
+            if (reference.getNode().getJadtIdentifiers().get(0).value.equalsIgnoreCase(className)) {
+                if (methodName.equals(ANY_METHOD) || isMethodName(methodNode, methodName)) {
+                    return true;
+                }
             }
         }
 
         return false;
+
     }
 
     static boolean isMethodName(final ASTMethodCallExpression m, final String methodName) {

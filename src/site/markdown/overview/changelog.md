@@ -274,4 +274,5 @@ to avoid XSS attacks.
 *   [#181](https://github.com/pmd/pmd/pull/181): \[apex] Control flow based CRUD rule checking
 *   [#184](https://github.com/pmd/pmd/pull/184): \[apex] Improving open redirect detection for static fields & assignment operations
 *   [#189](https://github.com/pmd/pmd/pull/189): \[apex] Bug fix of SOQL concatenated vars detection
+*   [#191](https://github.com/pmd/pmd/pull/191): \[apex] Detection of sharing violation when Database. methods are used
 
