@@ -9,7 +9,7 @@ import net.sourceforge.pmd.stat.Metric;
 /**
  * Wraps a report listener in order to synchronize calls to it.
  */
-public final class SynchronizedReportListener implements ReportListener {
+public final class SynchronizedReportListener implements ThreadSafeReportListener {
 
     private final ReportListener wrapped;
 

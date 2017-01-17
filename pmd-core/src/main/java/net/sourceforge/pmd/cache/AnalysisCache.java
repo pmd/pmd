@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cache;
 
 import java.io.File;
 
-import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.ThreadSafeReportListener;
 
 /**
  * An analysis cache for incremental analysis.
  */
-public interface AnalysisCache extends ReportListener {
+public interface AnalysisCache extends ThreadSafeReportListener {
 
     /**
      * Persist the analysis results on whatever means is used by the cache
