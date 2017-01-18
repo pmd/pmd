@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 import net.sourceforge.pmd.PMD;
 
-public class Match implements Comparable<Match> {
+public class Match implements Comparable<Match>, Iterable<Mark> {
 
     private int tokenCount;
     private Set<Mark> markSet = new TreeSet<>();
@@ -77,6 +77,7 @@ public class Match implements Comparable<Match> {
         return this.getMark(0).getSourceCodeSlice();
     }
 
+    @Override
     public Iterator<Mark> iterator() {
         return markSet.iterator();
     }
