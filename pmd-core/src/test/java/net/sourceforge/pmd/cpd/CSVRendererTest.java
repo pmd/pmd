@@ -36,7 +36,7 @@ public class CSVRendererTest {
         Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
 
         result.setLineCount(lineCount);
-        result.setSoureCodeSlice(code);
+        result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
         return result;
     }
 
