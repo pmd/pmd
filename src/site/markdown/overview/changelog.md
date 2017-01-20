@@ -30,6 +30,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
 * [New and noteworthy](#New_and_noteworthy)
     * [Incremental Analysis](#Incremental_Analysis)
     * [Apex Security Rule Set](#Apex_Security_Rule_Set)
+    * [Modified Rules](#Modified_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
@@ -212,12 +213,16 @@ attacks if unescaped.
 Makes sure that all values obtained from URL parameters are properly escaped / sanitized
 to avoid XSS attacks.
 
+
 #### Modified Rules
 
-The Java rule "UseLocaleWithCaseConversions" (ruleset java-design) has been modified, to detect calls
-to `toLowerCase` and to `toUpperCase` also within method call chains. This leads to more detected cases
-and potentially new false positives.
-See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
+*   The Java rule "UseLocaleWithCaseConversions" (ruleset java-design) has been modified, to detect calls
+    to `toLowerCase` and to `toUpperCase` also within method call chains. This leads to more detected cases
+    and potentially new false positives.
+    See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
+
+*   The rule `AvoidConstantsInterface` (ruleset java-design) has been removed. It is completely replaced by
+    the rule `ConstantsInInterface`.
 
 
 ### Fixed Issues
