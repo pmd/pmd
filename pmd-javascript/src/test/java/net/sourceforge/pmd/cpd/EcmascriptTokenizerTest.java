@@ -122,7 +122,7 @@ public class EcmascriptTokenizerTest {
     @Test
     public void testTemplateStrings() throws IOException {
         Tokenizer t = new EcmascriptTokenizer();
-        SourceCode sourceCode = new SourceCode( new SourceCode.StringCodeLoader(
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
                   "export default class DrawLocation extends joint.shapes.basic.Generic {\n"
                 + "  constructor(location: ILocation) {\n"
                 + "    this.markup = `<g>\n"
@@ -136,7 +136,7 @@ public class EcmascriptTokenizerTest {
                 + "      </g>`;\n"
                 + "  }\n"
                 + "\n"
-                + "}") );
+                + "}"));
         final Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens);
         final String templateString = "`<g>\n"
