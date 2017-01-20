@@ -199,6 +199,8 @@ to avoid XSS attacks.
     *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
 *   psql
     *   [#1549](https://sourceforge.net/p/pmd/bugs/1549/): \[plsql] Parse error for IS [NOT] NULL construct
+*   javascript
+    *   [#201](https://github.com/pmd/pmd/issues/201): \[javascript] template strings are not correctly parsed
 
 
 ### API Changes
@@ -234,4 +236,5 @@ to avoid XSS attacks.
 *   [#189](https://github.com/pmd/pmd/pull/189): \[apex] Bug fix of SOQL concatenated vars detection
 *   [#191](https://github.com/pmd/pmd/pull/191): \[apex] Detection of sharing violation when Database. methods are used
 *   [#192](https://github.com/pmd/pmd/pull/192): \[apex] Dead code removal
+*   [#200](https://github.com/pmd/pmd/pull/200): \[javascript] Templatestring grammar fix
 
