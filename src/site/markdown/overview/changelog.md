@@ -212,6 +212,14 @@ attacks if unescaped.
 Makes sure that all values obtained from URL parameters are properly escaped / sanitized
 to avoid XSS attacks.
 
+#### Modified Rules
+
+The Java rule "UseLocaleWithCaseConversions" (ruleset java-design) has been modified, to detect calls
+to `toLowerCase` and to `toUpperCase` also within method call chains. This leads to more detected cases
+and potentially new false positives.
+See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
+
+
 ### Fixed Issues
 
 *   General
