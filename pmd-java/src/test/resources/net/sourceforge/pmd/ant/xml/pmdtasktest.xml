@@ -107,4 +107,35 @@
             </classpath>
         </pmd>
     </target>
+
+    <target name="testFormatterEncodingWithXML">
+        <!-- source encoding is cp1252 -->
+        <pmd encoding="cp1252">
+            <ruleset>java-strings</ruleset>
+            <ruleset>java-unusedcode</ruleset>
+            <!--
+            <formatter type="xml" toConsole="true"/>
+            -->
+            <formatter type="xml" toFile="${pmd.home}/target/testFormatterEncodingWithXML-pmd.xml">
+                <param name="encoding" value="UTF-8" /> <!-- report encoding -->
+            </formatter>
+            <fileset dir="${pmd.home}/src/test/resources/ant/java">
+                <include name="EncodingTestClass.java" />
+                <include name="MoreThanThousandLinesOfCodeWithDuplicateLiterals.java" />
+            </fileset>
+        </pmd>
+    </target>
+
+    <target name="testFormatterEncodingWithXMLConsole">
+        <!-- source encoding is cp1252 -->
+        <pmd encoding="cp1252">
+            <ruleset>java-unusedcode</ruleset>
+            <formatter type="xml" toConsole="true">
+                <param name="encoding" value="UTF-8" /> <!-- report encoding -->
+            </formatter>
+            <fileset dir="${pmd.home}/src/test/resources/ant/java">
+                <include name="EncodingTestClass.java" />
+            </fileset>
+        </pmd>
+    </target>
 </project>
