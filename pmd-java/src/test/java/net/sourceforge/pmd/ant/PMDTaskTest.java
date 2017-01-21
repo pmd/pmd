@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -115,19 +116,22 @@ public class PMDTaskTest extends AbstractAntTestHelper {
             System.setProperty("file.encoding", charsetName);
             Field charset = Charset.class.getDeclaredField("defaultCharset");
             charset.setAccessible(true);
-            charset.set(null,null);
+            charset.set(null, null);
             Objects.requireNonNull(Charset.defaultCharset());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     @Rule
     public final TestRule restoreDefaultCharset = new ExternalResource() {
         private Charset defaultCharset;
+
         @Override
         protected void before() throws Throwable {
             defaultCharset = Charset.defaultCharset();
         }
+
         @Override
         protected void after() {
             setDefaultCharset(defaultCharset.name());
@@ -141,7 +145,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
         executeTarget("testFormatterEncodingWithXML");
         String report = FileUtils.readFileToString(new File("target/testFormatterEncodingWithXML-pmd.xml"), "UTF-8");
-        assertTrue(report.contains("unusedVariableWithÜmlaut"));
+        Assert.assertTrue(report.contains("unusedVariableWithÜmlaut"));
     }
 
     @Test
@@ -149,8 +153,8 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXMLConsole");
-        String report = getOutput();
-        assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
-        assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
+        String report = buildRule.getOutput();
+        Assert.assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
+        Assert.assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
     }
 }
