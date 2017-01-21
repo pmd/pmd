@@ -149,6 +149,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
         executeTarget("testFormatterEncodingWithXMLConsole");
         String report = getOutput();
-        assertTrue(report.contains("unusedVariableWithÜmlaut"));
+        assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
+        assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
     }
 }

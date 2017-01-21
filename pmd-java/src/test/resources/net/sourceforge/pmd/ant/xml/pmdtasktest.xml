@@ -131,7 +131,13 @@
         <pmd encoding="cp1252">
             <ruleset>java-unusedcode</ruleset>
             <formatter type="xml" toConsole="true">
-                <param name="encoding" value="UTF-8" /> <!-- report encoding -->
+                <!-- specifying a encoding here will override the console encoding.
+                     The output might have junk characters in it.
+
+                     <param name="encoding" value="UTF-8" />
+
+                     The test doesn't specify the report encoding, so that the console/default encoding is used
+                 -->
             </formatter>
             <fileset dir="${pmd.home}/src/test/resources/ant/java">
                 <include name="EncodingTestClass.java" />
