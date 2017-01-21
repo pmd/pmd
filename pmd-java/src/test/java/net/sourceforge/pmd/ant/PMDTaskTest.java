@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
@@ -140,7 +141,7 @@ public class PMDTaskTest extends AbstractAntTestHelper {
 
         executeTarget("testFormatterEncodingWithXML");
         String report = FileUtils.readFileToString(new File("target/testFormatterEncodingWithXML-pmd.xml"), "UTF-8");
-        assertTrue(report.contains("unusedVariableWithÜmlaut"));
+        Assert.assertTrue(report.contains("unusedVariableWithÜmlaut"));
     }
 
     @Test
@@ -148,8 +149,8 @@ public class PMDTaskTest extends AbstractAntTestHelper {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXMLConsole");
-        String report = getOutput();
-        assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
-        assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
+        String report = buildRule.getOutput();
+        Assert.assertTrue(report.startsWith("<?xml version=\"1.0\" encoding=\"windows-1252\"?>"));
+        Assert.assertTrue(report.contains("unusedVariableWith&#xdc;mlaut"));
     }
 }
