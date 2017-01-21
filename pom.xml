@@ -871,6 +871,11 @@
                 <artifactId>groovy</artifactId>
                 <version>2.4.7</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-rules</artifactId>
+                <version>1.8.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
