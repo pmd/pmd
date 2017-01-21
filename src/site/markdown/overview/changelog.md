@@ -53,6 +53,8 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
     *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
 *   psql
     *   [#1549](https://sourceforge.net/p/pmd/bugs/1549/): \[plsql] Parse error for IS [NOT] NULL construct
+*   javascript
+    *   [#201](https://github.com/pmd/pmd/issues/201): \[javascript] template strings are not correctly parsed
 
 
 ### External Contributions
@@ -61,4 +63,5 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
 *   [#152](https://github.com/pmd/pmd/pull/152): \[java] fixes #1552 continue does not require break
 *   [#154](https://github.com/pmd/pmd/pull/154): \[java] Fix #1547: UnusedImports: Adjust regex to support underscores
 *   [#170](https://github.com/pmd/pmd/pull/170): \[core] Ant Task Formatter encoding issue with XMLRenderer
+*   [#200](https://github.com/pmd/pmd/pull/200): \[javascript] Templatestring grammar fix
 
