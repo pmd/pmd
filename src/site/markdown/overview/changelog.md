@@ -55,6 +55,8 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
     *   [#1549](https://sourceforge.net/p/pmd/bugs/1549/): \[plsql] Parse error for IS [NOT] NULL construct
 *   javascript
     *   [#201](https://github.com/pmd/pmd/issues/201): \[javascript] template strings are not correctly parsed
+*   General
+    *   [#1511](https://sourceforge.net/p/pmd/bugs/1511/): \[core] Inconsistent behavior of Rule.start/Rule.end
 
 
 ### External Contributions
