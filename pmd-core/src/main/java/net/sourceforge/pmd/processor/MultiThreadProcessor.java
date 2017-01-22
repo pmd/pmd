@@ -6,18 +6,17 @@ package net.sourceforge.pmd.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -25,62 +24,46 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public class MultiThreadProcessor extends AbstractPMDProcessor {
 
+    private ThreadFactory factory;
+    private ExecutorService executor;
+    private CompletionService<Report> completionService;
+    private List<Future<Report>> tasks = new ArrayList<>();
+
     public MultiThreadProcessor(final PMDConfiguration configuration) {
         super(configuration);
+
+        factory = new PmdThreadFactory();
+        executor = Executors.newFixedThreadPool(configuration.getThreads(), factory);
+        completionService = new ExecutorCompletionService<>(executor);
     }
 
-    /**
-     * Run PMD on a list of files using multiple threads.
-     */
-    public void processFiles(final RuleSetFactory ruleSetFactory, final List<DataSource> files, final RuleContext ctx,
-            final List<Renderer> renderers) {
-
-        RuleSets rs = createRuleSets(ruleSetFactory);
-        rs.start(ctx);
-        configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
-
-        PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
-        ExecutorService executor = Executors.newFixedThreadPool(configuration.getThreads(), factory);
-        List<Future<Report>> tasks = new ArrayList<>(files.size());
-
-        for (DataSource dataSource : files) {
-            String niceFileName = filenameFrom(dataSource);
-
-            PmdRunnable r = new PmdRunnable(executor, configuration, dataSource, niceFileName, renderers);
-            Future<Report> future = executor.submit(r);
-            tasks.add(future);
-        }
-        executor.shutdown();
-
-        processReports(renderers, tasks);
-
-        rs.end(ctx);
-        super.renderReports(renderers, ctx.getReport());
-
+    @Override
+    protected void runAnalysis(PmdRunnable runnable) {
+        // multi-threaded execution, dispatch analysis to worker threads
+        tasks.add(completionService.submit(runnable));
     }
 
-    private void processReports(final List<Renderer> renderers, List<Future<Report>> tasks) {
-
-        while (!tasks.isEmpty()) {
-            Future<Report> future = tasks.remove(0);
-            Report report = null;
-            try {
-                report = future.get();
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-                future.cancel(true);
-            } catch (ExecutionException ee) {
-                Throwable t = ee.getCause();
-                if (t instanceof RuntimeException) {
-                    throw (RuntimeException) t;
-                } else if (t instanceof Error) {
-                    throw (Error) t;
-                } else {
-                    throw new IllegalStateException("PmdRunnable exception", t);
-                }
+    @Override
+    protected void collectReports(List<Renderer> renderers) {
+        // Collect result analysis, waiting for termination if needed
+        try {
+            for (int i = 0; i < tasks.size(); i++) {
+                final Report report = completionService.take().get();
+                super.renderReports(renderers, report);
             }
-
-            super.renderReports(renderers, report);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ee) {
+            Throwable t = ee.getCause();
+            if (t instanceof RuntimeException) {
+                throw (RuntimeException) t;
+            } else if (t instanceof Error) {
+                throw (Error) t;
+            } else {
+                throw new IllegalStateException("PmdRunnable exception", t);
+            }
+        } finally {
+            executor.shutdownNow();
         }
     }
 }

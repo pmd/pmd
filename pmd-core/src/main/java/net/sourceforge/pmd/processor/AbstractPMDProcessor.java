@@ -9,9 +9,11 @@ import java.util.List;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -61,4 +63,23 @@ public abstract class AbstractPMDProcessor {
         return RulesetsFactoryUtils.getRuleSets(configuration.getRuleSets(), factory);
     }
 
+    public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
+            List<Renderer> renderers) {
+        RuleSets rs = createRuleSets(ruleSetFactory);
+        configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
+        SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
+
+        for (DataSource dataSource : files) {
+            String niceFileName = filenameFrom(dataSource);
+
+            runAnalysis(new PmdRunnable(configuration, dataSource, niceFileName, renderers,
+                    ctx, ruleSetFactory, processor));
+        }
+
+        collectReports(renderers);
+    }
+
+    protected abstract void runAnalysis(PmdRunnable runnable);
+
+    protected abstract void collectReports(List<Renderer> renderers);
 }

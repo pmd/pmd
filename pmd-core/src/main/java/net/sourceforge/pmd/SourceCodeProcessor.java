@@ -90,6 +90,7 @@ public class SourceCodeProcessor {
             }
 
             try {
+                ruleSets.start(ctx);
                 processSource(sourceCode, ruleSets, ctx);
             } catch (ParseException pe) {
                 configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
@@ -99,6 +100,7 @@ public class SourceCodeProcessor {
                 throw new PMDException("Error while processing " + ctx.getSourceCodeFilename(), e);
             } finally {
                 IOUtils.closeQuietly(sourceCode);
+                ruleSets.end(ctx);
             }
         }
     }
