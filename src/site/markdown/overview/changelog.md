@@ -233,4 +233,5 @@ to avoid XSS attacks.
 *   [#184](https://github.com/pmd/pmd/pull/184): \[apex] Improving open redirect detection for static fields & assignment operations
 *   [#191](https://github.com/pmd/pmd/pull/191): \[apex] Detection of sharing violation when Database. methods are used
 *   [#192](https://github.com/pmd/pmd/pull/192): \[apex] Dead code removal
+*   [#204](https://github.com/pmd/pmd/pull/204): \[apex] Sharing violation SOQL detection bug fix
 
