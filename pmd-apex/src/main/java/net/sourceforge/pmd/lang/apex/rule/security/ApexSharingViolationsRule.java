@@ -62,7 +62,7 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
      * @param data
      */
     private void checkForSharingDeclaration(ApexNode<?> node, Object data, boolean sharingFound) {
-        final boolean foundAnyDMLorSOQL = Helper.foundAnyDML(node) && Helper.foundAnySOQLorSOSL(node);
+        final boolean foundAnyDMLorSOQL = Helper.foundAnyDML(node) || Helper.foundAnySOQLorSOSL(node);
         if (!sharingFound && !Helper.isTestMethodOrClass(node) && foundAnyDMLorSOQL) {
             addViolation(data, node);
         }
