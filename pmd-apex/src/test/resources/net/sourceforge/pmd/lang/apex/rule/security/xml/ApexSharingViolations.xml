@@ -13,6 +13,18 @@ public class Foo {
 		]]></code>
 	</test-code>
 
+	<test-code>
+		<description>Apex class without any sharing declared with SOQL
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+	}
+}
+		]]></code>
+	</test-code>
 
 	<test-code>
 		<description>Apex class without any sharing declared with DML
@@ -27,9 +39,10 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
-		<description>Apex class without any sharing declared with Database method
+		<description>Apex class without any sharing declared with Database
+			method
 		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -40,7 +53,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Apex class with sharing and Database method
 		</description>
