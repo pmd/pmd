@@ -246,4 +246,5 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
 *   [#191](https://github.com/pmd/pmd/pull/191): \[apex] Detection of sharing violation when Database. methods are used
 *   [#192](https://github.com/pmd/pmd/pull/192): \[apex] Dead code removal
 *   [#200](https://github.com/pmd/pmd/pull/200): \[javascript] Templatestring grammar fix
+*   [#204](https://github.com/pmd/pmd/pull/204): \[apex] Sharing violation SOQL detection bug fix
 
