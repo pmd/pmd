@@ -1,4 +1,9 @@
 /**
+ * Change lookahead for AnnotationMethodDeclaration in AnnotationTypeMemberDeclaration.
+ * Bug #206
+ *
+ * Juan Martin Sotuyo Dodero 01/2017
+ *====================================================================
  * Simplify VariableDeclaratorId, forbidding illegal sequences such as
  * this[] and MyClass.this[]
  *
@@ -2279,7 +2284,7 @@ void AnnotationTypeMemberDeclaration():
 {
  modifiers = Modifiers()
  (
-   LOOKAHEAD(3) AnnotationMethodDeclaration(modifiers)
+   LOOKAHEAD(Type() <IDENTIFIER> "(") AnnotationMethodDeclaration(modifiers)
   |
    ClassOrInterfaceDeclaration(modifiers)
   |
