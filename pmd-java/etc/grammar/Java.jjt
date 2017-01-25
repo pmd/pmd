@@ -1,4 +1,9 @@
 /**
+ * Allow method references to specify generics.
+ * Bug #207
+ *
+ * Juan Martin Sotuyo Dodero 01/2017
+ *====================================================================
  * Simplify VariableDeclaratorId, forbidding illegal sequences such as
  * this[] and MyClass.this[]
  *
@@ -1812,7 +1817,7 @@ Token t;
 void MethodReference() :
 {Token t; checkForBadMethodReferenceUsage();}
 {
-  "::" ("new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
+  "::" ("new" {jjtThis.setImage("new");} | [TypeArguments()] t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
 }
 
 void PrimaryPrefix() :
