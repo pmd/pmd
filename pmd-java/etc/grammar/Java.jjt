@@ -1,4 +1,9 @@
 /**
+ * Allow local classes to carry more than one annotation.
+ * Bug #208
+ *
+ * Juan Martin Sotuyo Dodero 01/2017
+ *====================================================================
  * Simplify VariableDeclaratorId, forbidding illegal sequences such as
  * this[] and MyClass.this[]
  *
@@ -1970,7 +1975,7 @@ void BlockStatement():
   ClassOrInterfaceDeclaration, but that seems like a hack that
   could break other things...
   */
-  LOOKAHEAD( [Annotation()] ["final"|"abstract"] "class") [Annotation()] ClassOrInterfaceDeclaration(0)
+  LOOKAHEAD( (Annotation())* ["final"|"abstract"] "class") (Annotation())* ClassOrInterfaceDeclaration(0)
 }
 
 void LocalVariableDeclaration() :

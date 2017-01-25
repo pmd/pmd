@@ -136,6 +136,12 @@ public class ParserCornersTest extends ParserTst {
         String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1530.java"));
         parseJava18(c);
     }
+    
+    @Test
+    public void testGitHubBug208ParseError() throws Exception {
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug208.java"));
+        parseJava15(c);
+    }
 
     /**
      * This triggered bug #1484 UnusedLocalVariable - false positive -
