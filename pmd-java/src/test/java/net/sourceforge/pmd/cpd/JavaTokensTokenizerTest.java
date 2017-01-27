@@ -202,4 +202,25 @@ public class JavaTokensTokenizerTest {
         // Enum constructor
         assertEquals("Foo", tokenList.get(13).toString());
     }
+
+    @Test
+    public void testIgnoreIdentifiersWithClassKeyword() throws IOException {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        t.setIgnoreIdentifiers(true);
+
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
+                "package foo.bar.baz;" + PMD.EOL + "public class Foo {" + PMD.EOL + "Foo() {" + PMD.EOL
+                        + "}" + PMD.EOL + "public void bar() {" + PMD.EOL + "Bar.baz(Foo.class, () -> {});"
+                        + PMD.EOL + "}" + PMD.EOL + "}" + PMD.EOL
+        ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        List<TokenEntry> tokenList = tokens.getTokens();
+
+        // Class constructor
+        assertEquals("Foo", tokenList.get(4).toString());
+        assertEquals(String.valueOf(JavaParserConstants.IDENTIFIER), tokenList.get(11).toString());
+    }
 }
