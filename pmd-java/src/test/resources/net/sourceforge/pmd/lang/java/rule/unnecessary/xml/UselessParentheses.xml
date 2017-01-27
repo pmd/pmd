@@ -327,4 +327,44 @@ public class Useless {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#199 UselessParentheses false positive on multiple logical and operators</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Useless {
+    public boolean test(Useless team) {
+        return (mNumber != null ? mNumber.equals(team.mNumber) : team.mNumber == null)
+	        && (mKey != null ? mKey.equals(team.mKey) : team.mKey == null)
+	        && (mTemplateKey != null ? mTemplateKey.equals(team.mTemplateKey) : team.mTemplateKey == null)
+	        && (mName != null ? mName.equals(team.mName) : team.mName == null);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#199 UselessParentheses false positive on multiple logical or operators</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Useless {
+    public boolean test(Useless team) {
+        return (mNumber != null ? mNumber.equals(team.mNumber) : team.mNumber == null)
+	        || (mKey != null ? mKey.equals(team.mKey) : team.mKey == null)
+	        || (mTemplateKey != null ? mTemplateKey.equals(team.mTemplateKey) : team.mTemplateKey == null)
+	        || (mName != null ? mName.equals(team.mName) : team.mName == null);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#199 UselessParentheses false positive on equals operator</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Useless {
+    public boolean test(Useless team) {
+        return (mNumber != null ? mNumber : team.mNumber)
+	        == (mKey != null ? mKey : team.mKey);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
