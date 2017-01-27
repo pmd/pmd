@@ -3,10 +3,10 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.ref.SoftReference;
@@ -16,7 +16,6 @@ import java.util.List;
 import net.sourceforge.pmd.PMD;
 
 import org.apache.commons.io.ByteOrderMark;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BOMInputStream;
 
 public class SourceCode {
@@ -36,25 +35,57 @@ public class SourceCode {
             return code.get();
         }
 
+        public List<String> getCodeSlice(int startLine, int endLine) {
+            List<String> c = null;
+            if (code != null) {
+                c = code.get();
+            }
+            if (c != null) {
+                return c.subList(startLine, endLine);
+            }
+            return load(startLine, endLine);
+        }
+
         public abstract String getFileName();
 
         protected abstract Reader getReader() throws Exception;
 
         protected List<String> load() {
-            LineNumberReader lnr = null;
-            try {
-                lnr = new LineNumberReader(getReader());
+            try (BufferedReader reader = new BufferedReader(getReader())) {
                 List<String> lines = new ArrayList<>();
                 String currentLine;
-                while ((currentLine = lnr.readLine()) != null) {
+                while ((currentLine = reader.readLine()) != null) {
                     lines.add(currentLine);
                 }
                 return lines;
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("Problem while reading " + getFileName() + ":" + e.getMessage());
-            } finally {
-                IOUtils.closeQuietly(lnr);
+            }
+        }
+
+        protected List<String> load(int startLine, int endLine) {
+            try (BufferedReader reader = new BufferedReader(getReader())) {
+                int linesToRead = endLine - startLine;
+                List<String> lines = new ArrayList<>(linesToRead);
+
+                // Skip lines until we reach the start point
+                for (int i = 0; i < startLine; i++) {
+                    reader.readLine();
+                }
+
+                String currentLine;
+                while ((currentLine = reader.readLine()) != null) {
+                    lines.add(currentLine);
+
+                    if (lines.size() == linesToRead) {
+                        break;
+                    }
+                }
+                return lines;
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Problem while reading " + getFileName() + ":" + e.getMessage());
             }
         }
     }
@@ -164,13 +195,14 @@ public class SourceCode {
     }
 
     public String getSlice(int startLine, int endLine) {
+        List<String> lines = cl.getCodeSlice(startLine - 1, endLine);
+
         StringBuilder sb = new StringBuilder();
-        List<String> lines = cl.getCode();
-        for (int i = startLine == 0 ? startLine : startLine - 1; i < endLine && i < lines.size(); i++) {
+        for (String line : lines) {
             if (sb.length() != 0) {
                 sb.append(PMD.EOL);
             }
-            sb.append(lines.get(i));
+            sb.append(line);
         }
         return sb.toString();
     }
