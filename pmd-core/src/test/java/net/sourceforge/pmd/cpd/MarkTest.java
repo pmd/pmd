@@ -8,6 +8,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
+
 public class MarkTest {
 
     @Test
@@ -20,7 +22,7 @@ public class MarkTest {
         int lineCount = 10;
         mark.setLineCount(lineCount);
         String codeFragment = "code fragment";
-        mark.setSoureCodeSlice(codeFragment);
+        mark.setSourceCode(new SourceCode(new StringCodeLoader(codeFragment)));
 
         assertEquals(token, mark.getToken());
         assertEquals(filename, mark.getFilename());

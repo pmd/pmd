@@ -53,7 +53,7 @@ public class XMLRendererTest {
         List<Match> list = new ArrayList<>();
         int lineCount = 6;
         String codeFragment = "code\nfragment";
-        Mark mark1 = createMark("public", "/var/Foo.java", 48, lineCount, codeFragment);
+        Mark mark1 = createMark("public", "/var/Foo.java", 1, lineCount, codeFragment);
         Mark mark2 = createMark("stuff", "/var/Foo.java", 73, lineCount, codeFragment);
         Match match = new Match(75, mark1, mark2);
 
@@ -69,7 +69,7 @@ public class XMLRendererTest {
                 file = file.getNextSibling();
             }
             if (file != null) {
-                assertEquals("48", file.getAttributes().getNamedItem("line").getNodeValue());
+                assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
                 assertEquals("/var/Foo.java", file.getAttributes().getNamedItem("path").getNodeValue());
                 file = file.getNextSibling();
                 while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
@@ -134,7 +134,7 @@ public class XMLRendererTest {
         Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
 
         result.setLineCount(lineCount);
-        result.setSoureCodeSlice(code);
+        result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
         return result;
     }
 
