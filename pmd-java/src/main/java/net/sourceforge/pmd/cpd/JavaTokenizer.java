@@ -244,6 +244,19 @@ public class JavaTokenizer implements Tokenizer {
                 }
                 currentNestingLevel--;
                 break;
+
+            default:
+                /*
+                 * Did we find a "class" token not followed by an identifier? i.e:
+                 * expectThrows(IllegalStateException.class, () -> {
+                 *  newSearcher(r).search(parentQuery.build(), c);
+                 * });
+                 */
+                if (storeNextIdentifier) {
+                    classMembersIndentations.pop();
+                    storeNextIdentifier = false;
+                }
+                break;
             }
         }
         
