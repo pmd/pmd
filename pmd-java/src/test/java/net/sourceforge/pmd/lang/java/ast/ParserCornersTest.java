@@ -143,6 +143,15 @@ public class ParserCornersTest extends ParserTst {
         parseJava18(c);
     }
 
+    @Test
+    public void testBug206() throws Exception {
+        String code = "public @interface Foo {" + PMD.EOL
+            + "static final ThreadLocal<Interner<Integer>> interner =" + PMD.EOL
+            + "    ThreadLocal.withInitial(Interners::newStrongInterner);" + PMD.EOL
+            + "}";
+        parseJava18(code);
+    }
+
     /**
      * This triggered bug #1484 UnusedLocalVariable - false positive -
      * parenthesis
