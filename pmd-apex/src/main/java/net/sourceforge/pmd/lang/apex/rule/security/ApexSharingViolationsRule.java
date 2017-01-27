@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.security;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -48,9 +49,18 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
         for (ASTMethodCallExpression call : calls) {
             if (Helper.isMethodName(call, "Database", Helper.ANY_METHOD)) {
                 if (!sharingFound) {
-                    addViolation(data, node);
+                    reportViolation(node, data);
                 }
             }
+        }
+    }
+
+    private void reportViolation(ApexNode<?> node, Object data) {
+        ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
+        if (modifier != null) {
+            addViolation(data, modifier);
+        } else {
+            addViolation(data, node);
         }
     }
 
@@ -63,7 +73,7 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     private void checkForSharingDeclaration(ApexNode<?> node, Object data, boolean sharingFound) {
         final boolean foundAnyDMLorSOQL = Helper.foundAnyDML(node) || Helper.foundAnySOQLorSOSL(node);
         if (!sharingFound && !Helper.isTestMethodOrClass(node) && foundAnyDMLorSOQL) {
-            addViolation(data, node);
+            reportViolation(node, data);
         }
     }
 
