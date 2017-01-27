@@ -42,6 +42,7 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
 ### Fixed Issues
 
 *   java
+    *   [#206](https://github.com/pmd/pmd/issues/206): \[java] Parse error on annotation fields with generics
     *   [#207](https://github.com/pmd/pmd/issues/207): \[java] Parse error on method reference with generics
     *   [#213](https://github.com/pmd/pmd/issues/213): \[java] CPD: OutOfMemory when analyzing Lucene
 *   java-design
