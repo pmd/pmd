@@ -24,23 +24,14 @@
   <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
   <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
 </ul>
-<p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
-<p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
+<p>You can <b><a href="https://github.com/pmd/pmd/releases">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="https://pmd.github.io/latest/pmd-java/rules/index.html">rulesets index</a> page.</p>
+<p>PMD is <a href="https://pmd.github.io/latest/usage/integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
     ]]>
   </description>
 
-    <url>http://pmd.sourceforge.net/</url>
-    <issueManagement>
-        <url>http://sourceforge.net/p/pmd/bugs/</url>
-    </issueManagement>
+    <url>https://pmd.github.io/</url>
     <ciManagement>
-        <notifiers>
-            <notifier>
-                <configuration>
-                    <address>tom@infoether.com</address>
-                </configuration>
-            </notifier>
-        </notifiers>
+        <url>https://travis-ci.org/pmd/pmd</url>
     </ciManagement>
     <inceptionYear>2002</inceptionYear>
     <licenses>
@@ -53,9 +44,15 @@
     <mailingLists>
         <mailingList>
             <name>PMD development</name>
-            <subscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
-            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
-            <archive>http://sourceforge.net/mailarchive/forum.php?forum=pmd-devel</archive>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
+            <archive>https://sourceforge.net/p/pmd/mailman/pmd-devel</archive>
+        </mailingList>
+        <mailingList>
+            <name>PMD commits</name>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/pmd-commits</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/pmd-commits</unsubscribe>
+            <archive>https://sourceforge.net/p/pmd/mailman/pmd-commits</archive>
         </mailingList>
     </mailingLists>
     <developers>
@@ -239,6 +236,15 @@
                 <role>Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id> juansotuyo</id>
+            <name>Juan Martín Sotuyo Dodero</name>
+            <email>jmsotuyo@monits.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>-3</timezone>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
@@ -253,9 +259,12 @@
         </site>
     </distributionManagement>
     <organization>
-        <name>InfoEther</name>
-        <url>http://pmd.sourceforge.net/</url>
+        <name>PMD</name>
+        <url>https://pmd.github.io/</url>
     </organization>
+    <issueManagement>
+        <url>https://github.com/pmd/pmd/issues</url>
+    </issueManagement>
 
     <properties>
         <javacc.version>5.0</javacc.version>
