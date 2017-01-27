@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd;
 public class Mark implements Comparable<Mark> {
     private TokenEntry token;
     private int lineCount;
-    private String code;
+    private SourceCode code;
 
     public Mark(TokenEntry token) {
         this.token = token;
@@ -37,10 +37,10 @@ public class Mark implements Comparable<Mark> {
     }
 
     public String getSourceCodeSlice() {
-        return this.code;
+        return this.code.getSlice(getBeginLine(), getEndLine());
     }
 
-    public void setSoureCodeSlice(String code) {
+    public void setSourceCode(SourceCode code) {
         this.code = code;
     }
 
