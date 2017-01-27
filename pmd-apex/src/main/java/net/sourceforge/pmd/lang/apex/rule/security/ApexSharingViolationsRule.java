@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.List;
+import java.util.WeakHashMap;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
@@ -21,6 +22,8 @@ import apex.jorje.semantic.symbol.type.ModifierOrAnnotationTypeInfo;
  */
 public class ApexSharingViolationsRule extends AbstractApexRule {
 
+    private WeakHashMap<ApexNode<?>, Object> localCacheOfReportedNodes = new WeakHashMap<>();
+
     public ApexSharingViolationsRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
@@ -34,6 +37,8 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
             checkForSharingDeclaration(node, data, sharingFound);
             checkForDatabaseMethods(node, data, sharingFound);
         }
+
+        localCacheOfReportedNodes.clear();
         return data;
     }
 
@@ -58,9 +63,13 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     private void reportViolation(ApexNode<?> node, Object data) {
         ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
         if (modifier != null) {
-            addViolation(data, modifier);
+            if (localCacheOfReportedNodes.put(modifier, data) == null) {
+                addViolation(data, modifier);
+            }
         } else {
-            addViolation(data, node);
+            if (localCacheOfReportedNodes.put(node, data) == null) {
+                addViolation(data, node);
+            }
         }
     }
 
@@ -89,9 +98,11 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
         for (ModifierOrAnnotationTypeInfo type : node.getNode().getDefiningType().getModifiers().all()) {
             if (type.getBytecodeName().equalsIgnoreCase(ModifierType.WithoutSharing.toString())) {
                 sharingFound = true;
+                break;
             }
             if (type.getBytecodeName().equalsIgnoreCase(ModifierType.WithSharing.toString())) {
                 sharingFound = true;
+                break;
             }
 
         }
