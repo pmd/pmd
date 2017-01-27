@@ -1,4 +1,9 @@
 /**
+ * Allow method references to specify generics.
+ * Bug #207
+ *
+ * Juan Martin Sotuyo Dodero 01/2017
+ *====================================================================
  * Fix for regression introduced in previous changeset.
  * The syntactic lookahead was not properly handled by javacc,
  * so it was converted to a semantic one
@@ -1806,7 +1811,7 @@ Token t;
 void MethodReference() :
 {Token t; checkForBadMethodReferenceUsage();}
 {
-  "::" ("new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
+  "::" ("new" {jjtThis.setImage("new");} | [TypeArguments()] t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
 }
 
 void PrimaryPrefix() :
