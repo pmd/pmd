@@ -41,6 +41,8 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
 
 ### Fixed Issues
 
+*   java
+    *   [#213](https://github.com/pmd/pmd/issues/213): \[java] CPD: OutOfMemory when analyzing Lucene
 *   java-design
     *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
     *   [#1556](https://sourceforge.net/p/pmd/bugs/1556/): \[java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)
