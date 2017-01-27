@@ -239,6 +239,15 @@
                 <role>Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id> juansotuyo</id>
+            <name>Juan Martín Sotuyo Dodero</name>
+            <email>jmsotuyo@monits.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>-3</timezone>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
