@@ -154,7 +154,8 @@ sb.append('a');		// use this instead
         class="net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveAppendsShouldReuseRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/java/strings.html#ConsecutiveAppendsShouldReuse">
     <description>
-Consecutively calls to StringBuffer/StringBuilder .append should reuse the target object. This can improve the performance.
+Consecutive calls to StringBuffer/StringBuilder .append should be chained, reusing the target object. This can improve the performance
+by producing a smaller bytecode, reducing overhead and improving inlining. A complete analysis can be found [here](https://github.com/pmd/pmd/issues/202#issuecomment-274349067)
     </description>
     <priority>3</priority>
     <example>
