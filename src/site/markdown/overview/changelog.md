@@ -192,6 +192,7 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
     *   [#183](https://github.com/pmd/pmd/issues/183): \[apex] NCSS Method length is incorrect when using method chaining
 *   java
     *   [#185](https://github.com/pmd/pmd/issues/185): \[java] CPD runs into NPE when analyzing Lucene
+    *   [#206](https://github.com/pmd/pmd/issues/206): \[java] Parse error on annotation fields with generics
     *   [#207](https://github.com/pmd/pmd/issues/207): \[java] Parse error on method reference with generics
     *   [#213](https://github.com/pmd/pmd/issues/213): \[java] CPD: OutOfMemory when analyzing Lucene
     *   [#1542](https://sourceforge.net/p/pmd/bugs/1542/): \[java] CPD throws an NPE when parsing enums with -ignore-identifiers
