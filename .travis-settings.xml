@@ -13,9 +13,22 @@
       <username>${env.CI_DEPLOY_USERNAME}</username>
       <password>${env.CI_DEPLOY_PASSWORD}</password>
     </server>
+    <server>
+      <id>sonatype-nexus-staging</id>
+      <username>${env.CI_DEPLOY_USERNAME}</username>
+      <password>${env.CI_DEPLOY_PASSWORD}</password>
+    </server>
   </servers>
   <mirrors/>
   <proxies/>
-  <profiles/>
+  <profiles>
+    <profile>
+      <id>ossrh</id>
+      <properties>
+        <gpg.keyname>${env.CI_SIGN_KEYNAME}</gpg.keyname>
+        <gpg.passphrase>${env.CI_SIGN_PASSPHRASE}</gpg.passphrase>
+      </properties>
+    </profile>
+  </profiles>
   <activeProfiles/>
 </settings>

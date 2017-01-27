@@ -3,17 +3,25 @@ before_script:
   - SHOULD_DEPLOY=no
   - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] && SHOULD_DEPLOY=yes || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
   - export SHOULD_DEPLOY
-matrix:
-  include:
-  - jdk: oraclejdk7
-    script:
-      - '[ "${SHOULD_DEPLOY}" = "yes" ] && mvn test deploy --settings .travis-settings.xml || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
-      - '[ "${SHOULD_DEPLOY}" = "yes" ] || mvn test'
-  - jdk: oraclejdk8
-    script: mvn test
-branches:
-  except:
-    - /^pmd_releases\/\d/
+script:
+  - '[ "${SHOULD_DEPLOY}" = "yes" ] && mvn deploy --settings .travis-settings.xml || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
+  - '[ "${SHOULD_DEPLOY}" = "yes" ] || mvn verify'
+  - '[ "${SHOULD_DEPLOY}" = "yes" ] && mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Sonar" )'
+
+deploy:
+  skip_cleanup: true
+  on:
+    tags: true
+    condition: "${TRAVIS_SECURE_ENV_VARS} = true"
+  - provider: script
+    script: bash .travis-deploy.sh
+  - provider: releases
+    api_key: ${GITHUB_OAUTH_TOKEN}
+    file:
+      - "pmd-dist/target/pmd-*.zip"
+      - "target/pmd-doc-*.zip"
+    # TODO : This won't copy the changelog to GitHub
+
 notifications:
   email:
     recipients:
@@ -27,3 +35,13 @@ env:
   global:
   - secure: KBEuB6U1p5RQXSYe157AwydFr/zpXQPA0IChVCgZV+X1mMyy9ZtrjH1J1AXuviseDDXDbaT25sRnsvpl82rfRw2xOkMGXHy4N95/ylTSr8DjHxTao71BhXsvFycNobFva5y2EGNWqDvpS8I2oSZo7Qk4la3yep3rcJQvcy6RDbbhpDTbL1QMFyadunIBm0WtqbunrMqtjSqaoPsXz8TiQuxHvX4vEXzVbaxV1QQt79Vi+daa6wAV3mRQAugnx+UffsC8JqMxgm06usWeJgCJzxgm8E7clZCLmf53B2TL8dK6bIYbqyvOY3uFxitsTG0d8Z0GOJwXBgZNgbniTRO8ZJSty5eZP8LBybbjVLSL25DNTWtCjADUL/uySnXIEidlMt2N/3QmH7zrGAfAk/tIwKpdRca2GLLydeXf6PSkiahnPEkIY/QupcsOLELhdifpdOjb8QW1OenA+vUbNM9dccLwKnX6Fj9cu4VQG601AcYDr2eyhq8WYkr3wYdw/6KdUa3hmplowTBs+qguppP+eOSgGuEsy38KLtqnvm6WlHy6tcLmcVYKG3DmR1b7TWXsOXC6/VMH8BHBkvsF1QdRg9+Cgx07vX3Hw7roPiYzmaO9Ajs20ATsUfRskMuWCTeTSK5pN8X27veRCZlhFjeKQMDdmfVwzpAfRgKsl3TEn1I=
   - secure: U1DfAv6acUUWe+dao/ZSDUX64JRadNJY16rITsdrM4ZNAJSuXpEY3p/LWcYjN7D49YmyutbXH9+L3KKQUQGrGXj9QTarfYvd8ZsKt4FK8yv7AFy+RQNIbAjNEHBzHx15p+srMheTaetl7aLwY0qhF+D/RtGapxHKyY4dBHrb0lp8VGyiCiL7Aop8GGskosi1mtirPBp/BStPZ2bEyxG0QzU5SsVWkJWwV9aWLPVAR/n7Xgx/6Gjl6Fed2c/WSrWi4vchm3Ny8pfTweOax3PGYYjBVxIfuX0mqmwuJsY7gNfXCfN3dPiPKGJPFy1pC+LGyGkklO5ReKFLd4O1ME6fU0dlIGfD6n+Q4H6/w9FHXegcKTfWIJm/MFa6vA/tJM5R6zJQuiTQJboHm/UmS/iQj76z0p6sK15Xp5vFId+/dHKqa8xY+Bt6HiXy6z401HOc8QcYBAf7TqhqUt/ZE7HN4be46uR90KmzIrWz6wEoDW7HfwQ9ZMbs55zoOXrvekyE9/gXskypO0p2JT3Y0vlvO27KQvIrSwI480kOVOrlyrYA+LZqlcKaayOuCuZh4lITQUYinUoZZict5joYthH+Cyh2zovoBpxsntDJdMnaZNLtSC7hlhpbMBYaT2y1O6vZH5Yix0mxuDvs/x6ogP5CNBeUYlXhaL+g4GnwKyr0ZA0=
+  - secure: "ElWjttpoMwqezP2zyHkx7CiPON/mRLUW7SsSlEqdlTUYRIaSaL7sShUORJUzj58U/Nnfi/eY4Rweo0CtVu20sG16s9B4adnmPS44LAitztybPR/co93gN9qb8jiIl41nVcOJq+Rut2Z4nr8AGRhVCG9Drg4+DreCqQ4DE5ZD6J99GN0IFGrREt59HQUlBlT9jD0AndK/1GQ6kWAenuSREE2P5ih59rf6FrrfddQO5iqyFFoaHek3JiOmpaLK+z7i4EvMKsAJEooFNuGhHVuyaJJRRZHAncGiQ+uW/yL7G5rY51G6YSNJczzEtfrRg+YrIUbokUPmifSIbnXO/AIZRAq1dMhA8exRc5n+75RB1X164qm4a+yggdybFBh0L59xu606PJQJAuWy+x10nled7FAVXiotxbB0r2bhlVmWFEN+FWPqXg2rVkHvw6+5PM67rG5g1LCgjKzb9I6JWPiVI+EMn8Pw8gryL2Sdqtl08Da0Ypbl2ZK/afU4CEPEKnrDc9ecXKjacehTYwGS48V213XvArcmoEpsyZDRSMTrvK3/e29GEaxoK/ZzWJylpeOtsICEEFYEBEiDsiIW4C50MIUPT2xHV6MaPQzhkuwrbQ6QFYzHzihBaiQuMmXUQ4DMb3fOPkNZAQHQo8CgJ78IcbCABAoGv9mu/fo2KoLo11U="
+
+
+# missing secure keys:
+# PMD_SF_USER
+# PMD_SF_PASSWORD
+# CI_SIGN_KEYNAME
+# CI_SIGN_PASSPHRASE
+
+# add the encrypted GPG keyring file to repo (https://docs.travis-ci.com/user/encrypting-files/#Automated-Encryption), decrypt it and install it at the beginning of .travis-deploy.sh
