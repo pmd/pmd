@@ -15,19 +15,10 @@
     </parent>
 
     <description>
-    <![CDATA[
-<p>PMD scans Java source code and looks for potential problems like:</p>
-<ul>
-  <li>Possible bugs - empty try/catch/finally/switch statements</li>
-  <li>Dead code - unused local variables, parameters and private methods</li>
-  <li>Suboptimal code - wasteful String/StringBuffer usage</li>
-  <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
-  <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
-</ul>
-<p>You can <b><a href="https://github.com/pmd/pmd/releases">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="https://pmd.github.io/latest/pmd-java/rules/index.html">rulesets index</a> page.</p>
-<p>PMD is <a href="https://pmd.github.io/latest/usage/integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
-    ]]>
-  </description>
+PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex, PLSQL, Apache Velocity, XML, XSL.
+
+Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in Java, C, C++, C#, Groovy, PHP, Ruby, Fortran, JavaScript, PLSQL, Apache Velocity, Scala, Objective C, Matlab, Python, Go, Swift and Salesforce.com Apex.
+    </description>
 
     <url>https://pmd.github.io/</url>
     <ciManagement>
@@ -237,9 +228,9 @@
             </roles>
         </developer>
         <developer>
-            <id> juansotuyo</id>
+            <id>jsotuyod</id>
             <name>Juan Martín Sotuyo Dodero</name>
-            <email>jmsotuyo@monits.com</email>
+            <email>juansotuyo@gmail.com</email>
             <roles>
                 <role>Developer</role>
             </roles>
