@@ -230,11 +230,13 @@ public class Test {
     count(*)=1 and
     count(./CastExpression)=0 and
     count(./EqualityExpression/MultiplicativeExpression)=0 and
+    count(./ConditionalExpression[@Ternary='true'])=0 and
     count(./ConditionalOrExpression)=0]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
     count(./CastExpression)=0 and
+    count(./ConditionalExpression[@Ternary='true'])=0 and
     count(./EqualityExpression/MultiplicativeExpression)=0]
 |
 //Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
@@ -242,7 +244,7 @@ public class Test {
     count(./CastExpression)=0 and
     count(./EqualityExpression)=0]
 |
-//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral = 'true'])]/PrimaryExpression[1]/PrimaryPrefix/Expression[
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])]/PrimaryExpression[1]/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
     not(./AdditiveExpression[@Image = '-']) and
@@ -263,6 +265,7 @@ public class Test {
     count(./AndExpression)=0 and
     count(./InclusiveOrExpression)=0 and
     count(./ExclusiveOrExpression)=0 and
+    count(./ConditionalExpression)=0 and
     count(./ConditionalAndExpression)=0 and
     count(./ConditionalOrExpression)=0 and
     count(./EqualityExpression)=0]
