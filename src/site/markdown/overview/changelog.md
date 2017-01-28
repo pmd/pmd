@@ -1,6 +1,6 @@
 # PMD Release Notes
 
-## ????? - 5.4.4-SNAPSHOT
+## 28-January-2017 - 5.4.4
 
 The PMD team is pleased to announce PMD 5.4.4
 
@@ -23,6 +23,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
+    * [Modified Rules](#Modified_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
