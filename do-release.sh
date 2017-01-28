@@ -20,6 +20,18 @@ if [ "" = "$PMD_SF_USER" ]; then
     echo
     exit 1
 fi
+if [ "" = "$PMD_SF_APIKEY" ]; then
+    echo "No env variable PMD_SF_APIKEY specified. This is the release api key,"
+    echo "needed to set the default download file. You can create an api key in"
+    echo "your user preferences on sourceforge.net"
+    echo
+    echo "Please set the variable, e.g. in your ~/.bashrc:"
+    echo
+    echo "PMD_SF_APIKEY=abcd-efgh-xxxx"
+    echo "export PMD_SF_APIKEY"
+    echo
+    exit 1
+fi
 
 if [ "" = "$PMD_GPG_PROFILE" ]; then
     echo "No env variable PMD_GPG_PROFILE specified. This is your maven profile, which configures"
@@ -211,13 +223,15 @@ if [ ! "" = "$PMD_LOCAL_BINARIES" -a -d $PMD_LOCAL_BINARIES ]; then
     echo
 fi
 
+echo "Making the binary the new default file..."
+curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others" \
+    -d "api_key=${PMD_SF_APIKEY}" https://sourceforge.net/projects/pmd/files/pmd/${RELEASE_VERSION}/pmd-bin-${RELEASE_VERSION}.zip
+echo
 
 echo
 echo "Verify the md5sums: <https://sourceforge.net/projects/pmd/files/pmd/${RELEASE_VERSION}/>"
 md5sum pmd-dist/target/pmd-*-${RELEASE_VERSION}.zip target/pmd-doc-${RELEASE_VERSION}.zip
 
-echo
-echo "and make the new binary pmd zip file the default download for all platforms."
 echo
 echo "Press enter to continue..."
 read
