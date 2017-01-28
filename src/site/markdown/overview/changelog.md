@@ -303,4 +303,5 @@ to avoid XSS attacks.
 *   [#192](https://github.com/pmd/pmd/pull/192): \[apex] Dead code removal
 *   [#200](https://github.com/pmd/pmd/pull/200): \[javascript] Templatestring grammar fix
 *   [#204](https://github.com/pmd/pmd/pull/204): \[apex] Sharing violation SOQL detection bug fix
+*   [#214](https://github.com/pmd/pmd/pull/214): \[apex] Sharing violation improving reporting of the correct node, de-duping
 

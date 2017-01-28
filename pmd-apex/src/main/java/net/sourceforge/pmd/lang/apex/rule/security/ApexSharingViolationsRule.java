@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.List;
+import java.util.WeakHashMap;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -21,6 +23,8 @@ import apex.jorje.semantic.symbol.type.ModifierOrAnnotationTypeInfo;
  */
 public class ApexSharingViolationsRule extends AbstractApexRule {
 
+    private WeakHashMap<ApexNode<?>, Object> localCacheOfReportedNodes = new WeakHashMap<>();
+
     public ApexSharingViolationsRule() {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
@@ -34,6 +38,8 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
             checkForSharingDeclaration(node, data, sharingFound);
             checkForDatabaseMethods(node, data, sharingFound);
         }
+
+        localCacheOfReportedNodes.clear();
         return data;
     }
 
@@ -49,8 +55,21 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
         for (ASTMethodCallExpression call : calls) {
             if (Helper.isMethodName(call, "Database", Helper.ANY_METHOD)) {
                 if (!sharingFound) {
-                    addViolation(data, node);
+                    reportViolation(node, data);
                 }
+            }
+        }
+    }
+
+    private void reportViolation(ApexNode<?> node, Object data) {
+        ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
+        if (modifier != null) {
+            if (localCacheOfReportedNodes.put(modifier, data) == null) {
+                addViolation(data, modifier);
+            }
+        } else {
+            if (localCacheOfReportedNodes.put(node, data) == null) {
+                addViolation(data, node);
             }
         }
     }
@@ -64,7 +83,7 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     private void checkForSharingDeclaration(ApexNode<?> node, Object data, boolean sharingFound) {
         final boolean foundAnyDMLorSOQL = Helper.foundAnyDML(node) || Helper.foundAnySOQLorSOSL(node);
         if (!sharingFound && !Helper.isTestMethodOrClass(node) && foundAnyDMLorSOQL) {
-            addViolation(data, node);
+            reportViolation(node, data);
         }
     }
 
@@ -80,9 +99,11 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
         for (ModifierOrAnnotationTypeInfo type : node.getNode().getDefiningType().getModifiers().all()) {
             if (type.getBytecodeName().equalsIgnoreCase(ModifierType.WithoutSharing.toString())) {
                 sharingFound = true;
+                break;
             }
             if (type.getBytecodeName().equalsIgnoreCase(ModifierType.WithSharing.toString())) {
                 sharingFound = true;
+                break;
             }
 
         }
