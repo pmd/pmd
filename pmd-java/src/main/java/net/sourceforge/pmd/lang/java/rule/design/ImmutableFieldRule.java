@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -65,6 +66,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
     private int initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
         int result = MUTABLE;
         int methodInitCount = 0;
+        int lambdaUsage = 0;
         Set<Node> consSet = new HashSet<>();
         for (NameOccurrence occ: usages) {
             JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
@@ -89,15 +91,17 @@ public class ImmutableFieldRule extends AbstractJavaRule {
                 } else {
                     if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
                         methodInitCount++;
+                    } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
+                        lambdaUsage++;
                     }
                 }
             }
         }
-        if (usages.isEmpty() || methodInitCount == 0 && consSet.isEmpty()) {
+        if (usages.isEmpty() || methodInitCount == 0 && lambdaUsage == 0 && consSet.isEmpty()) {
             result = CHECKDECL;
         } else {
             allConstructors.removeAll(consSet);
-            if (allConstructors.isEmpty() && methodInitCount == 0) {
+            if (allConstructors.isEmpty() && methodInitCount == 0 && lambdaUsage == 0) {
                 result = IMMUTABLE;
             }
         }
