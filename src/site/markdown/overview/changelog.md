@@ -1,6 +1,6 @@
 # PMD Release Notes
 
-## ????? - 5.5.3-SNAPSHOT
+## 28-January-2017 - 5.5.3
 
 The PMD team is pleased to announce PMD 5.5.3
 
