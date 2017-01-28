@@ -24,6 +24,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
 
 * [New and noteworthy](#New_and_noteworthy)
     * [Apex Security Rule Set](#Apex_Security_Rule_Set)
+    * [Modified Rules](#Modified_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
