@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -33,9 +34,14 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public class ImmutableFieldRule extends AbstractJavaRule {
 
-    private static final int MUTABLE = 0;
-    private static final int IMMUTABLE = 1;
-    private static final int CHECKDECL = 2;
+    private enum FieldImmutabilityType {
+        /** Variable is changed in methods and/or in lambdas */
+        MUTABLE,
+        /** Variable is not changed outside the constructor. */
+        IMMUTABLE,
+        /** Variable is only written during declaration, if at all. */
+        CHECKDECL;
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -50,11 +56,11 @@ public class ImmutableFieldRule extends AbstractJavaRule {
                 continue;
             }
 
-            int result = initializedInConstructor(entry.getValue(), new HashSet<>(constructors));
-            if (result == MUTABLE) {
+            FieldImmutabilityType result = initializedInConstructor(entry.getValue(), new HashSet<>(constructors));
+            if (result == FieldImmutabilityType.MUTABLE) {
                 continue;
             }
-            if (result == IMMUTABLE || result == CHECKDECL && initializedWhenDeclared(field)) {
+            if (result == FieldImmutabilityType.IMMUTABLE || result == FieldImmutabilityType.CHECKDECL && initializedWhenDeclared(field)) {
                 addViolation(data, field.getNode(), field.getImage());
             }
         }
@@ -65,9 +71,10 @@ public class ImmutableFieldRule extends AbstractJavaRule {
         return ((Node) field.getAccessNodeParent()).hasDescendantOfType(ASTVariableInitializer.class);
     }
 
-    private int initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
-        int result = MUTABLE;
+    private FieldImmutabilityType initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
+        FieldImmutabilityType result = FieldImmutabilityType.MUTABLE;
         int methodInitCount = 0;
+        int lambdaUsage = 0;
         Set<Node> consSet = new HashSet<>();
         for (NameOccurrence occ : usages) {
             JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
@@ -94,16 +101,18 @@ public class ImmutableFieldRule extends AbstractJavaRule {
                 } else {
                     if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
                         methodInitCount++;
+                    } else if (node.getFirstParentOfType(ASTLambdaExpression.class) != null) {
+                        lambdaUsage++;
                     }
                 }
             }
         }
-        if (usages.isEmpty() || methodInitCount == 0 && consSet.isEmpty()) {
-            result = CHECKDECL;
+        if (usages.isEmpty() || methodInitCount == 0 && lambdaUsage == 0 && consSet.isEmpty()) {
+            result = FieldImmutabilityType.CHECKDECL;
         } else {
             allConstructors.removeAll(consSet);
-            if (allConstructors.isEmpty() && methodInitCount == 0) {
-                result = IMMUTABLE;
+            if (allConstructors.isEmpty() && methodInitCount == 0 && lambdaUsage == 0) {
+                result = FieldImmutabilityType.IMMUTABLE;
             }
         }
         return result;
