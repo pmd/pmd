@@ -5,5 +5,5 @@
 <suppressions>
     <suppress files="[\\/]generated-sources[\\/]" checks="[a-zA-Z0-9]*"/>
 
-    <suppress checks="AvoidStarImport" files="src/main/java/net/sourceforge/pmd/lang/plsql/rule/AbstractPLSQLRule.java"/>
+    <suppress checks="AvoidStarImport" files="src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]plsql[\\/]rule[\\/]AbstractPLSQLRule\.java"/>
 </suppressions>

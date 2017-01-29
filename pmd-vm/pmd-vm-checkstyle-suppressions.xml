@@ -6,7 +6,7 @@
     <suppress files="[\\/]generated-sources[\\/]" checks="[a-zA-Z0-9]*"/>
 
     <!-- The velocity language is under the Apache License. -->
-    <suppress checks="RegexpHeaderCheck" files="net/sourceforge/pmd/lang/vm/.*"/>
+    <suppress checks="RegexpHeaderCheck" files="net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]vm[\\/].*"/>
 
-    <suppress checks="ModifiedControlVariable" files="src/main/java/net/sourceforge/pmd/lang/vm/ast/NodeUtils.java"/>
+    <suppress checks="ModifiedControlVariable" files="src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]vm[\\/]ast[\\/]NodeUtils\.java"/>
 </suppressions>

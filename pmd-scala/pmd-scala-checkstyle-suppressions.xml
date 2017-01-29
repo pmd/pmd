@@ -6,5 +6,5 @@
     <suppress files="[\\/]generated-sources[\\/]" checks="[a-zA-Z0-9]*"/>
 
     <!-- Part of pmd-scala is under LGPL -->
-    <suppress checks="RegexpHeader" files="org/sonar/plugins/scala/.*"/>
+    <suppress checks="RegexpHeader" files="org[\\/]sonar[\\/]plugins[\\/]scala[\\/].*"/>
 </suppressions>
