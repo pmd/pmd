@@ -51,6 +51,15 @@ public class ASTFieldDeclarationTest extends ParserTst {
             " String[] foo;" + PMD.EOL +
             "}";
 
+    @Test
+    public void testWithAnnotation() {
+        ASTCompilationUnit cu = parseJava15(TEST5);
+        ASTFieldDeclaration node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
+        assertFalse(node.isInterfaceMember());
+        assertTrue(node.isAnnotationMember());
+    }
+
+
     private static final String TEST2 =
             "class Foo {" + PMD.EOL +
             " String[][][] foo;" + PMD.EOL +
@@ -66,6 +75,8 @@ public class ASTFieldDeclarationTest extends ParserTst {
             " FOO(1);" + PMD.EOL +
             " private int x;" + PMD.EOL +
             "}";
+
+    private static final String TEST5 = "public @interface Foo {" + PMD.EOL + " int BAR = 6;" + PMD.EOL + "}";
 
     @Test
     public void testGetVariableName() {
