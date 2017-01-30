@@ -9,7 +9,9 @@ import net.sourceforge.pmd.stat.Metric;
 /**
  * Listener to be informed about found violations. Note: Suppressed violations
  * are not reported to this listener.
+ * @deprecated Use {@link ThreadSafeReportListener} instead.
  */
+@Deprecated
 public interface ReportListener {
     /**
      * A new violation has been found.
