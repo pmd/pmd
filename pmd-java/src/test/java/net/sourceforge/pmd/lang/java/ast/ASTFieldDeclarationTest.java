@@ -50,6 +50,14 @@ public class ASTFieldDeclarationTest extends ParserTst {
         assertFalse(node.isInterfaceMember());
     }
 
+    @Test
+    public void testWithAnnotation() {
+        ASTCompilationUnit cu = parseJava15(TEST5);
+        ASTFieldDeclaration node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
+        assertFalse(node.isInterfaceMember());
+        assertTrue(node.isAnnotationMember());
+    }
+
     private static final String TEST1 = "class Foo {" + PMD.EOL + " String[] foo;" + PMD.EOL + "}";
 
     private static final String TEST2 = "class Foo {" + PMD.EOL + " String[][][] foo;" + PMD.EOL + "}";
@@ -58,6 +66,8 @@ public class ASTFieldDeclarationTest extends ParserTst {
 
     private static final String TEST4 = "public enum Foo {" + PMD.EOL + " FOO(1);" + PMD.EOL + " private int x;"
             + PMD.EOL + "}";
+    
+    private static final String TEST5 = "public @interface Foo {" + PMD.EOL + " int BAR = 6;" + PMD.EOL + "}";
 
     @Test
     public void testGetVariableName() {
