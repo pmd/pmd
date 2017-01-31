@@ -215,7 +215,7 @@ public class TypeSet {
          */
         public CurrentPackageResolver(PMDASMClassLoader pmdClassLoader, String pkg) {
             super(pmdClassLoader);
-            if (pkg == null) {
+            if (pkg == null || pkg.length() == 0) {
                 this.pkg = null;
             } else {
                 this.pkg = pkg + ".";
