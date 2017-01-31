@@ -437,6 +437,18 @@ public class TypeSet {
 
             return c;
         }
+
+        @Override
+        public boolean couldResolve(String name) {
+            /*
+             * We can always try!
+             * If a file used an explicit import on A.Inner, the class loader will register
+             * A.Inner can't be resolved even if A$Inner can.
+             * If a second file used A.Inner without an explicit import, we would end here,
+             * super.couldResolve("A.Inner") will return false, but we CAN resolve it as A$Inner.
+             */
+            return true;
+        }
     }
 
     public void setASTCompilationUnitPackage(String pkg) {

@@ -381,6 +381,15 @@ public class ClassScope extends AbstractJavaScope {
             return qualified;
         }
 
+        // Is it an inner class of an explicit import?
+        int dotIndex = typeImage.indexOf('.');
+        if (dotIndex != -1) {
+            qualified = findQualifiedName(typeImage.substring(0, dotIndex), fileScope.getExplicitImports());
+            if (qualified != null) {
+                return qualified.concat(typeImage.substring(dotIndex));
+            }
+        }
+
         return typeImage;
     }
 
