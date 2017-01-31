@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
- 
+
 	<test-code>
 		<description>Proper CRUD,FLS via upsert</description>
 		<expected-problems>0</expected-problems>
@@ -468,8 +468,8 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
-		<test-code>
+
+	<test-code>
 		<description>No issues found in test classes</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
@@ -480,7 +480,7 @@ public class FooTest {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Control flow based CRUD,FLS check</description>
 		<expected-problems>0</expected-problems>
@@ -499,7 +499,7 @@ public class Foo {
 	}
 	
 } ]]></code>
-	</test-code> 
+	</test-code>
 	<test-code>
 		<description>Control flow based CRUD,FLS check recursive</description>
 		<expected-problems>0</expected-problems>
@@ -523,8 +523,9 @@ public class Foo {
 	
 } ]]></code>
 	</test-code>
- 	<test-code>
-		<description>Control flow constructor based CRUD,FLS check</description>
+	<test-code>
+		<description>Control flow constructor based CRUD,FLS check
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
@@ -541,8 +542,8 @@ public class Foo {
 	}
 	
 } ]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
 		<description>Control flow accessibility CRUD check</description>
 		<expected-problems>0</expected-problems>
@@ -562,8 +563,8 @@ public class Foo {
 	}
 } 
 ]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
 		<description>Control flow substitute CRUD check</description>
 		<expected-problems>0</expected-problems>
@@ -583,7 +584,7 @@ public class Foo {
 } 
 ]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Forgot to call the CRUD check</description>
 		<expected-problems>1</expected-problems>
@@ -603,7 +604,9 @@ public class Foo {
 ]]></code>
 	</test-code>
 	<test-code>
-		<description>Control flow substitute CRUD check should fail when check follows SOQL</description>
+		<description>Control flow substitute CRUD check should fail when check
+			follows SOQL
+		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 	
@@ -619,7 +622,7 @@ public class Foo {
 	}
 } 
 ]]></code>
-	</test-code> 
+	</test-code>
 
 	<test-code>
 		<description>Control flow with nested statementsL</description>
@@ -643,6 +646,33 @@ public class Foo {
 }
 	
 ]]></code>
-	</test-code>	
+	</test-code>
+
+	<test-code>
+		<description>Count does not expose data and CRUD checks are
+			unnecessary
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Integer getBaz() {
+	 	return  [SELECT count() FROM Contact];
+	} 
+} 
+]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Count does not leak data and CRUD checks are unnecessary
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public void getBaz() {
+		Integer countAdmins = [SELECT count() FROM Profile WHERE Name = 'System Administrator'];
+	} 
+} 
+]]></code>
+	</test-code>
 
 </test-data>
