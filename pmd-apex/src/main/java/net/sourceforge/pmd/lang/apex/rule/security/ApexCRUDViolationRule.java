@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import apex.jorje.data.ast.Identifier;
+import apex.jorje.data.ast.TypeRef;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -27,6 +29,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
@@ -160,6 +163,25 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(final ASTFieldDeclaration node, Object data) {
+        ASTFieldDeclarationStatements field = node.getFirstParentOfType(ASTFieldDeclarationStatements.class);
+        if (field != null) {
+            try {
+                TypeRef a = field.getNode().getTypeName();
+                Field f = a.getClass().getDeclaredField("className");
+                f.setAccessible(true);
+                if (f.get(a) instanceof ArrayList<?>) {
+                    @SuppressWarnings("unchecked")
+                    ArrayList<Identifier> innerField = (ArrayList<Identifier>) f.get(a);
+                    if (!innerField.isEmpty()) {
+                        String type = innerField.get(0).value;
+                        addVariableToMapping(Helper.getFQVariableName(node), type);
+                    }
+                }
+
+            } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException | SecurityException e) {
+            }
+
+        }
         final ASTSoqlExpression soql = node.getFirstChildOfType(ASTSoqlExpression.class);
         if (soql != null) {
             checkForAccessibility(soql, data);
