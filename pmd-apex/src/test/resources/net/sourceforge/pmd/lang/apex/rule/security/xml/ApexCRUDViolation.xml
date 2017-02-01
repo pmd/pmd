@@ -622,7 +622,7 @@ public class Foo {
 	</test-code> 
 
 	<test-code>
-		<description>Control flow with nested statementsL</description>
+		<description>Control flow with nested statements</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 	
@@ -644,5 +644,20 @@ public class Foo {
 	
 ]]></code>
 	</test-code>	
+	
+	<test-code>
+		<description>Field detection</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class MyProfilePageController { 	
+	private User currentUser;
 
+    public MyProfilePageController() {
+        currentUser = [SELECT id FROM User WHERE id = :UserInfo.getUserId()];
+    } 
+}
+	
+]]></code>
+	</test-code>
+	
 </test-data>

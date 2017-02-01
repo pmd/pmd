@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
@@ -25,11 +26,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
+import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 import apex.jorje.semantic.ast.expression.NewNameValueObjectExpression;
 import apex.jorje.semantic.ast.expression.VariableExpression;
 import apex.jorje.semantic.ast.member.Field;
+import apex.jorje.semantic.ast.statement.FieldDeclaration;
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 /**
@@ -172,6 +175,24 @@ public final class Helper {
         Field n = variable.getNode();
         StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":")
                 .append(n.getFieldInfo().getName());
+        return sb.toString();
+    }
+
+    static String getFQVariableName(final ASTFieldDeclaration variable) {
+        FieldDeclaration n = variable.getNode();
+        String name = "";
+
+        try {
+            java.lang.reflect.Field f = n.getClass().getDeclaredField("name");
+            f.setAccessible(true);
+            Identifier nameField = (Identifier) f.get(n);
+            name = nameField.value;
+
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(name);
         return sb.toString();
     }
 
