@@ -188,7 +188,6 @@ public final class Helper {
             name = nameField.value;
 
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
         }
 
         StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(name);
