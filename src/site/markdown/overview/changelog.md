@@ -309,4 +309,5 @@ to avoid XSS attacks.
 *   [#227](https://github.com/pmd/pmd/pull/227): \[apex] Improving detection of getters
 *   [#228](https://github.com/pmd/pmd/pull/228): \[apex] Excluding count from CRUD/FLS checks
 *   [#229](https://github.com/pmd/pmd/pull/229): \[apex] Dynamic SOQL is safe against Integer, Boolean, Double
+*   [#231](https://github.com/pmd/pmd/pull/231): \[apex] CRUD/FLS rule - add support for fields
 
