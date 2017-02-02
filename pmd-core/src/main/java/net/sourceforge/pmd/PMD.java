@@ -275,6 +275,15 @@ public class PMD {
             return 0;
         } finally {
             Benchmarker.mark(Benchmark.Reporting, System.nanoTime() - reportStart, 0);
+
+            /*
+             * Make sure it's our own classloader before attempting to close it....
+             * Maven + Jacoco provide us with a cloaseable classloader that if closed
+             * will throw a ClassNotFoundException.
+            */
+            if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
+                IOUtil.tryCloseClassLoader(configuration.getClassLoader());
+            }
         }
     }
 
@@ -361,10 +370,6 @@ public class PMD {
             new MultiThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
         } else {
             new MonoThreadProcessor(configuration).processFiles(ruleSetFactory, files, ctx, renderers);
-        }
-
-        if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
-            IOUtil.tryCloseClassLoader(configuration.getClassLoader());
         }
     }
 
