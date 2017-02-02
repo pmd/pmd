@@ -5,8 +5,8 @@
 <suppressions>
     <suppress files="[\\/]generated-sources[\\/]" checks="[a-zA-Z0-9]*"/>
 
-    <suppress files="/src/main/java/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.java"
+    <suppress files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]rule[\\/]AbstractJavaRule\.java"
         checks="AvoidStarImport" />
-    <suppress files="/src/test/java/net/sourceforge/pmd/typeresolution/testdata/ExtraTopLevelClass.java"
+    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]ExtraTopLevelClass\.java"
         checks="OneTopLevelClass" />
 </suppressions>

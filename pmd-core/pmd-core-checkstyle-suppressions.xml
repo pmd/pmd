@@ -6,6 +6,6 @@
     <suppress files="[\\/]generated-sources[\\/]" checks="[a-zA-Z0-9]*"/>
 
     <!-- ModifiedControlVariable / JumbledIncrementer -->
-    <suppress checks="ModifiedControlVariable" files="net/sourceforge/pmd/cpd/MatchAlgorithm\.java"/>
-    <suppress checks="ModifiedControlVariable" files="net/sourceforge/pmd/lang/dfa/SequenceChecker\.java"/>
+    <suppress checks="ModifiedControlVariable" files="net[\\/]sourceforge[\\/]pmd[\\/]cpd[\\/]MatchAlgorithm\.java"/>
+    <suppress checks="ModifiedControlVariable" files="net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]dfa[\\/]SequenceChecker\.java"/>
 </suppressions>
