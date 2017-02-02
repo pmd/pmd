@@ -418,21 +418,18 @@ public class RuleSetFactory {
      * Parse a rule node as a single Rule. The Rule has been fully defined
      * within the context of the current RuleSet.
      *
-     * <<<<<<< HEAD
-     * 
      * @param ruleSetReferenceId
      *            The RuleSetReferenceId of the RuleSet being parsed.
      * @param ruleSet
      *            The RuleSet being constructed.
      * @param ruleNode
-     *            Must be a rule element node. =======
+     *            Must be a rule element node.
      * @param ruleSetReferenceId
      *            The RuleSetReferenceId of the RuleSet being parsed.
      * @param ruleSetBuilder
      *            The RuleSet being constructed.
      * @param ruleNode
-     *            Must be a rule element node. >>>>>>>
-     *            1d6c9327a0df102a7f04308dd07a3b1a226107f2
+     *            Must be a rule element node.
      */
     private void parseSingleRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
             Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -553,19 +550,6 @@ public class RuleSetFactory {
      * which comes from another RuleSet with some of it's attributes potentially
      * overridden.
      *
-     * <<<<<<< HEAD
-     * 
-     * @param ruleSetReferenceId
-     *            The RuleSetReferenceId of the RuleSet being parsed.
-     * @param ruleSet
-     *            The RuleSet being constructed.
-     * @param ruleNode
-     *            Must be a rule element node.
-     * @param ref
-     *            A reference to a Rule.
-     * @param withDeprecatedRuleReferences
-     *            whether rule references that are deprecated should be ignored
-     *            or not =======
      * @param ruleSetReferenceId
      *            The RuleSetReferenceId of the RuleSet being parsed.
      * @param ruleSetBuilder
@@ -576,7 +560,7 @@ public class RuleSetFactory {
      *            A reference to a Rule.
      * @param withDeprecatedRuleReferences
      *            whether rule references that are deprecated should be ignored
-     *            or not >>>>>>> 1d6c9327a0df102a7f04308dd07a3b1a226107f2
+     *            or not
      */
     private void parseRuleReferenceNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
             Node ruleNode, String ref, boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
