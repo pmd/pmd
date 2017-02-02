@@ -96,6 +96,10 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         if (literal != null) {
             if (left != null) {
                 Object o = literal.getNode().getLiteral();
+                if (o instanceof Integer || o instanceof Boolean || o instanceof Double) {
+                    safeVariables.add(Helper.getFQVariableName(left));
+                }
+
                 if (o instanceof String) {
                     if (SELECT_PATTERN.matcher((String) o).matches()) {
                         selectContainingVariables.put(Helper.getFQVariableName(left), Boolean.TRUE);
