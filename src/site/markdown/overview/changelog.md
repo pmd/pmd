@@ -307,4 +307,5 @@ to avoid XSS attacks.
 *   [#204](https://github.com/pmd/pmd/pull/204): \[apex] Sharing violation SOQL detection bug fix
 *   [#214](https://github.com/pmd/pmd/pull/214): \[apex] Sharing violation improving reporting of the correct node, de-duping
 *   [#227](https://github.com/pmd/pmd/pull/227): \[apex] Improving detection of getters
+*   [#228](https://github.com/pmd/pmd/pull/228): \[apex] Excluding count from CRUD/FLS checks
 

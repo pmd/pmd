@@ -619,7 +619,8 @@ public class Foo {
 	</test-code>
 	<test-code>
 		<description>Control flow substitute CRUD check should fail when check
-			follows SOQL</description>
+			follows SOQL
+		</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 	
@@ -658,6 +659,33 @@ public class Foo {
 	}
 }
 	
+]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Count does not expose data and CRUD checks are
+			unnecessary
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Integer getBaz() {
+	 	return  [SELECT count() FROM Contact];
+	} 
+} 
+]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Count does not leak data and CRUD checks are unnecessary
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public void getBaz() {
+		Integer countAdmins = [SELECT count() FROM Profile WHERE Name = 'System Administrator'];
+	} 
+} 
 ]]></code>
 	</test-code>
 

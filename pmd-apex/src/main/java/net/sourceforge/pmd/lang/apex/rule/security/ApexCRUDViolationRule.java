@@ -457,6 +457,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void checkForAccessibility(final ASTSoqlExpression node, Object data) {
+        final boolean isCount = node.getNode().getCanonicalQuery().startsWith("SELECT COUNT()");
+
         final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
             collectCRUDMethodLevelChecks(prevCall);
@@ -468,7 +470,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTMethod wrappingMethod = node.getFirstParentOfType(ASTMethod.class);
         final ASTUserClass wrappingClass = node.getFirstParentOfType(ASTUserClass.class);
 
-        if ((wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
+        if (isCount || (wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass))
                 || (wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod))) {
             return;
         }
