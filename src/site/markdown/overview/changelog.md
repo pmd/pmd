@@ -308,4 +308,5 @@ to avoid XSS attacks.
 *   [#214](https://github.com/pmd/pmd/pull/214): \[apex] Sharing violation improving reporting of the correct node, de-duping
 *   [#227](https://github.com/pmd/pmd/pull/227): \[apex] Improving detection of getters
 *   [#228](https://github.com/pmd/pmd/pull/228): \[apex] Excluding count from CRUD/FLS checks
+*   [#229](https://github.com/pmd/pmd/pull/229): \[apex] Dynamic SOQL is safe against Integer, Boolean, Double
 
