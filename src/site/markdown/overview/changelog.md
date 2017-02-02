@@ -24,3 +24,5 @@ The PMD team is pleased to announce PMD 5.5.4
 
 ### External Contributions
 
+*   [#227](https://github.com/pmd/pmd/pull/227): \[apex] Improving detection of getters
+
