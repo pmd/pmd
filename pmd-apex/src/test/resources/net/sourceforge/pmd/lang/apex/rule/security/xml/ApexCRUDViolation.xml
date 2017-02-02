@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
- 
+
+	<test-code>
+		<description>Not a getter</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public Contact getFoo(ID tempID) {
+	 	Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+	 	return c;
+	} 
+	
+} 
+]]></code>
+	</test-code>
+
 	<test-code>
 		<description>Proper CRUD,FLS via upsert</description>
 		<expected-problems>0</expected-problems>
@@ -468,8 +482,8 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
-		<test-code>
+
+	<test-code>
 		<description>No issues found in test classes</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
@@ -480,7 +494,7 @@ public class FooTest {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Control flow based CRUD,FLS check</description>
 		<expected-problems>0</expected-problems>
@@ -499,7 +513,7 @@ public class Foo {
 	}
 	
 } ]]></code>
-	</test-code> 
+	</test-code>
 	<test-code>
 		<description>Control flow based CRUD,FLS check recursive</description>
 		<expected-problems>0</expected-problems>
@@ -523,8 +537,9 @@ public class Foo {
 	
 } ]]></code>
 	</test-code>
- 	<test-code>
-		<description>Control flow constructor based CRUD,FLS check</description>
+	<test-code>
+		<description>Control flow constructor based CRUD,FLS check
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 
@@ -541,8 +556,8 @@ public class Foo {
 	}
 	
 } ]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
 		<description>Control flow accessibility CRUD check</description>
 		<expected-problems>0</expected-problems>
@@ -562,8 +577,8 @@ public class Foo {
 	}
 } 
 ]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
 		<description>Control flow substitute CRUD check</description>
 		<expected-problems>0</expected-problems>
@@ -583,7 +598,7 @@ public class Foo {
 } 
 ]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Forgot to call the CRUD check</description>
 		<expected-problems>1</expected-problems>
@@ -603,7 +618,8 @@ public class Foo {
 ]]></code>
 	</test-code>
 	<test-code>
-		<description>Control flow substitute CRUD check should fail when check follows SOQL</description>
+		<description>Control flow substitute CRUD check should fail when check
+			follows SOQL</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 	
@@ -619,7 +635,7 @@ public class Foo {
 	}
 } 
 ]]></code>
-	</test-code> 
+	</test-code>
 
 	<test-code>
 		<description>Control flow with nested statementsL</description>
@@ -643,6 +659,6 @@ public class Foo {
 }
 	
 ]]></code>
-	</test-code>	
+	</test-code>
 
 </test-data>

@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
@@ -519,7 +520,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final boolean startsWithGet = method.getNode().getMethodInfo().getCanonicalName().startsWith("get");
         final boolean voidOrString = p
                 .matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
+        final boolean noParams = method.findChildrenOfType(ASTParameter.class).isEmpty();
 
-        return (startsWithGet && !voidOrString);
+        return (startsWithGet && noParams && !voidOrString);
     }
 }
