@@ -115,30 +115,30 @@ public class EcmascriptTokenizerTest {
     public void testTemplateStrings() throws IOException {
         Tokenizer t = new EcmascriptTokenizer();
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
-                  "export default class DrawLocation extends joint.shapes.basic.Generic {\n"
-                + "  constructor(location: ILocation) {\n"
-                + "    this.markup = `<g>\n"
-                + "        <path class=\"location\"/>\n"
-                + "        <text x=\"0\" y=\"0\" text-anchor=\"middle\" class=\"location-text\"></text>\n"
-                + "\n"
-                + "        <path class=\"location\"/>\n"
-                + "        <circle class=\"location-circle\"/>\n"
-                + "        ${drawIndicators.Check.markup}\n"
-                + "\n"
-                + "      </g>`;\n"
-                + "  }\n"
-                + "\n"
+                  "export default class DrawLocation extends joint.shapes.basic.Generic {" + PMD.EOL
+                + "  constructor(location: ILocation) {" + PMD.EOL
+                + "    this.markup = `<g>" + PMD.EOL
+                + "        <path class=\"location\"/>" + PMD.EOL
+                + "        <text x=\"0\" y=\"0\" text-anchor=\"middle\" class=\"location-text\"></text>" + PMD.EOL
+                + PMD.EOL
+                + "        <path class=\"location\"/>" + PMD.EOL
+                + "        <circle class=\"location-circle\"/>" + PMD.EOL
+                + "        ${drawIndicators.Check.markup}" + PMD.EOL
+                + PMD.EOL
+                + "      </g>`;" + PMD.EOL
+                + "  }" + PMD.EOL
+                + "" + PMD.EOL
                 + "}"));
         final Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens);
-        final String templateString = "`<g>\n"
-                + "        <path class=\"location\"/>\n"
-                + "        <text x=\"0\" y=\"0\" text-anchor=\"middle\" class=\"location-text\"></text>\n"
-                + "\n"
-                + "        <path class=\"location\"/>\n"
-                + "        <circle class=\"location-circle\"/>\n"
-                + "        ${drawIndicators.Check.markup}\n"
-                + "\n"
+        final String templateString = "`<g>" + PMD.EOL
+                + "        <path class=\"location\"/>" + PMD.EOL
+                + "        <text x=\"0\" y=\"0\" text-anchor=\"middle\" class=\"location-text\"></text>" + PMD.EOL
+                + PMD.EOL
+                + "        <path class=\"location\"/>" + PMD.EOL
+                + "        <circle class=\"location-circle\"/>" + PMD.EOL
+                + "        ${drawIndicators.Check.markup}" + PMD.EOL
+                + PMD.EOL
                 + "      </g>`";
         assertEquals(templateString, tokens.getTokens().get(24).toString());
     }
