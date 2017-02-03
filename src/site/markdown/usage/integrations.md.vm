@@ -64,6 +64,13 @@
     </tr>
 
     <tr>
+        <td>Gradle</td>
+        <td><a href="https://docs.gradle.org/current/userguide/pmd_plugin.html">Gradle: The PMD Plugin</a></td>
+        <td><a href="https://github.com/gradle/gradle/tree/master/subprojects/code-quality">github: gradle/gradle</a></td>
+        <td><a href="https://gradle.org/">Gradle.org</a></td>
+    </tr>
+
+    <tr>
         <td><a href="#IDEA">IntelliJ IDEA</a></td>
         <td></td>
         <td>N/A</td>
