@@ -20,6 +20,8 @@ This is a bug fixing release, no major changes were introduced.
 
 ### Fixed Issues
 
+*   java-optimizations
+    *   [#215](https://github.com/pmd/pmd/issues/215): \[java] RedundantFieldInitializer report for annotation field not explicitly marked as final
 
 ### API Changes
 
