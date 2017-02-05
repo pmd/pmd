@@ -53,7 +53,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isFinal() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return true;
         }
         return super.isFinal();
@@ -61,7 +61,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isPrivate() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return false;
         }
         return super.isPrivate();
@@ -69,7 +69,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isPackagePrivate() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return false;
         }
         return super.isPackagePrivate();
@@ -77,10 +77,17 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isProtected() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return false;
         }
         return super.isProtected();
+    }
+
+    public boolean isAnnotationMember() {
+        if (jjtGetParent().jjtGetParent() instanceof ASTAnnotationTypeBody) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isInterfaceMember() {
