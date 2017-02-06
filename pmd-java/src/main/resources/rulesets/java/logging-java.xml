@@ -167,7 +167,7 @@ otherwise skip the associate String creation and manipulation.
         class="net.sourceforge.pmd.lang.java.rule.logging.InvalidSlf4jMessageFormatRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/java/logging-java.html#InvalidSlf4jMessageFormat">
             <description>
-Check for invalid message format in slf4j loggers.
+Check for messages in slf4j loggers with non matching number of arguments and placeholders.
             </description>
             <priority>5</priority>
             <example>
