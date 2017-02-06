@@ -78,4 +78,20 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#219 ClassCastException in switch case with local variable returned</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int m(int val) {
+        switch (vl) {
+            default:
+                int i = 0;
+                return i;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
