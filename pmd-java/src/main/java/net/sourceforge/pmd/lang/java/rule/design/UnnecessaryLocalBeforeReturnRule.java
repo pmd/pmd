@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -94,22 +94,22 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
      * @return
      */
     private boolean hasAssertStatement(VariableNameDeclaration variableDeclaration, ASTReturnStatement rtn) {
-        boolean hasAssert = false;
         ASTBlockStatement blockStatement = variableDeclaration.getAccessNodeParent().getFirstParentOfType(ASTBlockStatement.class);
         int startIndex = blockStatement.jjtGetChildIndex() + 1;
         int endIndex = rtn.getFirstParentOfType(ASTBlockStatement.class).jjtGetChildIndex();
-        ASTBlock block = (ASTBlock)blockStatement.jjtGetParent();
+        Node block = blockStatement.jjtGetParent();
         for (int i = startIndex; i < endIndex; i++) {
             List<ASTAssertStatement> asserts = block.jjtGetChild(i).findDescendantsOfType(ASTAssertStatement.class);
             for (ASTAssertStatement assertStatement : asserts) {
                 List<ASTName> names = assertStatement.findDescendantsOfType(ASTName.class);
                 for (ASTName n : names) {
                     if (n.hasImageEqualTo(variableDeclaration.getName())) {
-                        hasAssert = true;
+                        return true;
                     }
                 }
             }
         }
-        return hasAssert;
+
+        return false;
     }
 }
