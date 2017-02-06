@@ -120,11 +120,15 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void createClassScope(JavaNode node) {
-	if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
-	    addScope(new ClassScope(), node);
-	} else {
-	    addScope(new ClassScope(node.getImage()), node);
-	}
+        Scope s = ((JavaNode) node.jjtGetParent()).getScope();
+        ClassNameDeclaration classNameDeclaration = new ClassNameDeclaration(node);
+        s.addDeclaration(classNameDeclaration);
+
+        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
+            addScope(new ClassScope(classNameDeclaration), node);
+        } else {
+            addScope(new ClassScope(node.getImage(), classNameDeclaration), node);
+        }
     }
 
     /**
@@ -158,21 +162,17 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-	createClassScope(node);
-	Scope s = ((JavaNode)node.jjtGetParent()).getScope();
-	s.addDeclaration(new ClassNameDeclaration(node));
-	cont(node);
-	return data;
+        createClassScope(node);
+        cont(node);
+        return data;
     }
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
-	createClassScope(node);
-	((ClassScope)node.getScope()).setIsEnum(true);
-    Scope s = ((JavaNode)node.jjtGetParent()).getScope();
-    s.addDeclaration(new ClassNameDeclaration(node));
-	cont(node);
-	return data;
+        createClassScope(node);
+        ((ClassScope) node.getScope()).setIsEnum(true);
+        cont(node);
+        return data;
     }
 
     @Override
