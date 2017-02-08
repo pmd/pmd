@@ -443,9 +443,33 @@ Here's a [screenshot](../images/screenshot_cpd.png) of CPD after running on the 
 
 ## Suppression
 
-By adding the annotations **@SuppressWarnings("CPD-START")** and **@SuppressWarnings("CPD-END")**
-all code within will be ignored by CPD - thus you can avoid false positivs.
-This provides the ability to ignore sections of source code, such as switch/case statements or parameterized factories.
+Arbitrary blocks of code can be ignored through comments on **Java** by including the keywords `CPD-OFF` and `CPD-ON`.
+
+    public Object someParameterizedFactoryMethod(int x) throws Exception {
+        // some unignored code
+
+        // tell cpd to start ignoring code - CPD-OFF
+
+        // mission critical code, manually loop unroll
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+
+        // resume CPD analysis - CPD-ON
+
+        // further code will *not* be ignored
+    }
+
+
+Additionally, **Java** allows to toggle suppression by adding the annotations
+**`@SuppressWarnings("CPD-START")`** and **`@SuppressWarnings("CPD-END")`**
+all code within will be ignored by CPD.
+
+This approach however, is limited to the locations were `@SuppressWarnings` is accepted.
+It's legacy and the new comment's based approch should be favored.
 
     //enable suppression
     @SuppressWarnings("CPD-START")
@@ -456,4 +480,8 @@ This provides the ability to ignore sections of source code, such as switch/case
     @SuppressWarnings("CPD-END)
     public void nextMethod() {
     }
+
+
+Other languages currently have no support to suppress CPD reports. In the future,
+the comment based approach will be extended to those of them that can support it.
 
