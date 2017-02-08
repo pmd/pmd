@@ -36,8 +36,8 @@ public class UnusedModifierRule extends AbstractJavaRule {
         }
 
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
-        boolean isParentInterfaceOrAnnotation = parent instanceof ASTAnnotationTypeDeclaration ||
-                parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) parent).isInterface();
+        boolean isParentInterfaceOrAnnotation = parent instanceof ASTAnnotationTypeDeclaration
+                || parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) parent).isInterface();
 
         // a public annotation within an interface or annotation
         if (node.isPublic() && isParentInterfaceOrAnnotation) {
@@ -63,8 +63,8 @@ public class UnusedModifierRule extends AbstractJavaRule {
         }
 
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
-        boolean isParentInterfaceOrAnnotation = parent instanceof ASTAnnotationTypeDeclaration ||
-                parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) parent).isInterface();
+        boolean isParentInterfaceOrAnnotation = parent instanceof ASTAnnotationTypeDeclaration
+                || parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) parent).isInterface();
 
         // a public interface within an interface or annotation
         if (node.isInterface() && node.isPublic() && isParentInterfaceOrAnnotation) {
@@ -109,8 +109,8 @@ public class UnusedModifierRule extends AbstractJavaRule {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
         Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();
-        if (parent instanceof ASTAnnotationTypeDeclaration ||
-                parent instanceof ASTClassOrInterfaceDeclaration
+        if (parent instanceof ASTAnnotationTypeDeclaration
+                || parent instanceof ASTClassOrInterfaceDeclaration
                 && ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
             addViolation(data, fieldOrMethod);
         }
