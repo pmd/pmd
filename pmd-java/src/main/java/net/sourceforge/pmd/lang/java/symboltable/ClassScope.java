@@ -127,6 +127,14 @@ public class ClassScope extends AbstractJavaScope {
                 List<NameOccurrence> nameOccurrences = getMethodDeclarations().get(decl);
                 if (nameOccurrences == null) {
                     // TODO may be a class name: Foo.this.super();
+                    
+                    // search inner classes
+                    for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
+                        Scope innerClassScope = innerClass.getScope();
+                        if (innerClassScope.contains(javaOccurrence)) {
+                            innerClassScope.addNameOccurrence(javaOccurrence);
+                        }
+                    }
                 } else {
                     nameOccurrences.add(javaOccurrence);
                     Node n = javaOccurrence.getLocation();
@@ -174,47 +182,16 @@ public class ClassScope extends AbstractJavaScope {
         Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isMethodOrConstructorInvocation()) {
             final boolean hasAuxclasspath = getEnclosingScope(SourceFileScope.class).hasAuxclasspath();
-            for (MethodNameDeclaration mnd : methodDeclarations.keySet()) {
-                if (mnd.getImage().equals(occurrence.getImage())) {
-                    List<TypedNameDeclaration> parameterTypes = determineParameterTypes(mnd);
-                    List<TypedNameDeclaration> argumentTypes = determineArgumentTypes(occurrence, parameterTypes);
+            matchMethodDeclaration(occurrence, methodDeclarations.keySet(), hasAuxclasspath, result);
 
-                    if (!mnd.isVarargs() && occurrence.getArgumentCount() == mnd.getParameterCount()
-                            && (!hasAuxclasspath || parameterTypes.equals(argumentTypes))) {
-                        result.add(mnd);
-                    } else if (mnd.isVarargs()) {
-                        int varArgIndex = parameterTypes.size() - 1;
-                        TypedNameDeclaration varArgType = parameterTypes.get(varArgIndex);
-
-                        // first parameter is varArg, calling method might have
-                        // 0 or more arguments
-                        // or the calling method has enough arguments to fill in
-                        // the parameters before the vararg
-                        if ((varArgIndex == 0 || argumentTypes.size() >= varArgIndex)
-                                && (!hasAuxclasspath || parameterTypes
-                                        .subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex)))) {
-
-                            if (!hasAuxclasspath) {
-                                result.add(mnd);
-                                continue;
-                            }
-
-                            boolean sameType = true;
-                            for (int i = varArgIndex; i < argumentTypes.size(); i++) {
-                                if (!varArgType.equals(argumentTypes.get(i))) {
-                                    sameType = false;
-                                    break;
-                                }
-                            }
-                            if (sameType) {
-                                result.add(mnd);
-                            }
-                        }
-                    }
-                }
-            }
             if (isEnum && "valueOf".equals(occurrence.getImage())) {
                 result.add(createBuiltInMethodDeclaration("valueOf", "String"));
+            }
+
+            if (result.isEmpty()) {
+                for (ClassNameDeclaration innerClass : getClassDeclarations().keySet()) {
+                    matchMethodDeclaration(occurrence, innerClass.getScope().getDeclarations(MethodNameDeclaration.class).keySet(), hasAuxclasspath, result);
+                }
             }
             return result;
         }
@@ -253,6 +230,50 @@ public class ClassScope extends AbstractJavaScope {
             }
         }
         return result;
+    }
+
+    private void matchMethodDeclaration(JavaNameOccurrence occurrence,
+            Set<MethodNameDeclaration> methodDeclarations, final boolean hasAuxclasspath,
+            Set<NameDeclaration> result) {
+        for (MethodNameDeclaration mnd : methodDeclarations) {
+            if (mnd.getImage().equals(occurrence.getImage())) {
+                List<TypedNameDeclaration> parameterTypes = determineParameterTypes(mnd);
+                List<TypedNameDeclaration> argumentTypes = determineArgumentTypes(occurrence, parameterTypes);
+
+                if (!mnd.isVarargs() && occurrence.getArgumentCount() == mnd.getParameterCount()
+                        && (!hasAuxclasspath || parameterTypes.equals(argumentTypes))) {
+                    result.add(mnd);
+                } else if (mnd.isVarargs()) {
+                    int varArgIndex = parameterTypes.size() - 1;
+                    TypedNameDeclaration varArgType = parameterTypes.get(varArgIndex);
+
+                    // first parameter is varArg, calling method might have
+                    // 0 or more arguments
+                    // or the calling method has enough arguments to fill in
+                    // the parameters before the vararg
+                    if ((varArgIndex == 0 || argumentTypes.size() >= varArgIndex)
+                            && (!hasAuxclasspath || parameterTypes
+                                    .subList(0, varArgIndex).equals(argumentTypes.subList(0, varArgIndex)))) {
+
+                        if (!hasAuxclasspath) {
+                            result.add(mnd);
+                            continue;
+                        }
+
+                        boolean sameType = true;
+                        for (int i = varArgIndex; i < argumentTypes.size(); i++) {
+                            if (!varArgType.equals(argumentTypes.get(i))) {
+                                sameType = false;
+                                break;
+                            }
+                        }
+                        if (sameType) {
+                            result.add(mnd);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
