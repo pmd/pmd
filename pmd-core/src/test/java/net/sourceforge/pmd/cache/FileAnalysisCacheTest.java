@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cache;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -18,11 +19,13 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
@@ -84,19 +87,24 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
-    public void testStoreSkipsFilesWithViolations() {
+    public void testStorePersistsFilesWithViolations() {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         cache.isUpToDate(sourceFile);
 
-        final RuleViolation rv = mock(RuleViolation.class);
+        final RuleViolation rv = mock(RuleViolation.class, Mockito.RETURNS_SMART_NULLS);
         when(rv.getFilename()).thenReturn(sourceFile.getPath());
+        final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
+        when(rv.getRule()).thenReturn(rule);
 
         cache.ruleViolationAdded(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
-        assertFalse("Cache believes unmodified file with violations is up to date",
+        assertTrue("Cache believes unmodified file with violations is not up to date",
                 reloadedCache.isUpToDate(sourceFile));
+        
+        final List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(sourceFile);
+        assertEquals("Cached rule violations count mismatch", 1, cachedViolations.size());
     }
 
     @Test
@@ -139,7 +147,7 @@ public class FileAnalysisCacheTest {
         assertTrue("Cache believes unmodified file is not up to date after classpath changed when no rule cares",
                 reloadedCache.isUpToDate(sourceFile));
     }
-    
+
     @Test
     public void testClasspathChangeInvalidatesCache() throws MalformedURLException, IOException {
         final RuleSets rs = mock(RuleSets.class);

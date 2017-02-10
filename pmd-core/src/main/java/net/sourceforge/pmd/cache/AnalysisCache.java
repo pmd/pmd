@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.File;
+import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ThreadSafeReportListener;
 
 /**
@@ -24,8 +26,14 @@ public interface AnalysisCache extends ThreadSafeReportListener {
      * @param sourceFile The file to check in the cache
      * @return True if the cache is a hit, false otherwise
      */
-    // TODO : In the future we may want to return the List<RuleViolation> to be directly added to the report
     boolean isUpToDate(File sourceFile);
+
+    /**
+     * Retrieves cached violations for the given file. Make sure to call {@link #isUpToDate(File)} first.
+     * @param sourceFile The file to check in the cache
+     * @return The list of cached violations.
+     */
+    List<RuleViolation> getCachedViolations(File sourceFile);
 
     /**
      * Notifies the cache that analysis of the given file has failed and should not be cached

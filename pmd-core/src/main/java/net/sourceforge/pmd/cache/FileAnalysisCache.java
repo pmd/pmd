@@ -13,9 +13,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RuleViolation;
 
 /**
  * An analysis cache backed by a regular file.
@@ -59,7 +62,13 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                         final String fileName = inputStream.readUTF();
                         final long checksum = inputStream.readLong();
                         
-                        fileResultsCache.put(fileName, new AnalysisResult(checksum));
+                        final int countViolations = inputStream.readInt();
+                        final List<RuleViolation> violations = new ArrayList<>(countViolations);
+                        for (int i = 0; i < countViolations; i++) {
+                            violations.add(CachedRuleViolation.loadFromStream(inputStream, ruleMapper));
+                        }
+
+                        fileResultsCache.put(fileName, new AnalysisResult(checksum, violations));
                     }
                 } else {
                     LOG.info("Analysis cache invalidated, PMD version changed.");
@@ -92,10 +101,14 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
             outputStream.writeLong(classpathChecksum);
             
             for (final Map.Entry<String, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
-                // TODO : In the future, we want to persist all violations, for now, just store files with NO violations
-                if (resultEntry.getValue().getViolations().isEmpty()) {
-                    outputStream.writeUTF(resultEntry.getKey());
-                    outputStream.writeLong(resultEntry.getValue().getFileChecksum());
+                final List<RuleViolation> violations = resultEntry.getValue().getViolations();
+
+                outputStream.writeUTF(resultEntry.getKey());
+                outputStream.writeLong(resultEntry.getValue().getFileChecksum());
+                
+                outputStream.writeInt(violations.size());
+                for (final RuleViolation rv : violations) {
+                    CachedRuleViolation.storeToStream(outputStream, rv);
                 }
             }
         } catch (final IOException e) {
