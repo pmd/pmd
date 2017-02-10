@@ -8,8 +8,10 @@ import net.sourceforge.pmd.stat.Metric;
 
 /**
  * Wraps a report listener in order to synchronize calls to it.
+ * @deprecated This is an over-locking listener. Implement your own minimizing synchronization.
  */
-public final class SynchronizedReportListener implements ReportListener {
+@Deprecated
+public final class SynchronizedReportListener implements ThreadSafeReportListener {
 
     private final ReportListener wrapped;
 

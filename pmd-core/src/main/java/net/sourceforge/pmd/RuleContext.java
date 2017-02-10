@@ -52,7 +52,7 @@ public class RuleContext {
      */
     public RuleContext(RuleContext ruleContext) {
         this.attributes = ruleContext.attributes;
-        this.report.addSynchronizedListeners(ruleContext.getReport().getSynchronizedListeners());
+        this.report.addListeners(ruleContext.getReport().getListeners());
     }
 
     /**

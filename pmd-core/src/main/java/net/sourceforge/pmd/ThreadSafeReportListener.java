@@ -7,12 +7,13 @@ package net.sourceforge.pmd;
 import net.sourceforge.pmd.stat.Metric;
 
 /**
- * Listener to be informed about found violations. Note: Suppressed violations
- * are not reported to this listener.
- * @deprecated Use {@link ThreadSafeReportListener} instead.
+ * Marker interface for report listeners that, being thread-safe, need not
+ * extra synchronization.
+ * 
+ * Thread-safety is required only for concurrently notifying about different files.
+ * Same file violations are guaranteed to be reported serially.
  */
-@Deprecated
-public interface ReportListener {
+public interface ThreadSafeReportListener extends ReportListener {
     /**
      * A new violation has been found.
      *
