@@ -279,6 +279,10 @@ to avoid XSS attacks.
 *   `net.sourceforge.pmd.RuleSet` is now immutable, too, and can only be created via `RuleSetFactory`.
     See [PR #145](https://github.com/pmd/pmd/pull/145).
 *   `net.sourceforge.pmd.cli.XPathCLI` has been removed. It's functionality is fully covered by the Designer.
+*   `net.sourceforge.pmd.Report` now works with `ThreadSafeReportListener`s. Both `ReportListener` and
+    `SynchronizedReportListener` are deprecated in favor of `net.sourceforge.pmd.ThreadSafeReportListener`.
+    Therefore, the methods `getSynchronizedListeners()` and `addSynchronizedListeners(...)` have been
+    replaced by `getListeners()` and `addListeners(...)`. See [PR #193](https://github.com/pmd/pmd/pull/193).
 
 ### External Contributions
 
