@@ -270,7 +270,7 @@ public class PMD {
 
             RuleContext ctx = new RuleContext();
             final AtomicInteger violations = new AtomicInteger(0);
-            ctx.getReport().addListener(new ReportListener() {
+            ctx.getReport().addListener(new ThreadSafeReportListener() {
                 @Override
                 public void ruleViolationAdded(RuleViolation ruleViolation) {
                     violations.incrementAndGet();
