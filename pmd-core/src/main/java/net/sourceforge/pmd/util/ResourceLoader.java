@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -81,7 +82,20 @@ public final class ResourceLoader {
                 connection.setReadTimeout(TIMEOUT);
                 return connection.getInputStream();
             } catch (Exception e) {
-                return loader.getResourceAsStream(name);
+                try {
+                    /*
+                     * Don't use getResourceAsStream to void reusing connections between threads
+                     * See https://github.com/pmd/pmd/issues/234
+                     */
+                    URL resource = loader.getResource(name);
+                    if (resource == null) {
+                        // Don't throw RuleSetNotFoundException, keep API compatibility
+                        return null;
+                    }
+                    return resource.openStream();
+                } catch (IOException e1) {
+                    // Ignored
+                }
             }
         }
         throw new RuleSetNotFoundException("Can't find resource " + name
