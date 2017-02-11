@@ -163,6 +163,14 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
     @Test
+    public void testNestedClassesOfImportResolution() {
+        parseCode(NESTED_CLASSES_OF_IMPORT);
+        final ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        final ClassScope c = (ClassScope) n.getScope();
+        assertEquals(EnumTest.class, c.resolveType("TheInnerClass.EnumTest"));
+    }
+
+    @Test
     public void testNestedClassesResolution() {
         parseForClass(InnerClass.class);
         final ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -349,5 +357,11 @@ public class ClassScopeTest extends STBBaseTst {
             "import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass.EnumTest;" + PMD.EOL
             + "public class Foo {" + PMD.EOL
             + " public EnumTest e;" + PMD.EOL
+            + "}" + PMD.EOL;
+
+    private static final String NESTED_CLASSES_OF_IMPORT =
+            "import net.sourceforge.pmd.lang.java.symboltable.testdata.InnerClass.TheInnerClass;" + PMD.EOL
+            + "public class Foo {" + PMD.EOL
+            + " public TheInnerClass.EnumTest e;" + PMD.EOL
             + "}" + PMD.EOL;
 }
