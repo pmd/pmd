@@ -113,14 +113,14 @@ public final class CachedRuleViolation implements RuleViolation {
      * Helper method to load a {@link CachedRuleViolation} from an input stream.
      *
      * @param stream The stream from which to load the violation.
+     * @param fileName The name of the file on which this rule was reported.
      * @param mapper The mapper to be used to obtain rule instances from the active rulesets.
      * @return The loaded rule violation.
      * @throws IOException
      */
     /* package */ static CachedRuleViolation loadFromStream(final DataInputStream stream,
-            final CachedRuleMapper mapper) throws IOException {
+            final String fileName, final CachedRuleMapper mapper) throws IOException {
         final String description = stream.readUTF();
-        final String fileName = stream.readUTF();
         final String ruleClassName = stream.readUTF();
         final int beginLine = stream.readInt();
         final int beginColumn = stream.readInt();
@@ -146,7 +146,6 @@ public final class CachedRuleViolation implements RuleViolation {
     /* package */ static void storeToStream(final DataOutputStream stream,
             final RuleViolation violation) throws IOException {
         stream.writeUTF(violation.getDescription());
-        stream.writeUTF(violation.getFilename());
         stream.writeUTF(violation.getRule().getRuleClass());
         stream.writeInt(violation.getBeginLine());
         stream.writeInt(violation.getBeginColumn());

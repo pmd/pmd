@@ -65,7 +65,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                         final int countViolations = inputStream.readInt();
                         final List<RuleViolation> violations = new ArrayList<>(countViolations);
                         for (int i = 0; i < countViolations; i++) {
-                            violations.add(CachedRuleViolation.loadFromStream(inputStream, ruleMapper));
+                            violations.add(CachedRuleViolation.loadFromStream(inputStream, fileName, ruleMapper));
                         }
 
                         fileResultsCache.put(fileName, new AnalysisResult(checksum, violations));
