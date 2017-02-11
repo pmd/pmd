@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
@@ -604,18 +603,14 @@ public class ClassScope extends AbstractJavaScope {
             types.addAll(firstParentOfType.findDescendantsOfType(ASTTypeParameter.class));
         }
 
-        // then search class level types
-        ASTClassOrInterfaceDeclaration enclosingClassOrEnum = argument
-                .getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (enclosingClassOrEnum == null) {
-            argument.getFirstParentOfType(ASTEnumDeclaration.class);
-        }
-        ASTTypeParameters classLevelTypeParameters = null;
-        if (enclosingClassOrEnum != null) {
-            classLevelTypeParameters = enclosingClassOrEnum.getFirstChildOfType(ASTTypeParameters.class);
-        }
-        if (classLevelTypeParameters != null) {
-            types.addAll(classLevelTypeParameters.findDescendantsOfType(ASTTypeParameter.class));
+        // then search class level types, from inner-most to outer-most
+        List<ASTClassOrInterfaceDeclaration> enclosingClasses = argument
+                .getParentsOfType(ASTClassOrInterfaceDeclaration.class);
+        for (ASTClassOrInterfaceDeclaration enclosing : enclosingClasses) {
+            ASTTypeParameters classLevelTypeParameters = enclosing.getFirstChildOfType(ASTTypeParameters.class);
+            if (classLevelTypeParameters != null) {
+                types.addAll(classLevelTypeParameters.findDescendantsOfType(ASTTypeParameter.class));
+            }
         }
         return resolveGenericType(typeImage, types);
     }
@@ -640,14 +635,10 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     private Node getNextSibling(Node current) {
-        Node nextSibling = null;
-        for (int i = 0; i < current.jjtGetParent().jjtGetNumChildren() - 1; i++) {
-            if (current.jjtGetParent().jjtGetChild(i) == current) {
-                nextSibling = current.jjtGetParent().jjtGetChild(i + 1);
-                break;
-            }
+        if (current.jjtGetParent().jjtGetNumChildren() > current.jjtGetChildIndex() + 1) {
+            return current.jjtGetParent().jjtGetChild(current.jjtGetChildIndex() + 1);
         }
-        return nextSibling;
+        return null;
     }
 
     public String toString() {
