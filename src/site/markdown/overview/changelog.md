@@ -28,9 +28,10 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
-    * [Incremental Analysis](#Incremental_Analysis)
-    * [Apex Security Rule Set](#Apex_Security_Rule_Set)
-    * [Modified Rules](#Modified_Rules)
+    *   [Incremental Analysis](#Incremental_Analysis)
+    *   [Apex Security Rule Set](#Apex_Security_Rule_Set)
+    *   [New Rules](#New_Rules)
+    *   [Modified Rules](#Modified_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
@@ -214,6 +215,36 @@ Makes sure that all values obtained from URL parameters are properly escaped / s
 to avoid XSS attacks.
 
 
+#### New Rules
+
+##### AccessorMethodGeneration (java-design)
+
+When accessing a private field / method from another class, the Java compiler will generate a accessor methods
+with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
+be avoided by changing the visibility of the field / method from private to package-private.
+
+For instance, it would report violations on code such as:
+
+```
+public class OuterClass {
+    private int counter;
+    /* package */ int id;
+
+    public class InnerClass {
+        InnerClass() {
+            OuterClass.this.counter++; // wrong, accessor method will be generated
+        }
+
+        public int getOuterClassId() {
+            return OuterClass.this.id; // id is package-private, no accessor method needed
+        }
+    }
+}
+```
+
+This new rule is part of the `java-design` ruleset.
+
+
 #### Modified Rules
 
 *   The Java rule "UseLocaleWithCaseConversions" (ruleset java-design) has been modified, to detect calls
@@ -247,6 +278,7 @@ to avoid XSS attacks.
 *   java-design
     *   [#1448](https://sourceforge.net/p/pmd/bugs/1448/): \[java] ImmutableField: Private field in inner class gives false positive with lambdas
     *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeReturn with assert
+    *   [#1496](https://sourceforge.net/p/pmd/bugs/1496/): \[java] New Rule: AccesorMethodGeneration - complements accessor class rule
     *   [#1512](https://sourceforge.net/p/pmd/bugs/1512/): \[java] Combine rules AvoidConstantsInInterface and ConstantsInInterface
     *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
     *   [#1556](https://sourceforge.net/p/pmd/bugs/1556/): \[java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)
