@@ -48,16 +48,18 @@ public class ClassScopeTest extends STBBaseTst {
     // FIXME - these will break when this goes from Anonymous$1 to Foo$1
     @Test
     public void testAnonymousInnerClassName() {
-        ClassScope s = new ClassScope("Foo");
-        s = new ClassScope();
+        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
+        ClassScope s = new ClassScope("Foo", classDeclaration);
+        s = new ClassScope(classDeclaration);
         assertEquals("Anonymous$1", s.getClassName());
-        s = new ClassScope();
+        s = new ClassScope(classDeclaration);
         assertEquals("Anonymous$2", s.getClassName());
     }
 
     @Test
     public void testContains() {
-        ClassScope s = new ClassScope("Foo");
+        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
+        ClassScope s = new ClassScope("Foo", classDeclaration);
         ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage("bar");
         s.addDeclaration(new VariableNameDeclaration(node));
@@ -66,7 +68,8 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testCantContainsSuperToString() {
-        ClassScope s = new ClassScope("Foo");
+        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
+        ClassScope s = new ClassScope("Foo", classDeclaration);
         JavaNode node = new DummyJavaNode(1);
         node.setImage("super.toString");
         assertFalse(s.contains(new JavaNameOccurrence(node, node.getImage())));
@@ -74,7 +77,8 @@ public class ClassScopeTest extends STBBaseTst {
 
     @Test
     public void testContainsStaticVariablePrefixedWithClassName() {
-        ClassScope s = new ClassScope("Foo");
+        ClassNameDeclaration classDeclaration = new ClassNameDeclaration(null);
+        ClassScope s = new ClassScope("Foo", classDeclaration);
         ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
         node.setImage("X");
         s.addDeclaration(new VariableNameDeclaration(node));

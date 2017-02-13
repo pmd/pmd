@@ -131,10 +131,14 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      *             if the scope stack is empty.
      */
     private void createClassScope(JavaNode node) {
+        Scope s = ((JavaNode) node.jjtGetParent()).getScope();
+        ClassNameDeclaration classNameDeclaration = new ClassNameDeclaration(node);
+        s.addDeclaration(classNameDeclaration);
+
         if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
-            addScope(new ClassScope(), node);
+            addScope(new ClassScope(classNameDeclaration), node);
         } else {
-            addScope(new ClassScope(node.getImage()), node);
+            addScope(new ClassScope(node.getImage(), classNameDeclaration), node);
         }
     }
 
@@ -171,8 +175,6 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         createClassScope(node);
-        Scope s = ((JavaNode) node.jjtGetParent()).getScope();
-        s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
     }
@@ -181,8 +183,6 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTEnumDeclaration node, Object data) {
         createClassScope(node);
         ((ClassScope) node.getScope()).setIsEnum(true);
-        Scope s = ((JavaNode) node.jjtGetParent()).getScope();
-        s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
     }

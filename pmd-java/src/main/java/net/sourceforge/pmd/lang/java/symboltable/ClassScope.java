@@ -72,9 +72,16 @@ public class ClassScope extends AbstractJavaScope {
 
     private boolean isEnum;
 
-    public ClassScope(final String className) {
+    /**
+     * The current class scope declaration. Technically it belongs to out parent scope,
+     * but knowing it we can better resolve this, super and direct class references such as Foo.X
+     */
+    private final ClassNameDeclaration classDeclaration;
+
+    public ClassScope(final String className, final ClassNameDeclaration classNameDeclaration) {
         this.className = Objects.requireNonNull(className);
         anonymousInnerClassCounter.set(Integer.valueOf(1));
+        this.classDeclaration = classNameDeclaration;
     }
 
     /**
@@ -83,13 +90,16 @@ public class ClassScope extends AbstractJavaScope {
      * <p>FIXME - should have name like Foo$1, not Anonymous$1 to get this working
      * right, the parent scope needs to be passed in when instantiating a
      * ClassScope</p>
+     * 
+     * @param classNameDeclaration The declaration of this class, as known to the parent scope.
      */
-    public ClassScope() {
+    public ClassScope(final ClassNameDeclaration classNameDeclaration) {
         // this.className = getParent().getEnclosingClassScope().getClassName()
         // + "$" + String.valueOf(anonymousInnerClassCounter);
         int v = anonymousInnerClassCounter.get().intValue();
         this.className = "Anonymous$" + v;
         anonymousInnerClassCounter.set(v + 1);
+        classDeclaration = classNameDeclaration;
     }
 
     public void setIsEnum(boolean isEnum) {
@@ -155,31 +165,12 @@ public class ClassScope extends AbstractJavaScope {
     }
 
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
-        Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
-        Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
         if (occurrence.isThisOrSuper() || className.equals(occurrence.getImage())) {
-            if (variableDeclarations.isEmpty() && methodDeclarations.isEmpty()) {
-                // this could happen if you do this:
-                // public class Foo {
-                // private String x = super.toString();
-                // }
-                return Collections.emptySet();
-            }
-            // return any name declaration, since all we really want is to get
-            // the scope
-            // for example, if there's a
-            // public class Foo {
-            // private static final int X = 2;
-            // private int y = Foo.X;
-            // }
-            // we'll look up Foo just to get a handle to the class scope
-            // and then we'll look up X.
-            if (!variableDeclarations.isEmpty()) {
-                return Collections.<NameDeclaration>singleton(variableDeclarations.keySet().iterator().next());
-            }
-            return Collections.<NameDeclaration>singleton(methodDeclarations.keySet().iterator().next());
+            // Reference to ourselves!
+            return Collections.<NameDeclaration>singleton(classDeclaration);
         }
 
+        Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isMethodOrConstructorInvocation()) {
             final boolean hasAuxclasspath = getEnclosingScope(SourceFileScope.class).hasAuxclasspath();
@@ -243,6 +234,8 @@ public class ClassScope extends AbstractJavaScope {
                 images.add(clipClassName(occurrence.getImage()));
             }
         }
+
+        Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
         ImageFinderFunction finder = new ImageFinderFunction(images);
         Applier.apply(finder, variableDeclarations.keySet().iterator());
         if (finder.getDecl() != null) {
