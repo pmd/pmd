@@ -17,6 +17,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AbstractClassWithoutAbstractMethod");
         addRule(RULESET, "AbstractClassWithoutAnyMethod");
         addRule(RULESET, "AccessorClassGeneration");
+        addRule(RULESET, "AccessorMethodGeneration");
         addRule(RULESET, "AssignmentToNonFinalStatic");
         addRule(RULESET, "AvoidConstantsInterface");
         addRule(RULESET, "AvoidDeeplyNestedIfStmts");
