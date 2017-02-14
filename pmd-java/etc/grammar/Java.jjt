@@ -1788,7 +1788,13 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {}
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
-| LOOKAHEAD(CastExpression()) CastExpression()
+/*
+ * This is really ugly... we are repeting the CastExpression lookahead and full expression...
+ * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
+ * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwhise)
+*/
+| LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
+| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
 | PostfixExpression()
 }
 
@@ -1803,7 +1809,7 @@ void CastExpression() :
 {
   LOOKAHEAD(
     "(" (Annotation())* PrimitiveType() ")"
-  ) "(" (Annotation() {checkForBadTypeAnnotations();})* PrimitiveType() ")" UnaryExpression()
+  ) "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
 | "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
 }
 
