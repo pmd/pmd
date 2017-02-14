@@ -1,0 +1,572 @@
+options { 
+	USER_CHAR_STREAM = true;
+	NODE_USES_PARSER=true;
+	UNICODE_INPUT=true;
+	FORCE_LA_CHECK = false;	  
+	IGNORE_CASE = true; 
+	STATIC = false; 
+	
+	MULTI=true;
+	VISITOR=true;
+	TRACK_TOKENS = true;
+} 
+
+PARSER_BEGIN(VfParser)
+package net.sourceforge.pmd.lang.vf.ast;
+
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+
+public class VfParser {
+
+
+	/**
+	* Counter used to keep track of unclosed tags
+	*/
+	private OpenTagRegister tagRegister = new OpenTagRegister();
+	
+	/**
+	 * Return the contents of a quote.
+	 * @param quote String - starting and ending with " or '
+	 * @return String a substring of quote: quote without the first and list
+	 * character.
+	 */
+	private static String quoteContent(String quote) {
+		return quote.substring(1, quote.length()-1);
+	}
+	
+	/**
+	 * Return the contents of a EL expression.
+	 * @param expression String - starting with ${ or #{ and ending with }
+	 * @return String a substring of expression: expression without the first two and list
+	 * characters.
+	 */
+	private static String expressionContent(String expression) {
+		return expression.substring(2, expression.length()-1).trim();
+	}
+}
+
+PARSER_END(VfParser)
+
+
+/** ******************************************************************** */
+/** *************************  JSP LEXICON  **************************** */
+/** ******************************************************************** */
+
+
+/* This JavaCC lexicon has the following states:
+ * - StartTagState : this is the state entered after the "<" of a tag, until a
+ *    non-whitespace is found.
+ *    This is only for tags, not for xml-comments, declarations, etc.
+ * - AfterTagState : this is the state entered after the closing ">" of a tag,
+ *    or xml-comment or declaration, until some non-whitespace is found
+ * - CommentState : the state between "<!--" and "-->"
+ * - DeclarationState : the state between "<?" or "<!" and ">"
+ * - CDataState : the state between "<![DATA[" and "]]>"
+ * - InTagState : the state when inside a tag
+ * - AttrValueStatue : the state when starting an attribute value, before the starting single or double quote
+ * - DocTypeState : the state when inside a doctype declaration
+ * - ElExpressionState : the state when inside a ElExpression
+ * - DocTypeState : inside a document type declaration
+ * - DocTypeExternalIdState : inside an "external id" part of a dtd
+ * - AttrValueBetweenSingleQuotesState : inside an attribute that is surrounded by single quotes (')
+ * - AttrValueBetweenDoubleQuotesState : inside an attribute that is surrounded by double quotes (")
+ * - HtmlScriptContentState : inside an HTML script <script> ... </script>
+ */
+
+
+<*> TOKEN :
+{
+  <#ALPHA_CHAR: [
+       "\u0024",
+       "\u0041"-"\u005a",
+       "\u005f",
+       "\u0061"-"\u007a",
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff"
+      ] >
+| <#NUM_CHAR:   [
+       "\u0030"-"\u0039"
+      ] >
+| <#ALPHANUM_CHAR: ( <ALPHA_CHAR> | <NUM_CHAR> ) >
+| <#IDENTIFIER_CHAR: ( <ALPHANUM_CHAR> | [ "_", "-", ".", ":" ] ) >
+| <#IDENTIFIER: <ALPHA_CHAR> (<IDENTIFIER_CHAR>)* >
+| <#XMLNAME: (<ALPHA_CHAR> | "_" | ":") (<IDENTIFIER_CHAR>)* >
+| <#QUOTED_STRING_NO_BREAKS: ( "'" ( ~["'", "\r", "\n"] )* "'" ) 
+                    | ( "\"" ( ~["\"", "\r", "\n"] )* "\"" ) >
+| <#QUOTED_STRING: ( "'" ( ~["'"] )* "'" ) | ( "\"" ( ~["\""] )* "\"" ) >
+| <#WHITESPACE: ( " " | "\t" | "\n" | "\r" ) >
+| <#NEWLINE:    ( "\r\n" | "\r" | "\n" ) >
+| <#QUOTE:      ( "'" | "\"" )>
+| <#NO_WHITESPACE_OR_LT_OR_DOLLAR: (~[" ", "\t", "\n", "\r", "<", "$", "#"])>
+| <#NO_BANG: (~["!"])>
+| <#OPENBRACE: ("{") >
+| <#NO_LT_OR_OPENBRACE: (~["<","{"])>
+| <#NO_ENDTAG_START: (~["<"]~["/"]) >
+| <#TEXT_IN_EL: (~["}", "'", "\""])+ >
+}
+
+
+<DEFAULT> SKIP :
+{
+  < (<WHITESPACE>)+ >
+}
+
+<AfterTagState, InTagState, HtmlScriptContentState> SPECIAL_TOKEN :
+{
+  < (<WHITESPACE>)+ >
+}
+
+<DEFAULT, AfterTagState> TOKEN : 
+{
+  <TAG_START:      			"<"       	> 	: StartTagState
+| <ENDTAG_START:   			"</"      	> 	: StartTagState
+| <COMMENT_START:  			"<!--"    	> 	: CommentState
+| <DECL_START:     			"<?"	  	>	: StartTagState
+| <DOCTYPE_DECL_START: 		"<!DOCTYPE" >	: DocTypeState
+| <CDATA_START:    			"<![CDATA[" >   : CDataState
+| <HTML_SCRIPT_START:       "<script"   >   : InTagState
+}
+
+<AfterTagState> TOKEN :
+{	
+	<EL_EXPRESSION: ( "{!" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" ) >
+|	<UNPARSED_TEXT: ( <NO_LT_OR_OPENBRACE>|<OPENBRACE><NO_BANG>)+ >
+}
+
+<DocTypeState, DocTypeExternalIdState> TOKEN : 
+{
+	<WHITESPACES: (<WHITESPACE>)+ >
+}
+
+<DocTypeState> TOKEN:
+{
+	<NAME: (<XMLNAME>) > : DocTypeExternalIdState
+}
+
+<DocTypeExternalIdState> TOKEN:
+{
+	<PUBLIC: "PUBLIC">
+|	<SYSTEM: "SYSTEM">
+|	<DOCTYPE_DECL_END: ">" > : AfterTagState
+|	<QUOTED_LITERAL: (<QUOTED_STRING>) >
+}
+
+<CDataState> TOKEN :
+{
+	<UNPARSED: 		(~[])  >
+  | <CDATA_END:		("]]>") > : AfterTagState
+}
+
+<StartTagState> TOKEN :
+{
+  <TAG_NAME: <IDENTIFIER> > : InTagState
+| <LST_ERROR: ~[]>          : DEFAULT
+}
+
+<InTagState> TOKEN :
+{
+  <ATTR_NAME: <IDENTIFIER> >
+| <TAG_END: ">"            >            : AfterTagState
+| <DECL_END: ("?>" | "!>") >            : AfterTagState
+| <TAG_SLASHEND: "/>" >                 : AfterTagState
+| <ATTR_EQ: "=" >                       : AttrValueState
+| <IN_TAG_ERROR: ~[]>
+}
+
+<AttrValueState> TOKEN :
+{
+  <SINGLE_QUOTE: "'"> : AttrValueBetweenSingleQuotesState
+| <DOUBLE_QUOTE: "\""> : AttrValueBetweenDoubleQuotesState
+| <NO_QUOTE_NO_WHITESPACE: ~["\"","'"," "] > { input_stream.backup(1);} : AttrValueNoQuotesState
+| <IN_ATTR_WHITESPACE: [" "] > : InTagState //support for empty attributes
+}
+
+<AttrValueBetweenSingleQuotesState, AttrValueBetweenDoubleQuotesState,AttrValueNoQuotesState> TOKEN:
+{
+	<EL_EXPRESSION_IN_ATTRIBUTE: "{!" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" >
+}
+
+<AttrValueNoQuotesState> TOKEN :
+{
+     <ENDING_WHITESPACE: " " >: InTagState
+|    <UNPARSED_TEXT_NO_WHITESPACE: ( ~["$", "#", " "] |(["$", "#"] ~["{"]) )+ >
+
+}
+
+<AttrValueBetweenSingleQuotesState> TOKEN :
+{
+	<ENDING_SINGLE_QUOTE: "'"> : InTagState
+|	<UNPARSED_TEXT_NO_SINGLE_QUOTES: 
+		( (~["$", "#", "'"]) | (["$", "#"] ~["{", "'"]) )+ >
+|	<DOLLAR_OR_HASH_SINGLE_QUOTE: ["$", "#"] "'" > : InTagState
+}
+
+<AttrValueBetweenDoubleQuotesState> TOKEN :
+{
+	<ENDING_DOUBLE_QUOTE: "\""> : InTagState
+|	<UNPARSED_TEXT_NO_DOUBLE_QUOTES: 
+		( (~["$", "#", "\""]) | (["$", "#"] ~["{", "\""]) )+ >
+|	<DOLLAR_OR_HASH_DOUBLE_QUOTE: ["$", "#"] "\"" > : InTagState
+}
+
+<CommentState> TOKEN : 
+{
+  < COMMENT_END:  ("--" (" ")* ">" | "->") > : AfterTagState 
+| < COMMENT_TEXT: (~[]) >
+}
+
+<HtmlScriptContentState> TOKEN :
+{
+		 <HTML_SCRIPT_CONTENT: (~[]) >
+		| <HTML_SCRIPT_END_TAG : "</script" | "</Script" | "</SCRIPT">  : AfterTagState
+}
+
+/** ******************************************************************** */
+/** *************************  VF GRAMMAR  **************************** */
+/** ******************************************************************** */
+
+/**
+ * The root of the AST of a VF.
+ */
+ASTCompilationUnit CompilationUnit() :
+{}
+{
+  Prolog()
+  
+  Content() <EOF> 
+  { return jjtThis; }
+}
+
+/**
+ * The optional prolog of a VF, including (xml) declarations and DTD.
+ */
+void Prolog() #void :
+{}
+{
+	(
+    	LOOKAHEAD( ( CommentTag() )* 	Declaration() )
+    	( CommentTag() )*
+	  	Declaration()
+	)?
+	
+    (
+    	LOOKAHEAD( ( CommentTag() )* 	DoctypeDeclaration() )
+    	( CommentTag() )*
+	    DoctypeDeclaration()
+	)?
+}
+
+/**
+ * Everything between a start-tag and the corresponding end-tag of an element (if an end tag exists).
+ */
+void Content() :
+{}
+{ 
+	( Text() | ContentElement()	)*
+}
+
+/**
+ * A single (non-text) element that can occur between a start-tag and end-tag of an element.
+ * 
+ */
+void ContentElement() #void :
+{}
+{
+	( 
+		CommentTag() 
+	  |	Element() 
+	  | CData() 
+      | HtmlScript()
+	)
+}
+
+
+/**
+ * This production groups all characters between two tags, where
+ * tag is an xml-tag "&lt;...&gt;" or CDATA "&lt;![CDATA[...]]&gt;".
+ * Text consists of unparsed text and/or Expression Language expressions.
+ */
+void Text() :
+{
+	StringBuffer content = new StringBuffer();
+	String tmp;
+}
+{	 
+	  (	
+	  	tmp = UnparsedText() { content.append(tmp); }
+	  | tmp = ElExpression() { content.append(tmp); }
+	  )+
+		{jjtThis.setImage(content.toString());}
+	  
+}
+
+String UnparsedText() :
+{ Token t; }
+{   
+	t = <UNPARSED_TEXT> 
+	{
+		jjtThis.setImage(t.image); 
+		return t.image;
+	}
+}
+
+String UnparsedTextNoWhitespace() #UnparsedText :
+{ Token t;}
+{
+  (
+    t = <UNPARSED_TEXT_NO_WHITESPACE>
+  )
+  {
+		jjtThis.setImage(t.image); 
+		return t.image;
+  }
+}
+
+  
+
+/**
+ * Text that contains no single quotes, and that does not contain the start
+ * of a EL expression.
+ */
+String UnparsedTextNoSingleQuotes() #UnparsedText : 
+{ Token t; }
+{
+	t = <UNPARSED_TEXT_NO_SINGLE_QUOTES> 
+	{ 
+		jjtThis.setImage(t.image); 
+		return t.image;
+	}
+}
+
+/**
+ * Text that contains no double quotes, and that does not contain the start
+ * of a EL expression.
+ */
+String UnparsedTextNoDoubleQuotes() #UnparsedText : 
+{ Token t; }
+{
+	t = <UNPARSED_TEXT_NO_DOUBLE_QUOTES> 
+	{ 
+		jjtThis.setImage(t.image); 
+		return t.image;
+	}
+}
+
+/**
+ * An EL expression, not within an attribute value.
+ */
+String ElExpression() :
+{ 	Token t; }
+{
+	t = <EL_EXPRESSION> 
+	{ 
+		jjtThis.setImage(expressionContent(t.image)); 
+		return t.image;
+	}
+}
+
+String ElExpressionInAttribute() #ElExpression :
+{	Token t; }
+{
+	t = <EL_EXPRESSION_IN_ATTRIBUTE> 
+	{ 
+		jjtThis.setImage(expressionContent(t.image)); 
+		return t.image;
+	}
+}
+
+void CData() :
+{
+	StringBuffer content = new StringBuffer();
+	Token t;
+}
+{
+	<CDATA_START> ( t = <UNPARSED>  { content.append(t.image); } )* <CDATA_END>
+	{
+		jjtThis.setImage(content.toString());
+	}
+}
+
+/**
+ * A XML element, either with a single empty tag, or with a starting and closing tag
+ * with optional contained content.
+ */
+void Element() : 
+{
+	Token startTag;
+	Token endTag;
+	String tagName;
+}
+{
+    (
+	      (
+	        <TAG_START> 
+	    	startTag = <TAG_NAME> { tagName = startTag.image;
+	    							jjtThis.setName(tagName);
+	    							tagRegister.openTag(jjtThis);
+	    							}
+	   	  )
+	      (Attribute())*
+	      ( 
+	    	(
+	    	  <TAG_END>{ jjtThis.setEmpty(false);}
+
+		   	 (Content())
+		    	
+			 (<ENDTAG_START> 
+			  endTag = <TAG_NAME> {tagRegister.closeTag(endTag.image);}
+		      <TAG_END>)?
+	    	)
+	   		|  
+	     	(<TAG_SLASHEND> { jjtThis.setEmpty(true);
+	     					  jjtThis.setUnclosed(false);
+	     					}
+	     	)  
+	      )
+   )
+}
+
+void Attribute() : 
+{	Token t; }
+{
+  t = <ATTR_NAME> { jjtThis.setName(t.image); }
+  (
+  	<ATTR_EQ> 
+  	AttributeValue()
+  )
+}
+
+/**
+ * The value of an attribute of an element.
+ * EL expressions
+ * are parsed as sub-nodes of the AttributeValue node.
+ */
+void AttributeValue() : 
+{
+	StringBuffer content = new StringBuffer();
+	String tmp;
+	Token t = null ;
+}
+{
+  	(
+	  	( 	<DOUBLE_QUOTE>
+		  	( (	tmp = UnparsedTextNoDoubleQuotes() 
+			  |	tmp = QuoteIndependentAttributeValueContent()
+			) { content.append(tmp); } )*
+			( 	<ENDING_DOUBLE_QUOTE> 
+			  |	t = <DOLLAR_OR_HASH_DOUBLE_QUOTE> { content.append(t.image.substring(0, 1)); }
+			) 
+		)
+		|
+	  	( 	<SINGLE_QUOTE>
+		  	( ( tmp = UnparsedTextNoSingleQuotes() | tmp = QuoteIndependentAttributeValueContent() )
+		  	{ content.append(tmp); } )*
+			( 	<ENDING_SINGLE_QUOTE> 
+			  | t = <DOLLAR_OR_HASH_SINGLE_QUOTE>  { content.append(t.image.substring(0, 1)); }
+			 ) 
+		)
+		|
+	  	( <NO_QUOTE_NO_WHITESPACE>
+		  	( ( tmp = UnparsedTextNoWhitespace() | tmp = QuoteIndependentAttributeValueContent() )
+		  		{ content.append(tmp); }
+		  	)*
+			( <ENDING_WHITESPACE> ) 
+		)
+		| <IN_ATTR_WHITESPACE> 
+	)
+	{ jjtThis.setImage( content.toString() );
+	}
+}
+
+/**
+ * Partial content of an attribute value that can contain all quotes.
+ * This groups EL expressions.
+ */
+String QuoteIndependentAttributeValueContent() #void :
+{ 	String tmp; }
+{
+	(	tmp = ElExpressionInAttribute()
+	)
+	{ return tmp; }
+}
+
+
+void CommentTag() :
+{
+	StringBuffer content = new StringBuffer();
+	Token t;
+}
+{
+  <COMMENT_START>
+  ( t = <COMMENT_TEXT> { content.append(t.image); } )* 
+  <COMMENT_END>
+  	{
+		jjtThis.setImage(content.toString().trim());
+	}
+}
+  
+void Declaration() :
+{	Token t; }
+{
+  <DECL_START> 
+  t = <TAG_NAME> { jjtThis.setName(t.image); }
+  (Attribute())* 
+  <DECL_END>
+}
+
+void DoctypeDeclaration() :
+{	Token t; }
+{
+	<DOCTYPE_DECL_START>
+	 <WHITESPACES>
+	 t = <NAME> { jjtThis.setName(t.image); }
+	 (<WHITESPACES>)?
+	 (DoctypeExternalId() 	 (<WHITESPACES>)?)? 
+ 	<DOCTYPE_DECL_END>
+}
+
+void DoctypeExternalId() :
+{
+	Token systemLiteral;
+	Token pubIdLiteral;
+}
+{
+		(	<SYSTEM>
+			<WHITESPACES> 
+			systemLiteral = <QUOTED_LITERAL> 
+				{ jjtThis.setUri(quoteContent(systemLiteral.image)); }
+		)
+	| 	
+		(	<PUBLIC>
+			<WHITESPACES> 
+			pubIdLiteral = <QUOTED_LITERAL> 
+				{ jjtThis.setPublicId(quoteContent(pubIdLiteral.image)); }
+			<WHITESPACES> 
+			systemLiteral = <QUOTED_LITERAL> 
+				{ jjtThis.setUri(quoteContent(systemLiteral.image)); }
+		)
+}
+
+void HtmlScript() :
+{
+	StringBuffer content = new StringBuffer();
+	String tagName;
+	Token t;
+}
+{
+  	<HTML_SCRIPT_START>         {}
+  	(Attribute() )*             {}
+  	(
+  	  (
+  	   <TAG_END>				    {token_source.SwitchTo(HtmlScriptContentState);}
+  	   (t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
+	   <HTML_SCRIPT_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
+	  )
+	|
+	  (
+	    <TAG_SLASHEND>
+	  )
+	)	
+}
