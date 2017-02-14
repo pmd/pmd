@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Parse the code
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<html>
+{!jobInfo}
+  
+<apex:attribute required="true" assignTo="{!jobClassNameProp + 'text'}" />
+  
+  <script>
+  	var x = '{!someVar}';
+  </script>  
+</html>]]></code>
+        <source-type>vf</source-type>
+    </test-code>
+</test-data>

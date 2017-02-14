@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic VF"
+	xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+	<description>Rules concerning basic VF guidelines.</description>
+
+	<rule name="BasicVFTest" since="3.7"
+		message="Avoid duplicate imports such as ''{0}''"
+		class="net.sourceforge.pmd.lang.vf.rule.basic.BasicVFTestRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/vf/basic.html#BasicVFTestRule">
+		<description><![CDATA[Avoid duplicate import statements inside JSP's. ]]>
+		</description>
+		<priority>3</priority>
+		<example>
+			<![CDATA[ 
+<html><body><b><img src=\"{!getURL}/foo\">xx</img>text</b></body></html>
+			 ]]>
+		</example>
+	</rule>
+	    
+</ruleset>
