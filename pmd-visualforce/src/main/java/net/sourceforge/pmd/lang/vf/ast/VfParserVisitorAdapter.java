@@ -17,10 +17,6 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
         return visit((VfNode) node, data);
     }
 
-    public Object visit(ASTContent node, Object data) {
-        return visit((VfNode) node, data);
-    }
-
     public Object visit(ASTText node, Object data) {
         return visit((VfNode) node, data);
     }
