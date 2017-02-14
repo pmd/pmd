@@ -26,7 +26,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -204,7 +203,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                             // but only if we are not inside a cast expression
                             Node parentNode = literal.jjtGetParent().jjtGetParent().jjtGetParent();
                             if (parentNode instanceof ASTCastExpression
-                                    && parentNode.getFirstChildOfType(ASTType.class).getType() == char.class) {
+                                    && ((ASTCastExpression) parentNode).getType() == char.class) {
                                 anticipatedLength += 1;
                             } else {
                                 // e.g. 0xdeadbeef -> will be converted to a

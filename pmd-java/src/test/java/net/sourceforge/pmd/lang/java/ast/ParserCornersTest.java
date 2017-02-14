@@ -157,6 +157,20 @@ public class ParserCornersTest extends ParserTst {
         String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug208.java"));
         parseJava15(c);
     }
+    
+    @Test
+    public void testGitHubBug257NonExistingCast() throws Exception {
+        String code = "public class Test {" + PMD.EOL
+                + "     public static void main(String[] args) {" + PMD.EOL
+                + "         double a = 4.0;" + PMD.EOL
+                + "         double b = 2.0;" + PMD.EOL
+                + "         double result = Math.sqrt((a)   - b);" + PMD.EOL
+                + "         System.out.println(result);" + PMD.EOL
+                + "     }" + PMD.EOL
+                + "}";
+        ASTCompilationUnit compilationUnit = parseJava15(code);
+        assertEquals("A cast was found when none expected", 0, compilationUnit.findDescendantsOfType(ASTCastExpression.class).size());
+    }
 
     /**
      * This triggered bug #1484 UnusedLocalVariable - false positive -
