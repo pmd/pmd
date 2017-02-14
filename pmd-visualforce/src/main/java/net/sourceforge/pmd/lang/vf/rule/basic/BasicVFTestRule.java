@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.vf.ast.ASTAttributeValue;
 import net.sourceforge.pmd.lang.vf.ast.ASTCData;
 import net.sourceforge.pmd.lang.vf.ast.ASTCommentTag;
 import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.vf.ast.ASTContent;
 import net.sourceforge.pmd.lang.vf.ast.ASTDeclaration;
 import net.sourceforge.pmd.lang.vf.ast.ASTDoctypeDeclaration;
 import net.sourceforge.pmd.lang.vf.ast.ASTDoctypeExternalId;
@@ -24,12 +23,6 @@ public class BasicVFTestRule extends AbstractVFRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        // TODO Auto-generated method stub
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTContent node, Object data) {
         // TODO Auto-generated method stub
         return super.visit(node, data);
     }

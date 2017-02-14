@@ -6,15 +6,24 @@ Parse the code
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-<html>
-{!jobInfo}
-  
-<apex:attribute required="true" assignTo="{!jobClassNameProp + 'text'}" />
-  
-  <script>
-  	var x = '{!someVar}';
-  </script>  
-</html>]]></code>
+<apex:page action="{!init}">
+    <apex:includeScript value='{!before}'/>
+    {!outOfElement}
+    <div>{!inElement}</div>
+
+    <script type="text/javascript">
+      window.SalesEdge = {
+          record: {
+              id: '{!CASESAFEID($CurrentPage.parameters.id)}',
+              type: 'contact'
+          }
+      }
+      window.NamespacePrefix = '{!namespace}';
+    </script>
+    
+    </apex:page>
+    
+]]></code>
         <source-type>vf</source-type>
     </test-code>
 </test-data>

@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.vf.ast.VfParserTokenManager;
 
 /**
- * JSP Token Manager implementation.
+ * VF Token Manager implementation.
  */
 public class VfTokenManager implements TokenManager {
     private final VfParserTokenManager tokenManager;

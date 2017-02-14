@@ -1,15 +1,15 @@
-options { 
+options {
 	USER_CHAR_STREAM = true;
 	NODE_USES_PARSER=true;
 	UNICODE_INPUT=true;
-	FORCE_LA_CHECK = false;	  
-	IGNORE_CASE = true; 
-	STATIC = false; 
-	
+	FORCE_LA_CHECK = false;
+	IGNORE_CASE = true;
+	STATIC = false;
+
 	MULTI=true;
 	VISITOR=true;
 	TRACK_TOKENS = true;
-} 
+}
 
 PARSER_BEGIN(VfParser)
 package net.sourceforge.pmd.lang.vf.ast;
@@ -24,7 +24,7 @@ public class VfParser {
 	* Counter used to keep track of unclosed tags
 	*/
 	private OpenTagRegister tagRegister = new OpenTagRegister();
-	
+
 	/**
 	 * Return the contents of a quote.
 	 * @param quote String - starting and ending with " or '
@@ -34,7 +34,7 @@ public class VfParser {
 	private static String quoteContent(String quote) {
 		return quote.substring(1, quote.length()-1);
 	}
-	
+
 	/**
 	 * Return the contents of a EL expression.
 	 * @param expression String - starting with ${ or #{ and ending with }
@@ -50,7 +50,7 @@ PARSER_END(VfParser)
 
 
 /** ******************************************************************** */
-/** *************************  JSP LEXICON  **************************** */
+/** *************************  VF LEXICON  **************************** */
 /** ******************************************************************** */
 
 
@@ -93,7 +93,7 @@ PARSER_END(VfParser)
 | <#IDENTIFIER_CHAR: ( <ALPHANUM_CHAR> | [ "_", "-", ".", ":" ] ) >
 | <#IDENTIFIER: <ALPHA_CHAR> (<IDENTIFIER_CHAR>)* >
 | <#XMLNAME: (<ALPHA_CHAR> | "_" | ":") (<IDENTIFIER_CHAR>)* >
-| <#QUOTED_STRING_NO_BREAKS: ( "'" ( ~["'", "\r", "\n"] )* "'" ) 
+| <#QUOTED_STRING_NO_BREAKS: ( "'" ( ~["'", "\r", "\n"] )* "'" )
                     | ( "\"" ( ~["\"", "\r", "\n"] )* "\"" ) >
 | <#QUOTED_STRING: ( "'" ( ~["'"] )* "'" ) | ( "\"" ( ~["\""] )* "\"" ) >
 | <#WHITESPACE: ( " " | "\t" | "\n" | "\r" ) >
@@ -118,7 +118,7 @@ PARSER_END(VfParser)
   < (<WHITESPACE>)+ >
 }
 
-<DEFAULT, AfterTagState> TOKEN : 
+<DEFAULT, AfterTagState> TOKEN :
 {
   <TAG_START:      			"<"       	> 	: StartTagState
 | <ENDTAG_START:   			"</"      	> 	: StartTagState
@@ -130,12 +130,12 @@ PARSER_END(VfParser)
 }
 
 <AfterTagState> TOKEN :
-{	
+{
 	<EL_EXPRESSION: ( "{!" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" ) >
 |	<UNPARSED_TEXT: ( <NO_LT_OR_OPENBRACE>|<OPENBRACE><NO_BANG>)+ >
 }
 
-<DocTypeState, DocTypeExternalIdState> TOKEN : 
+<DocTypeState, DocTypeExternalIdState> TOKEN :
 {
 	<WHITESPACES: (<WHITESPACE>)+ >
 }
@@ -198,7 +198,7 @@ PARSER_END(VfParser)
 <AttrValueBetweenSingleQuotesState> TOKEN :
 {
 	<ENDING_SINGLE_QUOTE: "'"> : InTagState
-|	<UNPARSED_TEXT_NO_SINGLE_QUOTES: 
+|	<UNPARSED_TEXT_NO_SINGLE_QUOTES:
 		( (~["$", "#", "'"]) | (["$", "#"] ~["{", "'"]) )+ >
 |	<DOLLAR_OR_HASH_SINGLE_QUOTE: ["$", "#"] "'" > : InTagState
 }
@@ -206,21 +206,21 @@ PARSER_END(VfParser)
 <AttrValueBetweenDoubleQuotesState> TOKEN :
 {
 	<ENDING_DOUBLE_QUOTE: "\""> : InTagState
-|	<UNPARSED_TEXT_NO_DOUBLE_QUOTES: 
+|	<UNPARSED_TEXT_NO_DOUBLE_QUOTES:
 		( (~["$", "#", "\""]) | (["$", "#"] ~["{", "\""]) )+ >
 |	<DOLLAR_OR_HASH_DOUBLE_QUOTE: ["$", "#"] "\"" > : InTagState
 }
 
-<CommentState> TOKEN : 
+<CommentState> TOKEN :
 {
-  < COMMENT_END:  ("--" (" ")* ">" | "->") > : AfterTagState 
+  < COMMENT_END:  ("--" (" ")* ">" | "->") > : AfterTagState
 | < COMMENT_TEXT: (~[]) >
 }
 
 <HtmlScriptContentState> TOKEN :
 {
 		 <HTML_SCRIPT_CONTENT: (~[]) >
-		| <HTML_SCRIPT_END_TAG : "</script" | "</Script" | "</SCRIPT">  : AfterTagState
+		| <HTML_SCRIPT_END_TAG : "</script>" | "</Script>" | "</SCRIPT>">  : AfterTagState
 }
 
 /** ******************************************************************** */
@@ -234,8 +234,8 @@ ASTCompilationUnit CompilationUnit() :
 {}
 {
   Prolog()
-  
-  Content() <EOF> 
+
+  Content() <EOF>
   { return jjtThis; }
 }
 
@@ -250,7 +250,7 @@ void Prolog() #void :
     	( CommentTag() )*
 	  	Declaration()
 	)?
-	
+
     (
     	LOOKAHEAD( ( CommentTag() )* 	DoctypeDeclaration() )
     	( CommentTag() )*
@@ -261,24 +261,24 @@ void Prolog() #void :
 /**
  * Everything between a start-tag and the corresponding end-tag of an element (if an end tag exists).
  */
-void Content() :
+void Content() #void :
 {}
-{ 
+{
 	( Text() | ContentElement()	)*
 }
 
 /**
  * A single (non-text) element that can occur between a start-tag and end-tag of an element.
- * 
+ *
  */
 void ContentElement() #void :
 {}
 {
-	( 
-		CommentTag() 
-	  |	Element() 
-	  | CData() 
-      | HtmlScript()
+	(
+		CommentTag()
+	  |	Element()
+	  | CData()
+    | HtmlScript()
 	)
 }
 
@@ -293,21 +293,21 @@ void Text() :
 	StringBuffer content = new StringBuffer();
 	String tmp;
 }
-{	 
-	  (	
+{
+	  (
 	  	tmp = UnparsedText() { content.append(tmp); }
 	  | tmp = ElExpression() { content.append(tmp); }
 	  )+
 		{jjtThis.setImage(content.toString());}
-	  
+
 }
 
 String UnparsedText() :
 { Token t; }
-{   
-	t = <UNPARSED_TEXT> 
+{
+	t = <UNPARSED_TEXT>
 	{
-		jjtThis.setImage(t.image); 
+		jjtThis.setImage(t.image);
 		return t.image;
 	}
 }
@@ -319,23 +319,23 @@ String UnparsedTextNoWhitespace() #UnparsedText :
     t = <UNPARSED_TEXT_NO_WHITESPACE>
   )
   {
-		jjtThis.setImage(t.image); 
+		jjtThis.setImage(t.image);
 		return t.image;
   }
 }
 
-  
+
 
 /**
  * Text that contains no single quotes, and that does not contain the start
  * of a EL expression.
  */
-String UnparsedTextNoSingleQuotes() #UnparsedText : 
+String UnparsedTextNoSingleQuotes() #UnparsedText :
 { Token t; }
 {
-	t = <UNPARSED_TEXT_NO_SINGLE_QUOTES> 
-	{ 
-		jjtThis.setImage(t.image); 
+	t = <UNPARSED_TEXT_NO_SINGLE_QUOTES>
+	{
+		jjtThis.setImage(t.image);
 		return t.image;
 	}
 }
@@ -344,12 +344,12 @@ String UnparsedTextNoSingleQuotes() #UnparsedText :
  * Text that contains no double quotes, and that does not contain the start
  * of a EL expression.
  */
-String UnparsedTextNoDoubleQuotes() #UnparsedText : 
+String UnparsedTextNoDoubleQuotes() #UnparsedText :
 { Token t; }
 {
-	t = <UNPARSED_TEXT_NO_DOUBLE_QUOTES> 
-	{ 
-		jjtThis.setImage(t.image); 
+	t = <UNPARSED_TEXT_NO_DOUBLE_QUOTES>
+	{
+		jjtThis.setImage(t.image);
 		return t.image;
 	}
 }
@@ -360,9 +360,9 @@ String UnparsedTextNoDoubleQuotes() #UnparsedText :
 String ElExpression() :
 { 	Token t; }
 {
-	t = <EL_EXPRESSION> 
-	{ 
-		jjtThis.setImage(expressionContent(t.image)); 
+	t = <EL_EXPRESSION>
+	{
+		jjtThis.setImage(expressionContent(t.image));
 		return t.image;
 	}
 }
@@ -370,9 +370,9 @@ String ElExpression() :
 String ElExpressionInAttribute() #ElExpression :
 {	Token t; }
 {
-	t = <EL_EXPRESSION_IN_ATTRIBUTE> 
-	{ 
-		jjtThis.setImage(expressionContent(t.image)); 
+	t = <EL_EXPRESSION_IN_ATTRIBUTE>
+	{
+		jjtThis.setImage(expressionContent(t.image));
 		return t.image;
 	}
 }
@@ -393,7 +393,7 @@ void CData() :
  * A XML element, either with a single empty tag, or with a starting and closing tag
  * with optional contained content.
  */
-void Element() : 
+void Element() :
 {
 	Token startTag;
 	Token endTag;
@@ -402,38 +402,38 @@ void Element() :
 {
     (
 	      (
-	        <TAG_START> 
+	        <TAG_START>
 	    	startTag = <TAG_NAME> { tagName = startTag.image;
 	    							jjtThis.setName(tagName);
 	    							tagRegister.openTag(jjtThis);
 	    							}
 	   	  )
 	      (Attribute())*
-	      ( 
+	      (
 	    	(
 	    	  <TAG_END>{ jjtThis.setEmpty(false);}
 
 		   	 (Content())
-		    	
-			 (<ENDTAG_START> 
+
+			 (<ENDTAG_START>
 			  endTag = <TAG_NAME> {tagRegister.closeTag(endTag.image);}
 		      <TAG_END>)?
 	    	)
-	   		|  
+	   		|
 	     	(<TAG_SLASHEND> { jjtThis.setEmpty(true);
 	     					  jjtThis.setUnclosed(false);
 	     					}
-	     	)  
+	     	)
 	      )
    )
 }
 
-void Attribute() : 
+void Attribute() :
 {	Token t; }
 {
   t = <ATTR_NAME> { jjtThis.setName(t.image); }
   (
-  	<ATTR_EQ> 
+  	<ATTR_EQ>
   	AttributeValue()
   )
 }
@@ -443,7 +443,7 @@ void Attribute() :
  * EL expressions
  * are parsed as sub-nodes of the AttributeValue node.
  */
-void AttributeValue() : 
+void AttributeValue() :
 {
 	StringBuffer content = new StringBuffer();
 	String tmp;
@@ -452,29 +452,29 @@ void AttributeValue() :
 {
   	(
 	  	( 	<DOUBLE_QUOTE>
-		  	( (	tmp = UnparsedTextNoDoubleQuotes() 
+		  	( (	tmp = UnparsedTextNoDoubleQuotes()
 			  |	tmp = QuoteIndependentAttributeValueContent()
 			) { content.append(tmp); } )*
-			( 	<ENDING_DOUBLE_QUOTE> 
+			( 	<ENDING_DOUBLE_QUOTE>
 			  |	t = <DOLLAR_OR_HASH_DOUBLE_QUOTE> { content.append(t.image.substring(0, 1)); }
-			) 
+			)
 		)
 		|
 	  	( 	<SINGLE_QUOTE>
 		  	( ( tmp = UnparsedTextNoSingleQuotes() | tmp = QuoteIndependentAttributeValueContent() )
 		  	{ content.append(tmp); } )*
-			( 	<ENDING_SINGLE_QUOTE> 
+			( 	<ENDING_SINGLE_QUOTE>
 			  | t = <DOLLAR_OR_HASH_SINGLE_QUOTE>  { content.append(t.image.substring(0, 1)); }
-			 ) 
+			 )
 		)
 		|
 	  	( <NO_QUOTE_NO_WHITESPACE>
 		  	( ( tmp = UnparsedTextNoWhitespace() | tmp = QuoteIndependentAttributeValueContent() )
 		  		{ content.append(tmp); }
 		  	)*
-			( <ENDING_WHITESPACE> ) 
+			( <ENDING_WHITESPACE> )
 		)
-		| <IN_ATTR_WHITESPACE> 
+		| <IN_ATTR_WHITESPACE>
 	)
 	{ jjtThis.setImage( content.toString() );
 	}
@@ -500,19 +500,19 @@ void CommentTag() :
 }
 {
   <COMMENT_START>
-  ( t = <COMMENT_TEXT> { content.append(t.image); } )* 
+  ( t = <COMMENT_TEXT> { content.append(t.image); } )*
   <COMMENT_END>
   	{
 		jjtThis.setImage(content.toString().trim());
 	}
 }
-  
+
 void Declaration() :
 {	Token t; }
 {
-  <DECL_START> 
+  <DECL_START>
   t = <TAG_NAME> { jjtThis.setName(t.image); }
-  (Attribute())* 
+  (Attribute())*
   <DECL_END>
 }
 
@@ -523,7 +523,7 @@ void DoctypeDeclaration() :
 	 <WHITESPACES>
 	 t = <NAME> { jjtThis.setName(t.image); }
 	 (<WHITESPACES>)?
-	 (DoctypeExternalId() 	 (<WHITESPACES>)?)? 
+	 (DoctypeExternalId() 	 (<WHITESPACES>)?)?
  	<DOCTYPE_DECL_END>
 }
 
@@ -534,17 +534,17 @@ void DoctypeExternalId() :
 }
 {
 		(	<SYSTEM>
-			<WHITESPACES> 
-			systemLiteral = <QUOTED_LITERAL> 
+			<WHITESPACES>
+			systemLiteral = <QUOTED_LITERAL>
 				{ jjtThis.setUri(quoteContent(systemLiteral.image)); }
 		)
-	| 	
+	|
 		(	<PUBLIC>
-			<WHITESPACES> 
-			pubIdLiteral = <QUOTED_LITERAL> 
+			<WHITESPACES>
+			pubIdLiteral = <QUOTED_LITERAL>
 				{ jjtThis.setPublicId(quoteContent(pubIdLiteral.image)); }
-			<WHITESPACES> 
-			systemLiteral = <QUOTED_LITERAL> 
+			<WHITESPACES>
+			systemLiteral = <QUOTED_LITERAL>
 				{ jjtThis.setUri(quoteContent(systemLiteral.image)); }
 		)
 }
@@ -563,10 +563,11 @@ void HtmlScript() :
   	   <TAG_END>				    {token_source.SwitchTo(HtmlScriptContentState);}
   	   (t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
 	   <HTML_SCRIPT_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
+
 	  )
 	|
 	  (
 	    <TAG_SLASHEND>
 	  )
-	)	
+	)
 }
