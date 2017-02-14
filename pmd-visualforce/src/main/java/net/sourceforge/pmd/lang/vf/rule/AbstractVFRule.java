@@ -35,27 +35,21 @@ public abstract class AbstractVFRule extends AbstractRule implements VfParserVis
         super.setLanguage(LanguageRegistry.getLanguage(VfLanguageModule.NAME));
     }
 
-    @Override
-    public void setUsesTypeResolution() {
-        // No Type resolution for JSP rules?
-    }
-
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
         visitAll(nodes, ctx);
     }
 
     protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
         for (Object element : nodes) {
-            VfNode node = (VfNode) element;
-            visit(node, ctx);
+            if (element instanceof ASTCompilationUnit) {
+                ASTCompilationUnit node = (ASTCompilationUnit) element;
+                visit(node, ctx);
+            } else {
+                VfNode node = (VfNode) element;
+                visit(node, ctx);
+            }
         }
     }
-
-    //
-    // The following APIs are identical to those in JspParserVisitorAdapter.
-    // Due to Java single inheritance, it preferred to extend from the more
-    // complex Rule base class instead of from relatively simple Visitor.
-    //
 
     public Object visit(VfNode node, Object data) {
         node.childrenAccept(this, data);

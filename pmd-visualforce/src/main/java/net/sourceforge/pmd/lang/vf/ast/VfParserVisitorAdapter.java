@@ -10,7 +10,7 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
 
     public Object visit(VfNode node, Object data) {
         node.childrenAccept(this, data);
-        return null;
+        return data;
     }
 
     public Object visit(ASTCompilationUnit node, Object data) {

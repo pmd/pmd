@@ -19,14 +19,7 @@ import net.sourceforge.pmd.lang.vf.ast.VfParserVisitorAdapter;
 public class VfRuleChainVisitor extends AbstractRuleChainVisitor {
 
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
-        VfParserVisitor jspParserVisitor = new VfParserVisitorAdapter() {
-            // Perform a visitation of the AST to index nodes which need
-            // visiting by type
-            public Object visit(VfNode node, Object data) {
-                indexNode(node);
-                return super.visit(node, data);
-            }
-        };
+        VfParserVisitor jspParserVisitor = new VfParserVisitorAdapter();
 
         for (int i = 0; i < nodes.size(); i++) {
             jspParserVisitor.visit((ASTCompilationUnit) nodes.get(i), ctx);

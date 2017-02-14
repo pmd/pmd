@@ -4,13 +4,6 @@
 
 package net.sourceforge.pmd.lang.vf.rule.basic;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ImportWrapper;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttributeValue;
 import net.sourceforge.pmd.lang.vf.ast.ASTCData;
@@ -28,25 +21,6 @@ import net.sourceforge.pmd.lang.vf.ast.ASTUnparsedText;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVFRule;
 
 public class BasicVFTestRule extends AbstractVFRule {
-
-    private Set<ImportWrapper> imports = new HashSet<>();
-
-    @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        /*
-         * TODO: This method is a hack! It's overriding the parent's method
-         * because the JSP parsing doesn't seem to hit ASTCompilationUnit
-         * properly
-         */
-        imports.clear();
-        super.apply(nodes, ctx);
-    }
-
-    @Override
-    protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
-        // TODO Auto-generated method stub
-        super.visitAll(nodes, ctx);
-    }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
