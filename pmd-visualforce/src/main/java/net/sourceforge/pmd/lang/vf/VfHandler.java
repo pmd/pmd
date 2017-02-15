@@ -16,11 +16,11 @@ import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.vf.ast.DumpFacade;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
-import net.sourceforge.pmd.lang.vf.rule.VFRuleViolationFactory;
+import net.sourceforge.pmd.lang.vf.rule.VfRuleViolationFactory;
 
 import net.sf.saxon.sxpath.IndependentContext;
 
-public class VFHandler extends AbstractLanguageVersionHandler {
+public class VfHandler extends AbstractLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {
@@ -34,11 +34,11 @@ public class VFHandler extends AbstractLanguageVersionHandler {
     }
 
     public RuleViolationFactory getRuleViolationFactory() {
-        return VFRuleViolationFactory.INSTANCE;
+        return VfRuleViolationFactory.INSTANCE;
     }
 
     public Parser getParser(ParserOptions parserOptions) {
-        return new VFParser(parserOptions);
+        return new VfParser(parserOptions);
     }
 
     @Override

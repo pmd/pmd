@@ -12,13 +12,13 @@ import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTUnparsedText;
-import net.sourceforge.pmd.lang.vf.rule.AbstractVFRule;
+import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
  * @author sergey.gorbaty
  *
  */
-public class VfUnescapeElRule extends AbstractVFRule {
+public class VfUnescapeElRule extends AbstractVfRule {
 
     private static final String VALUE = "value";
     private static final String ESCAPE = "escape";

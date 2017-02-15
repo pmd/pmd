@@ -13,11 +13,11 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 
-public final class VFRuleViolationFactory extends AbstractRuleViolationFactory {
+public final class VfRuleViolationFactory extends AbstractRuleViolationFactory {
 
-    public static final RuleViolationFactory INSTANCE = new VFRuleViolationFactory();
+    public static final RuleViolationFactory INSTANCE = new VfRuleViolationFactory();
 
-    private VFRuleViolationFactory() {
+    private VfRuleViolationFactory() {
     }
 
     @Override

@@ -28,9 +28,9 @@ import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.ASTUnparsedText;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 
-public abstract class AbstractVFRule extends AbstractRule implements VfParserVisitor, ImmutableLanguage {
+public abstract class AbstractVfRule extends AbstractRule implements VfParserVisitor, ImmutableLanguage {
 
-    public AbstractVFRule() {
+    public AbstractVfRule() {
         super.setLanguage(LanguageRegistry.getLanguage(VfLanguageModule.NAME));
     }
 

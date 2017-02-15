@@ -19,6 +19,6 @@ public class VfLanguageModule extends BaseLanguageModule {
 
     public VfLanguageModule() {
         super(NAME, "vf", TERSE_NAME, VfRuleChainVisitor.class, "page", "component");
-        addVersion("", new VFHandler(), true);
+        addVersion("", new VfHandler(), true);
     }
 }

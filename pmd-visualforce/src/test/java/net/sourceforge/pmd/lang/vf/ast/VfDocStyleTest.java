@@ -32,18 +32,20 @@ import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 
 /**
- * Test parsing of a JSP in document style, by checking the generated AST.
- *
- * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
+ * Test parsing of a VF in document style, by checking the generated AST.
+ * Original @author pieter_van_raemdonck - Application Engineers NV/SA -
+ * www.ae.be
+ * 
+ * @author sergey.gorbaty - VF adaptation
  *
  */
-public class JspDocStyleTest extends AbstractJspNodesTst {
+public class VfDocStyleTest extends AbstractVfNodesTest {
 
     /**
-     * Smoke test for JSP parser.
+     * Smoke test for VF parser.
      */
     @Test
-    public void testSimplestJsp() {
+    public void testSimplestVf() {
         assertNumberOfNodes(ASTElement.class, TEST_SIMPLEST_HTML, 1);
     }
 
@@ -165,8 +167,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * Test parsing of HTML &lt;script src="x"/&gt; element. It might not be valid
-     * html but it is likely to appear in .JSP files.
+     * Test parsing of HTML &lt;script src="x"/&gt; element. It might not be
+     * valid html but it is likely to appear in .page files.
      */
     @Test
     public void testImportHtmlScript() {
@@ -267,7 +269,6 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
         assertEquals("Correct content expected!", "expr2", script.getImage());
     }
 
-
     /**
      * A dangling unopened ( just &lt;/closed&gt; ) tag should not influence the
      * parsing.
@@ -318,15 +319,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
         Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_QUOTE_EL);
         assertEquals("One attribute expected!", 1, attributes.size());
         ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "${something}", attr.getImage());
-    }
-
-    @Test
-    public void quoteExpression() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_QUOTE_EXPRESSION);
-        assertEquals("One attribute expected!", 1, attributes.size());
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "<%=something%>", attr.getImage());
+        assertEquals("Expected to detect proper value for attribute!", "{!something}", attr.getImage());
     }
 
     @Test
@@ -351,7 +344,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * tests whether JSP el is properly detected as attribute value
+     * tests whether VF el is properly detected as attribute value
      */
     @Test
     public void noQuoteAttrWithJspEL() {
@@ -364,19 +357,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
             // in order to ensure that we check the proper attribute
             attr2 = iterator.next();
         }
-        assertEquals("Expected to detect proper value for EL in attribute!", "${something}", attr2.getImage());
-    }
-
-    /**
-     * tests whether parse correctly detects presence of JSP expression &lt;%= %&gt;
-     * within an non-quoted attribute value
-     */
-    @Test
-    public void noQuoteAttrWithJspExpression() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_EXPRESSION);
-        assertEquals("One attribute expected!", 1, attributes.size());
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "<%=something%>", attr.getImage());
+        assertEquals("Expected to detect proper value for EL in attribute!", "{!something}", attr2.getImage());
     }
 
     /**
@@ -428,32 +409,6 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * tests whether parse does not fail in the presence of unclosed JSP
-     * expression &lt;%= within an non-quoted attribute value
-     */
-    @Test
-    public void noQuoteAttrWithMalformedJspExpression() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_MALFORMED_EXPR);
-        assertEquals("One attribute expected!", 1, attributes.size());
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "<%=something", attr.getImage());
-    }
-
-    /**
-     * test a no quote attribute value which contains a scriptlet &lt;% %&gt; within
-     * its value
-     */
-    @Test
-    @Ignore // nice test for future development
-    public void noQuoteAttrWithScriptletInValue() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_SCRIPTLET);
-        assertEquals("One attribute expected!", 1, attributes.size());
-
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "<% String a = \"1\";%>", attr.getImage());
-    }
-
-    /**
      * test a no quote attribute value can contain a tag (e.g.
      * attr=&lt;bean:write property="value" /&gt;)
      * 
@@ -469,9 +424,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * test a quote attribute value can contain a tag (e.g.
-     * attr="&lt;bean:write property="value" /&gt;" ) Not sure if it's legal JSP code
-     * but most JSP engine accept and properly treat this value at runtime
+     * test a quote attribute value can contain a tag
      */
     @Test
     @Ignore // nice test for future development
@@ -493,7 +446,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
         Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_DOLLAR);
         assertEquals("One attribute expected!", 2, attributes.size());
         ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "${something", attr.getImage());
+        assertEquals("Expected to detect proper value for attribute!", "{!something", attr.getImage());
     }
 
     /**
@@ -506,7 +459,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
         Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_HASH);
         assertEquals("One attribute expected!", 1, attributes.size());
         ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "#{something", attr.getImage());
+        assertEquals("Expected to detect proper value for attribute!", "{!something", attr.getImage());
     }
 
     @Test
@@ -588,7 +541,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * &lt;html&gt; &lt;a1&gt; &lt;a2&gt; &lt;a3&gt; &lt;/a2&gt; &lt;/a1&gt; &lt;b/&gt; &lt;a4/&gt; &lt;/html&gt;
+     * &lt;html&gt; &lt;a1&gt; &lt;a2&gt; &lt;a3&gt; &lt;/a2&gt; &lt;/a1&gt;
+     * &lt;b/&gt; &lt;a4/&gt; &lt;/html&gt;
      */
     @Test
     public void nestedMultipleTags() {
@@ -629,8 +583,9 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * will test &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/x&gt; &lt;/a&gt; &lt;/x&gt; . Here x is the first tag to be
-     * closed thus rendering the next close of a (&lt;/a&gt;) to be disregarded.
+     * will test &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/x&gt; &lt;/a&gt;
+     * &lt;/x&gt; . Here x is the first tag to be closed thus rendering the next
+     * close of a (&lt;/a&gt;) to be disregarded.
      */
     @Test
     public void unclosedParentTagClosedBeforeChild() {
@@ -660,10 +615,11 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt; An unmatched closing of 'z' appears
-     * randomly in the document. This should be disregarded and structure of
-     * children and parents should not be influenced. in other words &lt;/a&gt; should
-     * close the first &lt;a&gt; tag , &lt;/x&gt; should close the first &lt;x&gt;, etc.
+     * &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
+     * An unmatched closing of 'z' appears randomly in the document. This should
+     * be disregarded and structure of children and parents should not be
+     * influenced. in other words &lt;/a&gt; should close the first &lt;a&gt;
+     * tag , &lt;/x&gt; should close the first &lt;x&gt;, etc.
      */
     @Test
     public void unmatchedTagDoesNotInfluenceStructure() {
@@ -693,10 +649,11 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt; An unmatched closing of 'z' appears
-     * randomly in the document. This should be disregarded and structure of
-     * children and parents should not be influenced. Also un unclosed &lt;a&gt; tag
-     * appears at the start of the document
+     * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt;
+     * &lt;/x&gt; An unmatched closing of 'z' appears randomly in the document.
+     * This should be disregarded and structure of children and parents should
+     * not be influenced. Also un unclosed &lt;a&gt; tag appears at the start of
+     * the document
      */
     @Test
     public void unclosedStartTagWithUnmatchedCloseOfDifferentTag() {
@@ -731,8 +688,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * {@link #TEST_UNCLOSED_END_OF_DOC} &lt;tag:x&gt; &lt;tag:y&gt; Tests whether parser
-     * breaks on no closed tags at all
+     * {@link #TEST_UNCLOSED_END_OF_DOC} &lt;tag:x&gt; &lt;tag:y&gt; Tests
+     * whether parser breaks on no closed tags at all
      */
     // This is yet to be improved. If a closing tag does not
     // exist no tags will be marked as empty :(
@@ -848,11 +805,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
     private static final String TEST_TAGS_WITH_DOLLAR = "<a> $ <b> $ </a>";
 
-    private static final String TEST_TAGS_WITH_EL_WITHIN = "<a>#{expr1}<b>${expr2}</a>";
-
-    private static final String TEST_TAGS_WITH_MIXED_EXPRESSIONS = "<a> aaa ${expr} #{expr} <%=expr%> <b> \\${expr} </a>";
-
-    private static final String TEST_TAGS_WITH_EXPRESSION_WITHIN = "<a> <%=expr%> <b> <%=expr%> </a>";
+    private static final String TEST_TAGS_WITH_EL_WITHIN = "<a>{!expr1}<b>{!expr2}</a>";
 
     private static final String TEST_TEXT_AFTER_OPEN_AND_CLOSED_TAG = "<a> some text <b> some text </a>";
 
@@ -860,9 +813,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
     private static final String TEST_MULTIPLE_CLOSING_TAGS = "<a> some text </b> </b> </b> some text </a>";
 
-    private static final String TEST_QUOTE_EL = "<tag:if something=\"${something}\" > </tag:if>";
-
-    private static final String TEST_QUOTE_EXPRESSION = "<tag:if something=\"<%=something%>\" >  </tag:if>";
+    private static final String TEST_QUOTE_EL = "<tag:if something=\"{!something}\" > </tag:if>";
 
     private static final String TEST_QUOTE_TAG_IN_ATTR = "<tag:if something=\"<bean:write name=\"x\" property=\"z\">\" >  "
             + "<a href=http://someHost:/some_URL >foo</a> </tag:if>";
@@ -871,27 +822,17 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
     private static final String TEST_NO_QUOTE_EMPTY_ATTR = "<tag:if something= >  <a href=http://someHost:/some_URL >foo</a> </tag:if>";
 
-    private static final String TEST_NO_QUOTE_TAG_IN_ATTR = "<tag:if something=<bean:write name=\"x\" property=\"z\"> >  <a href=http://someHost:/some_URL >foo</a> </tag:if>";
+    private static final String TEST_NO_QUOTE_TAG_IN_ATTR = "<something=<bean:write name=\"x\" property=\"z\"> >  <a href=http://someHost:/some_URL >foo</a> </tag:if>";
 
     private static final String TEST_NO_QUOTE_CR_LF_ATTR = "<tag:if something=\r\n >  <a href=http://someHost:/some_URL >foo</a> </tag:if>";
 
     private static final String TEST_NO_QUOTE_TAB_ATTR = "<tag:if something=\t >   </tag:if>";
 
-    private static final String TEST_NO_QUOTE_ATTR_WITH_EL = "<tag:if something=${something} >  <a href=url >foo</a> </tag:if>";
+    private static final String TEST_NO_QUOTE_ATTR_WITH_EL = "<tag:if something={!something} >  <a href=url >foo</a> </tag:if>";
 
-    private static final String TEST_NO_QUOTE_ATTR_WITH_EXPRESSION = "<tag:if something=<%=something%> >  </tag:if>";
+    private static final String TEST_NO_QUOTE_ATTR_WITH_DOLLAR = "<tag:if something=!{something >  <a href={! >foo</a> </tag:if>";
 
-    /**
-     * same as {@link #TEST_NO_QUOTE_ATTR_WITH_EXPRESSION} only expression is
-     * not properly closed
-     */
-    private static final String TEST_NO_QUOTE_ATTR_WITH_MALFORMED_EXPR = "<tag:if something=<%=something >  </tag:if>";
-
-    private static final String TEST_NO_QUOTE_ATTR_WITH_SCRIPTLET = "<tag:if something=<% String a = \"1\";%>x >  </tag:if>";
-
-    private static final String TEST_NO_QUOTE_ATTR_WITH_DOLLAR = "<tag:if something=${something >  <a href=${ >foo</a> </tag:if>";
-
-    private static final String TEST_NO_QUOTE_ATTR_WITH_HASH = "<tag:if something=#{something >  <a href=#{url} >foo</a> </tag:if>";
+    private static final String TEST_NO_QUOTE_ATTR_WITH_HASH = "<tag:if something={!something >  <a href={!url} >foo</a> </tag:if>";
 
     private static final String TEST_UNCLOSED_SIMPLE = "<tag:someTag> <tag:if someting=\"x\" > </tag:someTag>";
 

@@ -16,21 +16,26 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vf.VfLanguageModule;
 
 /**
- * Unit test for JSP parsing.
+ * @author sergey.gorbaty
  *
  */
 public class VfParserTest {
 
-    /**
-     * Verifies bug #939 Jsp parser fails on $
-     */
     @Test
-    public void testParseDollar() {
+    public void testSingleDoubleQuoteAndEL() {
         Node node = parse(
-                "<span class=\"CostUnit\">$</span><span class=\"CostMain\">129</span><span class=\"CostFrac\">.00</span>");
+                "<span escape='false' attrib=\"{!call}\">${!yes}</span>");
         Assert.assertNotNull(node);
     }
 
+
+    @Test
+    public void testSingleDoubleQuote() {
+        Node node = parse(
+                "<span escape='false' attrib=\"{!call}\">${yes}</span>");
+        Assert.assertNotNull(node);
+    }
+    
     private Node parse(String code) {
         LanguageVersionHandler jspLang = LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion()
                 .getLanguageVersionHandler();

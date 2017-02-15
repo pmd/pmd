@@ -17,11 +17,11 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 
 /**
- * Adapter for the JspParser.
+ * Adapter for the VfParser.
  */
-public class VFParser extends AbstractParser {
+public class VfParser extends AbstractParser {
 
-    public VFParser(ParserOptions parserOptions) {
+    public VfParser(ParserOptions parserOptions) {
         super(parserOptions);
     }
 

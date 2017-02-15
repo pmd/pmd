@@ -16,7 +16,11 @@ import net.sourceforge.pmd.lang.vf.ast.Token;
 import net.sourceforge.pmd.lang.vf.VfLanguageModule;
 import net.sourceforge.pmd.util.IOUtil;
 
-public class VFTokenizer implements Tokenizer {
+/**
+ * @author sergey.gorbaty
+ *
+ */
+public class VfTokenizer implements Tokenizer {
 
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
