@@ -44,5 +44,21 @@ XSS via EL via param binding
 ]]></code>
         <source-type>vf</source-type>
     </test-code>
+
+    <test-code>
+        <description><![CDATA[
+No XSS via EL via param binding
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+	<apex:outputText value="{0}" escape="false">
+		<apex:param value="something" />
+    </apex:outputText>
+</apex:page>
+    
+]]></code>
+        <source-type>vf</source-type>
+    </test-code>
     
 </test-data>

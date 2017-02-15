@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.ast.VfParser;
 
-public abstract class AbstractJspNodesTst {
+public abstract class AbstractVfNodesTest {
 
     public <T extends VfNode> void assertNumberOfNodes(Class<T> clazz, String source, int number) {
         Set<T> nodes = getNodes(clazz, source);
@@ -45,6 +45,7 @@ public abstract class AbstractJspNodesTst {
      * @param allNodes
      * @return Set
      */
+    @SuppressWarnings("unchecked")
     public <T extends VfNode> Set<T> getNodesOfType(Class<T> clazz, Set<VfNode> allNodes) {
         Set<T> result = new HashSet<>();
         for (Node node : allNodes) {
@@ -59,6 +60,7 @@ public abstract class AbstractJspNodesTst {
      * Add the given node and its subnodes to the set of nodes. If clazz is not
      * null, only nodes of the given class are put in the set of nodes.
      */
+    @SuppressWarnings("unchecked")
     private <T extends VfNode> void addNodeAndSubnodes(Node node, Set<T> nodes, Class<T> clazz) {
         if (null != node) {
             if ((null == clazz) || (clazz.equals(node.getClass()))) {
