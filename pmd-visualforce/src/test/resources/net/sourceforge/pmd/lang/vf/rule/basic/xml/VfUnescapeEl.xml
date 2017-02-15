@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
+   
     <test-code>
+        <description><![CDATA[
+No XSS 
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<apex:page>
+	<apex:outputText value=' XSS is not {! here }' />
+	<apex:outputText value=" XSS is not {! here }" />	
+</apex:page>
+]]></code>
+        <source-type>vf</source-type>
+    </test-code> 
+
+     <test-code>
         <description><![CDATA[
 XSS via EL and no escaping
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 <apex:page>
-	<apex:outputText value="{! here }" escape="false" />
+	<apex:outputText value="XSS might be {! here }" escape="false" />
 </apex:page>
     
 ]]></code>
         <source-type>vf</source-type>
     </test-code>
-    
-   
-    <test-code>
-        <description><![CDATA[
-XSS via EL concatenated and no escaping
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-<apex:page>
-	<apex:outputText value="Xss is {! here }" escape="false" />
-</apex:page>
-    
-]]></code>
-        <source-type>vf</source-type>
-    </test-code> 
 
     <test-code>
         <description><![CDATA[
