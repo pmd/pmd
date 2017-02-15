@@ -174,14 +174,14 @@ PARSER_END(VfParser)
 {
 	<ENDING_SINGLE_QUOTE: "'"> : InTagState
 |	<UNPARSED_TEXT_NO_SINGLE_QUOTES:
-		( (~["$", "#", "'"]) | (["$", "#"] ~["{", "'"]) )+ >
+		( (~["{", "'"]) | (["{"] ~["!", "'"]) )+ >
 }
 
 <AttrValueBetweenDoubleQuotesState> TOKEN :
 {
 	<ENDING_DOUBLE_QUOTE: "\""> : InTagState
 |	<UNPARSED_TEXT_NO_DOUBLE_QUOTES:
-		( (~["$", "#", "\""]) | (["$", "#"] ~["{", "\""]) )+ >
+		( (~["{", "\""]) | (["{"] ~["!", "\""]) )+ >
 }
 
 <CommentState> TOKEN :
