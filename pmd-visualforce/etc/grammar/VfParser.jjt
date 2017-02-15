@@ -48,32 +48,7 @@ public class VfParser {
 
 PARSER_END(VfParser)
 
-
-/** ******************************************************************** */
 /** *************************  VF LEXICON  **************************** */
-/** ******************************************************************** */
-
-
-/* This JavaCC lexicon has the following states:
- * - StartTagState : this is the state entered after the "<" of a tag, until a
- *    non-whitespace is found.
- *    This is only for tags, not for xml-comments, declarations, etc.
- * - AfterTagState : this is the state entered after the closing ">" of a tag,
- *    or xml-comment or declaration, until some non-whitespace is found
- * - CommentState : the state between "<!--" and "-->"
- * - DeclarationState : the state between "<?" or "<!" and ">"
- * - CDataState : the state between "<![DATA[" and "]]>"
- * - InTagState : the state when inside a tag
- * - AttrValueStatue : the state when starting an attribute value, before the starting single or double quote
- * - DocTypeState : the state when inside a doctype declaration
- * - ElExpressionState : the state when inside a ElExpression
- * - DocTypeState : inside a document type declaration
- * - DocTypeExternalIdState : inside an "external id" part of a dtd
- * - AttrValueBetweenSingleQuotesState : inside an attribute that is surrounded by single quotes (')
- * - AttrValueBetweenDoubleQuotesState : inside an attribute that is surrounded by double quotes (")
- * - HtmlScriptContentState : inside an HTML script <script> ... </script>
- */
-
 
 <*> TOKEN :
 {
@@ -172,7 +147,7 @@ PARSER_END(VfParser)
 | <DECL_END: ("?>" | "!>") >            : AfterTagState
 | <TAG_SLASHEND: "/>" >                 : AfterTagState
 | <ATTR_EQ: "=" >                       : AttrValueState
-| <IN_TAG_ERROR: ~[]>
+| <IN_TAG_ERROR: ~[] >
 }
 
 <AttrValueState> TOKEN :
@@ -183,7 +158,7 @@ PARSER_END(VfParser)
 | <IN_ATTR_WHITESPACE: [" "] > : InTagState //support for empty attributes
 }
 
-<AttrValueBetweenSingleQuotesState, AttrValueBetweenDoubleQuotesState,AttrValueNoQuotesState> TOKEN:
+<AttrValueBetweenSingleQuotesState, AttrValueBetweenDoubleQuotesState, AttrValueNoQuotesState> TOKEN:
 {
 	<EL_EXPRESSION_IN_ATTRIBUTE: "{!" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" >
 }
@@ -200,7 +175,6 @@ PARSER_END(VfParser)
 	<ENDING_SINGLE_QUOTE: "'"> : InTagState
 |	<UNPARSED_TEXT_NO_SINGLE_QUOTES:
 		( (~["$", "#", "'"]) | (["$", "#"] ~["{", "'"]) )+ >
-|	<DOLLAR_OR_HASH_SINGLE_QUOTE: ["$", "#"] "'" > : InTagState
 }
 
 <AttrValueBetweenDoubleQuotesState> TOKEN :
@@ -208,7 +182,6 @@ PARSER_END(VfParser)
 	<ENDING_DOUBLE_QUOTE: "\""> : InTagState
 |	<UNPARSED_TEXT_NO_DOUBLE_QUOTES:
 		( (~["$", "#", "\""]) | (["$", "#"] ~["{", "\""]) )+ >
-|	<DOLLAR_OR_HASH_DOUBLE_QUOTE: ["$", "#"] "\"" > : InTagState
 }
 
 <CommentState> TOKEN :
@@ -223,9 +196,7 @@ PARSER_END(VfParser)
 		| <HTML_SCRIPT_END_TAG : "</script>" | "</Script>" | "</SCRIPT>">  : AfterTagState
 }
 
-/** ******************************************************************** */
 /** *************************  VF GRAMMAR  **************************** */
-/** ******************************************************************** */
 
 /**
  * The root of the AST of a VF.
@@ -443,42 +414,38 @@ void Attribute() :
  * EL expressions
  * are parsed as sub-nodes of the AttributeValue node.
  */
-void AttributeValue() :
-{
-	StringBuffer content = new StringBuffer();
-	String tmp;
-	Token t = null ;
-}
-{
-  	(
-	  	( 	<DOUBLE_QUOTE>
-		  	( (	tmp = UnparsedTextNoDoubleQuotes()
-			  |	tmp = QuoteIndependentAttributeValueContent()
-			) { content.append(tmp); } )*
-			( 	<ENDING_DOUBLE_QUOTE>
-			  |	t = <DOLLAR_OR_HASH_DOUBLE_QUOTE> { content.append(t.image.substring(0, 1)); }
-			)
-		)
-		|
-	  	( 	<SINGLE_QUOTE>
-		  	( ( tmp = UnparsedTextNoSingleQuotes() | tmp = QuoteIndependentAttributeValueContent() )
-		  	{ content.append(tmp); } )*
-			( 	<ENDING_SINGLE_QUOTE>
-			  | t = <DOLLAR_OR_HASH_SINGLE_QUOTE>  { content.append(t.image.substring(0, 1)); }
-			 )
-		)
-		|
-	  	( <NO_QUOTE_NO_WHITESPACE>
-		  	( ( tmp = UnparsedTextNoWhitespace() | tmp = QuoteIndependentAttributeValueContent() )
-		  		{ content.append(tmp); }
-		  	)*
-			( <ENDING_WHITESPACE> )
-		)
-		| <IN_ATTR_WHITESPACE>
-	)
-	{ jjtThis.setImage( content.toString() );
-	}
-}
+ void AttributeValue() :
+ {
+ 	StringBuffer content = new StringBuffer();
+ 	String tmp;
+ 	Token t = null ;
+ }
+ {
+   	(
+ 	  	( 	<DOUBLE_QUOTE>
+ 		  	( (	tmp = UnparsedTextNoDoubleQuotes()
+ 			  |	tmp = QuoteIndependentAttributeValueContent()
+ 			) { content.append(tmp); } )*
+ 			( 	<ENDING_DOUBLE_QUOTE> )
+ 		)
+ 		|
+ 	  	( 	<SINGLE_QUOTE>
+ 		  	( ( tmp = UnparsedTextNoSingleQuotes() | tmp = QuoteIndependentAttributeValueContent() )
+ 		  	{ content.append(tmp); } )*
+ 			( 	<ENDING_SINGLE_QUOTE> )
+ 		)
+ 		|
+ 	  	( <NO_QUOTE_NO_WHITESPACE>
+ 		  	( ( tmp = UnparsedTextNoWhitespace() | tmp = QuoteIndependentAttributeValueContent() )
+ 		  		{ content.append(tmp); }
+ 		  	)*
+ 			( <ENDING_WHITESPACE> )
+ 		)
+ 		| <IN_ATTR_WHITESPACE>
+ 	)
+ 	{ jjtThis.setImage( content.toString() );
+ 	}
+ }
 
 /**
  * Partial content of an attribute value that can contain all quotes.
