@@ -21,4 +21,8 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode {
         return visitor.visit(this, data);
     }
 
+    public boolean isNested() {
+        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
+                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+    }
 }
