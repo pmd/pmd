@@ -27,7 +27,8 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
     }
 
     public boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration;
+        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
+                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
 
     private boolean isInterface;
