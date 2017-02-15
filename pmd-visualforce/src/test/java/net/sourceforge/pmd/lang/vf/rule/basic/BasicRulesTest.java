@@ -12,6 +12,6 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-        addRule(RULESET, "BasicVFTest");
+        addRule(RULESET, "VfUnescapeEl");
     }
 }

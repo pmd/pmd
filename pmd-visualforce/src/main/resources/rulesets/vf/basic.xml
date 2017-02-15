@@ -7,16 +7,16 @@
 
 	<description>Rules concerning basic VF guidelines.</description>
 
-	<rule name="BasicVFTest" since="3.7"
-		message="Avoid duplicate imports such as ''{0}''"
-		class="net.sourceforge.pmd.lang.vf.rule.basic.BasicVFTestRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/vf/basic.html#BasicVFTestRule">
-		<description><![CDATA[Avoid duplicate import statements inside JSP's. ]]>
+	<rule name="VfUnescapeEl" since="3.7"
+		message="Avoid unescaping of user controlled content in EL such as ''{0}''"
+		class="net.sourceforge.pmd.lang.vf.rule.basic.VfUnescapeElRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/vf/basic.html#VfUnescapeElRule">
+		<description><![CDATA[Avoid unescaping of user controlled content in EL to avoid XSS. ]]>
 		</description>
 		<priority>3</priority>
 		<example>
 			<![CDATA[ 
-<html><body><b><img src=\"{!getURL}/foo\">xx</img>text</b></body></html>
+<apex:outputText value="Potential XSS is {! here }" escape="false" />
 			 ]]>
 		</example>
 	</rule>
