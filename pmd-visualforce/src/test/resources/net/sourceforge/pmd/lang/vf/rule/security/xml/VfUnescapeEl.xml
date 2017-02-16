@@ -59,6 +59,6 @@ No XSS via EL via param binding
     
 ]]></code>
         <source-type>vf</source-type>
-    </test-code>
+    </test-code>    
     
 </test-data>
