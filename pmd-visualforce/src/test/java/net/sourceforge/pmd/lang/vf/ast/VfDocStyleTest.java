@@ -199,8 +199,10 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void testInlineCss() {
-        Set<ASTElement> scripts = getNodes(ASTElement.class, TEST_INLINE_STYLE);
-        assertEquals("Three elements expected!", 3, scripts.size());
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_INLINE_STYLE);
+        Set<ASTHtmlStyle> styles = getNodes(ASTHtmlStyle.class, TEST_INLINE_STYLE);
+        assertEquals("Two elements expected!", 2, elements.size());
+        assertEquals("One style expected!", 1, styles.size());
     }
 
     /**
