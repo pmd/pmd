@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
-import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTUnparsedText;
@@ -30,12 +29,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String APEX_PAGE_MESSAGES = "apex:pagemessages";
     private static final String APEX_SELECT_OPTION = "apex:selectoption ";
     private static final String FALSE = "false";
-
-    @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        // TODO Auto-generated method stub
-        return super.visit(node, data);
-    }
 
     @Override
     public Object visit(ASTElement node, Object data) {
