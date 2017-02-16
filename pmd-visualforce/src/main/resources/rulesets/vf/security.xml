@@ -8,10 +8,10 @@
 	<description>Rules concerning basic VF guidelines.</description>
 
 	<rule name="VfUnescapeEl" since="3.7"
-		message="Avoid unescaping of user controlled content in EL such as ''{0}''"
-		class="net.sourceforge.pmd.lang.vf.rule.basic.VfUnescapeElRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/vf/basic.html#VfUnescapeElRule">
-		<description><![CDATA[Avoid unescaping of user controlled content in EL to avoid XSS. ]]>
+		message="Avoid unescaped user controlled content in EL"
+		class="net.sourceforge.pmd.lang.vf.rule.security.VfUnescapeElRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/vf/security.html#VfUnescapeElRule">
+		<description><![CDATA[Avoid unescaped user controlled content in EL as it results in XSS. ]]>
 		</description>
 		<priority>3</priority>
 		<example>

@@ -152,8 +152,8 @@ PARSER_END(VfParser)
 
 <AttrValueState> TOKEN :
 {
-  <SINGLE_QUOTE: "'"> : AttrValueBetweenSingleQuotesState
-| <DOUBLE_QUOTE: "\""> : AttrValueBetweenDoubleQuotesState
+  <SINGLE_QUOTE: (<WHITESPACES>)? "'"> : AttrValueBetweenSingleQuotesState
+| <DOUBLE_QUOTE: (<WHITESPACES>)? "\"">: AttrValueBetweenDoubleQuotesState
 | <NO_QUOTE_NO_WHITESPACE: ~["\"","'"," "] > { input_stream.backup(1);} : AttrValueNoQuotesState
 | <IN_ATTR_WHITESPACE: [" "] > : InTagState //support for empty attributes
 }
