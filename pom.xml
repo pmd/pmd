@@ -473,7 +473,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         </dependency>
                     </dependencies>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -1002,6 +1002,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
+	      <module>pmd-visualforce</module>
         <module>pmd-matlab</module>
         <module>pmd-objectivec</module>
         <module>pmd-perl</module>
