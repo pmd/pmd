@@ -75,7 +75,7 @@ PARSER_END(VfParser)
 | <#WHITESPACE: ( " " | "\t" | "\n" | "\r" ) >
 | <#NEWLINE:    ( "\r\n" | "\r" | "\n" ) >
 | <#QUOTE:      ( "'" | "\"" )>
-| <#NO_WHITESPACE_OR_LT_OR_DOLLAR: (~[" ", "\t", "\n", "\r", "<", "$", "#"])>
+| <#NO_WHITESPACE_OR_LT_OR_DOLLAR: (~[" ", "\t", "\n", "\r", "<"])>
 | <#NO_BANG: (~["!"])>
 | <#OPENBRACE: ("{") >
 | <#NO_LT_OR_OPENBRACE: (~["<","{"])>
@@ -169,7 +169,7 @@ PARSER_END(VfParser)
 <AttrValueNoQuotesState> TOKEN :
 {
      <ENDING_WHITESPACE: " " >: InTagState
-|    <UNPARSED_TEXT_NO_WHITESPACE: ( ~["$", "#", " "] |(["$", "#"] ~["{"]) )+ >
+|    <UNPARSED_TEXT_NO_WHITESPACE: ( ~[" "] | (["{"] ~["!"]) )+ >
 
 }
 
