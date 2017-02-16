@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.vf.ast.ParseException;
-
 /**
  * Exception indicating that a syntactic error has been found.
  * 

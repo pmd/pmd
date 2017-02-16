@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.vf.ast.VfParser;
-import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
-
 public class ASTCommentTag extends AbstractVFNode {
     public ASTCommentTag(int id) {
         super(id);

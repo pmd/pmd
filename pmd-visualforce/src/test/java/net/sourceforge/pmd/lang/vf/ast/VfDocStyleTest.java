@@ -19,17 +19,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
-import net.sourceforge.pmd.lang.vf.ast.ASTAttributeValue;
-import net.sourceforge.pmd.lang.vf.ast.ASTCData;
-import net.sourceforge.pmd.lang.vf.ast.ASTCommentTag;
-import net.sourceforge.pmd.lang.vf.ast.ASTDoctypeDeclaration;
-import net.sourceforge.pmd.lang.vf.ast.ASTDoctypeExternalId;
-import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
-import net.sourceforge.pmd.lang.vf.ast.ASTElement;
-import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
-import net.sourceforge.pmd.lang.vf.ast.ASTText;
-import net.sourceforge.pmd.lang.vf.ast.VfNode;
 
 /**
  * Test parsing of a VF in document style, by checking the generated AST.

@@ -10,9 +10,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.vf.ast.ASTElement;
-import net.sourceforge.pmd.lang.vf.ast.OpenTagRegister;
-
 public class OpenTagRegisterTest {
 
     private OpenTagRegister tagList;
@@ -112,7 +109,8 @@ public class OpenTagRegisterTest {
     }
 
     /**
-     * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
+     * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt;
+     * &lt;/x&gt;
      */
     @Test
     public void openedIsolatedTag() {

@@ -12,8 +12,6 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.vf.ast.VfNode;
-import net.sourceforge.pmd.lang.vf.ast.VfParser;
 
 public abstract class AbstractVfNodesTest {
 

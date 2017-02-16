@@ -9,7 +9,6 @@ import java.util.List;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.vf.VfLanguageModule;
@@ -27,6 +26,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.ASTUnparsedText;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
+import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
 
 public abstract class AbstractVfRule extends AbstractRule implements VfParserVisitor, ImmutableLanguage {
 
