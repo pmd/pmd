@@ -49,6 +49,7 @@ public class VfParser {
 PARSER_END(VfParser)
 
 /** *************************  VF LEXICON  **************************** */
+// functionCall: identifier LPAREN expression? (COMMA expression)* RPAREN;
 
 <*> TOKEN :
 {
@@ -147,7 +148,7 @@ PARSER_END(VfParser)
   <ATTR_NAME: <IDENTIFIER> >
 | <TAG_END: ">"            >            : AfterTagState
 | <DECL_END: ("?>" | "!>") >            : AfterTagState
-| <TAG_SLASHEND: "/>" >                 : AfterTagState
+| <TAG_SLASHEND: ("/>" | "/ >") >       : AfterTagState
 | <ATTR_EQ: "=" >                       : AttrValueState
 | <IN_TAG_ERROR: ~[] >
 }
@@ -212,6 +213,7 @@ PARSER_END(VfParser)
 ASTCompilationUnit CompilationUnit() :
 {}
 {
+	(Bom())?
   Prolog()
 
   Content() <EOF>
@@ -235,6 +237,12 @@ void Prolog() #void :
     	( CommentTag() )*
 	    DoctypeDeclaration()
 	)?
+}
+
+void Bom() #void :
+{}
+{
+	<BYTE_ORDER_MARK: "\ufeff" >
 }
 
 /**
