@@ -62,4 +62,9 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
     public Object visit(ASTHtmlScript node, Object data) {
         return visit((VfNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTHtmlStyle node, Object data) {
+        return visit((VfNode) node, data);
+    }
 }
