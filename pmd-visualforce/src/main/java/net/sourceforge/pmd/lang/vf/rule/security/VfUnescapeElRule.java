@@ -20,9 +20,15 @@ import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
  */
 public class VfUnescapeElRule extends AbstractVfRule {
 
+    private static final String APEX_PARAM = "apex:param";
     private static final String VALUE = "value";
+    private static final String ITEM_VALUE = "itemValue";
     private static final String ESCAPE = "escape";
-    private static final String APEX_OUTPUT_TEXT = "apex:outputText";
+    private static final String ITEM_ESCAPED = "itemEscaped";
+    private static final String APEX_OUTPUT_TEXT = "apex:outputtext";
+    private static final String APEX_PAGE_MESSAGE = "apex:pagemessage";
+    private static final String APEX_PAGE_MESSAGES = "apex:pagemessages";
+    private static final String APEX_SELECT_OPTION = "apex:selectoption ";
     private static final String FALSE = "false";
 
     @Override
@@ -33,7 +39,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     @Override
     public Object visit(ASTElement node, Object data) {
-        if (node.getName().equalsIgnoreCase(APEX_OUTPUT_TEXT)) {
+        if (doesTagSupportEscaping(node)) {
             final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
             boolean isUnescaped = false;
             boolean isEL = false;
@@ -44,6 +50,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     String name = attr.getName();
                     switch (name) {
                     case ESCAPE:
+                    case ITEM_ESCAPED:
                         final ASTUnparsedText text = attr.getFirstDescendantOfType(ASTUnparsedText.class);
                         if (text != null) {
                             if (text.getImage().equalsIgnoreCase(FALSE)) {
@@ -52,6 +59,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                         }
                         break;
                     case VALUE:
+                    case ITEM_VALUE:
                         final ASTElExpression elInVal = attr.getFirstDescendantOfType(ASTElExpression.class);
                         if (elInVal != null) {
                             isEL = true;
@@ -86,10 +94,27 @@ public class VfUnescapeElRule extends AbstractVfRule {
         return super.visit(node, data);
     }
 
+    private boolean doesTagSupportEscaping(ASTElement node) {
+        if (node.getName() == null) {
+            return false;
+        }
+
+        switch (node.getName().toLowerCase()) { // vf is case insensitive?
+        case APEX_OUTPUT_TEXT:
+        case APEX_PAGE_MESSAGE:
+        case APEX_PAGE_MESSAGES:
+        case APEX_SELECT_OPTION:
+            return true;
+        default:
+            return false;
+        }
+
+    }
+
     private boolean hasAnyEL(ASTElement node) {
         final List<ASTElement> innerElements = node.findChildrenOfType(ASTElement.class);
         for (ASTElement element : innerElements) {
-            if (element.getName().equalsIgnoreCase("apex:param")) {
+            if (element.getName().equalsIgnoreCase(APEX_PARAM)) {
                 final List<ASTAttribute> innerAttributes = element.findChildrenOfType(ASTAttribute.class);
                 for (ASTAttribute attrib : innerAttributes) {
                     final ASTElExpression elInVal = attrib.getFirstDescendantOfType(ASTElExpression.class);

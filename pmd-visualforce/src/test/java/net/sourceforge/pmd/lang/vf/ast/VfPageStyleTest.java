@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.vf.ast;
 
 import static org.junit.Assert.assertEquals;
-import java.util.Set;
-import org.junit.Test;
 
-import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
+import java.util.Set;
+
+import org.junit.Test;
 
 public class VfPageStyleTest extends AbstractVfNodesTest {
 

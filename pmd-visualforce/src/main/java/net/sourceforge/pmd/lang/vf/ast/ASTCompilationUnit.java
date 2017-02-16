@@ -6,8 +6,6 @@
 package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.vf.ast.VfParser;
-import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
 
 public class ASTCompilationUnit extends AbstractVFNode implements RootNode {
     public ASTCompilationUnit(int id) {

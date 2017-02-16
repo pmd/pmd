@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
-
 public class VfParserVisitorAdapter implements VfParserVisitor {
 
     public Object visit(VfNode node, Object data) {

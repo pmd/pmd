@@ -12,8 +12,8 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.vf.ast.Token;
 import net.sourceforge.pmd.lang.vf.VfLanguageModule;
+import net.sourceforge.pmd.lang.vf.ast.Token;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**

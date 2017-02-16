@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.vf.ast.VfParser;
-import net.sourceforge.pmd.lang.vf.ast.VfParserVisitor;
-
 public class ASTUnparsedText extends AbstractVFNode {
     public ASTUnparsedText(int id) {
         super(id);
