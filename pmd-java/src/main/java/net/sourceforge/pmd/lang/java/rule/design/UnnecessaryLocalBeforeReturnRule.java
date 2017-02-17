@@ -7,12 +7,14 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -45,12 +47,13 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = name.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
+            VariableNameDeclaration variableDeclaration = entry.getKey();
             List<NameOccurrence> usages = entry.getValue();
 
             if (usages.size() == 1) { // If there is more than 1 usage, then it's not only returned
                 NameOccurrence occ = usages.get(0);
 
-                if (occ.getLocation().equals(name)) {
+                if (occ.getLocation().equals(name) && isNotAnnotated(variableDeclaration)) {
                     String var = name.getImage();
                     if (var.indexOf('.') != -1) {
                         var = var.substring(0, var.indexOf('.'));
@@ -60,6 +63,11 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
             }
         }
         return data;
+    }
+
+    private boolean isNotAnnotated(VariableNameDeclaration variableDeclaration) {
+        AccessNode accessNodeParent = variableDeclaration.getAccessNodeParent();
+        return !accessNodeParent.hasDescendantOfType(ASTAnnotation.class);
     }
 
     /**
