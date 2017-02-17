@@ -200,7 +200,16 @@ TOKEN :
       | "'"
         <SINGLE_STRING_LITERAL_BODY>
         "'"
+      | "`"
+        <BACKTICK_STRING_LITERAL_BODY>
+        "`"
   > : NOREGEXP
+|
+  < #BACKTICK_STRING_LITERAL_BODY:(   
+          ("\\" ~[] )
+        | (~["`", "\\"])
+        )*
+  >
 |
   < #SINGLE_STRING_LITERAL_BODY:(   
           ( "\\" ~[ "\r" , "\n" , "\u2028" , "\u2029"] )
@@ -271,6 +280,7 @@ TOKEN :
         <UNICODE_LETTER>
     |
         [
+          "@",
           "$",
           "_"
         ]
