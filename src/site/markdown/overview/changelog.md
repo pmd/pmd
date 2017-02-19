@@ -248,7 +248,7 @@ This new rule is part of the `java-design` ruleset.
 
 #### Modified Rules
 
-*   The Java rule "UseLocaleWithCaseConversions" (ruleset java-design) has been modified, to detect calls
+*   The Java rule `UseLocaleWithCaseConversions` (ruleset java-design) has been modified, to detect calls
     to `toLowerCase` and to `toUpperCase` also within method call chains. This leads to more detected cases
     and potentially new false positives.
     See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
@@ -256,13 +256,36 @@ This new rule is part of the `java-design` ruleset.
 *   The rule `AvoidConstantsInterface` (ruleset java-design) has been removed. It is completely replaced by
     the rule `ConstantsInInterface`.
 
+
 #### CPD Suppression
 
 It is now possible to allow CPD suppression through comments in **Java**. You tell CPD to ignore
-the following code with the comment `// CPD-OFF` and with `// CPD-ON` you tell CPD to resume
+the following code with a comment containin `CPD-OFF` and with `CPD-ON` you tell CPD to resume
 analysis. The old approach via `@SuppressWarnings` annotation is still supported, but is considered
 **deprecated**, since it is limited to locations where the `SuppressWarnings` annotation is allowed.
 See [PR #250](https://github.com/pmd/pmd/pull/250).
+
+For example:
+
+```java
+    public Object someMethod(int x) throws Exception {
+        // some unignored code
+
+        // tell cpd to start ignoring code - CPD-OFF
+
+        // mission critical code, manually loop unroll
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+
+        // resume CPD analysis - CPD-ON
+
+        // further code will *not* be ignored
+    }
+```
 
 ### Fixed Issues
 
@@ -287,7 +310,6 @@ See [PR #250](https://github.com/pmd/pmd/pull/250).
 *   java-design
     *   [#933](https://sourceforge.net/p/pmd/bugs/933/): \[java] UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation
     *   [#1448](https://sourceforge.net/p/pmd/bugs/1448/): \[java] ImmutableField: Private field in inner class gives false positive with lambdas
-    *   [#933](https://sourceforge.net/p/pmd/bugs/933/): \[java] UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation
     *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeReturn with assert
     *   [#1496](https://sourceforge.net/p/pmd/bugs/1496/): \[java] New Rule: AccesorMethodGeneration - complements accessor class rule
     *   [#1512](https://sourceforge.net/p/pmd/bugs/1512/): \[java] Combine rules AvoidConstantsInInterface and ConstantsInInterface
