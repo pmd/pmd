@@ -55,6 +55,10 @@ This new rule is part of the `java-design` ruleset.
     *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
     *   Nested enums marked as `static`.
 
+*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) no longer requires the variable declaration
+    and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be
+    reported.
+
 ### Fixed Issues
 
 *   General
