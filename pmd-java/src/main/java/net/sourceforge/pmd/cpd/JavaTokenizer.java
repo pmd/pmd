@@ -127,7 +127,7 @@ public class JavaTokenizer implements Tokenizer {
             }
         }
 
-        public void skipPackageAndImport(Token currentToken) {
+        private void skipPackageAndImport(Token currentToken) {
             if (currentToken.kind == JavaParserConstants.PACKAGE || currentToken.kind == JavaParserConstants.IMPORT) {
                 discardingKeywords = true;
             } else if (discardingKeywords && currentToken.kind == JavaParserConstants.SEMICOLON) {
@@ -135,7 +135,7 @@ public class JavaTokenizer implements Tokenizer {
             }
         }
 
-        public void skipSemicolon(Token currentToken) {
+        private void skipSemicolon(Token currentToken) {
             if (currentToken.kind == JavaParserConstants.SEMICOLON) {
                 discardingSemicolon = true;
             } else if (discardingSemicolon && currentToken.kind != JavaParserConstants.SEMICOLON) {
@@ -143,7 +143,21 @@ public class JavaTokenizer implements Tokenizer {
             }
         }
 
-        public void skipCPDSuppression(Token currentToken) {
+        private void skipCPDSuppression(Token currentToken) {
+            // Check if a comment is altering the suppression state
+            Token st = currentToken.specialToken;
+            while (st != null) {
+                if (st.image.contains("CPD-OFF")) {
+                    discardingSuppressing = true;
+                    break;
+                }
+                if (st.image.contains("CPD-ON")) {
+                    discardingSuppressing = false;
+                    break;
+                }
+                st = st.specialToken;
+            }
+
             // if processing an annotation, look for a CPD-START or CPD-END
             if (isAnnotation) {
                 if (!discardingSuppressing && currentToken.kind == JavaParserConstants.STRING_LITERAL
@@ -156,7 +170,7 @@ public class JavaTokenizer implements Tokenizer {
             }
         }
 
-        public void skipAnnotations() {
+        private void skipAnnotations() {
             if (!discardingAnnotations && isAnnotation) {
                 discardingAnnotations = true;
             } else if (discardingAnnotations && !isAnnotation) {
@@ -170,7 +184,7 @@ public class JavaTokenizer implements Tokenizer {
             return result;
         }
 
-        public void detectAnnotations(Token currentToken) {
+        private void detectAnnotations(Token currentToken) {
             if (isAnnotation && nextTokenEndsAnnotation) {
                 isAnnotation = false;
                 nextTokenEndsAnnotation = false;
