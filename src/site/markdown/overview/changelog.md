@@ -9,6 +9,7 @@ The PMD team is pleased to announce PMD 5.5.4
 
 *   [New and noteworthy](#New_and_noteworthy)
     *   [New Rules](#New_Rules)
+    *   [Modified Rules](#Modified_Rules)
 *   [Fixed Issues](#Fixed_Issues)
 *   [API Changes](#API_Changes)
 *   [External Contributions](#External_Contributions)
@@ -45,6 +46,14 @@ public class OuterClass {
 
 This new rule is part of the `java-design` ruleset.
 
+#### Modified Rules
+
+*   The Java rule `UnusedModifier` (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
+    *   Annotations marked as `abstract`.
+    *   Nested annotations marked as `static`.
+    *   Nested annotations within another interface or annotation marked as `public`.
+    *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
+    *   Nested enums marked as `static`.
 
 ### Fixed Issues
 
