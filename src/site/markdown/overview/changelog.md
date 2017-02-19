@@ -245,8 +245,11 @@ public class OuterClass {
 
 This new rule is part of the `java-design` ruleset.
 
-
 #### Modified Rules
+
+*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) no longer requires the variable declaration
+    and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be
+    reported.
 
 *   The Java rule `UseLocaleWithCaseConversions` (ruleset java-design) has been modified, to detect calls
     to `toLowerCase` and to `toUpperCase` also within method call chains. This leads to more detected cases
