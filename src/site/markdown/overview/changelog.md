@@ -256,6 +256,13 @@ This new rule is part of the `java-design` ruleset.
 *   The rule `AvoidConstantsInterface` (ruleset java-design) has been removed. It is completely replaced by
     the rule `ConstantsInInterface`.
 
+*   The Java rule `UnusedModifier` (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
+    *   Annotations marked as `abstract`.
+    *   Nested annotations marked as `static`.
+    *   Nested annotations within another interface or annotation marked as `public`.
+    *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
+    *   Nested enums marked as `static`.
+
 
 #### CPD Suppression
 
