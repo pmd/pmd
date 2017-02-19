@@ -32,6 +32,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
     *   [Apex Security Rule Set](#Apex_Security_Rule_Set)
     *   [New Rules](#New_Rules)
     *   [Modified Rules](#Modified_Rules)
+    *   [CPD Suppression](#CPD_Suppression)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
@@ -255,6 +256,13 @@ This new rule is part of the `java-design` ruleset.
 *   The rule `AvoidConstantsInterface` (ruleset java-design) has been removed. It is completely replaced by
     the rule `ConstantsInInterface`.
 
+#### CPD Suppression
+
+It is now possible to allow CPD suppression through comments in **Java**. You tell CPD to ignore
+the following code with the comment `// CPD-OFF` and with `// CPD-ON` you tell CPD to resume
+analysis. The old approach via `@SuppressWarnings` annotation is still supported, but is considered
+**deprecated**, since it is limited to locations where the `SuppressWarnings` annotation is allowed.
+See [PR #250](https://github.com/pmd/pmd/pull/250).
 
 ### Fixed Issues
 
