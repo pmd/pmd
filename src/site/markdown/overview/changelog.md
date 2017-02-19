@@ -9,6 +9,7 @@ The PMD team is pleased to announce PMD 5.5.4
 
 *   [New and noteworthy](#New_and_noteworthy)
     *   [New Rules](#New_Rules)
+    *   [Modified Rules](#Modified_Rules)
 *   [Fixed Issues](#Fixed_Issues)
 *   [API Changes](#API_Changes)
 *   [External Contributions](#External_Contributions)
@@ -45,6 +46,11 @@ public class OuterClass {
 
 This new rule is part of the `java-design` ruleset.
 
+#### Modified Rules
+
+*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) no longer requires the variable declaration
+    and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be
+    reported.
 
 ### Fixed Issues
 
