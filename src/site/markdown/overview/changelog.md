@@ -50,6 +50,8 @@ This new rule is part of the `java-design` ruleset.
 
 *   General
     *   [#234](https://github.com/pmd/pmd/issues/234): \[core] Zip file stream closes spuriously when loading rulesets
+*   apex-complexity
+    *   [#251](https://github.com/pmd/pmd/issues/251): \[apex] NCSS Type length is incorrect when using method chaining
 *   java-basic
     *   [#232](https://github.com/pmd/pmd/issues/232): \[java] SimplifiedTernary: Incorrect ternary operation can be simplified.
 *   java-design
