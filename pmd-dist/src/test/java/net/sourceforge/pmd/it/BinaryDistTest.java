@@ -8,12 +8,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -24,10 +27,14 @@ public class BinaryDistTest {
         return new File(".", "target/pmd-bin-" + PMD.VERSION + ".zip");
     }
 
+    private File getSourceDistribution() {
+        return new File(".", "target/pmd-src-" + PMD.VERSION + ".zip");
+    }
+
     @Test
     public void testFileExistence() {
-        File file = getBinaryDistribution();
-        assertTrue(file.exists());
+        assertTrue(getBinaryDistribution().exists());
+        assertTrue(getSourceDistribution().exists());
     }
 
     private Set<String> getExpectedFileNames() {
@@ -57,5 +64,23 @@ public class BinaryDistTest {
         zip.close();
 
         assertTrue(expectedFileNames.isEmpty());
+    }
+
+    @Test
+    public void runPMD() throws Exception {
+        Path tempDir = Files.createTempDirectory("pmd-it-test-");
+        String srcDir = new File(".", "src/test/resources/sample-source/").getAbsolutePath();
+
+        try {
+            ZipFileExtractor.extractZipFile(getBinaryDistribution().toPath(), tempDir);
+
+            PMDExecutionResult result = PMDExecutor.runPMD(tempDir, srcDir, "java-basic");
+            result.assertPMDExecutionResult(4, "JumbledIncrementer.java:8:");
+
+            result = PMDExecutor.runPMD(tempDir, srcDir, "java-design");
+            result.assertPMDExecutionResult(0, "");
+        } finally {
+            FileUtils.forceDelete(tempDir.toFile());
+        }
     }
 }
