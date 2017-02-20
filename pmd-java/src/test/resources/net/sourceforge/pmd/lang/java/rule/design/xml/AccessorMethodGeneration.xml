@@ -121,12 +121,12 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
-IGNORED - outer class accesses private method of inner class
+outer class accesses private method of inner class
      ]]></description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
  public class InnerClass {
@@ -135,7 +135,6 @@ public class Foo {
  }
  
  private void outerSecret() {
-   // FIXME : This is not detected right now. Name searches are not taking qualifiers into account...
    new InnerClass().secret(); // violation, accesing a private method
  }
 }
