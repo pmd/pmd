@@ -27,7 +27,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
 
 ### Table Of Contents
 
-* [New and noteworthy](#New_and_noteworthy)
+*   [New and noteworthy](#New_and_noteworthy)
     *   [Incremental Analysis](#Incremental_Analysis)
     *   [Apex Security Rule Set](#Apex_Security_Rule_Set)
     *   [New Rules](#New_Rules)
@@ -265,7 +265,6 @@ This new rule is part of the `java-design` ruleset.
     *   Nested annotations within another interface or annotation marked as `public`.
     *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
     *   Nested enums marked as `static`.
-
 
 #### CPD Suppression
 
