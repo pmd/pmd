@@ -21,20 +21,15 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 
-public class BinaryDistTest {
+public class BinaryDistributionIT {
 
     private File getBinaryDistribution() {
         return new File(".", "target/pmd-bin-" + PMD.VERSION + ".zip");
     }
 
-    private File getSourceDistribution() {
-        return new File(".", "target/pmd-src-" + PMD.VERSION + ".zip");
-    }
-
     @Test
     public void testFileExistence() {
         assertTrue(getBinaryDistribution().exists());
-        assertTrue(getSourceDistribution().exists());
     }
 
     private Set<String> getExpectedFileNames() {
