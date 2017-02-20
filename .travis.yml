@@ -1,10 +1,15 @@
 language: java
+jdk: oraclejdk8
+before_install:
+  - echo "MAVEN_OPTS='-Xms1g -Xmx1g'" > "$HOME/.mavenrc"
+  - mkdir -p "$HOME/.m2"
+  - cp .travis/travis-toolchains.xml "$HOME/.m2/toolchains.xml"
 before_script:
   - SHOULD_DEPLOY=no
   - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] && SHOULD_DEPLOY=yes || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
   - export SHOULD_DEPLOY
 script:
-  - '[ "${SHOULD_DEPLOY}" = "yes" ] && mvn deploy --settings .travis-settings.xml || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
+  - '[ "${SHOULD_DEPLOY}" = "yes" ] && mvn deploy --settings .travis/travis-settings.xml || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
   - '[ "${SHOULD_DEPLOY}" = "yes" ] || mvn verify'
   - '[ "${SHOULD_DEPLOY}" = "yes" ] && mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Sonar" )'
 
@@ -14,7 +19,7 @@ deploy:
     tags: true
     condition: "${TRAVIS_SECURE_ENV_VARS} = true"
   - provider: script
-    script: bash .travis-deploy.sh
+    script: bash .travis/travis-deploy.sh
   - provider: releases
     api_key: ${GITHUB_OAUTH_TOKEN}
     file:
