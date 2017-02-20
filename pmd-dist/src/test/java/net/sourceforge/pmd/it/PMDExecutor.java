@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.it;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -27,9 +28,10 @@ public class PMDExecutor {
         // this is a helper class only
     }
 
-    private static PMDExecutionResult runPMDUnix(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
+    private static PMDExecutionResult runPMDUnix(Path tempDir, String ... arguments) throws Exception {
         String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMD.VERSION + "/bin/run.sh").toAbsolutePath().toString();
-        ProcessBuilder pb = new ProcessBuilder(cmd, "pmd", SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset, FORMAT_FLAG, FORMATTER);
+        ProcessBuilder pb = new ProcessBuilder(cmd, "pmd");
+        pb.command().addAll(Arrays.asList(arguments));
         pb.redirectErrorStream(true);
         Process process = pb.start();
         String output = IOUtils.toString(process.getInputStream());
@@ -38,9 +40,10 @@ public class PMDExecutor {
         return new PMDExecutionResult(result, output);
     }
 
-    private static PMDExecutionResult runPMDWindows(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
+    private static PMDExecutionResult runPMDWindows(Path tempDir, String ... arguments) throws Exception {
         String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMD.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
-        ProcessBuilder pb = new ProcessBuilder(cmd, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset, FORMAT_FLAG, FORMATTER);
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.command().addAll(Arrays.asList(arguments));
         pb.redirectErrorStream(true);
         Process process = pb.start();
         String output = IOUtils.toString(process.getInputStream());
@@ -58,11 +61,26 @@ public class PMDExecutor {
      * @return collected result of the execution
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
-    public static PMDExecutionResult runPMD(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
+    public static PMDExecutionResult runPMDRules(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
         if (SystemUtils.IS_OS_WINDOWS) {
-            return runPMDWindows(tempDir, sourceDirectory, ruleset);
+            return runPMDWindows(tempDir, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset, FORMAT_FLAG, FORMATTER);
         } else {
-            return runPMDUnix(tempDir, sourceDirectory, ruleset);
+            return runPMDUnix(tempDir, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset, FORMAT_FLAG, FORMATTER);
+        }
+    }
+
+    /**
+     * Executes PMD found in tempDir with the given command line arguments.
+     * @param tempDir the directory, to which the binary distribution has been extracted
+     * @param arguments the arguments to execute PMD with
+     * @return collected result of the execution
+     * @throws Exception if the execution fails for any reason (executable not found, ...)
+     */
+    public static PMDExecutionResult runPMD(Path tempDir, String ... arguments) throws Exception {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return runPMDWindows(tempDir, arguments);
+        } else {
+            return runPMDUnix(tempDir, arguments);
         }
     }
 }

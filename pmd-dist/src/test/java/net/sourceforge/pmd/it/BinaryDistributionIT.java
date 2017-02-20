@@ -68,11 +68,15 @@ public class BinaryDistributionIT {
 
         try {
             ZipFileExtractor.extractZipFile(getBinaryDistribution().toPath(), tempDir);
+            PMDExecutionResult result;
 
-            PMDExecutionResult result = PMDExecutor.runPMD(tempDir, srcDir, "java-basic");
+            result = PMDExecutor.runPMD(tempDir, "-h");
+            result.assertPMDExecutionResult(1, "apex, java, ecmascript, jsp, plsql, vm, xml, xsl, wsdl, pom");
+
+            result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-basic");
             result.assertPMDExecutionResult(4, "JumbledIncrementer.java:8:");
 
-            result = PMDExecutor.runPMD(tempDir, srcDir, "java-design");
+            result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-design");
             result.assertPMDExecutionResult(0, "");
         } finally {
             FileUtils.forceDelete(tempDir.toFile());
