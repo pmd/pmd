@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unusedcode;
 
 import java.util.List;
@@ -13,6 +14,10 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UnusedLocalVariableRule extends AbstractJavaRule {
+
+    public UnusedLocalVariableRule() {
+        addRuleChainVisit(ASTLocalVariableDeclaration.class);
+    }
 
     public Object visit(ASTLocalVariableDeclaration decl, Object data) {
         for (int i = 0; i < decl.jjtGetNumChildren(); i++) {
@@ -31,11 +36,9 @@ public class UnusedLocalVariableRule extends AbstractJavaRule {
     }
 
     private boolean actuallyUsed(List<NameOccurrence> usages) {
-        for (NameOccurrence occ: usages) {
-            JavaNameOccurrence jocc = (JavaNameOccurrence)occ;
-            if (jocc.isOnLeftHandSide()) {
-                continue;
-            } else {
+        for (NameOccurrence occ : usages) {
+            JavaNameOccurrence jocc = (JavaNameOccurrence) occ;
+            if (!jocc.isOnLeftHandSide()) {
                 return true;
             }
         }
