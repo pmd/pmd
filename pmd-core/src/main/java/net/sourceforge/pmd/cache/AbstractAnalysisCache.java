@@ -7,6 +7,8 @@ package net.sourceforge.pmd.cache;
 import java.io.File;
 import java.net.URLClassLoader;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
@@ -28,6 +30,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache;
     protected long rulesetChecksum;
     protected long classpathChecksum;
+    protected final CachedRuleMapper ruleMapper = new CachedRuleMapper();
     
     /**
      * Creates a new empty cache
@@ -56,6 +59,18 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     @Override
+    public List<RuleViolation> getCachedViolations(final File sourceFile) {
+        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPath());
+
+        if (analysisResult == null) {
+            // new file, avoid nulls
+            return Collections.emptyList();
+        }
+
+        return analysisResult.getViolations();
+    }
+
+    @Override
     public void analysisFailed(final File sourceFile) {
         updatedResultsCache.remove(sourceFile.getPath());
     }
@@ -63,12 +78,12 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     @Override
     public void checkValidity(final RuleSets ruleSets, final ClassLoader classLoader) {
         boolean cacheIsValid = true;
-        
+
         if (ruleSets.getChecksum() != rulesetChecksum) {
             LOG.info("Analysis cache invalidated, rulesets changed.");
             cacheIsValid = false;
         }
-        
+
         final long classLoaderChecksum;
         if (classLoader instanceof URLClassLoader) {
             final URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
@@ -87,15 +102,16 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         } else {
             classLoaderChecksum = 0;
         }
-        
+
         if (!cacheIsValid) {
             // Clear the cache
             fileResultsCache.clear();
         }
-        
+
         // Update the local checksums
         rulesetChecksum = ruleSets.getChecksum();
         classpathChecksum = classLoaderChecksum;
+        ruleMapper.initialize(ruleSets);
     }
 
     @Override
