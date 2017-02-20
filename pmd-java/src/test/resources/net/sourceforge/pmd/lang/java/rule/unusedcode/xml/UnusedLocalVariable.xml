@@ -371,4 +371,19 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#257 UnusedLocalVariable - false positive - parenthesis</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static void main(String[] args) {
+        double a = 4.0;
+        double b = 2.0;
+        double result = Math.sqrt((a) - b);
+        System.out.println(result);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

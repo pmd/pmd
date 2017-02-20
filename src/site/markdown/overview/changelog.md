@@ -79,6 +79,7 @@ This new rule is part of the `java-design` ruleset.
     *   [#246](https://github.com/pmd/pmd/issues/246): \[java] UnusedModifier doesn't check annotations
     *   [#247](https://github.com/pmd/pmd/issues/247): \[java] UnusedModifier doesn't check annotations inner classes
     *   [#248](https://github.com/pmd/pmd/issues/248): \[java] UnusedModifier doesn't check static keyword on nested enum declaration
+    *   [#257](https://github.com/pmd/pmd/issues/257): \[java] UnusedLocalVariable false positive
 
 ### API Changes
 

@@ -1,4 +1,9 @@
 /**
+ * Provide a better fix for CastExpression, getting rid of most hacks.
+ * Bug #257
+ *
+ * Juan Martin Sotuyo Dodero 02/2017
+ *====================================================================
  * Allow local classes to carry more than one annotation.
  * Bug #208
  *
@@ -1558,7 +1563,7 @@ void ReferenceType():
 
 void ClassOrInterfaceType():
 {
-  StringBuffer s = new StringBuffer();
+  StringBuilder s = new StringBuilder();
   Token t;
 }
 {
@@ -1791,9 +1796,13 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {}
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
-| LOOKAHEAD( { getToken(1).kind == LPAREN && getToken(2).kind == IDENTIFIER && getToken(3).kind == RPAREN && getToken(4).kind == PLUS } ) PostfixExpression()
-| LOOKAHEAD( CastExpression() ) CastExpression()
-| LOOKAHEAD("(" Type() ")" "(") CastExpression()
+/*
+ * This is really ugly... we are repeting the CastExpression lookahead and full expression...
+ * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
+ * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwhise)
+*/
+| LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
+| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
 | PostfixExpression()
 }
 
@@ -1803,12 +1812,13 @@ void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
   PrimaryExpression() [ "++" {jjtThis.setImage("++");} | "--" {jjtThis.setImage("--");} ]
 }
 
-void CastExpression() #CastExpression(>1):
+void CastExpression() :
 {}
 {
-  LOOKAHEAD("(" (Annotation())* Type() ")") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
-| LOOKAHEAD("(" (Annotation())* Type() "&") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )+ ")" UnaryExpressionNotPlusMinus()
-| "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpressionNotPlusMinus()
+  LOOKAHEAD(
+    "(" (Annotation())* PrimitiveType() ")"
+  ) "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
+| "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
 }
 
 void PrimaryExpression() :
@@ -2012,12 +2022,9 @@ void StatementExpression() :
 |
   PreDecrementExpression()
 |
-  LOOKAHEAD( PrimaryExpression() ("++" | "--") ) PostfixExpression()
+  LOOKAHEAD( PrimaryExpression() AssignmentOperator() ) PrimaryExpression() AssignmentOperator() Expression()
 |
-  PrimaryExpression()
-  [
-  AssignmentOperator() Expression()
-  ]
+  PostfixExpression()
 }
 
 void SwitchStatement() :

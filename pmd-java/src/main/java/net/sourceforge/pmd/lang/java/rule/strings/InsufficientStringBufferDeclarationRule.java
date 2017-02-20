@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -197,19 +196,20 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                             anticipatedLength += str.length() - 2;
                         } else if (literal.isCharLiteral()) {
                             anticipatedLength += 1;
-	                    } else if(literal.isIntLiteral() && str.startsWith("0x")){
-	                    	// but only if we are not inside a cast expression
-	                    	Node parentNode = literal.jjtGetParent().jjtGetParent().jjtGetParent();
-							if (parentNode instanceof ASTCastExpression
-	                    		&& parentNode.getFirstChildOfType(ASTType.class).getType() == char.class) {
-	                    		anticipatedLength += 1;
-	                    	} else {
-    	                    	// e.g. 0xdeadbeef -> will be converted to a base 10 integer string: 3735928559
-    	                    	anticipatedLength += String.valueOf(Long.parseLong(str.substring(2), 16)).length();
-	                    	}
-	                    } else {
-	                        anticipatedLength += str.length();
-	                    }
+                        } else if (literal.isIntLiteral() && str.startsWith("0x")) {
+                            // but only if we are not inside a cast expression
+                            Node parentNode = literal.jjtGetParent().jjtGetParent().jjtGetParent();
+                            if (parentNode instanceof ASTCastExpression
+                                    && ((ASTCastExpression) parentNode).getType() == char.class) {
+                                anticipatedLength += 1;
+                            } else {
+                                // e.g. 0xdeadbeef -> will be converted to a
+                                // base 10 integer string: 3735928559
+                                anticipatedLength += String.valueOf(Long.parseLong(str.substring(2), 16)).length();
+                            }
+                        } else {
+                            anticipatedLength += str.length();
+                        }
                     }
                 }
             }
