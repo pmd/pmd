@@ -71,7 +71,7 @@ public class BinaryDistributionIT {
             PMDExecutionResult result;
 
             result = PMDExecutor.runPMD(tempDir, "-h");
-            result.assertPMDExecutionResult(1, "apex, java, ecmascript, jsp, plsql, vm, xml, xsl, wsdl, pom");
+            result.assertPMDExecutionResult(1, "java, jsp, wsdl, xsl, xml, vm, ecmascript, plsql");
 
             result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-basic");
             result.assertPMDExecutionResult(4, "JumbledIncrementer.java:8:");
