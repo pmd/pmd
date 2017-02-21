@@ -145,7 +145,7 @@ PARSER_END(VfParser)
 	| <GE: ">=" >
 	| <LT: "<" >
 	| <GT: ">" >
-	| <EXCL: ("!"|"~") >
+	| <EXCL: ("!"|"~"|"NOT") >
 	| <PIPE_PIPE: "||" >
 	| <STRING_LITERAL: <QUOTED_STRING> >
 	| <DIGITS: (<NUM_CHAR>)+ >
@@ -294,7 +294,7 @@ void Bom() #void :
 /**
  * Everything between a start-tag and the corresponding end-tag of an element (if an end tag exists).
  */
-void Content() #void :
+void Content() :
 {}
 {
 	( ElOrText() | ContentElement()	)*

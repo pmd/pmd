@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
+import net.sourceforge.pmd.lang.vf.ast.ASTContent;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
@@ -136,14 +137,20 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private boolean hasAnyEL(final ASTElement node) {
-        final List<ASTElement> innerElements = node.findChildrenOfType(ASTElement.class);
-        for (ASTElement element : innerElements) {
-            if (element.getName().equalsIgnoreCase(APEX_PARAM)) {
-                final List<ASTAttribute> innerAttributes = element.findChildrenOfType(ASTAttribute.class);
-                for (ASTAttribute attrib : innerAttributes) {
-                    final ASTElExpression elInVal = attrib.getFirstDescendantOfType(ASTElExpression.class);
-                    if (elInVal != null) {
-                        return true;
+        final ASTContent content = node.getFirstChildOfType(ASTContent.class);
+        if (content != null) {
+            List<ASTElement> innerElements = content.findChildrenOfType(ASTElement.class);
+            for (ASTElement element : innerElements) {
+                if (element.getName().equalsIgnoreCase(APEX_PARAM)) {
+                    final List<ASTAttribute> innerAttributes = element.findChildrenOfType(ASTAttribute.class);
+                    for (ASTAttribute attrib : innerAttributes) {
+                        final List<ASTElExpression> elsInVal = attrib.findDescendantsOfType(ASTElExpression.class);
+                        for (final ASTElExpression el : elsInVal) {
+                            if (doesElContainAnyUnescapedIdentifiers(el)) {
+                                return true;
+                            }
+
+                        }
                     }
                 }
             }
