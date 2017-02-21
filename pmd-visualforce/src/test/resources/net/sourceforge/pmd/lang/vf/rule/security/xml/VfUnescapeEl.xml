@@ -3,7 +3,7 @@
 
 	<test-code>
 		<description><![CDATA[
-No XSS 
+Default escaped EL - no XSS 
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
@@ -26,14 +26,43 @@ No XSS
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
+
 	<test-code>
 		<description><![CDATA[
-XSS via EL and no escaping
+XSS via EL identifier and no escaping
      ]]></description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 <apex:page>
 	<apex:outputText value='XSS might be {! here }' escape="false" />
+</apex:page>
+    
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+XSS via EL literal and no escaping
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<apex:outputText value='XSS might be {! 'here' }' escape="false" />
+</apex:page>
+    
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+<test-code>
+		<description><![CDATA[
+XSS via EL boolean and no escaping
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<apex:outputText value='XSS might be {! false }' escape="false" />
 </apex:page>
     
 ]]></code>
@@ -89,4 +118,19 @@ No XSS via EL via param binding
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
+	
+	<test-code>
+		<description><![CDATA[
+No XSS with escaped EL 
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<apex:outputText value=" {!HTMLENCODE(myTextField)}" escape="false"/>
+</apex:page>    
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+	
+	
 </test-data>
