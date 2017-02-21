@@ -63,6 +63,7 @@ This new rule is part of the `java-design` ruleset.
 
 *   General
     *   [#234](https://github.com/pmd/pmd/issues/234): \[core] Zip file stream closes spuriously when loading rulesets
+    *   [#256](https://github.com/pmd/pmd/issues/256): \[core] shortnames option is broken with relative paths
 *   apex-complexity
     *   [#251](https://github.com/pmd/pmd/issues/251): \[apex] NCSS Type length is incorrect when using method chaining
 *   java-basic
