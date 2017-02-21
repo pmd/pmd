@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
+import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
@@ -19,6 +20,9 @@ import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
  */
 public class VfUnescapeElRule extends AbstractVfRule {
 
+    private static final String JSINHTMLENCODE = "JSINHTMLENCODE";
+    private static final String URLENCODE = "URLENCODE";
+    private static final String HTMLENCODE = "HTMLENCODE";
     private static final String APEX_PARAM = "apex:param";
     private static final String VALUE = "value";
     private static final String ITEM_VALUE = "itemValue";
@@ -30,7 +34,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String APEX_SELECT_OPTION = "apex:selectoption ";
     private static final String FALSE = "false";
 
-    
     @Override
     public Object visit(ASTElement node, Object data) {
         if (doesTagSupportEscaping(node)) {
@@ -54,8 +57,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
                         break;
                     case VALUE:
                     case ITEM_VALUE:
+
                         final ASTElExpression elInVal = attr.getFirstDescendantOfType(ASTElExpression.class);
-                        if (elInVal != null) {
+                        if (doesElContainAnyUnescapedIdentifiers(elInVal)) {
                             isEL = true;
                         }
 
@@ -88,7 +92,33 @@ public class VfUnescapeElRule extends AbstractVfRule {
         return super.visit(node, data);
     }
 
-    private boolean doesTagSupportEscaping(ASTElement node) {
+    private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression) {
+        if (elExpression == null) {
+            return false;
+        }
+
+        boolean isEscaped = false;
+        List<ASTIdentifier> ids = elExpression.findDescendantsOfType(ASTIdentifier.class);
+        boolean foundAny = !ids.isEmpty();
+
+        for (final ASTIdentifier id : ids) {
+            if (id.getImage() != null) {
+                switch (id.getImage()) {
+                case HTMLENCODE:
+                case URLENCODE:
+                case JSINHTMLENCODE:
+                    isEscaped = true;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+
+        return (foundAny && !isEscaped);
+    }
+
+    private boolean doesTagSupportEscaping(final ASTElement node) {
         if (node.getName() == null) {
             return false;
         }
@@ -105,7 +135,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     }
 
-    private boolean hasAnyEL(ASTElement node) {
+    private boolean hasAnyEL(final ASTElement node) {
         final List<ASTElement> innerElements = node.findChildrenOfType(ASTElement.class);
         for (ASTElement element : innerElements) {
             if (element.getName().equalsIgnoreCase(APEX_PARAM)) {
