@@ -29,6 +29,7 @@ This is a bug fixing release.
 
 *   general
     *   [#234](https://github.com/pmd/pmd/issues/234): \[core] Zip file stream closes spuriously when loading rulesets
+    *   [#256](https://github.com/pmd/pmd/issues/256): \[core] shortnames option is broken with relative paths
 *   java-basic
     *   [#232](https://github.com/pmd/pmd/issues/232): \[java] SimplifiedTernary: Incorrect ternary operation can be simplified.
 *   java-design
