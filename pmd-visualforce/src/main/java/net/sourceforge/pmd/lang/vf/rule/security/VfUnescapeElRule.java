@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
-import net.sourceforge.pmd.lang.vf.ast.ASTUnparsedText;
+import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
@@ -45,7 +45,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     switch (name) {
                     case ESCAPE:
                     case ITEM_ESCAPED:
-                        final ASTUnparsedText text = attr.getFirstDescendantOfType(ASTUnparsedText.class);
+                        final ASTText text = attr.getFirstDescendantOfType(ASTText.class);
                         if (text != null) {
                             if (text.getImage().equalsIgnoreCase(FALSE)) {
                                 isUnescaped = true;
@@ -59,7 +59,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                             isEL = true;
                         }
 
-                        final ASTUnparsedText textValue = attr.getFirstDescendantOfType(ASTUnparsedText.class);
+                        final ASTText textValue = attr.getFirstDescendantOfType(ASTText.class);
                         if (textValue != null) {
                             if (Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}").matcher(textValue.getImage()).matches()) {
                                 hasPlaceholders = true;

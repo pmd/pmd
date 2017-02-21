@@ -1,56 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-   
-    <test-code>
-        <description><![CDATA[
+
+	<test-code>
+		<description><![CDATA[
 No XSS 
      ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
 <apex:page>
-	<apex:outputText value=' XSS is not {! here }' />
-	<apex:outputText value=" XSS is not {! here }" />	
+{! foo('test') }
 </apex:page>
 ]]></code>
-        <source-type>vf</source-type>
-    </test-code> 
+		<source-type>vf</source-type>
+	</test-code>
 
-     <test-code>
-        <description><![CDATA[
+	<test-code>
+		<description><![CDATA[
+No XSS 
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<apex:outputText value=' XSS is not {! here }' />
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
 XSS via EL and no escaping
      ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
 <apex:page>
-	<apex:outputText value="XSS might be {! here }" escape="false" />
+	<apex:outputText value='XSS might be {! here }' escape="false" />
 </apex:page>
     
 ]]></code>
-        <source-type>vf</source-type>
-    </test-code>
+		<source-type>vf</source-type>
+	</test-code>
 
-    <test-code>
-        <description><![CDATA[
+	<test-code>
+		<description><![CDATA[
 XSS via EL via param binding
      ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
 <apex:page>
-	<apex:outputText value="{0}" escape="false">
-		<apex:param value="{! here }" />
+	<apex:outputText value='{0}' escape="false">
+		<apex:param value='{! here }' />
     </apex:outputText>
 </apex:page>
     
 ]]></code>
-        <source-type>vf</source-type>
-    </test-code>
+		<source-type>vf</source-type>
+	</test-code>
 
-    <test-code>
-        <description><![CDATA[
+	<test-code>
+		<description><![CDATA[
 No XSS via EL via param binding
      ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
 <apex:page>
 	<apex:outputText value="{0}" escape="false">
 		<apex:param value="something" />
@@ -58,25 +69,24 @@ No XSS via EL via param binding
 </apex:page>
     
 ]]></code>
-        <source-type>vf</source-type>
-    </test-code>    
-    
-        <test-code>
-        <description><![CDATA[
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
 No XSS via EL via param binding
      ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
 <apex:page>
     <apex:form>
         <apex:selectList value="{!string}" size="1">
-            <apex:selectOption itemValue="{!XSS}" itemLabel="Red" itemEscaped="false"/>
+            <apex:selectOption itemValue='{!XSS}' itemLabel="Red" itemEscaped="false"/>
         </apex:selectList> 
     </apex:form>
 </apex:page>
     
 ]]></code>
-        <source-type>vf</source-type>
-    </test-code>   
-    
+		<source-type>vf</source-type>
+	</test-code>
 </test-data>
