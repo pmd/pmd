@@ -15,7 +15,7 @@ PARSER_BEGIN(VfParser)
 package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.vf.TokenMgrError;
 
 public class VfParser {
 
@@ -49,7 +49,6 @@ public class VfParser {
 PARSER_END(VfParser)
 
 /** *************************  VF LEXICON  **************************** */
-// functionCall: identifier LPAREN expression? (COMMA expression)* RPAREN;
 
 <*> TOKEN :
 {
@@ -66,7 +65,7 @@ PARSER_END(VfParser)
        "\u0030"-"\u0039"
       ] >
 | <#ALPHANUM_CHAR: ( <ALPHA_CHAR> | <NUM_CHAR> ) >
-| <#IDENTIFIER_CHAR: ( <ALPHANUM_CHAR> | [ "_", "-", ".", ":" ] ) >
+| <#IDENTIFIER_CHAR: ( <ALPHANUM_CHAR> | [ "_", "-", ":" ] ) >
 | <#IDENTIFIER: <ALPHA_CHAR> (<IDENTIFIER_CHAR>)* >
 | <#XMLNAME: (<ALPHA_CHAR> | "_" | ":") (<IDENTIFIER_CHAR>)* >
 | <#QUOTED_STRING_NO_BREAKS: ( "'" ( ~["'", "\r", "\n"] )* "'" )
@@ -81,6 +80,8 @@ PARSER_END(VfParser)
 | <#NO_LT_OR_OPENBRACE: (~["<","{"])>
 | <#NO_ENDTAG_START: (~["<"]~["/"]) >
 | <#TEXT_IN_EL: (~["}", "'", "\""])+ >
+| <#CLOSEBRACE: ("}")>
+| <#DOT: "." >
 }
 
 
@@ -89,7 +90,7 @@ PARSER_END(VfParser)
   < (<WHITESPACE>)+ >
 }
 
-<AfterTagState, InTagState, HtmlScriptContentState, HtmlStyleContentState> SPECIAL_TOKEN :
+<AfterTagState, InTagState, HtmlScriptContentState, HtmlStyleContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ> SPECIAL_TOKEN:
 {
   < (<WHITESPACE>)+ >
 }
@@ -109,8 +110,64 @@ PARSER_END(VfParser)
 
 <AfterTagState> TOKEN :
 {
-	<EL_EXPRESSION: ( "{!" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" ) >
+	<EL_EXPRESSION: "{!" > : ElTagState
 |	<UNPARSED_TEXT: ( <NO_LT_OR_OPENBRACE>|<OPENBRACE><NO_BANG>)+ >
+}
+
+<ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ> TOKEN :
+{
+		<NULL: "null" >
+	| <TRUE: "true" >
+	| <FALSE: "false" >
+	| <LPAREN: "(" >
+	| <RPAREN: ")" >
+	| <COMMA: "," >
+	| <LSQUARE: "[" >
+	| <RSQUARE: "]" >
+	| <EXP_DOT: <DOT> >
+	| <AMP_AMP: "&&" >
+	| <CONCATEQ: "&=">
+	| <CONCAT: "&" >
+	| <POW: "^" >
+	| <DIVEQ: "/=" >
+	| <DIV: "/" >
+	| <PLUSEQ: "+=" >
+	| <PLUS: "+" >
+	| <MINUSEQ: "-=">
+	| <MINUS: "-" >
+	| <MULEQ: "*=" >
+	| <MUL: "*" >
+	| <PERCENT: "%">
+	| <DOUBLE_EQ: "==" >
+	| <EQ: "=" >
+	| <NOT_EQ: ("<>" | "!=" ) >
+	| <LE: "<=" >
+	| <GE: ">=" >
+	| <LT: "<" >
+	| <GT: ">" >
+	| <EXCL: ("!"|"~") >
+	| <PIPE_PIPE: "||" >
+	| <STRING_LITERAL: <QUOTED_STRING> >
+	| <DIGITS: (<NUM_CHAR>)+ >
+	| <IDENTIFIER_EL: <IDENTIFIER> >
+	| <COLON: ":">
+	| <QQ: "?">
+
+}
+
+<ElTagState> TOKEN :
+{
+	<END_OF_EL: (<WHITESPACES>)? <CLOSEBRACE> > : AfterTagState
+}
+
+<ElAttribTagStateSQ> TOKEN :
+{
+			<END_OF_EL_ATTRIB_SQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenSingleQuotesState
+}
+
+<ElAttribTagStateDQ> TOKEN :
+{
+			<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
 }
 
 <DocTypeState, DocTypeExternalIdState> TOKEN :
@@ -157,33 +214,22 @@ PARSER_END(VfParser)
 {
   <SINGLE_QUOTE: (<WHITESPACES>)? "'"> : AttrValueBetweenSingleQuotesState
 | <DOUBLE_QUOTE: (<WHITESPACES>)? "\"">: AttrValueBetweenDoubleQuotesState
-| <NO_QUOTE_NO_WHITESPACE: ~["\"","'"," "] > { input_stream.backup(1);} : AttrValueNoQuotesState
 | <IN_ATTR_WHITESPACE: [" "] > : InTagState //support for empty attributes
-}
-
-<AttrValueBetweenSingleQuotesState, AttrValueBetweenDoubleQuotesState, AttrValueNoQuotesState> TOKEN:
-{
-	<EL_EXPRESSION_IN_ATTRIBUTE: "{!" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}" >
-}
-
-<AttrValueNoQuotesState> TOKEN :
-{
-     <ENDING_WHITESPACE: " " >: InTagState
-|    <UNPARSED_TEXT_NO_WHITESPACE: ( ~[" "] | (["{"] ~["!"]) )+ >
-
 }
 
 <AttrValueBetweenSingleQuotesState> TOKEN :
 {
 	<ENDING_SINGLE_QUOTE: "'"> : InTagState
+|	<EL_EXPRESSION_IN_ATTRIBUTE_SQ: "{!" (<WHITESPACES>)? > : ElAttribTagStateSQ
 |	<UNPARSED_TEXT_NO_SINGLE_QUOTES:
 		( (~["{", "'"]) | (["{"] ~["!", "'"]) )+ >
 }
 
 <AttrValueBetweenDoubleQuotesState> TOKEN :
 {
-	<ENDING_DOUBLE_QUOTE: "\""> : InTagState
-|	<UNPARSED_TEXT_NO_DOUBLE_QUOTES:
+		<ENDING_DOUBLE_QUOTE: "\""> : InTagState
+	| <EL_EXPRESSION_IN_ATTRIBUTE_DQ: "{!" (<WHITESPACES>)? > : ElAttribTagStateDQ
+	|	<UNPARSED_TEXT_NO_DOUBLE_QUOTES:
 		( (~["{", "\""]) | (["{"] ~["!", "\""]) )+ >
 }
 
@@ -262,7 +308,7 @@ void ContentElement() #void :
 {}
 {
 	(
-		CommentTag()
+			CommentTag()
 	  |	Element()
 	  | CData()
     | HtmlScript()
@@ -276,18 +322,10 @@ void ContentElement() #void :
  * tag is an xml-tag "&lt;...&gt;" or CDATA "&lt;![CDATA[...]]&gt;".
  * Text consists of unparsed text and/or Expression Language expressions.
  */
-void Text() :
+void Text() #void :
+{}
 {
-	StringBuffer content = new StringBuffer();
-	String tmp;
-}
-{
-	  (
-	  	tmp = UnparsedText() { content.append(tmp); }
-	  | tmp = ElExpression() { content.append(tmp); }
-	  )+
-		{jjtThis.setImage(content.toString());}
-
+	  ( LOOKAHEAD(ElExpression())	ElExpression() | UnparsedText() )+
 }
 
 String UnparsedText() :
@@ -299,20 +337,6 @@ String UnparsedText() :
 		return t.image;
 	}
 }
-
-String UnparsedTextNoWhitespace() #UnparsedText :
-{ Token t;}
-{
-  (
-    t = <UNPARSED_TEXT_NO_WHITESPACE>
-  )
-  {
-		jjtThis.setImage(t.image);
-		return t.image;
-  }
-}
-
-
 
 /**
  * Text that contains no single quotes, and that does not contain the start
@@ -345,24 +369,164 @@ String UnparsedTextNoDoubleQuotes() #UnparsedText :
 /**
  * An EL expression, not within an attribute value.
  */
-String ElExpression() :
-{ 	Token t; }
+void ElExpression() :
+{}
 {
-	t = <EL_EXPRESSION>
-	{
-		jjtThis.setImage(expressionContent(t.image));
-		return t.image;
-	}
+	<EL_EXPRESSION>
+	(Expression())+
+	<END_OF_EL>
 }
 
-String ElExpressionInAttribute() #ElExpression :
-{	Token t; }
+void Expression() :
+{}
 {
-	t = <EL_EXPRESSION_IN_ATTRIBUTE>
-	{
-		jjtThis.setImage(expressionContent(t.image));
-		return t.image;
-	}
+	ConditionalExpression() [ AssignmentOperator() Expression()  ]
+}
+
+void AssignmentOperator() #void :
+{}
+{
+ 	<MULEQ> | <DIVEQ> | <CONCATEQ> | <PLUSEQ> | <MINUSEQ> | <EQ>
+}
+
+void ConditionalExpression() #void  :
+{}
+{
+  ConditionalOrExpression() [ <QQ> Expression() <COLON> ConditionalExpression() ]
+}
+
+void ConditionalOrExpression() #void :
+{}
+{
+  ConditionalAndExpression() ( <PIPE_PIPE> ConditionalAndExpression() )*
+}
+
+void ConditionalAndExpression() #void  :
+{}
+{
+  PowerExpression() ( <AMP_AMP> PowerExpression() )*
+}
+
+void PowerExpression() #void :
+{}
+{
+  ConcatExpression() ( <POW> ConcatExpression() )*
+}
+
+void ConcatExpression() #void :
+{}
+{
+  EqualityExpression() ( <CONCAT> EqualityExpression() )*
+}
+
+void EqualityExpression() #void :
+{}
+{
+  RelationalExpression() ( ( <DOUBLE_EQ> | <NOT_EQ> ) RelationalExpression() )*
+}
+
+void RelationalExpression() #void :
+{}
+{
+  AdditiveExpression() ( ( <LT> | <GT> | <LE> | <GE> ) AdditiveExpression() )*
+}
+
+void AdditiveExpression()  #void :
+{}
+{
+  MultiplicativeExpression() ( LOOKAHEAD(2) ( <PLUS> | <MINUS> ) MultiplicativeExpression() )*
+}
+
+void MultiplicativeExpression()  #void :
+{}
+{
+  UnaryExpression() ( ( <MUL> | <DIV> | <PERCENT> ) UnaryExpression() )*
+}
+
+void UnaryExpression()  #void :
+{}
+{
+	  ( <PLUS> | <MINUS> ) UnaryExpression()
+	|  UnaryExpressionNotPlusMinus()
+}
+
+void UnaryExpressionNotPlusMinus() #void :
+{}
+{
+  ( <EXCL> ) UnaryExpression()
+|  PrimaryExpression()
+}
+
+void PrimaryExpression() #void :
+{}
+{
+  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+}
+
+void PrimaryPrefix() #void :
+{}
+{
+	 	Literal()
+	| Identifier()
+	|  <LPAREN> Expression() <RPAREN>
+}
+
+void PrimarySuffix() #void :
+{}
+{
+	  <LSQUARE> Expression() <RSQUARE>
+	| <EXP_DOT> Identifier()
+	| Arguments()
+}
+
+void Arguments() #void :
+{}
+{
+  <LPAREN> [ ArgumentList() ] <RPAREN>
+}
+
+void ArgumentList() #void:
+{}
+{
+  Expression() ( <COMMA> Expression() )*
+}
+
+void Literal() :
+{ String s; Token t; }
+{
+	  t = <STRING_LITERAL> { jjtThis.setImage(t.image);}
+	| t = <DIGITS> { jjtThis.setImage(t.image);}
+	| s = BooleanLiteral() { jjtThis.setImage(s);}
+	| s = NullLiteral() { jjtThis.setImage(s);}
+
+}
+
+String BooleanLiteral() #void :
+{ Token t; }
+{
+   ( t =	<TRUE>
+	| t = <FALSE>
+	) { return t.image; }
+}
+
+String NullLiteral() #void :
+{ Token t; }
+{
+  t = <NULL> { return t.image;}
+}
+
+void Identifier() :
+{ Token t;	}
+{
+	t = <IDENTIFIER_EL> { jjtThis.setImage(t.image);}
+}
+
+
+void ElExpressionInAttribute() #ElExpression :
+{}
+{
+		<EL_EXPRESSION_IN_ATTRIBUTE_SQ> Expression() <END_OF_EL_ATTRIB_SQ>
+	| <EL_EXPRESSION_IN_ATTRIBUTE_DQ> Expression() <END_OF_EL_ATTRIB_DQ>
 }
 
 void CData() :
@@ -403,7 +567,7 @@ void Element() :
 
 		   	 (Content())
 
-			 (<ENDTAG_START>
+			 (	LOOKAHEAD(2) <ENDTAG_START>
 			  endTag = <TAG_NAME> {tagRegister.closeTag(endTag.image);}
 		      <TAG_END>)?
 	    	)
@@ -421,8 +585,7 @@ void Attribute() :
 {
   t = <ATTR_NAME> { jjtThis.setName(t.image); }
   (
-  	<ATTR_EQ>
-  	AttributeValue()
+  	<ATTR_EQ> AttributeValue()
   )
 }
 
@@ -432,50 +595,21 @@ void Attribute() :
  * are parsed as sub-nodes of the AttributeValue node.
  */
  void AttributeValue() :
- {
- 	StringBuffer content = new StringBuffer();
- 	String tmp;
- 	Token t = null ;
- }
+ {}
  {
    	(
  	  	( 	<DOUBLE_QUOTE>
- 		  	( (	tmp = UnparsedTextNoDoubleQuotes()
- 			  |	tmp = QuoteIndependentAttributeValueContent()
- 			) { content.append(tmp); } )*
+ 		  	( (	UnparsedTextNoDoubleQuotes() |	ElExpressionInAttribute()	) )*
  			( 	<ENDING_DOUBLE_QUOTE> )
  		)
  		|
  	  	( 	<SINGLE_QUOTE>
- 		  	( ( tmp = UnparsedTextNoSingleQuotes() | tmp = QuoteIndependentAttributeValueContent() )
- 		  	{ content.append(tmp); } )*
+ 		  	( ( UnparsedTextNoSingleQuotes() | ElExpressionInAttribute() ) )*
  			( 	<ENDING_SINGLE_QUOTE> )
- 		)
- 		|
- 	  	( <NO_QUOTE_NO_WHITESPACE>
- 		  	( ( tmp = UnparsedTextNoWhitespace() | tmp = QuoteIndependentAttributeValueContent() )
- 		  		{ content.append(tmp); }
- 		  	)*
- 			( <ENDING_WHITESPACE> )
  		)
  		| <IN_ATTR_WHITESPACE>
  	)
- 	{ jjtThis.setImage( content.toString() );
- 	}
  }
-
-/**
- * Partial content of an attribute value that can contain all quotes.
- * This groups EL expressions.
- */
-String QuoteIndependentAttributeValueContent() #void :
-{ 	String tmp; }
-{
-	(	tmp = ElExpressionInAttribute()
-	)
-	{ return tmp; }
-}
-
 
 void CommentTag() :
 {
