@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-
 	<test-code>
 		<description><![CDATA[
 Default escaped EL - no XSS 
@@ -55,7 +54,7 @@ XSS via EL literal and no escaping
 		<source-type>vf</source-type>
 	</test-code>
 
-<test-code>
+	<test-code>
 		<description><![CDATA[
 XSS via EL boolean and no escaping
      ]]></description>
@@ -78,6 +77,23 @@ XSS via EL via param binding
 <apex:page>
 	<apex:outputText value='{0}' escape="false">
 		<apex:param value='{! here }' />
+    </apex:outputText>
+</apex:page>
+    
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+
+	<test-code>
+		<description><![CDATA[
+Escaped EL via param binding
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<apex:outputText value='{0}' escape="false">
+		<apex:param value='{! HTMLENCODE(here) }' />
     </apex:outputText>
 </apex:page>
     
@@ -118,7 +134,7 @@ No XSS via EL via param binding
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
-	
+
 	<test-code>
 		<description><![CDATA[
 No XSS with escaped EL 
@@ -131,6 +147,5 @@ No XSS with escaped EL
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
-	
-	
+
 </test-data>
