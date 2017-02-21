@@ -30,6 +30,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String APEX_SELECT_OPTION = "apex:selectoption ";
     private static final String FALSE = "false";
 
+    
     @Override
     public Object visit(ASTElement node, Object data) {
         if (doesTagSupportEscaping(node)) {
