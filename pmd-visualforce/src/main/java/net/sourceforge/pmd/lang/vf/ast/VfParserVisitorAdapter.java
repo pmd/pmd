@@ -19,10 +19,6 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
         return visit((VfNode) node, data);
     }
 
-    public Object visit(ASTUnparsedText node, Object data) {
-        return visit((VfNode) node, data);
-    }
-
     public Object visit(ASTElExpression node, Object data) {
         return visit((VfNode) node, data);
     }
@@ -82,5 +78,15 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
     public Object visit(ASTExpression node, Object data) {
         return visit((VfNode) node, data);
     }
+    
+    @Override
+    public Object visit(ASTArguments node, Object data) {
+        return visit((VfNode) node, data);
+    }
 
+    
+    @Override
+    public Object visit(ASTDotExpression node, Object data) {
+        return visit((VfNode) node, data);
+    }
 }

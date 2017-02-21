@@ -86,17 +86,16 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         ASTAttribute attr = attrsList.get(0);
         assertEquals("Correct attribute name expected!", "foo", attr.getName());
         assertEquals("Correct attribute value expected!", "CREATE",
-                attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage());
+                attr.getFirstDescendantOfType(ASTText.class).getImage());
 
         attr = attrsList.get(1);
         assertEquals("Correct attribute name expected!", "href", attr.getName());
-        assertEquals("Correct attribute value expected!", "#",
-                attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage());
+        assertEquals("Correct attribute value expected!", "#", attr.getFirstDescendantOfType(ASTText.class).getImage());
 
         attr = attrsList.get(2);
         assertEquals("Correct attribute name expected!", "something", attr.getName());
         assertEquals("Correct attribute value expected!", "#yes#",
-                attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage());
+                attr.getFirstDescendantOfType(ASTText.class).getImage());
     }
 
     /**
@@ -164,8 +163,12 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_IMPORT_JAVASCRIPT);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
-        List<ASTAttributeValue> value = script.findDescendantsOfType(ASTAttributeValue.class);
-        assertEquals("filename.js", value.get(0).getImage());
+        List<ASTAttribute> attr = script.findDescendantsOfType(ASTAttribute.class);
+        assertEquals("One script expected!", 1, attr.size());
+        ASTAttribute att = attr.iterator().next();
+        ASTAttributeValue val = att.getFirstChildOfType(ASTAttributeValue.class);
+        ASTText text = val.getFirstChildOfType(ASTText.class);
+        assertEquals("filename.js", text.getImage());
     }
 
     /**
@@ -177,7 +180,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         assertEquals("Correct script content expected!", "Script!", script.getImage());
-        List<ASTAttributeValue> attrs = script.findDescendantsOfType(ASTAttributeValue.class);
+        List<ASTText> attrs = script.findDescendantsOfType(ASTText.class);
         assertTrue("text/javascript".equals(attrs.get(0).getImage()));
     }
 
@@ -255,37 +258,14 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         List<ASTElExpression> exprs = sortByImage(scripts);
         Iterator<ASTElExpression> iterator = exprs.iterator();
         ASTElExpression script = iterator.next();
-        assertEquals("Correct content expected!", "expr1", script.getImage());
+        ASTExpression expr = script.getFirstChildOfType(ASTExpression.class);
+        ASTIdentifier id = expr.getFirstChildOfType(ASTIdentifier.class);
+        assertEquals("Correct content expected!", "expr1", id.getImage());
         script = iterator.next();
-        assertEquals("Correct content expected!", "expr2", script.getImage());
-    }
+        expr = script.getFirstChildOfType(ASTExpression.class);
+        id = expr.getFirstChildOfType(ASTIdentifier.class);
+        assertEquals("Correct content expected!", "expr2", id.getImage());
 
-    /**
-     * A dangling unopened ( just &lt;/closed&gt; ) tag should not influence the
-     * parsing.
-     */
-    @Test
-    @Ignore // sadly the number of
-    // <opening> tags has to be >= then the number of </closing> tags
-    public void textBetweenUnopenedTag() {
-        Set<ASTText> scripts = getNodes(ASTText.class, TEST_TEXT_WITH_UNOPENED_TAG);
-        assertEquals("Two text chunks expected!", 2, scripts.size());
-        ASTText script = scripts.iterator().next();
-        assertEquals("Correct content expected!", "$", script.getImage());
-    }
-
-    /**
-     * Parser should be able to handle documents which start or end with
-     * unparsed text
-     */
-    @Test
-    @Ignore // sadly the number of
-    // <opening> tags has to be >= then the number of </closing> tags
-    public void textMultipleClosingTags() {
-        Set<ASTText> scripts = getNodes(ASTText.class, TEST_MULTIPLE_CLOSING_TAGS);
-        assertEquals("Four text chunks expected!", 4, scripts.size());
-        ASTText script = scripts.iterator().next();
-        assertEquals("Correct content expected!", " some text ", script.getImage());
     }
 
     /**
@@ -310,7 +290,11 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_QUOTE_EL);
         assertEquals("One attribute expected!", 1, attributes.size());
         ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "{!something}", attr.getImage());
+        List<ASTElExpression> els = attr.findChildrenOfType(ASTElExpression.class);
+        assertEquals("Must be 1!", 1, els.size());
+        ASTExpression expr = els.get(0).getFirstChildOfType(ASTExpression.class);
+        ASTIdentifier id = expr.getFirstChildOfType(ASTIdentifier.class);
+        assertEquals("Expected to detect proper value for attribute!", "something", id.getImage());
     }
 
     @Test
@@ -327,28 +311,12 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      * smoke test for a non-quoted attribute value
      */
     @Test
-    public void noQuoteAttrValue() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR);
+    public void quoteAttrValue() {
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_ATTR);
         assertEquals("One attribute expected!", 1, attributes.size());
         ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "yes|", attr.getImage());
-    }
-
-    /**
-     * tests whether VF el is properly detected as attribute value
-     */
-    @Test
-    public void noQuoteAttrWithJspEL() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_EL);
-        assertEquals("two attributes expected!", 2, attributes.size());
-        Iterator<ASTAttributeValue> iterator = attributes.iterator();
-        ASTAttributeValue attr2 = iterator.next();
-        if ("url".equals(attr2.getImage())) {
-            // we have to employ this nasty work-around
-            // in order to ensure that we check the proper attribute
-            attr2 = iterator.next();
-        }
-        assertEquals("Expected to detect proper value for EL in attribute!", "{!something}", attr2.getImage());
+        ASTText text = attr.getFirstChildOfType(ASTText.class);
+        assertEquals("Expected to detect proper value for attribute!", "yes|", text.getImage());
     }
 
     /**
@@ -356,7 +324,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void noQuoteAttrEmpty() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_EMPTY_ATTR);
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_EMPTY_ATTR);
         assertEquals("two attributes expected!", 2, attributes.size());
         Iterator<ASTAttributeValue> iterator = attributes.iterator();
         ASTAttributeValue attr = iterator.next();
@@ -365,92 +333,21 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
             // in order to ensure that we check the proper attribute
             attr = iterator.next();
         }
-        assertEquals("Expected to detect proper value for attribute!", "", attr.getImage());
-    }
-
-    /**
-     * tests whether parse correctly interprets an cr lf instead of an attribute
-     */
-    @Test
-    public void noQuoteAttrCrLf() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_CR_LF_ATTR);
-        assertEquals("One attribute expected!", 2, attributes.size());
-        Iterator<ASTAttributeValue> iterator = attributes.iterator();
-        ASTAttributeValue attr = iterator.next();
-        if ("http://someHost:/some_URL".equals(attr.getImage())) {
-            // we have to employ this nasty work-around
-            // in order to ensure that we check the proper attribute
-            attr = iterator.next();
-        }
-        assertEquals("Expected to detect proper value for attribute!", "\r\n", attr.getImage());
-
+        assertEquals("Expected to detect proper value for attribute!", null, attr.getImage());
     }
 
     /**
      * tests whether parse correctly interprets an tab instead of an attribute
      */
     @Test
-    public void noQuoteAttrTab() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_TAB_ATTR);
+    public void singleQuoteAttrTab() {
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_TAB_ATTR);
         assertEquals("One attribute expected!", 1, attributes.size());
         Iterator<ASTAttributeValue> iterator = attributes.iterator();
         ASTAttributeValue attr = iterator.next();
-        assertEquals("Expected to detect proper value for attribute!", "\t", attr.getImage());
+        ASTText text = attr.getFirstChildOfType(ASTText.class);
+        assertEquals("Expected to detect proper value for attribute!", "\t", text.getImage());
 
-    }
-
-    /**
-     * test a no quote attribute value can contain a tag (e.g.
-     * attr=&lt;bean:write property="value" /&gt;)
-     * 
-     */
-    @Test
-    @Ignore // nice test for future development
-    public void noQuoteAttrWithBeanWriteTagAsValue() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_TAG_IN_ATTR);
-        assertEquals("One attribute expected!", 1, attributes.size());
-
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "<% String a = \"1\";%>", attr.getImage());
-    }
-
-    /**
-     * test a quote attribute value can contain a tag
-     */
-    @Test
-    @Ignore // nice test for future development
-    public void quoteAttrWithBeanWriteTagAsValue() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_TAG_IN_ATTR);
-        assertEquals("One attribute expected!", 1, attributes.size());
-
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "<% String a = \"1\";%>", attr.getImage());
-    }
-
-    /**
-     * test a no quote attribute value which contains the EL dollar sign $
-     * within its value
-     */
-    @Test
-    @Ignore // nice test for future development
-    public void noQuoteAttrWithDollarSignInValue() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_DOLLAR);
-        assertEquals("One attribute expected!", 2, attributes.size());
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "{!something", attr.getImage());
-    }
-
-    /**
-     * test a no quote attribute value which contains the EL sharp sign # within
-     * its value
-     */
-    @Test
-    @Ignore // nice test for future development
-    public void noQuoteAttrWithSharpSymbolInValue() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_HASH);
-        assertEquals("One attribute expected!", 1, attributes.size());
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "{!something", attr.getImage());
     }
 
     @Test
@@ -469,7 +366,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     @Test
     public void unclosedTagAndNoQuotesForAttribute() {
-        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_NO_QUOTE_ATTR);
+        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_ATTR);
         List<ASTElement> sortedElmnts = sortNodesByName(elements);
         assertEquals("2 tags expected", 2, elements.size());
         assertEquals("First element should be sorted tag:if", "tag:if", sortedElmnts.get(0).getName());
@@ -777,7 +674,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     private static final String TEST_HTML_SCRIPT = "<html><head><script>Script!</script></head></html>";
 
-    private static final String TEST_IMPORT_JAVASCRIPT = "<html><head><script src=\"filename.js\" type=\"text/javascript\"/></head></html>";
+    private static final String TEST_IMPORT_JAVASCRIPT = "<html><head><script src=\"filename.js\" /></head></html>";
 
     private static final String TEST_HTML_SCRIPT_WITH_ATTRIBUTE = "<html><head><script type=\"text/javascript\">Script!</script></head></html>";
 
@@ -800,30 +697,16 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     private static final String TEST_TEXT_AFTER_OPEN_AND_CLOSED_TAG = "<a> some text <b> some text </a>";
 
-    private static final String TEST_TEXT_WITH_UNOPENED_TAG = "<a> some text </b> some text </a>";
-
-    private static final String TEST_MULTIPLE_CLOSING_TAGS = "<a> some text </b> </b> </b> some text </a>";
-
     private static final String TEST_QUOTE_EL = "<tag:if something=\"{!something}\" > </tag:if>";
 
     private static final String TEST_QUOTE_TAG_IN_ATTR = "<tag:if something=\"<bean:write name=\"x\" property=\"z\">\" >  "
             + "<a href=http://someHost:/some_URL >foo</a> </tag:if>";
 
-    private static final String TEST_NO_QUOTE_ATTR = "<tag:if something=yes| > </tag:if>";
+    private static final String TEST_ATTR = "<tag:if something=\"yes|\" > </tag:if>";
 
-    private static final String TEST_NO_QUOTE_EMPTY_ATTR = "<tag:if something= >  <a href=http://someHost:/some_URL >foo</a> </tag:if>";
+    private static final String TEST_EMPTY_ATTR = "<tag:if something= >  <a href=\"http://someHost:/some_URL\" >foo</a> </tag:if>";
 
-    private static final String TEST_NO_QUOTE_TAG_IN_ATTR = "<something=<bean:write name=\"x\" property=\"z\"> >  <a href=http://someHost:/some_URL >foo</a> </tag:if>";
-
-    private static final String TEST_NO_QUOTE_CR_LF_ATTR = "<tag:if something=\r\n >  <a href=http://someHost:/some_URL >foo</a> </tag:if>";
-
-    private static final String TEST_NO_QUOTE_TAB_ATTR = "<tag:if something=\t >   </tag:if>";
-
-    private static final String TEST_NO_QUOTE_ATTR_WITH_EL = "<tag:if something={!something} >  <a href=url >foo</a> </tag:if>";
-
-    private static final String TEST_NO_QUOTE_ATTR_WITH_DOLLAR = "<tag:if something=!{something >  <a href={! >foo</a> </tag:if>";
-
-    private static final String TEST_NO_QUOTE_ATTR_WITH_HASH = "<tag:if something={!something >  <a href={!url} >foo</a> </tag:if>";
+    private static final String TEST_TAB_ATTR = "<tag:if something='\t' >   </tag:if>";
 
     private static final String TEST_UNCLOSED_SIMPLE = "<tag:someTag> <tag:if someting=\"x\" > </tag:someTag>";
 
@@ -861,5 +744,5 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     private static final String TEST_UNCLOSED_END_OF_DOC = "<tag:x> <tag:y>";
 
-    private static final String TEST_UNCLOSED_NO_QUOTE_ATTR = "<tag:someTag> <tag:if someting=x > </tag:someTag>";
+    private static final String TEST_UNCLOSED_ATTR = "<tag:someTag> <tag:if someting='x' > </tag:someTag>";
 }

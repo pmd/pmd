@@ -297,7 +297,7 @@ void Bom() #void :
 void Content() #void :
 {}
 {
-	( Text() | ContentElement()	)*
+	( ElOrText() | ContentElement()	)*
 }
 
 /**
@@ -322,13 +322,13 @@ void ContentElement() #void :
  * tag is an xml-tag "&lt;...&gt;" or CDATA "&lt;![CDATA[...]]&gt;".
  * Text consists of unparsed text and/or Expression Language expressions.
  */
-void Text() #void :
+void ElOrText() #void :
 {}
 {
-	  ( LOOKAHEAD(ElExpression())	ElExpression() | UnparsedText() )+
+	  ( LOOKAHEAD(ElExpression())	ElExpression() | Text() )+
 }
 
-String UnparsedText() :
+String Text() :
 { Token t; }
 {
 	t = <UNPARSED_TEXT>
@@ -342,7 +342,7 @@ String UnparsedText() :
  * Text that contains no single quotes, and that does not contain the start
  * of a EL expression.
  */
-String UnparsedTextNoSingleQuotes() #UnparsedText :
+String UnparsedTextNoSingleQuotes() #Text :
 { Token t; }
 {
 	t = <UNPARSED_TEXT_NO_SINGLE_QUOTES>
@@ -356,7 +356,7 @@ String UnparsedTextNoSingleQuotes() #UnparsedText :
  * Text that contains no double quotes, and that does not contain the start
  * of a EL expression.
  */
-String UnparsedTextNoDoubleQuotes() #UnparsedText :
+String UnparsedTextNoDoubleQuotes() #Text :
 { Token t; }
 {
 	t = <UNPARSED_TEXT_NO_DOUBLE_QUOTES>
@@ -475,11 +475,17 @@ void PrimarySuffix() #void :
 {}
 {
 	  <LSQUARE> Expression() <RSQUARE>
-	| <EXP_DOT> Identifier()
+	| DotExpression()
 	| Arguments()
 }
 
-void Arguments() #void :
+void DotExpression() :
+{}
+{
+	<EXP_DOT> Identifier()
+}
+
+void Arguments() :
 {}
 {
   <LPAREN> [ ArgumentList() ] <RPAREN>

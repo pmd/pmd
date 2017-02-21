@@ -20,7 +20,18 @@ public class VfPageStyleTest extends AbstractVfNodesTest {
         Set<ASTElExpression> expressions = getNodes(ASTElExpression.class, VF_EL_EXPRESSION);
         assertEquals("One expression expected!", 1, expressions.size());
         ASTElExpression expression = expressions.iterator().next();
-        assertEquals("Correct expression content expected!", "myBean.get(\"{! World }\")", expression.getImage());
+        ASTExpression exp = expression.getFirstChildOfType(ASTExpression.class);
+        ASTIdentifier id = exp.getFirstChildOfType(ASTIdentifier.class);
+        assertEquals("Correct expression content expected!", "myBean", id.getImage());
+        ASTDotExpression dot = exp.getFirstChildOfType(ASTDotExpression.class);
+        ASTIdentifier dotid = dot.getFirstChildOfType(ASTIdentifier.class);
+        assertEquals("Correct expression content expected!", "get", dotid.getImage()); // .get(\"{!
+                                                                                       // World
+                                                                                       // }\")
+        ASTArguments arguments = exp.getFirstChildOfType(ASTArguments.class);
+        ASTExpression innerExpression = arguments.getFirstChildOfType(ASTExpression.class);
+        ASTLiteral literal = innerExpression.getFirstChildOfType(ASTLiteral.class);
+        assertEquals("Correct expression content expected!", "\"{! World }\"", literal.getImage());
     }
 
     /**
@@ -31,7 +42,16 @@ public class VfPageStyleTest extends AbstractVfNodesTest {
         Set<ASTElExpression> expressions = getNodes(ASTElExpression.class, VF_EL_EXPRESSION_IN_ATTRIBUTE);
         assertEquals("One expression expected!", 1, expressions.size());
         ASTElExpression expression = expressions.iterator().next();
-        assertEquals("Correct expression content expected!", "myValidator.find(\"'vf'\")", expression.getImage());
+        ASTExpression exp = expression.getFirstChildOfType(ASTExpression.class);
+        ASTIdentifier id = exp.getFirstChildOfType(ASTIdentifier.class);
+        assertEquals("Correct expression content expected!", "myValidator", id.getImage());
+        ASTDotExpression dot = exp.getFirstChildOfType(ASTDotExpression.class);
+        ASTIdentifier dotid = dot.getFirstChildOfType(ASTIdentifier.class);
+        assertEquals("Correct expression content expected!", "find", dotid.getImage());
+        ASTArguments arguments = exp.getFirstChildOfType(ASTArguments.class);
+        ASTExpression innerExpression = arguments.getFirstChildOfType(ASTExpression.class);
+        ASTLiteral literal = innerExpression.getFirstChildOfType(ASTLiteral.class);
+        assertEquals("Correct expression content expected!", "\"'vf'\"", literal.getImage());
     }
 
     private static final String VF_EL_EXPRESSION = "<html><title>Hello {!myBean.get(\"{! World }\") } .jsp</title></html>";
