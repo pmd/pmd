@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
  * @author sergey.gorbaty
+ * February 2017
  *
  */
 public class VfUnescapeElRule extends AbstractVfRule {
@@ -161,8 +162,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     break;
                 }
 
-                if ("$Resource".equalsIgnoreCase(id.getImage()) || "URLFOR".equalsIgnoreCase(id.getImage()) || "$Site".equalsIgnoreCase(id.getImage())
-                        || "$Page".equalsIgnoreCase(id.getImage())) {
+                if ("$Resource".equalsIgnoreCase(id.getImage()) || "URLFOR".equalsIgnoreCase(id.getImage())
+                        || "$Site".equalsIgnoreCase(id.getImage()) || "$Page".equalsIgnoreCase(id.getImage())) {
                     isEscaped = true;
                     continue;
                 }
