@@ -498,9 +498,9 @@ void ArgumentList() #void:
 }
 
 void Literal() :
-{ String s; Token t,d,n; StringBuffer sb = new StringBuffer(); }
+{ String s; }
 {
-	  t = <STRING_LITERAL> { jjtThis.setImage(t.image);}	
+	  t = <STRING_LITERAL> { jjtThis.setImage(t.image);}
 	| t = <DIGITS> { jjtThis.setImage(t.image);}
 	| s = BooleanLiteral() { jjtThis.setImage(s);}
 	| s = NullLiteral() { jjtThis.setImage(s);}
