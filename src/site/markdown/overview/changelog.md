@@ -32,6 +32,8 @@ This is a bug fixing release.
     *   [#256](https://github.com/pmd/pmd/issues/256): \[core] shortnames option is broken with relative paths
 *   java-basic
     *   [#232](https://github.com/pmd/pmd/issues/232): \[java] SimplifiedTernary: Incorrect ternary operation can be simplified.
+*   java-coupling
+    *   [#270](https://github.com/pmd/pmd/issues/270): \[java] LoD false positive
 *   java-design
     *   [#216](https://github.com/pmd/pmd/issues/216): \[java] \[doc] NonThreadSafeSingleton: Be more explicit as to why double checked locking is not recommended
     *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeReturn: ClassCastException in switch case with local variable returned
@@ -48,3 +50,4 @@ This is a bug fixing release.
 
 ### External Contributions
 
+*   [#266](https://github.com/pmd/pmd/pull/266): \[java] corrected invalid reporting of LoD violation
