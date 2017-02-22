@@ -496,14 +496,14 @@ void PrimaryPrefix() #void :
 	 	Literal()
 	| Identifier()
 	| <LPAREN> Expression() <RPAREN>
-	| <LSQUARE> Expression() <RSQUARE>
+	| <LSQUARE> Expression() (<COMMA> Expression())*   <RSQUARE>
 
 }
 
 void PrimarySuffix() #void :
 {}
 {
-	  <LSQUARE> Expression() <RSQUARE>
+	  <LSQUARE> Expression() (<COMMA> Expression())*  <RSQUARE>
 	| DotExpression()
 	| Arguments()
 }
