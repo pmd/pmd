@@ -30,13 +30,13 @@ and soon you'll be fixing problems much faster.
 Suggestions?  Comments?  Post them [here][7]. Thanks!
 
 
-[1]: rules/java/unusedcode.html
-[2]: rules/java/basic.html
-[3]: rules/java/design.html
-[4]: rules/java/controversial.html
+[1]: pmd-java/rules/index.html#Unused_Code 
+[2]: pmd-java/rules/index.html#Basic
+[3]: pmd-java/rules/index.html#Design
+[4]: pmd-java/rules/index.html#Controversial
 [5]: ../usage/howtomakearuleset.html
 [6]: ../usage/suppressing.html
-[7]: http://sourceforge.net/p/pmd/discussion/188192
-[8]: rules/java/empty.html
-[9]: rules/java/unnecessary.html
+[7]: https://github.com/pmd/pmd/issues
+[8]: pmd-java/rules/index.html#Empty_Code
+[9]: pmd-java/rules/index.html#Unnecessary
 
