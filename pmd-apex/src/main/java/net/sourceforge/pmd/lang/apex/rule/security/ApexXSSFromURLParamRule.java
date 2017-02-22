@@ -32,6 +32,10 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private static final String[] JS_ESCAPING = new String[] { "ESAPI", "encoder", "SFDC_JSENCODE" };
     private static final String[] JSINHTML_ESCAPING = new String[] { "ESAPI", "encoder", "SFDC_JSINHTMLENCODE" };
     private static final String[] URL_ESCAPING = new String[] { "ESAPI", "encoder", "SFDC_URLENCODE" };
+    private static final String[] STRING_HTML3 = new String[] { "String", "escapeHtml3" };
+    private static final String[] STRING_HTML4 = new String[] { "String", "escapeHtml4" };
+    private static final String[] STRING_XML = new String[] { "String", "escapeXml" };
+    private static final String[] STRING_ECMASCRIPT = new String[] { "String", "escapeEcmaScript" };
     private static final String[] INTEGER_VALUEOF = new String[] { "Integer", "valueOf" };
     private static final String[] ID_VALUEOF = new String[] { "ID", "valueOf" };
     private static final String[] DOUBLE_VALUEOF = new String[] { "Double", "valueOf" };
@@ -99,15 +103,22 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     }
 
     private boolean isEscapingMethod(ASTMethodCallExpression methodNode) {
+        // escaping methods
         return Helper.isMethodCallChain(methodNode, HTML_ESCAPING) || Helper.isMethodCallChain(methodNode, JS_ESCAPING)
                 || Helper.isMethodCallChain(methodNode, JSINHTML_ESCAPING)
                 || Helper.isMethodCallChain(methodNode, URL_ESCAPING)
+                || Helper.isMethodCallChain(methodNode, STRING_HTML3)
+                || Helper.isMethodCallChain(methodNode, STRING_HTML4)
+                || Helper.isMethodCallChain(methodNode, STRING_XML)
+                || Helper.isMethodCallChain(methodNode, STRING_ECMASCRIPT)
+                // safe casts that eliminate injection
                 || Helper.isMethodCallChain(methodNode, INTEGER_VALUEOF)
                 || Helper.isMethodCallChain(methodNode, DOUBLE_VALUEOF)
                 || Helper.isMethodCallChain(methodNode, BOOLEAN_VALUEOF)
+                || Helper.isMethodCallChain(methodNode, ID_VALUEOF)
+                // safe boolean methods
                 || Helper.isMethodCallChain(methodNode, STRING_ISEMPTY)
-                || Helper.isMethodCallChain(methodNode, STRING_ISBLANK)
-                || Helper.isMethodCallChain(methodNode, ID_VALUEOF);
+                || Helper.isMethodCallChain(methodNode, STRING_ISBLANK);
     }
 
     private void processInlineMethodCalls(ASTMethodCallExpression methodNode, Object data, final boolean isNested) {

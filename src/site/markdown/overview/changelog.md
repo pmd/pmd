@@ -307,6 +307,8 @@ For example:
 *   apex-complexity
     *   [#183](https://github.com/pmd/pmd/issues/183): \[apex] NCSS Method length is incorrect when using method chaining
     *   [#251](https://github.com/pmd/pmd/issues/251): \[apex] NCSS Type length is incorrect when using method chaining
+*   apex-security
+    *   [#264](https://github.com/pmd/pmd/issues/264): \[apex] ApexXSSFromURLParamRule shouldn't enforce ESAPI usage. String.escapeHtml4 is sufficient.
 *   java
     *   [#185](https://github.com/pmd/pmd/issues/185): \[java] CPD runs into NPE when analyzing Lucene
     *   [#206](https://github.com/pmd/pmd/issues/206): \[java] Parse error on annotation fields with generics
@@ -403,4 +405,5 @@ For example:
 *   [#228](https://github.com/pmd/pmd/pull/228): \[apex] Excluding count from CRUD/FLS checks
 *   [#229](https://github.com/pmd/pmd/pull/229): \[apex] Dynamic SOQL is safe against Integer, Boolean, Double
 *   [#231](https://github.com/pmd/pmd/pull/231): \[apex] CRUD/FLS rule - add support for fields
+*   [#268](https://github.com/pmd/pmd/pull/268): \[apex] Support safe escaping via String method
 

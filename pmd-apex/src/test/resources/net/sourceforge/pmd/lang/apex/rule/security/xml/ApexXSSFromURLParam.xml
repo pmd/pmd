@@ -378,5 +378,19 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
+	
+		<test-code>
+		<description>URL parameter method passing</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String baz, bas;
+		bas = ApexPages.currentPage().getParameters().get('foo');
+		baz = String.escapeHtml4(bas);
+	}		
+}
+		]]></code>
+	</test-code>
 
 </test-data>
