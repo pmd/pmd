@@ -148,7 +148,7 @@ PARSER_END(VfParser)
 	| <EXCL: ("!"|"~"|"NOT") >
 	| <PIPE_PIPE: "||" >
 	| <STRING_LITERAL: <QUOTED_STRING> >
-	| <DIGITS: (<NUM_CHAR>)+ >
+	| <DIGITS: (<NUM_CHAR>)+ (<DOT> (<NUM_CHAR>)+)? >
 	| <IDENTIFIER_EL: <IDENTIFIER> >
 	| <COLON: ":">
 	| <QQ: "?">
@@ -498,9 +498,9 @@ void ArgumentList() #void:
 }
 
 void Literal() :
-{ String s; Token t; }
+{ String s; Token t,d,n; StringBuffer sb = new StringBuffer(); }
 {
-	  t = <STRING_LITERAL> { jjtThis.setImage(t.image);}
+	  t = <STRING_LITERAL> { jjtThis.setImage(t.image);}	
 	| t = <DIGITS> { jjtThis.setImage(t.image);}
 	| s = BooleanLiteral() { jjtThis.setImage(s);}
 	| s = NullLiteral() { jjtThis.setImage(s);}
