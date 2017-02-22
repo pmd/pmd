@@ -25,9 +25,7 @@ public class VfPageStyleTest extends AbstractVfNodesTest {
         assertEquals("Correct expression content expected!", "myBean", id.getImage());
         ASTDotExpression dot = exp.getFirstChildOfType(ASTDotExpression.class);
         ASTIdentifier dotid = dot.getFirstChildOfType(ASTIdentifier.class);
-        assertEquals("Correct expression content expected!", "get", dotid.getImage()); // .get(\"{!
-                                                                                       // World
-                                                                                       // }\")
+        assertEquals("Correct expression content expected!", "get", dotid.getImage()); 
         ASTArguments arguments = exp.getFirstChildOfType(ASTArguments.class);
         ASTExpression innerExpression = arguments.getFirstChildOfType(ASTExpression.class);
         ASTLiteral literal = innerExpression.getFirstChildOfType(ASTLiteral.class);
