@@ -80,7 +80,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
 
             if (hasPlaceholders && isUnescaped) {
-                if (hasAnyEL(node)) {
+                if (hasELInInnerElements(node)) {
                     addViolation(data, node);
                 }
             }
@@ -136,11 +136,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     }
 
-    private boolean hasAnyEL(final ASTElement node) {
+    private boolean hasELInInnerElements(final ASTElement node) {
         final ASTContent content = node.getFirstChildOfType(ASTContent.class);
         if (content != null) {
-            List<ASTElement> innerElements = content.findChildrenOfType(ASTElement.class);
-            for (ASTElement element : innerElements) {
+            final List<ASTElement> innerElements = content.findChildrenOfType(ASTElement.class);
+            for (final ASTElement element : innerElements) {
                 if (element.getName().equalsIgnoreCase(APEX_PARAM)) {
                     final List<ASTAttribute> innerAttributes = element.findChildrenOfType(ASTAttribute.class);
                     for (ASTAttribute attrib : innerAttributes) {
