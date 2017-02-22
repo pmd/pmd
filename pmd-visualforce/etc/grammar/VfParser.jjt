@@ -498,7 +498,7 @@ void ArgumentList() #void:
 }
 
 void Literal() :
-{ String s; }
+{ String s; Token t; }
 {
 	  t = <STRING_LITERAL> { jjtThis.setImage(t.image);}
 	| t = <DIGITS> { jjtThis.setImage(t.image);}
