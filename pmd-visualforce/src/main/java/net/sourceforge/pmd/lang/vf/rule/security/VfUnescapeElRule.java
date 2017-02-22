@@ -60,7 +60,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 }
             }
 
-            if (name.equalsIgnoreCase("href") || name.equalsIgnoreCase("src")) {
+            if ("href".equalsIgnoreCase(name) || "src".equalsIgnoreCase(name)) {
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
                     if (doesElContainAnyUnescapedIdentifiers(el, ESCAPING.URLENCODE)) {
@@ -217,7 +217,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         private final String text;
 
-        private ESCAPING(final String text) {
+        ESCAPING(final String text) {
             this.text = text;
         }
 
