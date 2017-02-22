@@ -114,7 +114,7 @@ PARSER_END(VfParser)
 |	<UNPARSED_TEXT: ( <NO_LT_OR_OPENBRACE>|<OPENBRACE><NO_BANG>)+ >
 }
 
-<ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ> TOKEN :
+<ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElAttribTagStateNQ> TOKEN :
 {
 		<NULL: "null" >
 	| <TRUE: "true" >
@@ -170,6 +170,11 @@ PARSER_END(VfParser)
 			<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
 }
 
+<ElAttribTagStateNQ> TOKEN :
+{
+			<END_OF_EL_ATTRIB_NQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueNoQuotesState
+}
+
 <DocTypeState, DocTypeExternalIdState> TOKEN :
 {
 	<WHITESPACES: (<WHITESPACE>)+ >
@@ -214,7 +219,16 @@ PARSER_END(VfParser)
 {
   <SINGLE_QUOTE: (<WHITESPACES>)? "'"> : AttrValueBetweenSingleQuotesState
 | <DOUBLE_QUOTE: (<WHITESPACES>)? "\"">: AttrValueBetweenDoubleQuotesState
+| <NO_QUOTE_NO_WHITESPACE: ~["\"","'"," "] > { input_stream.backup(1);} : AttrValueNoQuotesState
 | <IN_ATTR_WHITESPACE: [" "] > : InTagState //support for empty attributes
+}
+
+<AttrValueNoQuotesState> TOKEN :
+{
+     <ENDING_WHITESPACE: " " >: InTagState
+	|	<EL_EXPRESSION_IN_ATTRIBUTE_NQ: "{!" (<WHITESPACES>)? > : ElAttribTagStateNQ
+	| <UNPARSED_TEXT_NO_WHITESPACE: ( ~["$", "#", " "] |(["$", "#"] ~["{"]) )+ >
+
 }
 
 <AttrValueBetweenSingleQuotesState> TOKEN :
@@ -336,6 +350,19 @@ String Text() :
 		jjtThis.setImage(t.image);
 		return t.image;
 	}
+}
+
+
+String UnparsedTextNoWhitespace() #Text :
+{ Token t;}
+{
+  (
+    t = <UNPARSED_TEXT_NO_WHITESPACE>
+  )
+  {
+		jjtThis.setImage(t.image);
+		return t.image;
+  }
 }
 
 /**
@@ -468,7 +495,9 @@ void PrimaryPrefix() #void :
 {
 	 	Literal()
 	| Identifier()
-	|  <LPAREN> Expression() <RPAREN>
+	| <LPAREN> Expression() <RPAREN>
+	| <LSQUARE> Expression() <RSQUARE>
+
 }
 
 void PrimarySuffix() #void :
@@ -482,7 +511,7 @@ void PrimarySuffix() #void :
 void DotExpression() :
 {}
 {
-	<EXP_DOT> (Identifier() | BooleanLiteral() )
+	<EXP_DOT> (Identifier() | Literal() )
 
 }
 
@@ -534,6 +563,7 @@ void ElExpressionInAttribute() #ElExpression :
 {
 		<EL_EXPRESSION_IN_ATTRIBUTE_SQ> [Expression()] <END_OF_EL_ATTRIB_SQ>
 	| <EL_EXPRESSION_IN_ATTRIBUTE_DQ> [Expression()] <END_OF_EL_ATTRIB_DQ>
+	| <EL_EXPRESSION_IN_ATTRIBUTE_NQ> [Expression()] <END_OF_EL_ATTRIB_NQ>
 }
 
 void CData() :
@@ -614,6 +644,10 @@ void Attribute() :
  		  	( ( UnparsedTextNoSingleQuotes() | ElExpressionInAttribute() ) )*
  			( 	<ENDING_SINGLE_QUOTE> )
  		)
+		| ( <NO_QUOTE_NO_WHITESPACE>
+			( (  UnparsedTextNoWhitespace() | ElExpressionInAttribute() ) )*
+		( <ENDING_WHITESPACE> )
+		)
  		| <IN_ATTR_WHITESPACE>
  	)
  }
