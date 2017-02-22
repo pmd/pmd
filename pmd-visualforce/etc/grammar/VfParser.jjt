@@ -325,7 +325,7 @@ void ContentElement() #void :
 void ElOrText() #void :
 {}
 {
-	  ( LOOKAHEAD(ElExpression())	ElExpression() | Text() )+
+	  ( ElExpression() | Text() )+
 }
 
 String Text() :
@@ -482,7 +482,8 @@ void PrimarySuffix() #void :
 void DotExpression() :
 {}
 {
-	<EXP_DOT> Identifier()
+	<EXP_DOT> (Identifier() | BooleanLiteral() )
+
 }
 
 void Arguments() :
@@ -531,8 +532,8 @@ void Identifier() :
 void ElExpressionInAttribute() #ElExpression :
 {}
 {
-		<EL_EXPRESSION_IN_ATTRIBUTE_SQ> Expression() <END_OF_EL_ATTRIB_SQ>
-	| <EL_EXPRESSION_IN_ATTRIBUTE_DQ> Expression() <END_OF_EL_ATTRIB_DQ>
+		<EL_EXPRESSION_IN_ATTRIBUTE_SQ> [Expression()] <END_OF_EL_ATTRIB_SQ>
+	| <EL_EXPRESSION_IN_ATTRIBUTE_DQ> [Expression()] <END_OF_EL_ATTRIB_DQ>
 }
 
 void CData() :
