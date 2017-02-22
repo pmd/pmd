@@ -31,8 +31,10 @@
         <jjtree target="etc/grammar/VfParser.jjt"
                 outputdirectory="${target}/net/sourceforge/pmd/lang/vf/ast/"
                 javacchome="${javacc-home.path}" />
-        <!-- Ensure generated using CharStream interface -->
+        <!-- Ensure generated using CharStream interface debugparser="true"
+        		debugtokenmanager="true"-->
         <javacc static="false"
+        		
                 usercharstream="true"
                 unicodeinput="true"
                 javaunicodeescape="false"

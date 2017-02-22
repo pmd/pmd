@@ -7,8 +7,8 @@ Default escaped EL - no XSS
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <apex:page>
-{! foo('test') }
-</apex:page>
+{!NoXSSHere(bah)}
+ </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
@@ -127,6 +127,9 @@ No XSS via EL via param binding
     <apex:form>
         <apex:selectList value="{!string}" size="1">
             <apex:selectOption itemValue='{!XSS}' itemLabel="Red" itemEscaped="false"/>
+            <apex:selectOption itemValue={!XSS} itemLabel="Blue" itemEscaped="false"/>
+            <apex:selectOption itemValue="{!XSS}" itemLabel="Green" itemEscaped="false"/>
+            
         </apex:selectList> 
     </apex:form>
 </apex:page>
