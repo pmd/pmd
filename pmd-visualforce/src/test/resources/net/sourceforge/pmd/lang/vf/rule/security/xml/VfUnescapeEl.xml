@@ -1,5 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
+
+	<test-code>
+		<description><![CDATA[
+EL in JS on-event handler - stored XSS 
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<div onclick="{!XSSHere(bah)}" />
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+EL in JS on-event handler - stored XSS 
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<div onclick="{!JSENCODE(NoXSSHere)}" />
+<div onclick="{!JSINHTMLENCODE(NoXSSHere)}" />
+<div onclick="{!JSENCODE(NoXSSHere)}" />
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+
+	<test-code>
+		<description><![CDATA[
+EL in JS src handler - stored XSS 
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<iframe src="{!XSSHere}" />
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+EL in JS src handler - stored XSS 
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<iframe src="{!URLENCODE(XSSHere)}" />
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+
+	<test-code>
+		<description><![CDATA[
+EL in JS src handler - stored XSS 
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<iframe src="{!XSSHere}" />
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
 	<test-code>
 		<description><![CDATA[
 Default escaped EL - no XSS 
@@ -15,7 +85,7 @@ Default escaped EL - no XSS
 
 	<test-code>
 		<description><![CDATA[
-No XSS 
+EL that is properly escaped should be no XSS 
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
