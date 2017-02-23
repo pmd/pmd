@@ -34,7 +34,7 @@ Suggestions?  Comments?  Post them [here][7]. Thanks!
 [2]: ../pmd-java/rules/index.html#Basic
 [3]: ../pmd-java/rules/index.html#Design
 [4]: ../pmd-java/rules/index.html#Controversial
-[5]: ../usage/howtomakearuleset.html
+[5]: ../customizing/howtomakearuleset.html
 [6]: ../usage/suppressing.html
 [7]: https://github.com/pmd/pmd/issues
 [8]: ../pmd-java/rules/index.html#Empty_Code
