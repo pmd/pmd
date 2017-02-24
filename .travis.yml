@@ -8,10 +8,10 @@ before_install:
   - cp .travis/travis-settings.xml "$HOME/.m2/settings.xml"
   - mkdir -p "$HOME/.ssh"
   - chmod 700 "$HOME/.ssh"
-  - openssl aes-256-cbc -K $encrypted_c422865a395e_key -iv $encrypted_c422865a395e_iv -in .travis/id_rsa.enc -out "$HOME/.ssh/id_rsa" -d
+  - openssl aes-256-cbc -K $encrypted_5630fbebf057_key -iv $encrypted_5630fbebf057_iv -in .travis/id_rsa.enc -out "$HOME/.ssh/id_rsa" -d
   - chmod 600 "$HOME/.ssh/id_rsa"
   - mkdir -p "$HOME/.gpg"
-  - openssl aes-256-cbc -K $encrypted_c422865a395e_key -iv $encrypted_c422865a395e_iv -in .travis/release-signing-key-82DE7BE82166E84E.gpg.enc -out .travis/release-signing-key-82DE7BE82166E84E.gpg -d
+  - openssl aes-256-cbc -K $encrypted_5630fbebf057_key -iv $encrypted_5630fbebf057_iv -in .travis/release-signing-key-82DE7BE82166E84E.gpg.enc -out .travis/release-signing-key-82DE7BE82166E84E.gpg -d
   - gpg2 --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script:
