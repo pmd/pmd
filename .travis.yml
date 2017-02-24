@@ -14,10 +14,6 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_c422865a395e_key -iv $encrypted_c422865a395e_iv -in .travis/release-signing-key-82DE7BE82166E84E.gpg.enc -out .travis/release-signing-key-82DE7BE82166E84E.gpg -d
   - gpg2 --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-before_script:
-  - SHOULD_DEPLOY=no
-  - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] && SHOULD_DEPLOY=yes || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
-  - export SHOULD_DEPLOY
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash .travis/build-pull-request.sh; fi'
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]; then bash .travis/build-push.sh; fi'
