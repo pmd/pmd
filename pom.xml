@@ -1020,31 +1020,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         </profile>
 
         <profile>
-          <id>travis</id>
-          <activation>
-            <!-- https://github.com/travis-ci/travis-ci/issues/2727 -->
-            <!-- http://docs.travis-ci.com/user/ci-environment/#Environment-variables -->
-            <!-- from: https://github.com/marschall/jdeps-maven-plugin/blob/master/pom.xml -->
-            <property>
-              <name>env.TRAVIS</name>
-              <value>true</value>
-            </property>
-          </activation>
-          <build>
-            <plugins>
-              <plugin>
-                <artifactId>maven-toolchains-plugin</artifactId>
-                <executions>
-                  <execution>
-                    <phase>none</phase>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-          </build>
-        </profile>
-
-        <profile>
             <id>site</id>
             <!--
                 In order to build the site and build the aggregate javadoc report
