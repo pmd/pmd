@@ -3,7 +3,7 @@ language: java
 jdk: oraclejdk8
 before_install:
   - openssl aes-256-cbc -K $encrypted_5630fbebf057_key -iv $encrypted_5630fbebf057_iv -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
-  - cd .travis && tar xfv secrets.tar
+  - cd .travis && tar xfv secrets.tar && cd ..
   - echo "MAVEN_OPTS='-Xms1g -Xmx1g'" > "$HOME/.mavenrc"
   - mkdir -p "$HOME/.m2"
   - cp .travis/travis-toolchains.xml "$HOME/.m2/toolchains.xml"
