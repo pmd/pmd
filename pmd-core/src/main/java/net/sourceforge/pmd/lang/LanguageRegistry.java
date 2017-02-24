@@ -5,7 +5,9 @@ package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -20,9 +22,24 @@ public final class LanguageRegistry {
     private Map<String, Language> languages;
 
     private LanguageRegistry() {
-        languages = new HashMap<>();
+        List<Language> languagesList = new ArrayList<>();
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
         for (Language language : languageLoader) {
+            languagesList.add(language);
+        }
+
+        // sort languages by terse name. Avoiding differences in the order of languages
+        // across JVM versions / OS.
+        Collections.sort(languagesList, new Comparator<Language>() {
+            @Override
+            public int compare(Language o1, Language o2) {
+                return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
+            }
+        });
+
+        // using a linked hash map to maintain insertion order
+        languages = new LinkedHashMap<>();
+        for (Language language : languagesList) {
             languages.put(language.getName(), language);
         }
     }
