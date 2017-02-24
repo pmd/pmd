@@ -9,12 +9,12 @@
   <pluginGroups/>
   <servers>
     <server>
-      <id>sonatype-nexus-snapshots</id>
+      <id>ossrh</id>
       <username>${env.CI_DEPLOY_USERNAME}</username>
       <password>${env.CI_DEPLOY_PASSWORD}</password>
     </server>
     <server>
-      <id>sonatype-nexus-staging</id>
+      <id>ossrh</id>
       <username>${env.CI_DEPLOY_USERNAME}</username>
       <password>${env.CI_DEPLOY_PASSWORD}</password>
     </server>
