@@ -19,25 +19,25 @@ before_script:
   - '[ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] && SHOULD_DEPLOY=yes || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
   - export SHOULD_DEPLOY
 script:
-  - '[ "${SHOULD_DEPLOY}" = "yes" ] && mvn deploy --settings .travis/travis-settings.xml || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Deploy" )'
-  - '[ "${SHOULD_DEPLOY}" = "yes" ] || mvn verify'
-  - '[ "${SHOULD_DEPLOY}" = "yes" ] && mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} || ( [ "${SHOULD_DEPLOY}" != "yes" ] && echo "Skipping Sonar" )'
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash .travis/build-pull-request.sh; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]; then bash .travis/build-push.sh; fi'
 after_success: true
 
 
 before_deploy: true
 deploy:
   - provider: script
-    script: bash .travis/travis-deploy.sh
+    script: bash .travis/release.sh
     skip_cleanup: true
     on:
       tags: true
       condition: "${TRAVIS_SECURE_ENV_VARS} = true"
   - provider: releases
     api_key: ${GITHUB_OAUTH_TOKEN}
-    file:
-      - "pmd-dist/target/pmd-*.zip"
-      - "target/pmd-doc-*.zip"
+    file_glob: true
+    file: "pmd-dist/target/pmd-*.zip"
+#    - "pmd-dist/target/pmd-*.zip"
+#    - "target/pmd-doc-*.zip"
       # TODO : This won't copy the changelog to GitHub
     skip_cleanup: true
     on:
