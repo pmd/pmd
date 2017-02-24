@@ -5,6 +5,14 @@ before_install:
   - echo "MAVEN_OPTS='-Xms1g -Xmx1g'" > "$HOME/.mavenrc"
   - mkdir -p "$HOME/.m2"
   - cp .travis/travis-toolchains.xml "$HOME/.m2/toolchains.xml"
+  - cp .travis/travis-settings.xml "$HOME/.m2/settings.xml"
+  - mkdir -p "$HOME/.ssh"
+  - chmod 700 "$HOME/.ssh"
+  - openssl aes-256-cbc -K $encrypted_c422865a395e_key -iv $encrypted_c422865a395e_iv -in .travis/id_rsa.enc -out "$HOME/.ssh/id_rsa" -d
+  - chmod 600 "$HOME/.ssh/id_rsa"
+  - mkdir -p "$HOME/.gpg"
+  - openssl aes-256-cbc -K $encrypted_c422865a395e_key -iv $encrypted_c422865a395e_iv -in .travis/release-signing-key-82DE7BE82166E84E.gpg.enc -out .travis/release-signing-key-82DE7BE82166E84E.gpg -d
+  - gpg2 --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 before_script:
   - SHOULD_DEPLOY=no
