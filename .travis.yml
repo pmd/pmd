@@ -13,7 +13,7 @@ before_install:
   - mv .travis/id_rsa "$HOME/.ssh/id_rsa"
   - chmod 600 "$HOME/.ssh/id_rsa"
   - mkdir -p "$HOME/.gpg"
-  - gpg2 --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
+  - gpg --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
 install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash .travis/build-pull-request.sh; fi'
