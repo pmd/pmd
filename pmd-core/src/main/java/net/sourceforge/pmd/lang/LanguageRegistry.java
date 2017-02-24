@@ -28,12 +28,12 @@ public final class LanguageRegistry {
             languagesList.add(language);
         }
 
-        // sort languages by name. Avoiding differences in the order of languages
+        // sort languages by terse name. Avoiding differences in the order of languages
         // across JVM versions / OS.
         Collections.sort(languagesList, new Comparator<Language>() {
             @Override
             public int compare(Language o1, Language o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
+                return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
             }
         });
 
