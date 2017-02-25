@@ -28,6 +28,10 @@ EOF
 echo "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
 RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data-binary "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
 if [[ "$RESPONSE" != *"HTTP/1.1 200"* ]]; then
+    echo "Request:"
+    cat release-edit-request.json
+    echo
+    echo "Response:"
     echo "$RESPONSE"
 else
     echo "Update OK"
