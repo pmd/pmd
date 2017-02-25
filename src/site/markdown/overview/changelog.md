@@ -1,6 +1,6 @@
 # PMD Release Notes
 
-## ????? - 5.4.5-SNAPSHOT
+## 25-Februar-2017 - 5.4.5
 
 The PMD team is pleased to announce PMD 5.4.5
 
@@ -11,7 +11,6 @@ This is a bug fixing release.
 * [New and noteworthy](#New_and_noteworthy)
     *   [Modified Rules](#Modified_Rules)
 * [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
@@ -44,8 +43,6 @@ This is a bug fixing release.
     *   [#247](https://github.com/pmd/pmd/issues/247): \[java] UnusedModifier doesn't check annotations inner classes
     *   [#248](https://github.com/pmd/pmd/issues/248): \[java] UnusedModifier doesn't check static keyword on nested enum declaration
     *   [#257](https://github.com/pmd/pmd/issues/257): \[java] UnusedLocalVariable false positive
-
-### API Changes
 
 
 ### External Contributions
