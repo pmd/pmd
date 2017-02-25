@@ -36,17 +36,19 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
+      repo: pmd/pmd
       condition: "${TRAVIS_SECURE_ENV_VARS} = true"
   - provider: releases
     api_key: ${GITHUB_OAUTH_TOKEN}
     file_glob: true
-    file: "pmd-dist/target/pmd-*.zip"
-#    - "pmd-dist/target/pmd-*.zip"
-#    - "target/pmd-doc-*.zip"
+    file:
+    - pmd-dist/target/pmd-*.zip
+    - target/pmd-doc-*.zip
       # TODO : This won't copy the changelog to GitHub
     skip_cleanup: true
     on:
       tags: true
+      repo: pmd/pmd
       condition: "${TRAVIS_SECURE_ENV_VARS} = true"
 after_deploy: true
 

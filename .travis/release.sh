@@ -11,8 +11,20 @@ curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&defaul
      -d "api_key=${PMD_SF_APIKEY}" https://sourceforge.net/projects/pmd/files/pmd/${RELEASE_VERSION}/pmd-bin-${RELEASE_VERSION}.zip
 
 # TODO: patch the release on github? Upload the changelog? https://developer.github.com/v3/repos/releases/#create-a-release
-# TODO: deploy site from here? We could clone the site repo, and push using a secure token instead of a password...
-# TODO: publish site on pmd.github.io
-# TODO: Submit news on SF?
 
+
+echo "Adding the site to pmd.github.io..."
+# clone pmd.github.io. Note: This uses the ssh key setup earlier
+git clone --depth 1 git@github.com:pmd/pmd.github.io.git
+rsync -a target/pmd-doc-${RELEASE_VERSION}/ pmd.github.io/pmd-${RELEASE_VERSION}/
+(
+  cd pmd.github.io
+  git add pmd-${RELEASE_VERSION}
+  git commit -m "Added pmd-${RELEASE_VERSION}"
+  git rm -qr latest
+  cp -a pmd-${RELEASE_VERSION} latest
+  git add latest
+  git commit -m "Copying pmd-${RELEASE_VERSION} to latest"
+  git push origin
+)
 
