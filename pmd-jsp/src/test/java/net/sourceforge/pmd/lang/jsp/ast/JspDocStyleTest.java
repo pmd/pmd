@@ -156,7 +156,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	}
 
     /**
-     * Test parsing of HTML <script> element.
+     * Test parsing of HTML &lt;script&gt; element.
      */
     @Test
     public void testHtmlScript() {
@@ -167,7 +167,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * Test parsing of HTML <script src="x"/> element. It might not be valid html
+     * Test parsing of HTML &lt;script src="x"/&gt; element. It might not be valid html
      * but it is likely to appear in .JSP files.
      */
     @Test
@@ -180,7 +180,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * Test parsing of HTML <script> element.
+     * Test parsing of HTML &lt;script&gt; element.
      */
     @Test
     public void testHtmlScriptWithAttribute() {
@@ -206,7 +206,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * Test parsing of HTML <script> element.
+     * Test parsing of HTML &lt;script&gt; element.
      */
     @Test
     public void testInlineCss() {
@@ -319,7 +319,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     
     
     /**
-     * A dangling unopened ( just </closed> )  tag should not influence the parsing. 
+     * A dangling unopened ( just &lt;/closed&gt; )  tag should not influence the parsing. 
      */
     @Test
     @Ignore // sadly the number of 
@@ -346,7 +346,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     
     
     /**
-     * Test parsing of HTML <script> element.
+     * Test parsing of HTML &lt;script&gt; element.
      */
     @Test 
     public void textAfterOpenAndClosedTag() {
@@ -418,7 +418,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * tests whether parse correctly detects presence of JSP expression <%= %>
+     * tests whether parse correctly detects presence of JSP expression &lt;%= %&gt;
      * within an non-quoted attribute value
      */
     @Test
@@ -478,7 +478,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * tests whether parse does not fail in the presence of unclosed JSP expression <%= 
+     * tests whether parse does not fail in the presence of unclosed JSP expression &lt;%= 
      * within an non-quoted attribute value
      */
     @Test
@@ -490,7 +490,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * test a no quote attribute value which contains a scriptlet <% %> 
+     * test a no quote attribute value which contains a scriptlet &lt;% %&gt; 
      * within its value
      */
     @Test
@@ -504,7 +504,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * test a no quote attribute value can contain a tag (e.g. attr=<bean:write property="value" />)
+     * test a no quote attribute value can contain a tag (e.g. attr=&lt;bean:write property="value" /&gt;)
      * 
      */
     @Test
@@ -518,7 +518,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * test a quote attribute value can contain a tag (e.g. attr="<bean:write property="value" />" )
+     * test a quote attribute value can contain a tag (e.g. attr="&lt;bean:write property="value" /&gt;" )
      * Not sure if it's legal JSP code but most JSP engine accept and properly treat 
      * this value at runtime
      */
@@ -615,7 +615,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * <html> <a1> <a2/> <b/> </a1> </html>
+     * &lt;html&gt; &lt;a1&gt; &lt;a2/&gt; &lt;b/&gt; &lt;/a1&gt; &lt;/html&gt;
      */
     @Test
     public void nestedEmptyTags(){
@@ -651,7 +651,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * <html> <a1> <a2> <a3> </a2> </a1> <b/> <a4/> </html>
+     * &lt;html&gt; &lt;a1&gt; &lt;a2&gt; &lt;a3&gt; &lt;/a2&gt; &lt;/a1&gt; &lt;b/&gt; &lt;a4/&gt; &lt;/html&gt;
      */
     @Test
     public void nestedMultipleTags(){
@@ -699,8 +699,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * will test <x> <a> <b> <b> </x> </a> </x> . 
-     * Here x is the first tag to be closed thus rendering the next close of a (</a>)
+     * will test &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/x&gt; &lt;/a&gt; &lt;/x&gt; . 
+     * Here x is the first tag to be closed thus rendering the next close of a (&lt;/a&gt;)
      * to be disregarded. 
      */
     @Test
@@ -737,11 +737,11 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     
     
     /**
-     * <x> <a> <b> <b> </z> </a> </x>
+     * &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
      * An unmatched closing of 'z' appears randomly in the document. This
      * should be disregarded and structure of children and parents should not be influenced.
-     * in other words </a> should close the first <a> tag , </x> should close the first
-     *  <x>, etc.
+     * in other words &lt;/a&gt; should close the first &lt;a&gt; tag , &lt;/x&gt; should close the first
+     *  &lt;x&gt;, etc.
      */
     @Test
     public void unmatchedTagDoesNotInfluenceStructure(){
@@ -776,10 +776,10 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
     
     /**
-     * <a> <x> <a> <b> <b> </z> </a> </x>
+     * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
      * An unmatched closing of 'z' appears randomly in the document. This
      * should be disregarded and structure of children and parents should not be influenced.
-     * Also un unclosed <a> tag appears at the start of the document
+     * Also un unclosed &lt;a&gt; tag appears at the start of the document
      */
     @Test
     public void unclosedStartTagWithUnmatchedCloseOfDifferentTag(){
@@ -821,7 +821,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     
     /**
      * {@link #TEST_UNCLOSED_END_OF_DOC}
-     * <tag:x> <tag:y> 
+     * &lt;tag:x&gt; &lt;tag:y&gt; 
      * Tests whether parser breaks on no closed tags at all
      */
     //This is yet to be improved. If a closing tag does not 
@@ -1036,21 +1036,21 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 			"<html> <a1> <a2> <a3> </a2> </a1> <b/> <a4/> </html>"; 
 	
 	/**
-	 * </x> will close before </a>, thus leaving <a> to remain unclosed 
+	 * &lt;/x&gt; will close before &lt;/a&gt;, thus leaving &lt;a&gt; to remain unclosed 
 	 */
 	private static final String TEST_UNCLOSED_END_AFTER_PARENT_CLOSE = 
 			"<x> <a> <b> <b> </x> </a> aa </x> bb </x>";
 	
 	/**
-	 * </z> is just a dangling closing tag not matching any parent. The parser should
+	 * &lt;/z&gt; is just a dangling closing tag not matching any parent. The parser should
 	 * disregard it
 	 */
 	private static final String TEST_UNCLOSED_UNMATCHED_CLOSING_TAG = 
 			"<x> <a> <b> <b> </z> </a> </x>";
 	
 	/**
-	 * First <a> tag does not close. The first closing of </a> will match the 
-	 * second opening of a. Another rogue </z> is there for testing compliance
+	 * First &lt;a&gt; tag does not close. The first closing of &lt;/a&gt; will match the 
+	 * second opening of a. Another rogue &lt;/z&gt; is there for testing compliance
 	 */
 	private static final String TEST_UNCLOSED_START_TAG_WITH_UNMATCHED_CLOSE =
 			"<a> <x> <a> <b> <b> </z> </a> </x>";
