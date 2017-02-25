@@ -140,8 +140,8 @@ echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo
 echo
-echo "Send out an announcement mail to the mailing list:
-echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>
+echo "Send out an announcement mail to the mailing list:"
+echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
 echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} Released"
 echo "Body: !!Copy Changelog!!"
 echo
