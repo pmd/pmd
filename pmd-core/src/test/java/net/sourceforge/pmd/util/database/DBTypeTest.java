@@ -56,6 +56,7 @@ public class DBTypeTest {
     @After
     public void tearDown() throws Exception {
         testProperties = null;
+        absoluteFile.delete();
     }
 
     /**

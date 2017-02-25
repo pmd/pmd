@@ -658,8 +658,9 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * will test &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/x&gt; &lt;/a&gt; &lt;/x&gt; . Here x is the first tag to be
-     * closed thus rendering the next close of a (&lt;/a&gt;) to be disregarded.
+     * will test &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/x&gt; &lt;/a&gt; &lt;/x&gt; . 
+     * Here x is the first tag to be closed thus rendering the next close of a (&lt;/a&gt;)
+     * to be disregarded. 
      */
     @Test
     public void unclosedParentTagClosedBeforeChild() {
@@ -722,10 +723,10 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt; An unmatched closing of 'z' appears
-     * randomly in the document. This should be disregarded and structure of
-     * children and parents should not be influenced. Also un unclosed &lt;a&gt; tag
-     * appears at the start of the document
+     * &lt;a&gt; &lt;x&gt; &lt;a&gt; &lt;b&gt; &lt;b&gt; &lt;/z&gt; &lt;/a&gt; &lt;/x&gt;
+     * An unmatched closing of 'z' appears randomly in the document. This
+     * should be disregarded and structure of children and parents should not be influenced.
+     * Also un unclosed &lt;a&gt; tag appears at the start of the document
      */
     @Test
     public void unclosedStartTagWithUnmatchedCloseOfDifferentTag() {
@@ -760,8 +761,9 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
-     * {@link #TEST_UNCLOSED_END_OF_DOC} &lt;tag:x&gt; &lt;tag:y&gt; Tests whether parser
-     * breaks on no closed tags at all
+     * {@link #TEST_UNCLOSED_END_OF_DOC}
+     * &lt;tag:x&gt; &lt;tag:y&gt; 
+     * Tests whether parser breaks on no closed tags at all
      */
     // This is yet to be improved. If a closing tag does not
     // exist no tags will be marked as empty :(

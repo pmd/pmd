@@ -2,7 +2,7 @@
 
 ## ????? - 5.6.0-SNAPSHOT
 
-The PMD team is pleased to announce PMD 5.6.0
+The PMD team is pleased to announce PMD 5.6.0.
 
 The most significant changes are on analysis performance and a whole new **Apex Security Rule Set**.
 
