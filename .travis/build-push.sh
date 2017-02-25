@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:2.2:evaluate -Dexpression=project.version|grep -Ev '(^\[|Download\w+:)')
+VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
 if [[ "$VERSION" == *-SNAPSHOT ]]; then
@@ -12,12 +12,15 @@ fi
 
 mvn site site:stage -Psite -B -V
 
-# Uploading pmd distribution to sourceforge
+
+# create pmd-doc archive
 (
     cd target
     mv staging pmd-doc-${VERSION}
     zip -r pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
 )
+
+# Uploading pmd distribution to sourceforge
 rsync -avh pmd-dist/target/pmd-*-${VERSION}.zip target/pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
 rsync -avh src/site/markdown/overview/changelog.md ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
 
