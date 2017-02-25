@@ -10,14 +10,13 @@ else
     mvn deploy -Possrh,pmd-release -B -V
 fi
 
-mvn site site:stage -Psite -B -V
-
+bash .travis/build-site.sh
 
 # create pmd-doc archive
 (
     cd target
     mv staging pmd-doc-${VERSION}
-    zip -r pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
+    zip -qr pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
 )
 
 # Uploading pmd distribution to sourceforge
@@ -27,7 +26,7 @@ rsync -avh src/site/markdown/overview/changelog.md ${PMD_SF_USER}@web.sourceforg
 
 if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
     # Uploading snapshot site...
-    rsync -avh --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
+    rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
 fi
 
 

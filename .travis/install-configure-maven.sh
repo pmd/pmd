@@ -5,8 +5,8 @@ set -ev
 SOURCE_HOME=$PWD
 
 cd $HOME
-wget http://apache.claz.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-tar zxvf apache-maven-3.3.9-bin.tar.gz
+wget -q http://apache.claz.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+tar zxf apache-maven-3.3.9-bin.tar.gz
 chmod +x apache-maven-3.3.9/bin/mvn
 
 echo "MAVEN_OPTS='-Xms1g -Xmx1g'" > .mavenrc
