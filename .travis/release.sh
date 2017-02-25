@@ -10,7 +10,25 @@ RELEASE_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version
 curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others" \
      -d "api_key=${PMD_SF_APIKEY}" https://sourceforge.net/projects/pmd/files/pmd/${RELEASE_VERSION}/pmd-bin-${RELEASE_VERSION}.zip
 
-# TODO: patch the release on github? Upload the changelog? https://developer.github.com/v3/repos/releases/#create-a-release
+
+# Assumes, the release has already been created by travis github releases provider
+RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
+RELEASE_NAME="PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
+RELEASE_BODY=$(cat src/site/markdown/overview/changelog.md)
+RELEASE_BODY="${RELEASE_BODY//$'\\'/\\\\}"
+RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
+RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
+RELEASE_BODY="${RELEASE_BODY//$'"'/\\$'"'}"
+cat > release-edit-request.json <<EOF
+{
+  "name": "$RELEASE_NAME",
+  "body": "$RELEASE_BODY"
+}
+EOF
+echo "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
+curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data-binary "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}|grep "^HTTP"
+
+
 
 
 echo "Adding the site to pmd.github.io..."
