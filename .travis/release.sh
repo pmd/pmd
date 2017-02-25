@@ -47,12 +47,13 @@ rsync -a target/pmd-doc-${RELEASE_VERSION}/ pmd.github.io/pmd-${RELEASE_VERSION}
   cd pmd.github.io
   git config user.email "adangel@users.sourceforge.net"
   git config user.name "Andreas Dangel (PMD Releases)"
+  git checkout master
   git add pmd-${RELEASE_VERSION}
-  git commit -m "Added pmd-${RELEASE_VERSION}"
+  git commit -q -m "Added pmd-${RELEASE_VERSION}"
   git rm -qr latest
   cp -a pmd-${RELEASE_VERSION} latest
   git add latest
-  git commit -m "Copying pmd-${RELEASE_VERSION} to latest"
-  git push origin
+  git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
+  git push origin master
 )
 
