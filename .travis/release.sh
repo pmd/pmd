@@ -26,8 +26,12 @@ cat > release-edit-request.json <<EOF
 }
 EOF
 echo "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
-curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data-binary "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}|grep "^HTTP"
-
+RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data-binary "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
+if [[ "$RESPONSE" != *"HTTP/1.1 200"* ]]; then
+    echo "$RESPONSE"
+else
+    echo "Update OK"
+fi
 
 
 
@@ -37,6 +41,8 @@ git clone --depth 1 git@github.com:pmd/pmd.github.io.git
 rsync -a target/pmd-doc-${RELEASE_VERSION}/ pmd.github.io/pmd-${RELEASE_VERSION}/
 (
   cd pmd.github.io
+  git config user.email "adangel@users.sourceforge.net"
+  git config user.name "Andreas Dangel (PMD Releases)"
   git add pmd-${RELEASE_VERSION}
   git commit -m "Added pmd-${RELEASE_VERSION}"
   git rm -qr latest
