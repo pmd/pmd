@@ -97,4 +97,5 @@ This new rule is part of the `java-design` ruleset.
 *   [#231](https://github.com/pmd/pmd/pull/231): \[apex] CRUD/FLS rule - add support for fields
 *   [#266](https://github.com/pmd/pmd/pull/266): \[java] corrected invalid reporting of LoD violation
 *   [#268](https://github.com/pmd/pmd/pull/268): \[apex] Support safe escaping via String method
+*   [#273](https://github.com/pmd/pmd/pull/273): \[apex] Shade jackson on apex
 
