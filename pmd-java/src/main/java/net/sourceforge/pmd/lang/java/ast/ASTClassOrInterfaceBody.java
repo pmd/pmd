@@ -16,9 +16,17 @@ public class ASTClassOrInterfaceBody extends AbstractJavaNode {
 
 
     /**
-     * Accept the visitor. *
+     * Accept the visitor.
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    public boolean isAnonymousInnerClass() {
+        return jjtGetParent() instanceof ASTAllocationExpression;
+    }
+
+    public boolean isEnumChild() {
+        return jjtGetParent() instanceof ASTEnumConstant;
     }
 }

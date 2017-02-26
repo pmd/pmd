@@ -6,13 +6,16 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class ScopeAndDeclarationFinderTest extends STBBaseTst {
 
@@ -43,5 +46,29 @@ public class ScopeAndDeclarationFinderTest extends STBBaseTst {
             NameDeclaration decl = declarations.iterator().next();
             Assert.assertEquals(1, scope.getVariableDeclarations().get(decl).size());
         }
+    }
+
+    @Test
+    public void testAnnonInnerClassScoping() {
+        String source = "public class Foo {" + PMD.EOL
+                + "  public static final Creator<Foo> CREATOR = new Creator<Foo>() {" + PMD.EOL
+                + "    @Override public Foo createFromParcel(Parcel source) {" + PMD.EOL
+                + "      return new Foo();" + PMD.EOL
+                + "    }" + PMD.EOL
+                + "    @Override public Foo[] newArray(int size) {" + PMD.EOL
+                + "      return new Foo[size];" + PMD.EOL
+                + "    }" + PMD.EOL
+                + "  };" + PMD.EOL
+                + "}" + PMD.EOL;
+        parseCode(source, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.6"));
+
+        ClassScope cs = (ClassScope) acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getScope();
+        Assert.assertEquals(1, cs.getClassDeclarations().size()); // There should be 1 anonymous class
+
+        List<ASTMethodDeclarator> methods = acu.findDescendantsOfType(ASTMethodDeclarator.class);
+        Assert.assertEquals(2, methods.size());
+        ClassScope scope1 = methods.get(0).getScope().getEnclosingScope(ClassScope.class);
+        ClassScope scope2 = methods.get(1).getScope().getEnclosingScope(ClassScope.class);
+        Assert.assertSame(scope1, scope2);
     }
 }

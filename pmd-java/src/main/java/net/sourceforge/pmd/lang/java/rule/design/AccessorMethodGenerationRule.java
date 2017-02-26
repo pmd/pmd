@@ -7,10 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
@@ -60,13 +57,10 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
         }
 
         for (final NameOccurrence no : occurrences) {
-            Node n = no.getLocation();
-            while (n != null && !(n instanceof ASTClassOrInterfaceDeclaration) && !(n instanceof ASTEnumDeclaration)) {
-                n = n.jjtGetParent();
-            }
+            ClassScope usedAtScope = no.getLocation().getScope().getEnclosingScope(ClassScope.class);
 
             // Are we within the same class that defines the field / method?
-            if (!n.getImage().equals(classScope.getClassName())) {
+            if (!classScope.equals(usedAtScope)) {
                 addViolation(data, no.getLocation());
             }
         }
