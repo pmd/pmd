@@ -39,9 +39,9 @@ public class VfParserTest {
     }
 
     private Node parse(String code) {
-        LanguageVersionHandler jspLang = LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion()
+        LanguageVersionHandler vfLang = LanguageRegistry.getLanguage(VfLanguageModule.NAME).getDefaultVersion()
                 .getLanguageVersionHandler();
-        Parser parser = jspLang.getParser(jspLang.getDefaultParserOptions());
+        Parser parser = vfLang.getParser(vfLang.getDefaultParserOptions());
         Node node = parser.parse(null, new StringReader(code));
         return node;
     }
