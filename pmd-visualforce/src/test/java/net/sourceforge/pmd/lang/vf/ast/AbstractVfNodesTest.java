@@ -21,7 +21,7 @@ public abstract class AbstractVfNodesTest {
     }
 
     /**
-     * Run the JSP parser on the source, and return the nodes of type clazz.
+     * Run the VF parser on the source, and return the nodes of type clazz.
      *
      * @param clazz
      * @param source

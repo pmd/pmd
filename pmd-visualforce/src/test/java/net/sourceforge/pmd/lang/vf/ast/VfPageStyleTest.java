@@ -52,7 +52,7 @@ public class VfPageStyleTest extends AbstractVfNodesTest {
         assertEquals("Correct expression content expected!", "\"'vf'\"", literal.getImage());
     }
 
-    private static final String VF_EL_EXPRESSION = "<html><title>Hello {!myBean.get(\"{! World }\") } .jsp</title></html>";
+    private static final String VF_EL_EXPRESSION = "<html><title>Hello {!myBean.get(\"{! World }\") } .vf</title></html>";
 
     private static final String VF_EL_EXPRESSION_IN_ATTRIBUTE = "<html> <f:validator type=\"get('type').{!myValidator.find(\"'vf'\")}\" /> </html>";
 
