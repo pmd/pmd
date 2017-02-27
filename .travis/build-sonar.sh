@@ -2,13 +2,13 @@
 set -ev
 
 export PING_SLEEP=30s
-export BUILD_OUTPUT=/tmp/build-site.out
-export PING_PID_FILE=/tmp/build-site-ping.pid
+export BUILD_OUTPUT=/tmp/build-sonar.out
+export PING_PID_FILE=/tmp/build-sonar-ping.pid
 
 source .travis/background-job-funcs.sh
 
 # Run the build, redirect output into the file
-mvn site site:stage -Psite -B -V >> $BUILD_OUTPUT 2>&1
+mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -B -V >> $BUILD_OUTPUT 2>&1
 
 # The build finished without returning an error so dump a tail of the output
 dump_output
