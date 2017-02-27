@@ -7,15 +7,14 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -48,28 +47,27 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = name.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
-            VariableNameDeclaration key = entry.getKey();
+            VariableNameDeclaration variableDeclaration = entry.getKey();
             List<NameOccurrence> usages = entry.getValue();
 
-            // skip, if there is an assert between declaration and return
-            if (hasAssertStatement(key, rtn)) {
-                continue;
-            }
+            if (usages.size() == 1) { // If there is more than 1 usage, then it's not only returned
+                NameOccurrence occ = usages.get(0);
 
-            for (NameOccurrence occ: usages) {
-                if (occ.getLocation().equals(name)) {
-                    // only check declarations that occur one line earlier
-                    if (key.getNode().getBeginLine() == name.getBeginLine() - 1) {
-                        String var = name.getImage();
-                        if (var.indexOf('.') != -1) {
-                            var = var.substring(0, var.indexOf('.'));
-                        }
-                        addViolation(data, rtn, var);
+                if (occ.getLocation().equals(name) && isNotAnnotated(variableDeclaration)) {
+                    String var = name.getImage();
+                    if (var.indexOf('.') != -1) {
+                        var = var.substring(0, var.indexOf('.'));
                     }
+                    addViolation(data, rtn, var);
                 }
             }
         }
         return data;
+    }
+
+    private boolean isNotAnnotated(VariableNameDeclaration variableDeclaration) {
+        AccessNode accessNodeParent = variableDeclaration.getAccessNodeParent();
+        return !accessNodeParent.hasDescendantOfType(ASTAnnotation.class);
     }
 
     /**
@@ -87,32 +85,5 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
             }
         }
         return false;
-    }
-
-    /**
-     * Checks whether there is an assert statement between the variable declaration
-     * and the return statement, that uses the variable.
-     * @param variableDeclaration
-     * @param rtn
-     * @return
-     */
-    private boolean hasAssertStatement(VariableNameDeclaration variableDeclaration, ASTReturnStatement rtn) {
-        boolean hasAssert = false;
-        ASTBlockStatement blockStatement = variableDeclaration.getAccessNodeParent().getFirstParentOfType(ASTBlockStatement.class);
-        int startIndex = blockStatement.jjtGetChildIndex() + 1;
-        int endIndex = rtn.getFirstParentOfType(ASTBlockStatement.class).jjtGetChildIndex();
-        ASTBlock block = (ASTBlock) blockStatement.jjtGetParent();
-        for (int i = startIndex; i < endIndex; i++) {
-            List<ASTAssertStatement> asserts = block.jjtGetChild(i).findDescendantsOfType(ASTAssertStatement.class);
-            for (ASTAssertStatement assertStatement : asserts) {
-                List<ASTName> names = assertStatement.findDescendantsOfType(ASTName.class);
-                for (ASTName n : names) {
-                    if (n.hasImageEqualTo(variableDeclaration.getName())) {
-                        hasAssert = true;
-                    }
-                }
-            }
-        }
-        return hasAssert;
     }
 }

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.complexity;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
@@ -64,11 +63,6 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
         }
 
         return NumericConstants.ZERO;
-    }
-
-    @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
-        return countNodeChildren(node, data);
     }
 
     @Override

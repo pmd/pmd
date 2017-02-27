@@ -7,13 +7,6 @@
     <packaging>pom</packaging>
     <name>PMD</name>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-        <relativePath />
-    </parent>
-
     <description>
 PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex, PLSQL, Apache Velocity, XML, XSL.
 
@@ -244,6 +237,14 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <tag>HEAD</tag>
     </scm>
     <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
         <site>
             <id>local</id>
             <url>file:///tmp/pmd-site</url>
@@ -265,10 +266,11 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <java.version>1.7</java.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <ant.version>1.9.6</ant.version>
-        <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
+        <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
         <antlr.version>4.5.2-1</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot/${project.artifactId}</pmd.website.baseurl>
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
@@ -333,7 +335,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <version>2.5.2</version>
                     <configuration>
                         <releaseProfiles>pmd-release</releaseProfiles>
-                        <pushChanges>false</pushChanges>
+                        <pushChanges>true</pushChanges>
                         <localCheckout>true</localCheckout>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>pmd_releases/@{project.version}</tagNameFormat>
@@ -439,7 +441,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>3.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -473,7 +475,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         </dependency>
                     </dependencies>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.8</version>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse 
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -638,6 +645,18 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!-- if autoReleaseAfterClose is true, then the artifacts will be
+                         automatically promoted to maven central -->
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -931,6 +950,24 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <properties>
                 <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <profile>

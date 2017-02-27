@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
@@ -43,5 +45,10 @@ public class NoopAnalysisCache implements AnalysisCache {
     @Override
     public void checkValidity(final RuleSets ruleSets, final ClassLoader classLoader) {
         // noop
+    }
+
+    @Override
+    public List<RuleViolation> getCachedViolations(File sourceFile) {
+        return Collections.emptyList();
     }
 }

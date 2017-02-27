@@ -40,7 +40,7 @@ public class Report implements Iterable<RuleViolation> {
     // a bit
     private final List<RuleViolation> violations = new ArrayList<>();
     private final Set<Metric> metrics = new HashSet<>();
-    private final List<SynchronizedReportListener> listeners = new ArrayList<>();
+    private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
     private List<ProcessingError> errors;
     private List<RuleConfigurationError> configErrors;
     private Map<Integer, String> linesToSuppress = new HashMap<>();
@@ -61,7 +61,7 @@ public class Report implements Iterable<RuleViolation> {
         Report report = new Report();
 
         // overtake the listener
-        report.addSynchronizedListeners(ctx.getReport().getSynchronizedListeners());
+        report.addListeners(ctx.getReport().getListeners());
 
         ctx.setReport(report);
         ctx.setSourceCodeFilename(fileName);
@@ -279,9 +279,21 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param listener
      *            the listener
+     * @deprecated Use {@link #addListener(ThreadSafeReportListener)}
      */
+    @Deprecated
     public void addListener(ReportListener listener) {
         listeners.add(new SynchronizedReportListener(listener));
+    }
+
+    /**
+     * Registers a report listener
+     *
+     * @param listener
+     *            the listener
+     */
+    public void addListener(ThreadSafeReportListener listener) {
+        listeners.add(listener);
     }
 
     public List<SuppressedViolation> getSuppressedRuleViolations() {
@@ -311,7 +323,7 @@ public class Report implements Iterable<RuleViolation> {
         int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
         violations.add(index < 0 ? -index - 1 : index, violation);
         violationTree.addRuleViolation(violation);
-        for (ReportListener listener : listeners) {
+        for (ThreadSafeReportListener listener : listeners) {
             listener.ruleViolationAdded(violation);
         }
     }
@@ -324,7 +336,7 @@ public class Report implements Iterable<RuleViolation> {
      */
     public void addMetric(Metric metric) {
         metrics.add(metric);
-        for (ReportListener listener : listeners) {
+        for (ThreadSafeReportListener listener : listeners) {
             listener.metricAdded(metric);
         }
     }
@@ -512,17 +524,17 @@ public class Report implements Iterable<RuleViolation> {
         return end - start;
     }
 
-    public List<SynchronizedReportListener> getSynchronizedListeners() {
+    public List<ThreadSafeReportListener> getListeners() {
         return listeners;
     }
 
     /**
      * Adds all given listeners to this report
      *
-     * @param synchronizedListeners
+     * @param allListeners
      *            the report listeners
      */
-    public void addSynchronizedListeners(List<SynchronizedReportListener> synchronizedListeners) {
-        listeners.addAll(synchronizedListeners);
+    public void addListeners(List<ThreadSafeReportListener> allListeners) {
+        listeners.addAll(allListeners);
     }
 }

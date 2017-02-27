@@ -2,7 +2,7 @@
 
 ## ????? - 5.6.0-SNAPSHOT
 
-The PMD team is pleased to announce PMD 5.6.0
+The PMD team is pleased to announce PMD 5.6.0.
 
 The most significant changes are on analysis performance and a whole new **Apex Security Rule Set**.
 
@@ -27,10 +27,12 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
 
 ### Table Of Contents
 
-* [New and noteworthy](#New_and_noteworthy)
-    * [Incremental Analysis](#Incremental_Analysis)
-    * [Apex Security Rule Set](#Apex_Security_Rule_Set)
-    * [Modified Rules](#Modified_Rules)
+*   [New and noteworthy](#New_and_noteworthy)
+    *   [Incremental Analysis](#Incremental_Analysis)
+    *   [Apex Security Rule Set](#Apex_Security_Rule_Set)
+    *   [New Rules](#New_Rules)
+    *   [Modified Rules](#Modified_Rules)
+    *   [CPD Suppression](#CPD_Suppression)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
@@ -214,9 +216,42 @@ Makes sure that all values obtained from URL parameters are properly escaped / s
 to avoid XSS attacks.
 
 
+#### New Rules
+
+##### AccessorMethodGeneration (java-design)
+
+When accessing a private field / method from another class, the Java compiler will generate a accessor methods
+with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
+be avoided by changing the visibility of the field / method from private to package-private.
+
+For instance, it would report violations on code such as:
+
+```
+public class OuterClass {
+    private int counter;
+    /* package */ int id;
+
+    public class InnerClass {
+        InnerClass() {
+            OuterClass.this.counter++; // wrong, accessor method will be generated
+        }
+
+        public int getOuterClassId() {
+            return OuterClass.this.id; // id is package-private, no accessor method needed
+        }
+    }
+}
+```
+
+This new rule is part of the `java-design` ruleset.
+
 #### Modified Rules
 
-*   The Java rule "UseLocaleWithCaseConversions" (ruleset java-design) has been modified, to detect calls
+*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) no longer requires the variable declaration
+    and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be
+    reported.
+
+*   The Java rule `UseLocaleWithCaseConversions` (ruleset java-design) has been modified, to detect calls
     to `toLowerCase` and to `toUpperCase` also within method call chains. This leads to more detected cases
     and potentially new false positives.
     See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
@@ -224,15 +259,56 @@ to avoid XSS attacks.
 *   The rule `AvoidConstantsInterface` (ruleset java-design) has been removed. It is completely replaced by
     the rule `ConstantsInInterface`.
 
+*   The Java rule `UnusedModifier` (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
+    *   Annotations marked as `abstract`.
+    *   Nested annotations marked as `static`.
+    *   Nested annotations within another interface or annotation marked as `public`.
+    *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
+    *   Nested enums marked as `static`.
+
+#### CPD Suppression
+
+It is now possible to allow CPD suppression through comments in **Java**. You tell CPD to ignore
+the following code with a comment containin `CPD-OFF` and with `CPD-ON` you tell CPD to resume
+analysis. The old approach via `@SuppressWarnings` annotation is still supported, but is considered
+**deprecated**, since it is limited to locations where the `SuppressWarnings` annotation is allowed.
+See [PR #250](https://github.com/pmd/pmd/pull/250).
+
+For example:
+
+```java
+    public Object someMethod(int x) throws Exception {
+        // some unignored code
+
+        // tell cpd to start ignoring code - CPD-OFF
+
+        // mission critical code, manually loop unroll
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+
+        // resume CPD analysis - CPD-ON
+
+        // further code will *not* be ignored
+    }
+```
 
 ### Fixed Issues
 
 *   General
     *   [#1511](https://sourceforge.net/p/pmd/bugs/1511/): \[core] Inconsistent behavior of Rule.start/Rule.end
+    *   [#234](https://github.com/pmd/pmd/issues/234): \[core] Zip file stream closes spuriously when loading rulesets
+    *   [#256](https://github.com/pmd/pmd/issues/256): \[core] shortnames option is broken with relative paths
 *   apex-apexunit
     *   [#1543](https://sourceforge.net/p/pmd/bugs/1543/): \[apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive
 *   apex-complexity
     *   [#183](https://github.com/pmd/pmd/issues/183): \[apex] NCSS Method length is incorrect when using method chaining
+    *   [#251](https://github.com/pmd/pmd/issues/251): \[apex] NCSS Type length is incorrect when using method chaining
+*   apex-security
+    *   [#264](https://github.com/pmd/pmd/issues/264): \[apex] ApexXSSFromURLParamRule shouldn't enforce ESAPI usage. String.escapeHtml4 is sufficient.
 *   java
     *   [#185](https://github.com/pmd/pmd/issues/185): \[java] CPD runs into NPE when analyzing Lucene
     *   [#206](https://github.com/pmd/pmd/issues/206): \[java] Parse error on annotation fields with generics
@@ -241,13 +317,22 @@ to avoid XSS attacks.
     *   [#213](https://github.com/pmd/pmd/issues/213): \[java] CPD: OutOfMemory when analyzing Lucene
     *   [#1542](https://sourceforge.net/p/pmd/bugs/1542/): \[java] CPD throws an NPE when parsing enums with -ignore-identifiers
     *   [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
+*   java-basic
+    *   [#232](https://github.com/pmd/pmd/issues/232): \[java] SimplifiedTernary: Incorrect ternary operation can be simplified.
+*   java-coupling
+    *   [#270](https://github.com/pmd/pmd/issues/270): \[java] LoD false positive
 *   java-design
+    *   [#933](https://sourceforge.net/p/pmd/bugs/933/): \[java] UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation
     *   [#1448](https://sourceforge.net/p/pmd/bugs/1448/): \[java] ImmutableField: Private field in inner class gives false positive with lambdas
     *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeReturn with assert
+    *   [#1496](https://sourceforge.net/p/pmd/bugs/1496/): \[java] New Rule: AccesorMethodGeneration - complements accessor class rule
     *   [#1512](https://sourceforge.net/p/pmd/bugs/1512/): \[java] Combine rules AvoidConstantsInInterface and ConstantsInInterface
     *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
     *   [#1556](https://sourceforge.net/p/pmd/bugs/1556/): \[java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)
     *   [#177](https://github.com/pmd/pmd/issues/177): \[java] SingularField with lambdas as final fields
+    *   [#216](https://github.com/pmd/pmd/issues/216): \[java] \[doc] NonThreadSafeSingleton: Be more explicit as to why double checked locking is not recommended
+    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeReturn: ClassCastException in switch case with local variable returned
+    *   [#240](https://github.com/pmd/pmd/issues/240): \[java] UnnecessaryLocalBeforeReturn: Enhance by checking usages
 *   java-imports
     *   [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
     *   [#1547](https://sourceforge.net/p/pmd/bugs/1547/): \[java] UnusedImportRule - False Positive for only usage in Javadoc - {@link ClassName#CONSTANT}
@@ -255,10 +340,17 @@ to avoid XSS attacks.
 *   java-logging-java
     *   [#1541](https://sourceforge.net/p/pmd/bugs/1541/): \[java] InvalidSlf4jMessageFormat: False positive with placeholder and exception
     *   [#1551](https://sourceforge.net/p/pmd/bugs/1551/): \[java] InvalidSlf4jMessageFormat: fails with NPE
-*   java-unnecessary
-    *   [#199](https://github.com/pmd/pmd/issues/199): \[java] UselessParentheses: Parentheses in return statement are incorrectly reported as useless
+*   java-optimizations
+    *   [#215](https://github.com/pmd/pmd/issues/215): \[java] RedundantFieldInitializer report for annotation field not explicitly marked as final
 *   java-strings
     *   [#202](https://github.com/pmd/pmd/issues/202): \[java] \[doc] ConsecutiveAppendsShouldReuse is not really an optimization
+*   java-unnecessary
+    *   [#199](https://github.com/pmd/pmd/issues/199): \[java] UselessParentheses: Parentheses in return statement are incorrectly reported as useless
+*   java-unusedcode
+    *   [#246](https://github.com/pmd/pmd/issues/246): \[java] UnusedModifier doesn't check annotations
+    *   [#247](https://github.com/pmd/pmd/issues/247): \[java] UnusedModifier doesn't check annotations inner classes
+    *   [#248](https://github.com/pmd/pmd/issues/248): \[java] UnusedModifier doesn't check static keyword on nested enum declaration
+    *   [#257](https://github.com/pmd/pmd/issues/257): \[java] UnusedLocalVariable false positive
 *   XML
     *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
 *   psql
@@ -275,6 +367,10 @@ to avoid XSS attacks.
 *   `net.sourceforge.pmd.RuleSet` is now immutable, too, and can only be created via `RuleSetFactory`.
     See [PR #145](https://github.com/pmd/pmd/pull/145).
 *   `net.sourceforge.pmd.cli.XPathCLI` has been removed. It's functionality is fully covered by the Designer.
+*   `net.sourceforge.pmd.Report` now works with `ThreadSafeReportListener`s. Both `ReportListener` and
+    `SynchronizedReportListener` are deprecated in favor of `net.sourceforge.pmd.ThreadSafeReportListener`.
+    Therefore, the methods `getSynchronizedListeners()` and `addSynchronizedListeners(...)` have been
+    replaced by `getListeners()` and `addListeners(...)`. See [PR #193](https://github.com/pmd/pmd/pull/193).
 
 ### External Contributions
 
@@ -311,4 +407,7 @@ to avoid XSS attacks.
 *   [#228](https://github.com/pmd/pmd/pull/228): \[apex] Excluding count from CRUD/FLS checks
 *   [#229](https://github.com/pmd/pmd/pull/229): \[apex] Dynamic SOQL is safe against Integer, Boolean, Double
 *   [#231](https://github.com/pmd/pmd/pull/231): \[apex] CRUD/FLS rule - add support for fields
+*   [#266](https://github.com/pmd/pmd/pull/266): \[java] corrected invalid reporting of LoD violation
+*   [#268](https://github.com/pmd/pmd/pull/268): \[apex] Support safe escaping via String method
+*   [#273](https://github.com/pmd/pmd/pull/273): \[apex] Shade jackson on apex
 

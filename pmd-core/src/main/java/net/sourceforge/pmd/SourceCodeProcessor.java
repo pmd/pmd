@@ -86,6 +86,9 @@ public class SourceCodeProcessor {
         if (ruleSets.applies(ctx.getSourceCodeFile())) {
             // Is the cache up to date?
             if (configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile())) {
+                for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
+                    ctx.getReport().addRuleViolation(rv);
+                }
                 return;
             }
 

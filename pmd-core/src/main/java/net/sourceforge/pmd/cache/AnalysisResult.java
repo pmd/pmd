@@ -26,13 +26,13 @@ public class AnalysisResult {
     private final long fileChecksum;
     private final List<RuleViolation> violations;
 
-    public AnalysisResult(final long fileChecksum) {
+    public AnalysisResult(final long fileChecksum, final List<RuleViolation> violations) {
         this.fileChecksum = fileChecksum;
-        violations = new ArrayList<>();
+        this.violations = violations;
     }
 
     public AnalysisResult(final File sourceFile) {
-        this(computeFileChecksum(sourceFile));
+        this(computeFileChecksum(sourceFile), new ArrayList<RuleViolation>());
     }
 
     private static long computeFileChecksum(final File sourceFile) {

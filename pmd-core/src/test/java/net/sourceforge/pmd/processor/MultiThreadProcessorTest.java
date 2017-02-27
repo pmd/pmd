@@ -16,10 +16,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ThreadSafeReportListener;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -105,7 +105,7 @@ public class MultiThreadProcessorTest {
         }
     }
 
-    private static class SimpleReportListener implements ReportListener {
+    private static class SimpleReportListener implements ThreadSafeReportListener {
         public AtomicInteger violations = new AtomicInteger(0);
 
         @Override

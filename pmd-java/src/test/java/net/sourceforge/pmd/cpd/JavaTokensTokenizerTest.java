@@ -87,11 +87,6 @@ public class JavaTokensTokenizerTest {
         assertEquals(6, tokens.size());
     }
 
-    /**
-     * Comments are discarded already by the Java parser. It would be nice,
-     * however, to use simple comments like //CPD-START or //CPD-END to enable
-     * discard-mode of CPD
-     */
     @Test
     public void testIgnoreComments() {
         JavaTokenizer t = new JavaTokenizer();
@@ -115,6 +110,55 @@ public class JavaTokensTokenizerTest {
         t.tokenize(sourceCode, tokens);
         TokenEntry.getEOF();
         assertEquals(6, tokens.size());
+    }
+
+    @Test
+    public void testIgnoreBetweenSpecialComments() throws IOException {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
+                + "// CPD-OFF" + PMD.EOL + "// CPD-OFF" + PMD.EOL
+                + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL + "@NamedQuery(" + PMD.EOL + ")})"
+                + PMD.EOL + "public class Foo {" + "// CPD-ON" + PMD.EOL
+                + "}"
+        ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        assertEquals(2, tokens.size()); // 2 tokens: "}" + EOF
+    }
+
+    @Test
+    public void testIgnoreBetweenSpecialCommentsMultiple() throws IOException {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
+                + "// CPD-OFF" + PMD.EOL + "// another irrelevant comment" + PMD.EOL
+                + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL + "@NamedQuery(" + PMD.EOL + ")})"
+                + PMD.EOL + "public class Foo {" + "// CPD-ON" + PMD.EOL
+                + "}"
+        ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        assertEquals(2, tokens.size()); // 2 tokens: "}" + EOF
+    }
+
+    @Test
+    public void testIgnoreBetweenSpecialCommentsMultiline() throws IOException {
+        JavaTokenizer t = new JavaTokenizer();
+        t.setIgnoreAnnotations(false);
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL
+                + "/* " + PMD.EOL + " * CPD-OFF" + PMD.EOL + "*/" + PMD.EOL
+                + "@ MyAnnotation (\"ugh\")" + PMD.EOL + "@NamedQueries({" + PMD.EOL + "@NamedQuery(" + PMD.EOL + ")})"
+                + PMD.EOL + "public class Foo {" + PMD.EOL
+                + "/* " + PMD.EOL + " * CPD-ON" + PMD.EOL + "*/" + PMD.EOL
+                + "}"
+        ));
+        Tokens tokens = new Tokens();
+        t.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        assertEquals(2, tokens.size()); // 2 tokens: "}" + EOF
     }
 
     @Test

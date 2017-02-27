@@ -45,7 +45,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * <li>K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented
  * programs. Software, IEEE, 6(5):38–48, 1989.</li>
  * </ul>
- * 
+ *
  * @since 5.0
  *
  */
@@ -57,7 +57,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
     /**
      * That's a new method. We are going to check each method call inside the
      * method.
-     * 
+     *
      * @return <code>null</code>.
      */
     @Override
@@ -129,7 +129,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
          * Factory method to convert a given primary expression into
          * MethodCalls. In case the primary expression represents a method chain
          * call, then multiple MethodCalls are returned.
-         * 
+         *
          * @return a list of MethodCalls, might be empty.
          */
         public static List<MethodCall> createMethodCalls(ASTPrimaryExpression expression) {
@@ -317,11 +317,12 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
             ASTBlock block = expression.getFirstParentOfType(ASTMethodDeclaration.class)
                     .getFirstChildOfType(ASTBlock.class);
-
+            //get all variableDeclarators within this block
             List<ASTVariableDeclarator> variableDeclarators = block.findDescendantsOfType(ASTVariableDeclarator.class);
             for (ASTVariableDeclarator declarator : variableDeclarators) {
                 ASTVariableDeclaratorId variableDeclaratorId = declarator
                         .getFirstChildOfType(ASTVariableDeclaratorId.class);
+                //we only care about it if the image name matches the current baseName
                 if (variableDeclaratorId.hasImageEqualTo(baseName)) {
                     boolean allocationFound = declarator
                             .getFirstDescendantOfType(ASTAllocationExpression.class) != null;
@@ -331,18 +332,33 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 }
             }
 
+            //get all AssignmentOperators within this block
             List<ASTAssignmentOperator> assignmentStmts = block.findDescendantsOfType(ASTAssignmentOperator.class);
             for (ASTAssignmentOperator stmt : assignmentStmts) {
-                if (stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
-                    boolean allocationFound = stmt.jjtGetParent()
-                            .getFirstDescendantOfType(ASTAllocationExpression.class) != null;
-                    boolean iterator = isIterator();
-                    assignments.add(new Assignment(stmt.getBeginLine(), allocationFound, iterator, false));
+                //we only care about it if it occurs prior to (or on) the beginLine of the current expression
+                //and if it is a simple_assignement_operator
+                if (stmt.getBeginLine() <= expression.getBeginLine()
+                        && stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
+                    //now we need to make sure it has the right image name
+                    ASTPrimaryPrefix primaryPrefix = stmt.jjtGetParent()
+                            .getFirstDescendantOfType(ASTPrimaryPrefix.class);
+                    if (primaryPrefix != null) {
+                        ASTName prefixName = primaryPrefix.getFirstChildOfType(ASTName.class);
+                        if (prefixName != null && prefixName.hasImageEqualTo(baseName)) {
+                            //this is an assignment related to the baseName we are working with
+                            boolean allocationFound = stmt.jjtGetParent()
+                                    .getFirstDescendantOfType(ASTAllocationExpression.class) != null;
+                            boolean iterator = isIterator();
+                            assignments
+                                    .add(new Assignment(stmt.getBeginLine(), allocationFound, iterator, false));
+                        }
+                    }
                 }
             }
 
             Assignment result = null;
             if (!assignments.isEmpty()) {
+                //sort them in reverse order and return the first one
                 Collections.sort(assignments);
                 result = assignments.get(0);
             }

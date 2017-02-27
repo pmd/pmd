@@ -239,7 +239,7 @@ public class TypeSet {
          */
         public CurrentPackageResolver(PMDASMClassLoader pmdClassLoader, String pkg) {
             super(pmdClassLoader);
-            if (pkg == null) {
+            if (pkg == null || pkg.length() == 0) {
                 this.pkg = null;
             } else {
                 this.pkg = pkg + ".";
@@ -252,31 +252,25 @@ public class TypeSet {
                 throw new ClassNotFoundException();
             }
 
-            final String fqName = qualifyName(name);
-            final Class<?> c = resolveMaybeInner(fqName, fqName);
-
-            if (c == null) {
-                throw new ClassNotFoundException("Type " + name + " not found");
-            }
-
-            return c;
+            return pmdClassLoader.loadClass(qualifyName(name));
         }
 
         @Override
         public boolean couldResolve(String name) {
-            return super.couldResolve(qualifyName(name));
+            return pmdClassLoader.couldResolve(qualifyName(name));
         }
 
         private String qualifyName(final String name) {
+            final String qualifiedName = name.replace('.', '$');
             if (pkg == null) {
-                return name;
+                return qualifiedName;
             }
 
             /*
              * String.concat is bad in general, but for simple 2 string concatenation, it's the fastest
              * See http://www.rationaljava.com/2015/02/the-optimum-method-to-concatenate.html
              */
-            return pkg.concat(name);
+            return pkg.concat(qualifiedName);
         }
     }
 
@@ -319,7 +313,7 @@ public class TypeSet {
              * String.concat is bad in general, but for simple 2 string concatenation, it's the fastest
              * See http://www.rationaljava.com/2015/02/the-optimum-method-to-concatenate.html
              */
-            clazz = pmdClassLoader.loadClass("java.lang.".concat(name));
+            clazz = pmdClassLoader.loadClass("java.lang.".concat(name.replace('.', '$')));
             CLASS_CACHE.putIfAbsent(name, clazz);
 
             return clazz;
@@ -331,7 +325,7 @@ public class TypeSet {
              * String.concat is bad in general, but for simple 2 string concatenation, it's the fastest
              * See http://www.rationaljava.com/2015/02/the-optimum-method-to-concatenate.html
              */
-            return super.couldResolve("java.lang.".concat(name));
+            return pmdClassLoader.couldResolve("java.lang.".concat(name.replace('.', '$')));
         }
     }
 
@@ -365,12 +359,16 @@ public class TypeSet {
                 throw new ClassNotFoundException();
             }
 
+            name = name.replace('.', '$');
             for (String importStmt : importStmts) {
                 final String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
                         .replace(importStmt.length() - 1, importStmt.length(), name).toString();
-                final Class<?> c = resolveMaybeInner(name, fqClassName);
-                if (c != null) {
-                    return c;
+                if (pmdClassLoader.couldResolve(fqClassName)) {
+                    try {
+                        return pmdClassLoader.loadClass(fqClassName);
+                    } catch (ClassNotFoundException e) {
+                        // ignored
+                    }
                 }
             }
 
@@ -379,11 +377,12 @@ public class TypeSet {
 
         @Override
         public boolean couldResolve(String name) {
+            name = name.replace('.', '$');
             for (String importStmt : importStmts) {
                 final String fqClassName = new StringBuilder(importStmt.length() + name.length()).append(importStmt)
                         .replace(importStmt.length() - 1, importStmt.length(), name).toString();
                 // can any class be resolved / was never attempted?
-                if (super.couldResolve(fqClassName)) {
+                if (pmdClassLoader.couldResolve(fqClassName)) {
                     return true;
                 }
             }
@@ -471,6 +470,18 @@ public class TypeSet {
             }
 
             return c;
+        }
+
+        @Override
+        public boolean couldResolve(String name) {
+            /*
+             * We can always try!
+             * If a file used an explicit import on A.Inner, the class loader will register
+             * A.Inner can't be resolved even if A$Inner can.
+             * If a second file used A.Inner without an explicit import, we would end here,
+             * super.couldResolve("A.Inner") will return false, but we CAN resolve it as A$Inner.
+             */
+            return true;
         }
     }
 
