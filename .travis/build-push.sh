@@ -5,10 +5,18 @@ VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
 if [[ "$VERSION" != *-SNAPSHOT && "$TRAVIS_TAG" != "" ]]; then
+    # release build
     mvn deploy -Possrh,pmd-release -B -V
-else
+elif [[ "$VERSION" == *-SNAPSHOT ]]; then
+    # snapshot build
     mvn deploy -Possrh -B -V
+else
+    # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.
+    mvn verify -Possrh -B -V
+    # we stop here - no need to execute further steps
+    exit 0
 fi
+
 
 bash .travis/build-site.sh
 
