@@ -10,20 +10,26 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
+import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
+import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
+import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
+import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
 
 /**
- * @author sergey.gorbaty
- * February 2017
+ * @author sergey.gorbaty February 2017
  *
  */
 public class VfUnescapeElRule extends AbstractVfRule {
+    private static final String HREF = "href";
+    private static final String SRC = "src";
     private static final String APEX_PARAM = "apex:param";
     private static final String VALUE = "value";
     private static final String ITEM_VALUE = "itemvalue";
@@ -65,14 +71,32 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 }
             }
 
-            if ("href".equalsIgnoreCase(name) || "src".equalsIgnoreCase(name)) {
-                final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
-                for (ASTElExpression el : elsInVal) {
-                    if (doesElContainAnyUnescapedIdentifiers(el, ESCAPING.URLENCODE)) {
-                        isEL = true;
-                        toReport.add(el);
+            if (HREF.equalsIgnoreCase(name) || SRC.equalsIgnoreCase(name)) {
+                boolean startingWithSlashText = false;
+
+                final ASTText attrText = attr.getFirstDescendantOfType(ASTText.class);
+                if (attrText != null) {
+                    if (0 == attrText.jjtGetChildIndex()) {
+                        if (attrText.getImage().startsWith("/")) {
+                            startingWithSlashText = true;
+                        }
                     }
                 }
+
+                if (!startingWithSlashText) {
+                    final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
+                    for (ASTElExpression el : elsInVal) {
+                        if (startsWithSlashLiteral(el)) {
+                            continue;
+                        }
+
+                        if (doesElContainAnyUnescapedIdentifiers(el, ESCAPING.URLENCODE)) {
+                            isEL = true;
+                            toReport.add(el);
+                        }
+                    }
+                }
+
             }
         }
 
@@ -82,6 +106,21 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
         }
 
+    }
+
+    private boolean startsWithSlashLiteral(final ASTElExpression elExpression) {
+        final ASTExpression expression = elExpression.getFirstChildOfType(ASTExpression.class);
+        if (expression != null) {
+            final ASTLiteral literal = expression.getFirstChildOfType(ASTLiteral.class);
+            if (literal != null && literal.jjtGetChildIndex() == 0) {
+                if (literal.getImage().startsWith("'/") || literal.getImage().startsWith("\"/")) {
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
     }
 
     private void checkTagsThatSupportEscaping(ASTElement node, Object data) {
@@ -151,36 +190,72 @@ public class VfUnescapeElRule extends AbstractVfRule {
             return false;
         }
 
-        boolean isEscaped = false;
-        List<ASTIdentifier> ids = elExpression.findDescendantsOfType(ASTIdentifier.class);
-        boolean foundAny = !ids.isEmpty();
+        final Set<ASTIdentifier> nonEscapedIds = new HashSet<>();
 
-        for (final ASTIdentifier id : ids) {
-            for (ESCAPING e : escapes) {
-                if (id.getImage().equalsIgnoreCase(e.toString())) {
-                    isEscaped = true;
-                    break;
-                }
+        final List<ASTExpression> exprs = elExpression.findChildrenOfType(ASTExpression.class);
+        for (final ASTExpression expr : exprs) {
 
-                if ("$Resource".equalsIgnoreCase(id.getImage()) || "URLFOR".equalsIgnoreCase(id.getImage())
-                        || "$Site".equalsIgnoreCase(id.getImage()) || "$Page".equalsIgnoreCase(id.getImage())) {
-                    isEscaped = true;
-                    continue;
-                }
+            if (containsSafeFields(expr)) {
+                continue;
+            }
 
-                if (e.equals(ESCAPING.ANY)) {
-                    for (ESCAPING esc : ESCAPING.values()) {
-                        if (id.getImage().equalsIgnoreCase(esc.toString())) {
-                            isEscaped = true;
-                            break;
+            final List<ASTIdentifier> ids = expr.findChildrenOfType(ASTIdentifier.class);
+
+            for (final ASTIdentifier id : ids) {
+                boolean isEscaped = false;
+
+                for (ESCAPING e : escapes) {
+
+                    if (id.getImage().equalsIgnoreCase(e.toString())) {
+                        isEscaped = true;
+                        break;
+                    }
+
+                    if ("$Resource".equalsIgnoreCase(id.getImage()) || "URLFOR".equalsIgnoreCase(id.getImage())
+                            || "$Site".equalsIgnoreCase(id.getImage()) || "$Page".equalsIgnoreCase(id.getImage())) {
+                        isEscaped = true;
+                        continue;
+                    }
+
+                    if (e.equals(ESCAPING.ANY)) {
+                        for (ESCAPING esc : ESCAPING.values()) {
+                            if (id.getImage().equalsIgnoreCase(esc.toString())) {
+                                isEscaped = true;
+                                break;
+                            }
                         }
                     }
+
                 }
 
+                if (!isEscaped) {
+                    nonEscapedIds.add(id);
+                }
             }
+
         }
 
-        return (foundAny && !isEscaped);
+        return !nonEscapedIds.isEmpty();
+    }
+
+    private boolean containsSafeFields(final AbstractVFNode expression) {
+
+        for (int i = 0; i < expression.jjtGetNumChildren(); i++) {
+            Node child = expression.jjtGetChild(i);
+
+            if (child instanceof ASTIdentifier) {
+                if ("Id".equalsIgnoreCase(child.getImage()) || "size".equalsIgnoreCase(child.getImage())) {
+                    return true;
+                }
+            }
+
+            if (child instanceof ASTDotExpression) {
+                return containsSafeFields((ASTDotExpression) child);
+            }
+
+        }
+
+        return false;
     }
 
     private boolean doesTagSupportEscaping(final ASTElement node) {
