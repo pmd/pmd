@@ -3,6 +3,19 @@
 
 	<test-code>
 		<description><![CDATA[
+Id in the EL means no XSS
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<a onclick="ShowUnregisterWindow('{!item.id}')">foo</a>
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
 EL in JS on-event handler - stored XSS 
      ]]></description>
 		<expected-problems>1</expected-problems>
@@ -38,6 +51,30 @@ EL in JS src handler - stored XSS
 		<code><![CDATA[
 <apex:page>
 <iframe src="{!XSSHere}" />
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[ EL in JS src handler containing '/' literal - no stored XSS ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+<apex:page> 
+	<iframe src="{!'/foo' + XSSHere}" /> 
+</apex:page> 
+		]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+EL in JS src handler prepended by starting with '/' literal - no stored XSS 
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<iframe src="/{!XSSHere}" />
  </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
@@ -220,5 +257,4 @@ No XSS with escaped EL
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
-
 </test-data>
