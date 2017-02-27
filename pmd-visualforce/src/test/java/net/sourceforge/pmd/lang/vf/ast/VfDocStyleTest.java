@@ -599,14 +599,10 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
     @Test
     public void noQuoteAttrWithJspEL() {
         Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_EL);
-        assertEquals("two attributes expected!", 2, attributes.size());
+        assertEquals("One attribute expected!", 1, attributes.size());
         Iterator<ASTAttributeValue> iterator = attributes.iterator();
-        ASTAttributeValue attr2 = iterator.next();
-        if ("url".equals(attr2.getImage())) {
-            attr2 = iterator.next();
-        }
-
-        ASTIdentifier id = attr2.getFirstDescendantOfType(ASTIdentifier.class);
+        ASTAttributeValue attr = iterator.next();
+        ASTIdentifier id = attr.getFirstDescendantOfType(ASTIdentifier.class);        
         assertEquals("Expected to detect proper value for EL in attribute!", "something", id.getImage());
     }
 
@@ -693,5 +689,5 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     private static final String TEST_UNCLOSED_ATTR = "<tag:someTag> <tag:if someting='x' > </tag:someTag>";
 
-    private static final String TEST_NO_QUOTE_ATTR_WITH_EL = "<tag:if something={!something} >  <a href=url >foo</a> </tag:if>";
+    private static final String TEST_NO_QUOTE_ATTR_WITH_EL = "<apex:someTag something={!something} > foo </apex:someTag>";
 }
