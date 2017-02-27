@@ -227,7 +227,7 @@ PARSER_END(VfParser)
 {
      <ENDING_WHITESPACE: " " >: InTagState
 	|	<EL_EXPRESSION_IN_ATTRIBUTE_NQ: "{!" (<WHITESPACES>)? > : ElAttribTagStateNQ
-	| <UNPARSED_TEXT_NO_WHITESPACE: ( ~["$", "#", " "] |(["$", "#"] ~["{"]) )+ >
+	| <UNPARSED_TEXT_NO_WHITESPACE: ( ~["{", " "] |(["{"] ~["!"]) )+ >
 
 }
 

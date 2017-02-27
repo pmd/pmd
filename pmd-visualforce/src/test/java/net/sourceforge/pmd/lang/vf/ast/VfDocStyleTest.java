@@ -15,10 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Test parsing of a VF in document style, by checking the generated AST.
@@ -253,17 +250,21 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void unclosedTagsWithELWithin() {
-        Set<ASTElExpression> exprs = getNodes(ASTElExpression.class, TEST_TAGS_WITH_EL_WITHIN);
-        assertEquals("Two EL expressions expected!", 2, exprs.size());   
-        Iterator<ASTElExpression> iterator = exprs.iterator();
-        ASTElExpression script = iterator.next();
-        ASTExpression expr = script.getFirstChildOfType(ASTExpression.class);
-        ASTIdentifier id = expr.getFirstChildOfType(ASTIdentifier.class);
-        assertEquals("Correct content expected!", "expr1", id.getImage());
-        script = iterator.next();
-        expr = script.getFirstChildOfType(ASTExpression.class);
-        id = expr.getFirstChildOfType(ASTIdentifier.class);
-        assertEquals("Correct content expected!", "expr2", id.getImage());
+        Set<ASTElement> element = getNodes(ASTElement.class, TEST_TAGS_WITH_EL_WITHIN);
+        assertEquals("One element expected!", 1, element.size());
+
+        for (ASTElement elem : element) {
+            ASTContent content = elem.getFirstChildOfType(ASTContent.class);
+            List<ASTElExpression> els = content.findChildrenOfType(ASTElExpression.class);
+            assertEquals("Two EL expressions expected!", 2, els.size());
+
+            ASTElExpression node = (ASTElExpression) content.jjtGetChild(0);
+            ASTIdentifier id = node.getFirstDescendantOfType(ASTIdentifier.class);
+            assertEquals("Correct content expected!", "expr1", id.getImage());
+            node = (ASTElExpression) content.jjtGetChild(1);
+            id = node.getFirstDescendantOfType(ASTIdentifier.class);
+            assertEquals("Correct content expected!", "expr2", id.getImage());
+        }
 
     }
 
@@ -294,16 +295,6 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         ASTExpression expr = els.get(0).getFirstChildOfType(ASTExpression.class);
         ASTIdentifier id = expr.getFirstChildOfType(ASTIdentifier.class);
         assertEquals("Expected to detect proper value for attribute!", "something", id.getImage());
-    }
-
-    @Test
-    @Ignore // tags contain quotes and break attribute parsing
-    public void quoteTagInAttribute() {
-        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_QUOTE_TAG_IN_ATTR);
-        assertEquals("One attribute expected!", 1, attributes.size());
-        ASTAttributeValue attr = attributes.iterator().next();
-        assertEquals("Expected to detect proper value for attribute!", "<bean:write name=\"x\" property=\"z\">",
-                attr.getImage());
     }
 
     /**
@@ -575,30 +566,6 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
     }
 
     /**
-     * {@link #TEST_UNCLOSED_END_OF_DOC} &lt;tag:x&gt; &lt;tag:y&gt; Tests
-     * whether parser breaks on no closed tags at all
-     */
-    // This is yet to be improved. If a closing tag does not
-    // exist no tags will be marked as empty :(
-    @Ignore
-    @Test
-    public void unclosedEndOfDoc() {
-        Set<ASTElement> elements = getNodes(ASTElement.class, TEST_UNCLOSED_END_OF_DOC);
-        List<ASTElement> sortedElmnts = sortNodesByName(elements);
-        assertEquals("2 tags expected", 2, elements.size());
-        assertEquals("First element should be 'tag:x'", "tag:x", sortedElmnts.get(0).getName());
-        assertEquals("Second element should be tag:y", "tag:y", sortedElmnts.get(1).getName());
-
-        // b
-        // assertTrue(sortedElmnts.get(0).isEmpty());
-        assertTrue(sortedElmnts.get(0).isUnclosed());
-
-        // b
-        assertTrue(sortedElmnts.get(1).isEmpty());
-        assertTrue(sortedElmnts.get(1).isUnclosed());
-    }
-
-    /**
      * will sort the AST element in list in alphabetical order and if tag name
      * is the same it will sort against o1.getBeginColumn() +""+
      * o1.getBeginLine(). so first criteria is the name, then the second is the
@@ -629,32 +596,18 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         return list;
     }
 
-    /**
-     * will sort the AST node by the image name.
-     * 
-     * @param elements
-     * @return
-     */
-    private <T extends Node> List<T> sortByImage(Set<T> elements) {
-        List<T> list = new ArrayList<>();
-        list.addAll(elements);
-        Collections.sort(list, new Comparator<Node>() {
-            public int compare(Node o1, Node o2) {
-                if (o1.getImage() == null) {
-                    return Integer.MIN_VALUE;
-                }
-                if (o2.getImage() == null) {
-                    return Integer.MAX_VALUE;
-                }
-                if (o1.getImage().equals(o2.getImage())) {
-                    String o1Value = o1.getBeginColumn() + "" + o1.getBeginLine();
-                    String o2Value = o2.getBeginColumn() + "" + o2.getBeginLine();
-                    return o1Value.compareTo(o2Value);
-                }
-                return o1.getImage().compareTo(o2.getImage());
-            }
-        });
-        return list;
+    @Test
+    public void noQuoteAttrWithJspEL() {
+        Set<ASTAttributeValue> attributes = getNodes(ASTAttributeValue.class, TEST_NO_QUOTE_ATTR_WITH_EL);
+        assertEquals("two attributes expected!", 2, attributes.size());
+        Iterator<ASTAttributeValue> iterator = attributes.iterator();
+        ASTAttributeValue attr2 = iterator.next();
+        if ("url".equals(attr2.getImage())) {
+            attr2 = iterator.next();
+        }
+
+        ASTIdentifier id = attr2.getFirstDescendantOfType(ASTIdentifier.class);
+        assertEquals("Expected to detect proper value for EL in attribute!", "something", id.getImage());
     }
 
     private static final String TEST_SIMPLEST_HTML = "<html/>";
@@ -692,14 +645,11 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     private static final String TEST_TAGS_WITH_DOLLAR = "<a> $ <b> $ </a>";
 
-    private static final String TEST_TAGS_WITH_EL_WITHIN = "<a>{!expr1}<b>{!expr2}</a>";
+    private static final String TEST_TAGS_WITH_EL_WITHIN = "<a>{!expr1}{!expr2}</a>";
 
     private static final String TEST_TEXT_AFTER_OPEN_AND_CLOSED_TAG = "<a> some text <b> some text </a>";
 
     private static final String TEST_QUOTE_EL = "<tag:if something=\"{!something}\" > </tag:if>";
-
-    private static final String TEST_QUOTE_TAG_IN_ATTR = "<tag:if something=\"<bean:write name=\"x\" property=\"z\">\" >  "
-            + "<a href=http://someHost:/some_URL >foo</a> </tag:if>";
 
     private static final String TEST_ATTR = "<tag:if something=\"yes|\" > </tag:if>";
 
@@ -741,7 +691,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     private static final String TEST_UNCLOSED_START_TAG_WITH_UNMATCHED_CLOSE = "<a> <x> <a> <b> <b> </z> </a> </x>";
 
-    private static final String TEST_UNCLOSED_END_OF_DOC = "<tag:x> <tag:y>";
-
     private static final String TEST_UNCLOSED_ATTR = "<tag:someTag> <tag:if someting='x' > </tag:someTag>";
+
+    private static final String TEST_NO_QUOTE_ATTR_WITH_EL = "<tag:if something={!something} >  <a href=url >foo</a> </tag:if>";
 }
