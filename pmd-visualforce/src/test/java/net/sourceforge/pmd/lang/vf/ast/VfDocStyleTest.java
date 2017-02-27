@@ -253,9 +253,8 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
      */
     @Test
     public void unclosedTagsWithELWithin() {
-        Set<ASTElExpression> scripts = getNodes(ASTElExpression.class, TEST_TAGS_WITH_EL_WITHIN);
-        assertEquals("Two EL expressions expected!", 2, scripts.size());
-        List<ASTElExpression> exprs = sortByImage(scripts);
+        Set<ASTElExpression> exprs = getNodes(ASTElExpression.class, TEST_TAGS_WITH_EL_WITHIN);
+        assertEquals("Two EL expressions expected!", 2, exprs.size());   
         Iterator<ASTElExpression> iterator = exprs.iterator();
         ASTElExpression script = iterator.next();
         ASTExpression expr = script.getFirstChildOfType(ASTExpression.class);
