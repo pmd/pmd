@@ -223,8 +223,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     case "$site":
                     case "$page":
                         isEscaped = true;
-                    default:
-                        isEscaped = false;
+                        break;
                     }
 
                     if (e.equals(ESCAPING.ANY)) {

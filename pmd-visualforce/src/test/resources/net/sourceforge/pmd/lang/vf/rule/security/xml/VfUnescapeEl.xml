@@ -8,6 +8,19 @@ Id in the EL means no XSS
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <apex:page>
+<link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/resources/css/ext-all.css" id="ext-all-css"/>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+Id in the EL means no XSS
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
 <a onclick="ShowUnregisterWindow('{!item.id}')">foo</a>
  </apex:page>
 ]]></code>
