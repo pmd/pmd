@@ -40,6 +40,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String APEX_PAGE_MESSAGES = "apex:pagemessages";
     private static final String APEX_SELECT_OPTION = "apex:selectoption";
     private static final String FALSE = "false";
+    private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
+    private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
 
     @Override
     public Object visit(ASTElement node, Object data) {
@@ -60,7 +62,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
         for (ASTAttribute attr : attributes) {
             String name = attr.getName().toLowerCase();
             // look for onevents
-            if (Pattern.compile("^on(\\w)+$").matcher(name).matches()) {
+
+            if (ON_EVENT.matcher(name).matches()) {
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
                     if (doesElContainAnyUnescapedIdentifiers(el,
@@ -158,7 +161,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
                 final ASTText textValue = attr.getFirstDescendantOfType(ASTText.class);
                 if (textValue != null) {
-                    if (Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}").matcher(textValue.getImage()).matches()) {
+
+                    if (PLACEHOLDERS.matcher(textValue.getImage()).matches()) {
                         hasPlaceholders = true;
                     }
                 }
