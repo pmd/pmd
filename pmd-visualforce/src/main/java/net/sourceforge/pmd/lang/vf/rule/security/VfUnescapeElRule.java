@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.rule.security;
 
-import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +64,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
                     if (doesElContainAnyUnescapedIdentifiers(el,
-                            Arrays.asList(ESCAPING.JSINHTMLENCODE, ESCAPING.JSENCODE))) {
+                            EnumSet.of(ESCAPING.JSINHTMLENCODE, ESCAPING.JSENCODE))) {
                         isEL = true;
                         toReport.add(el);
                     }
@@ -184,11 +184,12 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression, ESCAPING escape) {
-        return doesElContainAnyUnescapedIdentifiers(elExpression, Arrays.asList(escape));
+        return doesElContainAnyUnescapedIdentifiers(elExpression, EnumSet.of(escape));
 
     }
 
-    private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression, List<ESCAPING> escapes) {
+    private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression,
+            EnumSet<ESCAPING> escapes) {
         if (elExpression == null) {
             return false;
         }
