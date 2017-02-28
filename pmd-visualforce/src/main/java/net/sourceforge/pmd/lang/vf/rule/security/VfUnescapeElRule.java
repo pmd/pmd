@@ -77,7 +77,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 final ASTText attrText = attr.getFirstDescendantOfType(ASTText.class);
                 if (attrText != null) {
                     if (0 == attrText.jjtGetChildIndex()) {
-                        if (attrText.getImage().startsWith("/") || attrText.getImage().toLowerCase().startsWith("http")) {
+                        if (attrText.getImage().startsWith("/")
+                                || attrText.getImage().toLowerCase().startsWith("http")) {
                             startingWithSlashText = true;
                         }
                     }
@@ -211,8 +212,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
                         break;
                     }
 
-                    if ("$Resource".equalsIgnoreCase(id.getImage()) || "URLFOR".equalsIgnoreCase(id.getImage())
-                            || "$Site".equalsIgnoreCase(id.getImage()) || "$Page".equalsIgnoreCase(id.getImage())) {
+                    if ("$Label".equalsIgnoreCase(id.getImage()) || "$Resource".equalsIgnoreCase(id.getImage())
+                            || "URLFOR".equalsIgnoreCase(id.getImage()) || "$Site".equalsIgnoreCase(id.getImage())
+                            || "$Page".equalsIgnoreCase(id.getImage())) {
                         isEscaped = true;
                         continue;
                     }
