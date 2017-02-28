@@ -53,7 +53,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  */
 public class ApexCRUDViolationRule extends AbstractApexRule {
-    private static final Pattern p = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern VOID_OR_STRING_PATTERN = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("^[\\S|\\s]+?FROM[\\s]+?(\\S+)",
+            Pattern.CASE_INSENSITIVE);
 
     private final HashMap<String, String> varToTypeMapping = new HashMap<>();
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
@@ -540,7 +542,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private String getTypeFromSOQLQuery(final ASTSoqlExpression node) {
         final String canonQuery = node.getNode().getCanonicalQuery();
 
-        Matcher m = Pattern.compile("^[\\S|\\s]+?FROM[\\s]+?(\\S+)", Pattern.CASE_INSENSITIVE).matcher(canonQuery);
+        Matcher m = SELECT_FROM_PATTERN.matcher(canonQuery);
         while (m.find()) {
             return new StringBuffer().append(node.getNode().getDefiningType().getApexName()).append(":")
                     .append(m.group(1)).toString();
@@ -555,7 +557,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private boolean isMethodAGetter(final ASTMethod method) {
         final boolean startsWithGet = method.getNode().getMethodInfo().getCanonicalName().startsWith("get");
-        final boolean voidOrString = p
+        final boolean voidOrString = VOID_OR_STRING_PATTERN
                 .matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
         final boolean noParams = method.findChildrenOfType(ASTParameter.class).isEmpty();
 
