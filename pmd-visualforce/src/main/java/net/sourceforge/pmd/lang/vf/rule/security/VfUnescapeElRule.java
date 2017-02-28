@@ -67,7 +67,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
                     if (doesElContainAnyUnescapedIdentifiers(el,
-                            EnumSet.of(ESCAPING.JSINHTMLENCODE, ESCAPING.JSENCODE))) {
+                            EnumSet.of(Escaping.JSINHTMLENCODE, Escaping.JSENCODE))) {
                         isEL = true;
                         toReport.add(el);
                     }
@@ -94,7 +94,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                             continue;
                         }
 
-                        if (doesElContainAnyUnescapedIdentifiers(el, ESCAPING.URLENCODE)) {
+                        if (doesElContainAnyUnescapedIdentifiers(el, Escaping.URLENCODE)) {
                             isEL = true;
                             toReport.add(el);
                         }
@@ -153,7 +153,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
-                    if (doesElContainAnyUnescapedIdentifiers(el, ESCAPING.HTMLENCODE)) {
+                    if (doesElContainAnyUnescapedIdentifiers(el, Escaping.HTMLENCODE)) {
                         isEL = true;
                         toReport.add(el);
                     }
@@ -187,13 +187,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
     }
 
-    private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression, ESCAPING escape) {
+    private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression, Escaping escape) {
         return doesElContainAnyUnescapedIdentifiers(elExpression, EnumSet.of(escape));
 
     }
 
     private boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression,
-            EnumSet<ESCAPING> escapes) {
+            EnumSet<Escaping> escapes) {
         if (elExpression == null) {
             return false;
         }
@@ -212,7 +212,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             for (final ASTIdentifier id : ids) {
                 boolean isEscaped = false;
 
-                for (ESCAPING e : escapes) {
+                for (Escaping e : escapes) {
 
                     if (id.getImage().equalsIgnoreCase(e.toString())) {
                         isEscaped = true;
@@ -231,8 +231,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
                         break;
                     }
 
-                    if (e.equals(ESCAPING.ANY)) {
-                        for (ESCAPING esc : ESCAPING.values()) {
+                    if (e.equals(Escaping.ANY)) {
+                        for (Escaping esc : Escaping.values()) {
                             if (id.getImage().equalsIgnoreCase(esc.toString())) {
                                 isEscaped = true;
                                 break;
@@ -300,7 +300,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     for (ASTAttribute attrib : innerAttributes) {
                         final List<ASTElExpression> elsInVal = attrib.findDescendantsOfType(ASTElExpression.class);
                         for (final ASTElExpression el : elsInVal) {
-                            if (doesElContainAnyUnescapedIdentifiers(el, ESCAPING.HTMLENCODE)) {
+                            if (doesElContainAnyUnescapedIdentifiers(el, Escaping.HTMLENCODE)) {
                                 toReturn.add(el);
                             }
 
@@ -313,7 +313,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         return toReturn;
     }
 
-    enum ESCAPING {
+    enum Escaping {
         HTMLENCODE("HTMLENCODE"),
         URLENCODE("URLENCODE"),
         JSINHTMLENCODE("JSINHTMLENCODE"),
@@ -322,7 +322,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         private final String text;
 
-        ESCAPING(final String text) {
+        Escaping(final String text) {
             this.text = text;
         }
 
