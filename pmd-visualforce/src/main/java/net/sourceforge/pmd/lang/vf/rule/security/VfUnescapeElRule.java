@@ -114,7 +114,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
         if (expression != null) {
             final ASTLiteral literal = expression.getFirstChildOfType(ASTLiteral.class);
             if (literal != null && literal.jjtGetChildIndex() == 0) {
-                if (literal.getImage().startsWith("'/") || literal.getImage().startsWith("\"/") || literal.getImage().toLowerCase().startsWith("'http") || literal.getImage().toLowerCase().startsWith("\"http") ) {
+                if (literal.getImage().startsWith("'/") || literal.getImage().startsWith("\"/")
+                        || literal.getImage().toLowerCase().startsWith("'http")
+                        || literal.getImage().toLowerCase().startsWith("\"http")) {
                     return true;
                 }
             }
@@ -212,11 +214,17 @@ public class VfUnescapeElRule extends AbstractVfRule {
                         break;
                     }
 
-                    if ("$ObjectType".equalsIgnoreCase(id.getImage()) || "$Label".equalsIgnoreCase(id.getImage()) || "$Resource".equalsIgnoreCase(id.getImage())
-                            || "URLFOR".equalsIgnoreCase(id.getImage()) || "$Site".equalsIgnoreCase(id.getImage())
-                            || "$Page".equalsIgnoreCase(id.getImage())) {
+                    switch (id.getImage().toLowerCase()) {
+                    case "$component":
+                    case "$objecttype":
+                    case "$label":
+                    case "$resource":
+                    case "urlfor":
+                    case "$site":
+                    case "$page":
                         isEscaped = true;
-                        continue;
+                    default:
+                        isEscaped = false;
                     }
 
                     if (e.equals(ESCAPING.ANY)) {
