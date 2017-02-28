@@ -114,7 +114,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         if (expression != null) {
             final ASTLiteral literal = expression.getFirstChildOfType(ASTLiteral.class);
             if (literal != null && literal.jjtGetChildIndex() == 0) {
-                if (literal.getImage().startsWith("'/") || literal.getImage().startsWith("\"/")) {
+                if (literal.getImage().startsWith("'/") || literal.getImage().startsWith("\"/") || literal.getImage().toLowerCase().startsWith("'http") || literal.getImage().toLowerCase().startsWith("\"http") ) {
                     return true;
                 }
             }
