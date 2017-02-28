@@ -246,6 +246,24 @@ XSS via item value
 
 	<test-code>
 		<description><![CDATA[
+XSS via item value
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+    <apex:form>
+        <apex:selectList value="{!string}" size="1">
+            <apex:selectOption itemValue='{!HTMLENCODE(XSS)}' itemLabel="Red" itemEscaped="false"/>
+        </apex:selectList> 
+    </apex:form>
+</apex:page>
+    
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
 No XSS with escaped EL 
      ]]></description>
 		<expected-problems>0</expected-problems>
