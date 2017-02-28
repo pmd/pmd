@@ -212,7 +212,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                         break;
                     }
 
-                    if ("$Label".equalsIgnoreCase(id.getImage()) || "$Resource".equalsIgnoreCase(id.getImage())
+                    if ("$ObjectType".equalsIgnoreCase(id.getImage()) || "$Label".equalsIgnoreCase(id.getImage()) || "$Resource".equalsIgnoreCase(id.getImage())
                             || "URLFOR".equalsIgnoreCase(id.getImage()) || "$Site".equalsIgnoreCase(id.getImage())
                             || "$Page".equalsIgnoreCase(id.getImage())) {
                         isEscaped = true;
