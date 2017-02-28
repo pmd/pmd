@@ -77,7 +77,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 final ASTText attrText = attr.getFirstDescendantOfType(ASTText.class);
                 if (attrText != null) {
                     if (0 == attrText.jjtGetChildIndex()) {
-                        if (attrText.getImage().startsWith("/") || attrText.getImage().startsWith("http")) {
+                        if (attrText.getImage().startsWith("/") || attrText.getImage().toLowerCase().startsWith("http")) {
                             startingWithSlashText = true;
                         }
                     }
