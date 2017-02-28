@@ -41,19 +41,24 @@ fi
 
 echo "Adding the site to pmd.github.io..."
 # clone pmd.github.io. Note: This uses the ssh key setup earlier
-git clone --depth 1 git@github.com:pmd/pmd.github.io.git
-rsync -a target/pmd-doc-${RELEASE_VERSION}/ pmd.github.io/pmd-${RELEASE_VERSION}/
+# In order to speed things up, we use a sparse checkout - no need to checkout all directories here
+mkdir pmd.github.io
 (
-  cd pmd.github.io
-  git config user.email "adangel@users.sourceforge.net"
-  git config user.name "Andreas Dangel (PMD Releases)"
-  git checkout master
-  git add pmd-${RELEASE_VERSION}
-  git commit -q -m "Added pmd-${RELEASE_VERSION}"
-  git rm -qr latest
-  cp -a pmd-${RELEASE_VERSION} latest
-  git add latest
-  git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
-  git push origin master
+    cd pmd.github.io
+    git init
+    git config user.email "adangel+pmd-bot@users.sourceforge.net"
+    git config user.name "Andreas Dangel (PMD Releases)"
+    git config core.sparsecheckout true
+    git remote add origin git@github.com:pmd/pmd.github.io.git
+    echo "latest/" > .git/info/sparse-checkout
+    git pull --depth=1 origin master
+    rsync -a ../target/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
+    git add pmd-${RELEASE_VERSION}
+    git commit -q -m "Added pmd-${RELEASE_VERSION}"
+    git rm -qr latest
+    cp -a pmd-${RELEASE_VERSION} latest
+    git add latest
+    git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
+    git push origin master
 )
 
