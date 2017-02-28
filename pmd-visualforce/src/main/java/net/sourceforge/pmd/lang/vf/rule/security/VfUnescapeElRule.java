@@ -38,7 +38,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String APEX_OUTPUT_TEXT = "apex:outputtext";
     private static final String APEX_PAGE_MESSAGE = "apex:pagemessage";
     private static final String APEX_PAGE_MESSAGES = "apex:pagemessages";
-    private static final String APEX_SELECT_OPTION = "apex:selectoption ";
+    private static final String APEX_SELECT_OPTION = "apex:selectoption";
     private static final String FALSE = "false";
 
     @Override

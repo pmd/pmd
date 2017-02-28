@@ -226,17 +226,16 @@ No XSS via EL via param binding
 
 	<test-code>
 		<description><![CDATA[
-No XSS via EL via param binding
+XSS via item value
      ]]></description>
-		<expected-problems>0</expected-problems>
+		<expected-problems>3</expected-problems>
 		<code><![CDATA[
 <apex:page>
     <apex:form>
         <apex:selectList value="{!string}" size="1">
             <apex:selectOption itemValue='{!XSS}' itemLabel="Red" itemEscaped="false"/>
             <apex:selectOption itemValue={!XSS} itemLabel="Blue" itemEscaped="false"/>
-            <apex:selectOption itemValue="{!XSS}" itemLabel="Green" itemEscaped="false"/>
-            
+            <apex:selectOption itemValue="{!XSS}" itemLabel="Green" itemEscaped="false"/>            
         </apex:selectList> 
     </apex:form>
 </apex:page>
@@ -252,7 +251,7 @@ No XSS with escaped EL
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <apex:page>
-	<apex:outputText value=" {!HTMLENCODE(myTextField)}" escape="false"/>
+	<apex:outputText value=" {!HTMLENCODE(myTextField) }" escape="false"/>
 </apex:page>    
 ]]></code>
 		<source-type>vf</source-type>
