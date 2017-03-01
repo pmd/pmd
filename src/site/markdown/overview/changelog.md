@@ -424,4 +424,5 @@ For example:
 *   [#266](https://github.com/pmd/pmd/pull/266): \[java] corrected invalid reporting of LoD violation
 *   [#268](https://github.com/pmd/pmd/pull/268): \[apex] Support safe escaping via String method
 *   [#273](https://github.com/pmd/pmd/pull/273): \[apex] Shade jackson on apex
+*   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
 
