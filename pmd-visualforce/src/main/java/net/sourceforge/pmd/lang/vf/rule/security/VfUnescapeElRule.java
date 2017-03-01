@@ -83,13 +83,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
         if (quoted) {
             // check escaping too
-            if (!startsWithSafeResource(elExpression) || !containsSafeFields(elExpression)) {
+            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
                 if (doesElContainAnyUnescapedIdentifiers(elExpression, Escaping.JSENCODE)) {
                     addViolation(data, elExpression);
                 }
             }
         } else {
-            if (!startsWithSafeResource(elExpression) || !containsSafeFields(elExpression)) {
+            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
                 addViolation(data, elExpression);
             }
         }
@@ -185,6 +185,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "urlfor":
                 case "$site":
                 case "$page":
+                case "$action":
                     return true;
 
                 }

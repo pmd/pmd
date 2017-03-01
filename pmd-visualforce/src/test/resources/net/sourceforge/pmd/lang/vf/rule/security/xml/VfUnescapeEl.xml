@@ -3,6 +3,20 @@
 
  	<test-code>
 		<description><![CDATA[
+No XSS in safe commands quoted context
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+	window.location.href = '{!URLFOR($Action.zqu__Quote__c.Submit, QuoteId, [retURL=QuoteId])}';
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code> 
+ 	<test-code>
+		<description><![CDATA[
 Unquoted EL in script tag is an XSS 
      ]]></description>
 		<expected-problems>1</expected-problems>
