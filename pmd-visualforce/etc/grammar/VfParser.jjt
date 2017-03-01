@@ -260,9 +260,10 @@ PARSER_END(VfParser)
 
 <HtmlScriptContentState> TOKEN :
 {
-		 <HTML_SCRIPT_CONTENT: ( (~["{"]) | (["{"] ~["!"]) ) >
+		  <HTML_SCRIPT_QUOTE: ( "'" | "\"") >
 		| <HTML_SCRIPT_END_TAG : "</script>" > : AfterTagState
 		| <EL_EXPRESSION_IN_SCRIPT: "{!" (<WHITESPACES>)? > : ElInScriptState
+		| <HTML_SCRIPT_CONTENT: ( (~["{"]) | (["{"] ~["!"]) ) >
 }
 
 <HtmlStyleContentState> TOKEN :
@@ -724,7 +725,7 @@ void HtmlScript() :
   	(
   	  (
   	   <TAG_END>				    {token_source.SwitchTo(HtmlScriptContentState);}
-  	   ( ( HtmlScriptContent() | ElExpressionInScript() ) )*
+  	   ( ( HtmlScriptContent() | ScriptQuotedContext() | ElExpressionInScript() ) )*
 	   <HTML_SCRIPT_END_TAG>
 
 	  )
@@ -733,6 +734,12 @@ void HtmlScript() :
 	    <TAG_SLASHEND>
 	  )
 	)
+}
+
+void ScriptQuotedContext() :
+{}
+{
+	 <HTML_SCRIPT_QUOTE> (HtmlScriptContent() | ElExpressionInScript())+ <HTML_SCRIPT_QUOTE>
 }
 
 void HtmlScriptContent() #Text :

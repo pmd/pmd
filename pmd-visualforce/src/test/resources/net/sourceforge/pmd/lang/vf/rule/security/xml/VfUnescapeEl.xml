@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
 
-	<test-code>
+ 	<test-code>
 		<description><![CDATA[
 Unquoted EL in script tag is an XSS 
      ]]></description>
@@ -14,8 +14,7 @@ Unquoted EL in script tag is an XSS
 </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
-	</test-code>
-
+	</test-code> 
 
 	<test-code>
 		<description><![CDATA[
@@ -25,14 +24,13 @@ Quoted EL in script tag is an XSS
 		<code><![CDATA[
 <apex:page>
 	<script>
-		var x = '{!hereComesXSS}';
 		var id = "spanTTUserInfo{!ApiName}";
+		var x = '{!hereComesXSS}';
 	</script>
 </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
-
 	<test-code>
 		<description><![CDATA[
 Quoted and escaped EL in script tag is an XSS 
@@ -363,4 +361,4 @@ No XSS with escaped EL
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
-</test-data>
+ </test-data>

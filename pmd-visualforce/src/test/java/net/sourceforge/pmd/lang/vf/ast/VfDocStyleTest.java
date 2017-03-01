@@ -162,8 +162,26 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         ASTText text = script.getFirstChildOfType(ASTText.class);
-        assertEquals("Correct script content expected!", "vartext=\"", text.getImage());
+        assertEquals("Correct script content expected!", "vartext=", text.getImage());
         ASTElExpression el = script.getFirstChildOfType(ASTElExpression.class);
+        ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
+        assertEquals("Correct EL content expected!", "elInScript", id.getImage());
+    }
+    
+    /**
+     * Test parsing of quoted EL in HTML &lt;script&gt; element.
+     */
+    @Test
+    public void testQuotedELInHtmlScript() {
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_QUOTED_EL_IN_HTML_SCRIPT);
+        assertEquals("One script expected!", 1, scripts.size());
+        ASTHtmlScript script = scripts.iterator().next();
+        ASTText text = script.getFirstChildOfType(ASTText.class);
+        assertEquals("Correct script content expected!", "vartext=", text.getImage());        
+        ASTScriptQuotedContext quotedContext = script.getFirstChildOfType(ASTScriptQuotedContext.class);
+        ASTElExpression el = quotedContext.getFirstChildOfType(ASTElExpression.class);
+        text = quotedContext.getFirstChildOfType(ASTText.class);
+        assertEquals("Correct EL content expected!", "textHere", text.getImage());
         ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
         assertEquals("Correct EL content expected!", "elInScript", id.getImage());
     }
@@ -641,7 +659,9 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
 
     private static final String TEST_HTML_SCRIPT = "<html><head><script>Script!</script></head></html>";
 
-    private static final String TEST_EL_IN_HTML_SCRIPT = "<html><head><script>var text=\"{!elInScript}\";</script></head></html>";
+    private static final String TEST_EL_IN_HTML_SCRIPT = "<html><head><script>var text={!elInScript};</script></head></html>";
+
+    private static final String TEST_QUOTED_EL_IN_HTML_SCRIPT = "<html><head><script>var text='textHere{!elInScript}';</script></head></html>";
 
     private static final String TEST_IMPORT_JAVASCRIPT = "<html><head><script src=\"filename.js\" /></head></html>";
 

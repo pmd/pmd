@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.vf.ast.ASTScriptQuotedContext;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
@@ -52,40 +53,37 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private void checkIfCorrectlyEscaped(ASTHtmlScript node, Object data) {
-        ASTText prev = null;
-
+        // churn thru every child just once instead of twice
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node n = node.jjtGetChild(i);
-            if (n instanceof ASTText) {
-                prev = (ASTText) n;
-            }
 
             if (n instanceof ASTElExpression) {
-                processElInScriptContext((ASTElExpression) n, prev, data);
+                processElInScriptContext((ASTElExpression) n, data);
+            }
+
+            if (n instanceof ASTScriptQuotedContext) {
+                processElInScriptQuotedContext((ASTScriptQuotedContext) n, data);
             }
         }
     }
-    
-    private void processElInScriptContext(ASTElExpression elExpression, ASTText previousText, Object data) {
-        String prevToken = null;
-        if (previousText != null) {
-            prevToken = previousText.jjtGetLastToken().toString();
-        }
-        
-        if (prevToken != null && (prevToken.equals("'") || prevToken.equals("\""))) {
-            // contained within quotes, now check if properly escaped
+
+    private void processElInScriptQuotedContext(ASTScriptQuotedContext quotedContext, Object data) {
+        List<ASTElExpression> els = quotedContext.findChildrenOfType(ASTElExpression.class);
+
+        for (ASTElExpression elExpression : els) {
             if (startsWithSafeResource(elExpression) || containsSafeFields(elExpression)) {
-                return;
+                continue;
             } else if (doesElContainAnyUnescapedIdentifiers(elExpression, Escaping.JSENCODE)) {
                 addViolation(data, elExpression);
             }
-
-        } else {
-            // not contained within quotes, escaping won't matter.
-            addViolation(data, elExpression);
-
         }
+    }
 
+    private void processElInScriptContext(ASTElExpression elExpression, Object data) {
+        // not contained within quotes, escaping won't matter.
+        if (!startsWithSafeResource(elExpression) || !containsSafeFields(elExpression)) {
+            addViolation(data, elExpression);
+        }
     }
 
     @Override
