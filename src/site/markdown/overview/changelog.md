@@ -4,7 +4,8 @@
 
 The PMD team is pleased to announce PMD 5.6.0.
 
-The most significant changes are on analysis performance and a whole new **Apex Security Rule Set**.
+The most significant changes are on analysis performance, support for Salesforce's Visualforce language
+a whole new **Apex Security Rule Set**.
 
 We have added initial support for **incremental analysis**. The experimental feature allows
 PMD to cache analysis results between executions to speed up the analysis for all
@@ -29,6 +30,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
 
 *   [New and noteworthy](#New_and_noteworthy)
     *   [Incremental Analysis](#Incremental_Analysis)
+    *   [Visualforce Support](#Visualforce_support)
     *   [Apex Security Rule Set](#Apex_Security_Rule_Set)
     *   [New Rules](#New_Rules)
     *   [Modified Rules](#Modified_Rules)
@@ -41,7 +43,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
 
 #### Incremental Analysis
 
-PMD now support incremental analysis. Analysis results can be cached and reused between runs.
+PMD now supports incremental analysis. Analysis results can be cached and reused between runs.
 This allows PMD to skip files without violations that have remained unchanged. In future releases,
 we plan to extend this behavior to unchanged files with violations too.
 
@@ -70,6 +72,18 @@ For Ant, a new `cacheLocation` attribute has been added. For instance:
         </pmd>
     </target>
 ```
+
+#### Visualforce Support
+
+Salesforce developers rejoice. To out growing Apex support we have added full Visualforce support.
+Both CPD and PD are available. So far only a security ruleset is available (`vf-security`).
+
+##### Visualforce Security Rule Set
+
+###### VfUnescapeEl
+
+The rule looks for Expression Language occurances printing unescaped values from the backend. These
+could lead to XSS attacks.
 
 #### Apex Security Rule Set
 
