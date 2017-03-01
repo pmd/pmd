@@ -3,6 +3,69 @@
 
 	<test-code>
 		<description><![CDATA[
+Unquoted EL in script tag is an XSS 
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		var x = {!hereComesXSS};
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+
+	<test-code>
+		<description><![CDATA[
+Quoted EL in script tag is an XSS 
+     ]]></description>
+		<expected-problems>2</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		var x = '{!hereComesXSS}';
+		var id = "spanTTUserInfo{!ApiName}";
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+Quoted and escaped EL in script tag is an XSS 
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		var x = '{!JSENCODE(containedXSSvector)}';
+		var id = "spanTTUserInfo{!JSENCODE(ApiName)}";
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+Quoted and escaped EL in script tag is an XSS 
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		var x = "{!JSENCODE(hereComesXSS)}";
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
 Has multiple resources but starts with a safe one
      ]]></description>
 		<expected-problems>0</expected-problems>

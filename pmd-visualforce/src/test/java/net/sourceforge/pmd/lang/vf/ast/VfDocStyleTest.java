@@ -148,7 +148,24 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
-        assertEquals("Correct script content expected!", "Script!", script.getImage());
+        ASTText text = script.getFirstChildOfType(ASTText.class);
+        assertEquals("Correct script content expected!", "Script!", text.getImage());
+    }
+    
+    
+    /**
+     * Test parsing of EL in HTML &lt;script&gt; element.
+     */
+    @Test
+    public void testELInHtmlScript() {
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_EL_IN_HTML_SCRIPT);
+        assertEquals("One script expected!", 1, scripts.size());
+        ASTHtmlScript script = scripts.iterator().next();
+        ASTText text = script.getFirstChildOfType(ASTText.class);
+        assertEquals("Correct script content expected!", "vartext=\"", text.getImage());
+        ASTElExpression el = script.getFirstChildOfType(ASTElExpression.class);
+        ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
+        assertEquals("Correct EL content expected!", "elInScript", id.getImage());
     }
 
     /**
@@ -176,7 +193,8 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT_WITH_ATTRIBUTE);
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
-        assertEquals("Correct script content expected!", "Script!", script.getImage());
+        ASTText text = script.getFirstChildOfType(ASTText.class);
+        assertEquals("Correct script content expected!", "Script!", text.getImage());
         List<ASTText> attrs = script.findDescendantsOfType(ASTText.class);
         assertTrue("text/javascript".equals(attrs.get(0).getImage()));
     }
@@ -189,7 +207,8 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         Set<ASTHtmlScript> script = getNodes(ASTHtmlScript.class, TEST_COMPLEX_SCRIPT);
         assertEquals("One script expected!", 1, script.size());
         ASTHtmlScript next = script.iterator().next();
-        assertTrue(next.getImage().contains("<!--"));
+        ASTText text = next.getFirstChildOfType(ASTText.class);
+        assertTrue(text.getImage().contains("<!--"));
         Set<ASTCommentTag> comments = getNodes(ASTCommentTag.class, TEST_COMPLEX_SCRIPT);
         assertEquals("One comment expected!", 1, comments.size());
     }
@@ -621,6 +640,8 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
     private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH = "<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
 
     private static final String TEST_HTML_SCRIPT = "<html><head><script>Script!</script></head></html>";
+
+    private static final String TEST_EL_IN_HTML_SCRIPT = "<html><head><script>var text=\"{!elInScript}\";</script></head></html>";
 
     private static final String TEST_IMPORT_JAVASCRIPT = "<html><head><script src=\"filename.js\" /></head></html>";
 

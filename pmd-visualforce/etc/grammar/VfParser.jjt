@@ -348,18 +348,17 @@ void ElOrText() #void :
 	  ( ElExpression() | Text() )+
 }
 
-String Text() :
+void Text() :
 { Token t; }
 {
 	t = <UNPARSED_TEXT>
 	{
 		jjtThis.setImage(t.image);
-		return t.image;
 	}
 }
 
 
-String UnparsedTextNoWhitespace() #Text :
+void UnparsedTextNoWhitespace() #Text :
 { Token t;}
 {
   (
@@ -367,7 +366,6 @@ String UnparsedTextNoWhitespace() #Text :
   )
   {
 		jjtThis.setImage(t.image);
-		return t.image;
   }
 }
 
@@ -375,13 +373,12 @@ String UnparsedTextNoWhitespace() #Text :
  * Text that contains no single quotes, and that does not contain the start
  * of a EL expression.
  */
-String UnparsedTextNoSingleQuotes() #Text :
+void UnparsedTextNoSingleQuotes() #Text :
 { Token t; }
 {
 	t = <UNPARSED_TEXT_NO_SINGLE_QUOTES>
 	{
 		jjtThis.setImage(t.image);
-		return t.image;
 	}
 }
 
@@ -389,13 +386,12 @@ String UnparsedTextNoSingleQuotes() #Text :
  * Text that contains no double quotes, and that does not contain the start
  * of a EL expression.
  */
-String UnparsedTextNoDoubleQuotes() #Text :
+void UnparsedTextNoDoubleQuotes() #Text :
 { Token t; }
 {
 	t = <UNPARSED_TEXT_NO_DOUBLE_QUOTES>
 	{
 		jjtThis.setImage(t.image);
-		return t.image;
 	}
 }
 
@@ -721,19 +717,15 @@ void DoctypeExternalId() :
 }
 
 void HtmlScript() :
-{
-	StringBuffer content = new StringBuffer();
-	String tagName;
-	Token t;
-}
+{}
 {
   	<HTML_SCRIPT_START>         {}
   	(Attribute() )*             {}
   	(
   	  (
   	   <TAG_END>				    {token_source.SwitchTo(HtmlScriptContentState);}
-  	   (t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
-	   <HTML_SCRIPT_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
+  	   ( ( HtmlScriptContent() | ElExpressionInScript() ) )*
+	   <HTML_SCRIPT_END_TAG>
 
 	  )
 	|
@@ -742,6 +734,17 @@ void HtmlScript() :
 	  )
 	)
 }
+
+void HtmlScriptContent() #Text :
+{
+	StringBuffer content = new StringBuffer();
+	Token t;
+}
+{
+	( t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); } )+
+	{ jjtThis.setImage(content.toString()); }
+}
+
 
 void HtmlStyle() :
 {

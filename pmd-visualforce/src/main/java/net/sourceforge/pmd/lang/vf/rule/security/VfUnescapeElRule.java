@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
+import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
@@ -42,6 +43,50 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String FALSE = "false";
     private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
+
+    @Override
+    public Object visit(ASTHtmlScript node, Object data) {
+        checkIfCorrectlyEscaped(node, data);
+
+        return super.visit(node, data);
+    }
+
+    private void checkIfCorrectlyEscaped(ASTHtmlScript node, Object data) {
+        ASTText prev = null;
+
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            Node n = node.jjtGetChild(i);
+            if (n instanceof ASTText) {
+                prev = (ASTText) n;
+            }
+
+            if (n instanceof ASTElExpression) {
+                processElInScriptContext((ASTElExpression) n, prev, data);
+            }
+        }
+    }
+    
+    private void processElInScriptContext(ASTElExpression elExpression, ASTText previousText, Object data) {
+        String prevToken = null;
+        if (previousText != null) {
+            prevToken = previousText.jjtGetLastToken().toString();
+        }
+        
+        if (prevToken != null && (prevToken.equals("'") || prevToken.equals("\""))) {
+            // contained within quotes, now check if properly escaped
+            if (startsWithSafeResource(elExpression) || containsSafeFields(elExpression)) {
+                return;
+            } else if (doesElContainAnyUnescapedIdentifiers(elExpression, Escaping.JSENCODE)) {
+                addViolation(data, elExpression);
+            }
+
+        } else {
+            // not contained within quotes, escaping won't matter.
+            addViolation(data, elExpression);
+
+        }
+
+    }
 
     @Override
     public Object visit(ASTElement node, Object data) {
@@ -285,9 +330,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "id":
                 case "size":
                 case "caseNumber":
-                    return true;                
+                    return true;
                 }
-                
+
             }
 
             if (child instanceof ASTDotExpression) {
