@@ -94,10 +94,4 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
         return visit((VfNode) node, data);
     }
 
-    @Override
-    public Object visit(ASTScriptQuotedContext node, Object data) {
-        return visit((VfNode) node, data);
-    }
-
-
 }

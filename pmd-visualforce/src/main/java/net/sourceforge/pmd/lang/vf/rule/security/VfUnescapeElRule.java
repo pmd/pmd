@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.vf.ast.ASTScriptQuotedContext;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
@@ -53,36 +52,46 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private void checkIfCorrectlyEscaped(ASTHtmlScript node, Object data) {
+        ASTText prevText = null;
+
         // churn thru every child just once instead of twice
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node n = node.jjtGetChild(i);
 
-            if (n instanceof ASTElExpression) {
-                processElInScriptContext((ASTElExpression) n, data);
+            if (n instanceof ASTText) {
+                prevText = (ASTText) n;
             }
 
-            if (n instanceof ASTScriptQuotedContext) {
-                processElInScriptQuotedContext((ASTScriptQuotedContext) n, data);
+            if (n instanceof ASTElExpression) {
+                processElInScriptContext((ASTElExpression) n, prevText, data);
             }
         }
     }
 
-    private void processElInScriptQuotedContext(ASTScriptQuotedContext quotedContext, Object data) {
-        List<ASTElExpression> els = quotedContext.findChildrenOfType(ASTElExpression.class);
+    private void processElInScriptContext(ASTElExpression elExpression, ASTText prevText, Object data) {
+        boolean quoted = false;
 
-        for (ASTElExpression elExpression : els) {
-            if (startsWithSafeResource(elExpression) || containsSafeFields(elExpression)) {
-                continue;
-            } else if (doesElContainAnyUnescapedIdentifiers(elExpression, Escaping.JSENCODE)) {
+        if (prevText != null) {
+            if ("'".equals(prevText.jjtGetLastToken()) || "\"".equals(prevText.jjtGetLastToken())) {
+                quoted = true;
+            } else {
+                if (prevText.getImage() != null
+                        && (prevText.getImage().contains("'") | prevText.getImage().contains("\""))) {
+                    quoted = true;
+                }
+            }
+        }
+        if (quoted) {
+            // check escaping too
+            if (!startsWithSafeResource(elExpression) || !containsSafeFields(elExpression)) {
+                if (doesElContainAnyUnescapedIdentifiers(elExpression, Escaping.JSENCODE)) {
+                    addViolation(data, elExpression);
+                }
+            }
+        } else {
+            if (!startsWithSafeResource(elExpression) || !containsSafeFields(elExpression)) {
                 addViolation(data, elExpression);
             }
-        }
-    }
-
-    private void processElInScriptContext(ASTElExpression elExpression, Object data) {
-        // not contained within quotes, escaping won't matter.
-        if (!startsWithSafeResource(elExpression) || !containsSafeFields(elExpression)) {
-            addViolation(data, elExpression);
         }
     }
 

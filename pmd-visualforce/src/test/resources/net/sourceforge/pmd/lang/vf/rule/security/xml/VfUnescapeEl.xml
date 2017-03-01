@@ -24,8 +24,8 @@ Quoted EL in script tag is an XSS
 		<code><![CDATA[
 <apex:page>
 	<script>
-		var id = "spanTTUserInfo{!ApiName}";
 		var x = '{!hereComesXSS}';
+		var y = 'aha{!hereComesXSS}';
 	</script>
 </apex:page>
 ]]></code>
@@ -39,8 +39,8 @@ Quoted and escaped EL in script tag is an XSS
 		<code><![CDATA[
 <apex:page>
 	<script>
-		var x = '{!JSENCODE(containedXSSvector)}';
-		var id = "spanTTUserInfo{!JSENCODE(ApiName)}";
+		var x = '{!JSENCODE(containedXSSvector)}';		
+		var y = 'text{!JSENCODE(containedXSSvector)}';		
 	</script>
 </apex:page>
 ]]></code>

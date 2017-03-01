@@ -177,11 +177,8 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         assertEquals("One script expected!", 1, scripts.size());
         ASTHtmlScript script = scripts.iterator().next();
         ASTText text = script.getFirstChildOfType(ASTText.class);
-        assertEquals("Correct script content expected!", "vartext=", text.getImage());        
-        ASTScriptQuotedContext quotedContext = script.getFirstChildOfType(ASTScriptQuotedContext.class);
-        ASTElExpression el = quotedContext.getFirstChildOfType(ASTElExpression.class);
-        text = quotedContext.getFirstChildOfType(ASTText.class);
-        assertEquals("Correct EL content expected!", "textHere", text.getImage());
+        assertEquals("Correct script content expected!", "vartext='textHere", text.getImage());        
+        ASTElExpression el = script.getFirstChildOfType(ASTElExpression.class);
         ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
         assertEquals("Correct EL content expected!", "elInScript", id.getImage());
     }
