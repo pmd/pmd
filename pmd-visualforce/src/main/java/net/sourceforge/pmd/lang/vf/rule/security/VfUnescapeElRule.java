@@ -135,6 +135,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "$page":
                     return true;
 
+                default:
                 }
             }
 
@@ -286,8 +287,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "size":
                 case "caseNumber":
                     return true;                
+                default:
                 }
-                
             }
 
             if (child instanceof ASTDotExpression) {
