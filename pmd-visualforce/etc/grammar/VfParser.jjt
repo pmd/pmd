@@ -90,7 +90,7 @@ PARSER_END(VfParser)
   < (<WHITESPACE>)+ >
 }
 
-<AfterTagState, InTagState, HtmlScriptContentState, HtmlStyleContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ> SPECIAL_TOKEN:
+<AfterTagState, InTagState, HtmlScriptContentState, HtmlStyleContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElInScriptState > SPECIAL_TOKEN:
 {
   < (<WHITESPACE>)+ >
 }
@@ -114,7 +114,7 @@ PARSER_END(VfParser)
 |	<UNPARSED_TEXT: ( <NO_LT_OR_OPENBRACE>|<OPENBRACE><NO_BANG>)+ >
 }
 
-<ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElAttribTagStateNQ> TOKEN :
+<ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElAttribTagStateNQ, ElInScriptState> TOKEN :
 {
 		<NULL: "null" >
 	| <TRUE: "true" >
@@ -173,6 +173,11 @@ PARSER_END(VfParser)
 <ElAttribTagStateNQ> TOKEN :
 {
 			<END_OF_EL_ATTRIB_NQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueNoQuotesState
+}
+
+<ElInScriptState> TOKEN :
+{
+	<END_OF_EL_SCRIPT: (<WHITESPACES>)? <CLOSEBRACE> > : HtmlScriptContentState
 }
 
 <DocTypeState, DocTypeExternalIdState> TOKEN :
@@ -255,8 +260,9 @@ PARSER_END(VfParser)
 
 <HtmlScriptContentState> TOKEN :
 {
-		 <HTML_SCRIPT_CONTENT: (~[]) >
+		 <HTML_SCRIPT_CONTENT: ( (~["{"]) | (["{"] ~["!"]) ) >
 		| <HTML_SCRIPT_END_TAG : "</script>" > : AfterTagState
+		| <EL_EXPRESSION_IN_SCRIPT: "{!" (<WHITESPACES>)? > : ElInScriptState
 }
 
 <HtmlStyleContentState> TOKEN :
@@ -564,6 +570,12 @@ void ElExpressionInAttribute() #ElExpression :
 		<EL_EXPRESSION_IN_ATTRIBUTE_SQ> [Expression()] <END_OF_EL_ATTRIB_SQ>
 	| <EL_EXPRESSION_IN_ATTRIBUTE_DQ> [Expression()] <END_OF_EL_ATTRIB_DQ>
 	| <EL_EXPRESSION_IN_ATTRIBUTE_NQ> [Expression()] <END_OF_EL_ATTRIB_NQ>
+}
+
+void ElExpressionInScript() #ElExpression :
+{}
+{
+	<EL_EXPRESSION_IN_SCRIPT> [Expression()] <END_OF_EL_SCRIPT>
 }
 
 void CData() :
