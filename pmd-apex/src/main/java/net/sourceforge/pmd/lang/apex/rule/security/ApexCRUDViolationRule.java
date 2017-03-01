@@ -53,7 +53,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  */
 public class ApexCRUDViolationRule extends AbstractApexRule {
-    private static final Pattern p = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern VOID_OR_STRING_PATTERN = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("^[\\S|\\s]+?FROM[\\s]+?(\\S+)",
+            Pattern.CASE_INSENSITIVE);
 
     private final HashMap<String, String> varToTypeMapping = new HashMap<>();
     private final ListMultimap<String, String> typeToDMLOperationMapping = ArrayListMultimap.create();
@@ -477,6 +479,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private void checkForAccessibility(final ASTSoqlExpression node, Object data) {
         final boolean isCount = node.getNode().getCanonicalQuery().startsWith("SELECT COUNT()");
+        final String typeFromSOQL = getTypeFromSOQLQuery(node);
 
         final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
@@ -507,7 +510,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     .append(":").append(type);
 
             if (!isGetter) {
-                validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
+                validateCRUDCheckPresent(node, data, ANY, typeFromSOQL == null ? typeCheck.toString() : typeFromSOQL);
             }
 
         }
@@ -520,7 +523,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 if (varToTypeMapping.containsKey(variableWithClass)) {
                     String type = varToTypeMapping.get(variableWithClass);
                     if (!isGetter) {
-                        validateCRUDCheckPresent(node, data, ANY, type);
+                        validateCRUDCheckPresent(node, data, ANY, typeFromSOQL == null ? type : typeFromSOQL);
                     }
                 }
             }
@@ -530,9 +533,21 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTReturnStatement returnStatement = node.getFirstParentOfType(ASTReturnStatement.class);
         if (returnStatement != null) {
             if (!isGetter) {
-                validateCRUDCheckPresent(node, data, ANY, returnType == null ? "" : returnType);
+                String retType = typeFromSOQL == null ? returnType : typeFromSOQL;
+                validateCRUDCheckPresent(node, data, ANY, retType == null ? "" : retType);
             }
         }
+    }
+
+    private String getTypeFromSOQLQuery(final ASTSoqlExpression node) {
+        final String canonQuery = node.getNode().getCanonicalQuery();
+
+        Matcher m = SELECT_FROM_PATTERN.matcher(canonQuery);
+        while (m.find()) {
+            return new StringBuffer().append(node.getNode().getDefiningType().getApexName()).append(":")
+                    .append(m.group(1)).toString();
+        }
+        return null;
     }
 
     private String getReturnType(final ASTMethod method) {
@@ -542,7 +557,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private boolean isMethodAGetter(final ASTMethod method) {
         final boolean startsWithGet = method.getNode().getMethodInfo().getCanonicalName().startsWith("get");
-        final boolean voidOrString = p
+        final boolean voidOrString = VOID_OR_STRING_PATTERN
                 .matcher(method.getNode().getMethodInfo().getEmitSignature().getReturnType().getApexName()).matches();
         final boolean noParams = method.findChildrenOfType(ASTParameter.class).isEmpty();
 
