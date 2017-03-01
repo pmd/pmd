@@ -20,3 +20,4 @@ The PMD team is pleased to announce PMD 5.5.5.
 
 ### External Contributions
 
+*   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
