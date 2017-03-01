@@ -66,6 +66,10 @@ public class VfUnescapeElRule extends AbstractVfRule {
             if (ON_EVENT.matcher(name).matches()) {
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
+                    if (startsWithSafeResource(el)) {
+                        continue;
+                    }
+
                     if (doesElContainAnyUnescapedIdentifiers(el,
                             EnumSet.of(Escaping.JSINHTMLENCODE, Escaping.JSENCODE))) {
                         isEL = true;
@@ -91,7 +95,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                     for (ASTElExpression el : elsInVal) {
                         if (startsWithSlashLiteral(el)) {
-                            continue;
+                            break;
+                        }
+
+                        if (startsWithSafeResource(el)) {
+                            break;
                         }
 
                         if (doesElContainAnyUnescapedIdentifiers(el, Escaping.URLENCODE)) {
@@ -110,6 +118,29 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
         }
 
+    }
+
+    private boolean startsWithSafeResource(final ASTElExpression el) {
+        final ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
+        if (expression != null) {
+            final ASTIdentifier id = expression.getFirstChildOfType(ASTIdentifier.class);
+            if (id != null) {
+                switch (id.getImage().toLowerCase()) {
+                case "$component":
+                case "$objecttype":
+                case "$label":
+                case "$resource":
+                case "urlfor":
+                case "$site":
+                case "$page":
+                    return true;
+
+                }
+            }
+
+        }
+
+        return false;
     }
 
     private boolean startsWithSlashLiteral(final ASTElExpression elExpression) {
@@ -153,6 +184,10 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
                 final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
                 for (ASTElExpression el : elsInVal) {
+                    if (startsWithSafeResource(el)) {
+                        continue;
+                    }
+
                     if (doesElContainAnyUnescapedIdentifiers(el, Escaping.HTMLENCODE)) {
                         isEL = true;
                         toReport.add(el);
@@ -219,18 +254,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
                         break;
                     }
 
-                    switch (id.getImage().toLowerCase()) {
-                    case "$component":
-                    case "$objecttype":
-                    case "$label":
-                    case "$resource":
-                    case "urlfor":
-                    case "$site":
-                    case "$page":
-                        isEscaped = true;
-                        break;
-                    }
-
                     if (e.equals(Escaping.ANY)) {
                         for (Escaping esc : Escaping.values()) {
                             if (id.getImage().equalsIgnoreCase(esc.toString())) {
@@ -258,9 +281,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
             Node child = expression.jjtGetChild(i);
 
             if (child instanceof ASTIdentifier) {
-                if ("Id".equalsIgnoreCase(child.getImage()) || "size".equalsIgnoreCase(child.getImage())) {
-                    return true;
+                switch (child.getImage().toLowerCase()) {
+                case "id":
+                case "size":
+                case "caseNumber":
+                    return true;                
                 }
+                
             }
 
             if (child instanceof ASTDotExpression) {
@@ -300,6 +327,10 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     for (ASTAttribute attrib : innerAttributes) {
                         final List<ASTElExpression> elsInVal = attrib.findDescendantsOfType(ASTElExpression.class);
                         for (final ASTElExpression el : elsInVal) {
+                            if (startsWithSafeResource(el)) {
+                                continue;
+                            }
+
                             if (doesElContainAnyUnescapedIdentifiers(el, Escaping.HTMLENCODE)) {
                                 toReturn.add(el);
                             }
