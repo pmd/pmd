@@ -143,15 +143,28 @@ EL in JS on-event handler - stored XSS
 		<source-type>vf</source-type>
 	</test-code>
 
+	<test-code>
+		<description><![CDATA[
+EL in img JS src handler - no XSS 
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<img src="{!XSSHere}" />
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
 
 	<test-code>
 		<description><![CDATA[
 EL in JS src handler - stored XSS 
      ]]></description>
-		<expected-problems>1</expected-problems>
+		<expected-problems>2</expected-problems>
 		<code><![CDATA[
 <apex:page>
 <iframe src="{!XSSHere}" />
+<a href="{!XSSHere}" />
  </apex:page>
 ]]></code>
 		<source-type>vf</source-type>

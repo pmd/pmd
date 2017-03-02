@@ -142,7 +142,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 if (attrText != null) {
                     if (0 == attrText.jjtGetChildIndex()) {
                         if (attrText.getImage().startsWith("/")
-                                || attrText.getImage().toLowerCase().startsWith("http")) {
+                                || attrText.getImage().toLowerCase().startsWith("http") || attrText.getImage().toLowerCase().startsWith("mailto")) {
                             startingWithSlashText = true;
                         }
                     }
