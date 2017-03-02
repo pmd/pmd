@@ -15,6 +15,9 @@ public class ApexXPathRule extends XPathRule implements CodeClimateRule {
 
     public ApexXPathRule() {
         super.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
+        definePropertyDescriptor(CODECLIMATE_CATEGORIES);
+        definePropertyDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER);
+        definePropertyDescriptor(CODECLIMATE_BLOCK_HIGHLIGHTING);
     }
 
     @Override
