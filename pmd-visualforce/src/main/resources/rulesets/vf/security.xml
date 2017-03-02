@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 
-<ruleset name="Basic VF"
-	xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+<ruleset name="Basic VF" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
 	<description>Rules concerning basic VF guidelines.</description>
 
 	<rule name="VfUnescapeEl" since="3.7"
-		message="Avoid unescaped user controlled content in EL"
-		class="net.sourceforge.pmd.lang.vf.rule.security.VfUnescapeElRule"
+		message="Avoid unescaped user controlled content in EL" class="net.sourceforge.pmd.lang.vf.rule.security.VfUnescapeElRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/vf/security.html#VfUnescapeElRule">
 		<description><![CDATA[Avoid unescaped user controlled content in EL as it results in XSS. ]]>
 		</description>
@@ -20,5 +18,18 @@
 			 ]]>
 		</example>
 	</rule>
-	    
+
+	<rule name="VfCsrf" since="3.7" message="Avoid calling VF action upon page load"
+		class="net.sourceforge.pmd.lang.vf.rule.security.VfCsrfRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/vf/security.html#VfCsrfRule">
+		<description><![CDATA[Avoid calling VF action upon page load as the action becomes vulnerable to CSRF. ]]>
+		</description>
+		<priority>3</priority>
+		<example>
+			<![CDATA[ 
+<apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >	
+		 ]]>
+		</example>
+	</rule>
+
 </ruleset>
