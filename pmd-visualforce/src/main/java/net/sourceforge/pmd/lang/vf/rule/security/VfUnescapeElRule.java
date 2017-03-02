@@ -98,15 +98,24 @@ public class VfUnescapeElRule extends AbstractVfRule {
     @Override
     public Object visit(ASTElement node, Object data) {
         if (doesTagSupportEscaping(node)) {
-            checkTagsThatSupportEscaping(node, data);
+            checkApexTagsThatSupportEscaping(node, data);
         } else {
-            checkAllOtherTags(node, data);
+            checkLimitedFlags(node, data);
+            checkAllOnEventTags(node, data);
         }
 
         return super.visit(node, data);
     }
 
-    private void checkAllOtherTags(ASTElement node, Object data) {
+    private void checkLimitedFlags(ASTElement node, Object data) {
+        switch (node.getName().toLowerCase()) {
+        case "iframe":
+        case "a":
+            break;
+        default:
+            return;
+        }
+
         final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
         boolean isEL = false;
         final Set<ASTElExpression> toReport = new HashSet<>();
@@ -114,21 +123,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
         for (ASTAttribute attr : attributes) {
             String name = attr.getName().toLowerCase();
             // look for onevents
-
-            if (ON_EVENT.matcher(name).matches()) {
-                final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
-                for (ASTElExpression el : elsInVal) {
-                    if (startsWithSafeResource(el)) {
-                        continue;
-                    }
-
-                    if (doesElContainAnyUnescapedIdentifiers(el,
-                            EnumSet.of(Escaping.JSINHTMLENCODE, Escaping.JSENCODE))) {
-                        isEL = true;
-                        toReport.add(el);
-                    }
-                }
-            }
 
             if (HREF.equalsIgnoreCase(name) || SRC.equalsIgnoreCase(name)) {
                 boolean startingWithSlashText = false;
@@ -162,6 +156,41 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 }
 
             }
+
+        }
+
+        if (isEL) {
+            for (ASTElExpression expr : toReport) {
+                addViolation(data, expr);
+            }
+        }
+
+    }
+
+    private void checkAllOnEventTags(ASTElement node, Object data) {
+        final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
+        boolean isEL = false;
+        final Set<ASTElExpression> toReport = new HashSet<>();
+
+        for (ASTAttribute attr : attributes) {
+            String name = attr.getName().toLowerCase();
+            // look for onevents
+
+            if (ON_EVENT.matcher(name).matches()) {
+                final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
+                for (ASTElExpression el : elsInVal) {
+                    if (startsWithSafeResource(el)) {
+                        continue;
+                    }
+
+                    if (doesElContainAnyUnescapedIdentifiers(el,
+                            EnumSet.of(Escaping.JSINHTMLENCODE, Escaping.JSENCODE))) {
+                        isEL = true;
+                        toReport.add(el);
+                    }
+                }
+            }
+
         }
 
         if (isEL) {
@@ -213,7 +242,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         return false;
     }
 
-    private void checkTagsThatSupportEscaping(ASTElement node, Object data) {
+    private void checkApexTagsThatSupportEscaping(ASTElement node, Object data) {
         final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
         final Set<ASTElExpression> toReport = new HashSet<>();
         boolean isUnescaped = false;
