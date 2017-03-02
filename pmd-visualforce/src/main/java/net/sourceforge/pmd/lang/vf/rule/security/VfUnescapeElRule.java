@@ -60,6 +60,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
             if (n instanceof ASTText) {
                 prevText = (ASTText) n;
+                continue;
             }
 
             if (n instanceof ASTElExpression) {
@@ -92,7 +93,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     private boolean isUnbalanced(String image, String pattern) {
         int occurance = 0;
-        int index = image.lastIndexOf("=");
+        int index = image.indexOf("=");
         index = image.indexOf(pattern, index + 1);
         while (index >= 0) {
             occurance++;

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
 
+<test-code>
+		<description><![CDATA[
+No XSS in safe commands quoted context
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+	window.parent.opener.location.href = '/apex/FSINT_BRAZIL_CaseViewPage?Id={!case.Id}&isdtp=vw';
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code> 
+
+
  	<test-code>
 		<description><![CDATA[
 No XSS in safe commands quoted context
