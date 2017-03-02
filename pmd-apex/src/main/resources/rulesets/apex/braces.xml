@@ -12,8 +12,8 @@ The Braces ruleset contains rules regarding the use and placement of braces.
    		language="apex"
    		since="5.6.0"
          message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/braces.html#IfStmtsMustUseBraces">
+         class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/braces.html#IfStmtsMustUseBraces">
      <description>
 Avoid using if statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
@@ -47,8 +47,8 @@ if (foo) {	// preferred approach
    		language="apex"
     		 since="5.6.0"
           message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/braces.html#WhileLoopsMustUseBraces">
+          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/braces.html#WhileLoopsMustUseBraces">
       <description>
 Avoid using 'while' statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
@@ -80,8 +80,8 @@ while (true) {	// preferred approach
             language="apex"
             since="5.6.0"
             message="Avoid using 'if...else' statements without curly braces"
-            class="net.sourceforge.pmd.lang.rule.XPathRule"
-            externalInfoUrl="${pmd.website.baseurl}/rules/java/braces.html#IfElseStmtsMustUseBraces">
+            class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+            externalInfoUrl="${pmd.website.baseurl}/rules/apex/braces.html#IfElseStmtsMustUseBraces">
        <description>
 Avoid using if..else statements without using surrounding braces. If the code formatting
 or indentation is lost then it becomes difficult to separate the code being controlled
@@ -119,8 +119,8 @@ if (foo)
            language="apex"
            since="5.6.0"
            message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-           externalInfoUrl="${pmd.website.baseurl}/rules/java/braces.html#ForLoopsMustUseBraces">
+           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+           externalInfoUrl="${pmd.website.baseurl}/rules/apex/braces.html#ForLoopsMustUseBraces">
        <description>
 Avoid using 'for' statements without using curly braces. If the code formatting or
 indentation is lost then it becomes difficult to separate the code being controlled
