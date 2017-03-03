@@ -37,7 +37,7 @@ public class VfCsrfRule extends AbstractVfRule {
                             isEl = true;
                             valToReport = value;
                         }
-                    }
+                    } 
                     break;
                 case "controller":
                     controller = true;
