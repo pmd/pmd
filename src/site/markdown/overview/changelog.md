@@ -17,6 +17,9 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   java-design:
+    *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
+
 ### API Changes
 
 ### External Contributions
