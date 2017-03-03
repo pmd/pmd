@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-
 	<test-code>
 		<description><![CDATA[
 CSRF by starting a controller with an EL action
@@ -11,7 +10,6 @@ CSRF by starting a controller with an EL action
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
-
 	<test-code>
 		<description><![CDATA[
 Controller without actions is perfectly safe
@@ -25,12 +23,12 @@ Controller without actions is perfectly safe
 
 	<test-code>
 		<description><![CDATA[
-JS action on load is perfectly safe     ]]></description>
+JS action on load is perfectly safe     
+	]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <apex:page controller="AcRestActionsController" action="init()" >
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
-
 </test-data>

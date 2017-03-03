@@ -166,4 +166,31 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+#274 - Method inside static inner class incorrectly reported as generating accessor methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo implements Parcelable {
+    public static final Creator<Foo> CREATOR = new Creator<Foo>() {
+        @Override
+        public Foo createFromParcel(Parcel source) {
+            return new Foo(source.readString(),
+                          getBooleanForInt(source.readInt()),
+                          source.readLong());
+        }
+
+        @Override
+        public Foo[] newArray(int size) {
+            return new Foo[size];
+        }
+
+        private boolean getBooleanForInt(int value) {
+            return value == 1;
+        }
+    };
+}
+     ]]></code>
+    </test-code>
 </test-data>

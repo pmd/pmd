@@ -93,4 +93,13 @@ interface Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#275 - False positive in @interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface MetricType {
+    int CHECKBOX = 0, COUNTER = 1, SPINNER = 2, NOTE = 3, STOPWATCH = 4, HEADER = 5;
+}
+        ]]></code>
+    </test-code>
 </test-data>
