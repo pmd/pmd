@@ -28,7 +28,6 @@ deploy:
   file:
   - pmd-dist/target/pmd-*.zip
   - target/pmd-doc-*.zip
-  # TODO : This won't copy the changelog to GitHub
   skip_cleanup: true
   on:
     tags: true

@@ -14,7 +14,7 @@ curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&defaul
 # Assumes, the release has already been created by travis github releases provider
 RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
 RELEASE_NAME="PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
-RELEASE_BODY=$(cat src/site/markdown/overview/changelog.md)
+RELEASE_BODY=$(tail -n +3 src/site/markdown/overview/changelog.md) # skips the first 2 lines - the heading 'PMD Release Notes'
 RELEASE_BODY="${RELEASE_BODY//$'\\'/\\\\}"
 RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
 RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
@@ -26,7 +26,9 @@ cat > release-edit-request.json <<EOF
 }
 EOF
 echo "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
-RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data-binary "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
+
+
+RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
 if [[ "$RESPONSE" != *"HTTP/1.1 200"* ]]; then
     echo "Request:"
     cat release-edit-request.json
