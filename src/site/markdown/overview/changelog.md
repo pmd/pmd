@@ -16,6 +16,9 @@ The PMD team is pleased to announce PMD 5.5.5.
 
 ### Fixed Issues
 
+*   java-design
+    *   [#274](https://github.com/pmd/pmd/issues/274): \[java] AccessorMethodGeneration: Method inside static inner class incorrectly reported
+
 ### API Changes
 
 ### External Contributions
