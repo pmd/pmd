@@ -235,6 +235,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "$remoteaction":
                     return true;
 
+                default:
                 }
             }
 
@@ -385,9 +386,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "id":
                 case "size":
                 case "caseNumber":
-                    return true;
+                    return true;                
+                default:
                 }
-
             }
 
             if (child instanceof ASTDotExpression) {

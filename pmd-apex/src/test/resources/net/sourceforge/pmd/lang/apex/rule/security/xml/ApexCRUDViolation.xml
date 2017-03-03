@@ -3,6 +3,37 @@
 <test-data>
 
 	<test-code>
+		<description>Proper CRUD checks for Aggregate Result</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public void justGiveMeFoo() {
+		if (Opportunity.sObjectType.getDescribe().isAccessible()) {
+	 		return;
+	 	}
+	 	AggregateResult[] test = [SELECT Id FROM Opportunity];
+	} 
+} 
+]]></code>
+	</test-code>
+
+
+	<test-code>
+		<description>Proper CRUD checks for Aggregate Result return</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo { 	
+	public AggregateResult[] justGiveMeFoo() {
+		if (Opportunity.sObjectType.getDescribe().isAccessible()) {
+	 		return null;
+	 	}
+	 	return [SELECT Id FROM Opportunity];
+	} 
+} 
+]]></code>
+	</test-code>
+
+	<test-code>
 		<description>Not a getter</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[ 
@@ -688,7 +719,7 @@ public class Foo {
 } 
 ]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Field detection</description>
 		<expected-problems>1</expected-problems>
@@ -703,5 +734,4 @@ public class MyProfilePageController {
 	
 ]]></code>
 	</test-code>
-	
 </test-data>
