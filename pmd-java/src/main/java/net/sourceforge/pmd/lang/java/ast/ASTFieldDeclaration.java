@@ -29,7 +29,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isPublic() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return true;
         }
         return super.isPublic();
@@ -41,7 +41,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isStatic() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return true;
         }
         return super.isStatic();
