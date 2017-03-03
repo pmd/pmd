@@ -292,7 +292,6 @@ in each object at runtime.
                     <![CDATA[
 //FieldDeclaration
  [@Final='true' and @Static='false']
- [not (../../../../ClassOrInterfaceDeclaration[@Interface='true'])]
    /VariableDeclarator/VariableInitializer/Expression
     /PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix/Literal
                     ]]>
