@@ -8,6 +8,24 @@ Safe escaped value in repeat
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <apex:page>
+	<apex:outputPanel>
+		<input type="radio"
+			   onclick="invokeDoSelectFormat('{!editFormat.recordType.Id}');">
+		</input>
+	</apex:outputPanel>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code> 
+
+
+<test-code>
+		<description><![CDATA[
+Safe escaped value in repeat
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
   <apex:repeat value="{!emailTemplates}" var="template">
   	emailTemplates.push({
   		id: '{!template.id}',

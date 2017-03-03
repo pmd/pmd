@@ -392,7 +392,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
 
             if (child instanceof ASTDotExpression) {
-                return containsSafeFields((ASTDotExpression) child);
+                if (containsSafeFields((ASTDotExpression) child)) {
+                    return true;
+                };
             }
 
         }
