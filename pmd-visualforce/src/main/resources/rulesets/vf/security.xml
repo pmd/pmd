@@ -20,7 +20,7 @@
 		</example>
 	</rule>
 
-	<rule name="VfCsrf" since="3.7" message="Avoid calling VF action upon page load"
+	<rule name="VfCsrf" since="5.6.0" message="Avoid calling VF action upon page load"
 		class="net.sourceforge.pmd.lang.vf.rule.security.VfCsrfRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/vf/security.html#VfCsrfRule">
 		<description><![CDATA[Avoid calling VF action upon page load as the action becomes vulnerable to CSRF. ]]>
