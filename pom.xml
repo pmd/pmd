@@ -447,6 +447,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${javadoc.plugin.version}</version>
+                    <configuration>
+                        <quiet>true</quiet>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -466,12 +469,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>5.5.2</version>
+                            <version>5.5.4</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>5.5.2</version>
+                            <version>5.5.4</version>
                         </dependency>
                     </dependencies>
                 </plugin>
