@@ -5,7 +5,7 @@
 The PMD team is pleased to announce PMD 5.6.0.
 
 The most significant changes are on analysis performance, support for Salesforce's Visualforce language
-a whole new **Apex Security Rule Set**.
+a whole new **Apex Security Rule Set** and the new **Braces Rule Set for Apex**.
 
 We have added initial support for **incremental analysis**. The experimental feature allows
 PMD to cache analysis results between executions to speed up the analysis for all
@@ -32,12 +32,13 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
     *   [Incremental Analysis](#Incremental_Analysis)
     *   [Visualforce Support](#Visualforce_support)
     *   [Apex Security Rule Set](#Apex_Security_Rule_Set)
+    *   [Apex Braces Rule Set](#Apex_Braces_Rule_Set)
     *   [New Rules](#New_Rules)
     *   [Modified Rules](#Modified_Rules)
     *   [CPD Suppression](#CPD_Suppression)
-* [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
-* [External Contributions](#External_Contributions)
+*   [Fixed Issues](#Fixed_Issues)
+*   [API Changes](#API_Changes)
+*   [External Contributions](#External_Contributions)
 
 ### New and noteworthy
 
@@ -229,6 +230,84 @@ attacks if unescaped.
 Makes sure that all values obtained from URL parameters are properly escaped / sanitized
 to avoid XSS attacks.
 
+#### Apex Braces Rule Set
+
+The Braces Rule Set has been added and serves the same purpose as the Braces Rule Set from Java:
+It checks the use and placement of braces around if-statements, for-loops and so on.
+
+##### IfStmtsMustUseBraces
+
+Avoid using if statements without using braces to surround the code block. If the code
+formatting or indentation is lost then it becomes difficult to separate the code being
+controlled from the rest.
+
+For instance, the following code shows the different. PMD would report on the not recommended approach:
+
+```
+if (foo)    // not recommended
+    x++;
+
+if (foo) {  // preferred approach
+    x++;
+}
+```
+
+##### WhileLoopsMustUseBraces
+
+Avoid using 'while' statements without using braces to surround the code block. If the code
+formatting or indentation is lost then it becomes difficult to separate the code being
+controlled from the rest.
+
+For instance, the following code shows the different. PMD would report on the not recommended approach:
+
+```
+while (true)    // not recommended
+      x++;
+
+while (true) {  // preferred approach
+      x++;
+}
+```
+
+##### IfElseStmtsMustUseBraces
+
+Avoid using if..else statements without using surrounding braces. If the code formatting
+or indentation is lost then it becomes difficult to separate the code being controlled
+from the rest.
+
+For instance, the following code shows the different. PMD would report on the not recommended approach:
+
+```
+// this is not recommended
+if (foo)
+       x = x+1;
+   else
+       x = x-1;
+
+// preferred approach
+if (foo) {
+   x = x+1;
+} else {
+   x = x-1;
+}
+```
+
+##### ForLoopsMustUseBraces
+
+Avoid using 'for' statements without using surrounding braces. If the code formatting or
+indentation is lost then it becomes difficult to separate the code being controlled
+from the rest.
+
+For instance, the following code shows the different. PMD would report on the not recommended approach:
+
+```
+for (int i = 0; i < 42; i++) // not recommended
+    foo();
+
+for (int i = 0; i < 42; i++) { // preferred approach
+    foo();
+}
+```
 
 #### New Rules
 
@@ -427,4 +506,5 @@ For example:
 *   [#268](https://github.com/pmd/pmd/pull/268): \[apex] Support safe escaping via String method
 *   [#273](https://github.com/pmd/pmd/pull/273): \[apex] Shade jackson on apex
 *   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
+*   [#281](https://github.com/pmd/pmd/pull/281): \[apex] Add Braces Rule Set
 
