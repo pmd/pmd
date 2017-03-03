@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Default ruleset used by the CodeClimate Engine for Salesforce.com Apex" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
    <description>Default ruleset used by the Code Climate Engine for Salesforce.com Apex</description>
+   
+   <!-- COMPLEXITY -->
    <rule ref="rulesets/apex/complexity.xml/ExcessiveClassLength" message="Avoid really long classes (lines of code)">
       <priority>3</priority>
       <properties>
@@ -91,6 +93,8 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   
+   <!-- PERFORMANCE -->
    <rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" message="Avoid Soql queries inside loops">
       <priority>3</priority>
       <properties>
@@ -127,6 +131,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <!-- NAMING -->
    <rule ref="rulesets/apex/style.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
       <priority>3</priority>
       <properties>
@@ -163,6 +168,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <!-- TESTS -->
    <rule ref="rulesets/apex/apexunit.xml/ApexUnitTestClassShouldHaveAsserts" message="Apex unit test classes should have at least one System.assert() or assertEquals() or AssertNotEquals() call">
       <priority>3</priority>
       <properties>
@@ -181,6 +187,7 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <!-- SECURITY -->
    <rule ref="rulesets/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">
       <priority>3</priority>
       <properties>
@@ -280,6 +287,41 @@
          <property name="cc_block_highlighting" value="false"/>
       </properties>
    </rule>
-   
-   
+   <!-- BRACES -->
+   <rule ref="rulesets/apex/braces.xml/IfStmtsMustUseBraces" message="Avoid using if statements without curly braces">
+    	<priority>3</priority>
+		<properties>
+		   <!-- relevant for Code Climate output only -->
+		   <property name="cc_categories" value="Style" />
+		   <property name="cc_remediation_points_multiplier" value="5" />
+		   <property name="cc_block_highlighting" value="false" />
+		</properties>
+     </rule>
+    <rule ref="rulesets/apex/braces.xml/WhileLoopsMustUseBraces" message="Avoid using 'while' statements without curly braces">
+    	<priority>3</priority>
+		<properties>
+		   <!-- relevant for Code Climate output only -->
+		   <property name="cc_categories" value="Style" />
+		   <property name="cc_remediation_points_multiplier" value="5" />
+		   <property name="cc_block_highlighting" value="false" />
+		</properties>
+     </rule>
+      <rule ref="rulesets/apex/braces.xml/IfElseStmtsMustUseBraces" message="Avoid using 'if...else' statements without curly braces">
+    	<priority>3</priority>
+		<properties>
+		   <!-- relevant for Code Climate output only -->
+		   <property name="cc_categories" value="Style" />
+		   <property name="cc_remediation_points_multiplier" value="5" />
+		   <property name="cc_block_highlighting" value="false" />
+		</properties>
+     </rule>
+     <rule ref="rulesets/apex/braces.xml/ForLoopsMustUseBraces" message="Avoid using 'for' statements without curly braces">
+    	<priority>3</priority>
+		<properties>
+		   <!-- relevant for Code Climate output only -->
+		   <property name="cc_categories" value="Style" />
+		   <property name="cc_remediation_points_multiplier" value="5" />
+		   <property name="cc_block_highlighting" value="false" />
+		</properties>
+     </rule>
 </ruleset>

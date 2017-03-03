@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -135,7 +135,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         ClassNameDeclaration classNameDeclaration = new ClassNameDeclaration(node);
         s.addDeclaration(classNameDeclaration);
 
-        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
+        if (node instanceof ASTClassOrInterfaceBody) {
             addScope(new ClassScope(classNameDeclaration), node);
         } else {
             addScope(new ClassScope(node.getImage(), classNameDeclaration), node);
@@ -195,7 +195,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
+    public Object visit(ASTClassOrInterfaceBody node, Object data) {
         if (node.isAnonymousInnerClass() || node.isEnumChild()) {
             createClassScope(node);
             cont(node);
