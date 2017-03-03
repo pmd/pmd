@@ -3,7 +3,27 @@
 
 <test-code>
 		<description><![CDATA[
-No XSS in safe commands quoted context
+Safe escaped value in repeat
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+  <apex:repeat value="{!emailTemplates}" var="template">
+  	emailTemplates.push({
+  		id: '{!template.id}',
+  		name: "{!JSENCODE(HTMLENCODE(template.name))}"
+  	});
+  </apex:repeat>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code> 
+
+
+
+<test-code>
+		<description><![CDATA[
+Safe case id in script
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
@@ -19,7 +39,7 @@ No XSS in safe commands quoted context
 
  	<test-code>
 		<description><![CDATA[
-No XSS in safe commands quoted context
+No XSS in safe script commands quoted context
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[

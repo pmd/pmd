@@ -94,6 +94,10 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private boolean isUnbalanced(String image, String pattern) {
         int occurance = 0;
         int index = image.indexOf("=");
+        if (index < 0) {
+            index = image.indexOf(":");
+        }
+        
         index = image.indexOf(pattern, index + 1);
         while (index >= 0) {
             occurance++;
@@ -227,6 +231,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "$site":
                 case "$page":
                 case "$action":
+                case "casesafeid":
+                case "$remoteaction":
                     return true;
 
                 }
