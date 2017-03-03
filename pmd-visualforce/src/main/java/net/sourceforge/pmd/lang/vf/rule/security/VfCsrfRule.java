@@ -25,14 +25,19 @@ public class VfCsrfRule extends AbstractVfRule {
         if (APEX_PAGE.equalsIgnoreCase(node.getName())) {
             List<ASTAttribute> attribs = node.findChildrenOfType(ASTAttribute.class);
             boolean controller = false;
-            boolean action = false;
             boolean isEl = false;
             ASTElExpression valToReport = null;
 
             for (ASTAttribute attr : attribs) {
                 switch (attr.getName().toLowerCase()) {
                 case "action":
-                    action = true;
+                    ASTElExpression value = attr.getFirstDescendantOfType(ASTElExpression.class);
+                    if (value != null) {
+                        if (doesElContainIdentifiers(value)) {
+                            isEl = true;
+                            valToReport = value;
+                        }
+                    }
                     break;
                 case "controller":
                     controller = true;
@@ -42,15 +47,6 @@ public class VfCsrfRule extends AbstractVfRule {
 
                 }
 
-                if (action) {
-                    ASTElExpression value = attr.getFirstDescendantOfType(ASTElExpression.class);
-                    if (value != null) {
-                        if (doesElContainIdentifiers(value)) {
-                            isEl = true;
-                            valToReport = value;
-                        }
-                    }
-                }
             }
 
             if (controller && isEl && valToReport != null) {

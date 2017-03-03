@@ -12,4 +12,25 @@ CSRF by starting a controller with an EL action
 		<source-type>vf</source-type>
 	</test-code>
 
+	<test-code>
+		<description><![CDATA[
+Controller without actions is perfectly safe
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page controller="AcRestActionsController"  >
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+JS action on load is perfectly safe     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page controller="AcRestActionsController" action="init()" >
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
 </test-data>
