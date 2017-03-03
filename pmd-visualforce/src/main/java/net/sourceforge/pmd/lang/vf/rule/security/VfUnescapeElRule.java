@@ -97,7 +97,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         if (index < 0) {
             index = image.indexOf(":");
         }
-        
+
         index = image.indexOf(pattern, index + 1);
         while (index >= 0) {
             occurance++;
@@ -146,8 +146,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 final ASTText attrText = attr.getFirstDescendantOfType(ASTText.class);
                 if (attrText != null) {
                     if (0 == attrText.jjtGetChildIndex()) {
-                        if (attrText.getImage().startsWith("/")
-                                || attrText.getImage().toLowerCase().startsWith("http") || attrText.getImage().toLowerCase().startsWith("mailto")) {
+                        if (attrText.getImage().startsWith("/") || attrText.getImage().toLowerCase().startsWith("http")
+                                || attrText.getImage().toLowerCase().startsWith("mailto")) {
                             startingWithSlashText = true;
                         }
                     }
@@ -386,7 +386,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "id":
                 case "size":
                 case "caseNumber":
-                    return true;                
+                    return true;
                 default:
                 }
             }
@@ -394,7 +394,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             if (child instanceof ASTDotExpression) {
                 if (containsSafeFields((ASTDotExpression) child)) {
                     return true;
-                };
+                }
             }
 
         }
