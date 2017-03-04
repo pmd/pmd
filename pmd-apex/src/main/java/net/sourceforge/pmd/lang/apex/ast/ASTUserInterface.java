@@ -8,8 +8,9 @@ import java.lang.reflect.Field;
 
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserInterface;
+import net.sourceforge.pmd.Rule;
 
-public class ASTUserInterface extends ApexRootNode<UserInterface> {
+public class ASTUserInterface extends ApexRootNode<UserInterface> implements CanSuppressWarnings {
 
     public ASTUserInterface(UserInterface userInterface) {
         super(userInterface);
@@ -30,5 +31,17 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> {
             e.printStackTrace();
         }
         return super.getImage();
+    }
+
+    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
+            if (jjtGetChild(i) instanceof ASTAnnotation) {
+                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
+                if (a.suppresses(rule)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
