@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
+import net.sourceforge.pmd.Rule;
 
-public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> {
+public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration> implements CanSuppressWarnings {
 
     public ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);
@@ -19,5 +20,14 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
     @Override
     public String getImage() {
         return node.getLocalInfo().getName();
+    }
+
+    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
+    	for(ASTAnnotation a : findDescendantsOfType(ASTAnnotation.class)) {
+            if (a.suppresses(rule)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

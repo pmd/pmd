@@ -8,8 +8,9 @@ import java.lang.reflect.Field;
 
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserClass;
+import net.sourceforge.pmd.Rule;
 
-public class ASTUserClass extends ApexRootNode<UserClass> {
+public class ASTUserClass extends ApexRootNode<UserClass> implements CanSuppressWarnings {
 
     public ASTUserClass(UserClass userClass) {
         super(userClass);
@@ -30,5 +31,14 @@ public class ASTUserClass extends ApexRootNode<UserClass> {
             e.printStackTrace();
         }
         return super.getImage();
+    }
+
+    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
+    	for(ASTAnnotation a : findDescendantsOfType(ASTAnnotation.class)) {
+            if (a.suppresses(rule)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
