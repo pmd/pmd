@@ -4,55 +4,19 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import java.util.List;
-
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
+import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 /**
  * Sample rule that detect any node with an image of "Foo". Used for testing.
  */
-public class FooRule extends AbstractRule {
-    public FooRule() {
-        setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-    }
+public class FooRule extends AbstractApexRule {
 
     @Override
-    public String getMessage() {
-        return "blah";
-    }
-
-    @Override
-    public String getName() {
-        return "Foo";
-    }
-
-    @Override
-    public String getRuleSetName() {
-        return "RuleSet";
-    }
-
-    @Override
-    public String getDescription() {
-        return "desc";
-    }
-
-    @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node node : nodes) {
-            apply(node, ctx);
-        }
-    }
-
-    protected void apply(Node node, RuleContext ctx) {
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            apply(node.jjtGetChild(i), ctx);
-        }
+    public Object visit(ApexNode<?> node, Object data) {
         if ("Foo".equals(node.getImage())) {
-            addViolation(ctx, node);
+            addViolation(data, node);
         }
+        return data;
     }
 }

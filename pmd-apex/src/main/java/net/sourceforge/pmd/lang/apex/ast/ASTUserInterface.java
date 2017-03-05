@@ -34,14 +34,13 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements Can
     }
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
+    	for(ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
+	    	for(ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
+	            if (a.suppresses(rule)) {
+	                return true;
+	            }
+	        }
+    	}
         return false;
     }
 }
