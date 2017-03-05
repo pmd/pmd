@@ -43,11 +43,13 @@ public class ASTMethod extends AbstractApexNode<Method> implements CanSuppressWa
     }
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-    	for(ASTAnnotation a : findDescendantsOfType(ASTAnnotation.class)) {
-            if (a.suppresses(rule)) {
-                return true;
-            }
-        }
+    	for(ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
+	    	for(ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
+	            if (a.suppresses(rule)) {
+	                return true;
+	            }
+	        }
+    	}
         return false;
     }
 }
