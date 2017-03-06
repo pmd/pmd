@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -51,11 +49,6 @@ public class ApexRuleViolation<T> extends ParametricRuleViolation<Node> {
     public static boolean isSupressed(Node node, Rule rule) {
         boolean result = suppresses(node, rule);
 
-        if (!result && (node instanceof ASTUserClass || node instanceof ASTUserInterface)) {
-            for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
-                result = suppresses(node.jjtGetChild(i), rule);
-            }
-        }
         if (!result) {
             Node parent = node.jjtGetParent();
             while (!result && parent != null) {
@@ -63,6 +56,7 @@ public class ApexRuleViolation<T> extends ParametricRuleViolation<Node> {
                 parent = parent.jjtGetParent();
             }
         }
+        
         return result;
     }
 

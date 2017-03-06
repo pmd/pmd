@@ -25,6 +25,11 @@ public class SuppressWarningsTest extends RuleTst {
             }
             return super.visit(clazz, ctx);
         }
+
+        @Override
+        public String getName() {
+            return "NoBar";
+        }
     }
 
     @Test

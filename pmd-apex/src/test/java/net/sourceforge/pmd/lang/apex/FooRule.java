@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 /**
@@ -12,11 +15,45 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  */
 public class FooRule extends AbstractApexRule {
 
+    public FooRule() {
+        setMessage("No Foo allowed");
+    }
+
     @Override
-    public Object visit(ApexNode<?> node, Object data) {
-        if ("Foo".equals(node.getImage())) {
-            addViolation(data, node);
+    public Object visit(ASTUserClass c, Object ctx) {
+        if (c.getImage().equalsIgnoreCase("Foo")) {
+            addViolation(ctx, c);
         }
-        return data;
+        return super.visit(c, ctx);
+    }
+
+    @Override
+    public Object visit(ASTVariableDeclaration c, Object ctx) {
+        if (c.getImage().equalsIgnoreCase("Foo")) {
+            addViolation(ctx, c);
+        }
+        return super.visit(c, ctx);
+    }
+
+    @Override
+    public Object visit(ASTField c, Object ctx) {
+    	String image = c.getImage();
+        if (image.equalsIgnoreCase("Foo")) {
+            addViolation(ctx, c);
+        }
+        return super.visit(c, ctx);
+    }
+
+    @Override
+    public Object visit(ASTParameter c, Object ctx) {
+        if (c.getImage().equalsIgnoreCase("Foo")) {
+            addViolation(ctx, c);
+        }
+        return super.visit(c, ctx);
+    }
+
+    @Override
+    public String getName() {
+        return "NoFoo";
     }
 }

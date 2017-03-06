@@ -26,11 +26,11 @@ public class ASTAnnotation extends AbstractApexNode<Annotation> {
     }
 
     public boolean suppresses(Rule rule) {
-        final String ruleAnno = "'PMD." + rule.getName() + "'";
+        final String ruleAnno = "PMD." + rule.getName();
         
-        if ("SuppressWarnings".equals(getImage())) {
+        if (hasImageEqualTo("SuppressWarnings")) {
         	for(ASTAnnotationParameter param : findChildrenOfType(ASTAnnotationParameter.class)) {
-                if (param.hasImageEqualTo("'PMD'") || param.hasImageEqualTo(ruleAnno) || param.hasImageEqualTo("'all'")) {
+                if(param.hasImageEqualTo("PMD") || param.hasImageEqualTo(ruleAnno) || param.hasImageEqualTo("all")) {
                     return true;
                 }
 	        }
