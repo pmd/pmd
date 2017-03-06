@@ -4,10 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.apache.commons.lang.StringUtils;
 
 import apex.jorje.semantic.ast.modifier.Annotation;
-
 import net.sourceforge.pmd.Rule;
 
 public class ASTAnnotation extends AbstractApexNode<Annotation> {
@@ -22,7 +25,8 @@ public class ASTAnnotation extends AbstractApexNode<Annotation> {
 
     @Override
     public String getImage() {
-        return StringUtils.substringBetween(node.toString(), "value = ", "), parameters");
+        String result = StringUtils.substringBetween(node.toString(), "value = ", ")");
+        return result;
     }
 
     public boolean suppresses(Rule rule) {
@@ -30,9 +34,15 @@ public class ASTAnnotation extends AbstractApexNode<Annotation> {
         
         if (hasImageEqualTo("SuppressWarnings")) {
         	for(ASTAnnotationParameter param : findChildrenOfType(ASTAnnotationParameter.class)) {
-                if(param.hasImageEqualTo("PMD") || param.hasImageEqualTo(ruleAnno) || param.hasImageEqualTo("all")) {
-                    return true;
-                }
+        		String image = param.getImage();
+        		
+        		if(image != null) {
+        			Set<String> paramValues = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        			paramValues.addAll(Arrays.asList(image.replaceAll("\\s+","").split(",")));
+        			if(paramValues.contains("PMD") || paramValues.contains(ruleAnno) || paramValues.contains("all")) {
+        				return true;
+        			}
+        		}
 	        }
         }
         

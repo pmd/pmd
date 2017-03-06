@@ -100,41 +100,9 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     @Test
-    public void testSpecificSuppressionValue1() {
+    public void testSpecificSuppressionMulitpleValues() {
         Report rpt = new Report();
-        runTestFromString(TEST9_VALUE1, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getVersion("35"));
-        assertEquals(1, rpt.size());
-    }
-
-    @Test
-    public void testSpecificSuppressionValue2() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_VALUE2, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getVersion("35"));
-        assertEquals(1, rpt.size());
-    }
-
-    @Test
-    public void testSpecificSuppressionValue3() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_VALUE3, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getVersion("35"));
-        assertEquals(1, rpt.size());
-    }
-
-    @Test
-    public void testSpecificSuppressionMulitpleValues1() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_MULTIPLE_VALUES_1, new FooRule(), rpt,
-                LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getVersion("35"));
-        assertEquals(0, rpt.size());
-    }
-
-    @Test
-    public void testSpecificSuppressionMulitpleValues2() {
-        Report rpt = new Report();
-        runTestFromString(TEST9_MULTIPLE_VALUES_2, new FooRule(), rpt,
+        runTestFromString(TEST9_MULTIPLE_VALUES, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getVersion("35"));
         assertEquals(0, rpt.size());
     }
@@ -198,20 +166,7 @@ public class SuppressWarningsTest extends RuleTst {
     private static final String TEST9 = "public class Bar {" + PMD.EOL + " Integer foo;" + PMD.EOL + " void bar() {"
             + PMD.EOL + "  @SuppressWarnings('PMD.NoFoo') Integer foo;" + PMD.EOL + " }" + PMD.EOL + "}";
 
-    private static final String TEST9_VALUE1 = "public class Bar {" + PMD.EOL + " Integer foo;" + PMD.EOL + " void bar() {"
-            + PMD.EOL + "  @SuppressWarnings(value = 'PMD.NoFoo') Integer foo;" + PMD.EOL + " }" + PMD.EOL + "}";
-
-    private static final String TEST9_VALUE2 = "public class Bar {" + PMD.EOL + " Integer foo;" + PMD.EOL + " void bar() {"
-            + PMD.EOL + "  @SuppressWarnings({'PMD.NoFoo'}) Integer foo;" + PMD.EOL + " }" + PMD.EOL + "}";
-
-    private static final String TEST9_VALUE3 = "public class Bar {" + PMD.EOL + " Integer foo;" + PMD.EOL + " void bar() {"
-            + PMD.EOL + "  @SuppressWarnings(value = {'PMD.NoFoo'}) Integer foo;" + PMD.EOL + " }" + PMD.EOL + "}";
-
-    private static final String TEST9_MULTIPLE_VALUES_1 = "@SuppressWarnings({'PMD.NoFoo', 'PMD.NoBar'})" + PMD.EOL
-            + "public class Bar {" + PMD.EOL + " Integer foo;" + PMD.EOL + " void bar() {" + PMD.EOL + "  Integer foo;"
-            + PMD.EOL + " }" + PMD.EOL + "}";
-
-    private static final String TEST9_MULTIPLE_VALUES_2 = "@SuppressWarnings(value = {'PMD.NoFoo', 'PMD.NoBar'})"
+    private static final String TEST9_MULTIPLE_VALUES = "@SuppressWarnings('PMD.NoFoo, PMD.NoBar')"
             + PMD.EOL + "public class Bar {" + PMD.EOL + " Integer foo;" + PMD.EOL + " void bar() {" + PMD.EOL
             + "  Integer foo;" + PMD.EOL + " }" + PMD.EOL + "}";
 
