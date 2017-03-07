@@ -510,6 +510,7 @@ For example:
 *   [#266](https://github.com/pmd/pmd/pull/266): \[java] corrected invalid reporting of LoD violation
 *   [#268](https://github.com/pmd/pmd/pull/268): \[apex] Support safe escaping via String method
 *   [#273](https://github.com/pmd/pmd/pull/273): \[apex] Shade jackson on apex
+*   [#279](https://github.com/pmd/pmd/pull/279): \[vf] New Salesforce VisualForce language support
 *   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
 *   [#281](https://github.com/pmd/pmd/pull/281): \[apex] Add Braces Rule Set
 *   [#283](https://github.com/pmd/pmd/pull/283): \[vf] CSRF in VF controller pages
