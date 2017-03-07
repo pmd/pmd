@@ -13,5 +13,6 @@ public class SecurityRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "VfUnescapeEl");
+        addRule(RULESET, "VfCsrf");
     }
 }

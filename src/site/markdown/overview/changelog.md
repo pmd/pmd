@@ -86,6 +86,11 @@ Both CPD and PD are available. So far only a security ruleset is available (`vf-
 The rule looks for Expression Language occurances printing unescaped values from the backend. These
 could lead to XSS attacks.
 
+###### VfCsrf
+
+The rule looks for `<apex:page>` tags performing an action on page load, definish such `action`
+through Expression Language, as doing so is vulnerable to CSRF attacks.
+
 #### Apex Security Rule Set
 
 A new ruleset focused on security has been added, consisting of a wide range of rules
@@ -507,4 +512,5 @@ For example:
 *   [#273](https://github.com/pmd/pmd/pull/273): \[apex] Shade jackson on apex
 *   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
 *   [#281](https://github.com/pmd/pmd/pull/281): \[apex] Add Braces Rule Set
+*   [#283](https://github.com/pmd/pmd/pull/283): \[vf] CSRF in VF controller pages
 
