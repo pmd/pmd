@@ -514,4 +514,5 @@ For example:
 *   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
 *   [#281](https://github.com/pmd/pmd/pull/281): \[apex] Add Braces Rule Set
 *   [#283](https://github.com/pmd/pmd/pull/283): \[vf] CSRF in VF controller pages
+*   [#284](https://github.com/pmd/pmd/pull/284): \[vf] Adding support for parsing EL in script tags
 

@@ -90,7 +90,7 @@ PARSER_END(VfParser)
   < (<WHITESPACE>)+ >
 }
 
-<AfterTagState, InTagState, HtmlScriptContentState, HtmlStyleContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ> SPECIAL_TOKEN:
+<AfterTagState, InTagState, HtmlScriptContentState, HtmlStyleContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElInScriptState > SPECIAL_TOKEN:
 {
   < (<WHITESPACE>)+ >
 }
@@ -114,7 +114,7 @@ PARSER_END(VfParser)
 |	<UNPARSED_TEXT: ( <NO_LT_OR_OPENBRACE>|<OPENBRACE><NO_BANG>)+ >
 }
 
-<ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElAttribTagStateNQ> TOKEN :
+<ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElAttribTagStateNQ, ElInScriptState> TOKEN :
 {
 		<NULL: "null" >
 	| <TRUE: "true" >
@@ -173,6 +173,11 @@ PARSER_END(VfParser)
 <ElAttribTagStateNQ> TOKEN :
 {
 			<END_OF_EL_ATTRIB_NQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueNoQuotesState
+}
+
+<ElInScriptState> TOKEN :
+{
+	<END_OF_EL_SCRIPT: (<WHITESPACES>)? <CLOSEBRACE> > : HtmlScriptContentState
 }
 
 <DocTypeState, DocTypeExternalIdState> TOKEN :
@@ -255,8 +260,9 @@ PARSER_END(VfParser)
 
 <HtmlScriptContentState> TOKEN :
 {
-		 <HTML_SCRIPT_CONTENT: (~[]) >
-		| <HTML_SCRIPT_END_TAG : "</script>" > : AfterTagState
+		  <HTML_SCRIPT_END_TAG : "</script>" > : AfterTagState
+		| <EL_EXPRESSION_IN_SCRIPT: "{!" (<WHITESPACES>)? > : ElInScriptState
+		| <HTML_SCRIPT_CONTENT: ( (~["{"]) | (["{"] ~["!"]) ) >
 }
 
 <HtmlStyleContentState> TOKEN :
@@ -342,18 +348,17 @@ void ElOrText() #void :
 	  ( ElExpression() | Text() )+
 }
 
-String Text() :
+void Text() :
 { Token t; }
 {
 	t = <UNPARSED_TEXT>
 	{
 		jjtThis.setImage(t.image);
-		return t.image;
 	}
 }
 
 
-String UnparsedTextNoWhitespace() #Text :
+void UnparsedTextNoWhitespace() #Text :
 { Token t;}
 {
   (
@@ -361,7 +366,6 @@ String UnparsedTextNoWhitespace() #Text :
   )
   {
 		jjtThis.setImage(t.image);
-		return t.image;
   }
 }
 
@@ -369,13 +373,12 @@ String UnparsedTextNoWhitespace() #Text :
  * Text that contains no single quotes, and that does not contain the start
  * of a EL expression.
  */
-String UnparsedTextNoSingleQuotes() #Text :
+void UnparsedTextNoSingleQuotes() #Text :
 { Token t; }
 {
 	t = <UNPARSED_TEXT_NO_SINGLE_QUOTES>
 	{
 		jjtThis.setImage(t.image);
-		return t.image;
 	}
 }
 
@@ -383,13 +386,12 @@ String UnparsedTextNoSingleQuotes() #Text :
  * Text that contains no double quotes, and that does not contain the start
  * of a EL expression.
  */
-String UnparsedTextNoDoubleQuotes() #Text :
+void UnparsedTextNoDoubleQuotes() #Text :
 { Token t; }
 {
 	t = <UNPARSED_TEXT_NO_DOUBLE_QUOTES>
 	{
 		jjtThis.setImage(t.image);
-		return t.image;
 	}
 }
 
@@ -566,6 +568,12 @@ void ElExpressionInAttribute() #ElExpression :
 	| <EL_EXPRESSION_IN_ATTRIBUTE_NQ> [Expression()] <END_OF_EL_ATTRIB_NQ>
 }
 
+void ElExpressionInScript() #ElExpression :
+{}
+{
+	<EL_EXPRESSION_IN_SCRIPT> [Expression()] <END_OF_EL_SCRIPT>
+}
+
 void CData() :
 {
 	StringBuffer content = new StringBuffer();
@@ -709,19 +717,15 @@ void DoctypeExternalId() :
 }
 
 void HtmlScript() :
-{
-	StringBuffer content = new StringBuffer();
-	String tagName;
-	Token t;
-}
+{}
 {
   	<HTML_SCRIPT_START>         {}
   	(Attribute() )*             {}
   	(
   	  (
   	   <TAG_END>				    {token_source.SwitchTo(HtmlScriptContentState);}
-  	   (t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); })*
-	   <HTML_SCRIPT_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
+  	   ( ( HtmlScriptContent() | ElExpressionInScript() ) )*
+	   <HTML_SCRIPT_END_TAG>
 
 	  )
 	|
@@ -730,6 +734,17 @@ void HtmlScript() :
 	  )
 	)
 }
+
+void HtmlScriptContent() #Text :
+{
+	StringBuffer content = new StringBuffer();
+	Token t;
+}
+{
+	( t = <HTML_SCRIPT_CONTENT>  { content.append(t.image); } )+
+	{ jjtThis.setImage(content.toString()); }
+}
+
 
 void HtmlStyle() :
 {

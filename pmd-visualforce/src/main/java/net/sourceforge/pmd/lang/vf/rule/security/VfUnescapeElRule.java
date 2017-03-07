@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
+import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
@@ -44,17 +45,93 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
 
     @Override
+    public Object visit(ASTHtmlScript node, Object data) {
+        checkIfCorrectlyEscaped(node, data);
+
+        return super.visit(node, data);
+    }
+
+    private void checkIfCorrectlyEscaped(ASTHtmlScript node, Object data) {
+        ASTText prevText = null;
+
+        // churn thru every child just once instead of twice
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            Node n = node.jjtGetChild(i);
+
+            if (n instanceof ASTText) {
+                prevText = (ASTText) n;
+                continue;
+            }
+
+            if (n instanceof ASTElExpression) {
+                processElInScriptContext((ASTElExpression) n, prevText, data);
+            }
+        }
+    }
+
+    private void processElInScriptContext(ASTElExpression elExpression, ASTText prevText, Object data) {
+        boolean quoted = false;
+
+        if (prevText != null) {
+            if (isUnbalanced(prevText.getImage(), "'") || isUnbalanced(prevText.getImage(), "\"")) {
+                quoted = true;
+            }
+        }
+        if (quoted) {
+            // check escaping too
+            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
+                if (doesElContainAnyUnescapedIdentifiers(elExpression, Escaping.JSENCODE)) {
+                    addViolation(data, elExpression);
+                }
+            }
+        } else {
+            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
+                addViolation(data, elExpression);
+            }
+        }
+    }
+
+    private boolean isUnbalanced(String image, String pattern) {
+        int occurance = 0;
+        int index = image.indexOf("=");
+        if (index < 0) {
+            index = image.indexOf(":");
+        }
+
+        index = image.indexOf(pattern, index + 1);
+        while (index >= 0) {
+            occurance++;
+            index = image.indexOf(pattern, index + 1);
+        }
+
+        if ((occurance % 2) != 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public Object visit(ASTElement node, Object data) {
         if (doesTagSupportEscaping(node)) {
-            checkTagsThatSupportEscaping(node, data);
+            checkApexTagsThatSupportEscaping(node, data);
         } else {
-            checkAllOtherTags(node, data);
+            checkLimitedFlags(node, data);
+            checkAllOnEventTags(node, data);
         }
 
         return super.visit(node, data);
     }
 
-    private void checkAllOtherTags(ASTElement node, Object data) {
+    private void checkLimitedFlags(ASTElement node, Object data) {
+        switch (node.getName().toLowerCase()) {
+        case "iframe":
+        case "a":
+            break;
+        default:
+            return;
+        }
+
         final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
         boolean isEL = false;
         final Set<ASTElExpression> toReport = new HashSet<>();
@@ -63,29 +140,14 @@ public class VfUnescapeElRule extends AbstractVfRule {
             String name = attr.getName().toLowerCase();
             // look for onevents
 
-            if (ON_EVENT.matcher(name).matches()) {
-                final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
-                for (ASTElExpression el : elsInVal) {
-                    if (startsWithSafeResource(el)) {
-                        continue;
-                    }
-
-                    if (doesElContainAnyUnescapedIdentifiers(el,
-                            EnumSet.of(Escaping.JSINHTMLENCODE, Escaping.JSENCODE))) {
-                        isEL = true;
-                        toReport.add(el);
-                    }
-                }
-            }
-
             if (HREF.equalsIgnoreCase(name) || SRC.equalsIgnoreCase(name)) {
                 boolean startingWithSlashText = false;
 
                 final ASTText attrText = attr.getFirstDescendantOfType(ASTText.class);
                 if (attrText != null) {
                     if (0 == attrText.jjtGetChildIndex()) {
-                        if (attrText.getImage().startsWith("/")
-                                || attrText.getImage().toLowerCase().startsWith("http")) {
+                        if (attrText.getImage().startsWith("/") || attrText.getImage().toLowerCase().startsWith("http")
+                                || attrText.getImage().toLowerCase().startsWith("mailto")) {
                             startingWithSlashText = true;
                         }
                     }
@@ -110,6 +172,41 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 }
 
             }
+
+        }
+
+        if (isEL) {
+            for (ASTElExpression expr : toReport) {
+                addViolation(data, expr);
+            }
+        }
+
+    }
+
+    private void checkAllOnEventTags(ASTElement node, Object data) {
+        final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
+        boolean isEL = false;
+        final Set<ASTElExpression> toReport = new HashSet<>();
+
+        for (ASTAttribute attr : attributes) {
+            String name = attr.getName().toLowerCase();
+            // look for onevents
+
+            if (ON_EVENT.matcher(name).matches()) {
+                final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
+                for (ASTElExpression el : elsInVal) {
+                    if (startsWithSafeResource(el)) {
+                        continue;
+                    }
+
+                    if (doesElContainAnyUnescapedIdentifiers(el,
+                            EnumSet.of(Escaping.JSINHTMLENCODE, Escaping.JSENCODE))) {
+                        isEL = true;
+                        toReport.add(el);
+                    }
+                }
+            }
+
         }
 
         if (isEL) {
@@ -133,6 +230,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "urlfor":
                 case "$site":
                 case "$page":
+                case "$action":
+                case "casesafeid":
+                case "$remoteaction":
                     return true;
 
                 default:
@@ -161,7 +261,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         return false;
     }
 
-    private void checkTagsThatSupportEscaping(ASTElement node, Object data) {
+    private void checkApexTagsThatSupportEscaping(ASTElement node, Object data) {
         final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
         final Set<ASTElExpression> toReport = new HashSet<>();
         boolean isUnescaped = false;
@@ -286,13 +386,15 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "id":
                 case "size":
                 case "caseNumber":
-                    return true;                
+                    return true;
                 default:
                 }
             }
 
             if (child instanceof ASTDotExpression) {
-                return containsSafeFields((ASTDotExpression) child);
+                if (containsSafeFields((ASTDotExpression) child)) {
+                    return true;
+                }
             }
 
         }
