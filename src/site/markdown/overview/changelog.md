@@ -425,4 +425,5 @@ For example:
 *   [#268](https://github.com/pmd/pmd/pull/268): \[apex] Support safe escaping via String method
 *   [#273](https://github.com/pmd/pmd/pull/273): \[apex] Shade jackson on apex
 *   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
+*   [#284](https://github.com/pmd/pmd/pull/284): \[vf] Adding support for parsing EL in script tags
 
