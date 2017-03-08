@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
@@ -19,6 +20,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
+import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -54,7 +56,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final Pattern VOID_OR_STRING_PATTERN = Pattern.compile("^(string|void)$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("^[\\S|\\s]+?FROM[\\s]+?(\\S+)",
+    private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("[\\S|\\s]+?FROM[\\s]+?(\\w+)",
             Pattern.CASE_INSENSITIVE);
 
     private final HashMap<String, String> varToTypeMapping = new HashMap<>();
@@ -169,11 +171,28 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         if (field != null) {
             try {
                 TypeRef a = field.getNode().getTypeName();
-                Field f = a.getClass().getDeclaredField("className");
-                f.setAccessible(true);
-                if (f.get(a) instanceof ArrayList<?>) {
+                Field classNameField = a.getClass().getDeclaredField("className");
+                Field typeArgsField = a.getClass().getDeclaredField("typeArguments");
+                classNameField.setAccessible(true);
+                typeArgsField.setAccessible(true);
+
+                if (typeArgsField.get(a) instanceof Optional<?>) {
+                    Optional<?> optionalContainer = (Optional<?>) typeArgsField.get(a);
+                    if (optionalContainer.isPresent()) {
+                        @SuppressWarnings("unchecked")
+                        ArrayList<ClassTypeRef> inner = (ArrayList<ClassTypeRef>) optionalContainer.get();
+                        if (!inner.isEmpty()) {
+                            ClassTypeRef innerClassRef = inner.get(0);
+                            List<Identifier> ids = innerClassRef.className;
+                            String argType = ids.get(0).value;
+                            addVariableToMapping(Helper.getFQVariableName(node), argType);
+                        }
+                    }
+                }
+
+                if (classNameField.get(a) instanceof ArrayList<?>) {
                     @SuppressWarnings("unchecked")
-                    ArrayList<Identifier> innerField = (ArrayList<Identifier>) f.get(a);
+                    ArrayList<Identifier> innerField = (ArrayList<Identifier>) classNameField.get(a);
                     if (!innerField.isEmpty()) {
                         String type = innerField.get(0).value;
                         addVariableToMapping(Helper.getFQVariableName(node), type);
@@ -204,7 +223,13 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void addVariableToMapping(final String variableName, final String type) {
-        varToTypeMapping.put(variableName, getSimpleType(type));
+        switch (type.toLowerCase()) {
+        case "list":
+        case "map":
+            return;
+        default:
+            varToTypeMapping.put(variableName, getSimpleType(type));
+        }
     }
 
     private String getSimpleType(final String type) {
@@ -267,7 +292,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 if (nestedMethodCall != null) {
                     if (isLastMethodName(nestedMethodCall, S_OBJECT_TYPE, GET_DESCRIBE)) {
                         String resolvedType = getType(nestedMethodCall);
-                        typeToDMLOperationMapping.put(resolvedType, method);
+                        if (!typeToDMLOperationMapping.get(resolvedType).contains(method)) {
+                            typeToDMLOperationMapping.put(resolvedType, method);
+                        }
                     }
                 }
             }
@@ -304,7 +331,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         int flsIndex = Collections.lastIndexOfSubList(strings, Arrays.asList(RESERVED_KEYS_FLS));
         if (flsIndex != -1) {
             String objectTypeName = strings.get(flsIndex + RESERVED_KEYS_FLS.length);
-            typeToDMLOperationMapping.put(definingType + ":" + objectTypeName, method);
+            if (!typeToDMLOperationMapping.get(definingType + ":" + objectTypeName).contains(method)) {
+                typeToDMLOperationMapping.put(definingType + ":" + objectTypeName, method);
+            }
         }
     }
 
@@ -479,7 +508,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private void checkForAccessibility(final ASTSoqlExpression node, Object data) {
         final boolean isCount = node.getNode().getCanonicalQuery().startsWith("SELECT COUNT()");
-        final String typeFromSOQL = getTypeFromSOQLQuery(node);
+        final Set<String> typesFromSOQL = getTypesFromSOQLQuery(node);
 
         final HashSet<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
@@ -510,7 +539,13 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     .append(":").append(type);
 
             if (!isGetter) {
-                validateCRUDCheckPresent(node, data, ANY, typeFromSOQL == null ? typeCheck.toString() : typeFromSOQL);
+                if (typesFromSOQL.isEmpty()) {
+                    validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
+                } else {
+                    for (String typeFromSOQL : typesFromSOQL) {
+                        validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
+                    }
+                }
             }
 
         }
@@ -523,7 +558,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 if (varToTypeMapping.containsKey(variableWithClass)) {
                     String type = varToTypeMapping.get(variableWithClass);
                     if (!isGetter) {
-                        validateCRUDCheckPresent(node, data, ANY, typeFromSOQL == null ? type : typeFromSOQL);
+                        if (typesFromSOQL.isEmpty()) {
+                            validateCRUDCheckPresent(node, data, ANY, type);
+                        } else {
+                            for (String typeFromSOQL : typesFromSOQL) {
+                                validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
+                            }
+                        }
+
                     }
                 }
             }
@@ -533,21 +575,27 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTReturnStatement returnStatement = node.getFirstParentOfType(ASTReturnStatement.class);
         if (returnStatement != null) {
             if (!isGetter) {
-                String retType = typeFromSOQL == null ? returnType : typeFromSOQL;
-                validateCRUDCheckPresent(node, data, ANY, retType == null ? "" : retType);
+                if (typesFromSOQL.isEmpty()) {
+                    validateCRUDCheckPresent(node, data, ANY, returnType);
+                } else {
+                    for (String typeFromSOQL : typesFromSOQL) {
+                        validateCRUDCheckPresent(node, data, ANY, typeFromSOQL);
+                    }
+                }
             }
         }
     }
 
-    private String getTypeFromSOQLQuery(final ASTSoqlExpression node) {
+    private Set<String> getTypesFromSOQLQuery(final ASTSoqlExpression node) {
+        final Set<String> retVal = new HashSet<>();
         final String canonQuery = node.getNode().getCanonicalQuery();
 
         Matcher m = SELECT_FROM_PATTERN.matcher(canonQuery);
         while (m.find()) {
-            return new StringBuffer().append(node.getNode().getDefiningType().getApexName()).append(":")
-                    .append(m.group(1)).toString();
+            retVal.add(new StringBuffer().append(node.getNode().getDefiningType().getApexName()).append(":")
+                    .append(m.group(1)).toString());
         }
-        return null;
+        return retVal;
     }
 
     private String getReturnType(final ASTMethod method) {
