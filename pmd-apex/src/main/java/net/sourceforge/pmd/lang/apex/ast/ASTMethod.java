@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.Rule;
+
 import apex.jorje.semantic.ast.member.Method;
 
-public class ASTMethod extends AbstractApexNode<Method> {
+public class ASTMethod extends AbstractApexNode<Method> implements CanSuppressWarnings {
 
     public ASTMethod(Method method) {
         super(method);
@@ -39,5 +41,16 @@ public class ASTMethod extends AbstractApexNode<Method> {
         }
 
         return super.getEndColumn();
+    }
+
+    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
+        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
+            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
+                if (a.suppresses(rule)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

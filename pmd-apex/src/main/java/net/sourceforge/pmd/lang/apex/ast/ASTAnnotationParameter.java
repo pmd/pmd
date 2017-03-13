@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import org.apache.commons.lang.StringUtils;
+
 import apex.jorje.semantic.ast.modifier.AnnotationParameter;
 
 public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter> {
@@ -14,5 +16,17 @@ public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter
 
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public String getImage() {
+        String result = null;
+
+        if (node.getValue() != null) {
+            result = node.getValue().toString();
+            result = StringUtils.substringBetween(result, "value = ", ")");
+        }
+
+        return result;
     }
 }
