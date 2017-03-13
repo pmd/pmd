@@ -37,8 +37,7 @@ public class FooRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTField c, Object ctx) {
-    	String image = c.getImage();
-        if (image.equalsIgnoreCase("Foo")) {
+        if (c.getImage().equalsIgnoreCase("Foo")) {
             addViolation(ctx, c);
         }
         return super.visit(c, ctx);

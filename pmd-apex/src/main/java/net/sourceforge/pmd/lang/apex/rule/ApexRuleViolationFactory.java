@@ -23,10 +23,10 @@ public final class ApexRuleViolationFactory extends AbstractRuleViolationFactory
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
         return new ApexRuleViolation<>(rule, ruleContext, (ApexNode) node, message);
     }
-    
+
     @SuppressWarnings("rawtypes")
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
             int beginLine, int endLine) {
-    	return new ApexRuleViolation(rule, ruleContext, (ApexNode) node, message, beginLine, endLine);
+        return new ApexRuleViolation(rule, ruleContext, (ApexNode) node, message, beginLine, endLine);
     }
 }

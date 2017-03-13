@@ -6,9 +6,10 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Field;
 
+import net.sourceforge.pmd.Rule;
+
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserClass;
-import net.sourceforge.pmd.Rule;
 
 public class ASTUserClass extends ApexRootNode<UserClass> implements CanSuppressWarnings {
 
@@ -34,13 +35,13 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements CanSuppress
     }
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-    	for(ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-	    	for(ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-	            if (a.suppresses(rule)) {
-	                return true;
-	            }
-	        }
-    	}
+        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
+            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
+                if (a.suppresses(rule)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 }

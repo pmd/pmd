@@ -20,13 +20,13 @@ public class ASTAnnotationParameter extends AbstractApexNode<AnnotationParameter
 
     @Override
     public String getImage() {
-    	String result = null;
-    	
-    	if(node.getValue() != null) {
-    		result = node.getValue().toString();
-    		result = StringUtils.substringBetween(result, "value = ", ")");
-    	}
-    	
-    	return result;
+        String result = null;
+
+        if (node.getValue() != null) {
+            result = node.getValue().toString();
+            result = StringUtils.substringBetween(result, "value = ", ")");
+        }
+
+        return result;
     }
 }
