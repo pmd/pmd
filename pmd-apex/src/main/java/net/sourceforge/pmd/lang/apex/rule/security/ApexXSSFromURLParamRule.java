@@ -42,6 +42,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private static final String[] BOOLEAN_VALUEOF = new String[] { "Boolean", "valueOf" };
     private static final String[] STRING_ISEMPTY = new String[] { "String", "isEmpty" };
     private static final String[] STRING_ISBLANK = new String[] { "String", "isBlank" };
+    private static final String[] STRING_ISNOTBLANK = new String[] { "String", "isNotBlank" };
 
     private final Set<String> urlParameterStrings = new HashSet<>();
 
@@ -118,7 +119,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 || Helper.isMethodCallChain(methodNode, ID_VALUEOF)
                 // safe boolean methods
                 || Helper.isMethodCallChain(methodNode, STRING_ISEMPTY)
-                || Helper.isMethodCallChain(methodNode, STRING_ISBLANK);
+                || Helper.isMethodCallChain(methodNode, STRING_ISBLANK)
+                || Helper.isMethodCallChain(methodNode, STRING_ISNOTBLANK);
     }
 
     private void processInlineMethodCalls(ASTMethodCallExpression methodNode, Object data, final boolean isNested) {
