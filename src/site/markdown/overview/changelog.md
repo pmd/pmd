@@ -532,6 +532,7 @@ For example:
 *   [#281](https://github.com/pmd/pmd/pull/281): \[apex] Add Braces Rule Set
 *   [#283](https://github.com/pmd/pmd/pull/283): \[vf] CSRF in VF controller pages
 *   [#284](https://github.com/pmd/pmd/pull/284): \[vf] Adding support for parsing EL in script tags
-*   [#288](https://github.com/pmd/pmd/pull/288): \[vf] Setting the tab size to 4 for VF
 *   [#287](https://github.com/pmd/pmd/pull/287): \[apex] Make Rule suppression work
+*   [#288](https://github.com/pmd/pmd/pull/288): \[vf] Setting the tab size to 4 for VF
+*   [#289](https://github.com/pmd/pmd/pull/289): \[apex] Complex SOQL Crud check bug fixes
 
