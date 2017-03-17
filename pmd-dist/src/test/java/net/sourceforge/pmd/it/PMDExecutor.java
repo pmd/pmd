@@ -28,7 +28,7 @@ public class PMDExecutor {
         // this is a helper class only
     }
 
-    private static PMDExecutionResult runPMDUnix(Path tempDir, String ... arguments) throws Exception {
+    private static ExecutionResult runPMDUnix(Path tempDir, String ... arguments) throws Exception {
         String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMD.VERSION + "/bin/run.sh").toAbsolutePath().toString();
         ProcessBuilder pb = new ProcessBuilder(cmd, "pmd");
         pb.command().addAll(Arrays.asList(arguments));
@@ -37,10 +37,10 @@ public class PMDExecutor {
         String output = IOUtils.toString(process.getInputStream());
 
         int result = process.waitFor();
-        return new PMDExecutionResult(result, output);
+        return new ExecutionResult(result, output);
     }
 
-    private static PMDExecutionResult runPMDWindows(Path tempDir, String ... arguments) throws Exception {
+    private static ExecutionResult runPMDWindows(Path tempDir, String ... arguments) throws Exception {
         String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMD.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.command().addAll(Arrays.asList(arguments));
@@ -49,7 +49,7 @@ public class PMDExecutor {
         String output = IOUtils.toString(process.getInputStream());
 
         int result = process.waitFor();
-        return new PMDExecutionResult(result, output);
+        return new ExecutionResult(result, output);
     }
 
     /**
@@ -61,7 +61,7 @@ public class PMDExecutor {
      * @return collected result of the execution
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
-    public static PMDExecutionResult runPMDRules(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
+    public static ExecutionResult runPMDRules(Path tempDir, String sourceDirectory, String ruleset) throws Exception {
         if (SystemUtils.IS_OS_WINDOWS) {
             return runPMDWindows(tempDir, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset, FORMAT_FLAG, FORMATTER);
         } else {
@@ -76,7 +76,7 @@ public class PMDExecutor {
      * @return collected result of the execution
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
-    public static PMDExecutionResult runPMD(Path tempDir, String ... arguments) throws Exception {
+    public static ExecutionResult runPMD(Path tempDir, String ... arguments) throws Exception {
         if (SystemUtils.IS_OS_WINDOWS) {
             return runPMDWindows(tempDir, arguments);
         } else {

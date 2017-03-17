@@ -17,14 +17,37 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 
 public class BinaryDistributionIT {
 
-    private File getBinaryDistribution() {
+    private static File getBinaryDistribution() {
         return new File(".", "target/pmd-bin-" + PMD.VERSION + ".zip");
+    }
+
+    /**
+     * The temporary directory, to which the binary distribution will be extracted.
+     * It will be deleted again after the test.
+     */
+    private static Path tempDir;
+
+    @BeforeClass
+    public static void setupTempDirectory() throws Exception {
+        tempDir = Files.createTempDirectory("pmd-it-test-");
+        if (getBinaryDistribution().exists()) {
+            ZipFileExtractor.extractZipFile(getBinaryDistribution().toPath(), tempDir);
+        }
+    }
+
+    @AfterClass
+    public static void cleanupTempDirectory() throws IOException {
+        if (tempDir != null && tempDir.toFile().exists()) {
+            FileUtils.forceDelete(tempDir.toFile());
+        }
     }
 
     @Test
@@ -63,23 +86,35 @@ public class BinaryDistributionIT {
 
     @Test
     public void runPMD() throws Exception {
-        Path tempDir = Files.createTempDirectory("pmd-it-test-");
         String srcDir = new File(".", "src/test/resources/sample-source/").getAbsolutePath();
 
-        try {
-            ZipFileExtractor.extractZipFile(getBinaryDistribution().toPath(), tempDir);
-            PMDExecutionResult result;
+        ExecutionResult result;
 
-            result = PMDExecutor.runPMD(tempDir, "-h");
-            result.assertPMDExecutionResult(1, "apex, ecmascript, java, jsp, plsql, pom, vf, vm, wsdl, xml, xsl");
+        result = PMDExecutor.runPMD(tempDir, "-h");
+        result.assertExecutionResult(1, "apex, ecmascript, java, jsp, plsql, pom, vf, vm, wsdl, xml, xsl");
 
-            result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-basic");
-            result.assertPMDExecutionResult(4, "JumbledIncrementer.java:8:");
+        result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-basic");
+        result.assertExecutionResult(4, "JumbledIncrementer.java:8:");
 
-            result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-design");
-            result.assertPMDExecutionResult(0, "");
-        } finally {
-            FileUtils.forceDelete(tempDir.toFile());
-        }
+        result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-design");
+        result.assertExecutionResult(0, "");
+    }
+
+    @Test
+    public void runCPD() throws Exception {
+        String srcDir = new File(".", "src/test/resources/sample-source-cpd/").getAbsolutePath();
+
+        ExecutionResult result;
+
+        result = CpdExecutor.runCpd(tempDir, "-h");
+        result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
+
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);
+        result.assertExecutionResult(4, "Found a 10 line (55 tokens) duplication in the following files:");
+        result.assertExecutionResult(4, "Class1.java");
+        result.assertExecutionResult(4, "Class2.java");
+
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--files", srcDir);
+        result.assertExecutionResult(0, "");
     }
 }

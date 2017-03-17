@@ -4,8 +4,14 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -26,18 +32,35 @@ public final class LanguageFactory {
     private Map<String, Language> languages = new HashMap<>();
 
     private LanguageFactory() {
+        List<Language> languagesList = new ArrayList<>();
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
         Iterator<Language> iterator = languageLoader.iterator();
         while (iterator.hasNext()) {
             try {
                 Language language = iterator.next();
-                languages.put(language.getTerseName().toLowerCase(), language);
+                languagesList.add(language);
             } catch (UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
                 System.err.println("Ignoring language for CPD: " + e.toString());
             }
         }
+
+        // sort languages by terse name. Avoiding differences in the order of languages
+        // across JVM versions / OS.
+        Collections.sort(languagesList, new Comparator<Language>() {
+            @Override
+            public int compare(Language o1, Language o2) {
+                return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
+            }
+        });
+
+        // using a linked hash map to maintain insertion order
+        languages = new LinkedHashMap<>();
+        for (Language language : languagesList) {
+            languages.put(language.getTerseName().toLowerCase(Locale.ROOT), language);
+        }
+
     }
 
     public static Language createLanguage(String language) {
