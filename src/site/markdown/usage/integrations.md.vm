@@ -4,6 +4,7 @@
 
 # IDE Integrations
 
+
 ## Summary
 
 <table>
@@ -155,6 +156,7 @@
     </tr>
 </table>
 
+
 ## General comments
 
 A general note - most plugins include the PMD jar files, which has the rulesets
@@ -162,16 +164,19 @@ inside it.  So even though the rulesets parameter that some plugins
 use (i.e., "rulesets/java/unusedcode.xml") looks like a filesystem reference, it's really
 being used by a getResourceAsStream() call to load it out of the PMD jar files.
 
+
 ## BlueJ
 
 [BlueJ](http://bluej.org/) is a teaching IDE. To install the PMD extension for BlueJ, download
 the [PMDExtension jar file](http://sourceforge.net/projects/pmd/files/pmd-bluej/pmd-bluej-1.0/)
 and place it in your `bluej/lib/extensions/` directory.
 
+
 ## Codacy
 
 Although it is not an IDE, with [Codacy](https://www.codacy.com/) you have PMDJava analysis out-of-the-box,
 and it is free for open source projects.
+
 
 ## Code Guide
 
@@ -196,6 +201,7 @@ On Windows you need to use the pmd.bat file instead of pmd.sh.
 
 If you haven't heard of CodeGuide before, [check it out](http://www.omnicore.com/).
 It's a great IDE.
+
 
 ## Eclipse
 
@@ -228,12 +234,14 @@ try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.e
 To get Eclipse to not flag the @SuppressWarnings("PMD") annotation, look
 under the menu headings Java -> Compiler -> Errors/Warnings -> Annotations -> Unhandled Warning Token.
 
+
 ## Emacs
 
 Integration with GNU Emacs is performed through an ELisp package, pmd.el.
 It supports two commands, "pmd-current-buffer" and "pmd-current-dir".
 The output is captured in a compilation buffer which allows the user to "jump"
 directly to the source code position associated with the PMD warnings.
+
 
 ## Gel
 
@@ -253,6 +261,7 @@ That's pretty much it.  Now you can open a Java project and click on Plugins->PM
 a configuration panel will pop up.  You can pick which ruleset you want to run and
 you can also pick whether you want to run PMD on the current file or on every
 source file in your project.
+
 
 ## IDEA
 
@@ -282,6 +291,7 @@ be displayed in a window and hyperlinked into the correct file and line of code.
 right-click on the message window title bar and unselect "autohide" so the window doesn't go
 away every time I fix something in the code window.
 
+
 ## IDEA - QAPlug
 
 QAPlug is an Intellij IDEA plugin to manage code quality.  It integrates no less than Checkstyle, FindBugs, and PMD.
@@ -290,6 +300,7 @@ The plugin is available at <http://www.qaplug.com/>.
 
 Also available at the JetBrains site, [QAPlug-PMD](http://plugins.jetbrains.com/idea/plugin/4596-qaplug--pmd)
 and [QAPlug](http://plugins.jetbrains.com/idea/plugin/4594-qaplug).
+
 
 ## JBuilder
 
@@ -316,6 +327,7 @@ Things still to do:
 *   Optional insertion of @todo comments at the point of a violation
 *   Possibly provide configurable ability to limit the number of violations per rule per file
 
+
 ## JCreator
 
 1.  Open Configure > Options
@@ -328,6 +340,7 @@ Things still to do:
 8.  Put '"$[PrjDir]" emacs' followed by desired rulesets in the arguments
 
 To run PMD on a project, just pick pmd from the Tools menu.
+
 
 ## JDeveloper
 
@@ -353,6 +366,7 @@ To run the PMD plugin for JDeveloper:
     Toolbar Icon, Context Menu or File Menu
 *   Any rule violations should show up in a LogWindow tab at the bottom of the screen
 
+
 ## JEdit
 
 The way I use the JEdit plugin is:
@@ -367,9 +381,11 @@ Note that you can select individual rules by going to Utilities->Global Options-
 Also, you can change the plugin to prompt you for a directory to check by going to that same menu and
 selecting the "Ask for Directory" checkbox.
 
+
 ## Maven
 
 Please see [the Maven plugins web site](http://maven.apache.org/maven-1.x/plugins/pmd/) for more information.
+
 
 ## Maven 2
 
@@ -378,9 +394,11 @@ Please see
 for more information. 
 Also, the bug tracker for this plugin is [here](http://jira.codehaus.org/browse/MPMD).
 
+
 ## NetBeans
 
 The [SQE](http://kenai.com/projects/sqe/) project includes PMD integration for NetBeans.
+
 
 ## TextPad
 
@@ -462,8 +480,7 @@ the (blank Command Results) document, and then confirming that, "yes, I do reall
 Please see [the WebLogic Workshop plugin project home page](http://pmdwlw.sf.net/) for more information.
 
 
-Codacy
-------
+## Codacy
 
 Although it is not an IDE, with [Codacy](https://www.codacy.com/) you have PMDJava analysis out-of-the-box,
 and it is free for open source projects.
