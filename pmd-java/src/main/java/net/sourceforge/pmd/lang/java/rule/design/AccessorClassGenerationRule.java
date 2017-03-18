@@ -21,9 +21,11 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
  * 1. Note all private constructors. 2. Note all instantiations from outside of
  * the class by way of the private constructor. 3. Flag instantiations.
  * 
- * <p>Parameter types can not be matched because they can come as exposed members
+ * <p>
+ * Parameter types can not be matched because they can come as exposed members
  * of classes. In this case we have no way to know what the type is. We can make
- * a best effort though which can filter some?</p>
+ * a best effort though which can filter some?
+ * </p>
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  * @author David Konecny (david.konecny@)
