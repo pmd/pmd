@@ -8,11 +8,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBURI;
 
 import com.beust.jcommander.JCommander;
@@ -78,15 +80,7 @@ public class CPDCommandLineInterface {
         CPD cpd = new CPD(arguments);
 
         try {
-            // Add files
-            if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
-                addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
-            }
-
-            // Add Database URIS
-            if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
-                addSourceURIToCPD(arguments.getURI(), cpd);
-            }
+            addSourceFilesToCPD(cpd, arguments);
 
             cpd.go();
             System.out.println(arguments.getRenderer().render(cpd.getMatches()));
@@ -102,6 +96,22 @@ public class CPDCommandLineInterface {
         } catch (RuntimeException e) {
             e.printStackTrace();
             setStatusCodeOrExit(ERROR_STATUS);
+        }
+    }
+
+    public static void addSourceFilesToCPD(CPD cpd, CPDConfiguration arguments) {
+        // Add files
+        if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
+            addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
+        }
+
+        // Add Database URIS
+        if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
+            addSourceURIToCPD(arguments.getURI(), cpd);
+        }
+
+        if (null != arguments.getFileListPath() && !"".equals(arguments.getFileListPath())) {
+            addFilesFromFilelist(arguments.getFileListPath(), cpd, !arguments.isNonRecursive());
         }
     }
 
@@ -122,6 +132,28 @@ public class CPDCommandLineInterface {
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private static void addFilesFromFilelist(String inputFilePath, CPD cpd, boolean recursive) {
+        File file = new File(inputFilePath);
+        List<File> files = new ArrayList<>();
+        try {
+            if (!file.exists()) {
+                throw new FileNotFoundException("Couldn't find directory/file '" + inputFilePath + "'");
+            } else {
+                String filePaths = FileUtil.readFilelist(new File(inputFilePath));
+                for (String param : filePaths.split(",")) {
+                    File fileToAdd = new File(param);
+                    if (!fileToAdd.exists()) {
+                        throw new FileNotFoundException("Couldn't find directory/file '" + param + "'");
+                    }
+                    files.add(fileToAdd);
+                }
+                addSourcesFilesToCPD(files, cpd, recursive);
+            }
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 

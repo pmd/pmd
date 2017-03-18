@@ -91,6 +91,12 @@ The options "minimum-tokens" and "files" are the two required options; there are
         <td></td>
     </tr>
     <tr>
+        <td>--filelist</td>
+        <td>Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `--files`.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
         <td>--language</td>
         <td>Sources code language. Default value is `java`</td>
         <td>no</td>
@@ -484,4 +490,3 @@ It's legacy and the new comment's based approch should be favored.
 
 Other languages currently have no support to suppress CPD reports. In the future,
 the comment based approach will be extended to those of them that can support it.
-

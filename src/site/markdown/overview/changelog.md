@@ -37,6 +37,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
     *   [New Rules](#New_Rules)
     *   [Modified Rules](#Modified_Rules)
     *   [CPD Suppression](#CPD_Suppression)
+    *   [CPD filelist command line option)(#CPD_filelist_command_line_option)
 *   [Fixed Issues](#Fixed_Issues)
 *   [API Changes](#API_Changes)
 *   [External Contributions](#External_Contributions)
@@ -411,6 +412,13 @@ For example:
     }
 ```
 
+#### CPD filelist command line option
+
+CPD now supports the command line option `--filelist`. With that, you can specify a file, which
+contains the names and paths of the files, that should be analyzed. This is similar to PMD's filelist option.
+You need to use this, if you have a large project with many files, and you hit the command line length limit.
+
+
 ### Fixed Issues
 
 *   General
@@ -538,4 +546,5 @@ For example:
 *   [#288](https://github.com/pmd/pmd/pull/288): \[vf] Setting the tab size to 4 for VF
 *   [#289](https://github.com/pmd/pmd/pull/289): \[apex] Complex SOQL Crud check bug fixes
 *   [#296](https://github.com/pmd/pmd/pull/296): \[apex] Adding String.IsNotBlank to the whitelist to prevent False positives
+*   [#297](https://github.com/pmd/pmd/pull/297): \[core] CPD: Adding the --filelist option from pmd to cpd
 

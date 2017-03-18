@@ -100,6 +100,10 @@ public class CPDConfiguration extends AbstractConfiguration {
             required = false, converter = FileConverter.class)
     private List<File> files;
 
+    @Parameter(names = "--filelist", description = "Path to a file containing a list of files to analyze.",
+            required = false)
+    private String fileListPath;
+
     @Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check",
             required = false, converter = FileConverter.class)
     private List<File> excludes;
@@ -389,6 +393,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setFiles(List<File> files) {
         this.files = files;
+    }
+
+    public String getFileListPath() {
+        return fileListPath;
+    }
+
+    public void setFileListPath(String fileListPath) {
+        this.fileListPath = fileListPath;
     }
 
     public String getURI() {
