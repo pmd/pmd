@@ -295,6 +295,20 @@ public class Foo {
 	</test-code>
 
 	<test-code>
+		<description>IsNotBlank check</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String baz, bas;
+		bas = ApexPages.currentPage().getParameters().get('foo');
+		boolean isNotBlank = String.isNotBlank(bas);
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
 		<description>URL parameter type empty check</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
@@ -365,7 +379,7 @@ public class Foo {
 		]]></code>
 	</test-code>
 
-<test-code>
+	<test-code>
 		<description>Casting applied to a method call
 		</description>
 		<expected-problems>0</expected-problems>
@@ -378,8 +392,8 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
-		<test-code>
+
+	<test-code>
 		<description>URL parameter method passing</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
