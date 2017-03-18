@@ -22,9 +22,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
@@ -481,11 +479,7 @@ public class PMD {
                     LOG.log(Level.SEVERE, "Problem with Input File Path", inputFilePath);
                     throw new RuntimeException("Problem with Input File Path: " + inputFilePath);
                 } else {
-                    String filePaths = FileUtils.readFileToString(new File(inputFilePath));
-                    filePaths = StringUtils.trimToEmpty(filePaths);
-                    filePaths = filePaths.replaceAll("\\r?\\n", ",");
-                    filePaths = filePaths.replaceAll(",+", ",");
-
+                    String filePaths = FileUtil.readFilelist(new File(inputFilePath));
                     files.addAll(FileUtil.collectFiles(filePaths, fileSelector));
                 }
             } catch (IOException ex) {

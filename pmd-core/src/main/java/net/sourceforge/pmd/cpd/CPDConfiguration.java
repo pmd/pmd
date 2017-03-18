@@ -391,12 +391,16 @@ public class CPDConfiguration extends AbstractConfiguration {
         return files;
     }
 
+    public void setFiles(List<File> files) {
+        this.files = files;
+    }
+
     public String getFileListPath() {
         return fileListPath;
     }
 
-    public void setFiles(List<File> files) {
-        this.files = files;
+    public void setFileListPath(String fileListPath) {
+        this.fileListPath = fileListPath;
     }
 
     public String getURI() {

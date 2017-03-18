@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class PMDTest {
+public class PMDFilelistTest {
     @Test
     public void testGetApplicableFiles() {
         Set<Language> languages = new HashSet<>();

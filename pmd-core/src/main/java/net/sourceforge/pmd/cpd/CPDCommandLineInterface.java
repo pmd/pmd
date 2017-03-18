@@ -13,10 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.database.DBURI;
 
 import com.beust.jcommander.JCommander;
@@ -82,19 +80,7 @@ public class CPDCommandLineInterface {
         CPD cpd = new CPD(arguments);
 
         try {
-            // Add files
-            if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
-                addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
-            }
-
-            // Add Database URIS
-            if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
-                addSourceURIToCPD(arguments.getURI(), cpd);
-            }
-
-            if (null != arguments.getFileListPath() && !"".equals(arguments.getFileListPath())) {
-                addFilesFromFilelist(arguments.getFileListPath(), cpd, !arguments.isNonRecursive());
-            }
+            addSourceFilesToCPD(cpd, arguments);
 
             cpd.go();
             System.out.println(arguments.getRenderer().render(cpd.getMatches()));
@@ -110,6 +96,22 @@ public class CPDCommandLineInterface {
         } catch (RuntimeException e) {
             e.printStackTrace();
             setStatusCodeOrExit(ERROR_STATUS);
+        }
+    }
+
+    public static void addSourceFilesToCPD(CPD cpd, CPDConfiguration arguments) {
+        // Add files
+        if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
+            addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
+        }
+
+        // Add Database URIS
+        if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
+            addSourceURIToCPD(arguments.getURI(), cpd);
+        }
+
+        if (null != arguments.getFileListPath() && !"".equals(arguments.getFileListPath())) {
+            addFilesFromFilelist(arguments.getFileListPath(), cpd, !arguments.isNonRecursive());
         }
     }
 
@@ -140,11 +142,7 @@ public class CPDCommandLineInterface {
             if (!file.exists()) {
                 throw new FileNotFoundException("Couldn't find directory/file '" + inputFilePath + "'");
             } else {
-                String filePaths = FileUtils.readFileToString(new File(inputFilePath));
-                filePaths = StringUtils.trimToEmpty(filePaths);
-                if (null == filePaths) {
-                    throw new FileNotFoundException("Couldn't open directory/file '" + inputFilePath + "'");
-                }
+                String filePaths = FileUtil.readFilelist(new File(inputFilePath));
                 for (String param : filePaths.split(",")) {
                     File fileToAdd = new File(param);
                     if (!fileToAdd.exists()) {
