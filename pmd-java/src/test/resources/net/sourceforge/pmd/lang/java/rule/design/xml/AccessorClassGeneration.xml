@@ -99,33 +99,36 @@ public class Foo1 {
  }
 }
      ]]></code>
-    </test-code> <!--
-    <test-code>
-        <description><![CDATA[
-See bug# 1807370 (False +). static private inner classes DOES not
-generate an accesor. They are ok.
-     ]]></description>
-      This is buggy, the point of the fix is that there should
-     			be '0' expected problem !
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo1 {
- public class InnerClass {
-   private static InnerClass(int[] a){
-   }
- }
- void method(){
-   new InnerClass(new int[]{1});//Causes generation of accessor
- }
-}
-     ]]></code>
-    </test-code> -->
-
+    </test-code>
     <test-code>
         <description>#1452 ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public @interface Something { public interface SomthingElse{}; }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+#291 - Private constructor called from anonymous class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Example extends View {
+  private int foo;
+
+  private Example(final Context context) {
+    super(context);
+  }
+
+  public static void create() {
+    new Handler().post(new Runnable() {
+      @Override
+      public void run() {
+          Example example = new Example(null); // Should be marked since the constructor is private.
+      }
+    });
+  }
+}
+     ]]></code>
     </test-code>
 </test-data>
