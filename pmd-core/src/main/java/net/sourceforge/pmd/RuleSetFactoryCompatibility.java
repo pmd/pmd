@@ -64,6 +64,9 @@ public class RuleSetFactoryCompatibility {
         
         // PMD 5.6.0
         addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
+        // unused/UnusedModifier moved AND renamed, order is important!
+        addFilterRuleMoved("java", "unused", "unnecessary", "UnusedModifier");
+        addFilterRuleRenamed("java", "unnecessary", "UnusedModifier", "UnnecessaryModifier");
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {

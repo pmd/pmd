@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.unusedcode;
+package net.sourceforge.pmd.lang.java.rule.unnecessary;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationMethodDeclaration;
@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-public class UnusedModifierRule extends AbstractJavaRule {
+public class UnnecessaryModifierRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
