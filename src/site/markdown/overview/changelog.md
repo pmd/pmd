@@ -535,4 +535,5 @@ For example:
 *   [#287](https://github.com/pmd/pmd/pull/287): \[apex] Make Rule suppression work
 *   [#288](https://github.com/pmd/pmd/pull/288): \[vf] Setting the tab size to 4 for VF
 *   [#289](https://github.com/pmd/pmd/pull/289): \[apex] Complex SOQL Crud check bug fixes
+*   [#296](https://github.com/pmd/pmd/pull/296): \[apex] Adding String.IsNotBlank to the whitelist to prevent False positives
 
