@@ -8,9 +8,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.database.DBURI;
@@ -88,6 +92,10 @@ public class CPDCommandLineInterface {
                 addSourceURIToCPD(arguments.getURI(), cpd);
             }
 
+            if (null != arguments.getFileListPath() && !"".equals(arguments.getFileListPath())) {
+                addFilesFromFilelist(arguments.getFileListPath(), cpd, !arguments.isNonRecursive());
+            }
+
             cpd.go();
             System.out.println(arguments.getRenderer().render(cpd.getMatches()));
             if (cpd.getMatches().hasNext()) {
@@ -122,6 +130,32 @@ public class CPDCommandLineInterface {
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private static void addFilesFromFilelist(String inputFilePath, CPD cpd, boolean recursive) {
+        File file = new File(inputFilePath);
+        List<File> files = new ArrayList<>();
+        try {
+            if (!file.exists()) {
+                throw new FileNotFoundException("Couldn't find directory/file '" + inputFilePath + "'");
+            } else {
+                String filePaths = FileUtils.readFileToString(new File(inputFilePath));
+                filePaths = StringUtils.trimToEmpty(filePaths);
+                if (null == filePaths) {
+                    throw new FileNotFoundException("Couldn't open directory/file '" + inputFilePath + "'");
+                }
+                for (String param : filePaths.split(",")) {
+                    File fileToAdd = new File(param);
+                    if (!fileToAdd.exists()) {
+                        throw new FileNotFoundException("Couldn't find directory/file '" + param + "'");
+                    }
+                    files.add(fileToAdd);
+                }
+                addSourcesFilesToCPD(files, cpd, recursive);
+            }
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
