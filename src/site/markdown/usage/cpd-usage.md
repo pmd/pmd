@@ -92,7 +92,7 @@ The options "minimum-tokens" and "files" are the two required options; there are
     </tr>
     <tr>
         <td>--filelist</td>
-        <td>Path to file containing a comma delimited list of files to analyze.If this is given, then you don't need to provide `--files`.</td>
+        <td>Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `--files`.</td>
         <td>no</td>
         <td></td>
     </tr>
