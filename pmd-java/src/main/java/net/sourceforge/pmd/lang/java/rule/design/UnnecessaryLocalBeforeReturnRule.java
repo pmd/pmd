@@ -13,10 +13,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
@@ -56,11 +59,54 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
                     if (var.indexOf('.') != -1) {
                         var = var.substring(0, var.indexOf('.'));
                     }
-                    addViolation(data, rtn, var);
+                    // Is the variable initialized with another member that is later used?
+                    if (!isInitDataModifiedAfterInit(variableDeclaration, rtn)) {
+                        addViolation(data, rtn, var);
+                    }
                 }
             }
         }
         return data;
+    }
+
+    private boolean isInitDataModifiedAfterInit(final VariableNameDeclaration variableDeclaration,
+            final ASTReturnStatement rtn) {
+        final ASTVariableInitializer initializer = variableDeclaration.getAccessNodeParent()
+                .getFirstDescendantOfType(ASTVariableInitializer.class);
+        if (initializer != null) {
+            final List<ASTName> referencedNames = initializer.findDescendantsOfType(ASTName.class);
+            for (final ASTName refName : referencedNames) {
+                // TODO : Shouldn't the scope allow us to search for a var name occurrences directly, moving up through parent scopes?
+                Scope scope = refName.getScope();
+                do {
+                    final Map<VariableNameDeclaration, List<NameOccurrence>> declarations = scope
+                            .getDeclarations(VariableNameDeclaration.class);
+                    for (final Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : declarations
+                            .entrySet()) {
+                        if (entry.getKey().getName().equals(refName.getImage())) {
+                            // Variable found! Check usage locations
+                            for (final NameOccurrence occ : entry.getValue()) {
+                                final ScopedNode location = occ.getLocation();
+                                // Is it used after initializing our "unnecessary" local but before the return statement?
+                                // TODO : should node define isAfter / isBefore helper methods?
+                                if ((location.getBeginLine() > initializer.getEndLine()
+                                        || (location.getBeginLine() == initializer.getEndLine() && location.getBeginColumn() >= initializer.getEndColumn()))
+                                        && (location.getEndLine() < rtn.getBeginLine()
+                                                || (location.getEndLine() == rtn.getBeginLine()
+                                                        && location.getEndColumn() <= rtn.getEndColumn()))) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+                    }
+                    scope = scope.getParent();
+                } while (scope != null);
+            }
+        }
+
+        return false;
     }
 
     private boolean isNotAnnotated(VariableNameDeclaration variableDeclaration) {
