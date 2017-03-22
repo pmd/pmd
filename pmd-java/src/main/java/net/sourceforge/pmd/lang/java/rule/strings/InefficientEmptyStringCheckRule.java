@@ -63,5 +63,6 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
         }
         return data;
     }
+
 }
 
