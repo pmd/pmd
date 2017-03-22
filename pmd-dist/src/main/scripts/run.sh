@@ -5,7 +5,7 @@ usage() {
     echo "    $(basename $0) <application-name> [-h|-v] ..."
     echo ""
     echo "application-name: valid options are: $(valid_app_options)"
-	echo "-h print this help"
+    echo "-h print this help"
     echo "-v display PMD's version"
 }
 
@@ -15,7 +15,7 @@ valid_app_options () {
 
 is_cygwin() {
     case "$(uname)" in
-        CYGWIN*)
+        CYGWIN*|MINGW*)
             readonly cygwin=true
             ;;
     esac
@@ -28,19 +28,17 @@ is_cygwin() {
 cygwin_paths() {
     # For Cygwin, switch paths to Windows format before running java
     if ${cygwin} ; then
-        JAVA_HOME=$(cygpath --windows "${JAVA_HOME}")
+        [ -n "${JAVA_HOME}" ] && JAVA_HOME=$(cygpath --windows "${JAVA_HOME}")
+        [ -n "${DIRECTORY}" ] && DIRECTORY=$(cygpath --windows "${DIRECTORY}")
         classpath=$(cygpath --path --windows "${classpath}")
-        DIRECTORY=$(cygpath --windows "${DIRECTORY}")
     fi
 }
 
 convert_cygwin_vars() {
     # If cygwin, convert to Unix form before manipulating
     if ${cygwin} ; then
-        [ -n "${JAVA_HOME}" ] &&
-            JAVA_HOME=$(cygpath --unix "${JAVA_HOME}")
-        [ -n "${CLASSPATH}" ] &&
-            CLASSPATH=$(cygpath --path --unix "${CLASSPATH}")
+        [ -n "${JAVA_HOME}" ] && JAVA_HOME=$(cygpath --unix "${JAVA_HOME}")
+        [ -n "${CLASSPATH}" ] && CLASSPATH=$(cygpath --path --unix "${CLASSPATH}")
     fi
 }
 
@@ -116,7 +114,11 @@ classpath=$CLASSPATH
 cd "${CWD}"
 
 for jarfile in ${LIB_DIR}/*.jar; do
-    classpath=$classpath:$jarfile
+    if [ -n "$classpath" ]; then
+        classpath=$classpath:$jarfile
+    else
+        classpath=$jarfile
+    fi
 done
 
 cygwin_paths
