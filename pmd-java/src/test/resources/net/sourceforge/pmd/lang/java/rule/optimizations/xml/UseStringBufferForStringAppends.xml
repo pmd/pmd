@@ -160,6 +160,7 @@ public class UseStringBuffer {
     public void foo2() {
         String country = request.getParameter("country");
         country = (country == null) ? "USA" : country;
+        country = (country != null) ? country : "USA";
     }
 }
         ]]></code>

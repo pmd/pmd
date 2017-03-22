@@ -45,8 +45,13 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 continue;
             }
             ASTConditionalExpression conditional = name.getFirstParentOfType(ASTConditionalExpression.class);
-            if (conditional != null && name.jjtGetParent().jjtGetParent().jjtGetParent() == conditional && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
-                // is used in ternary as only option (not appendend to other string)
+            if (conditional != null
+                    && (name.jjtGetParent().jjtGetParent().jjtGetParent() == conditional
+                            || name.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() == conditional)
+                    && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
+                // is used in ternary as only option (not appended to other
+                // string)
+                
                 continue;
             }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0) instanceof ASTPrimaryExpression) {
