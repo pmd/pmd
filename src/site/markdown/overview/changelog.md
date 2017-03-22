@@ -471,6 +471,7 @@ You need to use this, if you have a large project with many files, and you hit t
     *   [#215](https://github.com/pmd/pmd/issues/215): \[java] RedundantFieldInitializer report for annotation field not explicitly marked as final
 *   java-strings
     *   [#202](https://github.com/pmd/pmd/issues/202): \[java] \[doc] ConsecutiveAppendsShouldReuse is not really an optimization
+    *   [#290](https://github.com/pmd/pmd/issues/290): \[java] InefficientEmptyStringCheck misses String.trim().isEmpty()
 *   java-unnecessary
     *   [#199](https://github.com/pmd/pmd/issues/199): \[java] UselessParentheses: Parentheses in return statement are incorrectly reported as useless
 *   java-unusedcode
@@ -547,4 +548,4 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#289](https://github.com/pmd/pmd/pull/289): \[apex] Complex SOQL Crud check bug fixes
 *   [#296](https://github.com/pmd/pmd/pull/296): \[apex] Adding String.IsNotBlank to the whitelist to prevent False positives
 *   [#297](https://github.com/pmd/pmd/pull/297): \[core] CPD: Adding the --filelist option from pmd to cpd
-
+*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty() 
