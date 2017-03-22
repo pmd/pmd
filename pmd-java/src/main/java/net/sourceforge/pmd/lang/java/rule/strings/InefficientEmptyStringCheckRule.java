@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
  * @author acaplan
  */
 public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroCheck {
-    
+
     @Override
     public boolean isTargetMethod(JavaNameOccurrence occ) {
         if (occ.getNameForWhichThisIsAQualifier() != null
@@ -40,28 +40,28 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
         }
         return false;
     }
-    
+
     @Override
     public boolean appliesToClassName(String name) {
         return "String".equals(name);
     }
-    
+
     @Override
     public Object visit(ASTPrimaryExpression node, Object data) {
-        
+
         if (node.jjtGetNumChildren() > 3) {
             // Check last suffix
             if (!"isEmpty".equals(node.jjtGetChild(node.jjtGetNumChildren() - 2).getImage())) {
                 return data;
             }
-            
+
             Node prevCall = node.jjtGetChild(node.jjtGetNumChildren() - 4);
             String target = prevCall.jjtGetNumChildren() > 0 ? prevCall.jjtGetChild(0).getImage() : prevCall.getImage();
-            if (target != null && target.indexOf("trim") != -1) {
+            if (target != null && "trim".equals(target) || target.endsWith(".trim")) {
                 addViolation(data, node);
             }
         }
         return data;
     }
-    
+
 }
