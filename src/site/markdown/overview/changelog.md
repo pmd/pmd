@@ -425,6 +425,7 @@ You need to use this, if you have a large project with many files, and you hit t
     *   [#1511](https://sourceforge.net/p/pmd/bugs/1511/): \[core] Inconsistent behavior of Rule.start/Rule.end
     *   [#234](https://github.com/pmd/pmd/issues/234): \[core] Zip file stream closes spuriously when loading rulesets
     *   [#256](https://github.com/pmd/pmd/issues/256): \[core] shortnames option is broken with relative paths
+    *   [#305](https://github.com/pmd/pmd/issues/305): \[core] PMD not executing under git bash
 *   apex-apexunit
     *   [#1543](https://sourceforge.net/p/pmd/bugs/1543/): \[apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive
 *   apex-complexity
