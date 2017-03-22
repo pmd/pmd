@@ -132,4 +132,52 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+String.trim().isEmpty() is called, should have failed
+      ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b = foo.trim().isEmpty(); 
+    }
+}
+     ]]></code>
+    </test-code>
+    
+     <test-code>
+        <description><![CDATA[
+String.trim().isEmpty() is called after a chain call, should have failed
+      ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b =  Arrays.toString(foo.toCharArray()).trim().isEmpty();
+        int i = 2;
+        b =  String.valueOf(i).trim().isEmpty();
+    }
+}
+     ]]></code>
+    </test-code>
+    
+     <test-code>
+        <description><![CDATA[
+String.trim().isEmpty() is called after a chain call, should have failed twice
+      ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        boolean b =  Arrays.toString(foo.toCharArray()).trim().isEmpty();
+        b =  String.valueOf(2).trim().isEmpty();
+    }
+}
+     ]]></code>
+    </test-code>
+    
 </test-data>
