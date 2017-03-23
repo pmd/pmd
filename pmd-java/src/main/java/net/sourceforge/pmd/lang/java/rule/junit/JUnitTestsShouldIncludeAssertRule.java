@@ -4,16 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.rule.junit;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     
@@ -33,6 +42,34 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
             }
         }
         return data;
+    }
+    
+    private List<NameDeclaration> getRuleAnnotatedExpectedExceptions(Scope classScope) {
+        List<NameDeclaration> result = new ArrayList<>();
+        Map<NameDeclaration, List<NameOccurrence>> decls = classScope.getDeclarations();
+
+        for (NameDeclaration decl : decls.keySet()) {
+            Node parent = decl.getNode().jjtGetParent().jjtGetParent().jjtGetParent();
+            if (parent.hasDescendantOfType(ASTAnnotation.class)
+                    && parent.jjtGetChild(1) instanceof ASTFieldDeclaration) {
+                if (!"Rule"
+                        .equals(parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage())) {
+                    System.out.println(
+                            parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage());
+                    continue;
+                }
+
+                Node type = parent.getFirstDescendantOfType(ASTReferenceType.class);
+                if (!"ExpectedException".equals(type.jjtGetChild(0).getImage())) {
+                    System.out.println(type.jjtGetChild(0).getImage());
+                    continue;
+                }
+
+                result.add(decl);
+            }
+        }
+
+        return result;
     }
     
     private boolean containsAssert(Node n, boolean assertFound) {
