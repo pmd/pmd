@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
-
+    
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node, String.class) || node.isArray()) {
@@ -46,11 +46,15 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 continue;
             }
             ASTConditionalExpression conditional = name.getFirstParentOfType(ASTConditionalExpression.class);
-            if (conditional != null && name.jjtGetParent().jjtGetParent().jjtGetParent() == conditional
-                    && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
-                // is used in ternary as only option (not appendend to other
-                // string)
-                continue;
+
+            if (conditional != null) {
+                Node thirdParent = name.jjtGetParent().jjtGetParent().jjtGetParent();
+                if ((thirdParent == conditional || thirdParent.jjtGetParent() == conditional)
+                        && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
+                    // is used in ternary as only option (not appended to other
+                    // string)
+                    continue;
+                }
             }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0) instanceof ASTPrimaryExpression) {
                 ASTName astName = statement.jjtGetChild(0).getFirstDescendantOfType(ASTName.class);
