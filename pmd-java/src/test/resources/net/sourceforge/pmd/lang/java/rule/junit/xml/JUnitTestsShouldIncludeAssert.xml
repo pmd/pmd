@@ -271,7 +271,7 @@ public class Foo_Test
 }
         ]]></code>
     </test-code>
-      <test-code>
+    <test-code>
         <description>#285 Issues with @Rule annotation and ExpectedException</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -281,19 +281,11 @@ public class SimpleExpectedExceptionTest {
      public ExpectedException thrown= ExpectedException.none();
 
      @Test
-     public void throwsNothing() {
-         // no exception expected, none thrown: passes.
-     }
-
-     @Test
      public void throwsExceptionWithSpecificType() {
          thrown.expect(NullPointerException.class);
          throw new NullPointerException();
      }
  }
         ]]></code>
-    </test-code>
-    
-    
-    
+    </test-code>    
 </test-data>
