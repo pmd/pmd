@@ -160,6 +160,17 @@ public class UseStringBuffer {
     public void foo2() {
         String country = request.getParameter("country");
         country = (country == null) ? "USA" : country;
+    }
+}
+        ]]></code>
+    </test-code>
+	<test-code>
+        <description>#222 False positive when inverting ternary expression arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        String country = request.getParameter("country");
         country = (country != null) ? country : "USA";
     }
 }
