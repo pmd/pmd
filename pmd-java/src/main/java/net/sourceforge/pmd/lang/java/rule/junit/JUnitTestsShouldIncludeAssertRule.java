@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
-    
+
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
@@ -33,42 +33,39 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         }
         return super.visit(node, data);
     }
-    
+
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
         if (isJUnitMethod(method, data)) {
             if (!isExpectAnnotated(method.jjtGetParent())) {
                 Scope classScope = method.getScope().getParent();
                 Map<String, List<NameOccurrence>> expectables = getRuleAnnotatedExpectedExceptions(classScope);
-
-                if (!containsExpectOrAssert(method.getBlock(), false, expectables)) {
+                
+                if (!containsExpectOrAssert(method.getBlock(), expectables)) {
                     addViolation(data, method);
                 }
             }
         }
         return data;
     }
-    
-    private boolean containsExpectOrAssert(Node n, boolean found, Map<String, List<NameOccurrence>> expectables) {
-        if (!found) {
-            if (n instanceof ASTStatementExpression) {
-                if (isExpectStatement((ASTStatementExpression) n, expectables)
-                        || isAssertOrFailStatement((ASTStatementExpression) n)) {
+
+    private boolean containsExpectOrAssert(Node n, Map<String, List<NameOccurrence>> expectables) {
+        if (n instanceof ASTStatementExpression) {
+            if (isExpectStatement((ASTStatementExpression) n, expectables)
+                    || isAssertOrFailStatement((ASTStatementExpression) n)) {
+                return true;
+            }
+        } else {
+            for (int i = 0; i < n.jjtGetNumChildren(); i++) {
+                Node c = n.jjtGetChild(i);
+                if (containsExpectOrAssert(c, expectables)) {
                     return true;
-                }
-            } else {
-                for (int i = 0; i < n.jjtGetNumChildren(); i++) {
-                    Node c = n.jjtGetChild(i);
-                    if (containsExpectOrAssert(c, found, expectables)) {
-                        return true;
-                    }
                 }
             }
         }
         return false;
-
     }
-
+    
     /**
      * Gets a list of NameDeclarations for all the fields that have type
      * ExpectedException and have a Rule annotation.
@@ -80,7 +77,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     private Map<String, List<NameOccurrence>> getRuleAnnotatedExpectedExceptions(Scope classScope) {
         Map<String, List<NameOccurrence>> result = new HashMap<>();
         Map<NameDeclaration, List<NameOccurrence>> decls = classScope.getDeclarations();
-        
+
         for (NameDeclaration decl : decls.keySet()) {
             Node parent = decl.getNode().jjtGetParent().jjtGetParent().jjtGetParent();
             if (parent.hasDescendantOfType(ASTAnnotation.class)
@@ -91,7 +88,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                             parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage());
                     continue;
                 }
-                
+
                 Node type = parent.getFirstDescendantOfType(ASTReferenceType.class);
                 if (!"ExpectedException".equals(type.jjtGetChild(0).getImage())) {
                     System.out.println(type.jjtGetChild(0).getImage());
@@ -102,7 +99,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         }
         return result;
     }
-
+    
     /**
      * Tells if the node contains a Test annotation with an expected exception.
      */
@@ -122,7 +119,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         }
         return false;
     }
-    
+
     /**
      * Tells if the expression is an assert statement or not.
      */
@@ -139,10 +136,10 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         }
         return false;
     }
-    
+
     private boolean isExpectStatement(ASTStatementExpression expression,
             Map<String, List<NameOccurrence>> expectables) {
-
+        
         if (expression != null) {
             ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
             if (pe != null) {
@@ -151,11 +148,11 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                     return false;
                 }
                 String varname = img.split("\\.")[0];
-                
+
                 if (!expectables.containsKey(varname)) {
                     return false;
                 }
-                
+
                 for (NameOccurrence occ : expectables.get(varname)) {
                     if (occ.getLocation() == pe.jjtGetChild(0).jjtGetChild(0) && img.startsWith(varname + ".expect")) {
                         return true;
