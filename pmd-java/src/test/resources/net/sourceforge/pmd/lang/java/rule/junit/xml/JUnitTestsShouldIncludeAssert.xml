@@ -285,6 +285,13 @@ public class SimpleExpectedExceptionTest {
          thrown.expect(NullPointerException.class);
          throw new NullPointerException();
      }
+     
+     @Test
+  	public void throwsIllegalArgumentExceptionIfIconIsNull() {
+    	thrown.expect(IllegalArgumentException.class);
+    	thrown.expectMessage("Icon is null, not a file, or doesn't exist.");
+    	new DigitalAssetManager(null, null);
+  	} 
  }
         ]]></code>
     </test-code>    
