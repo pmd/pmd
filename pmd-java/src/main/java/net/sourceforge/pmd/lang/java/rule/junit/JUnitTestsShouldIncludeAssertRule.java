@@ -82,16 +82,13 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
             Node parent = decl.getNode().jjtGetParent().jjtGetParent().jjtGetParent();
             if (parent.hasDescendantOfType(ASTAnnotation.class)
                     && parent.getFirstChildOfType(ASTFieldDeclaration.class) != null) {
-                if (!"Rule"
-                        .equals(parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage())) {
-                    System.out.println(
-                            parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage());
+                String annot = parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage();
+                if (!"Rule".equals(annot) && !"org.junit.Rule".equals(annot)) {
                     continue;
                 }
 
                 Node type = parent.getFirstDescendantOfType(ASTReferenceType.class);
                 if (!"ExpectedException".equals(type.jjtGetChild(0).getImage())) {
-                    System.out.println(type.jjtGetChild(0).getImage());
                     continue;
                 }
                 result.put(decl.getName(), decls.get(decl));
