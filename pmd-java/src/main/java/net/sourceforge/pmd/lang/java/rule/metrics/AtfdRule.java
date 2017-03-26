@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.rule.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.Metrics;
+import net.sourceforge.pmd.lang.java.metrics.Metrics.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -15,7 +16,7 @@ public class AtfdRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        double atfd = Metrics.get(Metrics.Key.ATFD, node);
+        double atfd = Metrics.get(ClassMetricKey.ATFD, node);
         if (atfd > .3) {
             addViolation(data, node);
         }
