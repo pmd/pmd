@@ -278,7 +278,7 @@ public class Foo_Test
 import org.junit.*;
 public class SimpleExpectedExceptionTest {
      @Rule
-     public ExpectedException thrown= ExpectedException.none();
+     public ExpectedException thrown = ExpectedException.none();
 
      @Test
      public void throwsExceptionWithSpecificType() {
@@ -292,6 +292,23 @@ public class SimpleExpectedExceptionTest {
     	thrown.expectMessage("Icon is null, not a file, or doesn't exist.");
     	new DigitalAssetManager(null, null);
   	} 
+ }
+        ]]></code>
+    </test-code>    
+    <test-code>
+        <description>#285 Follow-up for @org.junit.Rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.*;
+public class SimpleExpectedExceptionTest {
+     @org.junit.Rule
+     public ExpectedException thrown = ExpectedException.none();
+
+     @Test
+     public void throwsExceptionWithSpecificType() {
+         thrown.expect(NullPointerException.class);
+         throw new NullPointerException();
+     }
  }
         ]]></code>
     </test-code>    
