@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>5.4.6-SNAPSHOT</version>
+    <version>5.4.6</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -234,7 +234,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
         <url>https://github.com/pmd/pmd</url>
-        <tag>HEAD</tag>
+        <tag>pmd_releases/5.4.6</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>
