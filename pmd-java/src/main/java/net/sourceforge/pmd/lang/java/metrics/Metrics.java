@@ -34,19 +34,19 @@ public class Metrics {
     }
 
     /* References all available method metrics */
-    public static enum MethodMetricKey {
+    public static enum OperationMetricKey {
         ATFD(new AtfdMetric()),
         // ...
         ;
 
         /* The object used to calculate the metric */
-        private final MethodMetric calculator;
+        private final OperationMetric calculator;
 
-        MethodMetricKey(MethodMetric m) {
+        OperationMetricKey(OperationMetric m) {
             calculator = m;
         }
         
-        MethodMetric getCalculator() {
+        OperationMetric getCalculator() {
             return calculator;
         }
     }
@@ -63,7 +63,7 @@ public class Metrics {
      * Computes a metric identified by its code on the method AST node being
      * passed.
      */
-    public static double get(MethodMetricKey key, ASTMethodDeclaration node) {
+    public static double get(OperationMetricKey key, ASTMethodDeclaration node) {
         return key.getCalculator().computeFor(node, m_holder);
     }
     
