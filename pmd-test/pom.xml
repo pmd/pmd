@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>5.5.5-SNAPSHOT</version>
+        <version>5.5.5</version>
     </parent>
 
     <properties>
