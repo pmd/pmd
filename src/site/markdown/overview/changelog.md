@@ -18,6 +18,8 @@ The PMD team is pleased to announce PMD 5.5.5.
 
 *   general:
     *   [#305](https://github.com/pmd/pmd/issues/305): \[core] PMD not executing under git bash
+*   java
+    *   [#309](https://github.com/pmd/pmd/issues/309): \[java] Parse error on method reference
 *   java-design
     *   [#274](https://github.com/pmd/pmd/issues/274): \[java] AccessorMethodGeneration: Method inside static inner class incorrectly reported
     *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
