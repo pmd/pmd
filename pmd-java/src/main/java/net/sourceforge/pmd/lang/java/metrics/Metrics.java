@@ -11,46 +11,46 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
  *
  */
 public class Metrics {
-
+    
     /* Holds sufficient statistics gathered by the visitor */
-    private static DataHolder m_holder;
-
+    private static PackageStats m_holder;
+    
     /* References all available class metrics */
     public static enum ClassMetricKey {
         ATFD(new AtfdMetric()),
         // ...
         WMC(new WmcMetric());
-        
+
         /* The object used to calculate the metric */
         private final ClassMetric calculator;
-        
+
         ClassMetricKey(ClassMetric m) {
             calculator = m;
         }
-
+        
         ClassMetric getCalculator() {
             return calculator;
         }
     }
-    
+
     /* References all available method metrics */
     public static enum MethodMetricKey {
         ATFD(new AtfdMetric()),
         // ...
         ;
-        
+
         /* The object used to calculate the metric */
         private final MethodMetric calculator;
-        
+
         MethodMetricKey(MethodMetric m) {
             calculator = m;
         }
-
+        
         MethodMetric getCalculator() {
             return calculator;
         }
     }
-
+    
     /**
      * Computes a metric identified by its code on the class AST node being
      * passed.
@@ -58,7 +58,7 @@ public class Metrics {
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
         return key.getCalculator().computeFor(node, m_holder);
     }
-
+    
     /**
      * Computes a metric identified by its code on the method AST node being
      * passed.
@@ -66,5 +66,5 @@ public class Metrics {
     public static double get(MethodMetricKey key, ASTMethodDeclaration node) {
         return key.getCalculator().computeFor(node, m_holder);
     }
-
+    
 }

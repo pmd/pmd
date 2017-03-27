@@ -13,13 +13,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 public class AtfdMetric implements ClassMetric, MethodMetric {
     
     @Override
-    public double computeFor(ASTMethodDeclaration node, DataHolder holder) {
+    public double computeFor(ASTMethodDeclaration node, PackageStats holder) {
         // TODO Auto-generated method stub
         return 0;
     }
     
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, DataHolder holder) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder) {
         // TODO Auto-generated method stub
         return 0;
     }
