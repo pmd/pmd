@@ -179,5 +179,18 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>Verify no NPE is thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (super.guardStmtByLogLevel.isEmpty() && logLevels.length > 0 && guardMethods.length > 0) {
+            configureGuards(logLevels, guardMethods);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
