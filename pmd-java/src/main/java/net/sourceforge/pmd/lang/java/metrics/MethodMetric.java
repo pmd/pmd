@@ -10,5 +10,5 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
  *
  */
 public interface MethodMetric extends Metric {
-    public double computeFor(ASTMethodDeclaration node, DataHolder holder);
+    public double computeFor(ASTMethodDeclaration node, PackageStats holder);
 }

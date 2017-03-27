@@ -10,5 +10,5 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
  *
  */
 public interface ClassMetric extends Metric {
-    public double computeFor(ASTClassOrInterfaceDeclaration node, DataHolder holder);
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder);
 }

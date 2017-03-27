@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 public class WmcMetric implements ClassMetric {
     
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, DataHolder holder) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder) {
         // TODO Auto-generated method stub
         return 0;
     }
