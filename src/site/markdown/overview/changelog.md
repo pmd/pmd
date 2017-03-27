@@ -19,6 +19,8 @@ This is a bug fixing release.
 
 *   general:
     *   [#305](https://github.com/pmd/pmd/issues/305): \[core] PMD not executing under git bash
+*   java
+    *   [#309](https://github.com/pmd/pmd/issues/309): \[java] Parse error on method reference
 *   java-design:
     *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
 *   java-junit

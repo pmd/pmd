@@ -1,4 +1,9 @@
 /**
+ * Allow method references to specify generics also for
+ * constructor references ("new").
+ * Bug #309
+ * Andreas Dangel 03/2017
+ *====================================================================
  * Provide a better fix for CastExpression, getting rid of most hacks.
  * Bug #257
  *
@@ -1831,7 +1836,7 @@ Token t;
 void MethodReference() :
 {Token t; checkForBadMethodReferenceUsage();}
 {
-  "::" ("new" {jjtThis.setImage("new");} | [TypeArguments()] t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
+  "::" [TypeArguments()] ( "new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
 }
 
 void PrimaryPrefix() :
