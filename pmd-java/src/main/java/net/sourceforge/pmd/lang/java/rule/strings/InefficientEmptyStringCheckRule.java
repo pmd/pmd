@@ -56,7 +56,7 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
 
             Node prevCall = node.jjtGetChild(node.jjtGetNumChildren() - 4);
             String target = prevCall.jjtGetNumChildren() > 0 ? prevCall.jjtGetChild(0).getImage() : prevCall.getImage();
-            if (target != null && "trim".equals(target) || target.endsWith(".trim")) {
+            if (target != null && ("trim".equals(target) || target.endsWith(".trim"))) {
                 addViolation(data, node);
             }
         }
