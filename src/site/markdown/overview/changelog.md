@@ -439,6 +439,7 @@ You need to use this, if you have a large project with many files, and you hit t
     *   [#207](https://github.com/pmd/pmd/issues/207): \[java] Parse error on method reference with generics
     *   [#208](https://github.com/pmd/pmd/issues/208): \[java] Parse error with local class with 2 or more annotations
     *   [#213](https://github.com/pmd/pmd/issues/213): \[java] CPD: OutOfMemory when analyzing Lucene
+    *   [#309](https://github.com/pmd/pmd/issues/309): \[java] Parse error on method reference
     *   [#1542](https://sourceforge.net/p/pmd/bugs/1542/): \[java] CPD throws an NPE when parsing enums with -ignore-identifiers
     *   [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
 *   java-basic

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -170,6 +171,13 @@ public class ParserCornersTest extends ParserTst {
                 + "}";
         ASTCompilationUnit compilationUnit = parseJava15(code);
         assertEquals("A cast was found when none expected", 0, compilationUnit.findDescendantsOfType(ASTCastExpression.class).size());
+    }
+
+    @Test
+    public void testGitHubBug309() throws Exception {
+        String code = readAsString("GitHubBug309.java");
+        ASTCompilationUnit compilationUnit = parseJava18(code);
+        assertNotNull(compilationUnit);
     }
 
     /**
