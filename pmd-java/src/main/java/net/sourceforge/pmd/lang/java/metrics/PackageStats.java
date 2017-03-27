@@ -24,4 +24,11 @@ public class PackageStats {
     public ClassStats getClassStats(String name) {
         return m_classes.get(name);
     }
+
+    public boolean hasMatchingSig(String qname, OperationSigMask sigMask) {
+        // navigate to the class in the tree
+        // return true if the signature of the qualified name is covered by the
+        // mask.
+        return true;
+    }
 }
