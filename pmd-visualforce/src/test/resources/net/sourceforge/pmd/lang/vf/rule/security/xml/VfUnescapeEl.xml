@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-
-
 	<test-code>
 		<description><![CDATA[
-iFrame with src pointing to VFEL
+apex:iframe with src pointing to VFEL
      ]]></description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
 <apex:page>
 <apex:iframe src="{!iframeSource}" />
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+html iframe with src pointing to VFEL
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<iframe src="{!iframeSource}" />
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+html link with src pointing to VFEL
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<a src="{!iframeSource}">Link me</a>
 </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
