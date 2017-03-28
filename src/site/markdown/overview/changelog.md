@@ -556,4 +556,5 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty() 
 *   [#307](https://github.com/pmd/pmd/pull/307): \[java] Fix false positive with UseStringBufferForStringAppendsRule
 *   [#308](https://github.com/pmd/pmd/pull/308): \[java] JUnitTestsShouldIncludeAssertRule supports @Rule annotated ExpectedExceptions
+*   [#313](https://github.com/pmd/pmd/pull/313): \[vf] Apex:iFrame not being detected - bug fix
 
