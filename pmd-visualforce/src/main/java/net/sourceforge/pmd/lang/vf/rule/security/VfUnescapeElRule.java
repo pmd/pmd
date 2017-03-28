@@ -29,6 +29,9 @@ import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
  *
  */
 public class VfUnescapeElRule extends AbstractVfRule {
+    private static final String A_CONST = "a";
+    private static final String APEXIFRAME_CONST = "apex:iframe";
+    private static final String IFRAME_CONST = "iframe";
     private static final String HREF = "href";
     private static final String SRC = "src";
     private static final String APEX_PARAM = "apex:param";
@@ -125,8 +128,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     private void checkLimitedFlags(ASTElement node, Object data) {
         switch (node.getName().toLowerCase()) {
-        case "iframe":
-        case "a":
+        case IFRAME_CONST:
+        case APEXIFRAME_CONST:
+        case A_CONST:
             break;
         default:
             return;
