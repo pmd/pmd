@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
 
-<test-code>
+
+	<test-code>
+		<description><![CDATA[
+iFrame with src pointing to VFEL
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<apex:iframe src="{!iframeSource}" />
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
 		<description><![CDATA[
 Safe escaped value in repeat
      ]]></description>
@@ -16,10 +30,10 @@ Safe escaped value in repeat
 </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
-	</test-code> 
+	</test-code>
 
 
-<test-code>
+	<test-code>
 		<description><![CDATA[
 Safe escaped value in repeat
      ]]></description>
@@ -35,11 +49,11 @@ Safe escaped value in repeat
 </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
-	</test-code> 
+	</test-code>
 
 
 
-<test-code>
+	<test-code>
 		<description><![CDATA[
 Safe case id in script
      ]]></description>
@@ -52,10 +66,10 @@ Safe case id in script
 </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
-	</test-code> 
+	</test-code>
 
 
- 	<test-code>
+	<test-code>
 		<description><![CDATA[
 No XSS in safe script commands quoted context
      ]]></description>
@@ -68,8 +82,8 @@ No XSS in safe script commands quoted context
 </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
-	</test-code> 
- 	<test-code>
+	</test-code>
+	<test-code>
 		<description><![CDATA[
 Unquoted EL in script tag is an XSS 
      ]]></description>
@@ -82,7 +96,7 @@ Unquoted EL in script tag is an XSS
 </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
-	</test-code> 
+	</test-code>
 
 	<test-code>
 		<description><![CDATA[
@@ -442,4 +456,4 @@ No XSS with escaped EL
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
- </test-data>
+</test-data>
