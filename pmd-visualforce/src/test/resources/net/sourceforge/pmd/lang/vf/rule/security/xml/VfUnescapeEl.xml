@@ -95,6 +95,51 @@ Safe case id in script
 
 	<test-code>
 		<description><![CDATA[
+Safely escaped case in script context
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+	window.parent.opener.location.href = '{!JSINHTMLENCODE(case)}';
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+
+
+	<test-code>
+		<description><![CDATA[
+Id in the EL means no XSS
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+<a onclick="ShowUnregisterWindow('{!item.id}')">foo</a>
+ </apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+		User Id is safe
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		$Lightning.createComponent("c:RE_TasksListComp",{"loginUserId":"{!$User.Id}"});
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
 No XSS in safe script commands quoted context
      ]]></description>
 		<expected-problems>0</expected-problems>
@@ -190,19 +235,6 @@ Starts with Resource
 <apex:page>
 <link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/resources/css/ext-all.css" id="ext-all-css"/>
 </apex:page>
-]]></code>
-		<source-type>vf</source-type>
-	</test-code>
-
-	<test-code>
-		<description><![CDATA[
-Id in the EL means no XSS
-     ]]></description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-<apex:page>
-<a onclick="ShowUnregisterWindow('{!item.id}')">foo</a>
- </apex:page>
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
