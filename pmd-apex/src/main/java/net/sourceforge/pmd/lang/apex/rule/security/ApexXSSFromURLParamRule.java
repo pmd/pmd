@@ -11,6 +11,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
@@ -89,7 +90,10 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
         ASTMethodCallExpression methodCall = node.getFirstChildOfType(ASTMethodCallExpression.class);
         if (methodCall != null) {
-            processInlineMethodCalls(methodCall, data, true);
+            String retType = getReturnType(node);
+            if (retType.equalsIgnoreCase("string")) {
+                processInlineMethodCalls(methodCall, data, true);
+            }
         }
 
         List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
@@ -101,6 +105,15 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         }
 
         return data;
+    }
+
+    private String getReturnType(ASTReturnStatement node) {
+        ASTMethod method = node.getFirstParentOfType(ASTMethod.class);
+        if (method != null) {
+            return method.getNode().getMethodInfo().getReturnType().getApexName();
+        }
+
+        return "";
     }
 
     private boolean isEscapingMethod(ASTMethodCallExpression methodNode) {
@@ -149,8 +162,17 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             if (Helper.isMethodCallChain(right, URL_PARAMETER_METHOD)) {
                 ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
 
+                String varType = null;
+
+                if (node instanceof ASTVariableDeclaration) {
+                    varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
+
+                }
+
                 if (left != null) {
-                    urlParameterStrings.add(Helper.getFQVariableName(left));
+                    if (varType == null || !varType.equalsIgnoreCase("id")) {
+                        urlParameterStrings.add(Helper.getFQVariableName(left));
+                    }
                 }
             }
 
@@ -179,7 +201,15 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private void processVariableAssignments(AbstractApexNode<?> node, Object data, final boolean reverseOrder) {
         ASTMethodCallExpression methodCallAssignment = node.getFirstChildOfType(ASTMethodCallExpression.class);
         if (methodCallAssignment != null) {
-            processInlineMethodCalls(methodCallAssignment, data, false);
+
+            String varType = null;
+            if (node instanceof ASTVariableDeclaration) {
+                varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
+            }
+
+            if (varType == null || !varType.equalsIgnoreCase("id")) {
+                processInlineMethodCalls(methodCallAssignment, data, false);
+            }
         }
 
         List<ASTVariableExpression> nodes = node.findChildrenOfType(ASTVariableExpression.class);
