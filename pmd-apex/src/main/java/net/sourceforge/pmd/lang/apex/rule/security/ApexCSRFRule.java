@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 /**
@@ -21,6 +23,15 @@ public class ApexCSRFRule extends AbstractApexRule {
         setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+    }
+
+    @Override
+    public Object visit(ASTUserClass node, Object data) {
+        if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
+            return data; // stops all the rules
+        }
+
+        return visit((ApexNode<?>) node, data);
     }
 
     @Override

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,11 +23,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
 import apex.jorje.data.ast.Identifier;
+import apex.jorje.data.ast.TypeRef;
 import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 import apex.jorje.semantic.ast.expression.NewNameValueObjectExpression;
@@ -209,6 +212,48 @@ public final class Helper {
 
         StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(objType);
         return sb.toString();
+    }
+
+    static boolean isSystemLevelClass(ASTUserClass node) {
+        List<TypeRef> interfaces = node.getNode().getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs();
+        for (TypeRef intObject : interfaces) {
+            try {
+                java.lang.reflect.Field f = intObject.getClass().getDeclaredField("className");
+                f.setAccessible(true);
+                @SuppressWarnings("unchecked")
+                ArrayList<Identifier> ids = (ArrayList<Identifier>) f.get(intObject);
+                if (isWhitelisted(ids)) {
+                    return true;
+                }
+
+            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            }
+
+        }
+
+        return false;
+    }
+
+    private static boolean isWhitelisted(List<Identifier> ids) {
+        StringBuffer sb = new StringBuffer();
+
+        for (int i = 0; i < ids.size(); i++) {
+            sb.append(ids.get(i).value);
+
+            if (i != (ids.size() - 1)) {
+                sb.append(".");
+            }
+        }
+
+        switch (sb.toString().toLowerCase()) {
+        case "queueable":
+        case "database.batchable":
+        case "installhandler":
+            return true;
+        default:
+            break;
+        }
+        return false;
     }
 
 }

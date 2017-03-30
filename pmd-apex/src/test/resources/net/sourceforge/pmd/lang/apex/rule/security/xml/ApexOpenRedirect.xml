@@ -2,7 +2,20 @@
 
 <test-data>
 
-	 <test-code>
+	<test-code>
+		<description>Schedulable class doesn't need check for open redirect
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo implements Queueable {
+	public PageReference redirect() {
+	    return new PageReference(test1 + 'something later');
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
 		<description>PageReference open redirect with unsafe variable
 			concatenation
 		</description>
@@ -15,7 +28,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>PageReference open redirect with variable</description>
 		<expected-problems>1</expected-problems>
@@ -84,9 +97,10 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
-		<description>PageReference redirect in test class should be ignored</description>
+		<description>PageReference redirect in test class should be ignored
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 @isTest
@@ -96,10 +110,11 @@ public class Foo {
 	}
 }
 		]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
-		<description>PageReference redirect in test method should be ignored</description>
+		<description>PageReference redirect in test method should be ignored
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 public class Foo {
@@ -109,7 +124,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>PageReference to a literal field</description>
 		<expected-problems>0</expected-problems>
@@ -124,7 +139,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Safe pageReference as a field</description>
 		<expected-problems>0</expected-problems>
@@ -138,8 +153,8 @@ public class Foo {
 	}
 }
 		]]></code>
-	</test-code> 
-	
+	</test-code>
+
 	<test-code>
 		<description>Unsafe pageReference object</description>
 		<expected-problems>1</expected-problems>
@@ -154,7 +169,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Safe pageReference object</description>
 		<expected-problems>0</expected-problems>
@@ -168,7 +183,7 @@ public class Foo {
 	}
 }
 		]]></code>
-	</test-code> 
+	</test-code>
 	<test-code>
 		<description>Safe pageReference object concatenation</description>
 		<expected-problems>0</expected-problems>
@@ -183,7 +198,7 @@ public class Foo {
 	}
 }
 		]]></code>
-	</test-code> 
+	</test-code>
 	<test-code>
 		<description>Static link pageReference object</description>
 		<expected-problems>0</expected-problems>
@@ -199,5 +214,5 @@ public class Foo {
 	</test-code>
 
 
-	
+
 </test-data>

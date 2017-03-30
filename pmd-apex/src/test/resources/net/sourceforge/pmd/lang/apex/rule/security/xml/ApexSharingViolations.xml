@@ -3,11 +3,12 @@
 <test-data>
 
 	<test-code>
-		<description>Apex class without sharing</description>
+		<description>Apex class that is queued</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
-public class Foo {
+public class FooBar implements Database.Batchable {
 	public void test1() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
 	}
 }
 		]]></code>

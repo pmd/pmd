@@ -46,8 +46,8 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     @Override
     public Object visit(ASTUserClass node, Object data) {
 
-        if (Helper.isTestMethodOrClass(node)) {
-            return data;
+        if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
+            return data; // stops all the rules
         }
 
         final List<ASTFieldDeclaration> fieldExpr = node.findDescendantsOfType(ASTFieldDeclaration.class);
