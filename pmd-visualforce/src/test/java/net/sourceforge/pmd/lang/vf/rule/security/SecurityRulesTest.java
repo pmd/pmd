@@ -14,5 +14,6 @@ public class SecurityRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "VfUnescapeEl");
         addRule(RULESET, "VfCsrf");
+        addRule(RULESET, "LightningUnescapedHtml");
     }
 }
