@@ -91,7 +91,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         ASTMethodCallExpression methodCall = node.getFirstChildOfType(ASTMethodCallExpression.class);
         if (methodCall != null) {
             String retType = getReturnType(node);
-            if (retType.equalsIgnoreCase("string")) {
+            if ("string".equalsIgnoreCase(retType)) {
                 processInlineMethodCalls(methodCall, data, true);
             }
         }
@@ -170,7 +170,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 }
 
                 if (left != null) {
-                    if (varType == null || !varType.equalsIgnoreCase("id")) {
+                    if (varType == null || !"id".equalsIgnoreCase(varType)) {
                         urlParameterStrings.add(Helper.getFQVariableName(left));
                     }
                 }
@@ -207,7 +207,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
             }
 
-            if (varType == null || !varType.equalsIgnoreCase("id")) {
+            if (varType == null || !"id".equalsIgnoreCase(varType)) {
                 processInlineMethodCalls(methodCallAssignment, data, false);
             }
         }
