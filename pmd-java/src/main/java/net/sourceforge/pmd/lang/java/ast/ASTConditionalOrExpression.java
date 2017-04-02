@@ -14,7 +14,6 @@ public class ASTConditionalOrExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.testframework;
 
 import java.util.ArrayList;
@@ -8,8 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
-import net.sourceforge.pmd.Rule;
 
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -23,20 +22,22 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
 
+import net.sourceforge.pmd.Rule;
+
 /**
- * A test runner for rule tests. Unlike {@link SimpleAggregatorTst.CustomXmlTestClassMethodsRunner}
- * it also reports the successful executed tests and allows to selectively execute single test cases
- * (it is {@link Filterable}).
- * <p>
- * In order to use it, you'll need to subclass {@link SimpleAggregatorTst} and annotate your test
- * class with RunWith:
+ * A test runner for rule tests. It reports
+ * the successful executed tests and allows to selectively execute single test
+ * cases (it is {@link Filterable}).
+ *
+ * <p>In order to use it, you'll need to subclass {@link SimpleAggregatorTst} and
+ * annotate your test class with RunWith:</p>
+ * 
  * <pre>
  * {@code @}RunWith(PMDTestRunner.class)
  * public class MyRuleSetTest extends SimpleAggregatorTst {
  * ...
  * }
  * </pre>
- * </p>
  */
 public class PMDTestRunner extends Runner implements Filterable {
     private final Description desc;
@@ -46,8 +47,11 @@ public class PMDTestRunner extends Runner implements Filterable {
 
     /**
      * Creates a new {@link PMDTestRunner} for the given test class.
-     * @param klass the test class that is under test
-     * @throws InitializationError any error
+     * 
+     * @param klass
+     *            the test class that is under test
+     * @throws InitializationError
+     *             any error
      */
     public PMDTestRunner(final Class<? extends SimpleAggregatorTst> klass) throws InitializationError {
         this.klass = klass;
@@ -74,7 +78,7 @@ public class PMDTestRunner extends Runner implements Filterable {
             for (Rule r : rules) {
                 Description ruleDescription = Description.createSuiteDescription(r.getName());
                 root.addChild(ruleDescription);
-                
+
                 TestDescriptor[] ruleTests = test.extractTestsFromXml(r);
                 for (TestDescriptor t : ruleTests) {
                     Description d = createTestDescription(t);
@@ -142,7 +146,8 @@ public class PMDTestRunner extends Runner implements Filterable {
 
     private Description createTestDescription(TestDescriptor t) {
         String d = t.getDescription().replaceAll("\n|\r", " ");
-        return Description.createTestDescription(klass, t.getRule().getName() + "::" + t.getNumberInDocument() + " " + d);
+        return Description.createTestDescription(klass,
+                t.getRule().getName() + "::" + t.getNumberInDocument() + " " + d);
     }
 
     @Override

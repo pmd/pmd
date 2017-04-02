@@ -1,89 +1,86 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.FileUtil;
+import net.sourceforge.pmd.util.database.DBURI;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.database.DBURI;
 
 public class CPDCommandLineInterface {
     private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
-	private static final int DUPLICATE_CODE_FOUND = 4;
-	private static final int ERROR_STATUS = 1;
+    private static final int DUPLICATE_CODE_FOUND = 4;
+    private static final int ERROR_STATUS = 1;
 
-	public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
-	public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
+    public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
+    public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
-	private static final String PROGRAM_NAME = "cpd";
+    private static final String PROGRAM_NAME = "cpd";
 
-	public static void setStatusCodeOrExit(int status) {
-		if (isExitAfterRunSet()) {
-			System.exit(status);
-		} else {
-			setStatusCode(status);
-		}
-	}
+    private CPDCommandLineInterface() { }
 
-	private static boolean isExitAfterRunSet() {
-	    String noExit = System.getenv(NO_EXIT_AFTER_RUN);
-	    if (noExit == null) {
-	        noExit = System.getProperty(NO_EXIT_AFTER_RUN);
-	    }
-		return (noExit == null ? true : false);
-	}
+    public static void setStatusCodeOrExit(int status) {
+        if (isExitAfterRunSet()) {
+            System.exit(status);
+        } else {
+            setStatusCode(status);
+        }
+    }
 
-	private static void setStatusCode(int statusCode) {
-		System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
-	}
+    private static boolean isExitAfterRunSet() {
+        String noExit = System.getenv(NO_EXIT_AFTER_RUN);
+        if (noExit == null) {
+            noExit = System.getProperty(NO_EXIT_AFTER_RUN);
+        }
+        return (noExit == null ? true : false);
+    }
 
-	public static void main(String[] args) {
-		CPDConfiguration arguments = new CPDConfiguration();
-		JCommander jcommander = new JCommander(arguments);
-		jcommander.setProgramName(PROGRAM_NAME);
+    private static void setStatusCode(int statusCode) {
+        System.setProperty(STATUS_CODE_PROPERTY, Integer.toString(statusCode));
+    }
 
-		try {
-			jcommander.parse(args);
-			if (arguments.isHelp()) {
-				jcommander.usage();
-				System.out.println(buildUsageText());
-				setStatusCodeOrExit(ERROR_STATUS);
-				return;
-			}
-		} catch (ParameterException e) {
-			jcommander.usage();
-			System.out.println(buildUsageText());
-			System.err.println(" " + e.getMessage());
-			setStatusCodeOrExit(ERROR_STATUS);
-			return;
-		}
-		arguments.postContruct();
-		// Pass extra parameters as System properties to allow language
-		// implementation to retrieve their associate values...
-		CPDConfiguration.setSystemProperties(arguments);
-		CPD cpd = new CPD(arguments);
+    public static void main(String[] args) {
+        CPDConfiguration arguments = new CPDConfiguration();
+        JCommander jcommander = new JCommander(arguments);
+        jcommander.setProgramName(PROGRAM_NAME);
 
         try {
-            // Add files
-            if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
-                addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
+            jcommander.parse(args);
+            if (arguments.isHelp()) {
+                jcommander.usage();
+                System.out.println(buildUsageText());
+                setStatusCodeOrExit(ERROR_STATUS);
+                return;
             }
+        } catch (ParameterException e) {
+            jcommander.usage();
+            System.out.println(buildUsageText());
+            System.err.println(" " + e.getMessage());
+            setStatusCodeOrExit(ERROR_STATUS);
+            return;
+        }
+        arguments.postContruct();
+        // Pass extra parameters as System properties to allow language
+        // implementation to retrieve their associate values...
+        CPDConfiguration.setSystemProperties(arguments);
+        CPD cpd = new CPD(arguments);
 
-            // Add Database URIS
-            if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
-                addSourceURIToCPD(arguments.getURI(), cpd);
-            }
+        try {
+            addSourceFilesToCPD(cpd, arguments);
 
             cpd.go();
             System.out.println(arguments.getRenderer().render(cpd.getMatches()));
@@ -102,48 +99,80 @@ public class CPDCommandLineInterface {
         }
     }
 
-	private static void addSourcesFilesToCPD(List<File> files, CPD cpd, boolean recursive) {
-		try {
-			for (File file : files) {
-				if (!file.exists()) {
-					throw new FileNotFoundException("Couldn't find directory/file '" + file + "'");
-				} else if (file.isDirectory()) {
-					if (recursive) {
-						cpd.addRecursively(file);
-					} else {
-						cpd.addAllInDirectory(file);
-					}
-				} else {
-					cpd.add(file);
-				}
-			}
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-	}
+    public static void addSourceFilesToCPD(CPD cpd, CPDConfiguration arguments) {
+        // Add files
+        if (null != arguments.getFiles() && !arguments.getFiles().isEmpty()) {
+            addSourcesFilesToCPD(arguments.getFiles(), cpd, !arguments.isNonRecursive());
+        }
 
-	private static void addSourceURIToCPD(String uri, CPD cpd) {
-          try {
-                        LOGGER.fine(String.format("Attempting DBURI=%s" , uri));
-                            DBURI dburi = new DBURI(uri);
-                            LOGGER.fine(String.format("Initialised DBURI=%s"
-                                                 , dburi
-                                                 )
-                                      );
-                            LOGGER.fine(String.format("Adding DBURI=%s with DBType=%s"
-                                                 , dburi.toString() 
-                                                 , dburi.getDbType().toString()
-                                                 )
-                                      );
-                            cpd.add(dburi);
-              } catch (IOException e) {
-                      throw new IllegalStateException( "uri="+uri, e);
-              } catch (URISyntaxException ex) {
-                      throw new IllegalStateException( "uri="+uri, ex);
-              } catch (Exception ex) {
-                throw new IllegalStateException( "uri="+uri, ex);
-              }
-	}
+        // Add Database URIS
+        if (null != arguments.getURI() && !"".equals(arguments.getURI())) {
+            addSourceURIToCPD(arguments.getURI(), cpd);
+        }
+
+        if (null != arguments.getFileListPath() && !"".equals(arguments.getFileListPath())) {
+            addFilesFromFilelist(arguments.getFileListPath(), cpd, !arguments.isNonRecursive());
+        }
+    }
+
+    private static void addSourcesFilesToCPD(List<File> files, CPD cpd, boolean recursive) {
+        try {
+            for (File file : files) {
+                if (!file.exists()) {
+                    throw new FileNotFoundException("Couldn't find directory/file '" + file + "'");
+                } else if (file.isDirectory()) {
+                    if (recursive) {
+                        cpd.addRecursively(file);
+                    } else {
+                        cpd.addAllInDirectory(file);
+                    }
+                } else {
+                    cpd.add(file);
+                }
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static void addFilesFromFilelist(String inputFilePath, CPD cpd, boolean recursive) {
+        File file = new File(inputFilePath);
+        List<File> files = new ArrayList<>();
+        try {
+            if (!file.exists()) {
+                throw new FileNotFoundException("Couldn't find directory/file '" + inputFilePath + "'");
+            } else {
+                String filePaths = FileUtil.readFilelist(new File(inputFilePath));
+                for (String param : filePaths.split(",")) {
+                    File fileToAdd = new File(param);
+                    if (!fileToAdd.exists()) {
+                        throw new FileNotFoundException("Couldn't find directory/file '" + param + "'");
+                    }
+                    files.add(fileToAdd);
+                }
+                addSourcesFilesToCPD(files, cpd, recursive);
+            }
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    private static void addSourceURIToCPD(String uri, CPD cpd) {
+        try {
+            LOGGER.fine(String.format("Attempting DBURI=%s", uri));
+            DBURI dburi = new DBURI(uri);
+            LOGGER.fine(String.format("Initialised DBURI=%s", dburi));
+            LOGGER.fine(
+                    String.format("Adding DBURI=%s with DBType=%s", dburi.toString(), dburi.getDbType().toString()));
+            cpd.add(dburi);
+        } catch (IOException e) {
+            throw new IllegalStateException("uri=" + uri, e);
+        } catch (URISyntaxException ex) {
+            throw new IllegalStateException("uri=" + uri, ex);
+        } catch (Exception ex) {
+            throw new IllegalStateException("uri=" + uri, ex);
+        }
+    }
 
     public static String buildUsageText() {
         String helpText = " For example on Windows:" + PMD.EOL;

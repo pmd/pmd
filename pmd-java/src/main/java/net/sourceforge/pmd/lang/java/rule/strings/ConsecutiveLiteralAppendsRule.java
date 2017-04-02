@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.util.HashSet;
@@ -36,27 +37,25 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 /**
  * This rule finds concurrent calls to StringBuffer/Builder.append where String
  * literals are used It would be much better to make these calls using one call
- * to .append
- * <p/>
- * example:
- * <p/>
+ * to <code>.append</code>
+ * 
+ * <p>Example:</p>
  * 
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello&quot;);
  * buf.append(&quot; &quot;).append(&quot;World&quot;);
  * </pre>
- * <p/>
- * This would be more eloquently put as:
- * <p/>
+ * 
+ * <p>This would be more eloquently put as:</p>
  * 
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello World&quot;);
  * </pre>
- * <p/>
- * The rule takes one parameter, threshold, which defines the lower limit of
- * consecutive appends before a violation is created. The default is 1.
+ *
+ * <p>The rule takes one parameter, threshold, which defines the lower limit of
+ * consecutive appends before a violation is created. The default is 1.</p>
  */
 public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
@@ -95,8 +94,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         }
         Node lastBlock = getFirstParentBlock(node);
         Node currentBlock = lastBlock;
-        Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope().getDeclarations(
-                VariableNameDeclaration.class);
+        Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
         Node rootNode = null;
         // only want the constructor flagged if it's really containing strings
         if (concurrentCount >= 1) {
@@ -107,7 +106,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
                 JavaNameOccurrence jno = (JavaNameOccurrence) no;
                 Node n = jno.getLocation();
 
-                // skip the declarations/usages, that deal with a different variable
+                // skip the declarations/usages, that deal with a different
+                // variable
                 if (!node.getImage().equals(jno.getImage())) {
                     continue;
                 }
@@ -169,7 +169,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     private int checkConstructor(ASTVariableDeclaratorId node, Object data) {
         Node parent = node.jjtGetParent();
         if (parent.jjtGetNumChildren() >= 2) {
-            ASTAllocationExpression allocationExpression = parent.jjtGetChild(1).getFirstDescendantOfType(ASTAllocationExpression.class);
+            ASTAllocationExpression allocationExpression = parent.jjtGetChild(1)
+                    .getFirstDescendantOfType(ASTAllocationExpression.class);
             ASTArgumentList list = null;
             if (allocationExpression != null) {
                 list = allocationExpression.getFirstDescendantOfType(ASTArgumentList.class);
@@ -201,10 +202,11 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         for (int i = 0; i < primary.jjtGetNumChildren(); i++) {
             Node child = primary.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0 && child.jjtGetChild(0) instanceof ASTAllocationExpression) {
-                continue; // skip the constructor call, that has already been checked
+                // skip the constructor call, that has already been checked
+                continue;
             }
             if (child instanceof ASTPrimarySuffix) {
-                ASTPrimarySuffix suffix = (ASTPrimarySuffix)child;
+                ASTPrimarySuffix suffix = (ASTPrimarySuffix) child;
                 if (suffix.jjtGetNumChildren() == 0 && suffix.hasImageEqualTo("append")) {
                     previousWasAppend = true;
                 } else if (suffix.jjtGetNumChildren() > 0 && previousWasAppend) {
@@ -214,8 +216,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
                     if (literal != null && literal.isStringLiteral()) {
                         result++;
                     } else {
-                        // if it was not a String literal that was appended, then we don't
-                        // have a consecutive literal string append anymore and we can skip
+                        // if it was not a String literal that was appended,
+                        // then we don't
+                        // have a consecutive literal string append anymore and
+                        // we can skip
                         // checking the remainder of the initializer
                         break;
                     }

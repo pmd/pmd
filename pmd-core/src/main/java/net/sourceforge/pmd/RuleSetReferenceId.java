@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.io.File;
@@ -11,11 +12,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.StringUtil;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * This class is used to parse a RuleSet reference value. Most commonly used for
@@ -23,63 +24,61 @@ import org.apache.commons.lang3.StringUtils;
  * RuleSet XML. The RuleSet reference can refer to either an external RuleSet or
  * the current RuleSet when used as a Rule 'ref' attribute value. An individual
  * Rule in the RuleSet can be indicated.
- * 
+ *
  * For an external RuleSet, referring to the entire RuleSet, the format is
  * <i>ruleSetName</i>, where the RuleSet name is either a resource file path to
- * a RuleSet that ends with <code>'.xml'</code>.</li>, or a simple RuleSet name.
- * 
+ * a RuleSet that ends with <code>'.xml'</code>, or a simple RuleSet name.
+ *
  * A simple RuleSet name, is one which contains no path separators, and either
  * contains a '-' or is entirely numeric release number. A simple name of the
  * form <code>[language]-[name]</code> is short for the full RuleSet name
  * <code>rulesets/[language]/[name].xml</code>. A numeric release simple name of
  * the form <code>[release]</code> is short for the full PMD Release RuleSet
  * name <code>rulesets/releases/[release].xml</code>.
- * 
+ *
  * For an external RuleSet, referring to a single Rule, the format is
  * <i>ruleSetName/ruleName</i>, where the RuleSet name is as described above. A
  * Rule with the <i>ruleName</i> should exist in this external RuleSet.
- * 
+ *
  * For the current RuleSet, the format is <i>ruleName</i>, where the Rule name
  * is not RuleSet name (i.e. contains no path separators, '-' or '.xml' in it,
  * and is not all numeric). A Rule with the <i>ruleName</i> should exist in the
  * current RuleSet.
- * 
+ *
  * <table>
- *    <caption>Examples</caption>
- *    <thead>
- *       <tr>
- *    	    <th>String</th>
- *    	    <th>RuleSet file name</th>
- *    	    <th>Rule</th>
- *       </tr>
- *    </thead>
- *    <tbody>
- *       <tr>
- *    	    <td>rulesets/java/basic.xml</td>
- *    	    <td>rulesets/java/basic.xml</td>
- *    	    <td>all</td>
- *       </tr>
- *       <tr>
- *    	    <td>java-basic</td>
- *    	    <td>rulesets/java/basic.xml</td>
- *    	    <td>all</td>
- *       </tr>
- *       <tr>
- *    	    <td>50</td>
- *    	    <td>rulesets/releases/50.xml</td>
- *    	    <td>all</td>
- *       </tr>
- *       <tr>
- *    	    <td>rulesets/java/basic.xml/EmptyCatchBlock</td>
- *    	    <td>rulesets/java/basic.xml</td>
- *    	    <td>EmptyCatchBlock</td>
- *       </tr>
- *       <tr>
- *    	    <td>EmptyCatchBlock</td>
- *    	    <td>null</td>
- *    	    <td>EmptyCatchBlock</td>
- *       </tr>
- *    </tbody>
+ * <caption>Examples</caption> <thead>
+ * <tr>
+ * <th>String</th>
+ * <th>RuleSet file name</th>
+ * <th>Rule</th>
+ * </tr>
+ * </thead> <tbody>
+ * <tr>
+ * <td>rulesets/java/basic.xml</td>
+ * <td>rulesets/java/basic.xml</td>
+ * <td>all</td>
+ * </tr>
+ * <tr>
+ * <td>java-basic</td>
+ * <td>rulesets/java/basic.xml</td>
+ * <td>all</td>
+ * </tr>
+ * <tr>
+ * <td>50</td>
+ * <td>rulesets/releases/50.xml</td>
+ * <td>all</td>
+ * </tr>
+ * <tr>
+ * <td>rulesets/java/basic.xml/EmptyCatchBlock</td>
+ * <td>rulesets/java/basic.xml</td>
+ * <td>EmptyCatchBlock</td>
+ * </tr>
+ * <tr>
+ * <td>EmptyCatchBlock</td>
+ * <td>null</td>
+ * <td>EmptyCatchBlock</td>
+ * </tr>
+ * </tbody>
  * </table>
  */
 public class RuleSetReferenceId {
@@ -91,9 +90,11 @@ public class RuleSetReferenceId {
 
     /**
      * Construct a RuleSetReferenceId for the given single ID string.
-     * 
-     * @param id The id string.
-     * @throws IllegalArgumentException If the ID contains a comma character.
+     *
+     * @param id
+     *            The id string.
+     * @throws IllegalArgumentException
+     *             If the ID contains a comma character.
      */
     public RuleSetReferenceId(final String id) {
 
@@ -105,15 +106,18 @@ public class RuleSetReferenceId {
      * external RuleSetReferenceId is given, the ID must refer to a non-external
      * Rule. The external RuleSetReferenceId will be responsible for producing
      * the InputStream containing the Rule.
-     * 
-     * @param id The id string.
-     * @param externalRuleSetReferenceId A RuleSetReferenceId to associate with
-     *            this new instance.
-     * @throws IllegalArgumentException If the ID contains a comma character.
-     * @throws IllegalArgumentException If external RuleSetReferenceId is not
-     *             external.
-     * @throws IllegalArgumentException If the ID is not Rule reference when
-     *             there is an external RuleSetReferenceId.
+     *
+     * @param id
+     *            The id string.
+     * @param externalRuleSetReferenceId
+     *            A RuleSetReferenceId to associate with this new instance.
+     * @throws IllegalArgumentException
+     *             If the ID contains a comma character.
+     * @throws IllegalArgumentException
+     *             If external RuleSetReferenceId is not external.
+     * @throws IllegalArgumentException
+     *             If the ID is not Rule reference when there is an external
+     *             RuleSetReferenceId.
      */
     public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
 
@@ -122,8 +126,8 @@ public class RuleSetReferenceId {
         }
 
         if (id != null && id.indexOf(',') >= 0) {
-            throw new IllegalArgumentException("A single RuleSetReferenceId cannot contain ',' (comma) characters: "
-                    + id);
+            throw new IllegalArgumentException(
+                    "A single RuleSetReferenceId cannot contain ',' (comma) characters: " + id);
         }
 
         // Damn this parsing sucks, but my brain is just not working to let me
@@ -143,8 +147,8 @@ public class RuleSetReferenceId {
             ruleName = null;
         } else {
             String tempRuleName = getRuleName(id);
-            String tempRuleSetFileName = tempRuleName != null && id != null ? id.substring(0, id.length()
-                    - tempRuleName.length() - 1) : id;
+            String tempRuleSetFileName = tempRuleName != null && id != null
+                    ? id.substring(0, id.length() - tempRuleName.length() - 1) : id;
 
             if (isValidUrl(tempRuleSetFileName)) {
                 // remaining part is a xml ruleset file, so the tempRuleName is
@@ -197,8 +201,8 @@ public class RuleSetReferenceId {
                         allRules = true;
                     } else {
                         external = externalRuleSetReferenceId != null ? externalRuleSetReferenceId.isExternal() : false;
-                        ruleSetFileName = externalRuleSetReferenceId != null ? externalRuleSetReferenceId
-                                .getRuleSetFileName() : null;
+                        ruleSetFileName = externalRuleSetReferenceId != null
+                                ? externalRuleSetReferenceId.getRuleSetFileName() : null;
                         ruleName = id;
                         allRules = false;
                     }
@@ -207,16 +211,17 @@ public class RuleSetReferenceId {
         }
 
         if (this.external && this.ruleName != null && !this.ruleName.equals(id) && externalRuleSetReferenceId != null) {
-            throw new IllegalArgumentException("Cannot pair external <" + this + "> with external <"
-                    + externalRuleSetReferenceId + ">.");
+            throw new IllegalArgumentException(
+                    "Cannot pair external <" + this + "> with external <" + externalRuleSetReferenceId + ">.");
         }
         this.externalRuleSetReferenceId = externalRuleSetReferenceId;
     }
 
     /**
      * Tries to load the given ruleset.
-     * 
-     * @param name the ruleset name
+     *
+     * @param name
+     *            the ruleset name
      * @return <code>true</code> if the ruleset could be loaded,
      *         <code>false</code> otherwise.
      */
@@ -242,7 +247,8 @@ public class RuleSetReferenceId {
      * return the full classpath name for the ruleset, in this example it would
      * return "rulesets/java/basic.xml".
      *
-     * @param name the ruleset name
+     * @param name
+     *            the ruleset name
      * @return the full classpath to the ruleset
      */
     private String resolveBuiltInRuleset(final String name) {
@@ -270,8 +276,9 @@ public class RuleSetReferenceId {
      * Extracts the rule name out of a ruleset path. E.g. for
      * "/my/ruleset.xml/MyRule" it would return "MyRule". If no single rule is
      * specified, <code>null</code> is returned.
-     * 
-     * @param rulesetName the full rule set path
+     *
+     * @param rulesetName
+     *            the full rule set path
      * @return the rule name or <code>null</code>.
      */
     private String getRuleName(final String rulesetName) {
@@ -327,8 +334,9 @@ public class RuleSetReferenceId {
     /**
      * Parse a String comma separated list of RuleSet reference IDs into a List
      * of RuleReferenceId instances.
-     * 
-     * @param referenceString A comma separated list of RuleSet reference IDs.
+     *
+     * @param referenceString
+     *            A comma separated list of RuleSet reference IDs.
      * @return The corresponding List of RuleSetReferenceId instances.
      */
     public static List<RuleSetReferenceId> parse(String referenceString) {
@@ -348,7 +356,7 @@ public class RuleSetReferenceId {
 
     /**
      * Is this an external RuleSet reference?
-     * 
+     *
      * @return <code>true</code> if this is an external reference,
      *         <code>false</code> otherwise.
      */
@@ -358,7 +366,7 @@ public class RuleSetReferenceId {
 
     /**
      * Is this a reference to all Rules in a RuleSet, or a single Rule?
-     * 
+     *
      * @return <code>true</code> if this is a reference to all Rules,
      *         <code>false</code> otherwise.
      */
@@ -368,7 +376,7 @@ public class RuleSetReferenceId {
 
     /**
      * Get the RuleSet file name.
-     * 
+     *
      * @return The RuleSet file name if this is an external reference,
      *         <code>null</code> otherwise.
      */
@@ -378,7 +386,7 @@ public class RuleSetReferenceId {
 
     /**
      * Get the Rule name.
-     * 
+     *
      * @return The Rule name. The Rule name.
      */
     public String getRuleName() {
@@ -392,17 +400,19 @@ public class RuleSetReferenceId {
      * external RuleSetReferenceId if there is one associated with this
      * instance.
      *
-     * @param classLoader The ClassLoader to use.
+     * @param classLoader
+     *            The ClassLoader to use.
      * @return An InputStream to that resource.
-     * @throws RuleSetNotFoundException if unable to find a resource.
+     * @throws RuleSetNotFoundException
+     *             if unable to find a resource.
      */
     public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
         if (externalRuleSetReferenceId == null) {
-            InputStream in = StringUtil.isEmpty(ruleSetFileName) ? null : ResourceLoader.loadResourceAsStream(
-                    ruleSetFileName, classLoader);
+            InputStream in = StringUtil.isEmpty(ruleSetFileName) ? null
+                    : ResourceLoader.loadResourceAsStream(ruleSetFileName, classLoader);
             if (in == null) {
-                throw new RuleSetNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '"
-                        + ruleName + "'" + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
+                throw new RuleSetNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName
+                        + "'" + ".  Make sure the resource is a valid file or URL and is on the CLASSPATH. "
                         + "Here's the current classpath: " + System.getProperty("java.class.path"));
             }
             return in;
@@ -413,12 +423,13 @@ public class RuleSetReferenceId {
 
     /**
      * Return the String form of this Rule reference.
-     * 
+     *
      * @return Return the String form of this Rule reference, which is
      *         <i>ruleSetFileName</i> for all Rule external references,
      *         <i>ruleSetFileName/ruleName</i>, for a single Rule external
      *         references, or <i>ruleName</i> otherwise.
      */
+    @Override
     public String toString() {
         if (ruleSetFileName != null) {
             if (allRules) {

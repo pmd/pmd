@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,26 +17,29 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
- * Detects fields that are declared after methods, constructors, etc.
- * It was a XPath rule, but the Java version is much faster.
- * The XPath rule for reference:
+ * Detects fields that are declared after methods, constructors, etc. It was a
+ * XPath rule, but the Java version is much faster. The XPath rule for
+ * reference:
+ * 
  * <pre>
 //ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [not(.//ClassOrInterfaceBodyDeclaration) or $ignoreAnonymousClassDeclarations = 'false']
 [../preceding-sibling::ClassOrInterfaceBodyDeclaration
-    [  count(ClassOrInterfaceDeclaration) > 0
-    or count(ConstructorDeclaration) > 0
-    or count(MethodDeclaration) > 0
-    or count(AnnotationTypeDeclaration) > 0
-    or ($ignoreEnumDeclarations = 'false' and count(EnumDeclaration) > 0)
+    [  count(ClassOrInterfaceDeclaration) &gt; 0
+    or count(ConstructorDeclaration) &gt; 0
+    or count(MethodDeclaration) &gt; 0
+    or count(AnnotationTypeDeclaration) &gt; 0
+    or ($ignoreEnumDeclarations = 'false' and count(EnumDeclaration) &gt; 0)
     ]
 ]
  * </pre>
  */
 public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRule {
 
-    private BooleanProperty ignoreEnumDeclarations = new BooleanProperty("ignoreEnumDeclarations", "Ignore Enum Declarations that precede fields.", true, 1.0f);
-    private BooleanProperty ignoreAnonymousClassDeclarations = new BooleanProperty("ignoreAnonymousClassDeclarations", "Ignore Field Declarations, that are initialized with anonymous class declarations", true, 2.0f);
+    private BooleanProperty ignoreEnumDeclarations = new BooleanProperty("ignoreEnumDeclarations",
+            "Ignore Enum Declarations that precede fields.", true, 1.0f);
+    private BooleanProperty ignoreAnonymousClassDeclarations = new BooleanProperty("ignoreAnonymousClassDeclarations",
+            "Ignore Field Declarations, that are initialized with anonymous class declarations", true, 2.0f);
 
     /**
      * Initializes the rule {@link FieldDeclarationsShouldBeAtStartOfClassRule}.
@@ -59,13 +63,12 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             if (child instanceof ASTFieldDeclaration) {
                 continue;
             }
-            if (node.hasDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class) && getProperty(ignoreAnonymousClassDeclarations).booleanValue()) {
+            if (node.hasDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class)
+                    && getProperty(ignoreAnonymousClassDeclarations).booleanValue()) {
                 continue;
             }
-            if (child instanceof ASTClassOrInterfaceDeclaration
-                    || child instanceof ASTMethodDeclaration
-                    || child instanceof ASTConstructorDeclaration
-                    || child instanceof ASTAnnotationTypeDeclaration) {
+            if (child instanceof ASTClassOrInterfaceDeclaration || child instanceof ASTMethodDeclaration
+                    || child instanceof ASTConstructorDeclaration || child instanceof ASTAnnotationTypeDeclaration) {
                 addViolation(data, node);
                 break;
             }
@@ -80,7 +83,9 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     /**
      * Ignore all annotations, until anything, that is not an annotation and
      * return this node
-     * @param child the node from where to start the search
+     * 
+     * @param child
+     *            the node from where to start the search
      * @return the first child or the first child after annotations
      */
     private Node skipAnnotations(Node child) {

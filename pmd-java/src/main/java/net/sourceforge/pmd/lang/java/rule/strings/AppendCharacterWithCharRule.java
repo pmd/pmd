@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
@@ -9,14 +10,16 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
  * This rule finds the following:
- * <p/>
+ *
  * <pre>
- *         StringBuffer.append(&quot;c&quot;); // appends a
- *         single character
+ * StringBuffer.append(&quot;c&quot;); // appends a single character
  * </pre>
- * <p/>
- * It is preferable to use StringBuffer.append('c'); // appends a single
- * character Implementation of PMD RFE 1373863
+ * 
+ * <p>It is preferable to use</p>
+ * 
+ * <pre>StringBuffer.append('c'); // appends a single character</pre>
+ * 
+ * @see <a href="https://sourceforge.net/p/pmd/feature-requests/381/">feature request #381 Single character StringBuffer.append </a>
  */
 public class AppendCharacterWithCharRule extends AbstractJavaRule {
 

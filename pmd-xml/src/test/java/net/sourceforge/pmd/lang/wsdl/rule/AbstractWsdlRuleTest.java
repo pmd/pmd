@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.wsdl.rule;
 
 import static org.junit.Assert.assertEquals;
@@ -9,16 +10,15 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.wsdl.WsdlLanguageModule;
-import net.sourceforge.pmd.lang.wsdl.rule.AbstractWsdlRule;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
-
-import org.junit.Test;
 
 public class AbstractWsdlRuleTest {
 
@@ -26,9 +26,8 @@ public class AbstractWsdlRuleTest {
     public void testVisit() throws Exception {
         String source = "<?xml version=\"1.0\"?><foo abc=\"abc\"><bar/></foo>";
         XmlParserOptions parserOptions = new XmlParserOptions();
-        Parser parser =
-                LanguageRegistry.getLanguage(WsdlLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler()
-                        .getParser(parserOptions);
+        Parser parser = LanguageRegistry.getLanguage(WsdlLanguageModule.NAME).getDefaultVersion()
+                .getLanguageVersionHandler().getParser(parserOptions);
         XmlNode xmlNode = (XmlNode) parser.parse(null, new StringReader(source));
         List<XmlNode> nodes = new ArrayList<>();
         nodes.add(xmlNode);
@@ -45,7 +44,7 @@ public class AbstractWsdlRuleTest {
     private static class MyRule extends AbstractWsdlRule {
         final List<XmlNode> visitedNodes = new ArrayList<>();
 
-        public MyRule() {
+        MyRule() {
         }
 
         @Override
@@ -59,9 +58,5 @@ public class AbstractWsdlRuleTest {
             visitedNodes.add(node);
             super.visit(node, ctx);
         }
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(AbstractWsdlRuleTest.class);
     }
 }

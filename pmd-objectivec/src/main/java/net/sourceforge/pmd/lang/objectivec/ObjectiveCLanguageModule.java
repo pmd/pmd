@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.objectivec;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
@@ -16,7 +17,8 @@ public class ObjectiveCLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "objectivec";
 
     /**
-     * Creates a new instance of {@link ObjectiveCLanguageModule} with the default file extensions for Objective-C.
+     * Creates a new instance of {@link ObjectiveCLanguageModule} with the
+     * default file extensions for Objective-C.
      */
     public ObjectiveCLanguageModule() {
         super(NAME, null, TERSE_NAME, null, "h", "m");

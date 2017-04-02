@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.dcd.asm;
 
 import java.lang.reflect.Array;
@@ -105,19 +106,19 @@ public class TypeSignatureVisitor extends SignatureVisitor {
 
     private void popType() {
         switch (typeType) {
-            case NO_TYPE:
-                break;
-            case FIELD_TYPE:
-                fieldType = getType();
-                break;
-            case RETURN_TYPE:
-                returnType = getType();
-                break;
-            case PARAMETER_TYPE:
-                parameterTypes.add(getType());
-                break;
-            default:
-                throw new RuntimeException("Unknown type type: " + typeType);
+        case NO_TYPE:
+            break;
+        case FIELD_TYPE:
+            fieldType = getType();
+            break;
+        case RETURN_TYPE:
+            returnType = getType();
+            break;
+        case PARAMETER_TYPE:
+            parameterTypes.add(getType());
+            break;
+        default:
+            throw new RuntimeException("Unknown type type: " + typeType);
         }
 
         typeType = NO_TYPE;
@@ -154,35 +155,35 @@ public class TypeSignatureVisitor extends SignatureVisitor {
             printlnIndent("descriptor: " + descriptor);
         }
         switch (descriptor) {
-            case 'B':
-                type = Byte.TYPE;
-                break;
-            case 'C':
-                type = Character.TYPE;
-                break;
-            case 'D':
-                type = Double.TYPE;
-                break;
-            case 'F':
-                type = Float.TYPE;
-                break;
-            case 'I':
-                type = Integer.TYPE;
-                break;
-            case 'J':
-                type = Long.TYPE;
-                break;
-            case 'S':
-                type = Short.TYPE;
-                break;
-            case 'Z':
-                type = Boolean.TYPE;
-                break;
-            case 'V':
-                type = Void.TYPE;
-                break;
-            default:
-                throw new RuntimeException("Unknown baseType descriptor: " + descriptor);
+        case 'B':
+            type = Byte.TYPE;
+            break;
+        case 'C':
+            type = Character.TYPE;
+            break;
+        case 'D':
+            type = Double.TYPE;
+            break;
+        case 'F':
+            type = Float.TYPE;
+            break;
+        case 'I':
+            type = Integer.TYPE;
+            break;
+        case 'J':
+            type = Long.TYPE;
+            break;
+        case 'S':
+            type = Short.TYPE;
+            break;
+        case 'Z':
+            type = Boolean.TYPE;
+            break;
+        case 'V':
+            type = Void.TYPE;
+            break;
+        default:
+            throw new RuntimeException("Unknown baseType descriptor: " + descriptor);
         }
     }
 

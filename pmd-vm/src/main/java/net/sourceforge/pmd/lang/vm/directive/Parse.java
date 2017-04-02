@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -19,10 +20,8 @@ package net.sourceforge.pmd.lang.vm.directive;
  * under the License.    
  */
 
-
 /**
- * Pluggable directive that handles the <code>#parse()</code>
- * statement in VTL.
+ * Pluggable directive that handles the <code>#parse()</code> statement in VTL.
  *
  * <pre>
  * Notes:
@@ -43,35 +42,31 @@ package net.sourceforge.pmd.lang.vm.directive;
  * @author <a href="mailto:Christoph.Reck@dlr.de">Christoph Reck</a>
  * @version $Id: Parse.java 928253 2010-03-27 19:39:04Z nbubna $
  */
-public class Parse extends InputBase
-{
+public class Parse extends InputBase {
 
     /**
      * Return name of this directive.
+     * 
      * @return The name of this directive.
      */
-    public String getName()
-    {
+    public String getName() {
         return "parse";
     }
 
     /**
-     * Overrides the default to use "template", so that all templates
-     * can use the same scope reference, whether rendered via #parse
-     * or direct merge.
+     * Overrides the default to use "template", so that all templates can use
+     * the same scope reference, whether rendered via #parse or direct merge.
      */
-    public String getScopeName()
-    {
+    public String getScopeName() {
         return "template";
     }
 
     /**
      * Return type of this directive.
+     * 
      * @return The type of this directive.
      */
-    public int getType()
-    {
+    public int getType() {
         return LINE;
     }
 }
-

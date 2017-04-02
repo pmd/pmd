@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp;
 
 import java.io.Reader;
@@ -21,24 +22,24 @@ import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 public class JspParser extends AbstractParser {
 
     public JspParser(ParserOptions parserOptions) {
-	super(parserOptions);
+        super(parserOptions);
     }
 
     @Override
     public TokenManager createTokenManager(Reader source) {
-	return new JspTokenManager(source);
+        return new JspTokenManager(source);
     }
 
     public boolean canParse() {
-	return true;
+        return true;
     }
 
     public Node parse(String fileName, Reader source) throws ParseException {
-	AbstractTokenManager.setFileName(fileName);
-	return new net.sourceforge.pmd.lang.jsp.ast.JspParser(new SimpleCharStream(source)).CompilationUnit();
+        AbstractTokenManager.setFileName(fileName);
+        return new net.sourceforge.pmd.lang.jsp.ast.JspParser(new SimpleCharStream(source)).CompilationUnit();
     }
 
     public Map<Integer, String> getSuppressMap() {
-	return new HashMap<>(); // FIXME
+        return new HashMap<>(); // FIXME
     }
 }

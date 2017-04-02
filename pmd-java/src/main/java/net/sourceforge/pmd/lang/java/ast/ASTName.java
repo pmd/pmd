@@ -27,7 +27,6 @@ public class ASTName extends AbstractJavaTypeNode {
         return this.nd;
     }
 
-
     /**
      * Accept the visitor. *
      */

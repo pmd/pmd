@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util;
 
 import java.lang.reflect.Method;
@@ -11,8 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Various class-related utility methods intended for mapping common java.lang types to their short 
- * short forms allowing end users to enter these names in UIs without the package prefixes.
+ * Various class-related utility methods intended for mapping common java.lang
+ * types to their short short forms allowing end users to enter these names in
+ * UIs without the package prefixes.
  *
  * @author Brian Remedios
  */
@@ -22,21 +24,22 @@ public final class ClassUtil {
 
     @SuppressWarnings("PMD.AvoidUsingShortType")
     private static final TypeMap PRIMITIVE_TYPE_NAMES = new TypeMap(new Class[] { int.class, byte.class, long.class,
-            short.class, float.class, double.class, char.class, boolean.class, });
+        short.class, float.class, double.class, char.class, boolean.class, });
 
-    private static final TypeMap TYPES_BY_NAME = new TypeMap(new Class[] { Integer.class, Byte.class, Long.class,
-            Short.class, Float.class, Double.class, Character.class, Boolean.class, BigDecimal.class, String.class,
-            Object.class, Class.class});
+    private static final TypeMap TYPES_BY_NAME = new TypeMap(
+            new Class[] { Integer.class, Byte.class, Long.class, Short.class, Float.class, Double.class,
+                Character.class, Boolean.class, BigDecimal.class, String.class, Object.class, Class.class, });
 
     private static final Map<Class<?>, String> SHORT_NAMES_BY_TYPE = computeClassShortNames();
-    
+
     private ClassUtil() {
     }
 
     /**
      * Returns the type(class) for the name specified or null if not found.
      *
-     * @param name String
+     * @param name
+     *            String
      * @return Class
      */
     public static Class<?> getPrimitiveTypeFor(String name) {
@@ -50,7 +53,7 @@ public final class ClassUtil {
      * @return Map<Class, String>
      */
     private static Map<Class<?>, String> computeClassShortNames() {
-        
+
         Map<Class<?>, String> map = new HashMap<>();
         map.putAll(PRIMITIVE_TYPE_NAMES.asInverseWithShortName());
         map.putAll(TYPES_BY_NAME.asInverseWithShortName());
@@ -60,11 +63,12 @@ public final class ClassUtil {
     public static Map<Class<?>, String> getClassShortNames() {
         return SHORT_NAMES_BY_TYPE;
     }
-    
+
     /**
      * Attempt to determine the actual class given the short name.
      *
-     * @param shortName String
+     * @param shortName
+     *            String
      * @return Class
      */
     public static Class<?> getTypeFor(String shortName) {
@@ -84,16 +88,16 @@ public final class ClassUtil {
     /**
      * Return the name of the type in its short form if its known to us
      * otherwise return its name fully packaged.
-     * 
+     *
      * @param type
      * @return String
      */
     public static String asShortestName(Class<?> type) {
-        
+
         String name = SHORT_NAMES_BY_TYPE.get(type);
         return name == null ? type.getName() : name;
     }
-    
+
     /**
      * Returns the abbreviated name of the type, without the package name
      *
@@ -111,9 +115,12 @@ public final class ClassUtil {
      * walk up its superclasses until it finds a match. Returns null if it
      * doesn't.
      *
-     * @param clasz		 Class
-     * @param methodName String
-     * @param paramTypes Class[]
+     * @param clasz
+     *            Class
+     * @param methodName
+     *            String
+     * @param paramTypes
+     *            Class[]
      * @return Method
      */
     public static Method methodFor(Class<?> clasz, String methodName, Class<?>[] paramTypes) {
@@ -131,18 +138,18 @@ public final class ClassUtil {
         }
         return null;
     }
-    
+
     /**
      * Return the methods as a map keyed by their common declaration types.
-     * 
+     *
      * @param methods
-     * @return Map<String, List<Method>>
+     * @return methods grouped by declaring type name
      */
     public static Map<String, List<Method>> asMethodGroupsByTypeName(Method[] methods) {
-        
+
         Map<String, List<Method>> methodGroups = new HashMap<>(methods.length);
-        
-        for (int i=0; i<methods.length; i++) {
+
+        for (int i = 0; i < methods.length; i++) {
             String clsName = asShortestName(methods[i].getDeclaringClass());
             if (!methodGroups.containsKey(clsName)) {
                 methodGroups.put(clsName, new ArrayList<Method>());

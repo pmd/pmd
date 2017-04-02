@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.objectivec;
 
 import java.io.Reader;
@@ -17,7 +18,9 @@ public class ObjectiveCTokenManager implements TokenManager {
 
     /**
      * Creates a new Objective-C Token Manager from the given source code.
-     * @param source the source code
+     * 
+     * @param source
+     *            the source code
      */
     public ObjectiveCTokenManager(Reader source) {
         tokenManager = new ObjectiveCParserTokenManager(new SimpleCharStream(source));

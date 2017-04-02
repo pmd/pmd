@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli;
 
 import static org.junit.Assert.assertTrue;
@@ -11,15 +12,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import net.sourceforge.pmd.PMD;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import net.sourceforge.pmd.PMD;
+
 /**
- * @author Romain Pelisse <belaran@gmail.com>
- * 
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
+ *
  */
 public abstract class BaseCLITest {
 
@@ -70,6 +71,7 @@ public abstract class BaseCLITest {
     protected String runTest(String[] args, String testname) {
         return runTest(args, testname, 0);
     }
+
     protected String runTest(String[] args, String testname, int expectedExitCode) {
         String filename = TEST_OUPUT_DIRECTORY + testname + ".txt";
         long start = System.currentTimeMillis();

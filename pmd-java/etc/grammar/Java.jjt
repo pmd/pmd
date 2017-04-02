@@ -1,4 +1,45 @@
 /**
+ * Allow method references to specify generics also for
+ * constructor references ("new").
+ * Bug #309
+ * Andreas Dangel 03/2017
+ *====================================================================
+ * Provide a better fix for CastExpression, getting rid of most hacks.
+ * Bug #257
+ *
+ * Juan Martin Sotuyo Dodero 02/2017
+ *====================================================================
+ * Allow local classes to carry more than one annotation.
+ * Bug #208
+ *
+ * Juan Martin Sotuyo Dodero 01/2017
+ *====================================================================
+ * Change lookahead for AnnotationMethodDeclaration in AnnotationTypeMemberDeclaration.
+ * Bug #206
+ *
+ * Juan Martin Sotuyo Dodero 01/2017
+ *====================================================================
+ * Allow method references to specify generics.
+ * Bug #207
+ *
+ * Juan Martin Sotuyo Dodero 01/2017
+ *====================================================================
+ * Simplify VariableDeclaratorId, forbidding illegal sequences such as
+ * this[] and MyClass.this[]
+ *
+ * Juan Martin Sotuyo Dodero 10/2016
+ *====================================================================
+ * Improve lambda detection in PrimaryPrefix to improve parsing performance.
+ *
+ * Juan Martin Sotuyo Dodero 10/2016
+ *====================================================================
+ * Fix for regression introduced in previous changeset.
+ * The syntactic lookahead was not properly handled by javacc,
+ * so it was converted to a semantic one
+ * Bug #1530
+ *
+ * Juan Martin Sotuyo Dodero 10/2016
+ *====================================================================
  * Fix for an expression within an additive expression that was
  * wrongly taken as a cast expression.
  * Bug #1484
@@ -1418,9 +1459,8 @@ void VariableDeclaratorId() :
 {
   (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
    | t=<THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image = t.image;}
-   | t=<IDENTIFIER> { image = t.image; }
+   | t=<IDENTIFIER> { image = t.image; } ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
   )
-  ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
   {
     checkForBadAssertUsage(image, "a variable name");
     checkForBadEnumUsage(image, "a variable name");
@@ -1528,7 +1568,7 @@ void ReferenceType():
 
 void ClassOrInterfaceType():
 {
-  StringBuffer s = new StringBuffer();
+  StringBuilder s = new StringBuilder();
   Token t;
 }
 {
@@ -1589,14 +1629,12 @@ void Name() :
  * by a ".*" when used in the context of an "ImportDeclaration".
  */
 {
-  StringBuffer s = new StringBuffer();
+  StringBuilder s = new StringBuilder();
   Token t;
 }
 {
   t=<IDENTIFIER>
   {
-    jjtThis.testingOnly__setBeginLine( t.beginLine);
-    jjtThis.testingOnly__setBeginColumn( t.beginColumn);
     s.append(t.image);
   }
   ( LOOKAHEAD(2) "." t=<IDENTIFIER>
@@ -1761,9 +1799,13 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {}
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
-| LOOKAHEAD("(" <IDENTIFIER> ")" "+") PostfixExpression()
-| LOOKAHEAD( CastExpression() ) CastExpression()
-| LOOKAHEAD("(" Type() ")" "(") CastExpression()
+/*
+ * This is really ugly... we are repeting the CastExpression lookahead and full expression...
+ * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
+ * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwhise)
+*/
+| LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
+| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
 | PostfixExpression()
 }
 
@@ -1773,12 +1815,13 @@ void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
   PrimaryExpression() [ "++" {jjtThis.setImage("++");} | "--" {jjtThis.setImage("--");} ]
 }
 
-void CastExpression() #CastExpression(>1):
+void CastExpression() :
 {}
 {
-  LOOKAHEAD("(" (Annotation())* Type() ")") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
-| LOOKAHEAD("(" (Annotation())* Type() "&") "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )+ ")" UnaryExpressionNotPlusMinus()
-| "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpressionNotPlusMinus()
+  LOOKAHEAD(
+    "(" (Annotation())* PrimitiveType() ")"
+  ) "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ")" UnaryExpression()
+| "(" (Annotation() {checkForBadTypeAnnotations();})* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
 }
 
 void PrimaryExpression() :
@@ -1799,7 +1842,7 @@ Token t;
 void MethodReference() :
 {Token t; checkForBadMethodReferenceUsage();}
 {
-  "::" ("new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
+  "::" [TypeArguments()] ( "new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
 }
 
 void PrimaryPrefix() :
@@ -1808,13 +1851,9 @@ void PrimaryPrefix() :
   Literal()
 | LOOKAHEAD(2) "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-| LOOKAHEAD( "(" ")" "->" ) LambdaExpression()
 | LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
-| LOOKAHEAD( "(" VariableDeclaratorId() ")" "->" ) LambdaExpression()
-| LOOKAHEAD( "(" VariableDeclaratorId() "," VariableDeclaratorId() ["," VariableDeclaratorId()] ")" "->" ) LambdaExpression()
-| LOOKAHEAD( "(" FormalParameter() ")" "->" ) LambdaExpression()
-| LOOKAHEAD( "(" FormalParameter() "," FormalParameter() ["," FormalParameter() ] ")" "->" ) LambdaExpression()
-| LOOKAHEAD( LambdaExpression() ) LambdaExpression()
+| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ) LambdaExpression()
+| LOOKAHEAD( FormalParameters() "->" ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
@@ -1843,9 +1882,8 @@ void PrimarySuffix() :
 }
 
 void Literal() :
-{}
-{
 { Token t;}
+{
   t=<INTEGER_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
 | t=<FLOATING_POINT_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
@@ -1962,7 +2000,7 @@ void BlockStatement():
   ClassOrInterfaceDeclaration, but that seems like a hack that
   could break other things...
   */
-  LOOKAHEAD( [Annotation()] ["final"|"abstract"] "class") [Annotation()] ClassOrInterfaceDeclaration(0)
+  LOOKAHEAD( (Annotation())* ["final"|"abstract"] "class") (Annotation())* ClassOrInterfaceDeclaration(0)
 }
 
 void LocalVariableDeclaration() :
@@ -1987,12 +2025,9 @@ void StatementExpression() :
 |
   PreDecrementExpression()
 |
-  LOOKAHEAD( PrimaryExpression() ("++" | "--") ) PostfixExpression()
+  LOOKAHEAD( PrimaryExpression() AssignmentOperator() ) PrimaryExpression() AssignmentOperator() Expression()
 |
-  PrimaryExpression()
-  [
-  AssignmentOperator() Expression()
-  ]
+  PostfixExpression()
 }
 
 void SwitchStatement() :
@@ -2271,7 +2306,7 @@ void AnnotationTypeMemberDeclaration():
 {
  modifiers = Modifiers()
  (
-   LOOKAHEAD(3) AnnotationMethodDeclaration(modifiers)
+   LOOKAHEAD(Type() <IDENTIFIER> "(") AnnotationMethodDeclaration(modifiers)
   |
    ClassOrInterfaceDeclaration(modifiers)
   |

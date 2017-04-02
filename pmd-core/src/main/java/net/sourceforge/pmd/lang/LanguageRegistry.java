@@ -1,10 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,18 +24,33 @@ public final class LanguageRegistry {
     private Map<String, Language> languages;
 
     private LanguageRegistry() {
-        languages = new LinkedHashMap<>();
+        List<Language> languagesList = new ArrayList<>();
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
         Iterator<Language> iterator = languageLoader.iterator();
         while (iterator.hasNext()) {
             try {
                 Language language = iterator.next();
-                languages.put(language.getName(), language);
+                languagesList.add(language);
             } catch (UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
                 System.err.println("Ignoring language for PMD: " + e.toString());
             }
+        }
+
+        // sort languages by terse name. Avoiding differences in the order of languages
+        // across JVM versions / OS.
+        Collections.sort(languagesList, new Comparator<Language>() {
+            @Override
+            public int compare(Language o1, Language o2) {
+                return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
+            }
+        });
+
+        // using a linked hash map to maintain insertion order
+        languages = new LinkedHashMap<>();
+        for (Language language : languagesList) {
+            languages.put(language.getName(), language);
         }
     }
 
@@ -111,7 +129,7 @@ public final class LanguageRegistry {
 
     /**
      * A utility method to find the Languages which have Rule support.
-     * 
+     *
      * @return A List of Languages with Rule support.
      */
     public static List<Language> findWithRuleSupport() {

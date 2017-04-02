@@ -3,44 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>5.5.1-SNAPSHOT</version>
+    <version>5.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-        <relativePath />
-    </parent>
-
     <description>
-    <![CDATA[
-<p>PMD scans Java source code and looks for potential problems like:</p>
-<ul>
-  <li>Possible bugs - empty try/catch/finally/switch statements</li>
-  <li>Dead code - unused local variables, parameters and private methods</li>
-  <li>Suboptimal code - wasteful String/StringBuffer usage</li>
-  <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
-  <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
-</ul>
-<p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
-<p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
-    ]]>
-  </description>
+PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex, PLSQL, Salesforce.com Visualforce, Apache Velocity, XML, XSL.
 
-    <url>http://pmd.sourceforge.net/</url>
-    <issueManagement>
-        <url>http://sourceforge.net/p/pmd/bugs/</url>
-    </issueManagement>
+Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in Java, C, C++, C#, Groovy, PHP, Ruby, Fortran, JavaScript, PLSQL, Apache Velocity, Scala, Objective C, Matlab, Python, Go, Swift and Salesforce.com Apex.
+    </description>
+
+    <url>https://pmd.github.io/</url>
     <ciManagement>
-        <notifiers>
-            <notifier>
-                <configuration>
-                    <address>tom@infoether.com</address>
-                </configuration>
-            </notifier>
-        </notifiers>
+        <url>https://travis-ci.org/pmd/pmd</url>
     </ciManagement>
     <inceptionYear>2002</inceptionYear>
     <licenses>
@@ -53,9 +28,15 @@
     <mailingLists>
         <mailingList>
             <name>PMD development</name>
-            <subscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
-            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
-            <archive>http://sourceforge.net/mailarchive/forum.php?forum=pmd-devel</archive>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
+            <archive>https://sourceforge.net/p/pmd/mailman/pmd-devel</archive>
+        </mailingList>
+        <mailingList>
+            <name>PMD commits</name>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/pmd-commits</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/pmd-commits</unsubscribe>
+            <archive>https://sourceforge.net/p/pmd/mailman/pmd-commits</archive>
         </mailingList>
     </mailingLists>
     <developers>
@@ -239,6 +220,15 @@
                 <role>Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>jsotuyod</id>
+            <name>Juan Martín Sotuyo Dodero</name>
+            <email>juansotuyo@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>-3</timezone>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
@@ -247,36 +237,46 @@
         <tag>HEAD</tag>
     </scm>
     <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
         <site>
             <id>local</id>
             <url>file:///tmp/pmd-site</url>
         </site>
     </distributionManagement>
     <organization>
-        <name>InfoEther</name>
-        <url>http://pmd.sourceforge.net/</url>
+        <name>PMD</name>
+        <url>https://pmd.github.io/</url>
     </organization>
+    <issueManagement>
+        <url>https://github.com/pmd/pmd/issues</url>
+    </issueManagement>
 
     <properties>
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.18.1</surefire.version>
-        <checkstyle.version>2.16</checkstyle.version>
-        <pmd.plugin.version>3.6</pmd.plugin.version>
+        <checkstyle.version>2.17</checkstyle.version>
+        <pmd.plugin.version>3.7</pmd.plugin.version>
         <java.version>1.7</java.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <ant.version>1.9.6</ant.version>
-        <javadoc.plugin.version>2.10.3</javadoc.plugin.version>
+        <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
         <antlr.version>4.5.2-1</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot/${project.artifactId}</pmd.website.baseurl>
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
         <config.basedir>${basedir}/pmd-core</config.basedir>
         <pmd.dogfood.ruleset>${config.basedir}/src/main/resources/rulesets/internal/dogfood.xml</pmd.dogfood.ruleset>
-        <checkstyle.configLocation>${config.basedir}/etc/checkstyle-config.xml</checkstyle.configLocation>
-        <checkstyle.suppressionsFile>${config.basedir}/etc/checkstyle-suppressions.xml</checkstyle.suppressionsFile>
     </properties>
 
     <build>
@@ -335,7 +335,7 @@
                     <version>2.5.2</version>
                     <configuration>
                         <releaseProfiles>pmd-release</releaseProfiles>
-                        <pushChanges>false</pushChanges>
+                        <pushChanges>true</pushChanges>
                         <localCheckout>true</localCheckout>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>pmd_releases/@{project.version}</tagNameFormat>
@@ -441,12 +441,15 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>3.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${javadoc.plugin.version}</version>
+                    <configuration>
+                        <quiet>true</quiet>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -466,14 +469,19 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>5.5.0</version>
+                            <version>5.5.4</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>5.5.0</version>
+                            <version>5.5.4</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.8</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse 
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -585,15 +593,32 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>checkstyle-check</id>
                         <phase>verify</phase>
                         <goals>
-                            <goal>checkstyle</goal>
+                          <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>7.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-build-tools-config</artifactId>
+                        <version>1.0.0-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
-                    <configLocation>${checkstyle.configLocation}</configLocation>
-                    <suppressionsLocation>${checkstyle.suppressionsFile}</suppressionsLocation>
+                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
+                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                    </sourceDirectories>
                 </configuration>
             </plugin>
             <plugin>
@@ -624,6 +649,18 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!-- if autoReleaseAfterClose is true, then the artifacts will be
+                         automatically promoted to maven central -->
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -639,9 +676,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${javadoc.plugin.version}</version>
-                <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -676,8 +710,12 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${checkstyle.version}</version>
                 <configuration>
-                    <configLocation>${checkstyle.configLocation}</configLocation>
-                    <suppressionsLocation>${checkstyle.suppressionsFile}</suppressionsLocation>
+                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
+                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                    </sourceDirectories>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -850,6 +888,16 @@
                 <artifactId>wiremock</artifactId>
                 <version>1.57</version>
             </dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>2.4.7</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-rules</artifactId>
+                <version>1.8.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -905,6 +953,24 @@
             <properties>
                 <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <profile>
@@ -942,6 +1008,13 @@
             <properties>
                 <java.version>1.8</java.version>
             </properties>
+        </profile>
+
+        <profile>
+            <id>doclint</id>
+            <properties>
+                <java.version>1.8</java.version>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -949,7 +1022,7 @@
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
-                                <additionalparam>-Xdoclint:none</additionalparam>
+                                <additionalparam>-Xdoclint:all</additionalparam>
                             </configuration>
                         </plugin>
                     </plugins>
@@ -965,6 +1038,7 @@
         <module>pmd-dist</module>
         <module>pmd-fortran</module>
         <module>pmd-go</module>
+        <module>pmd-groovy</module>
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
@@ -977,6 +1051,7 @@
         <module>pmd-ruby</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
+        <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
     </modules>

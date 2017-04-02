@@ -14,7 +14,6 @@ public class ASTTypeArguments extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

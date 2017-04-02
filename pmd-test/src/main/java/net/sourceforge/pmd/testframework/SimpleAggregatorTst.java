@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.testframework;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public abstract class SimpleAggregatorTst extends RuleTst {
     /**
      * Configure the rule tests to be executed. Implement this method in
      * subclasses by calling adRule.
-     * 
+     *
      * @see #addRule(String, String)
      */
     protected void setUp() {
@@ -65,7 +66,7 @@ public abstract class SimpleAggregatorTst extends RuleTst {
 
     /**
      * Gets all configured rules.
-     * 
+     *
      * @return all configured rules.
      */
     protected List<Rule> getRules() {

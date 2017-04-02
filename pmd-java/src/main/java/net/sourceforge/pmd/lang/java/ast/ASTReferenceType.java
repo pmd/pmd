@@ -17,7 +17,6 @@ public class ASTReferenceType extends AbstractJavaTypeNode implements Dimensiona
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

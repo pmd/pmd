@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant;
 
 import static org.junit.Assert.assertTrue;
@@ -14,7 +15,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Romain Pelisse <belaran@gmail.com>
+ * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
  */
 public class CPDTaskTest {
@@ -30,7 +31,8 @@ public class CPDTaskTest {
     @Test
     public void testBasic() {
         buildRule.executeTarget("testBasic");
-        // FIXME: This clearly needs to be improved - but I don't like to write test, so feel free to contribute :)
+        // FIXME: This clearly needs to be improved - but I don't like to write
+        // test, so feel free to contribute :)
         assertTrue(new File("target/cpd.ant.tests").exists());
     }
 }

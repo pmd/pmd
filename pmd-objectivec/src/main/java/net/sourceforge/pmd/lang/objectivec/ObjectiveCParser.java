@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.objectivec;
 
 import java.io.Reader;
@@ -20,7 +21,9 @@ public class ObjectiveCParser extends AbstractParser {
 
     /**
      * Creates a new Objective-C Parser.
-     * @param parserOptions the options
+     * 
+     * @param parserOptions
+     *            the options
      */
     public ObjectiveCParser(ParserOptions parserOptions) {
         super(parserOptions);

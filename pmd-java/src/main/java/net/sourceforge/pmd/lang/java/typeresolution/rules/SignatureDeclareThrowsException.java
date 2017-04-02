@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
 import java.util.List;
@@ -25,32 +26,38 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  * type resolution facilities, and can detect if the class implements or extends
  * TestCase class
  *
- * @author <a mailto:trondandersen@c2i.net>Trond Andersen</a>
+ * @author <a href="mailto:trondandersen@c2i.net">Trond Andersen</a>
  * @author acaplan
  * @author Wouter Zelle
  */
 public class SignatureDeclareThrowsException extends AbstractJavaRule {
-	
-    private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty("IgnoreJUnitCompletely",
-        "Allow all methods in a JUnit testcase to throw Exceptions", false, 1.0f);
 
-    //Set to true when the class is determined to be a JUnit testcase
+    private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty(
+            "IgnoreJUnitCompletely", "Allow all methods in a JUnit testcase to throw Exceptions", false, 1.0f);
+
+    // Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;
-    
+
     public SignatureDeclareThrowsException() {
-	definePropertyDescriptor(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR);
+        definePropertyDescriptor(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR);
     }
-    
+
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (junitImported) {
-	    return super.visit(node, data);
-	}
+            return super.visit(node, data);
+        }
 
         ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
         if (impl != null && impl.jjtGetParent().equals(node)) {
             for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
-                ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) impl.jjtGetChild(ix);
+                Node child = impl.jjtGetChild(ix);
+
+                if (child.getClass() != ASTClassOrInterfaceType.class) {
+                    continue;
+                }
+
+                ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) child;
                 if (isJUnitTest(type)) {
                     junitImported = true;
                     return super.visit(node, data);
@@ -69,28 +76,28 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     private boolean isJUnitTest(ASTClassOrInterfaceType type) {
-    	Class<?> clazz = type.getType();
+        Class<?> clazz = type.getType();
         if (clazz == null) {
             if ("junit.framework.Test".equals(type.getImage())) {
-            	return true;
+                return true;
             }
         } else if (isJUnitTest(clazz)) {
-        	return true;
+            return true;
         } else {
-        	while (clazz != null && !Object.class.equals(clazz)) {
-	        	for(Class<?> intf : clazz.getInterfaces()) {
-	        		if (isJUnitTest(intf)) {
-	        			return true;
-	        		}
-	        	}
+            while (clazz != null && !Object.class.equals(clazz)) {
+                for (Class<?> intf : clazz.getInterfaces()) {
+                    if (isJUnitTest(intf)) {
+                        return true;
+                    }
+                }
                 clazz = clazz.getSuperclass();
-        	}
+            }
         }
         return false;
     }
 
     private boolean isJUnitTest(Class<?> clazz) {
-    	return clazz.getName().equals("junit.framework.Test");
+        return clazz.getName().equals("junit.framework.Test");
     }
 
     @Override
@@ -100,7 +107,6 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
         }
         return super.visit(node, o);
     }
-
 
     @Override
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
@@ -115,11 +121,11 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
 
     private boolean isAllowedMethod(ASTMethodDeclaration methodDeclaration) {
         if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
-	    return true;
-	} else {
-	    return methodDeclaration.getMethodName().equals("setUp") || methodDeclaration
-                .getMethodName().equals("tearDown");
-	}
+            return true;
+        } else {
+            return methodDeclaration.getMethodName().equals("setUp")
+                    || methodDeclaration.getMethodName().equals("tearDown");
+        }
     }
 
     @Override
@@ -140,13 +146,15 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     /**
-     * Checks all exceptions for possible violation on the exception declaration.
+     * Checks all exceptions for possible violation on the exception
+     * declaration.
      *
-     * @param exceptionList containing all exception for declaration
+     * @param exceptionList
+     *            containing all exception for declaration
      * @param context
      */
     private void evaluateExceptions(List<ASTName> exceptionList, Object context) {
-        for (ASTName exception: exceptionList) {
+        for (ASTName exception : exceptionList) {
             if (hasDeclaredExceptionInSignature(exception)) {
                 addViolation(context, exception);
             }
@@ -154,10 +162,11 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     /**
-     * Checks if the given value is defined as <code>Exception</code> and the parent is either
-     * a method or constructor declaration.
+     * Checks if the given value is defined as <code>Exception</code> and the
+     * parent is either a method or constructor declaration.
      *
-     * @param exception to evaluate
+     * @param exception
+     *            to evaluate
      * @return true if <code>Exception</code> is declared and has proper parents
      */
     private boolean hasDeclaredExceptionInSignature(ASTName exception) {
@@ -165,7 +174,8 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     /**
-     * @param exception to evaluate
+     * @param exception
+     *            to evaluate
      * @return true if parent node is either a method or constructor declaration
      */
     private boolean isParentSignatureDeclaration(ASTName exception) {

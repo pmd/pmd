@@ -24,6 +24,9 @@
                 <exclude>**/.pmd</exclude>
                 <exclude>**/.ruleset</exclude>
                 <exclude>**/.git</exclude>
+                <exclude>**/.travis/secrets.tar</exclude>
+                <exclude>**/.travis/id_rsa</exclude>
+                <exclude>**/.travis/*.gpg</exclude>
             </excludes>
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>

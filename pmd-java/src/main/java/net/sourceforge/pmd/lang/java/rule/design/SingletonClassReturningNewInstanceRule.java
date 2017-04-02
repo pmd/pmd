@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
@@ -59,10 +60,10 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
              * return m_instance; } }
              */
 
-            List<ASTBlockStatement> ASTBlockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
+            List<ASTBlockStatement> astBlockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
             returnVariableName = getReturnVariableName(node);
-            if (ASTBlockStatements.size() != 0) {
-                for (ASTBlockStatement blockStatement : ASTBlockStatements) {
+            if (astBlockStatements.size() != 0) {
+                for (ASTBlockStatement blockStatement : astBlockStatements) {
                     if (blockStatement.hasDescendantOfType(ASTLocalVariableDeclaration.class)) {
                         List<ASTLocalVariableDeclaration> lVarList = blockStatement
                                 .findDescendantsOfType(ASTLocalVariableDeclaration.class);

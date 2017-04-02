@@ -1,27 +1,29 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * Encapsulate the settings needed to access database source code.
- * 
- * 
+ *
+ *
  * @author sturton
  */
 public class DBType {
-    private static final String CLASS_NAME = DBType.class.getCanonicalName();
-
     private static final Logger LOGGER = Logger.getLogger(DBType.class.getPackage().getName());
 
     private static final String INTERNAL_SETTINGS = "[Internal Settings]";
@@ -29,22 +31,24 @@ public class DBType {
     /**
      * The names of the properties
      */
-    public enum property {
-        USER("user", "Name of the connecting database user"), PASSWORD("password",
-                "The connecting database user's password"), DRIVER("driver", "JDBC driver classname"), CHARACTERSET(
-                "characterset", "Reader character set"), LANGUAGES("languages",
-                "Comma-separated list of PMD-supported languages"), SCHEMAS("schemas",
-                "SchemaSpy compatible regular expression for schemas to be processed"), SOURCE_TYPES("sourcecodetypes",
-                "Comma-separated list of supported source types"), SOURCE_NAMES("sourcecodenames",
-                "Default comma-separated list of source code names to validate"), GET_SOURCE_CODE_STATEMENT(
+    public enum Property {
+        USER("user", "Name of the connecting database user"),
+        PASSWORD("password", "The connecting database user's password"),
+        DRIVER("driver", "JDBC driver classname"),
+        CHARACTERSET("characterset", "Reader character set"),
+        LANGUAGES("languages", "Comma-separated list of PMD-supported languages"),
+        SCHEMAS("schemas", "SchemaSpy compatible regular expression for schemas to be processed"),
+        SOURCE_TYPES("sourcecodetypes", "Comma-separated list of supported source types"),
+        SOURCE_NAMES("sourcecodenames", "Default comma-separated list of source code names to validate"),
+        GET_SOURCE_CODE_STATEMENT(
                 "getSourceCodeStatement",
-                "SQL92 or Oracle embedded SQL statement to retrieve  code source from the database catalogue"), RETURN_TYPE(
-                "returnType", "int equivalent of java.sql.Types return type of getSourceCodeStatement");
+                "SQL92 or Oracle embedded SQL statement to retrieve  code source from the database catalogue"),
+        RETURN_TYPE("returnType", "int equivalent of java.sql.Types return type of getSourceCodeStatement");
 
         private String name;
         private String description;
 
-        private property(String name, String description) {
+        Property(String name, String description) {
             this.name = name;
             this.description = description;
         }
@@ -84,7 +88,7 @@ public class DBType {
     private int sourceCodeReturnType;
 
     /**
-     * 
+     *
      * @param dbType
      */
     public DBType(String dbType) throws Exception {
@@ -93,7 +97,7 @@ public class DBType {
 
     /**
      * Load the most specific dbType for the protocol
-     * 
+     *
      * @param subProtocol
      * @param subnamePrefix
      * @throws IOException
@@ -123,9 +127,9 @@ public class DBType {
             } else if (subProtocol != null && properties != null) {
                 LOGGER.log(Level.FINE, "DBType found using subProtocol={0}", subProtocol);
             } else {
-                throw new RuntimeException(String.format(
-                        "Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s", subProtocol,
-                        subnamePrefix));
+                throw new RuntimeException(
+                        String.format("Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s",
+                                subProtocol, subnamePrefix));
             }
 
         }
@@ -138,7 +142,7 @@ public class DBType {
 
     /**
      * Load properties from one or more files or resources.
-     * 
+     *
      * <p>
      * This method recursively finds property files or JAR resources matching
      * {@matchstring}.
@@ -152,9 +156,10 @@ public class DBType {
      *         files)
      */
     private Properties loadDBProperties(String matchString) throws IOException {
-        LOGGER.entering(CLASS_NAME, matchString);
+        LOGGER.entering(DBType.class.getCanonicalName(), matchString);
         // Locale locale = Control.g;
         ResourceBundle resourceBundle = null;
+        InputStream stream = null;
 
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("class_path+" + System.getProperty("java.class.path"));
@@ -170,7 +175,8 @@ public class DBType {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("Attempting File no file suffix: " + matchString);
             }
-            resourceBundle = new PropertyResourceBundle(new FileInputStream(propertiesFile));
+            stream = new FileInputStream(propertiesFile);
+            resourceBundle = new PropertyResourceBundle(stream);
             propertiesSource = propertiesFile.getAbsolutePath();
             LOGGER.finest("FileSystemWithoutExtension");
         } catch (FileNotFoundException notFoundOnFilesystemWithoutExtension) {
@@ -180,7 +186,8 @@ public class DBType {
             }
             try {
                 File propertiesFile = new File(matchString + ".properties");
-                resourceBundle = new PropertyResourceBundle(new FileInputStream(propertiesFile));
+                stream = new FileInputStream(propertiesFile);
+                resourceBundle = new PropertyResourceBundle(stream);
                 propertiesSource = propertiesFile.getAbsolutePath();
                 LOGGER.finest("FileSystemWithExtension");
             } catch (FileNotFoundException notFoundOnFilesystemWithExtensionTackedOn) {
@@ -193,10 +200,10 @@ public class DBType {
                     LOGGER.finest("InJarWithoutPath");
                 } catch (Exception notInJarWithoutPath) {
                     if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("Attempting JARWithClass prefix: " + DBType.CLASS_NAME + "." + matchString);
+                        LOGGER.finest("Attempting JARWithClass prefix: " + DBType.class.getCanonicalName() + "." + matchString);
                     }
                     try {
-                        resourceBundle = ResourceBundle.getBundle(DBType.CLASS_NAME + "." + matchString);
+                        resourceBundle = ResourceBundle.getBundle(DBType.class.getPackage().getName() + "." + matchString);
                         propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator + matchString + ".properties";
                         LOGGER.finest("found InJarWithPath");
                     } catch (Exception notInJarWithPath) {
@@ -207,6 +214,8 @@ public class DBType {
                     }
                 }
             }
+        } finally {
+            IOUtils.closeQuietly(stream);
         }
 
         // Properties in this matched resource
@@ -248,9 +257,10 @@ public class DBType {
      */
 
     /**
-     * Convert <code>resourceBundle</code> to usable {@Properties}.
+     * Convert <code>resourceBundle</code> to usable {@link Properties}.
      *
-     * @param resourceBundle ResourceBundle
+     * @param resourceBundle
+     *            ResourceBundle
      * @return Properties
      */
     public static Properties getResourceBundleAsProperties(ResourceBundle resourceBundle) {
@@ -379,7 +389,8 @@ public class DBType {
     }
 
     /**
-     * @param properties the properties to set
+     * @param properties
+     *            the properties to set
      */
     public void setProperties(Properties properties) {
         this.properties = properties;
@@ -416,6 +427,6 @@ public class DBType {
 
     @Override
     public String toString() {
-        return CLASS_NAME + "@" + propertiesSource;
+        return DBType.class.getCanonicalName() + "@" + propertiesSource;
     }
 }

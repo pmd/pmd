@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.python;
 
 import java.io.Reader;
@@ -20,7 +21,9 @@ public class PythonParser extends AbstractParser {
 
     /**
      * Creates a new Python Parser.
-     * @param parserOptions the options
+     * 
+     * @param parserOptions
+     *            the options
      */
     public PythonParser(ParserOptions parserOptions) {
         super(parserOptions);

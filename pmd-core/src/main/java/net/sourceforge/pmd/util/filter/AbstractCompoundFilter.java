@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.filter;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * A base class for Filters which implements behavior using a List of other
  * Filters.
- * 
+ *
  * @param <T>
  *            The underlying type on which the filter applies.
  */

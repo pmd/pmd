@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public class MatchAlgorithm {
         for (Iterator<Object> i = markGroups.values().iterator(); i.hasNext();) {
             Object o = i.next();
             if (o instanceof List) {
+                @SuppressWarnings("unchecked")
                 List<TokenEntry> l = (List<TokenEntry>) o;
                 Collections.reverse(l);
                 matchCollector.collect(l);
@@ -73,16 +75,13 @@ public class MatchAlgorithm {
         matches = matchCollector.getMatches();
 
         for (Match match : matches) {
-        	for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
-                Mark mark = occurrences.next();
+            for (Mark mark : match) {
                 TokenEntry token = mark.getToken();
                 int lineCount = tokens.getLineCount(token, match);
 
                 mark.setLineCount(lineCount);
                 SourceCode sourceCode = source.get(token.getTokenSrcID());
-                String code = sourceCode.getSlice(mark.getBeginLine(), mark.getEndLine());
-
-                mark.setSoureCodeSlice(code);
+                mark.setSourceCode(sourceCode);
             }
         }
         cpdListener.phaseUpdate(CPDListener.DONE);
@@ -99,7 +98,8 @@ public class MatchAlgorithm {
                 token.setHashCode(lastHash);
                 Object o = markGroups.get(token);
 
-                // Note that this insertion method is worthwhile since the vast majority
+                // Note that this insertion method is worthwhile since the vast
+                // majority
                 // markGroup keys will have only one value.
                 if (o == null) {
                     markGroups.put(token, token);
@@ -109,6 +109,7 @@ public class MatchAlgorithm {
                     l.add(token);
                     markGroups.put(token, l);
                 } else {
+                    @SuppressWarnings("unchecked")
                     List<TokenEntry> l = (List<TokenEntry>) o;
                     l.add(token);
                 }

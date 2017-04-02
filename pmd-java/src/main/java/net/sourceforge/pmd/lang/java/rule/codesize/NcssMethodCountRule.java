@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -29,6 +30,6 @@ public class NcssMethodCountRule extends AbstractNcssCountRule {
     @Override
     public Object[] getViolationParameters(DataPoint point) {
         return new String[] { ((ASTMethodDeclaration) point.getNode()).getMethodName(),
-                String.valueOf((int) point.getScore()) };
+            String.valueOf((int) point.getScore()), };
     }
 }

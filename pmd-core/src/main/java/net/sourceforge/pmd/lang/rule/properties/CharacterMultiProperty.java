@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property type that supports multiple Character values.
- * 
+ *
  * @author Brian Remedios
  */
 public class CharacterMultiProperty extends AbstractProperty<Character[]> {
@@ -19,21 +20,27 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterMultiProperty>(
             Character[].class) {
 
+        @Override
         public CharacterMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
-            return new CharacterMultiProperty(nameIn(valuesById), descriptionIn(valuesById), charsIn(
-                    defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
+            return new CharacterMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
+                    charsIn(defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
         }
     };
 
     /**
      * Constructor for CharacterProperty.
-     * 
-     * @param theName String
-     * @param theDescription String
-     * @param theDefaults char[]
-     * @param theUIOrder float
-     * @param delimiter char
+     *
+     * @param theName
+     *            String
+     * @param theDescription
+     *            String
+     * @param theDefaults
+     *            char[]
+     * @param theUIOrder
+     *            float
+     * @param delimiter
+     *            char
      * @throws IllegalArgumentException
      */
     public CharacterMultiProperty(String theName, String theDescription, Character[] theDefaults, float theUIOrder,
@@ -53,16 +60,19 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
+    @Override
     public Class<Character[]> type() {
         return Character[].class;
     }
 
     /**
-     * @param valueString String
+     * @param valueString
+     *            String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
+    @Override
     public Character[] valueFrom(String valueString) throws IllegalArgumentException {
         String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter());
 

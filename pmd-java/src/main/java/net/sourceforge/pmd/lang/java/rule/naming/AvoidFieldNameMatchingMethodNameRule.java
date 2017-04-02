@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.naming;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
             if (child.jjtGetNumChildren() == 0) {
                 continue;
             }
-            child = child.jjtGetChild(child.jjtGetNumChildren()-1);
+            child = child.jjtGetChild(child.jjtGetNumChildren() - 1);
             if (child instanceof ASTFieldDeclaration) {
                 fields.add((ASTFieldDeclaration) child);
             } else if (child instanceof ASTMethodDeclaration) {

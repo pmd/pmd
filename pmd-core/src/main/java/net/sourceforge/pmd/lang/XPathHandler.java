@@ -1,11 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
-import net.sf.saxon.sxpath.IndependentContext;
-
 import org.jaxen.Navigator;
+
+import net.sourceforge.pmd.lang.xpath.Initializer;
+
+import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Interface for performing Language specific XPath handling, such as
@@ -14,12 +17,15 @@ import org.jaxen.Navigator;
 public interface XPathHandler {
 
     XPathHandler DUMMY = new XPathHandler() {
+        @Override
         public void initialize() {
         }
 
+        @Override
         public void initialize(IndependentContext context) {
         }
 
+        @Override
         public Navigator getNavigator() {
             return null;
         }

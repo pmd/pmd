@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.ArrayList;
@@ -69,12 +70,15 @@ public class SimpleTypedNameDeclarationTest {
     private static SimpleTypedNameDeclaration byClass(Class<?> c) {
         return new SimpleTypedNameDeclaration(c.getSimpleName(), c);
     }
+
     private static SimpleTypedNameDeclaration byName(String n) {
         return new SimpleTypedNameDeclaration(n, null);
     }
+
     private static SimpleTypedNameDeclaration by(Class<?> c, String n) {
         return new SimpleTypedNameDeclaration(n, c);
     }
+
     private static SimpleTypedNameDeclaration withNext(SimpleTypedNameDeclaration next, String n) {
         SimpleTypedNameDeclaration t = new SimpleTypedNameDeclaration(n, null);
         t.addNext(next);

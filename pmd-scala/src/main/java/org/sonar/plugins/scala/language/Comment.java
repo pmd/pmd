@@ -17,6 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
+
 package org.sonar.plugins.scala.language;
 
 import java.io.IOException;
@@ -28,92 +29,89 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.sonar.plugins.scala.util.StringUtils;
 
 /**
- * This class implements a Scala comment and the computation
- * of several base metrics for a comment.
+ * This class implements a Scala comment and the computation of several base
+ * metrics for a comment.
  *
  * @author Felix Müller
  * @since 0.1
  */
 public class Comment {
 
-  private final CommentType type;
-  private final List<String> lines;
+    private final CommentType type;
+    private final List<String> lines;
 
-  public Comment(String content, CommentType type) throws IOException {
-    lines = StringUtils.convertStringToListOfLines(content);
-    this.type = type;
-  }
+    public Comment(String content, CommentType type) throws IOException {
+        lines = StringUtils.convertStringToListOfLines(content);
+        this.type = type;
+    }
 
-  public int getNumberOfLines() {
-    return lines.size() - getNumberOfBlankLines() - getNumberOfCommentedOutLinesOfCode();
-  }
+    public int getNumberOfLines() {
+        return lines.size() - getNumberOfBlankLines() - getNumberOfCommentedOutLinesOfCode();
+    }
 
-  public int getNumberOfBlankLines() {
-    int numberOfBlankLines = 0;
-    for (String comment : lines) {
-      boolean isBlank = true;
+    public int getNumberOfBlankLines() {
+        int numberOfBlankLines = 0;
+        for (String comment : lines) {
+            boolean isBlank = true;
 
-      for (int i = 0; isBlank && i < comment.length(); i++) {
-        char character = comment.charAt(i);
-        if (!Character.isWhitespace(character) && character != '*' && character != '/') {
-          isBlank = false;
+            for (int i = 0; isBlank && i < comment.length(); i++) {
+                char character = comment.charAt(i);
+                if (!Character.isWhitespace(character) && character != '*' && character != '/') {
+                    isBlank = false;
+                }
+            }
+
+            if (isBlank) {
+                numberOfBlankLines++;
+            }
         }
-      }
-
-      if (isBlank) {
-        numberOfBlankLines++;
-      }
-    }
-    return numberOfBlankLines;
-  }
-
-  public int getNumberOfCommentedOutLinesOfCode() {
-    if (isDocComment()) {
-      return 0;
+        return numberOfBlankLines;
     }
 
-    int numberOfCommentedOutLinesOfCode = 0;
-    for (String line : lines) {
-      String strippedLine = org.apache.commons.lang3.StringUtils.strip(line, " /*");
-      if (CodeDetector.hasDetectedCode(strippedLine)) {
-        numberOfCommentedOutLinesOfCode++;
-      }
-    }
-    return numberOfCommentedOutLinesOfCode;
-  }
+    public int getNumberOfCommentedOutLinesOfCode() {
+        if (isDocComment()) {
+            return 0;
+        }
 
-  public boolean isDocComment() {
-    return type == CommentType.DOC;
-  }
-
-  public boolean isHeaderComment() {
-    return type == CommentType.HEADER;
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().append(type).append(lines).toHashCode();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof Comment)) {
-      return false;
+        int numberOfCommentedOutLinesOfCode = 0;
+        for (String line : lines) {
+            String strippedLine = org.apache.commons.lang3.StringUtils.strip(line, " /*");
+            if (CodeDetector.hasDetectedCode(strippedLine)) {
+                numberOfCommentedOutLinesOfCode++;
+            }
+        }
+        return numberOfCommentedOutLinesOfCode;
     }
 
-    Comment other = (Comment) obj;
-    return new EqualsBuilder().append(type, other.type).append(lines, other.lines).isEquals();
-  }
+    public boolean isDocComment() {
+        return type == CommentType.DOC;
+    }
 
-  @Override
-  public String toString() {
-    final String firstLine = lines.isEmpty() ? "" : lines.get(0);
-    final String lastLine = lines.isEmpty() ? "" : lines.get(lines.size() - 1);
-    return new ToStringBuilder(this).append("type", type)
-        .append("firstLine", firstLine)
-        .append("lastLine", lastLine)
-        .append("numberOfLines", getNumberOfLines())
-        .append("numberOfCommentedOutLinesOfCode", getNumberOfCommentedOutLinesOfCode())
-        .toString();
-  }
+    public boolean isHeaderComment() {
+        return type == CommentType.HEADER;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(type).append(lines).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Comment)) {
+            return false;
+        }
+
+        Comment other = (Comment) obj;
+        return new EqualsBuilder().append(type, other.type).append(lines, other.lines).isEquals();
+    }
+
+    @Override
+    public String toString() {
+        final String firstLine = lines.isEmpty() ? "" : lines.get(0);
+        final String lastLine = lines.isEmpty() ? "" : lines.get(lines.size() - 1);
+        return new ToStringBuilder(this).append("type", type).append("firstLine", firstLine)
+                .append("lastLine", lastLine).append("numberOfLines", getNumberOfLines())
+                .append("numberOfCommentedOutLinesOfCode", getNumberOfCommentedOutLinesOfCode()).toString();
+    }
 }

@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 import org.apache.commons.lang3.text.StrBuilder;
@@ -18,7 +19,6 @@ import org.apache.commons.lang3.text.StrBuilder;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 
 /**
  * ASTStringLiteral support. Will interpolate!
@@ -44,10 +44,12 @@ public class ASTStringLiteral extends AbstractVmNode {
     }
 
     /**
-     * Adjust all the line and column numbers that comprise a node so that they are corrected for the string literals
-     * position within the template file. This is neccessary if an exception is thrown while processing the node so that
-     * the line and column position reported reflects the error position within the template and not just relative to
-     * the error position within the string literal.
+     * Adjust all the line and column numbers that comprise a node so that they
+     * are corrected for the string literals position within the template file.
+     * This is neccessary if an exception is thrown while processing the node so
+     * that the line and column position reported reflects the error position
+     * within the template and not just relative to the error position within
+     * the string literal.
      */
     public void adjTokenLineNums(final AbstractVmNode node) {
         Token tok = node.getFirstToken();
@@ -87,7 +89,8 @@ public class ASTStringLiteral extends AbstractVmNode {
             result.append(string.substring(lastCopied, u));
 
             /*
-             * we don't worry about an exception here, because the lexer checked that string is correct
+             * we don't worry about an exception here, because the lexer checked
+             * that string is correct
              */
             final char c = (char) Integer.parseInt(string.substring(u + 2, u + 6), 16);
             result.append(c);
@@ -102,10 +105,6 @@ public class ASTStringLiteral extends AbstractVmNode {
         }
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.SimpleNode#jjtAccept(org.apache.velocity.runtime.parser.node.VmParserVisitor,
-     *      java.lang.Object)
-     */
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);

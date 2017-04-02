@@ -204,6 +204,13 @@ The tool comes with a rather extensive help text, simply running with `-help`!
         <td>no</td>
         <td></td>
     </tr>
+    <tr>
+        <td>-cache</td>
+        <td>Specify a location for the analysis cache file to use.
+            This can greatly improve analysis performance and is <b>highly recommended</b>.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
 </table>
 
 

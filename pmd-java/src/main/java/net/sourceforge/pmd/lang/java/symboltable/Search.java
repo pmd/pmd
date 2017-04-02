@@ -1,8 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +20,8 @@ public class Search {
 
     public Search(JavaNameOccurrence occ) {
         if (TRACE) {
-            System.out.println("new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
+            System.out.println(
+                    "new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
         }
         this.occ = occ;
     }
@@ -47,18 +50,19 @@ public class Search {
         if (TRACE) {
             System.out.println(" checking scope " + scope + " for name occurrence " + nameOccurrence);
         }
-        if (!scope.contains(nameOccurrence) && scope.getParent() != null) {
+        final boolean isInScope = scope.contains(nameOccurrence);
+        if (!isInScope && scope.getParent() != null) {
             if (TRACE) {
                 System.out.println(" moving up from " + scope + " to " + scope.getParent());
             }
             return searchUpward(nameOccurrence, scope.getParent());
         }
-        if (scope.contains(nameOccurrence)) {
+        if (isInScope) {
             if (TRACE) {
                 System.out.println(" found it!");
             }
             return scope.addNameOccurrence(nameOccurrence);
         }
-        return new HashSet<>();
+        return Collections.emptySet();
     }
 }

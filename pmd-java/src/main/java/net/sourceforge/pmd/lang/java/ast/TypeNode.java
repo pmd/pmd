@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -20,7 +21,8 @@ public interface TypeNode extends Node {
     /**
      * Set the Java Class associated with this node.
      * 
-     * @param type A Java Class
+     * @param type
+     *            A Java Class
      */
     void setType(Class<?> type);
 }

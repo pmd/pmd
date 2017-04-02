@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.complexity;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -14,29 +15,29 @@ import net.sourceforge.pmd.util.NumericConstants;
  */
 public class NcssConstructorCountRule extends AbstractNcssCountRule {
 
-	/**
-	 * Count constructor declarations. This includes any explicit super() calls.
-	 */
-	public NcssConstructorCountRule() {
-		super(ASTMethod.class);
-		setProperty(MINIMUM_DESCRIPTOR, 20d);
-		setProperty(CODECLIMATE_CATEGORIES, new String[]{ "Complexity" });
-		setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
-		setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-	}
+    /**
+     * Count constructor declarations. This includes any explicit super() calls.
+     */
+    public NcssConstructorCountRule() {
+        super(ASTMethod.class);
+        setProperty(MINIMUM_DESCRIPTOR, 20d);
+        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Complexity" });
+        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
+        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+    }
 
-	@Override
-	public Object visit(ASTMethod node, Object data) {
-		if (node.getNode().getMethodInfo().isConstructor()) {
-			return super.visit(node, data);
-		}
+    @Override
+    public Object visit(ASTMethod node, Object data) {
+        if (node.getNode().getMethodInfo().isConstructor()) {
+            return super.visit(node, data);
+        }
 
-		return NumericConstants.ZERO;
-	}
+        return NumericConstants.ZERO;
+    }
 
-	@Override
-	public Object[] getViolationParameters(DataPoint point) {
-		// TODO need to put class name or constructor ID in string
-		return new String[] { String.valueOf((int) point.getScore()) };
-	}
+    @Override
+    public Object[] getViolationParameters(DataPoint point) {
+        // TODO need to put class name or constructor ID in string
+        return new String[] { String.valueOf((int) point.getScore()) };
+    }
 }

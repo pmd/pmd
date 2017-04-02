@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.complexity;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -27,29 +28,29 @@ import net.sourceforge.pmd.stat.DataPoint;
  */
 
 public class ExcessiveNodeCountRule extends AbstractStatisticalApexRule {
-	private Class<?> nodeClass;
+    private Class<?> nodeClass;
 
-	public ExcessiveNodeCountRule(Class<?> nodeClass) {
-		this.nodeClass = nodeClass;
-	}
+    public ExcessiveNodeCountRule(Class<?> nodeClass) {
+        this.nodeClass = nodeClass;
+    }
 
-	@Override
-	public Object visit(ApexNode<?> node, Object data) {
-		int numNodes = 0;
+    @Override
+    public Object visit(ApexNode<?> node, Object data) {
+        int numNodes = 0;
 
-		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			Integer treeSize = (Integer) ((ApexNode<?>) node.jjtGetChild(i)).jjtAccept(this, data);
-			numNodes += treeSize;
-		}
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            Integer treeSize = (Integer) ((ApexNode<?>) node.jjtGetChild(i)).jjtAccept(this, data);
+            numNodes += treeSize;
+        }
 
-		if (nodeClass.isInstance(node)) {
-			DataPoint point = new DataPoint();
-			point.setNode(node);
-			point.setScore(1.0 * numNodes);
-			point.setMessage(getMessage());
-			addDataPoint(point);
-		}
+        if (nodeClass.isInstance(node)) {
+            DataPoint point = new DataPoint();
+            point.setNode(node);
+            point.setScore(1.0 * numNodes);
+            point.setMessage(getMessage());
+            addDataPoint(point);
+        }
 
-		return Integer.valueOf(numNodes);
-	}
+        return Integer.valueOf(numNodes);
+    }
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.io.IOException;
@@ -11,95 +12,92 @@ import java.util.List;
 
 public class DumpFacade extends PLSQLParserVisitorAdapter {
 
-	private PrintWriter writer;
-	private boolean recurse;
+    private PrintWriter writer;
+    private boolean recurse;
 
-	public void initializeWith(Writer writer, String prefix, boolean recurse, PLSQLNode node) {
-		this.writer = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
-		this.recurse = recurse;
-		this.visit(node, prefix);
-		try {
-			writer.flush();
-		} catch (IOException e) {
-			throw new RuntimeException("Problem flushing PrintWriter.", e);
-		}
-	}
+    public void initializeWith(Writer writer, String prefix, boolean recurse, PLSQLNode node) {
+        this.writer = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
+        this.recurse = recurse;
+        this.visit(node, prefix);
+        try {
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException("Problem flushing PrintWriter.", e);
+        }
+    }
 
-	@Override
-	public Object visit(PLSQLNode node, Object data) {
-		dump(node, (String) data);
-		if (recurse) {
-			return super.visit(node, data + " ");
-		} else {
-			return data;
-		}
-	}
+    @Override
+    public Object visit(PLSQLNode node, Object data) {
+        dump(node, (String) data);
+        if (recurse) {
+            return super.visit(node, data + " ");
+        } else {
+            return data;
+        }
+    }
 
-	private void dump(PLSQLNode node, String prefix) {
-		//
-		// Dump format is generally composed of the following items...
-		//
+    private void dump(PLSQLNode node, String prefix) {
+        //
+        // Dump format is generally composed of the following items...
+        //
 
-		// 1) Dump prefix
-		writer.print(prefix);
+        // 1) Dump prefix
+        writer.print(prefix);
 
-		// 2) JJT Name of the Node
-		writer.print(node.toString());
+        // 2) JJT Name of the Node
+        writer.print(node.toString());
 
-		//
-		// If there are any additional details, then:
-		// 1) A colon
-		// 2) The Node.getImage() if it is non-empty
-		// 3) Extras in parentheses
-		//
+        //
+        // If there are any additional details, then:
+        // 1) A colon
+        // 2) The Node.getImage() if it is non-empty
+        // 3) Extras in parentheses
+        //
 
-		// Standard image handling
-		String image = node.getImage();
+        // Standard image handling
+        String image = node.getImage();
 
-		// Special image handling (e.g. Nodes with normally null images)
-		if (node instanceof ASTBooleanLiteral) {
-			image = node.getImage();
-		} else if (node instanceof ASTPrimaryPrefix) {
-			String result = null;
-			/*
-			if (primaryPrefix.usesSuperModifier()) {
-				result = "super";
-			} else if (primaryPrefix.usesThisModifier()) {
-				result = "this";
-			}
-			*/
-			if (image != null) {
-				result += "." + image;
-			}
-			image = result;
-		} else if (node instanceof ASTPrimarySuffix) {
-			ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) node;
-			if (primarySuffix.isArrayDereference()) {
-				if (image == null) {
-					image = "[";
-				} else {
-					image = "[" + image;
-				}
-			}
-		}
+        // Special image handling (e.g. Nodes with normally null images)
+        if (node instanceof ASTBooleanLiteral) {
+            image = node.getImage();
+        } else if (node instanceof ASTPrimaryPrefix) {
+            String result = null;
+            /*
+             * if (primaryPrefix.usesSuperModifier()) { result = "super"; } else
+             * if (primaryPrefix.usesThisModifier()) { result = "this"; }
+             */
+            if (image != null) {
+                result += "." + image;
+            }
+            image = result;
+        } else if (node instanceof ASTPrimarySuffix) {
+            ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) node;
+            if (primarySuffix.isArrayDereference()) {
+                if (image == null) {
+                    image = "[";
+                } else {
+                    image = "[" + image;
+                }
+            }
+        }
 
-		// Extras
-		List<String> extras = new ArrayList<>();
+        // Extras
+        List<String> extras = new ArrayList<>();
 
-		// Output image and extras
-		if (image != null || !extras.isEmpty()) {
-			writer.print(':');
-			if (image != null) {
-				writer.print(image);
-			}
-			for (String extra : extras) {
-				writer.print('(');
-				writer.print(extra);
-				writer.print(')');
-			}
-		}
+        // Output image and extras
+        if (image != null || !extras.isEmpty()) {
+            writer.print(':');
+            if (image != null) {
+                writer.print(image);
+            }
+            for (String extra : extras) {
+                writer.print('(');
+                writer.print(extra);
+                writer.print(')');
+            }
+        }
 
-		writer.println();
-	}
+        writer.println();
+    }
 
 }

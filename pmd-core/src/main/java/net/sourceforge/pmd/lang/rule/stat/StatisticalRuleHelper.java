@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.stat;
 
 import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
@@ -17,16 +18,15 @@ import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
 
 /**
- * This class is used to implement the core logic of a StatisticalRule.
- * Concrete Rule implementations should delegate to an instance of this class.
- * 
- * @author David Dixon-Peugh
- *         Aug 8, 2002 StatisticalRule.java
+ * This class is used to implement the core logic of a StatisticalRule. Concrete
+ * Rule implementations should delegate to an instance of this class.
+ *
+ * @author David Dixon-Peugh Aug 8, 2002 StatisticalRule.java
  */
 public class StatisticalRuleHelper {
 
     public static final double DELTA = 0.000005; // Within this range. . .
-    
+
     private AbstractRule rule;
 
     private SortedSet<DataPoint> dataPoints = new TreeSet<>();
@@ -35,10 +35,10 @@ public class StatisticalRuleHelper {
     private double total = 0.0;
 
     public StatisticalRuleHelper(AbstractRule rule) {
-    	this.rule = rule;
-    	rule.definePropertyDescriptor(SIGMA_DESCRIPTOR);
-    	rule.definePropertyDescriptor(MINIMUM_DESCRIPTOR);
-    	rule.definePropertyDescriptor(TOP_SCORE_DESCRIPTOR);
+        this.rule = rule;
+        rule.definePropertyDescriptor(SIGMA_DESCRIPTOR);
+        rule.definePropertyDescriptor(MINIMUM_DESCRIPTOR);
+        rule.definePropertyDescriptor(TOP_SCORE_DESCRIPTOR);
     }
 
     public void addDataPoint(DataPoint point) {
@@ -52,13 +52,18 @@ public class StatisticalRuleHelper {
         double deviation;
         double minimum = 0.0;
 
-        if (rule.getProperty(SIGMA_DESCRIPTOR) != null) {	// TODO - need to come up with a good default value
+        if (rule.getProperty(SIGMA_DESCRIPTOR) != null) { // TODO - need to come
+            // up with a good
+            // default value
             deviation = getStdDev();
             double sigma = rule.getProperty(SIGMA_DESCRIPTOR);
             minimum = getMean() + (sigma * deviation);
         }
 
-        if (rule.getProperty(MINIMUM_DESCRIPTOR) != null) {	// TODO - need to come up with a good default value
+        if (rule.getProperty(MINIMUM_DESCRIPTOR) != null) { // TODO - need to
+            // come up with a
+            // good default
+            // value
             double mMin = rule.getProperty(MINIMUM_DESCRIPTOR);
             if (mMin > minimum) {
                 minimum = mMin;
@@ -67,7 +72,10 @@ public class StatisticalRuleHelper {
 
         SortedSet<DataPoint> newPoints = applyMinimumValue(dataPoints, minimum);
 
-        if (rule.getProperty(TOP_SCORE_DESCRIPTOR) != null) {	// TODO - need to come up with a good default value
+        if (rule.getProperty(TOP_SCORE_DESCRIPTOR) != null) { // TODO - need to
+            // come up with a
+            // good default
+            // value
             int topScore = rule.getProperty(TOP_SCORE_DESCRIPTOR);
             if (newPoints.size() >= topScore) {
                 newPoints = applyTopScore(newPoints, topScore);
@@ -101,7 +109,7 @@ public class StatisticalRuleHelper {
         double deltaSq = 0.0;
         double scoreMinusMean;
 
-        for (DataPoint point: dataPoints) {
+        for (DataPoint point : dataPoints) {
             scoreMinusMean = point.getScore() - mean;
             deltaSq += scoreMinusMean * scoreMinusMean;
         }
@@ -113,7 +121,7 @@ public class StatisticalRuleHelper {
         SortedSet<DataPoint> rc = new TreeSet<>();
         double threshold = minValue - DELTA;
 
-        for (DataPoint point: pointSet) {
+        for (DataPoint point : pointSet) {
             if (point.getScore() > threshold) {
                 rc.add(point);
             }
@@ -123,7 +131,7 @@ public class StatisticalRuleHelper {
 
     private SortedSet<DataPoint> applyTopScore(SortedSet<DataPoint> points, int topScore) {
         SortedSet<DataPoint> s = new TreeSet<>();
-        DataPoint[] arr = points.toArray(new DataPoint[]{});
+        DataPoint[] arr = points.toArray(new DataPoint[] {});
         for (int i = arr.length - 1; i >= (arr.length - topScore); i--) {
             s.add(arr[i]);
         }
@@ -131,8 +139,9 @@ public class StatisticalRuleHelper {
     }
 
     private void makeViolations(RuleContext ctx, Set<DataPoint> p) {
-        for (DataPoint point: p) {
-            rule.addViolationWithMessage(ctx, point.getNode(), point.getMessage(), ((StatisticalRule)rule).getViolationParameters(point));
+        for (DataPoint point : p) {
+            rule.addViolationWithMessage(ctx, point.getNode(), point.getMessage(),
+                    ((StatisticalRule) rule).getViolationParameters(point));
         }
     }
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class NameFinder {
             add(new JavaNameOccurrence(prefix, "this"));
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            checkForNameChild((JavaNode)node.jjtGetChild(i));
+            checkForNameChild((JavaNode) node.jjtGetChild(i));
         }
     }
 
@@ -79,11 +80,10 @@ public class NameFinder {
         }
     }
 
-
     @Override
     public String toString() {
-    	StringBuilder result = new StringBuilder();
-        for (NameOccurrence occ: names) {
+        StringBuilder result = new StringBuilder();
+        for (NameOccurrence occ : names) {
             result.append(occ);
             result.append(PMD.EOL);
         }

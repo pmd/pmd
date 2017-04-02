@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import static org.junit.Assert.assertEquals;
@@ -13,15 +14,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Test;
+import org.mozilla.javascript.ast.AstRoot;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.Ecmascript3Parser;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
-
-import org.junit.Test;
-import org.mozilla.javascript.ast.AstRoot;
 
 public class EcmascriptParserTest extends EcmascriptParserTestBase {
 
@@ -30,10 +31,7 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testLineNumbers() {
-        String SOURCE_CODE =
-                "function a() {" + PMD.EOL
-              + "  alert('hello');" + PMD.EOL
-              + "}" + PMD.EOL;
+        final String SOURCE_CODE = "function a() {" + PMD.EOL + "  alert('hello');" + PMD.EOL + "}" + PMD.EOL;
         EcmascriptNode<AstRoot> node = parse(SOURCE_CODE);
         assertEquals(1, node.getBeginLine());
         assertEquals(1, node.getBeginColumn());
@@ -58,14 +56,8 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testLineNumbersWithinEcmascriptRules() {
-        String source =
-                "function f(x){\n" + 
-                "   if (x) {\n" + 
-                "       return 1;\n" + 
-                "   } else {\n" + 
-                "       return 0;\n" + 
-                "   }\n" + 
-                "}";
+        String source = "function f(x){\n" + "   if (x) {\n" + "       return 1;\n" + "   } else {\n"
+                + "       return 0;\n" + "   }\n" + "}";
         final List<String> output = new ArrayList<>();
 
         class MyEcmascriptRule extends AbstractEcmascriptRule {
@@ -97,17 +89,14 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
     }
 
     /**
-     * Test for bug #1136 ECAMScript: NullPointerException in getLeft() and getRight()
+     * Test for bug #1136 ECAMScript: NullPointerException in getLeft() and
+     * getRight()
      */
     @Test
     public void testArrayMethod() {
-        EcmascriptNode<AstRoot> rootNode = parse("function test(){\n" + 
-                "  a();      // OK\n" + 
-                "  b.c();    // OK\n" + 
-                "  d[0]();   // OK\n" + 
-                "  e[0].f(); // OK\n" + 
-                "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + 
-                "}");
+        EcmascriptNode<AstRoot> rootNode = parse(
+                "function test(){\n" + "  a();      // OK\n" + "  b.c();    // OK\n" + "  d[0]();   // OK\n"
+                        + "  e[0].f(); // OK\n" + "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + "}");
 
         List<ASTFunctionCall> calls = rootNode.findDescendantsOfType(ASTFunctionCall.class);
         List<String> results = new ArrayList<>();
@@ -119,31 +108,28 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
     }
 
     private String getName(Node node) {
-        if( node instanceof ASTName ){
-            return ((ASTName)node).getIdentifier();
+        if (node instanceof ASTName) {
+            return ((ASTName) node).getIdentifier();
         }
-        if( node instanceof ASTPropertyGet ){
-            final ASTPropertyGet pgNode = (ASTPropertyGet)node;
-            final String leftName  = getName(pgNode.getLeft());
+        if (node instanceof ASTPropertyGet) {
+            final ASTPropertyGet pgNode = (ASTPropertyGet) node;
+            final String leftName = getName(pgNode.getLeft());
             final String rightName = getName(pgNode.getRight());
             return leftName + "." + rightName;
         }
-        if( node instanceof ASTElementGet ){
-            return getName(((ASTElementGet)node).getTarget()) + "[]";
+        if (node instanceof ASTElementGet) {
+            return getName(((ASTElementGet) node).getTarget()) + "[]";
         }
         return "????";
     }
 
     /**
-     * https://sourceforge.net/p/pmd/bugs/1150/
-     * #1150 "EmptyExpression" for valid statements!
+     * https://sourceforge.net/p/pmd/bugs/1150/ #1150 "EmptyExpression" for
+     * valid statements!
      */
     @Test
     public void testCaseAsIdentifier() {
-        ASTAstRoot rootNode = parse("function f(a){\n" + 
-                "    a.case.flag = 1;\n" + 
-                "    return;\n" + 
-                "}");
+        ASTAstRoot rootNode = parse("function f(a){\n" + "    a.case.flag = 1;\n" + "    return;\n" + "}");
         ASTBlock block = rootNode.getFirstDescendantOfType(ASTBlock.class);
         assertFalse(block.jjtGetChild(0) instanceof ASTEmptyExpression);
         assertTrue(block.jjtGetChild(0) instanceof ASTExpressionStatement);
@@ -151,15 +137,13 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
     }
 
     /**
-     * https://sourceforge.net/p/pmd/bugs/1045/
-     * #1045 //NOPMD not working (or not implemented) with ECMAscript 
+     * https://sourceforge.net/p/pmd/bugs/1045/ #1045 //NOPMD not working (or
+     * not implemented) with ECMAscript
      */
     @Test
     public void testSuppresionComment() {
         Ecmascript3Parser parser = new Ecmascript3Parser(new EcmascriptParserOptions());
-        Reader sourceCode = new StringReader("function(x) {\n"
-                + "x = x; //NOPMD I know what I'm doing\n"
-                + "}\n");
+        Reader sourceCode = new StringReader("function(x) {\n" + "x = x; //NOPMD I know what I'm doing\n" + "}\n");
         parser.parse("foo", sourceCode);
         assertEquals(" I know what I'm doing", parser.getSuppressMap().get(2));
         assertEquals(1, parser.getSuppressMap().size());
@@ -167,10 +151,8 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
         EcmascriptParserOptions parserOptions = new EcmascriptParserOptions();
         parserOptions.setSuppressMarker("FOOOO");
         parser = new Ecmascript3Parser(parserOptions);
-        sourceCode = new StringReader("function(x) {\n"
-                + "y = y; //NOPMD xyz\n"
-                + "x = x; //FOOOO I know what I'm doing\n"
-                + "}\n");
+        sourceCode = new StringReader(
+                "function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
         parser.parse("foo", sourceCode);
         assertEquals(" I know what I'm doing", parser.getSuppressMap().get(3));
         assertEquals(1, parser.getSuppressMap().size());
@@ -181,9 +163,9 @@ public class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     public void testVoidKeyword() {
-        ASTAstRoot rootNode = parse("function f(matchFn, fieldval, n){\n" +
-                "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n" +
-                "}\n");
+        ASTAstRoot rootNode = parse("function f(matchFn, fieldval, n){\n"
+                + "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n"
+                + "}\n");
         ASTUnaryExpression unary = rootNode.getFirstDescendantOfType(ASTUnaryExpression.class);
         assertEquals("void", unary.getImage());
     }

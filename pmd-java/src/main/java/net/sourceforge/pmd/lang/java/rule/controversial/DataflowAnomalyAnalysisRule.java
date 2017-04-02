@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.controversial;
 
 import java.text.MessageFormat;
@@ -34,8 +35,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     private int maxRuleViolations;
     private int currentRuleViolationCount;
 
-    private static final IntegerProperty MAX_PATH_DESCRIPTOR = new IntegerProperty(
-            "maxPaths",
+    private static final IntegerProperty MAX_PATH_DESCRIPTOR = new IntegerProperty("maxPaths",
             "Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.",
             100, 8000, 1000, 1.0f);
 
@@ -46,7 +46,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
         public int accessType;
         public DataFlowNode node;
 
-        public Usage(int accessType, DataFlowNode node) {
+        Usage(int accessType, DataFlowNode node) {
             this.accessType = accessType;
             this.node = node;
         }
@@ -131,7 +131,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     /**
      * Adds a daa violation to the report.
      */
-    private final void addDaaViolation(Object data, Node node, String type, String var, int startLine, int endLine) {
+    private void addDaaViolation(Object data, Node node, String type, String var, int startLine, int endLine) {
         if (!maxNumberOfViolationsReached() && !violationAlreadyExists(type, var, startLine, endLine) && node != null) {
             RuleContext ctx = (RuleContext) data;
             String msg = type;

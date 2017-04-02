@@ -1,51 +1,5 @@
 #!/bin/bash
 
-# work around a maven-scm bug with git while releasing
-# this might also be necessary: git config --add status.displayCommentPrefix true
-# see https://jira.codehaus.org/browse/SCM-740
-export LANG=C
-
-export MAVEN_OPTS="-XX:MaxPermSize=1g"
-
-
-# check setup
-if [ "" = "$PMD_SF_USER" ]; then
-    echo "No env variable PMD_SF_USER specified. This is the sourceforge account name needed"
-    echo "during the release process to upload files via ssh/scp/rsync."
-    echo
-    echo "Please set the variable, e.g. in your ~/.bashrc:"
-    echo
-    echo "PMD_SF_USER=sfuser"
-    echo "export PMD_SF_USER"
-    echo
-    exit 1
-fi
-
-if [ "" = "$PMD_GPG_PROFILE" ]; then
-    echo "No env variable PMD_GPG_PROFILE specified. This is your maven profile, which configures"
-    echo "the properties gpg.keyname and gpg.passphrase used"
-    echo "to sign the created release artifacts before uploading to maven central."
-    echo
-    echo "Please set the variable, e.g. in your ~/.bashrc:"
-    echo
-    echo "PMD_GPG_PROFILE=pmd-gpg"
-    echo "export PMD_GPG_PROFILE"
-    echo
-    echo "And in your ~/.m2/settings.xml file:"
-    echo
-    echo "  <profiles>"
-    echo "    <profile>"
-    echo "      <id>pmd-gpg</id>"
-    echo "        <properties>"
-    echo "          <gpg.keyname>AB123CDE</gpg.keyname>"
-    echo "          <gpg.passphrase></gpg.passphrase>"
-    echo "        </properties>"
-    echo "    </profile>"
-    echo "  </profiles"
-    echo
-    exit 1
-fi
-
 # verify the current directory
 if [ ! -f pom.xml -o ! -d ../pmd.github.io ]; then
     echo "You seem to be in the wrong working directory or you don't have pmd.github.io checked out..."
@@ -57,8 +11,6 @@ if [ ! -f pom.xml -o ! -d ../pmd.github.io ]; then
     exit 1
 fi
 
-##########################################################################
-
 
 RELEASE_VERSION=
 DEVELOPMENT_VERSION=
@@ -68,26 +20,34 @@ echo "-------------------------------------------"
 echo "Releasing PMD"
 echo "-------------------------------------------"
 
+# see also https://gist.github.com/pdunnavant/4743895
+CURRENT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
+CURRENT_BUILD_NUMBER=$(echo ${RELEASE_VERSION} | sed -e 's/[0-9]*\.//g')
+NEXT_BUILD_NUMBER=$(expr ${CURRENT_BUILD_NUMBER} + 1)
+DEVELOPMENT_VERSION=$(echo ${RELEASE_VERSION} | sed -e "s/[0-9][0-9]*\([^0-9]*\)$/${NEXT_BUILD_NUMBER}/")
+DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
 
-if [ "" = "$RELEASE_VERSION" ]; then
-    echo -n "What is the release version of PMD? (e.g. 5.4.0) "
-    read RELEASE_VERSION
-fi
-if [ "" = "$DEVELOPMENT_VERSION" ]; then
-    echo -n "What is the next development version of PMD? (e.g. 5.5.0-SNAPSHOT) "
-    read DEVELOPMENT_VERSION
-fi
-if [ "" = "$CURRENT_BRANCH" ]; then
-    echo -n "What is the branch you want to release from? (e.g. master or pmd/5.4.x or pmd/5.3.x) "
-    read CURRENT_BRANCH
-fi
+# http://stackoverflow.com/questions/1593051/how-to-programmatically-determine-the-current-checked-out-git-branch
+CURRENT_BRANCH=$(git symbolic-ref -q HEAD)
+CURRENT_BRANCH=${CURRENT_BRANCH##refs/heads/}
+CURRENT_BRANCH=${CURRENT_BRANCH:-HEAD}
+
+echo "RELEASE_VERSION: ${RELEASE_VERSION}"
+echo "DEVELOPMENT_VERSION: ${DEVELOPMENT_VERSION}"
+echo "CURRENT_BRANCH: ${CURRENT_BRANCH}"
+
+echo
+echo "Is this correct?"
+echo
+echo "Press enter to continue..."
+read
+
 
 export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
-echo
-echo
 echo "*   Update version/release info in **src/site/markdown/overview/changelog.md**."
 echo
 echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
@@ -95,127 +55,28 @@ echo
 echo "*   Ensure all the new rules are listed in a the proper file:"
 echo "    pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION}.xml file."
 echo
-echo "*   Update **../pmd.github.io/latest/index.html** of our website, to redirect to the new version"
-echo
-echo "redirect_to: https://pmd.github.io/pmd-${RELEASE_VERSION}/"
-echo
 echo "*   Update **../pmd.github.io/index.html** to mention the new release"
 echo
-echo
 echo "Press enter to continue..."
 read
-
-echo "first - running a test install..."
-
-mvn clean install
-if [ $? -ne 0 ]; then
-    echo "Failure during test install...."
-    exit 1
-fi
-
-(
-    cd pmd-dist/target
-    unzip pmd-bin-*.zip
-    cd pmd-bin-*
-    ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
-)
-
-echo
-echo "---- OK?"
-echo "Press enter to continue..."
-read
-
 echo "Committing current changes (pmd)"
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
     echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
     git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
+    git push
 )
-
 
 mvn -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
-    -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
-    -P${PMD_GPG_PROFILE}
-mvn -B release:perform \
-    -P${PMD_GPG_PROFILE} \
-    -DreleaseProfiles=pmd-release,${PMD_GPG_PROFILE}
-
-(
-    cd target/checkout/
-
-    (
-        cd pmd-dist/target
-        unzip pmd-bin-${RELEASE_VERSION}.zip
-        cd pmd-bin-${RELEASE_VERSION}
-        ./bin/run.sh pmd -d ../../../pmd-java/src/main/java -language java -f xml -R rulesets/java/unusedcode.xml
-    )
-
-echo
-echo "Verify once again..."
-echo "---- OK?"
-echo "Press enter to continue..."
-read
-
-echo
-echo "Generating site..."
-mvn site site:stage -Psite
-echo
-echo "Press enter to continue..."
-read
+    -DdevelopmentVersion=${DEVELOPMENT_VERSION}
 
 
 echo
-echo "*   Login to <https://oss.sonatype.org/>"
-echo "    Close and Release the staging repository"
-echo "    Check here: <http://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/>"
+echo "Tag has been pushed.... now check travis build: <https://travis-ci.org/pmd/pmd>"
 echo
-echo "Press enter to continue..."
-read
-
-echo
-echo "Creating the pmd-doc-${RELEASE_VERSION}.zip archive..."
-(
-    cd target
-    mv staging pmd-doc-${RELEASE_VERSION}
-    zip -r pmd-doc-${RELEASE_VERSION}.zip pmd-doc-${RELEASE_VERSION}/
-)
-
-echo
-echo "Adding the site to pmd.github.io..."
-rsync -avhP target/pmd-doc-${RELEASE_VERSION}/ ../../../pmd.github.io/pmd-${RELEASE_VERSION}/
-(
-  cd ../../../pmd.github.io
-  git add pmd-${RELEASE_VERSION}
-  git commit -m "Added pmd-${RELEASE_VERSION}"
-)
-
-echo
-echo "Uploading the zip files..."
-rsync -avhP pmd-dist/target/pmd-*-${RELEASE_VERSION}.zip target/pmd-doc-${RELEASE_VERSION}.zip $PMD_SF_USER@web.sourceforge.net:/home/frs/project/pmd/pmd/${RELEASE_VERSION}/
-rsync -avhP src/site/markdown/overview/changelog.md $PMD_SF_USER@web.sourceforge.net:/home/frs/project/pmd/pmd/${RELEASE_VERSION}/ReadMe.md
-echo
-
-if [ ! "" = "$PMD_LOCAL_BINARIES" -a -d $PMD_LOCAL_BINARIES ]; then
-    echo "Copying the files to local storage directory $PMD_LOCAL_BINARIES..."
-    cp -av pmd-dist/target/pmd-*-${RELEASE_VERSION}.zip target/pmd-doc-${RELEASE_VERSION}.zip $PMD_LOCAL_BINARIES
-    echo
-fi
-
-
-echo
-echo "Verify the md5sums: <https://sourceforge.net/projects/pmd/files/pmd/${RELEASE_VERSION}/>"
-md5sum pmd-dist/target/pmd-*-${RELEASE_VERSION}.zip target/pmd-doc-${RELEASE_VERSION}.zip
-
-echo
-echo "and make the new binary pmd zip file the default download for all platforms."
-echo
-echo "Press enter to continue..."
-read
-)
-
 echo
 echo "Submit news to SF on <https://sourceforge.net/p/pmd/news/> page. You can use"
 echo "the following template:"
@@ -234,75 +95,61 @@ echo "Press enter to continue..."
 read
 
 echo
-echo "Close the milestone on sourceforge and create a new one..."
+echo "Check the milestone on sourceforge:"
 echo "<https://sourceforge.net/p/pmd/bugs/milestones>"
 echo
-echo "Press enter to continue..."
-read
-
-echo "Last step - next development version:"
+echo
+echo
+echo "Prepare Next development version:"
 echo "*   Move version/release info from **src/site/markdown/overview/changelog.md** to **src/site/markdown/overview/changelog-old.md**."
 echo "*   Update version/release info in **src/site/markdown/overview/changelog.md**."
-echo "*   Update pmd-{java8,ui}/pom.xml - the version is probably wrong - set it to the parent's=next development version: ${DEVELOPMENT_VERSION}."
 echo
 cat <<EOF
-# Changelog
+# PMD Release Notes
 
 ## ????? - ${DEVELOPMENT_VERSION}
 
-**New Supported Languages:**
+The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
 
-**Feature Request and Improvements:**
+This is a bug fixing release.
 
-**New/Modified/Deprecated Rules:**
+### Table Of Contents
 
-**Pull Requests:**
+* [New and noteworthy](#New_and_noteworthy)
+* [Fixed Issues](#Fixed_Issues)
+* [API Changes](#API_Changes)
+* [External Contributions](#External_Contributions)
 
-**Bugfixes:**
+### New and noteworthy
 
-**API Changes:**
+### Fixed Issues
+
+### API Changes
+
+### External Contributions
 
 EOF
 echo
 echo "Press enter to continue..."
 read
 git commit -a -m "Prepare next development version"
-
-
-echo
-echo "Now - last step - pushing everything..."
-echo
-echo "Press enter to continue..."
-read
-
 git push origin ${CURRENT_BRANCH}
-git push origin tag pmd_releases/${RELEASE_VERSION}
-
-(
-    echo "Pushing pmd.github.io..."
-    echo "Press enter to continue..."
-    read
-    cd ../pmd.github.io
-    git push origin master
-)
-
 echo
-echo "Create a new release on github: <https://github.com/pmd/pmd/releases>"
 echo
-echo "   * Set the title: PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
-echo "   * copy/paste the changelog.md"
-echo "   * Upload the binary zip file"
-echo "   * Upload the doc zip file"
-echo "   * Upload the src zip file"
 echo
-echo "Press enter to continue..."
-read
-
-
+echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
+echo
+echo
+echo "Send out an announcement mail to the mailing list:"
+echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
+echo "Subject: [ANNOUNCE] PMD ${RELEASE_VERSION} Released"
+echo "Body: !!Copy Changelog!!"
+echo
 echo
 echo "------------------------------------------"
 echo "Done."
 echo "------------------------------------------"
 echo
+
 
 

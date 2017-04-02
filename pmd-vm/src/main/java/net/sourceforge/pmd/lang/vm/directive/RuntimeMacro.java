@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -20,33 +21,32 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 
 /**
- * This class acts as a proxy for potential macros.  When the AST is built
- * this class is inserted as a placeholder for the macro (whether or not
- * the macro is actually defined).  At render time we check whether there is
- * a implementation for the macro call. If an implementation cannot be
- * found the literal text is rendered.
+ * This class acts as a proxy for potential macros. When the AST is built this
+ * class is inserted as a placeholder for the macro (whether or not the macro is
+ * actually defined). At render time we check whether there is a implementation
+ * for the macro call. If an implementation cannot be found the literal text is
+ * rendered.
+ * 
  * @since 1.6
  */
-public class RuntimeMacro extends Directive
-{
+public class RuntimeMacro extends Directive {
     /**
      * Name of the macro
      */
-    private String macroName;    
-   
+    private String macroName;
+
     /**
-     * Create a RuntimeMacro instance. Macro name and source
-     * template stored for later use.
+     * Create a RuntimeMacro instance. Macro name and source template stored for
+     * later use.
      *
-     * @param macroName name of the macro
+     * @param macroName
+     *            name of the macro
      */
-    public RuntimeMacro(String macroName)
-    {
-        if (macroName == null)
-        {
+    public RuntimeMacro(String macroName) {
+        if (macroName == null) {
             throw new IllegalArgumentException("Null arguments");
         }
-        
+
         this.macroName = macroName.intern();
     }
 
@@ -55,31 +55,27 @@ public class RuntimeMacro extends Directive
      *
      * @return The name of this Velocimacro.
      */
-    public String getName()
-    {
+    public String getName() {
         return macroName;
     }
 
     /**
-     * Override to always return "macro".  We don't want to use
-     * the macro name here, since when writing VTL that uses the
-     * scope, we are within a #macro call.  The macro name will instead
-     * be used as the scope name when defining the body of a BlockMacro.
+     * Override to always return "macro". We don't want to use the macro name
+     * here, since when writing VTL that uses the scope, we are within a #macro
+     * call. The macro name will instead be used as the scope name when defining
+     * the body of a BlockMacro.
      */
-    public String getScopeName()
-    {
+    public String getScopeName() {
         return "macro";
     }
 
     /**
-     * Velocimacros are always LINE
-     * type directives.
+     * Velocimacros are always LINE type directives.
      *
      * @return The type of this directive.
      */
-    public int getType()
-    {
+    public int getType() {
         return LINE;
     }
-    
+
 }

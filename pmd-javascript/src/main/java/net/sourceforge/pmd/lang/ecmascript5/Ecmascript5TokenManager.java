@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript5;
 
 import java.io.Reader;
@@ -17,7 +18,9 @@ public class Ecmascript5TokenManager implements TokenManager {
 
     /**
      * Creates a new Ecmascript 5 Token Manager from the given source code.
-     * @param source the source code
+     * 
+     * @param source
+     *            the source code
      */
     public Ecmascript5TokenManager(Reader source) {
         tokenManager = new Ecmascript5ParserTokenManager(new SimpleCharStream(source));

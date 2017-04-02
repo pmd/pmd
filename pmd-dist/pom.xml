@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pmd-dist</artifactId>
     <name>PMD Distribution Packages</name>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>5.5.1-SNAPSHOT</version>
+        <version>5.6.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -55,6 +55,19 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.19.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -85,6 +98,11 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-groovy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-java</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -96,6 +114,11 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-jsp</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-visualforce</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -147,6 +170,18 @@
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-xml</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.13</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

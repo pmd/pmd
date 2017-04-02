@@ -1,15 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.cli.BaseCPDCLITest;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.sourceforge.pmd.cli.BaseCPDCLITest;
 
 /**
  * Unit test for {@link CPDCommandLineInterface}.
@@ -21,7 +22,8 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
      */
     @Test
     public void testIgnoreIdentifiers() throws Exception {
-        runCPD("--minimum-tokens", "34", "--language", "java", "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers");
+        runCPD("--minimum-tokens", "34", "--language", "java", "--files",
+                "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers");
 
         String out = getOutput();
         Assert.assertTrue(out.contains("Found a 7 line (36 tokens) duplication"));
@@ -33,10 +35,9 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
      */
     @Test
     public void testIgnoreIdentifiersFailOnViolationFalse() throws Exception {
-        runCPD("--minimum-tokens", "34", "--language", "java",
-               "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
-               "--ignore-identifiers",
-               "--failOnViolation", "false");
+        runCPD("--minimum-tokens", "34", "--language", "java", "--files",
+                "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers", "--failOnViolation",
+                "false");
 
         String out = getOutput();
         Assert.assertTrue(out.contains("Found a 7 line (36 tokens) duplication"));
@@ -48,11 +49,9 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
      */
     @Test
     public void testExcludes() throws Exception {
-        runCPD("--minimum-tokens", "34", "--language", "java",
-                "--ignore-identifiers",
-                "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
-                "--exclude", "src/test/resources/net/sourceforge/pmd/cpd/clitest/File2.java"
-                );
+        runCPD("--minimum-tokens", "34", "--language", "java", "--ignore-identifiers", "--files",
+                "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--exclude",
+                "src/test/resources/net/sourceforge/pmd/cpd/clitest/File2.java");
 
         String out = getOutput();
         Assert.assertFalse(out.contains("Found a 7 line (34 tokens) duplication"));
@@ -69,11 +68,9 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
         // set the default encoding under Windows
         System.setProperty("file.encoding", "Cp1252");
 
-        runCPD("--minimum-tokens", "34", "--language", "java",
-                "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
-                "--ignore-identifiers",
-                "--format", "xml",
-        // request UTF-8 for CPD
+        runCPD("--minimum-tokens", "34", "--language", "java", "--files",
+                "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--ignore-identifiers", "--format", "xml",
+                // request UTF-8 for CPD
                 "--encoding", "UTF-8");
         // reset default encoding
         System.setProperty("file.encoding", origEncoding);
@@ -86,27 +83,25 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
 
     /**
      * See: https://sourceforge.net/p/pmd/bugs/1178/
-     * @throws IOException any error
+     * 
+     * @throws IOException
+     *             any error
      */
     @Test
     public void testBrokenAndValidFile() throws IOException {
-        runCPD("--minimum-tokens", "10",
-               "--language", "java",
-               "--files", "src/test/resources/net/sourceforge/pmd/cpd/badandgood/",
-               "--format", "text",
-               "--skip-lexical-errors");
+        runCPD("--minimum-tokens", "10", "--language", "java", "--files",
+                "src/test/resources/net/sourceforge/pmd/cpd/badandgood/", "--format", "text", "--skip-lexical-errors");
         String out = getOutput();
-        Assert.assertTrue(Pattern.compile("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file").matcher(out).find());
+        Assert.assertTrue(
+                Pattern.compile("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file").matcher(out).find());
         Assert.assertTrue(out.contains("Found a 5 line (13 tokens) duplication"));
         Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
     }
 
     @Test
     public void testFormatXmlWithoutEncoding() throws Exception {
-        runCPD("--minimum-tokens", "10",
-               "--language", "java",
-               "--files", "src/test/resources/net/sourceforge/pmd/cpd/clitest/",
-               "--format", "xml");
+        runCPD("--minimum-tokens", "10", "--language", "java", "--files",
+                "src/test/resources/net/sourceforge/pmd/cpd/clitest/", "--format", "xml");
         String out = getOutput();
         Assert.assertTrue(out.contains("<duplication lines=\"3\" tokens=\"10\">"));
         Assert.assertEquals(4, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));
@@ -114,10 +109,8 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
 
     @Test
     public void testCSVFormat() throws Exception {
-        runCPD("--minimum-tokens", "100",
-               "--files", "src/test/resources/net/sourceforge/pmd/cpd/badandgood/",
-               "--language", "c",
-               "--format", "csv");
+        runCPD("--minimum-tokens", "100", "--files", "src/test/resources/net/sourceforge/pmd/cpd/badandgood/",
+                "--language", "c", "--format", "csv");
         String out = getOutput();
         Assert.assertFalse(out.contains("Couldn't instantiate renderer"));
         Assert.assertEquals(0, Integer.parseInt(System.getProperty(CPDCommandLineInterface.STATUS_CODE_PROPERTY)));

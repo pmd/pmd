@@ -15,7 +15,8 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     private boolean isString;
 
     /**
-     * Pattern used to detect a single escaped character or octal character in a String.
+     * Pattern used to detect a single escaped character or octal character in a
+     * String.
      */
     private static final Pattern SINGLE_CHAR_ESCAPE_PATTERN = Pattern
             .compile("^\"\\\\(([ntbrf\\\\'\\\"])|([0-7][0-7]?)|([0-3][0-7][0-7]))\"");
@@ -52,6 +53,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
 
     /**
      * Checks whether this literal is a long integer.
+     * 
      * @return <code>true</code> if this literal is a long
      */
     public boolean isLongLiteral() {
@@ -81,6 +83,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
 
     /**
      * Checks whether this literal describes a double.
+     * 
      * @return <code>true</code> if this literal is a double.
      */
     public boolean isDoubleLiteral() {
@@ -111,9 +114,9 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     /**
-     * Tries to reconstruct the original string literal.
-     * If the original length is greater than the parsed String literal, then
-     * probably some unicode escape sequences have been used.
+     * Tries to reconstruct the original string literal. If the original length
+     * is greater than the parsed String literal, then probably some unicode
+     * escape sequences have been used.
      *
      * @return
      */
@@ -140,8 +143,8 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     /**
-     * Returns true if this is a String literal with only one character.
-     * Handles octal and escape characters.
+     * Returns true if this is a String literal with only one character. Handles
+     * octal and escape characters.
      *
      * @return true is this is a String literal with only one character
      */

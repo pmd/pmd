@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.designer;
 
 import java.awt.BorderLayout;
@@ -32,173 +33,174 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 
     public static class DFACanvas extends JPanel {
 
-	private static final int NODE_RADIUS = 12;
-	private static final int NODE_DIAMETER = 2 * NODE_RADIUS;
+        private static final int NODE_RADIUS = 12;
+        private static final int NODE_DIAMETER = 2 * NODE_RADIUS;
 
-	private Node node;
+        private Node node;
 
-	private int x = 150;
-	private int y = 50;
-	private LineGetter lines;
+        private int x = 150;
+        private int y = 50;
+        private LineGetter lines;
 
-	private void addAccessLabel(StringBuffer sb, VariableAccess va) {
+        private void addAccessLabel(StringBuffer sb, VariableAccess va) {
 
-	    if (va.isDefinition()) {
-		sb.append("d(");
-	    } else if (va.isReference()) {
-		sb.append("r(");
-	    } else if (va.isUndefinition()) {
-		sb.append("u(");
-		//continue;  // eo - the u() entries add a lot of clutter to the report
-	    } else {
-		sb.append("?(");
-	    }
+            if (va.isDefinition()) {
+                sb.append("d(");
+            } else if (va.isReference()) {
+                sb.append("r(");
+            } else if (va.isUndefinition()) {
+                sb.append("u(");
+                // continue; // eo - the u() entries add a lot of clutter to the
+                // report
+            } else {
+                sb.append("?(");
+            }
 
-	    sb.append(va.getVariableName()).append(')');
-	}
-
-	private String childIndicesOf(DataFlowNode node, String separator) {
-
-	    List<DataFlowNode> kids = node.getChildren();
-	    if (kids.isEmpty()) {
-		return "";
-	    }
-
-	    StringBuffer sb = new StringBuffer();
-	    sb.append(kids.get(0).getIndex());
-
-	    for (int j = 1; j < node.getChildren().size(); j++) {
-		sb.append(separator);
-		sb.append(kids.get(j).getIndex());
-	    }
-	    return sb.toString();
-	}
-
-	private String[] deriveAccessLabels(List<DataFlowNode> flow) {
-
-        if (flow == null || flow.isEmpty()) {
-            return StringUtil.getEmptyStrings();
+            sb.append(va.getVariableName()).append(')');
         }
 
-	    String[] labels = new String[flow.size()];
+        private String childIndicesOf(DataFlowNode node, String separator) {
 
-	    for (int i = 0; i < labels.length; i++) {
-		List<VariableAccess> access = flow.get(i).getVariableAccess();
+            List<DataFlowNode> kids = node.getChildren();
+            if (kids.isEmpty()) {
+                return "";
+            }
 
-		if (access == null || access.isEmpty()) {
-		    continue; // leave a null at this slot
-		}
+            StringBuffer sb = new StringBuffer();
+            sb.append(kids.get(0).getIndex());
 
-		StringBuffer exp = new StringBuffer();
-		addAccessLabel(exp, access.get(0));
+            for (int j = 1; j < node.getChildren().size(); j++) {
+                sb.append(separator);
+                sb.append(kids.get(j).getIndex());
+            }
+            return sb.toString();
+        }
 
-		for (int k = 1; k < access.size(); k++) {
-		    exp.append(", ");
-		    addAccessLabel(exp, access.get(k));
-		}
+        private String[] deriveAccessLabels(List<DataFlowNode> flow) {
 
-		labels[i] = exp.toString();
-	    }
-	    return labels;
-	}
+            if (flow == null || flow.isEmpty()) {
+                return StringUtil.getEmptyStrings();
+            }
 
-	private int maxWidthOf(String[] strings, FontMetrics fm) {
+            String[] labels = new String[flow.size()];
 
-	    int max = 0;
-	    String str;
+            for (int i = 0; i < labels.length; i++) {
+                List<VariableAccess> access = flow.get(i).getVariableAccess();
 
-	    for (String element : strings) {
-		str = element;
-		if (str == null) {
-		    continue;
-		}
-		max = Math.max(max, SwingUtilities.computeStringWidth(fm, str));
-	    }
-	    return max;
-	}
+                if (access == null || access.isEmpty()) {
+                    continue; // leave a null at this slot
+                }
 
-	@Override
-	public void paintComponent(Graphics g) {
-	    super.paintComponent(g);
+                StringBuffer exp = new StringBuffer();
+                addAccessLabel(exp, access.get(0));
 
-	    if (node == null) {
-		return;
-	    }
+                for (int k = 1; k < access.size(); k++) {
+                    exp.append(", ");
+                    addAccessLabel(exp, access.get(k));
+                }
 
-	    List<DataFlowNode> flow = node.getDataFlowNode().getFlow();
-	    FontMetrics fm = g.getFontMetrics();
-	    int halfFontHeight = fm.getAscent() / 2;
+                labels[i] = exp.toString();
+            }
+            return labels;
+        }
 
-	    String[] accessLabels = deriveAccessLabels(flow);
-	    int maxAccessLabelWidth = maxWidthOf(accessLabels, fm);
+        private int maxWidthOf(String[] strings, FontMetrics fm) {
 
-	    for (int i = 0; i < flow.size(); i++) {
-		DataFlowNode inode = flow.get(i);
+            int max = 0;
+            String str;
 
-		y = computeDrawPos(inode.getIndex());
+            for (String element : strings) {
+                str = element;
+                if (str == null) {
+                    continue;
+                }
+                max = Math.max(max, SwingUtilities.computeStringWidth(fm, str));
+            }
+            return max;
+        }
 
-		g.drawArc(x, y, NODE_DIAMETER, NODE_DIAMETER, 0, 360);
-		g.drawString(lines.getLine(inode.getLine()), x + 100 + maxAccessLabelWidth, y + 15);
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
 
-		// draw index number centered inside of node
-		String idx = String.valueOf(inode.getIndex());
-		int halfWidth = SwingUtilities.computeStringWidth(fm, idx) / 2;
-		g.drawString(idx, x + NODE_RADIUS - halfWidth, y + NODE_RADIUS + halfFontHeight);
+            if (node == null) {
+                return;
+            }
 
-		String accessLabel = accessLabels[i];
-		if (accessLabel != null) {
-		    g.drawString(accessLabel, x + 70, y + 15);
-		}
+            List<DataFlowNode> flow = node.getDataFlowNode().getFlow();
+            FontMetrics fm = g.getFontMetrics();
+            int halfFontHeight = fm.getAscent() / 2;
 
-		for (int j = 0; j < inode.getChildren().size(); j++) {
-		    DataFlowNode n = inode.getChildren().get(j);
-		    drawMyLine(inode.getIndex(), n.getIndex(), g);
-		}
-		String childIndices = childIndicesOf(inode, ", ");
-		g.drawString(childIndices, x - 3 * NODE_DIAMETER, y + NODE_RADIUS - 2);
-	    }
-	}
+            String[] accessLabels = deriveAccessLabels(flow);
+            int maxAccessLabelWidth = maxWidthOf(accessLabels, fm);
 
-	public void setCode(LineGetter h) {
-	    this.lines = h;
-	}
+            for (int i = 0; i < flow.size(); i++) {
+                DataFlowNode inode = flow.get(i);
 
-	public void setMethod(Node node) {
-	    this.node = node;
-	}
+                y = computeDrawPos(inode.getIndex());
 
-	private int computeDrawPos(int index) {
-	    int z = NODE_RADIUS * 4;
-	    return z + index * z;
-	}
+                g.drawArc(x, y, NODE_DIAMETER, NODE_DIAMETER, 0, 360);
+                g.drawString(lines.getLine(inode.getLine()), x + 100 + maxAccessLabelWidth, y + 15);
 
-	private void drawArrow(Graphics g, int x, int y, int direction) {
+                // draw index number centered inside of node
+                String idx = String.valueOf(inode.getIndex());
+                int halfWidth = SwingUtilities.computeStringWidth(fm, idx) / 2;
+                g.drawString(idx, x + NODE_RADIUS - halfWidth, y + NODE_RADIUS + halfFontHeight);
 
-	    final int height = NODE_RADIUS * 2 / 3;
-	    final int width = NODE_RADIUS * 2 / 3;
+                String accessLabel = accessLabels[i];
+                if (accessLabel != null) {
+                    g.drawString(accessLabel, x + 70, y + 15);
+                }
 
-	    switch (direction) {
-	    case SwingConstants.NORTH:
-		g.drawLine(x, y, x - width / 2, y + height);
-		g.drawLine(x, y, x + width / 2, y + height);
-		break;
-	    case SwingConstants.SOUTH:
-		g.drawLine(x, y, x - width / 2, y - height);
-		g.drawLine(x, y, x + width / 2, y - height);
-		break;
-	    case SwingConstants.EAST:
-		g.drawLine(x, y, x - height, y - width / 2);
-		g.drawLine(x, y, x - height, y + width / 2);
-		break;
-	    case SwingConstants.WEST:
-		g.drawLine(x, y, x + height, y - width / 2);
-		g.drawLine(x, y, x + height, y + width / 2);
-		break;
-	    default:
-		// Do nothing
-		break;
-	    }
-	}
+                for (int j = 0; j < inode.getChildren().size(); j++) {
+                    DataFlowNode n = inode.getChildren().get(j);
+                    drawMyLine(inode.getIndex(), n.getIndex(), g);
+                }
+                String childIndices = childIndicesOf(inode, ", ");
+                g.drawString(childIndices, x - 3 * NODE_DIAMETER, y + NODE_RADIUS - 2);
+            }
+        }
+
+        public void setCode(LineGetter h) {
+            this.lines = h;
+        }
+
+        public void setMethod(Node node) {
+            this.node = node;
+        }
+
+        private int computeDrawPos(int index) {
+            int z = NODE_RADIUS * 4;
+            return z + index * z;
+        }
+
+        private void drawArrow(Graphics g, int x, int y, int direction) {
+
+            final int height = NODE_RADIUS * 2 / 3;
+            final int width = NODE_RADIUS * 2 / 3;
+
+            switch (direction) {
+            case SwingConstants.NORTH:
+                g.drawLine(x, y, x - width / 2, y + height);
+                g.drawLine(x, y, x + width / 2, y + height);
+                break;
+            case SwingConstants.SOUTH:
+                g.drawLine(x, y, x - width / 2, y - height);
+                g.drawLine(x, y, x + width / 2, y - height);
+                break;
+            case SwingConstants.EAST:
+                g.drawLine(x, y, x - height, y - width / 2);
+                g.drawLine(x, y, x - height, y + width / 2);
+                break;
+            case SwingConstants.WEST:
+                g.drawLine(x, y, x + height, y - width / 2);
+                g.drawLine(x, y, x + height, y + width / 2);
+                break;
+            default:
+                // Do nothing
+                break;
+            }
+        }
 
         private void drawMyLine(int index1, int index2, Graphics g) {
             int y1 = this.computeDrawPos(index1);
@@ -241,20 +243,20 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
     }
 
     private static class ElementWrapper {
-	private DFAGraphMethod node;
+        private DFAGraphMethod node;
 
-	public ElementWrapper(DFAGraphMethod node) {
-	    this.node = node;
-	}
+        ElementWrapper(DFAGraphMethod node) {
+            this.node = node;
+        }
 
-	public DFAGraphMethod getNode() {
-	    return node;
-	}
+        public DFAGraphMethod getNode() {
+            return node;
+        }
 
-	@Override
-	public String toString() {
-	    return node.getName();
-	}
+        @Override
+        public String toString() {
+            return node.getName();
+        }
     }
 
     private DFACanvas dfaCanvas;
@@ -262,27 +264,27 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
     private DefaultListModel nodes = new DefaultListModel();
 
     public DFAPanel() {
-	super();
+        super();
 
-	setLayout(new BorderLayout());
-	JPanel leftPanel = new JPanel();
+        setLayout(new BorderLayout());
+        JPanel leftPanel = new JPanel();
 
-	nodeList = new JList(nodes);
-	nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	nodeList.setFixedCellWidth(150);
-	nodeList.setBorder(BorderFactory.createLineBorder(Color.black));
-	nodeList.addListSelectionListener(this);
+        nodeList = new JList(nodes);
+        nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        nodeList.setFixedCellWidth(150);
+        nodeList.setBorder(BorderFactory.createLineBorder(Color.black));
+        nodeList.addListSelectionListener(this);
 
-	leftPanel.add(nodeList);
-	add(leftPanel, BorderLayout.WEST);
+        leftPanel.add(nodeList);
+        add(leftPanel, BorderLayout.WEST);
 
-	dfaCanvas = new DFACanvas();
-	dfaCanvas.setBackground(Color.WHITE);
-	dfaCanvas.setPreferredSize(new Dimension(900, 1400));
+        dfaCanvas = new DFACanvas();
+        dfaCanvas.setBackground(Color.WHITE);
+        dfaCanvas.setPreferredSize(new Dimension(900, 1400));
 
-	JScrollPane scrollPane = new JScrollPane(dfaCanvas);
+        JScrollPane scrollPane = new JScrollPane(dfaCanvas);
 
-	add(scrollPane, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     @Override
@@ -302,13 +304,13 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
     }
 
     public void resetTo(List<DFAGraphMethod> newNodes, LineGetter lines) {
-	dfaCanvas.setCode(lines);
-	nodes.clear();
-	for (DFAGraphMethod md : newNodes) {
-	    nodes.addElement(new ElementWrapper(md));
-	}
-	nodeList.setSelectedIndex(0);
-	dfaCanvas.setMethod(newNodes.get(0));
-	repaint();
+        dfaCanvas.setCode(lines);
+        nodes.clear();
+        for (DFAGraphMethod md : newNodes) {
+            nodes.addElement(new ElementWrapper(md));
+        }
+        nodeList.setSelectedIndex(0);
+        dfaCanvas.setMethod(newNodes.get(0));
+        repaint();
     }
 }

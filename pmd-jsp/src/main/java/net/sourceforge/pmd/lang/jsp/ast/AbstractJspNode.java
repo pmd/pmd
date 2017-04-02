@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
@@ -19,21 +20,21 @@ public class AbstractJspNode extends AbstractNode implements JspNode {
     }
 
     public void jjtOpen() {
-	if (beginLine == -1 && parser.token.next != null) {
-	    beginLine = parser.token.next.beginLine;
-	    beginColumn = parser.token.next.beginColumn;
-	}
+        if (beginLine == -1 && parser.token.next != null) {
+            beginLine = parser.token.next.beginLine;
+            beginColumn = parser.token.next.beginColumn;
+        }
     }
 
     public void jjtClose() {
-	if (beginLine == -1 && (children == null || children.length == 0)) {
-	    beginColumn = parser.token.beginColumn;
-	}
-	if (beginLine == -1) {
-	    beginLine = parser.token.beginLine;
-	}
-	endLine = parser.token.endLine;
-	endColumn = parser.token.endColumn;
+        if (beginLine == -1 && (children == null || children.length == 0)) {
+            beginColumn = parser.token.beginColumn;
+        }
+        if (beginLine == -1) {
+            beginLine = parser.token.beginLine;
+        }
+        endLine = parser.token.endLine;
+        endColumn = parser.token.endColumn;
     }
 
     /**

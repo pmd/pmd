@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.coupling;
 
 import java.util.ArrayList;
@@ -32,16 +33,19 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
- * This rule can detect possible violations of the Law of Demeter.
- * The Law of Demeter is a simple rule, that says "only talk to friends". It helps to reduce
- * coupling between classes or objects.
+ * This rule can detect possible violations of the Law of Demeter. The Law of
+ * Demeter is a simple rule, that says "only talk to friends". It helps to
+ * reduce coupling between classes or objects.
  * <p>
  * See:
  * <ul>
- *   <li>Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer. From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October 1999.</li>
- *   <li>K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented programs. Software, IEEE, 6(5):38–48, 1989.</li>
+ * <li>Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer.
+ * From Journeyman to Master. Addison-Wesley Longman, Amsterdam, October
+ * 1999.</li>
+ * <li>K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented
+ * programs. Software, IEEE, 6(5):38–48, 1989.</li>
  * </ul>
- * 
+ *
  * @since 5.0
  *
  */
@@ -49,9 +53,11 @@ public class LawOfDemeterRule extends AbstractJavaRule {
     private static final String REASON_METHOD_CHAIN_CALLS = "method chain calls";
     private static final String REASON_OBJECT_NOT_CREATED_LOCALLY = "object not created locally";
     private static final String REASON_STATIC_ACCESS = "static property access";
-    
+
     /**
-     * That's a new method. We are going to check each method call inside the method.
+     * That's a new method. We are going to check each method call inside the
+     * method.
+     *
      * @return <code>null</code>.
      */
     @Override
@@ -59,20 +65,20 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         List<ASTPrimaryExpression> primaryExpressions = node.findDescendantsOfType(ASTPrimaryExpression.class);
         for (ASTPrimaryExpression expression : primaryExpressions) {
             List<MethodCall> calls = MethodCall.createMethodCalls(expression);
-            addViolations(calls, (RuleContext)data);
+            addViolations(calls, (RuleContext) data);
         }
         return null;
     }
-    
+
     private void addViolations(List<MethodCall> calls, RuleContext ctx) {
         for (MethodCall method : calls) {
             if (method.isViolation()) {
-                addViolationWithMessage(ctx, method.getExpression(), getMessage() + " (" + method.getViolationReason() + ")");
+                addViolationWithMessage(ctx, method.getExpression(),
+                        getMessage() + " (" + method.getViolationReason() + ")");
             }
         }
     }
-    
-    
+
     /**
      * Collects the information of one identified method call. The method call
      * might be a violation of the Law of Demeter or not.
@@ -87,7 +93,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private static final String SCOPE_STATIC_CHAIN = "static-chain";
         private static final String SUPER = "super";
         private static final String THIS = "this";
-        
+
         private ASTPrimaryExpression expression;
         private String baseName;
         private String methodName;
@@ -96,9 +102,10 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private Class<?> baseType;
         private boolean violation;
         private String violationReason;
-        
+
         /**
-         * Create a new method call for the prefix expression part of the primary expression.
+         * Create a new method call for the prefix expression part of the
+         * primary expression.
          */
         private MethodCall(ASTPrimaryExpression expression, ASTPrimaryPrefix prefix) {
             this.expression = expression;
@@ -108,8 +115,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
 
         /**
-         * Create a new method call for the given suffix expression part of the primary expression.
-         * This is used for method chains.
+         * Create a new method call for the given suffix expression part of the
+         * primary expression. This is used for method chains.
          */
         private MethodCall(ASTPrimaryExpression expression, ASTPrimarySuffix suffix) {
             this.expression = expression;
@@ -117,12 +124,12 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             determineType();
             checkViolation();
         }
-        
+
         /**
-         * Factory method to convert a given primary expression into MethodCalls.
-         * In case the primary expression represents a method chain call, then multiple
-         * MethodCalls are returned.
-         * 
+         * Factory method to convert a given primary expression into
+         * MethodCalls. In case the primary expression represents a method chain
+         * call, then multiple MethodCalls are returned.
+         *
          * @return a list of MethodCalls, might be empty.
          */
         public static List<MethodCall> createMethodCalls(ASTPrimaryExpression expression) {
@@ -132,7 +139,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 ASTPrimaryPrefix prefixNode = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
                 MethodCall firstMethodCallInChain = new MethodCall(expression, prefixNode);
                 result.add(firstMethodCallInChain);
-                
+
                 if (firstMethodCallInChain.isNotBuilder()) {
                     List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
                     for (ASTPrimarySuffix suffix : suffixes) {
@@ -140,10 +147,10 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                     }
                 }
             }
-            
+
             return result;
         }
-        
+
         private static boolean isNotAConstructorCall(ASTPrimaryExpression expression) {
             return !expression.hasDescendantOfType(ASTAllocationExpression.class);
         }
@@ -157,10 +164,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
 
         private boolean isNotBuilder() {
-            return baseType != StringBuffer.class
-                    && baseType != StringBuilder.class
-                    && !"StringBuilder".equals(baseTypeName)
-                    && !"StringBuffer".equals(baseTypeName);
+            return baseType != StringBuffer.class && baseType != StringBuilder.class
+                    && !"StringBuilder".equals(baseTypeName) && !"StringBuffer".equals(baseTypeName);
         }
 
         private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {
@@ -175,12 +180,12 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             }
             return result;
         }
-        
+
         private static boolean hasRealPrefix(ASTPrimaryExpression expr) {
             ASTPrimaryPrefix prefix = expr.getFirstDescendantOfType(ASTPrimaryPrefix.class);
             return !prefix.usesThisModifier() && !prefix.usesSuperModifier();
         }
-        
+
         private static boolean hasSuffixesWithArguments(ASTPrimaryExpression expr) {
             boolean result = false;
             if (hasRealPrefix(expr)) {
@@ -197,13 +202,13 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
         private void analyze(ASTPrimaryPrefix prefixNode) {
             List<ASTName> names = prefixNode.findDescendantsOfType(ASTName.class);
-            
+
             baseName = "unknown";
             methodName = "unknown";
-            
+
             if (!names.isEmpty()) {
                 baseName = names.get(0).getImage();
-                
+
                 int dot = baseName.lastIndexOf('.');
                 if (dot == -1) {
                     methodName = baseName;
@@ -212,7 +217,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                     methodName = baseName.substring(dot + 1);
                     baseName = baseName.substring(0, dot);
                 }
-                
+
             } else {
                 if (prefixNode.usesThisModifier()) {
                     baseName = THIS;
@@ -221,22 +226,20 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 }
             }
         }
-        
+
         private void analyze(ASTPrimarySuffix suffix) {
             baseName = METHOD_CALL_CHAIN;
             methodName = suffix.getImage();
         }
-        
+
         private void checkViolation() {
             violation = false;
             violationReason = null;
-            
+
             if (SCOPE_LOCAL.equals(baseScope)) {
                 Assignment lastAssignment = determineLastAssignment();
-                if (lastAssignment != null
-                    && !lastAssignment.allocation
-                    && !lastAssignment.iterator
-                    && !lastAssignment.forLoop) {
+                if (lastAssignment != null && !lastAssignment.allocation && !lastAssignment.iterator
+                        && !lastAssignment.forLoop) {
                     violation = true;
                     violationReason = REASON_OBJECT_NOT_CREATED_LOCALLY;
                 }
@@ -248,20 +251,22 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 violationReason = REASON_STATIC_ACCESS;
             }
         }
-        
+
         private void determineType() {
             NameDeclaration var = null;
             Scope scope = expression.getScope();
-            
+
             baseScope = SCOPE_LOCAL;
             var = findInLocalScope(baseName, scope);
             if (var == null) {
                 baseScope = SCOPE_METHOD;
-                var = determineTypeOfVariable(baseName, scope.getEnclosingScope(MethodScope.class).getVariableDeclarations().keySet());
+                var = determineTypeOfVariable(baseName,
+                        scope.getEnclosingScope(MethodScope.class).getVariableDeclarations().keySet());
             }
             if (var == null) {
                 baseScope = SCOPE_CLASS;
-                var = determineTypeOfVariable(baseName, scope.getEnclosingScope(ClassScope.class).getVariableDeclarations().keySet());
+                var = determineTypeOfVariable(baseName,
+                        scope.getEnclosingScope(ClassScope.class).getVariableDeclarations().keySet());
             }
             if (var == null) {
                 baseScope = SCOPE_METHOD_CHAINING;
@@ -269,32 +274,34 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             if (var == null && (THIS.equals(baseName) || SUPER.equals(baseName))) {
                 baseScope = SCOPE_CLASS;
             }
-            
+
             if (var instanceof TypedNameDeclaration) {
-                baseTypeName = ((TypedNameDeclaration)var).getTypeImage();
-                baseType = ((TypedNameDeclaration)var).getType();
+                baseTypeName = ((TypedNameDeclaration) var).getTypeImage();
+                baseType = ((TypedNameDeclaration) var).getType();
             } else if (METHOD_CALL_CHAIN.equals(baseName)) {
                 baseScope = SCOPE_METHOD_CHAINING;
             } else if (baseName.contains(".") && !baseName.startsWith("System.")) {
                 baseScope = SCOPE_STATIC_CHAIN;
             } else {
-                // everything else is no violation - probably a static method call.
+                // everything else is no violation - probably a static method
+                // call.
                 baseScope = null;
             }
         }
-        
+
         private VariableNameDeclaration findInLocalScope(String name, Scope scope) {
             VariableNameDeclaration result = null;
-            
+
             result = determineTypeOfVariable(name, scope.getDeclarations(VariableNameDeclaration.class).keySet());
             if (result == null && scope.getParent() instanceof LocalScope) {
                 result = findInLocalScope(name, scope.getParent());
             }
-            
+
             return result;
         }
 
-        private VariableNameDeclaration determineTypeOfVariable(String variableName, Set<VariableNameDeclaration> declarations) {
+        private VariableNameDeclaration determineTypeOfVariable(String variableName,
+                Set<VariableNameDeclaration> declarations) {
             VariableNameDeclaration result = null;
             for (VariableNameDeclaration var : declarations) {
                 if (variableName.equals(var.getImage())) {
@@ -304,40 +311,60 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             }
             return result;
         }
-        
+
         private Assignment determineLastAssignment() {
             List<Assignment> assignments = new ArrayList<>();
-            
-            ASTBlock block = expression.getFirstParentOfType(ASTMethodDeclaration.class).getFirstChildOfType(ASTBlock.class);
-            
+
+            ASTBlock block = expression.getFirstParentOfType(ASTMethodDeclaration.class)
+                    .getFirstChildOfType(ASTBlock.class);
+            //get all variableDeclarators within this block
             List<ASTVariableDeclarator> variableDeclarators = block.findDescendantsOfType(ASTVariableDeclarator.class);
             for (ASTVariableDeclarator declarator : variableDeclarators) {
-                ASTVariableDeclaratorId variableDeclaratorId = declarator.getFirstChildOfType(ASTVariableDeclaratorId.class);
+                ASTVariableDeclaratorId variableDeclaratorId = declarator
+                        .getFirstChildOfType(ASTVariableDeclaratorId.class);
+                //we only care about it if the image name matches the current baseName
                 if (variableDeclaratorId.hasImageEqualTo(baseName)) {
-                    boolean allocationFound = declarator.getFirstDescendantOfType(ASTAllocationExpression.class) != null;
+                    boolean allocationFound = declarator
+                            .getFirstDescendantOfType(ASTAllocationExpression.class) != null;
                     boolean iterator = isIterator() || isFactory(declarator);
                     boolean forLoop = isForLoop(declarator);
                     assignments.add(new Assignment(declarator.getBeginLine(), allocationFound, iterator, forLoop));
                 }
             }
-            
+
+            //get all AssignmentOperators within this block
             List<ASTAssignmentOperator> assignmentStmts = block.findDescendantsOfType(ASTAssignmentOperator.class);
             for (ASTAssignmentOperator stmt : assignmentStmts) {
-                if (stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
-                    boolean allocationFound = stmt.jjtGetParent().getFirstDescendantOfType(ASTAllocationExpression.class) != null;
-                    boolean iterator = isIterator();
-                    assignments.add(new Assignment(stmt.getBeginLine(), allocationFound, iterator, false));
+                //we only care about it if it occurs prior to (or on) the beginLine of the current expression
+                //and if it is a simple_assignement_operator
+                if (stmt.getBeginLine() <= expression.getBeginLine()
+                        && stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
+                    //now we need to make sure it has the right image name
+                    ASTPrimaryPrefix primaryPrefix = stmt.jjtGetParent()
+                            .getFirstDescendantOfType(ASTPrimaryPrefix.class);
+                    if (primaryPrefix != null) {
+                        ASTName prefixName = primaryPrefix.getFirstChildOfType(ASTName.class);
+                        if (prefixName != null && prefixName.hasImageEqualTo(baseName)) {
+                            //this is an assignment related to the baseName we are working with
+                            boolean allocationFound = stmt.jjtGetParent()
+                                    .getFirstDescendantOfType(ASTAllocationExpression.class) != null;
+                            boolean iterator = isIterator();
+                            assignments
+                                    .add(new Assignment(stmt.getBeginLine(), allocationFound, iterator, false));
+                        }
+                    }
                 }
             }
-            
+
             Assignment result = null;
             if (!assignments.isEmpty()) {
+                //sort them in reverse order and return the first one
                 Collections.sort(assignments);
                 result = assignments.get(0);
             }
             return result;
         }
-        
+
         private boolean isIterator() {
             boolean iterator = false;
             if (baseType != null && baseType == Iterator.class
@@ -346,6 +373,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             }
             return iterator;
         }
+
         private boolean isFactory(ASTVariableDeclarator declarator) {
             boolean factory = false;
             List<ASTName> names = declarator.findDescendantsOfType(ASTName.class);
@@ -357,6 +385,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             }
             return factory;
         }
+
         private boolean isForLoop(ASTVariableDeclarator declarator) {
             return declarator.jjtGetParent().jjtGetParent() instanceof ASTForStatement;
         }
@@ -364,48 +393,46 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         public ASTPrimaryExpression getExpression() {
             return expression;
         }
-        
+
         public boolean isViolation() {
             return violation;
         }
-        
+
         public String getViolationReason() {
             return violationReason;
         }
-        
+
         @Override
         public String toString() {
-            return "MethodCall on line " + expression.getBeginLine() + ":\n"
-                + "  " + baseName + " name: "+ methodName+ "\n"
-                + "  type: " + baseTypeName + " (" + baseType + "), \n"
-                + "  scope: " + baseScope + "\n"
-                + "  violation: " + violation + " (" + violationReason + ")\n";
+            return "MethodCall on line " + expression.getBeginLine() + ":\n" + "  " + baseName + " name: " + methodName
+                    + "\n" + "  type: " + baseTypeName + " (" + baseType + "), \n" + "  scope: " + baseScope + "\n"
+                    + "  violation: " + violation + " (" + violationReason + ")\n";
         }
-        
+
     }
-    
+
     /**
      * Stores the assignment of a variable and whether the variable's value is
-     * allocated locally (new constructor call). The class is comparable, so that
-     * the last assignment can be determined.
+     * allocated locally (new constructor call). The class is comparable, so
+     * that the last assignment can be determined.
      */
     private static class Assignment implements Comparable<Assignment> {
         private int line;
         private boolean allocation;
         private boolean iterator;
         private boolean forLoop;
-        
-        public Assignment(int line, boolean allocation, boolean iterator, boolean forLoop) {
+
+        Assignment(int line, boolean allocation, boolean iterator, boolean forLoop) {
             this.line = line;
             this.allocation = allocation;
             this.iterator = iterator;
             this.forLoop = forLoop;
         }
-        
+
         @Override
         public String toString() {
-            return "assignment: line=" + line + " allocation:" + allocation
-                + " iterator:" + iterator + " forLoop: " + forLoop;
+            return "assignment: line=" + line + " allocation:" + allocation + " iterator:" + iterator + " forLoop: "
+                    + forLoop;
         }
 
         public int compareTo(Assignment o) {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -37,17 +38,16 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
                 return true;
             } else if (n instanceof ASTForInit) {
                 /*
-                 * init part is not technically inside the loop.
-                 * Skip parent ASTForStatement but continue higher
-                 * up to detect nested loops
+                 * init part is not technically inside the loop. Skip parent
+                 * ASTForStatement but continue higher up to detect nested loops
                  */
                 n = n.jjtGetParent();
-            } else if (n.jjtGetParent() instanceof ASTForStatement
-                && n.jjtGetParent().jjtGetNumChildren() > 1
-                && n == n.jjtGetParent().jjtGetChild(1)) {
+            } else if (n.jjtGetParent() instanceof ASTForStatement && n.jjtGetParent().jjtGetNumChildren() > 1
+                    && n == n.jjtGetParent().jjtGetChild(1)) {
                 // it is the second child of a ForStatement - which means
                 // we are dealing with a for-each construct
-                // In that case, we can ignore this allocation expression, as the second child
+                // In that case, we can ignore this allocation expression, as
+                // the second child
                 // is the expression, over which to iterate.
                 // Skip this parent but continue higher up
                 // to detect nested loops

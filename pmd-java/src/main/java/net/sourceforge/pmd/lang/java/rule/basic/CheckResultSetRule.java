@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class CheckResultSetRule extends AbstractJavaRule {
     private Map<String, Node> resultSetVariables = new HashMap<>();
 
     private static Set<String> methods = new HashSet<>();
+
     static {
         methods.add(".next");
         methods.add(".previous");
@@ -46,11 +48,10 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        ASTClassOrInterfaceType type = node.getFirstChildOfType(ASTType.class).getFirstDescendantOfType(
-                ASTClassOrInterfaceType.class);
-        if (type != null
-                && (type.getType() != null && "java.sql.ResultSet".equals(type.getType().getName()) || "ResultSet"
-                        .equals(type.getImage()))) {
+        ASTClassOrInterfaceType type = node.getFirstChildOfType(ASTType.class)
+                .getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        if (type != null && (type.getType() != null && "java.sql.ResultSet".equals(type.getType().getName())
+                || "ResultSet".equals(type.getImage()))) {
             ASTVariableDeclarator declarator = node.getFirstChildOfType(ASTVariableDeclarator.class);
             if (declarator != null) {
                 ASTName name = declarator.getFirstDescendantOfType(ASTName.class);

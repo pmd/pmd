@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
@@ -17,8 +18,8 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AbstractClassWithoutAbstractMethod");
         addRule(RULESET, "AbstractClassWithoutAnyMethod");
         addRule(RULESET, "AccessorClassGeneration");
+        addRule(RULESET, "AccessorMethodGeneration");
         addRule(RULESET, "AssignmentToNonFinalStatic");
-        addRule(RULESET, "AvoidConstantsInterface");
         addRule(RULESET, "AvoidDeeplyNestedIfStmts");
         addRule(RULESET, "AvoidInstanceofChecksInCatchClause");
         addRule(RULESET, "AvoidProtectedFieldInFinalClass");
@@ -30,6 +31,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "CloseResource");
         addRule(RULESET, "CompareObjectsWithEquals");
         addRule(RULESET, "ConfusingTernary");
+        addRule(RULESET, "ConstantsInInterface");
         addRule(RULESET, "ConstructorCallsOverridableMethod");
         addRule(RULESET, "DefaultLabelNotLastInSwitchStmt");
         addRule(RULESET, "EmptyMethodInAbstractClassShouldBeAbstract");
@@ -73,6 +75,5 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UseNotifyAllInsteadOfNotify");
         addRule(RULESET, "UseUtilityClass");
         addRule(RULESET, "UseVarargs");
-        addRule(RULESET, "ConstantsInInterface");
     }
 }

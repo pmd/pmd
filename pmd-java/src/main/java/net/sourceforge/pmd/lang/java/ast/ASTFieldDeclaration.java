@@ -29,7 +29,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isPublic() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return true;
         }
         return super.isPublic();
@@ -41,7 +41,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isStatic() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return true;
         }
         return super.isStatic();
@@ -53,7 +53,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isFinal() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return true;
         }
         return super.isFinal();
@@ -61,7 +61,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isPrivate() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return false;
         }
         return super.isPrivate();
@@ -69,7 +69,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isPackagePrivate() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return false;
         }
         return super.isPackagePrivate();
@@ -77,10 +77,17 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public boolean isProtected() {
-        if (isInterfaceMember()) {
+        if (isAnnotationMember() || isInterfaceMember()) {
             return false;
         }
         return super.isProtected();
+    }
+
+    public boolean isAnnotationMember() {
+        if (jjtGetParent().jjtGetParent() instanceof ASTAnnotationTypeBody) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isInterfaceMember() {
@@ -117,8 +124,9 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
     }
 
     /**
-     * Gets the variable name of this field.
-     * This method searches the first VariableDeclartorId node and returns its image or <code>null</code> if the child node is not found.
+     * Gets the variable name of this field. This method searches the first
+     * VariableDeclartorId node and returns its image or <code>null</code> if
+     * the child node is not found.
      *
      * @return a String representing the name of the variable
      */

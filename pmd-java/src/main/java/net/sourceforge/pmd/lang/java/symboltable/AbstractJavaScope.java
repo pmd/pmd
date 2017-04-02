@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Set;
@@ -10,8 +11,8 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * Provides the basic java scope implementation
- * <p/>
+ * Provides the basic java scope implementation.
+ * 
  * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-6.html#jls-6.3">JLS 6.3</a>
  */
 public abstract class AbstractJavaScope extends AbstractScope {
@@ -30,14 +31,14 @@ public abstract class AbstractJavaScope extends AbstractScope {
 
     @Override
     public boolean contains(NameOccurrence occurrence) {
-        return !findVariableHere((JavaNameOccurrence)occurrence).isEmpty();
+        return !findVariableHere((JavaNameOccurrence) occurrence).isEmpty();
     }
 
     protected abstract Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence);
 
     protected <T> String glomNames(Set<T> s) {
-    	StringBuilder result = new StringBuilder();
-        for (T t: s) {
+        StringBuilder result = new StringBuilder();
+        for (T t : s) {
             result.append(t.toString());
             result.append(',');
         }

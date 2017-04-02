@@ -1,15 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.DummyNode;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.sourceforge.pmd.lang.ast.DummyNode;
 
 /**
  * Unit test for {@link AttributeAxisIterator}
@@ -22,8 +23,8 @@ public class AttributeAxisIteratorTest {
     @Test
     public void testAttributeAxisIterator() {
         DummyNode dummyNode = new DummyNode(1);
-        dummyNode.testingOnly__setBeginLine(1);
-        dummyNode.testingOnly__setBeginColumn(1);
+        dummyNode.testingOnlySetBeginLine(1);
+        dummyNode.testingOnlySetBeginColumn(1);
 
         AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = new HashMap<>();

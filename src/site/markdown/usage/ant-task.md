@@ -10,7 +10,7 @@
 
 ### Description
 
-Runs a set of static code analysis rules on some Java source code files and generates a list of problems found.
+Runs a set of static code analysis rules on some source code files and generates a list of problems found.
 
 ### Parameters
 
@@ -71,6 +71,15 @@ Runs a set of static code analysis rules on some Java source code files and gene
       </td>
       <td>No</td>
     </tr>
+    <tr>
+      <td>cacheLocation</td>
+      <td>
+        The location of the analysis cache file to be used.
+        The cache can greatly improve analysis time without loosing analysis quality.
+        <b>It's use is strongly recommended.</b>
+      </td>
+      <td>No</td>
+    </tr>
 </table>
 
 
@@ -98,6 +107,8 @@ Runs a set of static code analysis rules on some Java source code files and gene
    <td colspan="2">
        <p>The <code>formatter</code> element can contain nested <code>param</code> elements to configure the formatter in detail, e.g.</p>
        <dl>
+       <dt>encoding</dt>
+       <dd>Specifies the encoding to be used in the generated report (only honored when used with `toFile`). When rendering `toConsole` PMD will automatically detect the terminal's encoding and use it, unless the output is being redirected / piped, in which case `file.encoding` is used. See example below.</dd>
        <dt>linkPrefix</dt>
        <dd>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html">this</a>).  See example below.</dd>
        <dt>linePrefix</dt>
@@ -162,7 +173,9 @@ Several folks (most recently, Wouter Zelle) have written XSLT scripts
 which you can use to transform the XML report into nifty HTML.  To do this,
 make sure you use the XML formatter in the PMD task invocation, i.e.:
 
-    <formatter type="xml" toFile="${tempbuild}/$report_pmd.xml"/>
+    <formatter type="xml" toFile="${tempbuild}/$report_pmd.xml">
+        <param name="encoding" value="UTF-8" /> <!-- enforce UTF-8 encoding for the XML -->
+    </formatter>
 
 Then, after the end of the PMD task, do this:
 
@@ -170,13 +183,13 @@ Then, after the end of the PMD task, do this:
 
 ### Examples
 
-Running one ruleset to produce a HTML report (and printing the report to the console as well)
+Running one ruleset to produce a HTML report (and printing the report to the console as well) using a file cache
 
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="java-imports">
+        <pmd rulesetfiles="java-imports" cacheLocation="build/pmd/pmd.cache">
             <formatter type="html" toFile="pmd_report.html" toConsole="true"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
                 <include name="**/*.java"/>
@@ -184,13 +197,13 @@ Running one ruleset to produce a HTML report (and printing the report to the con
         </pmd>
     </target>
 
-Running multiple rulesets to produce an XML report
+Running multiple rulesets to produce an XML report with the same analysis cache
 
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode">
+        <pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode" cacheLocation="build/pmd/pmd.cache">
             <formatter type="xml" toFile="c:\pmd_report.xml"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
                 <include name="**/*.java"/>

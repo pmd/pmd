@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.dfa;
 
 import java.util.logging.Level;
@@ -17,9 +18,10 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 
 /**
+ * TODO What about initializers? This only processes methods and
+ * constructors.
+ *
  * @author raik
- *         <p/>
- *         TODO What about initializers?  This only processes methods and constructors
  */
 public class DataFlowFacade extends PLSQLParserVisitorAdapter {
     private static final String CLASS_PATH = DataFlowFacade.class.getCanonicalName();
@@ -36,111 +38,89 @@ public class DataFlowFacade extends PLSQLParserVisitorAdapter {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTMethodDeclaration)");
+        LOGGER.entering(CLASS_PATH, "visit(ASTMethodDeclaration)");
         if (LOGGER.isLoggable(Level.FINEST)) {
-        LOGGER.finest("visit(ASTMethodDeclaration): " 
-                      + node.getClass().getCanonicalName() + " @ line " 
-                      + node.getBeginLine() 
-                      +", column " + node.getBeginColumn()
-                      + " --- " + new Throwable().getStackTrace()
-                );
+            LOGGER.finest("visit(ASTMethodDeclaration): " + node.getClass().getCanonicalName() + " @ line "
+                    + node.getBeginLine() + ", column " + node.getBeginColumn() + " --- "
+                    + new Throwable().getStackTrace());
         }
 
-        super.visit(node, data) ;
+        super.visit(node, data);
         sbf.buildDataFlowFor(node);
         vav.compute(node);
-        LOGGER.exiting(CLASS_PATH,"visit(ASTMethodDeclaration)");
+        LOGGER.exiting(CLASS_PATH, "visit(ASTMethodDeclaration)");
         return data;
     }
 
     @Override
     public Object visit(ASTTriggerUnit node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTriggerUnit)");
+        LOGGER.entering(CLASS_PATH, "visit(ASTTriggerUnit)");
         if (LOGGER.isLoggable(Level.FINEST)) {
-        LOGGER.finest("visit(ASTTriggerUnit): " 
-                      + node.getClass().getCanonicalName() + " @ line " 
-                      + node.getBeginLine() 
-                      +", column " + node.getBeginColumn()
-                      + " --- " + new Throwable().getStackTrace()
-                );
+            LOGGER.finest(
+                    "visit(ASTTriggerUnit): " + node.getClass().getCanonicalName() + " @ line " + node.getBeginLine()
+                            + ", column " + node.getBeginColumn() + " --- " + new Throwable().getStackTrace());
         }
-        if (node.hasDescendantOfType(ASTCompoundTriggerBlock.class))
-        {
+        if (node.hasDescendantOfType(ASTCompoundTriggerBlock.class)) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-          LOGGER.finest("visit(ASTTriggerUnit): treating ASTTriggerUnit like a PackageBody " 
-                        + node.getClass().getCanonicalName() + " @ line " 
-                        + node.getBeginLine() 
-                        +", column " + node.getBeginColumn()
-                        + " --- " + new Throwable().getStackTrace()
-                      );
+                LOGGER.finest("visit(ASTTriggerUnit): treating ASTTriggerUnit like a PackageBody "
+                        + node.getClass().getCanonicalName() + " @ line " + node.getBeginLine() + ", column "
+                        + node.getBeginColumn() + " --- " + new Throwable().getStackTrace());
             }
-          //Pass
-          super.visit(node, data) ;
+            // Pass
+            super.visit(node, data);
         }
         {
             if (LOGGER.isLoggable(Level.FINEST)) {
-          LOGGER.finest("visit(ASTTriggerUnit): treating ASTTriggerUnit as standalone " 
-                        + node.getClass().getCanonicalName() + " @ line " 
-                        + node.getBeginLine() 
-                        +", column " + node.getBeginColumn()
-                        + " --- " + new Throwable().getStackTrace()
-                      );
+                LOGGER.finest("visit(ASTTriggerUnit): treating ASTTriggerUnit as standalone "
+                        + node.getClass().getCanonicalName() + " @ line " + node.getBeginLine() + ", column "
+                        + node.getBeginColumn() + " --- " + new Throwable().getStackTrace());
             }
-          sbf.buildDataFlowFor(node);
-          vav.compute(node);
+            sbf.buildDataFlowFor(node);
+            vav.compute(node);
         }
-        LOGGER.exiting(CLASS_PATH,"visit(ASTTriggerUnit)");
+        LOGGER.exiting(CLASS_PATH, "visit(ASTTriggerUnit)");
         return data;
     }
 
     @Override
     public Object visit(ASTTriggerTimingPointSection node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTriggerTimingPointSection)");
+        LOGGER.entering(CLASS_PATH, "visit(ASTTriggerTimingPointSection)");
         if (LOGGER.isLoggable(Level.FINEST)) {
-        LOGGER.finest("visit(ASTTriggerTimingPointSection): " 
-                      + node.getClass().getCanonicalName() + " @ line " 
-                      + node.getBeginLine() 
-                      +", column " + node.getBeginColumn()
-                      + " --- " + new Throwable().getStackTrace()
-                );
+            LOGGER.finest("visit(ASTTriggerTimingPointSection): " + node.getClass().getCanonicalName() + " @ line "
+                    + node.getBeginLine() + ", column " + node.getBeginColumn() + " --- "
+                    + new Throwable().getStackTrace());
         }
         sbf.buildDataFlowFor(node);
         vav.compute(node);
-        LOGGER.exiting(CLASS_PATH,"visit(ASTProgramUnit)");
+        LOGGER.exiting(CLASS_PATH, "visit(ASTProgramUnit)");
         return data;
     }
 
     @Override
     public Object visit(ASTProgramUnit node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTProgramUnit)");
+        LOGGER.entering(CLASS_PATH, "visit(ASTProgramUnit)");
         if (LOGGER.isLoggable(Level.FINEST)) {
-        LOGGER.finest("visit(ASTProgramUnit): " 
-                      + node.getClass().getCanonicalName() + " @ line " 
-                      + node.getBeginLine() 
-                      +", column " + node.getBeginColumn()
-                      + " --- " + new Throwable().getStackTrace()
-                );
+            LOGGER.finest(
+                    "visit(ASTProgramUnit): " + node.getClass().getCanonicalName() + " @ line " + node.getBeginLine()
+                            + ", column " + node.getBeginColumn() + " --- " + new Throwable().getStackTrace());
         }
         sbf.buildDataFlowFor(node);
         vav.compute(node);
-        LOGGER.exiting(CLASS_PATH,"visit(ASTProgramUnit)");
+        LOGGER.exiting(CLASS_PATH, "visit(ASTProgramUnit)");
         return data;
     }
 
     @Override
     public Object visit(ASTTypeMethod node, Object data) {
-        LOGGER.entering(CLASS_PATH,"visit(ASTTypeMethod)");
+        LOGGER.entering(CLASS_PATH, "visit(ASTTypeMethod)");
         if (LOGGER.isLoggable(Level.FINEST)) {
-        LOGGER.finest("visit(ASTTypeMethod): " 
-                      + node.getClass().getCanonicalName() + " @ line " 
-                      + node.getBeginLine() 
-                      +", column " + node.getBeginColumn()
-                      + " --- " + new Throwable().getStackTrace()
-                );
+            LOGGER.finest(
+                    "visit(ASTTypeMethod): " + node.getClass().getCanonicalName() + " @ line " + node.getBeginLine()
+                            + ", column " + node.getBeginColumn() + " --- " + new Throwable().getStackTrace());
         }
         sbf.buildDataFlowFor(node);
         vav.compute(node);
-        LOGGER.exiting(CLASS_PATH,"visit(ASTTypeMethod)");
+        LOGGER.exiting(CLASS_PATH, "visit(ASTTypeMethod)");
         return data;
     }
 }

@@ -1,17 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.cpd.CPDCommandLineInterface;
-
 import org.junit.After;
 import org.junit.Before;
+
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.CPDCommandLineInterface;
 
 public abstract class BaseCPDCLITest {
     private ByteArrayOutputStream bufferStdout;
@@ -41,7 +42,7 @@ public abstract class BaseCPDCLITest {
         }
     }
 
-    protected void runCPD(String ... args) {
+    protected void runCPD(String... args) {
         System.setProperty(CPDCommandLineInterface.NO_EXIT_AFTER_RUN, "true");
         CPD.main(args);
     }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp.rule;
 
 import net.sourceforge.pmd.Rule;
@@ -21,10 +22,11 @@ public final class JspRuleViolationFactory extends AbstractRuleViolationFactory 
 
     @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-    	return new ParametricRuleViolation<>(rule, ruleContext, (JspNode) node, message);
+        return new ParametricRuleViolation<>(rule, ruleContext, (JspNode) node, message);
     }
-    
-    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message, int beginLine, int endLine) {
-		return null;	// FIXME
-	}
+
+    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
+            int beginLine, int endLine) {
+        return null; // FIXME
+    }
 }

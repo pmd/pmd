@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class MatchCollector {
     }
 
     public void collect(List<TokenEntry> marks) {
-        //first get a pairwise collection of all maximal matches
+        // first get a pairwise collection of all maximal matches
         for (int i = 0; i < marks.size() - 1; i++) {
             TokenEntry mark1 = marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
@@ -48,7 +49,7 @@ public class MatchCollector {
 
     private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
         Map<Integer, Match> matches = matchTree.get(dupes);
-        if (matches == null) {            
+        if (matches == null) {
             matches = new TreeMap<>();
             matchTree.put(dupes, matches);
             addNewMatch(mark1, mark2, dupes, matches);
@@ -58,28 +59,28 @@ public class MatchCollector {
 
             if (matchA == null && matchB == null) {
                 addNewMatch(mark1, mark2, dupes, matches);
-            } else if(matchA == null) {
+            } else if (matchA == null) {
                 matchB.addTokenEntry(mark1);
                 matches.put(mark1.getIndex(), matchB);
-            } else if(matchB == null) {
+            } else if (matchB == null) {
                 matchA.addTokenEntry(mark2);
                 matches.put(mark2.getIndex(), matchA);
             }
         }
     }
-    
-    private void addNewMatch(TokenEntry mark1, TokenEntry mark2, int dupes, Map<Integer, Match> matches){
+
+    private void addNewMatch(TokenEntry mark1, TokenEntry mark2, int dupes, Map<Integer, Match> matches) {
         Match match = new Match(dupes, mark1, mark2);
         matches.put(mark1.getIndex(), match);
         matches.put(mark2.getIndex(), match);
-        matchList.add(match);        
+        matchList.add(match);
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public List<Match> getMatches() {
         Collections.sort(matchList);
         return matchList;
-    }    
+    }
 
     private boolean hasPreviousDupe(TokenEntry mark1, TokenEntry mark2) {
         if (mark1.getIndex() == 0) {

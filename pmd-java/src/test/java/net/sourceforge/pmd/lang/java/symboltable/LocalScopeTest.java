@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import static org.junit.Assert.assertEquals;
@@ -8,6 +9,8 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 import java.util.Map;
+
+import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -18,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-import org.junit.Test;
 public class LocalScopeTest extends STBBaseTst {
 
     @Test
@@ -108,39 +110,19 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals(2, ms.getDeclarations().size());
     }
 
+    public static final String TEST1 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL
+            + "  Bar b = new Bar();" + PMD.EOL + " }" + PMD.EOL + "}";
 
-    public static final String TEST1 =
-            "public class Foo {" + PMD.EOL +
-            " void foo() {" + PMD.EOL +
-            "  Bar b = new Bar();" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    public static final String TEST2 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL
+            + "  Bar b = new Bar();" + PMD.EOL + "  b.buz = 2;" + PMD.EOL + " }" + PMD.EOL + "}";
 
-    public static final String TEST2 =
-            "public class Foo {" + PMD.EOL +
-            " void foo() {" + PMD.EOL +
-            "  Bar b = new Bar();" + PMD.EOL +
-            "  b.buz = 2;" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    public static final String TEST3 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL + "  int x = 2;"
+            + PMD.EOL + "  x++;" + PMD.EOL + " }" + PMD.EOL + "}";
 
-    public static final String TEST3 =
-            "public class Foo {" + PMD.EOL +
-            " void foo() {" + PMD.EOL +
-            "  int x = 2;" + PMD.EOL +
-            "  x++;" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
+    public static final String TEST4 = "public class Foo {" + PMD.EOL + " void foo(String x, String z) { int y; }"
+            + PMD.EOL + "}";
 
-    public static final String TEST4 =
-            "public class Foo {" + PMD.EOL +
-            " void foo(String x, String z) { int y; }" + PMD.EOL +
-            "}";
-
-    public static final String TEST5 =
-            "public class Foo {" + PMD.EOL +
-            " void foo(String x);" + PMD.EOL +
-            "}";
+    public static final String TEST5 = "public class Foo {" + PMD.EOL + " void foo(String x);" + PMD.EOL + "}";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(LocalScopeTest.class);

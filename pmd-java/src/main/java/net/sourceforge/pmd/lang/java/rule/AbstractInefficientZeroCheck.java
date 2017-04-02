@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Arrays;
@@ -84,11 +85,11 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @param location
      *            the node location to report
      * @param expr
-     *            the ==, <, > expression
+     *            the ==, &lt;, &gt; expression
      */
     protected void checkNodeAndReport(Object data, Node location, Node expr) {
-        if ((expr instanceof ASTEqualityExpression || expr instanceof ASTRelationalExpression
-                && getComparisonTargets().containsKey(expr.getImage()))
+        if ((expr instanceof ASTEqualityExpression
+                || expr instanceof ASTRelationalExpression && getComparisonTargets().containsKey(expr.getImage()))
                 && isCompare(expr)) {
             addViolation(data, location);
         }
@@ -146,10 +147,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @see #getComparisonTargets()
      */
     private boolean checkComparison(String operator, Node equality, int i) {
-        Node target = equality
-                .jjtGetChild(i)
-                .jjtGetChild(0)
-                .jjtGetChild(0);
+        Node target = equality.jjtGetChild(i).jjtGetChild(0).jjtGetChild(0);
         return target instanceof ASTLiteral && getComparisonTargets().get(operator).contains(target.getImage());
     }
 

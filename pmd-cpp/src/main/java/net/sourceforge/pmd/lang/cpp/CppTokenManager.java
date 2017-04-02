@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.cpp;
 
 import java.io.Reader;
@@ -17,7 +18,9 @@ public class CppTokenManager implements TokenManager {
 
     /**
      * Creates a new C++ Token Manager from the given source code.
-     * @param source the source code
+     * 
+     * @param source
+     *            the source code
      */
     public CppTokenManager(Reader source) {
         tokenManager = new CppParserTokenManager(new SimpleCharStream(new ContinuationReader(source)));

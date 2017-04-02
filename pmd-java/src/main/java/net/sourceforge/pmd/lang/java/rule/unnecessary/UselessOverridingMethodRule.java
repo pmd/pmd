@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unnecessary;
 
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
- * @author Romain Pelisse, bugfix for [ 1522517 ] False +: UselessOverridingMethod
+ * @author Romain Pelisse, bugfix for [ 1522517 ] False +:
+ *         UselessOverridingMethod
  */
 public class UselessOverridingMethodRule extends AbstractJavaRule {
     private final List<String> exceptions;
@@ -39,8 +41,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
     private static final String CLONE = "clone";
     private static final String OBJECT = "Object";
 
-    private static final BooleanProperty IGNORE_ANNOTATIONS_DESCRIPTOR = new BooleanProperty(
-                "ignoreAnnotations", "Ignore annotations", false, 1.0f);
+    private static final BooleanProperty IGNORE_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("ignoreAnnotations",
+            "Ignore annotations", false, 1.0f);
 
     public UselessOverridingMethodRule() {
         definePropertyDescriptor(IGNORE_ANNOTATIONS_DESCRIPTOR);
@@ -67,18 +69,18 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         return super.visit(clz, data);
     }
 
-    //TODO: this method should be externalize into an utility class, shouldn't it ?
+    // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodType(ASTMethodDeclaration node, String methodType) {
         boolean result = false;
         ASTResultType type = node.getResultType();
         if (type != null) {
-            result = type.hasDescendantMatchingXPath("./Type/ReferenceType/ClassOrInterfaceType[@Image = '"
-                        + methodType + "']");
+            result = type.hasDescendantMatchingXPath(
+                    "./Type/ReferenceType/ClassOrInterfaceType[@Image = '" + methodType + "']");
         }
         return result;
     }
 
-    //TODO: this method should be externalize into an utility class, shouldn't it ?
+    // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodThrowingType(ASTMethodDeclaration node, List<String> exceptedExceptions) {
         boolean result = false;
         ASTNameList thrownsExceptions = node.getFirstChildOfType(ASTNameList.class);
@@ -119,7 +121,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         if (block == null) {
             return super.visit(node, data);
         }
-        //Only process functions with one BlockStatement
+        // Only process functions with one BlockStatement
         if (block.jjtGetNumChildren() != 1 || block.findDescendantsOfType(ASTStatement.class).size() != 1) {
             return super.visit(node, data);
         }
@@ -158,9 +160,9 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         ASTMethodDeclarator methodDeclarator = findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
         ASTPrimarySuffix primarySuffix = primarySuffixList.get(0);
         if (!primarySuffix.hasImageEqualTo(methodDeclarator.getImage())) {
-        	return super.visit(node, data);
+            return super.visit(node, data);
         }
-        //Process arguments
+        // Process arguments
         primarySuffix = primarySuffixList.get(1);
         ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
         ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.jjtGetChild(0);
@@ -191,17 +193,20 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             for (int i = 0; i < argumentList.jjtGetNumChildren(); i++) {
                 Node expressionChild = argumentList.jjtGetChild(i).jjtGetChild(0);
                 if (!(expressionChild instanceof ASTPrimaryExpression) || expressionChild.jjtGetNumChildren() != 1) {
-                    return super.visit(node, data); //The arguments are not simply passed through
+                    // The arguments are not simply passed through
+                    return super.visit(node, data);
                 }
 
                 ASTPrimaryExpression argumentPrimaryExpression = (ASTPrimaryExpression) expressionChild;
                 ASTPrimaryPrefix argumentPrimaryPrefix = (ASTPrimaryPrefix) argumentPrimaryExpression.jjtGetChild(0);
                 if (argumentPrimaryPrefix.jjtGetNumChildren() == 0) {
-                    return super.visit(node, data); //The arguments are not simply passed through (using "this" for instance)
+                    // The arguments are not simply passed through (using "this" for instance)
+                    return super.visit(node, data);
                 }
                 Node argumentPrimaryPrefixChild = argumentPrimaryPrefix.jjtGetChild(0);
                 if (!(argumentPrimaryPrefixChild instanceof ASTName)) {
-                    return super.visit(node, data); //The arguments are not simply passed through
+                    // The arguments are not simply passed through
+                    return super.visit(node, data);
                 }
 
                 if (formalParameters.jjtGetNumChildren() < i + 1) {
@@ -213,11 +218,13 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
                 ASTVariableDeclaratorId variableId = findFirstDegreeChildrenOfType(formalParameter,
                         ASTVariableDeclaratorId.class).get(0);
                 if (!argumentName.hasImageEqualTo(variableId.getImage())) {
-                    return super.visit(node, data); //The arguments are not simply passed through
+                    // The arguments are not simply passed through
+                    return super.visit(node, data);
                 }
 
             }
-            addViolation(data, node, getMessage()); //All arguments are passed through directly
+            // All arguments are passed through directly
+            addViolation(data, node, getMessage());
         }
         return super.visit(node, data);
     }

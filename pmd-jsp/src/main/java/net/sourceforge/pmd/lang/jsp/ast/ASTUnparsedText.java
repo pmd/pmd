@@ -14,7 +14,6 @@ public class ASTUnparsedText extends AbstractJspNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

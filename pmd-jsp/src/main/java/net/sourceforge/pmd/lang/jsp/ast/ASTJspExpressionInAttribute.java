@@ -14,7 +14,6 @@ public class ASTJspExpressionInAttribute extends AbstractJspNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

@@ -1,22 +1,24 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.AstNode;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
-	public ApexRootNode(T node) {
-		super(node);
-	}
+import apex.jorje.semantic.ast.AstNode;
 
-	// For top level classes, the end is the end of file.
-	@Override
-	void calculateLineNumbers(SourceCodePositioner positioner) {
-		super.calculateLineNumbers(positioner);
-		this.endLine = positioner.getLastLine();
-		this.endColumn = positioner.getLastLineColumn();
-	}
+public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
+    public ApexRootNode(T node) {
+        super(node);
+    }
+
+    // For top level classes, the end is the end of file.
+    @Override
+    void calculateLineNumbers(SourceCodePositioner positioner) {
+        super.calculateLineNumbers(positioner);
+        this.endLine = positioner.getLastLine();
+        this.endColumn = positioner.getLastLineColumn();
+    }
 }

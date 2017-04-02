@@ -562,7 +562,7 @@ public class Foo extends MultiActionController {
 
     private static final Logger logger = Logger.getLogger(Foo.class);
 
-    public DashboardGraphInnateFilter_o getGraphInnateFilter(HttpServletRequest request) {
+    public DashboardGraphInnateFilter getGraphInnateFilter(HttpServletRequest request) {
         setInnateFilterFields();
         return null;
     }
@@ -582,13 +582,13 @@ import net.sourceforge.pmd.lang.java.rule.unusedcode.unusedprivatemethod.*;
 public class Foo extends MultiActionController {
     private static final Logger logger = Logger.getLogger(Foo.class);
 
-    public DashboardGraphInnateFilter_o getGraphInnateFilter(HttpServletRequest request) {
-        DashboardGraphInnateFilter_o filter = new DashboardGraphInnateFilter_o();
+    public DashboardGraphInnateFilter getGraphInnateFilter(HttpServletRequest request) {
+        DashboardGraphInnateFilter filter = new DashboardGraphInnateFilter();
         setInnateFilterFields(filter, request);
         return filter;
     }
 
-    private void setInnateFilterFields(DashboardInnateFilter_o filter, HttpServletRequest request) { //incorrectly flagged
+    private void setInnateFilterFields(DashboardInnateFilter filter, HttpServletRequest request) { //incorrectly flagged
         logger.info("here");
     }
 }

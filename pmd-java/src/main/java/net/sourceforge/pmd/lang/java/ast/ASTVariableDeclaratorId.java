@@ -42,7 +42,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     }
 
     public List<NameOccurrence> getUsages() {
-        return getScope().getDeclarations().get(nameDeclaration);
+        return getScope().getDeclarations(VariableNameDeclaration.class).get(nameDeclaration);
     }
 
     public void bumpArrayDepth() {
@@ -64,6 +64,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     public void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;
     }
+
     public boolean isExplicitReceiverParameter() {
         return explicitReceiverParameter;
     }
@@ -74,7 +75,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
         } else if (jjtGetParent() instanceof ASTLambdaExpression) {
             // lambda expression with lax types. The type is inferred...
             return null;
-        } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
+        } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration
+                || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
             return findTypeNameNode(jjtGetParent().jjtGetParent());
         }
         return null;
@@ -82,6 +84,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
     /**
      * Determines the type node of this variable id.
+     * 
      * @return the type node or <code>null</code> if there is no explicit type.
      */
     public ASTType getTypeNode() {

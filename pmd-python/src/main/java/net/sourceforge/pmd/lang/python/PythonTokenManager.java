@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.python;
 
 import java.io.Reader;
@@ -17,7 +18,9 @@ public class PythonTokenManager implements TokenManager {
 
     /**
      * Creates a new Python Token Manager from the given source code.
-     * @param source the source code
+     * 
+     * @param source
+     *            the source code
      */
     public PythonTokenManager(Reader source) {
         tokenManager = new PythonParserTokenManager(new SimpleCharStream(source));

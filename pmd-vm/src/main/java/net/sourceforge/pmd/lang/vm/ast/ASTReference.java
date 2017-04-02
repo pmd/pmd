@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 /*
@@ -22,12 +23,13 @@ package net.sourceforge.pmd.lang.vm.ast;
 /**
  * This class is responsible for handling the references in VTL ($foo).
  * 
- * Please look at the Parser.jjt file which is what controls the generation of this class.
+ * Please look at the Parser.jjt file which is what controls the generation of
+ * this class.
  * 
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author <a href="mailto:Christoph.Reck@dlr.de">Christoph Reck</a>
- * @author <a href="mailto:kjohnson@transparent.com>Kent Johnson</a>
+ * @author <a href="mailto:kjohnson@transparent.com">Kent Johnson</a>
  * @version $Id: ASTReference.java 806597 2009-08-21 15:21:44Z nbubna $
  */
 public class ASTReference extends AbstractVmNode {
@@ -41,9 +43,11 @@ public class ASTReference extends AbstractVmNode {
     public boolean strictRef = false;
 
     /**
-     * Indicates if toString() should be called during condition evaluation just to ensure it does not return null.
-     * Check is unnecessary if all toString() implementations are known to have non-null return values. Disabling the
-     * check will give a performance improval since toString() may be a complex operation on large objects.
+     * Indicates if toString() should be called during condition evaluation just
+     * to ensure it does not return null. Check is unnecessary if all toString()
+     * implementations are known to have non-null return values. Disabling the
+     * check will give a performance improval since toString() may be a complex
+     * operation on large objects.
      */
     public boolean toStringNullCheck = true;
 
@@ -62,10 +66,6 @@ public class ASTReference extends AbstractVmNode {
         super(p, id);
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.SimpleNode#jjtAccept(org.apache.velocity.runtime.parser.node.VmParserVisitor,
-     *      java.lang.Object)
-     */
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);
@@ -81,13 +81,15 @@ public class ASTReference extends AbstractVmNode {
     }
 
     /**
-     * Routine to allow the literal representation to be externally overridden. Used now in the VM system to override a
-     * reference in a VM tree with the literal of the calling arg to make it work nicely when calling arg is null. It
-     * seems a bit much, but does keep things consistant.
+     * Routine to allow the literal representation to be externally overridden.
+     * Used now in the VM system to override a reference in a VM tree with the
+     * literal of the calling arg to make it work nicely when calling arg is
+     * null. It seems a bit much, but does keep things consistant.
      * 
      * Note, you can only set the literal once...
      * 
-     * @param literal String to render to when null
+     * @param literal
+     *            String to render to when null
      */
     public void setLiteral(final String literal) {
         /*
@@ -100,8 +102,8 @@ public class ASTReference extends AbstractVmNode {
     }
 
     /**
-     * Override of the SimpleNode method literal() Returns the literal representation of the node. Should be something
-     * like $<token>.
+     * Override of the SimpleNode method literal() Returns the literal
+     * representation of the node. Should be something like $&lt;token&gt;.
      * 
      * @return A literal string.
      */
@@ -111,7 +113,8 @@ public class ASTReference extends AbstractVmNode {
             return literal;
         }
 
-        // this value could be cached in this.literal but it increases memory usage
+        // this value could be cached in this.literal but it increases memory
+        // usage
         return super.literal();
     }
 }

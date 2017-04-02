@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util;
 
 public class NumericConstants {
@@ -11,4 +12,5 @@ public class NumericConstants {
 
     public static final Float FLOAT_ZERO = new Float(0.0f);
 
+    private NumericConstants() { }
 }

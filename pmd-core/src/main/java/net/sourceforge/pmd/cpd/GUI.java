@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.awt.BorderLayout;
@@ -52,6 +53,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
@@ -63,31 +65,59 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import net.sourceforge.pmd.PMD;
-
 import org.apache.commons.io.IOUtils;
+
+import net.sourceforge.pmd.PMD;
 
 public class GUI implements CPDListener {
 
-//	private interface Renderer {
-//		String render(Iterator<Match> items);
-//	}
+    // private interface Renderer {
+    // String render(Iterator<Match> items);
+    // }
 
-	private static final Object[][] RENDERER_SETS = new Object[][] {
-		{ "Text", 		new Renderer() { public String render(Iterator<Match> items) { return new SimpleRenderer().render(items); } } },
-		{ "XML", 		new Renderer() { public String render(Iterator<Match> items) { return new XMLRenderer().render(items); } } },
-		{ "CSV (comma)",new Renderer() { public String render(Iterator<Match> items) { return new CSVRenderer(',').render(items); } } },
-		{ "CSV (tab)",	new Renderer() { public String render(Iterator<Match> items) { return new CSVRenderer('\t').render(items); } } }
-		};
+    private static final Object[][] RENDERER_SETS = new Object[][] { { "Text", new Renderer() {
+        @Override
+        public String render(Iterator<Match> items) {
+            return new SimpleRenderer().render(items);
+        }
+    }, }, { "XML", new Renderer() {
+        @Override
+        public String render(Iterator<Match> items) {
+            return new XMLRenderer().render(items);
+        }
+    }, }, { "CSV (comma)", new Renderer() {
+        @Override
+        public String render(Iterator<Match> items) {
+            return new CSVRenderer(',').render(items);
+        }
+    }, }, { "CSV (tab)", new Renderer() {
+        @Override
+        public String render(Iterator<Match> items) {
+            return new CSVRenderer('\t').render(items);
+        }
+    }, }, };
 
-	private static abstract class LanguageConfig {
-		public abstract Language languageFor(Properties p);
-		public boolean canIgnoreIdentifiers() { return false; }
-		public boolean canIgnoreLiterals() { return false; }
-		public boolean canIgnoreAnnotations() { return false; }
-		public boolean canIgnoreUsings() { return false; }
-		public abstract String[] extensions();
-	}
+    private abstract static class LanguageConfig {
+        public abstract Language languageFor(Properties p);
+
+        public boolean canIgnoreIdentifiers() {
+            return false;
+        }
+
+        public boolean canIgnoreLiterals() {
+            return false;
+        }
+
+        public boolean canIgnoreAnnotations() {
+            return false;
+        }
+
+        public boolean canIgnoreUsings() {
+            return false;
+        }
+
+        public abstract String[] extensions();
+    }
 
     private static final Object[][] LANGUAGE_SETS;
 
@@ -105,23 +135,28 @@ public class GUI implements CPDListener {
                     lang.setProperties(p);
                     return lang;
                 }
+
                 @Override
                 public String[] extensions() {
                     List<String> exts = lang.getExtensions();
                     return exts.toArray(new String[exts.size()]);
                 }
+
                 @Override
                 public boolean canIgnoreAnnotations() {
                     return "java".equals(terseName);
                 }
+
                 @Override
                 public boolean canIgnoreIdentifiers() {
                     return "java".equals(terseName);
                 }
+
                 @Override
                 public boolean canIgnoreLiterals() {
                     return "java".equals(terseName);
                 }
+
                 @Override
                 public boolean canIgnoreUsings() {
                     return "cs".equals(terseName);
@@ -134,61 +169,77 @@ public class GUI implements CPDListener {
             public Language languageFor(Properties p) {
                 return LanguageFactory.createLanguage(LanguageFactory.BY_EXTENSION, p);
             }
+
             @Override
             public String[] extensions() {
-                return new String[] {"" };
+                return new String[] { "" };
             }
         };
     }
 
-	private static final int		DEFAULT_CPD_MINIMUM_LENGTH = 75;
-	private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<>(LANGUAGE_SETS.length);
-	private static final KeyStroke	COPY_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.CTRL_MASK,false);
-	private static final KeyStroke	DELETE_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+    private static final int DEFAULT_CPD_MINIMUM_LENGTH = 75;
+    private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<>(LANGUAGE_SETS.length);
+    private static final KeyStroke COPY_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK,
+            false);
+    private static final KeyStroke DELETE_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 
-	private class ColumnSpec {
-		private String label;
-		private int alignment;
-		private int width;
-		private Comparator<Match> sorter;
+    private class ColumnSpec {
+        private String label;
+        private int alignment;
+        private int width;
+        private Comparator<Match> sorter;
 
-		public ColumnSpec(String aLabel, int anAlignment, int aWidth, Comparator<Match> aSorter) {
-			label = aLabel;
-			alignment = anAlignment;
-			width = aWidth;
-			sorter = aSorter;
-		}
-		public String label() { return label; }
-		public int alignment() { return alignment; }
-		public int width() { return width; }
-		public Comparator<Match> sorter() { return sorter; }
-	}
+        ColumnSpec(String aLabel, int anAlignment, int aWidth, Comparator<Match> aSorter) {
+            label = aLabel;
+            alignment = anAlignment;
+            width = aWidth;
+            sorter = aSorter;
+        }
 
-	private final ColumnSpec[] matchColumns = new ColumnSpec[] {
-		new ColumnSpec("Source", 	SwingConstants.LEFT, -1, Match.LABEL_COMPARATOR),
-		new ColumnSpec("Matches", 	SwingConstants.RIGHT, 60, Match.MATCHES_COMPARATOR),
-		new ColumnSpec("Lines", 	SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR),
-		};
+        public String label() {
+            return label;
+        }
 
-	static {
-		for (int i=0; i<LANGUAGE_SETS.length; i++) {
-			LANGUAGE_CONFIGS_BY_LABEL.put((String)LANGUAGE_SETS[i][0], (LanguageConfig)LANGUAGE_SETS[i][1]);
-		}
-	}
+        public int alignment() {
+            return alignment;
+        }
 
-	private static LanguageConfig languageConfigFor(String label) {
-		return LANGUAGE_CONFIGS_BY_LABEL.get(label);
-	}
+        public int width() {
+            return width;
+        }
+
+        public Comparator<Match> sorter() {
+            return sorter;
+        }
+    }
+
+    private final ColumnSpec[] matchColumns = new ColumnSpec[] {
+        new ColumnSpec("Source", SwingConstants.LEFT, -1, Match.LABEL_COMPARATOR),
+        new ColumnSpec("Matches", SwingConstants.RIGHT, 60, Match.MATCHES_COMPARATOR),
+        new ColumnSpec("Lines", SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR), };
+
+    static {
+        for (int i = 0; i < LANGUAGE_SETS.length; i++) {
+            LANGUAGE_CONFIGS_BY_LABEL.put((String) LANGUAGE_SETS[i][0], (LanguageConfig) LANGUAGE_SETS[i][1]);
+        }
+    }
+
+    private static LanguageConfig languageConfigFor(String label) {
+        return LANGUAGE_CONFIGS_BY_LABEL.get(label);
+    }
 
     private static class CancelListener implements ActionListener {
+        @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
         }
     }
 
     private class GoListener implements ActionListener {
+        @Override
         public void actionPerformed(ActionEvent e) {
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     tokenizingFilesBar.setValue(0);
                     tokenizingFilesBar.setString("");
@@ -203,18 +254,19 @@ public class GUI implements CPDListener {
 
     private class SaveListener implements ActionListener {
 
-    	final Renderer renderer;
+        final Renderer renderer;
 
-    	public SaveListener(Renderer theRenderer) {
-    		renderer = theRenderer;
-    	}
+        SaveListener(Renderer theRenderer) {
+            renderer = theRenderer;
+        }
 
+        @Override
         public void actionPerformed(ActionEvent evt) {
-            JFileChooser fcSave	= new JFileChooser();
+            JFileChooser fcSave = new JFileChooser();
             int ret = fcSave.showSaveDialog(GUI.this.frame);
             File f = fcSave.getSelectedFile();
             if (f == null || ret != JFileChooser.APPROVE_OPTION) {
-        	return;
+                return;
             }
 
             if (!f.canWrite()) {
@@ -244,6 +296,7 @@ public class GUI implements CPDListener {
     }
 
     private class BrowseListener implements ActionListener {
+        @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser fc = new JFileChooser(rootDirectoryField.getText());
             fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -254,39 +307,41 @@ public class GUI implements CPDListener {
         }
     }
 
-	private class AlignmentRenderer extends DefaultTableCellRenderer {
+    private class AlignmentRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = -2190382865483285032L;
         private int[] alignments;
 
-		public AlignmentRenderer(int[] theAlignments) {
-			alignments = theAlignments;
-		}
+        AlignmentRenderer(int[] theAlignments) {
+            alignments = theAlignments;
+        }
 
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                int row, int column) {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-			setHorizontalAlignment(alignments[column]);
+            setHorizontalAlignment(alignments[column]);
 
-			return this;
-		}
-	}
+            return this;
+        }
+    }
 
-    private JTextField rootDirectoryField	= new JTextField(System.getProperty("user.home"));
-    private JTextField minimumLengthField	= new JTextField(Integer.toString(DEFAULT_CPD_MINIMUM_LENGTH));
-    private JTextField encodingField		= new JTextField(System.getProperty("file.encoding"));
-    private JTextField timeField			= new JTextField(6);
-    private JLabel phaseLabel				= new JLabel();
+    private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
+    private JTextField minimumLengthField = new JTextField(Integer.toString(DEFAULT_CPD_MINIMUM_LENGTH));
+    private JTextField encodingField = new JTextField(System.getProperty("file.encoding"));
+    private JTextField timeField = new JTextField(6);
+    private JLabel phaseLabel = new JLabel();
     private JProgressBar tokenizingFilesBar = new JProgressBar();
-    private JTextArea resultsTextArea		= new JTextArea();
-    private JCheckBox recurseCheckbox		= new JCheckBox("", true);
+    private JTextArea resultsTextArea = new JTextArea();
+    private JCheckBox recurseCheckbox = new JCheckBox("", true);
     private JCheckBox ignoreIdentifiersCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreAnnotationsCheckbox = new JCheckBox("", false);
-    private JCheckBox ignoreUsingsCheckbox  = new JCheckBox("", false);
-    private JComboBox<String> languageBox	= new JComboBox<>();
-    private JTextField extensionField		= new JTextField();
-    private JLabel extensionLabel			= new JLabel("Extension:", SwingConstants.RIGHT);
-    private JTable resultsTable				= new JTable();
+    private JCheckBox ignoreUsingsCheckbox = new JCheckBox("", false);
+    private JComboBox<String> languageBox = new JComboBox<>();
+    private JTextField extensionField = new JTextField();
+    private JLabel extensionLabel = new JLabel("Extension:", SwingConstants.RIGHT);
+    private JTable resultsTable = new JTable();
     private JButton goButton;
     private JButton cancelButton;
     private JPanel progressPanel;
@@ -299,10 +354,10 @@ public class GUI implements CPDListener {
 
         JMenuItem saveItem;
 
-        for (int i=0; i<RENDERER_SETS.length; i++) {
-        	saveItem = new JMenuItem("Save as " + RENDERER_SETS[i][0]);
-        	saveItem.addActionListener(new SaveListener((Renderer)RENDERER_SETS[i][1]));
-        	menu.add(saveItem);
+        for (int i = 0; i < RENDERER_SETS.length; i++) {
+            saveItem = new JMenuItem("Save as " + RENDERER_SETS[i][0]);
+            saveItem.addActionListener(new SaveListener((Renderer) RENDERER_SETS[i][1]));
+            menu.add(saveItem);
         }
     }
 
@@ -324,8 +379,9 @@ public class GUI implements CPDListener {
         fileMenu.setMnemonic('v');
         JMenuItem trimItem = new JCheckBoxMenuItem("Trim leading whitespace");
         trimItem.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent e) {
-                AbstractButton button = (AbstractButton)e.getItem();
+                AbstractButton button = (AbstractButton) e.getItem();
                 GUI.this.trimLeadingWhitespace = button.isSelected();
             }
         });
@@ -349,14 +405,14 @@ public class GUI implements CPDListener {
         progressPanel = makeProgressPanel();
         JPanel resultsPanel = makeResultsPanel();
 
-        adjustLanguageControlsFor((LanguageConfig)LANGUAGE_SETS[0][1]);
+        adjustLanguageControlsFor((LanguageConfig) LANGUAGE_SETS[0][1]);
 
         frame.getContentPane().setLayout(new BorderLayout());
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         topPanel.add(settingsPanel, BorderLayout.NORTH);
         topPanel.add(progressPanel, BorderLayout.CENTER);
-        setProgressControls(false);	// not running now
+        setProgressControls(false); // not running now
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
         frame.getContentPane().add(resultsPanel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -365,19 +421,19 @@ public class GUI implements CPDListener {
     }
 
     private void adjustLanguageControlsFor(LanguageConfig current) {
-         ignoreIdentifiersCheckbox.setEnabled(current.canIgnoreIdentifiers());
-         ignoreLiteralsCheckbox.setEnabled(current.canIgnoreLiterals());
-         ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
-         ignoreUsingsCheckbox.setEnabled(current.canIgnoreUsings());
-         extensionField.setText(current.extensions()[0]);
-         boolean enableExtension = current.extensions()[0].length() == 0;
-         extensionField.setEnabled(enableExtension);
-         extensionLabel.setEnabled(enableExtension);
+        ignoreIdentifiersCheckbox.setEnabled(current.canIgnoreIdentifiers());
+        ignoreLiteralsCheckbox.setEnabled(current.canIgnoreLiterals());
+        ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
+        ignoreUsingsCheckbox.setEnabled(current.canIgnoreUsings());
+        extensionField.setText(current.extensions()[0]);
+        boolean enableExtension = current.extensions()[0].length() == 0;
+        extensionField.setEnabled(enableExtension);
+        extensionLabel.setEnabled(enableExtension);
     }
 
     private JPanel makeSettingsPanel(JButton browseButton, JButton goButton, JButton cxButton) {
         JPanel settingsPanel = new JPanel();
-        GridBagHelper helper = new GridBagHelper(settingsPanel, new double[]{0.2, 0.7, 0.1, 0.1});
+        GridBagHelper helper = new GridBagHelper(settingsPanel, new double[] { 0.2, 0.7, 0.1, 0.1 });
         helper.addLabel("Root source directory:");
         helper.add(rootDirectoryField);
         helper.add(browseButton, 2);
@@ -386,14 +442,13 @@ public class GUI implements CPDListener {
         minimumLengthField.setColumns(4);
         helper.add(minimumLengthField);
         helper.addLabel("Language:");
-        for (int i=0; i<LANGUAGE_SETS.length; i++) {
-        	languageBox.addItem(String.valueOf(LANGUAGE_SETS[i][0]));
+        for (int i = 0; i < LANGUAGE_SETS.length; i++) {
+            languageBox.addItem(String.valueOf(LANGUAGE_SETS[i][0]));
         }
         languageBox.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-            	adjustLanguageControlsFor(
-            			languageConfigFor((String)languageBox.getSelectedItem())
-            			);
+                adjustLanguageControlsFor(languageConfigFor((String) languageBox.getSelectedItem()));
             }
         });
         helper.add(languageBox);
@@ -438,13 +493,13 @@ public class GUI implements CPDListener {
         helper.addLabel("");
         helper.addLabel("");
         helper.nextRow();
-//        settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
+        // settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
         return settingsPanel;
     }
 
     private JPanel makeProgressPanel() {
         JPanel progressPanel = new JPanel();
-        final double[] weights = {0.0, 0.8, 0.4, 0.2};
+        final double[] weights = { 0.0, 0.8, 0.4, 0.2 };
         GridBagHelper helper = new GridBagHelper(progressPanel, weights);
         helper.addLabel("Tokenizing files:");
         helper.add(tokenizingFilesBar, 3);
@@ -463,7 +518,7 @@ public class GUI implements CPDListener {
         resultsPanel.setLayout(new BorderLayout());
         JScrollPane areaScrollPane = new JScrollPane(resultsTextArea);
         resultsTextArea.setEditable(false);
-        areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        areaScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         areaScrollPane.setPreferredSize(new Dimension(600, 300));
 
         resultsPanel.add(makeMatchList(), BorderLayout.WEST);
@@ -472,111 +527,120 @@ public class GUI implements CPDListener {
     }
 
     private void populateResultArea() {
-    	int[] selectionIndices = resultsTable.getSelectedRows();
-    	TableModel model = resultsTable.getModel();
-    	List<Match> selections = new ArrayList<>(selectionIndices.length);
-    	for (int i=0; i<selectionIndices.length; i++) {
-    		selections.add((Match)model.getValueAt(selectionIndices[i], 99));
-    	}
-    	String report = new SimpleRenderer(trimLeadingWhitespace).render(selections.iterator());
-    	resultsTextArea.setText(report);
-    	resultsTextArea.setCaretPosition(0);	// move to the top
+        int[] selectionIndices = resultsTable.getSelectedRows();
+        TableModel model = resultsTable.getModel();
+        List<Match> selections = new ArrayList<>(selectionIndices.length);
+        for (int i = 0; i < selectionIndices.length; i++) {
+            selections.add((Match) model.getValueAt(selectionIndices[i], 99));
+        }
+        String report = new SimpleRenderer(trimLeadingWhitespace).render(selections.iterator());
+        resultsTextArea.setText(report);
+        resultsTextArea.setCaretPosition(0); // move to the top
     }
 
     private void copyMatchListSelectionsToClipboard() {
 
-    	int[] selectionIndices = resultsTable.getSelectedRows();
-    	int colCount = resultsTable.getColumnCount();
+        int[] selectionIndices = resultsTable.getSelectedRows();
+        int colCount = resultsTable.getColumnCount();
 
-    	StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-    	for (int r=0; r<selectionIndices.length; r++) {
-			if (r > 0) {
-			    sb.append('\n');
-			}
-			sb.append(resultsTable.getValueAt(selectionIndices[r], 0));
-    		for (int c=1; c<colCount; c++) {
-    			sb.append('\t');
-    			sb.append(resultsTable.getValueAt(selectionIndices[r], c));
-    		}
-    	}
+        for (int r = 0; r < selectionIndices.length; r++) {
+            if (r > 0) {
+                sb.append('\n');
+            }
+            sb.append(resultsTable.getValueAt(selectionIndices[r], 0));
+            for (int c = 1; c < colCount; c++) {
+                sb.append('\t');
+                sb.append(resultsTable.getValueAt(selectionIndices[r], c));
+            }
+        }
 
-    	StringSelection ss = new StringSelection(sb.toString());
+        StringSelection ss = new StringSelection(sb.toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
     }
 
     private void deleteMatchlistSelections() {
 
-    	int[] selectionIndices = resultsTable.getSelectedRows();
+        int[] selectionIndices = resultsTable.getSelectedRows();
 
-    	for (int i=selectionIndices.length-1; i >=0; i--) {
-    		matches.remove(selectionIndices[i]);
-    	}
+        for (int i = selectionIndices.length - 1; i >= 0; i--) {
+            matches.remove(selectionIndices[i]);
+        }
 
-    	resultsTable.getSelectionModel().clearSelection();
-    	resultsTable.addNotify();
+        resultsTable.getSelectionModel().clearSelection();
+        resultsTable.addNotify();
     }
 
     private JComponent makeMatchList() {
 
-    	resultsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				populateResultArea();
-			}});
+        resultsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                populateResultArea();
+            }
+        });
 
-    	resultsTable.registerKeyboardAction(new ActionListener() {
-			public void actionPerformed(ActionEvent e) { copyMatchListSelectionsToClipboard(); }
-    		},"Copy", COPY_KEY_STROKE, JComponent.WHEN_FOCUSED);
+        resultsTable.registerKeyboardAction(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                copyMatchListSelectionsToClipboard();
+            }
+        }, "Copy", COPY_KEY_STROKE, JComponent.WHEN_FOCUSED);
 
-    	resultsTable.registerKeyboardAction(new ActionListener() {
-			public void actionPerformed(ActionEvent e) { deleteMatchlistSelections(); }
-    		},"Del", DELETE_KEY_STROKE, JComponent.WHEN_FOCUSED);
+        resultsTable.registerKeyboardAction(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteMatchlistSelections();
+            }
+        }, "Del", DELETE_KEY_STROKE, JComponent.WHEN_FOCUSED);
 
-    	int[] alignments = new int[matchColumns.length];
-    	for (int i=0; i<alignments.length; i++) {
-    	    alignments[i] = matchColumns[i].alignment();
-    	}
+        int[] alignments = new int[matchColumns.length];
+        for (int i = 0; i < alignments.length; i++) {
+            alignments[i] = matchColumns[i].alignment();
+        }
 
-    	resultsTable.setDefaultRenderer(Object.class, new AlignmentRenderer(alignments));
+        resultsTable.setDefaultRenderer(Object.class, new AlignmentRenderer(alignments));
 
-    	final JTableHeader header = resultsTable.getTableHeader();
-    	header.addMouseListener( new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				sortOnColumn(header.columnAtPoint(new Point(e.getX(), e.getY())));
-				}
-			});
+        final JTableHeader header = resultsTable.getTableHeader();
+        header.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                sortOnColumn(header.columnAtPoint(new Point(e.getX(), e.getY())));
+            }
+        });
 
         return new JScrollPane(resultsTable);
     }
 
     private boolean isLegalPath(String path, LanguageConfig config) {
-    	String[] extensions = config.extensions();
-    	for (int i=0; i<extensions.length; i++) {
-    		if (path.endsWith(extensions[i]) && extensions[i].length() > 0) {
-    		    return true;
-    		}
-    	}
-    	return false;
+        String[] extensions = config.extensions();
+        for (int i = 0; i < extensions.length; i++) {
+            if (path.endsWith(extensions[i]) && extensions[i].length() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String setLabelFor(Match match) {
 
-    	Set<String> sourceIDs = new HashSet<>(match.getMarkCount());
-    	for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
-             sourceIDs.add(occurrences.next().getFilename());
-          }
-    	String label;
+        Set<String> sourceIDs = new HashSet<>(match.getMarkCount());
+        for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
+            sourceIDs.add(occurrences.next().getFilename());
+        }
+        String label;
 
-    	if (sourceIDs.size() == 1) {
-    		String sourceId = sourceIDs.iterator().next();
-    		int separatorPos = sourceId.lastIndexOf(File.separatorChar);
-    		label = "..." + sourceId.substring(separatorPos);
-    		} else {
-    	    	label = "(" + sourceIDs.size() + " separate files)";
-    		}
+        if (sourceIDs.size() == 1) {
+            String sourceId = sourceIDs.iterator().next();
+            int separatorPos = sourceId.lastIndexOf(File.separatorChar);
+            label = "..." + sourceId.substring(separatorPos);
+        } else {
+            label = "(" + sourceIDs.size() + " separate files)";
+        }
 
-    	match.setLabel(label);
-    	return label;
+        match.setLabel(label);
+        return label;
     }
 
     private void setProgressControls(boolean isRunning) {
@@ -589,9 +653,8 @@ public class GUI implements CPDListener {
         try {
             File dirPath = new File(rootDirectoryField.getText());
             if (!dirPath.exists()) {
-                JOptionPane.showMessageDialog(frame,
-                        "Can't read from that root source directory",
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Can't read from that root source directory", "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -607,7 +670,7 @@ public class GUI implements CPDListener {
             config.setIgnoreUsings(ignoreUsingsCheckbox.isSelected());
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
 
-            LanguageConfig conf = languageConfigFor((String)languageBox.getSelectedItem());
+            LanguageConfig conf = languageConfigFor((String) languageBox.getSelectedItem());
             Language language = conf.languageFor(p);
             config.setLanguage(language);
 
@@ -617,8 +680,10 @@ public class GUI implements CPDListener {
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             phaseLabel.setText("");
-            if (isLegalPath(dirPath.getPath(), conf)) {	// should use the language file filter instead?
-            	cpd.add(dirPath);
+            if (isLegalPath(dirPath.getPath(), conf)) { // should use the
+                // language file filter
+                // instead?
+                cpd.add(dirPath);
             } else {
                 if (recurseCheckbox.isSelected()) {
                     cpd.addRecursively(dirPath);
@@ -631,12 +696,12 @@ public class GUI implements CPDListener {
             cpd.go();
             t.stop();
 
-        	matches = new ArrayList<>();
-        	for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
-        		Match match = i.next();
-        		setLabelFor(match);
-        		matches.add(match);
-        	}
+            matches = new ArrayList<>();
+            for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
+                Match match = i.next();
+                setLabelFor(match);
+                matches.add(match);
+            }
 
             setListDataFrom(matches);
             String report = new SimpleRenderer().render(cpd.getMatches());
@@ -656,144 +721,207 @@ public class GUI implements CPDListener {
         setProgressControls(false);
     }
 
-	private Timer createTimer() {
+    private Timer createTimer() {
 
-		final long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
 
-		Timer t = new Timer(1000, new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        long now = System.currentTimeMillis();
-		        long elapsedMillis = now - start;
-		        long elapsedSeconds = elapsedMillis / 1000;
-		        long minutes = (long) Math.floor(elapsedSeconds / 60);
-		        long seconds = elapsedSeconds - (minutes * 60);
-		        timeField.setText(formatTime(minutes, seconds));
-		    }
-		});
-		return t;
-	}
+        Timer t = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                long now = System.currentTimeMillis();
+                long elapsedMillis = now - start;
+                long elapsedSeconds = elapsedMillis / 1000;
+                long minutes = (long) Math.floor(elapsedSeconds / 60);
+                long seconds = elapsedSeconds - (minutes * 60);
+                timeField.setText(formatTime(minutes, seconds));
+            }
+        });
+        return t;
+    }
 
-	private static String formatTime(long minutes, long seconds) {
+    private static String formatTime(long minutes, long seconds) {
 
-		StringBuilder sb = new StringBuilder(5);
-		if (minutes < 10) { sb.append('0'); }
-		sb.append(minutes).append(':');
-		if (seconds < 10) { sb.append('0'); }
-		sb.append(seconds);
-		return sb.toString();
-	}
+        StringBuilder sb = new StringBuilder(5);
+        if (minutes < 10) {
+            sb.append('0');
+        }
+        sb.append(minutes).append(':');
+        if (seconds < 10) {
+            sb.append('0');
+        }
+        sb.append(seconds);
+        return sb.toString();
+    }
 
     private interface SortingTableModel<E> extends TableModel {
-    	int sortColumn();
-    	void sortColumn(int column);
-    	boolean sortDescending();
-    	void sortDescending(boolean flag);
-    	void sort(Comparator<E> comparator);
+        int sortColumn();
+
+        void sortColumn(int column);
+
+        boolean sortDescending();
+
+        void sortDescending(boolean flag);
+
+        void sort(Comparator<E> comparator);
     }
 
     private TableModel tableModelFrom(final List<Match> items) {
 
-    	TableModel model = new SortingTableModel<Match>() {
+        TableModel model = new SortingTableModel<Match>() {
 
-    		private int sortColumn;
-    		private boolean sortDescending;
+            private int sortColumn;
+            private boolean sortDescending;
 
-    		 public Object getValueAt(int rowIndex, int columnIndex) {
-    			Match match = items.get(rowIndex);
-    			switch (columnIndex) {
-    				case 0: return match.getLabel();
-    				case 2: return Integer.toString(match.getLineCount());
-    				case 1: return match.getMarkCount() > 2 ? Integer.toString(match.getMarkCount()) : "";
-    				case 99: return match;
-    				default: return "";
-    				}
-    		 	}
-			public int getColumnCount() { return matchColumns.length;	}
-			public int getRowCount() {	return items.size(); }
-			public boolean isCellEditable(int rowIndex, int columnIndex) {	return false;	}
-			public Class<?> getColumnClass(int columnIndex) { return Object.class;	}
-			public void setValueAt(Object aValue, int rowIndex, int columnIndex) {	}
-			public String getColumnName(int i) {	return matchColumns[i].label();	}
-			public void addTableModelListener(TableModelListener l) { }
-			public void removeTableModelListener(TableModelListener l) { }
-			public int sortColumn() { return sortColumn; }
-			public void sortColumn(int column) { sortColumn = column; }
-			public boolean sortDescending() { return sortDescending; }
-			public void sortDescending(boolean flag) { sortDescending = flag; }
-			public void sort(Comparator<Match> comparator) {
-				Collections.sort(items, comparator);
-				if (sortDescending) {
-				    Collections.reverse(items);
-				}
-				}
-    		};
+            @Override
+            public Object getValueAt(int rowIndex, int columnIndex) {
+                Match match = items.get(rowIndex);
+                switch (columnIndex) {
+                case 0:
+                    return match.getLabel();
+                case 2:
+                    return Integer.toString(match.getLineCount());
+                case 1:
+                    return match.getMarkCount() > 2 ? Integer.toString(match.getMarkCount()) : "";
+                case 99:
+                    return match;
+                default:
+                    return "";
+                }
+            }
 
-    	return model;
+            @Override
+            public int getColumnCount() {
+                return matchColumns.length;
+            }
+
+            @Override
+            public int getRowCount() {
+                return items.size();
+            }
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return Object.class;
+            }
+
+            @Override
+            public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            }
+
+            @Override
+            public String getColumnName(int i) {
+                return matchColumns[i].label();
+            }
+
+            @Override
+            public void addTableModelListener(TableModelListener l) {
+            }
+
+            @Override
+            public void removeTableModelListener(TableModelListener l) {
+            }
+
+            @Override
+            public int sortColumn() {
+                return sortColumn;
+            }
+
+            @Override
+            public void sortColumn(int column) {
+                sortColumn = column;
+            }
+
+            @Override
+            public boolean sortDescending() {
+                return sortDescending;
+            }
+
+            @Override
+            public void sortDescending(boolean flag) {
+                sortDescending = flag;
+            }
+
+            @Override
+            public void sort(Comparator<Match> comparator) {
+                Collections.sort(items, comparator);
+                if (sortDescending) {
+                    Collections.reverse(items);
+                }
+            }
+        };
+
+        return model;
     }
 
     private void sortOnColumn(int columnIndex) {
-    	Comparator<Match> comparator = matchColumns[columnIndex].sorter();
-    	SortingTableModel<Match> model = (SortingTableModel<Match>)resultsTable.getModel();
-    	if (model.sortColumn() == columnIndex) {
-    		model.sortDescending(!model.sortDescending());
-    	}
-    	model.sortColumn(columnIndex);
-    	model.sort(comparator);
+        Comparator<Match> comparator = matchColumns[columnIndex].sorter();
+        SortingTableModel<Match> model = (SortingTableModel<Match>) resultsTable.getModel();
+        if (model.sortColumn() == columnIndex) {
+            model.sortDescending(!model.sortDescending());
+        }
+        model.sortColumn(columnIndex);
+        model.sort(comparator);
 
-    	resultsTable.getSelectionModel().clearSelection();
-    	resultsTable.repaint();
+        resultsTable.getSelectionModel().clearSelection();
+        resultsTable.repaint();
     }
 
     private void setListDataFrom(List<Match> matches) {
 
-    	resultsTable.setModel(tableModelFrom(matches));
+        resultsTable.setModel(tableModelFrom(matches));
 
-    	TableColumnModel colModel = resultsTable.getColumnModel();
-    	TableColumn column;
-    	int width;
+        TableColumnModel colModel = resultsTable.getColumnModel();
+        TableColumn column;
+        int width;
 
-    	for (int i=0; i<matchColumns.length; i++) {
-    		if (matchColumns[i].width() > 0) {
-    			column = colModel.getColumn(i);
-    			width = matchColumns[i].width();
-    			column.setPreferredWidth(width);
-    			column.setMinWidth(width);
-    			column.setMaxWidth(width);
-    		}
-    	}
+        for (int i = 0; i < matchColumns.length; i++) {
+            if (matchColumns[i].width() > 0) {
+                column = colModel.getColumn(i);
+                width = matchColumns[i].width();
+                column.setPreferredWidth(width);
+                column.setMinWidth(width);
+                column.setMaxWidth(width);
+            }
+        }
     }
 
     // CPDListener
+    @Override
     public void phaseUpdate(int phase) {
         phaseLabel.setText(getPhaseText(phase));
     }
 
     public String getPhaseText(int phase) {
         switch (phase) {
-            case CPDListener.INIT:
-                return "Initializing";
-            case CPDListener.HASH:
-                return "Hashing";
-            case CPDListener.MATCH:
-                return "Matching";
-            case CPDListener.GROUPING:
-                return "Grouping";
-            case CPDListener.DONE:
-                return "Done";
-            default :
-                return "Unknown";
+        case CPDListener.INIT:
+            return "Initializing";
+        case CPDListener.HASH:
+            return "Hashing";
+        case CPDListener.MATCH:
+            return "Matching";
+        case CPDListener.GROUPING:
+            return "Grouping";
+        case CPDListener.DONE:
+            return "Done";
+        default:
+            return "Unknown";
         }
     }
 
+    @Override
     public void addedFile(int fileCount, File file) {
         tokenizingFilesBar.setMaximum(fileCount);
         tokenizingFilesBar.setValue(tokenizingFilesBar.getValue() + 1);
     }
     // CPDListener
 
-
     public static void main(String[] args) {
-    	//this should prevent the disk not found popup
+        // this should prevent the disk not found popup
         // System.setSecurityManager(null);
         new GUI();
     }

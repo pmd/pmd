@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -26,7 +27,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * 
  * For example : #foreach()
  * 
- * Please look at the Parser.jjt file which is what controls the generation of this class.
+ * Please look at the Parser.jjt file which is what controls the generation of
+ * this class.
  * 
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
@@ -51,18 +53,15 @@ public class ASTDirective extends AbstractVmNode {
         super(p, id);
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.SimpleNode#jjtAccept(org.apache.velocity.runtime.parser.node.VmParserVisitor,
-     *      java.lang.Object)
-     */
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);
     }
 
     /**
-     * Sets the directive name. Used by the parser. This keeps us from having to dig it out of the token stream and
-     * gives the parse the change to override.
+     * Sets the directive name. Used by the parser. This keeps us from having to
+     * dig it out of the token stream and gives the parse the change to
+     * override.
      * 
      * @param str
      */

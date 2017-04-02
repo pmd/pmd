@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.logging;
 
 import java.util.ArrayList;
@@ -11,20 +12,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jaxen.JaxenException;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.optimizations.AbstractOptimizationRule;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
-import org.jaxen.JaxenException;
-
 /**
  * Check that log.debug, log.trace, log.error, etc... statements are guarded by
  * some test expression on log.isDebugEnabled() or log.isTraceEnabled().
  * 
- * @author Romain Pelisse - <belaran@gmail.com>
- * @author Heiko Rupp - <hwr@pilhuhn.de>
+ * @author Romain Pelisse - &lt;belaran@gmail.com&gt;
+ * @author Heiko Rupp - &lt;hwr@pilhuhn.de&gt;
  * @author Tammo van Lessen - provided original XPath expression
  * 
  */
@@ -65,11 +66,12 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     }
 
     @SuppressWarnings("unchecked")
-    private List<? extends Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard, String xpathExpression) {
+    private List<? extends Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard,
+            String xpathExpression) {
         try {
-            return unit.findChildNodesWithXPath(xpathExpression
-                    .replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase()).replaceAll("LOG_LEVEL", logLevel)
-                    .replaceAll("GUARD", guard));
+            return unit
+                    .findChildNodesWithXPath(xpathExpression.replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase())
+                            .replaceAll("LOG_LEVEL", logLevel).replaceAll("GUARD", guard));
         } catch (JaxenException e) {
             e.printStackTrace();
         }

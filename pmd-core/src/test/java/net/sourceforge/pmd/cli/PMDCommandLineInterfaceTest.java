@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli;
 
 import org.junit.Assert;
@@ -17,11 +18,11 @@ public class PMDCommandLineInterfaceTest {
     @Rule
     public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
-    @Rule //Restores system properties after test
+    @Rule // Restores system properties after test
     public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
 
     @Before
-    public void clearSystemProperties () {
+    public void clearSystemProperties() {
         System.clearProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN);
         System.clearProperty(PMDCommandLineInterface.STATUS_CODE_PROPERTY);
     }
@@ -29,8 +30,7 @@ public class PMDCommandLineInterfaceTest {
     @Test
     public void testProperties() {
         PMDParameters params = new PMDParameters();
-        String[] args = { "-d", "source_folder", "-f", "yahtml", "-P", "outputDir=output_folder",
-                "-R", "java-empty" };
+        String[] args = { "-d", "source_folder", "-f", "yahtml", "-P", "outputDir=output_folder", "-R", "java-empty", };
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
         Assert.assertEquals("output_folder", params.getProperties().getProperty("outputDir"));
@@ -39,10 +39,8 @@ public class PMDCommandLineInterfaceTest {
     @Test
     public void testMultipleProperties() {
         PMDParameters params = new PMDParameters();
-        String[] args = { "-d", "source_folder", "-f", "ideaj", "-P", "sourcePath=/home/user/source/",
-                "-P", "fileName=Foo.java",
-                "-P", "classAndMethodName=Foo.method",
-                "-R", "java-empty" };
+        String[] args = { "-d", "source_folder", "-f", "ideaj", "-P", "sourcePath=/home/user/source/", "-P",
+            "fileName=Foo.java", "-P", "classAndMethodName=Foo.method", "-R", "java-empty", };
         PMDCommandLineInterface.extractParameters(params, args, "PMD");
 
         Assert.assertEquals("/home/user/source/", params.getProperties().getProperty("sourcePath"));
@@ -51,14 +49,14 @@ public class PMDCommandLineInterfaceTest {
     }
 
     @Test
-    public void testSetStatusCodeOrExit_DoExit() {
+    public void testSetStatusCodeOrExitDoExit() {
         exit.expectSystemExitWithStatus(0);
 
         PMDCommandLineInterface.setStatusCodeOrExit(0);
     }
 
     @Test
-    public void testSetStatusCodeOrExit_SetStatus() {
+    public void testSetStatusCodeOrExitSetStatus() {
         System.setProperty(PMDCommandLineInterface.NO_EXIT_AFTER_RUN, "1");
 
         PMDCommandLineInterface.setStatusCodeOrExit(0);

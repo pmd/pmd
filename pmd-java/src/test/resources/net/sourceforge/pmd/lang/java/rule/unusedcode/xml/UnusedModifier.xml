@@ -296,4 +296,136 @@ public enum TestEnum {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>Unnecessary public on annotation element</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    public String message();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary abstract on annotation element</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    abstract String message();
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary final on annotation field</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    final String message = "MESSAGE";
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary static on annotation field</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    static String message = "MESSAGE";
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary public on annotation field</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    public String message = "MESSAGE";
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary public on annotation nested class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    public class Inner {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary static on annotation nested class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    static class Inner {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary public on annotation nested interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    public interface Inner {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary public on annotation nested annotation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    public @interface Inner {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary static on annotation nested enum</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public @interface TestAnnotation {
+    public static enum Inner {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary static on interface nested enum</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface TestInterface {
+    public static enum Inner {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary static on class nested enum</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestClass {
+    public static enum Inner {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary abstract on interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract interface TestInterface {
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Unnecessary abstract on annotation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract @interface TestAnnotation {
+}
+        ]]></code>
+    </test-code>
 </test-data>

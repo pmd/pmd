@@ -14,7 +14,6 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */
@@ -22,4 +21,8 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode {
         return visitor.visit(this, data);
     }
 
+    public boolean isNested() {
+        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
+                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+    }
 }

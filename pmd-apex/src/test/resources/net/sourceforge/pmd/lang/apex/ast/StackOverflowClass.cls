@@ -63,7 +63,7 @@ public class SomeClass {
 
         itemList = new List<Item>();
         itemToSomething1();
-        itemToSomething2();       
+        itemToSomething2();
         insert itemList;
     }
 
@@ -77,8 +77,8 @@ public class SomeClass {
     //-------------- HELPER FUNCTION -----------------
     private static void itemToSomething1(){
         if(!List1.isEmpty()){
-            Map<Id, Object1__c> object1Map = new Map<Id, Object1__c>([SELECT Id, Name 
-                                                                                     FROM Object1__c 
+            Map<Id, Object1__c> object1Map = new Map<Id, Object1__c>([SELECT Id, Name
+                                                                                     FROM Object1__c
                                                                                      WHERE someId in: objectIds]);
 
             for(Object1__c object1 : List1){
@@ -87,7 +87,7 @@ public class SomeClass {
                     post.ParentId = object1Map.get(object1.Id).Id;
                     post.Body = "Something";
 
-                    itemList.add(post); 
+                    itemList.add(post);
                 }
             }
         }

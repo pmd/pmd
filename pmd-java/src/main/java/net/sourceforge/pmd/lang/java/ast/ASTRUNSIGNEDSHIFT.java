@@ -14,7 +14,6 @@ public class ASTRUNSIGNEDSHIFT extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

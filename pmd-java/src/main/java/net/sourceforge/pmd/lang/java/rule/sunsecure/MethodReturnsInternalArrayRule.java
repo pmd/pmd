@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.sunsecure;
 
 import java.util.List;
@@ -25,8 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 
 /**
  * Implementation note: this rule currently ignores return types of y.x.z,
- * currently it handles only local type fields.
- * Created on Jan 17, 2005
+ * currently it handles only local type fields. Created on Jan 17, 2005
  *
  * @author mgriffa
  */
@@ -47,7 +47,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
         }
         List<ASTReturnStatement> returns = method.findDescendantsOfType(ASTReturnStatement.class);
         ASTTypeDeclaration td = method.getFirstParentOfType(ASTTypeDeclaration.class);
-        for (ASTReturnStatement ret: returns) {
+        for (ASTReturnStatement ret : returns) {
             final String vn = getReturnedVariableName(ret);
             if (!isField(vn, td)) {
                 continue;
@@ -86,8 +86,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
     private boolean hasClone(ASTReturnStatement ret, String varName) {
         List<ASTPrimaryExpression> expressions = ret.findDescendantsOfType(ASTPrimaryExpression.class);
         for (ASTPrimaryExpression e : expressions) {
-            if (e.jjtGetChild(0) instanceof ASTPrimaryPrefix
-                    && e.jjtGetNumChildren() == 2
+            if (e.jjtGetChild(0) instanceof ASTPrimaryPrefix && e.jjtGetNumChildren() == 2
                     && e.jjtGetChild(1) instanceof ASTPrimarySuffix
                     && ((ASTPrimarySuffix) e.jjtGetChild(1)).isArguments()
                     && ((ASTPrimarySuffix) e.jjtGetChild(1)).getArgumentCount() == 0) {
@@ -125,7 +124,8 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
                             return true;
                         } else if (child instanceof ASTExpression) {
                             try {
-                                List<? extends Node> arrayAllocation = child.findChildNodesWithXPath("./PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@IntLiteral=\"true\"][@Image=\"0\"]");
+                                List<? extends Node> arrayAllocation = child.findChildNodesWithXPath(
+                                        "./PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@IntLiteral=\"true\"][@Image=\"0\"]");
                                 if (arrayAllocation != null && arrayAllocation.size() == 1) {
                                     return true;
                                 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.dfa.pathfinder;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -9,15 +10,19 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 
 /**
- *         Finds all paths of a data flow. Each loop will be 0 or 2 times traversed ->
- *         2 paths. This is special to the data flow anomaly analysis.
- * @since Created on 09.08.2004
+ * Finds all paths of a data flow. Each loop will be 0 or 2 times traversed -&gt; 2
+ * paths. This is special to the data flow anomaly analysis.
+ *
  * @author raik
+ * @since Created on 09.08.2004
  */
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;
 
-    /** Maximum loops to prevent hanging of PMD. See https://sourceforge.net/p/pmd/bugs/1393/ */
+    /**
+     * Maximum loops to prevent hanging of PMD. See
+     * https://sourceforge.net/p/pmd/bugs/1393/
+     */
     private static final int MAX_LOOPS = 100;
 
     private DataFlowNode rootNode;
@@ -31,7 +36,7 @@ public class DAAPathFinder {
         this.shim = shim;
         this.maxPaths = MAX_PATHS;
     }
-    
+
     public DAAPathFinder(DataFlowNode rootNode, Executable shim, int maxPaths) {
         this.rootNode = rootNode;
         this.shim = shim;
@@ -44,14 +49,15 @@ public class DAAPathFinder {
 
     /*
      * Initialise the path search. Starts the searching.
-     * */
+     */
     private void phase1() {
         currentPath.addLast(rootNode);
         int i = 0;
         boolean flag = true;
         do {
             i++;
-//            System.out.println("Building path from " + currentPath.getLast());
+            // System.out.println("Building path from " +
+            // currentPath.getLast());
             phase2(flag);
             shim.execute(currentPath);
             flag = false;
@@ -60,7 +66,7 @@ public class DAAPathFinder {
 
     /*
      * Builds up the path.
-     * */
+     */
     private void phase2(boolean flag) {
         int i = 0;
         while (!currentPath.isEndNode() && i < MAX_LOOPS) {
@@ -85,9 +91,9 @@ public class DAAPathFinder {
     }
 
     /*
-     * Decompose the path until it finds a node which branches are not all 
+     * Decompose the path until it finds a node which branches are not all
      * traversed.
-     * */
+     */
     private boolean phase3() {
         while (!currentPath.isEmpty()) {
             if (currentPath.isBranch()) {
@@ -117,7 +123,7 @@ public class DAAPathFinder {
 
     private void addLastChild() {
         PathElement e = (PathElement) stack.getLastLeaf().getUserObject();
-        for (int i=e.node.getChildren().size()-1; i >= 0; i--) {
+        for (int i = e.node.getChildren().size() - 1; i >= 0; i--) {
             if (i != e.currentChild) {
                 currentPath.addLast(e.node.getChildren().get(i));
                 break;
@@ -125,31 +131,32 @@ public class DAAPathFinder {
         }
     }
 
-
     private void addCurrentChild() {
         if (currentPath.isBranch()) { // TODO WHY????
             PathElement last = (PathElement) stack.getLastLeaf().getUserObject();
             DataFlowNode inode = currentPath.getLast();
-            if (inode.getChildren().size() > last.currentChild) { 
-                // for some unknown reasons last.currentChild might not be a children of inode, see bug 1597987
+            if (inode.getChildren().size() > last.currentChild) {
+                // for some unknown reasons last.currentChild might not be a
+                // children of inode, see bug 1597987
                 // see https://sourceforge.net/p/pmd/bugs/606/
                 DataFlowNode child = inode.getChildren().get(last.currentChild);
                 this.currentPath.addLast(child);
             }
         } else {
             DataFlowNode inode = currentPath.getLast();
-            DataFlowNode child = inode.getChildren().get(0); //TODO ???? IMPORTANT - ERROR?
+            // TODO ???? IMPORTANT - ERROR?
+            DataFlowNode child = inode.getChildren().get(0);
             this.currentPath.addLast(child);
         }
     }
 
-//  ----------------------------------------------------------------------------
-//	TREE FUNCTIONS
-    
+    // ----------------------------------------------------------------------------
+    // TREE FUNCTIONS
+
     /*
-     * Adds a PathElement to a Tree, which contains information about
-     * loops and "local scopes - encapsulation".
-     * */
+     * Adds a PathElement to a Tree, which contains information about loops and
+     * "local scopes - encapsulation".
+     */
     private void addNodeToTree() {
         if (currentPath.isFirstDoStatement()) {
             DefaultMutableTreeNode level = stack;
@@ -217,7 +224,7 @@ public class DAAPathFinder {
         }
         DefaultMutableTreeNode parent = (DefaultMutableTreeNode) last.getParent();
         if (parent != null) {
-        	// for some unknown reasons parent might be null, see bug 1597987
+            // for some unknown reasons parent might be null, see bug 1597987
             parent.remove(last);
         }
         last = stack.getLastLeaf();
@@ -237,20 +244,20 @@ public class DAAPathFinder {
 
     /*
      * Needed for do loops
-     * */
+     */
     private void addNewPseudoPathElement(DefaultMutableTreeNode level, DataFlowNode ref) {
         addNode(level, new PathElement(currentPath.getLast(), ref));
     }
 
     /*
      * Needed for do loops
-     * */
+     */
     private void addRefPseudoPathElement(DefaultMutableTreeNode level, PathElement ref) {
         addNode(level, ref);
     }
 
     private boolean equalsPseudoPathElementWithDoBranchNodeInLevel(DefaultMutableTreeNode level) {
-	DataFlowNode inode = currentPath.getLast();
+        DataFlowNode inode = currentPath.getLast();
 
         if (!inode.isType(NodeType.DO_EXPR)) {
             return false;
@@ -270,7 +277,7 @@ public class DAAPathFinder {
     }
 
     private PathElement getDoBranchNodeInLevel(DefaultMutableTreeNode level) {
-	DataFlowNode inode = currentPath.getLast();
+        DataFlowNode inode = currentPath.getLast();
         if (!inode.isType(NodeType.DO_EXPR)) {
             return null;
         }
@@ -295,7 +302,7 @@ public class DAAPathFinder {
     }
 
     private PathElement isNodeInLevel(DefaultMutableTreeNode level) {
-	DataFlowNode inode = currentPath.getLast();
+        DataFlowNode inode = currentPath.getLast();
         DefaultMutableTreeNode child = (DefaultMutableTreeNode) level.getFirstChild();
 
         if (child != null) {
@@ -318,7 +325,8 @@ public class DAAPathFinder {
         DefaultMutableTreeNode treeNode = stack.getLastLeaf();
         int counter = 0;
         if (treeNode.getParent() != null) {
-            // for some unknown reasons the parent of treeNode might be null, see bug 1597987
+            // for some unknown reasons the parent of treeNode might be null,
+            // see bug 1597987
             // see https://sourceforge.net/p/pmd/bugs/606/
             int childCount = treeNode.getParent().getChildCount();
             for (int i = 0; i < childCount; i++) {

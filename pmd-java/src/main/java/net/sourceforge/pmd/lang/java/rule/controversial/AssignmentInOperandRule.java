@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.controversial;
 
 import net.sourceforge.pmd.PropertySource;
@@ -48,11 +49,12 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
         Node parent = node.jjtGetParent();
         if ((parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR)
                 || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
-                || parent instanceof ASTForStatement && parent.jjtGetChild(1) == node && !getProperty(ALLOW_FOR_DESCRIPTOR))
+                || parent instanceof ASTForStatement && parent.jjtGetChild(1) == node
+                        && !getProperty(ALLOW_FOR_DESCRIPTOR))
                 && (node.hasDescendantOfType(ASTAssignmentOperator.class)
                         || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
-                                && (node.hasDecendantOfAnyType(ASTPreIncrementExpression.class, ASTPreDecrementExpression.class,
-                                ASTPostfixExpression.class)))) {
+                                && (node.hasDecendantOfAnyType(ASTPreIncrementExpression.class,
+                                        ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
 
             addViolation(data, node);
             return data;

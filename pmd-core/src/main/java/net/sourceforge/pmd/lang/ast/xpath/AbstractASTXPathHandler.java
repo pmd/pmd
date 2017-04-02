@@ -1,21 +1,24 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.ast.xpath;
 
-import net.sf.saxon.sxpath.IndependentContext;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.XPathHandler;
+package net.sourceforge.pmd.lang.ast.xpath;
 
 import org.jaxen.Navigator;
 
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.XPathHandler;
+
+import net.sf.saxon.sxpath.IndependentContext;
+
 public abstract class AbstractASTXPathHandler implements XPathHandler {
 
+    @Override
     public Navigator getNavigator() {
-	return new DocumentNavigator();
+        return new DocumentNavigator();
     }
 
     public void initialize(IndependentContext context, Language language, Class<?> functionsClass) {
-	context.declareNamespace("pmd-" + language.getTerseName(), "java:" + functionsClass.getName());
+        context.declareNamespace("pmd-" + language.getTerseName(), "java:" + functionsClass.getName());
     }
 }

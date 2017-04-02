@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm.rule.basic;
 
 import java.util.HashSet;
@@ -61,7 +62,7 @@ public class UnusedMacroParameterRule extends AbstractVmRule {
 
     private String[] formatNameVariations(final String param) {
         final String actualName = param.substring(1);
-        return new String[] {param, "${" + actualName + "}", "${" + actualName + ".", "$!" + actualName,
-                "$!{" + actualName + ".", "$!{" + actualName + "}"};
+        return new String[] { param, "${" + actualName + "}", "${" + actualName + ".", "$!" + actualName,
+            "$!{" + actualName + ".", "$!{" + actualName + "}", };
     }
 }

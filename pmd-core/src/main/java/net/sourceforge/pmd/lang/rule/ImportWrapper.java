@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule;
 
 import java.lang.reflect.Field;
@@ -44,21 +45,22 @@ public class ImportWrapper {
         this.isStaticDemand = isStaticDemand;
     }
 
+    @Override
     public boolean equals(Object other) {
-    	if (other == null) {
-    	    return false;
-    	}
-    	if (other == this) {
-    	    return true;
-    	}
-    	if (other instanceof ImportWrapper) {
-	        ImportWrapper i = (ImportWrapper) other;
-	        if (name == null && i.getName() == null) {
-	            return i.getFullName().equals(fullname);
-	        }
-	        return i.getName().equals(name);
-    	}
-    	return false;
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (other instanceof ImportWrapper) {
+            ImportWrapper i = (ImportWrapper) other;
+            if (name == null && i.getName() == null) {
+                return i.getFullName().equals(fullname);
+            }
+            return i.getName().equals(name);
+        }
+        return false;
     }
 
     public boolean matches(ImportWrapper i) {
@@ -73,8 +75,9 @@ public class ImportWrapper {
         return i.getName().equals(name);
     }
 
+    @Override
     public int hashCode() {
-        if(name == null){
+        if (name == null) {
             return fullname.hashCode();
         }
         return name.hashCode();
@@ -101,4 +104,3 @@ public class ImportWrapper {
         return "Import[name=" + name + ",fullname=" + fullname + ",static*=" + isStaticDemand + "]";
     }
 }
-

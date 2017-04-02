@@ -17,6 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
+
 package org.sonar.plugins.scala.util;
 
 import java.io.BufferedReader;
@@ -28,22 +29,22 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 public final class StringUtils {
-  private StringUtils() {
-    // to prevent instantiation
-  }
-
-  public static List<String> convertStringToListOfLines(String string) throws IOException {
-    final List<String> lines = new ArrayList<>();
-    BufferedReader reader = null;
-    try {
-      reader = new BufferedReader(new StringReader(string));
-      String line = null;
-      while ((line = reader.readLine()) != null) {
-        lines.add(line);
-      }
-    } finally {
-      IOUtils.closeQuietly(reader);
+    private StringUtils() {
+        // to prevent instantiation
     }
-    return lines;
-  }
+
+    public static List<String> convertStringToListOfLines(String string) throws IOException {
+        final List<String> lines = new ArrayList<>();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new StringReader(string));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } finally {
+            IOUtils.closeQuietly(reader);
+        }
+        return lines;
+    }
 }

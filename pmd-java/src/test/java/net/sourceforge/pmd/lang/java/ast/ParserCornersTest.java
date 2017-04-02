@@ -1,32 +1,31 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ParserTst;
 
 public class ParserCornersTest extends ParserTst {
 
     /**
      * #1107 PMD 5.0.4 couldn't parse call of parent outer java class method
-     * from inner class
-     * 
-     * @throws Exception
-     *             any error
+     * from inner class.
      */
     @Test
-    public void testInnerOuterClass() throws Exception {
+    public void testInnerOuterClass() {
         parseJava17("/**\n" + " * @author azagorulko\n" + " *\n" + " */\n"
                 + "public class TestInnerClassCallsOuterParent {\n" + "\n" + "    public void test() {\n"
                 + "        new Runnable() {\n" + "            @Override\n" + "            public void run() {\n"
@@ -35,12 +34,12 @@ public class ParserCornersTest extends ParserTst {
     }
 
     @Test
-    public final void testGetFirstASTNameImageNull() throws Throwable {
+    public final void testGetFirstASTNameImageNull() {
         parseJava14(ABSTRACT_METHOD_LEVEL_CLASS_DECL);
     }
 
     @Test
-    public final void testCastLookaheadProblem() throws Throwable {
+    public final void testCastLookaheadProblem() {
         parseJava14(CAST_LOOKAHEAD_PROBLEM);
     }
 
@@ -71,9 +70,11 @@ public class ParserCornersTest extends ParserTst {
         String test18 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases18.java");
         ASTCompilationUnit cu = parseJava18(test18);
 
-        Assert.assertEquals(13, cu.findChildNodesWithXPath("//FormalParameter").size());
-        Assert.assertEquals(4, cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='true']").size());
-        Assert.assertEquals(9, cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='false']").size());
+        Assert.assertEquals(21, cu.findChildNodesWithXPath("//FormalParameter").size());
+        Assert.assertEquals(4,
+                cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='true']").size());
+        Assert.assertEquals(17,
+                cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='false']").size());
     }
 
     /**
@@ -131,17 +132,64 @@ public class ParserCornersTest extends ParserTst {
         parseJava18(c);
     }
 
+    @Test
+    public void testBug1530ParseError() throws Exception {
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1530.java"));
+        parseJava18(c);
+    }
+    
+    @Test
+    public void testGitHubBug207() throws Exception {
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug207.java"));
+        parseJava18(c);
+    }
+
+    @Test
+    public void testBug206() throws Exception {
+        String code = "public @interface Foo {" + PMD.EOL
+            + "static final ThreadLocal<Interner<Integer>> interner =" + PMD.EOL
+            + "    ThreadLocal.withInitial(Interners::newStrongInterner);" + PMD.EOL
+            + "}";
+        parseJava18(code);
+    }
+
+    @Test
+    public void testGitHubBug208ParseError() throws Exception {
+        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug208.java"));
+        parseJava15(c);
+    }
+    
+    @Test
+    public void testGitHubBug257NonExistingCast() throws Exception {
+        String code = "public class Test {" + PMD.EOL
+                + "     public static void main(String[] args) {" + PMD.EOL
+                + "         double a = 4.0;" + PMD.EOL
+                + "         double b = 2.0;" + PMD.EOL
+                + "         double result = Math.sqrt((a)   - b);" + PMD.EOL
+                + "         System.out.println(result);" + PMD.EOL
+                + "     }" + PMD.EOL
+                + "}";
+        ASTCompilationUnit compilationUnit = parseJava15(code);
+        assertEquals("A cast was found when none expected", 0, compilationUnit.findDescendantsOfType(ASTCastExpression.class).size());
+    }
+
+    @Test
+    public void testGitHubBug309() throws Exception {
+        String code = readAsString("GitHubBug309.java");
+        ASTCompilationUnit compilationUnit = parseJava18(code);
+        assertNotNull(compilationUnit);
+    }
+
     /**
-     * This triggered bug #1484 UnusedLocalVariable - false positive - parenthesis
+     * This triggered bug #1484 UnusedLocalVariable - false positive -
+     * parenthesis
+     * 
      * @throws Exception
      */
     @Test
     public void stringConcatentationShouldNotBeCast() throws Exception {
-        String code = "public class Test {\n" + 
-                "    public static void main(String[] args) {\n" + 
-                "        System.out.println(\"X\" + (args) + \"Y\");\n" + 
-                "    }\n" + 
-                "}";
+        String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
+                + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
         ASTCompilationUnit cu = parseJava18(code);
         Assert.assertEquals(0, cu.findDescendantsOfType(ASTCastExpression.class).size());
     }

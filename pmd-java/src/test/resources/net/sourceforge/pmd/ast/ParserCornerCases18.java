@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  * Java 8 language syntax
  * 
  * @see <a href="http://cr.openjdk.java.net/~briangoetz/lambda/lambda-state-final.html">State of the Lambda</a>
- * @see <a href="http://download.java.net/jdk8/docs/api/java/util/function/package-summary.html">java.util.function</a>
+ * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">java.util.function</a>
  */
 public class ParserCornerCases18 {
 
@@ -54,7 +54,18 @@ public class ParserCornerCases18 {
 
         // grammar/parser: don't get confused with this...
         int initialSizeGlobal = (int) (profilingContext.m_profileItems.size() * (150.0 * 0.30));
+
+        BiConsumer<String, Integer> lambda2 = (String s, Integer i) -> { i++; };
+        BiConsumer<String, Integer> lambda2a = (s, i) -> { i++; };
+        TriConsumer<String, Integer, Double> lambda3 = (String s, Integer i, Double d) -> { d += i; };
+        TriConsumer<String, Integer, Double> lambda3a = (s, i, d) -> { d += i; };
     }
+
+    @FunctionalInterface
+    public interface TriConsumer<A, B, C> {
+        void accept(A a, B b, C c);
+    }
+
     Runnable r1 = () -> { System.out.println(this); };
     
     public Runnable toDoLater() {

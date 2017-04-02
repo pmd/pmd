@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -20,33 +21,31 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 
 /**
- * Foreach directive used for moving through arrays,
- * or objects that provide an Iterator.
+ * Foreach directive used for moving through arrays, or objects that provide an
+ * Iterator.
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @author Daniel Rall
  * @version $Id: Foreach.java 945927 2010-05-18 22:21:41Z nbubna $
  */
-public class Foreach extends Directive
-{
+public class Foreach extends Directive {
     /**
      * Return name of this directive.
+     * 
      * @return The name of this directive.
      */
-    public String getName()
-    {
+    public String getName() {
         return "foreach";
     }
 
     /**
      * Return type of this directive.
+     * 
      * @return The type of this directive.
      */
-    public int getType()
-    {
+    public int getType() {
         return BLOCK;
     }
-
 
 }

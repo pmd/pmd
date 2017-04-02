@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -190,8 +191,8 @@ public class GodClassRule extends AbstractJavaRule {
             if (currentMethodName != null) {
                 Set<String> methodAccess = methodAttributeAccess.get(currentMethodName);
                 String variableName = getVariableName(node);
-                VariableNameDeclaration variableDeclaration = findVariableDeclaration(variableName, node.getScope()
-                        .getEnclosingScope(ClassScope.class));
+                VariableNameDeclaration variableDeclaration = findVariableDeclaration(variableName,
+                        node.getScope().getEnclosingScope(ClassScope.class));
                 if (variableDeclaration != null) {
                     methodAccess.add(variableName);
                 }

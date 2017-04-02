@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ruleset name="Strict Syntax"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+The Strict Syntax ruleset contains rules that highlight invalid plsql syntax, which works, but should be avoided.
+  </description>
+
+<rule name="MisplacedPragma"
+      language="plsql"
+      since="5.5.2"
+      message="Pragma should be used only inside the declaration block before 'BEGIN'."
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/plsql/strictsyntax.html#MisplacedPragma">
+    <description>
+Oracle states that the PRAQMA AUTONOMOUS_TRANSACTION must be in the declaration block,
+but the code does not complain, when being compiled on the 11g DB.
+https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value><![CDATA[
+//ProgramUnit/Pragma
+            ]]></value>
+        </property>
+    </properties>
+    <example><![CDATA[
+create or replace package inline_pragma_error is
+
+end;
+/
+
+create or replace package body inline_pragma_error is
+  procedure do_transaction(p_input_token        in varchar(200)) is
+  PRAGMA AUTONOMOUS_TRANSACTION; /* this is correct place for PRAGMA */
+  begin
+    PRAGMA AUTONOMOUS_TRANSACTION; /* this is the wrong place for PRAGMA -> violation */
+    /* do something */
+    COMMIT;
+   end do_transaction;
+
+end inline_pragma_error;
+/
+
+    ]]></example>
+</rule>
+
+</ruleset>

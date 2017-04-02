@@ -35,7 +35,8 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return isStatic;
     }
 
-    // TODO - this should go away, but the DuplicateImports rule still uses it (in a clunky way)
+    // TODO - this should go away, but the DuplicateImports rule still uses it
+    // (in a clunky way)
     public ASTName getImportedNameNode() {
         return (ASTName) jjtGetChild(0);
     }
@@ -63,12 +64,12 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-    
-    public void setPackage(Package packge){
+
+    public void setPackage(Package packge) {
         this.pkg = packge;
     }
-    
-    public Package getPackage(){
+
+    public Package getPackage() {
         return this.pkg;
     }
 }

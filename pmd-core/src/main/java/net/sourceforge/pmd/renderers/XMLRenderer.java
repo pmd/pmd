@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -26,7 +27,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             "XML encoding format, defaults to UTF-8.", "UTF-8", 0);
     private boolean useUTF8 = false;
 
-
     public XMLRenderer() {
         super(NAME, "XML format.");
         definePropertyDescriptor(ENCODING);
@@ -37,6 +37,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         setProperty(ENCODING, encoding);
     }
 
+    @Override
     public String defaultFileExtension() {
         return "xml";
     }
@@ -47,7 +48,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
-        if (encoding.equalsIgnoreCase("utf-8")) {
+        if ("utf-8".equalsIgnoreCase(encoding)) {
             useUTF8 = true;
         }
 
@@ -75,8 +76,10 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             buf.setLength(0);
             RuleViolation rv = violations.next();
-            if (!rv.getFilename().equals(filename)) { // New File
-                if (filename != null) {// Not first file ?
+            if (!rv.getFilename().equals(filename)) {
+                // New File
+                if (filename != null) {
+                    // Not first file ?
                     buf.append("</file>").append(PMD.EOL);
                 }
                 filename = rv.getFilename();

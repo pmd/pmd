@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.sourceforge.pmd</groupId>
 		<artifactId>pmd</artifactId>
-		<version>5.5.1-SNAPSHOT</version>
+		<version>5.6.0-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -86,6 +86,11 @@
                                     <pattern>org.objectweb.asm</pattern>
                                     <shadedPattern>shaded.org.objectweb.asm</shadedPattern>
                                 </relocation>
+                                <!-- apex uses an older version of jackson, hence we need to shaded it away -->
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <shadedPattern>shaded.com.fasterxml.jackson</shadedPattern>
+                                </relocation>
                             </relocations>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>apex-jorje-shaded</shadedClassifierName>
@@ -106,13 +111,13 @@
 			<artifactId>pmd-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		 <dependency>
 	        <groupId>apex</groupId>
 	        <artifactId>apex-jorje-ide</artifactId>
 	        <version>1.0-sfdc-187-SNAPSHOT-55042bfc2e</version>
 	    </dependency>
-	    
+
 		<dependency>
 	        <groupId>apex</groupId>
 	        <artifactId>apex-jorje-semantic</artifactId>

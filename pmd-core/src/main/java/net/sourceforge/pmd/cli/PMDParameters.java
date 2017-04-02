@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli;
 
 import java.io.IOException;
@@ -8,19 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import com.beust.jcommander.IStringConverter;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
-import com.beust.jcommander.validators.PositiveInteger;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
+import com.beust.jcommander.IStringConverter;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.validators.PositiveInteger;
+
 public class PMDParameters {
 
-    @Parameter(names = { "-rulesets", "-R" }, description = "Comma separated list of ruleset names to use.", required = true)
+    @Parameter(names = { "-rulesets", "-R" }, description = "Comma separated list of ruleset names to use.",
+            required = true)
     private String rulesets;
 
     @Parameter(names = { "-uri", "-u" }, description = "Database URI for sources.", required = false)
@@ -29,7 +31,8 @@ public class PMDParameters {
     @Parameter(names = { "-dir", "-d" }, description = "Root directory for sources.", required = false)
     private String sourceDir;
 
-    @Parameter(names = { "-filelist" }, description = "Path to a file containing a list of files to analyze.", required = false)
+    @Parameter(names = { "-filelist" }, description = "Path to a file containing a list of files to analyze.",
+            required = false)
     private String fileListPath;
 
     @Parameter(names = { "-format", "-f" }, description = "Report format type.")
@@ -41,13 +44,16 @@ public class PMDParameters {
     @Parameter(names = { "-help", "-h", "-H" }, description = "Display help on usage.", help = true)
     private boolean help = false;
 
-    @Parameter(names = { "-encoding", "-e" }, description = "Specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8).")
+    @Parameter(names = { "-encoding", "-e" },
+            description = "Specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8).")
     private String encoding = "UTF-8";
 
-    @Parameter(names = { "-threads", "-t" }, description = "Sets the number of threads used by PMD.", validateWith = PositiveInteger.class)
+    @Parameter(names = { "-threads", "-t" }, description = "Sets the number of threads used by PMD.",
+            validateWith = PositiveInteger.class)
     private Integer threads = 1;
 
-    @Parameter(names = { "-benchmark", "-b" }, description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
+    @Parameter(names = { "-benchmark", "-b" },
+            description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
     private boolean benchmark = false;
 
     @Parameter(names = { "-stress", "-S" }, description = "Performs a stress test.")
@@ -59,10 +65,13 @@ public class PMDParameters {
     @Parameter(names = "-showsuppressed", description = "Report should show suppressed rule violations.")
     private boolean showsuppressed = false;
 
-    @Parameter(names = "-suppressmarker", description = "Specifies the string that marks the a line which PMD should ignore; default is NOPMD.")
+    @Parameter(names = "-suppressmarker",
+            description = "Specifies the string that marks the a line which PMD should ignore; default is NOPMD.")
     private String suppressmarker = "NOPMD";
 
-    @Parameter(names = { "-minimumpriority", "-min" }, description = "Rule priority threshold; rules with lower priority than configured here won't be used. Default is '5' which is the lowest priority.", converter = RulePriorityConverter.class)
+    @Parameter(names = { "-minimumpriority", "-min" },
+            description = "Rule priority threshold; rules with lower priority than configured here won't be used. Default is '5' which is the lowest priority.",
+            converter = RulePriorityConverter.class)
     private RulePriority minimumPriority = RulePriority.LOW;
 
     @Parameter(names = { "-property", "-P" }, description = "{name}={value}: Define a property for the report format.",
@@ -78,20 +87,27 @@ public class PMDParameters {
     @Parameter(names = { "-language", "-l" }, description = "Specify a language PMD should use.")
     private String language = null;
 
-    @Parameter(names = "-auxclasspath", description = "Specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
+    @Parameter(names = "-auxclasspath",
+            description = "Specifies the classpath for libraries used by the source code. This is used by the type resolution. Alternatively, a 'file://' URL to a text file containing path elements on consecutive lines can be specified.")
     private String auxclasspath;
 
-    @Parameter(names = {"-failOnViolation", "--failOnViolation"}, arity = 1, description = "By default PMD exits with status 4 if violations are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
+    @Parameter(names = { "-failOnViolation", "--failOnViolation" }, arity = 1,
+            description = "By default PMD exits with status 4 if violations are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
 
-    @Parameter(names = "-norulesetcompatibility", description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
+    @Parameter(names = "-norulesetcompatibility",
+            description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
     private boolean noRuleSetCompatibility = false;
+    
+    @Parameter(names = "-cache", description = "Specify the location of the cache file for incremental analysis.")
+    private String cacheLocation = null;
 
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
         private static final char SEPARATOR = '=';
 
+        @Override
         public Properties convert(String value) {
             int indexOfSeparator = value.indexOf(SEPARATOR);
             if (indexOfSeparator < 0) {
@@ -112,12 +128,13 @@ public class PMDParameters {
         public int validate(String value) throws ParameterException {
             int minPriorityValue = Integer.parseInt(value);
             if (minPriorityValue < 1 || minPriorityValue > 5) {
-                throw new ParameterException("Priority values can only be integer value, between 1 and 5," + value
-                        + " is not valid");
+                throw new ParameterException(
+                        "Priority values can only be integer value, between 1 and 5," + value + " is not valid");
             }
             return minPriorityValue;
         }
 
+        @Override
         public RulePriority convert(String value) {
             return RulePriority.valueOf(validate(value));
         }
@@ -147,9 +164,11 @@ public class PMDParameters {
         configuration.setSuppressMarker(params.getSuppressmarker());
         configuration.setThreads(params.getThreads());
         configuration.setFailOnViolation(params.isFailOnViolation());
+        configuration.setAnalysisCacheLocation(params.cacheLocation);
 
-        LanguageVersion languageVersion = LanguageRegistry.findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
-        if(languageVersion != null) {
+        LanguageVersion languageVersion = LanguageRegistry
+                .findLanguageVersionByTerseName(params.getLanguage() + " " + params.getVersion());
+        if (languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
         try {
@@ -237,7 +256,7 @@ public class PMDParameters {
 
     public String getFileListPath() {
         return fileListPath;
-    };
+    }
 
     public String getFormat() {
         return format;
@@ -255,7 +274,8 @@ public class PMDParameters {
     }
 
     /**
-     * @param uri the uri specifying the source directory.
+     * @param uri
+     *            the uri specifying the source directory.
      */
     public void setUri(String uri) {
         this.uri = uri;

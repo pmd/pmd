@@ -14,7 +14,6 @@ public class ASTInclusiveOrExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

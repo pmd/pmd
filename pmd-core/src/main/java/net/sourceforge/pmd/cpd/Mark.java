@@ -1,12 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 public class Mark implements Comparable<Mark> {
     private TokenEntry token;
     private int lineCount;
-    private String code;
+    private SourceCode code;
 
     public Mark(TokenEntry token) {
         this.token = token;
@@ -16,15 +17,15 @@ public class Mark implements Comparable<Mark> {
         return this.token;
     }
 
-    public String getFilename () {
+    public String getFilename() {
         return this.token.getTokenSrcID();
     }
 
-    public int getBeginLine () {
+    public int getBeginLine() {
         return this.token.getBeginLine();
     }
 
-	public int getEndLine() {
+    public int getEndLine() {
         return getBeginLine() + getLineCount() - 1;
     }
 
@@ -37,10 +38,10 @@ public class Mark implements Comparable<Mark> {
     }
 
     public String getSourceCodeSlice() {
-        return this.code;
+        return this.code.getSlice(getBeginLine(), getEndLine());
     }
 
-    public void setSoureCodeSlice(String code) {
+    public void setSourceCode(SourceCode code) {
         this.code = code;
     }
 
@@ -76,6 +77,6 @@ public class Mark implements Comparable<Mark> {
 
     @Override
     public int compareTo(Mark other) {
-       return getToken().compareTo(other.getToken());
+        return getToken().compareTo(other.getToken());
     }
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties.factories;
 
 import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
@@ -24,7 +25,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * 
+ *
  * @author Brian Remedios
  *
  * @param <T>
@@ -34,9 +35,9 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     private final Class<?> valueType;
     private final Map<String, Boolean> fieldTypesByKey;
 
-    protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil
-            .mapFrom(new String[] { NAME, DESC, DEFAULT_VALUE, DELIMITER }, new Boolean[] { Boolean.TRUE, Boolean.TRUE,
-                    Boolean.TRUE, Boolean.FALSE });
+    protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil.mapFrom(
+            new String[] { NAME, DESC, DEFAULT_VALUE, DELIMITER },
+            new Boolean[] { Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE });
 
     public BasicPropertyDescriptorFactory(Class<?> theValueType) {
         valueType = theValueType;
@@ -56,22 +57,24 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     public BasicPropertyDescriptorFactory(Class<?> theValueType, Map<String, Boolean> additionalFieldTypesByKey) {
 
         valueType = theValueType;
-        Map<String, Boolean> temp = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size()
-                + additionalFieldTypesByKey.size());
+        Map<String, Boolean> temp = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size() + additionalFieldTypesByKey.size());
         temp.putAll(CORE_FIELD_TYPES_BY_KEY);
         temp.putAll(additionalFieldTypesByKey);
 
         fieldTypesByKey = Collections.unmodifiableMap(temp);
     }
 
+    @Override
     public Class<?> valueType() {
         return valueType;
     }
 
+    @Override
     public PropertyDescriptor<?> createWith(Map<String, String> valuesById) {
         throw new RuntimeException("Unimplemented createWith() method in subclass");
     }
 
+    @Override
     public Map<String, Boolean> expectedFields() {
         return fieldTypesByKey;
     }
@@ -91,8 +94,8 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     protected String numericDefaultValueIn(Map<String, String> valuesById) {
         String number = defaultValueIn(valuesById);
         return StringUtil.isEmpty(number) ? "0" : number; // TODO is 0
-                                                          // reasonable if
-                                                          // undefined?
+        // reasonable if
+        // undefined?
     }
 
     protected static String minValueIn(Map<String, String> valuesById) {

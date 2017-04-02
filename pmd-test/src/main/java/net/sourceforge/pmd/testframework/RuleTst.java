@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.testframework;
 
 import static org.junit.Assert.assertEquals;
@@ -21,6 +22,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -36,11 +43,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.TextRenderer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 /**
  * Advanced methods for test cases
  */
@@ -64,9 +66,9 @@ public abstract class RuleTst {
         }
     }
 
-
     /**
-     * Run the rule on the given code, and check the expected number of violations.
+     * Run the rule on the given code, and check the expected number of
+     * violations.
      */
     @SuppressWarnings("unchecked")
     public void runTest(TestDescriptor test) {
@@ -81,17 +83,18 @@ public abstract class RuleTst {
             int res;
             Report report;
             try {
-        	// Set test specific properties onto the Rule
+                // Set test specific properties onto the Rule
                 if (test.getProperties() != null) {
                     for (Map.Entry<Object, Object> entry : test.getProperties().entrySet()) {
-                	String propertyName = (String)entry.getKey();
-                	PropertyDescriptor propertyDescriptor = rule.getPropertyDescriptor(propertyName);
-                	if (propertyDescriptor == null) {
-                            throw new IllegalArgumentException("No such property '" + propertyName + "' on Rule " + rule.getName());
-                	}
+                        String propertyName = (String) entry.getKey();
+                        PropertyDescriptor propertyDescriptor = rule.getPropertyDescriptor(propertyName);
+                        if (propertyDescriptor == null) {
+                            throw new IllegalArgumentException(
+                                    "No such property '" + propertyName + "' on Rule " + rule.getName());
+                        }
 
-                	Object value = propertyDescriptor.valueFrom((String)entry.getValue());
-                	rule.setProperty(propertyDescriptor, value);
+                        Object value = propertyDescriptor.valueFrom((String) entry.getValue());
+                        rule.setProperty(propertyDescriptor, value);
                     }
                 }
 
@@ -109,9 +112,9 @@ public abstract class RuleTst {
             assertMessages(report, test);
             assertLineNumbers(report, test);
         } finally {
-            //Restore old properties
-            for (Map.Entry<PropertyDescriptor<?>, Object> entry: oldProperties.entrySet()) {
-        	rule.setProperty((PropertyDescriptor)entry.getKey(), entry.getValue());
+            // Restore old properties
+            for (Map.Entry<PropertyDescriptor<?>, Object> entry : oldProperties.entrySet()) {
+                rule.setProperty((PropertyDescriptor) entry.getKey(), entry.getValue());
             }
         }
     }
@@ -161,9 +164,8 @@ public abstract class RuleTst {
             if (expected.get(index) != actual.intValue()) {
                 printReport(test, report);
             }
-            assertEquals(
-                    '"' + test.getDescription() + "\" violation on wrong line number: violation number " + (index + 1) + ".",
-                    expected.get(index), actual);
+            assertEquals('"' + test.getDescription() + "\" violation on wrong line number: violation number "
+                    + (index + 1) + ".", expected.get(index), actual);
             index++;
         }
     }
@@ -171,8 +173,8 @@ public abstract class RuleTst {
     private void printReport(TestDescriptor test, Report report) {
         System.out.println("--------------------------------------------------------------");
         System.out.println("Test Failure: " + test.getDescription());
-        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), "
-                + report.size() + " problem(s) found.");
+        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.size()
+                + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
         System.out.println();
@@ -202,20 +204,21 @@ public abstract class RuleTst {
         runTestFromString(code, rule, report, languageVersion, true);
     }
 
-    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion, boolean isUseAuxClasspath) {
+    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion,
+            boolean isUseAuxClasspath) {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
             if (isUseAuxClasspath) {
-                p.getConfiguration().prependClasspath("."); // configure the "auxclasspath" option for unit testing
+                // configure the "auxclasspath" option for unit testing
+                p.getConfiguration().prependClasspath(".");
             }
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
             ctx.setSourceCodeFilename("n/a");
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
-            RuleSet rules = new RuleSet();
-            rules.addRule(rule);
+            RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
             p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -233,11 +236,12 @@ public abstract class RuleTst {
     protected String getCleanRuleName(Rule rule) {
         String fullClassName = rule.getClass().getName();
         if (fullClassName.equals(rule.getName())) {
-            //We got the full class name, so we'll use the stripped name instead
+            // We got the full class name, so we'll use the stripped name
+            // instead
             String packageName = rule.getClass().getPackage().getName();
-            return fullClassName.substring(packageName.length()+1);
+            return fullClassName.substring(packageName.length() + 1);
         } else {
-            return rule.getName();  //Test is using findRule, smart!
+            return rule.getName(); // Test is using findRule, smart!
         }
     }
 
@@ -255,10 +259,11 @@ public abstract class RuleTst {
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
         return extractTestsFromXml(rule, testsFileName, "xml/");
     }
+
     /**
-     * Extract a set of tests from an XML file with the given name. The file should be
-     * ./xml/[testsFileName].xml relative to the test class. The format is defined in
-     * test-data.xsd.
+     * Extract a set of tests from an XML file with the given name. The file
+     * should be ./xml/[testsFileName].xml relative to the test class. The
+     * format is defined in test-data.xsd.
      */
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
@@ -294,14 +299,13 @@ public abstract class RuleTst {
 
         TestDescriptor[] tests = new TestDescriptor[testCodes.getLength()];
         for (int i = 0; i < testCodes.getLength(); i++) {
-            Element testCode = (Element)testCodes.item(i);
+            Element testCode = (Element) testCodes.item(i);
 
             boolean reinitializeRule = true;
             Node reinitializeRuleAttribute = testCode.getAttributes().getNamedItem("reinitializeRule");
             if (reinitializeRuleAttribute != null) {
                 String reinitializeRuleValue = reinitializeRuleAttribute.getNodeValue();
-                if ("false".equalsIgnoreCase(reinitializeRuleValue) ||
-                        "0".equalsIgnoreCase(reinitializeRuleValue)) {
+                if ("false".equalsIgnoreCase(reinitializeRuleValue) || "0".equalsIgnoreCase(reinitializeRuleValue)) {
                     reinitializeRule = false;
                 }
             }
@@ -335,7 +339,7 @@ public abstract class RuleTst {
             NodeList expectedMessagesNodes = testCode.getElementsByTagName("expected-messages");
             List<String> messages = new ArrayList<>();
             if (expectedMessagesNodes != null && expectedMessagesNodes.getLength() > 0) {
-                Element item = (Element)expectedMessagesNodes.item(0);
+                Element item = (Element) expectedMessagesNodes.item(0);
                 NodeList messagesNodes = item.getElementsByTagName("message");
                 for (int j = 0; j < messagesNodes.getLength(); j++) {
                     messages.add(parseTextNode(messagesNodes.item(j)));
@@ -345,7 +349,7 @@ public abstract class RuleTst {
             NodeList expectedLineNumbersNodes = testCode.getElementsByTagName("expected-linenumbers");
             List<Integer> expectedLineNumbers = new ArrayList<>();
             if (expectedLineNumbersNodes != null && expectedLineNumbersNodes.getLength() > 0) {
-                Element item = (Element)expectedLineNumbersNodes.item(0);
+                Element item = (Element) expectedLineNumbersNodes.item(0);
                 String numbers = item.getTextContent();
                 for (String n : numbers.split(" *, *")) {
                     expectedLineNumbers.add(Integer.valueOf(n));
@@ -354,10 +358,11 @@ public abstract class RuleTst {
 
             String code = getNodeValue(testCode, "code", false);
             if (code == null) {
-                //Should have a coderef
+                // Should have a coderef
                 NodeList coderefs = testCode.getElementsByTagName("code-ref");
-                if (coderefs.getLength()==0) {
-                    throw new RuntimeException("Required tag is missing from the test-xml. Supply either a code or a code-ref tag");
+                if (coderefs.getLength() == 0) {
+                    throw new RuntimeException(
+                            "Required tag is missing from the test-xml. Supply either a code or a code-ref tag");
                 }
                 Node coderef = coderefs.item(0);
                 String referenceId = coderef.getAttributes().getNamedItem("id").getNodeValue();
@@ -369,7 +374,7 @@ public abstract class RuleTst {
                     }
                 }
 
-                if (code==null) {
+                if (code == null) {
                     throw new RuntimeException("No matching code fragment found for coderef");
                 }
             }
@@ -381,7 +386,8 @@ public abstract class RuleTst {
             if (languageVersionString == null) {
                 tests[i] = new TestDescriptor(code, description, expectedProblems, rule);
             } else {
-            	LanguageVersion languageVersion = LanguageRegistry.findLanguageVersionByTerseName(languageVersionString);
+                LanguageVersion languageVersion = LanguageRegistry
+                        .findLanguageVersionByTerseName(languageVersionString);
                 if (languageVersion != null) {
                     tests[i] = new TestDescriptor(code, description, expectedProblems, rule, languageVersion);
                 } else {
@@ -416,8 +422,7 @@ public abstract class RuleTst {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
             Node node = exampleNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.CDATA_SECTION_NODE
-                    || node.getNodeType() == Node.TEXT_NODE) {
+            if (node.getNodeType() == Node.CDATA_SECTION_NODE || node.getNodeType() == Node.TEXT_NODE) {
                 buffer.append(node.getNodeValue());
             }
         }

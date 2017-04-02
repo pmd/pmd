@@ -25,6 +25,25 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
+/**
+ * Added ASTIsOfTypeCondition node, added support for USING IN|OUT|IN_OUT
+ * See PMD Bug #1520
+ *
+ * Andreas Dangel 11/2016
+ *====================================================================
+ * Adjusted ProgramUnit() to allow Pragma(), even though this is not
+ * valid syntax. See PMD Bug #1527.
+ *
+ * Andreas Dangel 11/2016
+ */
+
+ /**
+ * Added ASTIsNullCondition node
+ *
+ * Sergey Yanzin 11/2016
+ */
+
 //
 options {
 	DEBUG_PARSER = false ;
@@ -483,7 +502,9 @@ ASTProgramUnit ProgramUnit()  :
 			|
 			(
 				DeclarativeSection()
-				<BEGIN> (Statement())* (ExceptionHandler())? <END> [ID()]
+				<BEGIN>
+				[Pragma()] // See PMD Bug #1527
+				(Statement())* (ExceptionHandler())? <END> [ID()]
 			)
 		)
 	]
@@ -908,6 +929,7 @@ ASTExceptionHandler ExceptionHandler() :
 
 void Skip2NextTerminator(String initiator,String terminator) :
 {
+  Token beginToken = getToken(0);
   Token t = getToken(1);
   int count = (initiator == null) ? 0 : 1;
   if(t.image.equals(initiator)) count++;
@@ -917,6 +939,10 @@ void Skip2NextTerminator(String initiator,String terminator) :
     t = getToken(1);
 	  if(t.image.equals(initiator)) count++;
 	  if(t.image.equals(terminator)) count--;
+    if((null != t.specialToken && beginToken.kind != SELECT && beginToken.kind != INSERT && beginToken.kind != UPDATE && beginToken.kind != DELETE && beginToken.kind != MERGE) || t.kind == EOF)
+        return;
+    if (t.specialToken != null && "/".equals(t.image))
+	    return;
   }
 }
 {
@@ -1070,13 +1096,15 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 /**
  * 2011-05-15 - SRT - Added to cope with wrapped objects
   A wrapped function looks like this (always terminated by one or more equals signs "="):-
+  
+  <pre>
   "  CREATE OR REPLACE FUNCTION "TESTUSER"."GET_DATE_STRING"
 / ** Return SYSDATE formatted using the provided template.
  *
  *
- *  @param p_date_format normal TO_CHARE/TO_DATE date template
- *  @return formatted datestring
- *  @see http://www.oracle-base.com/articles/10g/WrapAndDBMS_DDL_10gR2.php#dbms_ddl
+ *  &#64;param p_date_format normal TO_CHARE/TO_DATE date template
+ *  &#64;return formatted datestring
+ *  &#64;see http://www.oracle-base.com/articles/10g/WrapAndDBMS_DDL_10gR2.php#dbms_ddl
  * /
 wrapped
 a000000
@@ -1102,6 +1130,7 @@ abcd
 v04omzJ0zOfHdMAzuHQlw+fAsr2ym9YI8I521pRTbnFVAHOOUw4JqPkIyj7wj4VwyL17nhYb
 3qPVuL6SvhZTmEBnRtaErHpzaDuIpqZ0G4s=
   "
+  </pre>
  */
 
 
@@ -1133,7 +1162,7 @@ void WrappedObject()  :
 // ============================================================================
 
 /**
- * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at <LOOP>
+ * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at &lt;LOOP&gt;
  */
 ASTUnlabelledStatement UnlabelledStatement()  :
 {}
@@ -1356,7 +1385,7 @@ ASTOpenStatement OpenStatement()  :
 {
 	 <OPEN> [Expression()]
 		//[LOOKAHEAD(functionCall()) functionCall() | QualifiedName()]
-		[<FOR> Expression() [<USING> Expression() ("," Expression())*]] 
+		[<FOR> Expression() [<USING> (<IN> | <OUT> | <IN_OUT>)? Expression() ("," (<IN> | <OUT> | <IN_OUT>)? Expression())*]] 
       { return jjtThis ; }
 }
 
@@ -1955,11 +1984,47 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() :
   (<NOT>) {sb.append(" NOT "); } 
   (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
-   (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
+   (simpleNode = IsNullCondition() ) {sb.append(simpleNode.getImage()); } 
   )
  { 
  jjtThis.setImage(sb.toString()); return jjtThis; 
  }
+}
+ASTIsNullCondition IsNullCondition() :  //yanzin
+{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+{
+  (
+    LOOKAHEAD(<IDENTIFIER> <IS> (<NOT> <NULL>|<NULL>))
+    (
+		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");} 
+	)
+	|
+	(
+		simpleNode = IsOfTypeCondition() 
+	) 
+	{ 
+		sb.append(simpleNode.getImage()); 
+	}
+  )
+  {
+    jjtThis.setImage(sb.toString());
+	return jjtThis;
+ }
+}
+
+ASTIsOfTypeCondition IsOfTypeCondition() :
+{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+{
+  (
+    LOOKAHEAD(<IDENTIFIER> <IS>)
+    ((name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <OF> {sb.append(" OF");} [<TYPE>]
+      "(" [<ONLY>] Name() ("," [<ONLY>] Name() )* ")")
+  |
+    (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
+  )
+  {
+    jjtThis.setImage(sb.toString()); return jjtThis;
+  }
 }
 
 /**
@@ -2201,7 +2266,7 @@ ASTNumericLiteral NumericLiteral() :
 	}
 }
 
-/** This cannot be a token because these are valid labels '<< next_msg >>", '<<"OUTER LOOP">>'  
+/** This cannot be a token because these are valid labels '&lt;&lt; next_msg &gt;&gt;", '&lt;&lt;"OUTER LOOP"&gt;&gt;'
 */
 ASTLabel Label() :
 { 
@@ -3236,6 +3301,7 @@ TOKEN [IGNORE_CASE]:
  *                                 Added: <MERGE: "MERGE">, <AFTER: "AFTER">, <BEFORE: "BEFORE">,
  *                                 <INSTEADOF: "INSTEAD OF">, <FOREACHROW: "FOR EACH ROW">, <REFERENCING: "REFERENCING">,
  *                                 <OLD: "OLD">, <PARENT: "PARENT">
+ * 2016-11-04 - Andreas Dangel - Added <ONLY: "ONLY">, <IN_OUT: "IN_OUT">
  */
 
 TOKEN [IGNORE_CASE]:
@@ -3335,6 +3401,7 @@ TOKEN [IGNORE_CASE]:
 <IF: "IF"> |
 <IMMEDIATE: "IMMEDIATE"> |
 <IN: "IN"> |
+<IN_OUT: "IN_OUT"> |
 <INDEX: "INDEX"> |
 <INDICES: "INDICES"> |
 <INCLUDING: "INCLUDING"> |
@@ -3396,6 +3463,7 @@ TOKEN [IGNORE_CASE]:
 <OF: "OF"> |
 <OID: "OID"> |
 <ON: "ON"> |
+<ONLY: "ONLY"> |
 <OPAQUE: "OPAQUE"> |
 <OPEN: "OPEN"> |
 <OPERATOR: "OPERATOR"> |
@@ -4886,7 +4954,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 
 //SRT 2011-04-17 - END  */
 /**
- * 2006-05-20 - Matthias Hendler - added <OLD> and <PARENT>  
+ * 2006-05-20 - Matthias Hendler - added &lt;OLD&gt; and &lt;PARENT&gt;
  */
 ASTID ID(): {}
 {
@@ -5087,7 +5155,7 @@ ASTID ID(): {}
 }
 
 /**
- * 2006-05-20 - Matthias Hendler - added <OLD>, <NEW>, <LOOP>, <INT>
+ * 2006-05-20 - Matthias Hendler - added &lt;OLD&gt;, &lt;NEW&gt;, &lt;LOOP&gt;, &lt;INT&gt;
  */
 ASTUnqualifiedID UnqualifiedID(): {}
 {
@@ -5120,7 +5188,7 @@ ASTUnqualifiedID UnqualifiedID(): {}
 }
 
 /**
- * 2006-05-20 - Matthias Hendler - added <LIMIT>
+ * 2006-05-20 - Matthias Hendler - added &lt;LIMIT&gt;
  */
 ASTQualifiedID QualifiedID(): {}
 {

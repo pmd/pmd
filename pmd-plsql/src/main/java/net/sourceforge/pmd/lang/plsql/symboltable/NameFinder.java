@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.ArrayList;
@@ -21,16 +22,15 @@ public class NameFinder {
     private List<PLSQLNameOccurrence> names = new ArrayList<>();
 
     public NameFinder(ASTPrimaryExpression node) {
-    	Node simpleNode = node.jjtGetChild(0);
-        if (simpleNode instanceof ASTPrimaryPrefix) 
-        {
-          ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) simpleNode ;
-          //if (prefix.usesSuperModifier()) {
-          //    add(new NameOccurrence(prefix, "super"));
-          //} else 
-          if (prefix.usesSelfModifier()) {
-              add(new PLSQLNameOccurrence(prefix, "this"));
-          }
+        Node simpleNode = node.jjtGetChild(0);
+        if (simpleNode instanceof ASTPrimaryPrefix) {
+            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) simpleNode;
+            // if (prefix.usesSuperModifier()) {
+            // add(new NameOccurrence(prefix, "super"));
+            // } else
+            if (prefix.usesSelfModifier()) {
+                add(new PLSQLNameOccurrence(prefix, "this"));
+            }
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             checkForNameChild(node.jjtGetChild(i));
@@ -58,11 +58,12 @@ public class NameFinder {
                 occurrence.setIsMethodOrConstructorInvocation();
                 ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
                 occurrence.setArgumentCount(args.getArgumentCount());
-            } //else if (suffix.jjtGetNumChildren() == 1 
-		//       && suffix.jjtGetChild(0) instanceof ASTMemberSelector) 
-	    //{
-            //    add(new NameOccurrence((SimpleNode)suffix.jjtGetChild(0), suffix.jjtGetChild(0).getImage()));
-            //}
+            } // else if (suffix.jjtGetNumChildren() == 1
+            // && suffix.jjtGetChild(0) instanceof ASTMemberSelector)
+            // {
+            // add(new NameOccurrence((SimpleNode)suffix.jjtGetChild(0),
+            // suffix.jjtGetChild(0).getImage()));
+            // }
         }
     }
 
@@ -74,11 +75,10 @@ public class NameFinder {
         }
     }
 
-
     @Override
     public String toString() {
-    	StringBuilder result = new StringBuilder();
-        for (PLSQLNameOccurrence occ: names) {
+        StringBuilder result = new StringBuilder();
+        for (PLSQLNameOccurrence occ : names) {
             result.append(occ.getImage());
         }
         return result.toString();

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.util.HashSet;
@@ -19,8 +20,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 /**
  * This rule finds places where StringBuffer.toString() is called just to see if
- * the string is 0 length by either using .equals("") or toString().length()
- * <p/>
+ * the string is 0 length by either using .equals("") or toString().length().
  * 
  * <pre>
  * StringBuffer sb = new StringBuffer(&quot;some string&quot;);

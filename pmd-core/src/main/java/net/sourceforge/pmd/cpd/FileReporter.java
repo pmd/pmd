@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedWriter;
@@ -37,12 +38,12 @@ public class FileReporter {
         try {
             Writer writer = null;
             try {
-            	OutputStream outputStream;
-            	if (reportFile == null) {
-            		outputStream = System.out;
-            	} else {
-            		outputStream = new FileOutputStream(reportFile);
-            	}
+                OutputStream outputStream;
+                if (reportFile == null) {
+                    outputStream = System.out;
+                } else {
+                    outputStream = new FileOutputStream(reportFile);
+                }
                 writer = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
                 writer.write(content);
             } finally {

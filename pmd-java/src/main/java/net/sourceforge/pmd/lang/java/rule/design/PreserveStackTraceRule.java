@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
@@ -17,13 +18,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-
-import org.jaxen.JaxenException;
 
 /**
  *
@@ -32,12 +31,6 @@ import org.jaxen.JaxenException;
  *
  */
 public class PreserveStackTraceRule extends AbstractJavaRule {
-
-    // FUTURE: This detection is name based, it should probably use Type
-    // Resolution, to become type "based"
-    // it assumes the exception class contains 'Exception' in its name
-    private static final String FIND_THROWABLE_INSTANCE = "./VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression"
-            + "[ClassOrInterfaceType[contains(@Image,'Exception')] and Arguments[count(*)=0]]";
 
     private static final String FILL_IN_STACKTRACE = ".fillInStackTrace";
 
@@ -82,10 +75,17 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                             List<NameOccurrence> occurrences = entry.getValue();
                             if (decl.getImage().equals(child.getImage())) {
                                 if (!isInitCauseCalled(target, occurrences)) {
-                                    args = decl.getNode().jjtGetParent()
-                                            .getFirstDescendantOfType(ASTArgumentList.class);
-                                    if (args != null) {
-                                        ck(data, target, throwStatement, args);
+                                    // Check how the variable is initialized
+                                    ASTVariableInitializer initializer = decl.getNode().jjtGetParent()
+                                            .getFirstDescendantOfType(ASTVariableInitializer.class);
+                                    if (initializer != null) {
+                                        args = initializer.getFirstDescendantOfType(ASTArgumentList.class);
+                                        if (args != null) {
+                                            // constructor with args?
+                                            ck(data, target, throwStatement, args);
+                                        } else if (!isFillInStackTraceCalled(target, initializer)) {
+                                            addViolation(data, throwStatement);
+                                        }
                                     }
                                 }
                             }
@@ -99,6 +99,11 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
         return super.visit(catchStmt, data);
     }
 
+    private boolean isFillInStackTraceCalled(final String target, final ASTVariableInitializer initializer) {
+        final ASTName astName = initializer.getFirstDescendantOfType(ASTName.class);
+        return astName != null && astName.hasImageEqualTo(target + FILL_IN_STACKTRACE);
+    }
+
     private boolean isInitCauseCalled(String target, List<NameOccurrence> occurrences) {
         boolean initCauseCalled = false;
         for (NameOccurrence occurrence : occurrences) {
@@ -107,8 +112,8 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                 image = occurrence.getLocation().getImage();
             }
             if (image != null && image.endsWith("initCause")) {
-                ASTPrimaryExpression primaryExpression = occurrence.getLocation().getFirstParentOfType(
-                        ASTPrimaryExpression.class);
+                ASTPrimaryExpression primaryExpression = occurrence.getLocation()
+                        .getFirstParentOfType(ASTPrimaryExpression.class);
                 if (primaryExpression != null) {
                     ASTArgumentList args2 = primaryExpression.getFirstDescendantOfType(ASTArgumentList.class);
                     if (checkForTargetUsage(target, args2)) {
@@ -119,49 +124,6 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
             }
         }
         return initCauseCalled;
-    }
-
-    @Override
-    public Object visit(ASTVariableDeclarator node, Object data) {
-        // Search Catch stmt nodes for variable used to store improperly created
-        // throwable or exception
-        try {
-            if (node.hasDescendantMatchingXPath(FIND_THROWABLE_INSTANCE)) {
-                String variableName = node.jjtGetChild(0).getImage(); // VariableDeclatorId
-                ASTCatchStatement catchStmt = node.getFirstParentOfType(ASTCatchStatement.class);
-
-                while (catchStmt != null) {
-                    List<Node> violations = catchStmt
-                            .findChildNodesWithXPath("//Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = '"
-                                    + variableName + "']");
-                    if (!violations.isEmpty()) {
-                        // If, after this allocation, the 'initCause' method is
-                        // called, and the ex passed
-                        // this is not a violation
-                        if (!useInitCause(violations.get(0), catchStmt)) {
-                            addViolation(data, node);
-                        }
-                    }
-
-                    // check ASTCatchStatement higher up
-                    catchStmt = catchStmt.getFirstParentOfType(ASTCatchStatement.class);
-                }
-            }
-            return super.visit(node, data);
-        } catch (JaxenException e) {
-            // XPath is valid, this should never happens...
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private boolean useInitCause(Node node, ASTCatchStatement catchStmt) {
-        // In case of NPE...
-        if (node != null && node.getImage() != null) {
-            return catchStmt
-                    .hasDescendantMatchingXPath("./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '"
-                            + node.getImage() + ".initCause']");
-        }
-        return false;
     }
 
     /**

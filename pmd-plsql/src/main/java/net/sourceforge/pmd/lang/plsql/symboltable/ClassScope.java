@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
+import net.sourceforge.pmd.lang.symboltable.Applier;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -37,11 +40,11 @@ public class ClassScope extends AbstractScope {
     }
 
     /**
-     * This is only for anonymous inner classes
-     * <p/>
-     * FIXME - should have name like Foo$1, not Anonymous$1 to get this working
+     * This is only for anonymous inner classes.
+     *
+     * <p>FIXME - should have name like Foo$1, not Anonymous$1 to get this working
      * right, the parent scope needs to be passed in when instantiating a
-     * ClassScope
+     * ClassScope</p>
      */
     public ClassScope() {
         // this.className = getParent().getEnclosingClassScope().getClassName()

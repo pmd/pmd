@@ -3,6 +3,500 @@
 Previous versions of PMD can be downloaded here:
 http://sourceforge.net/projects/pmd/files/pmd/
 
+
+## 27-March-2017 - 5.5.5
+
+The PMD team is pleased to announce PMD 5.5.5.
+
+
+### Table Of Contents
+
+* [Fixed Issues](#Fixed_Issues)
+* [External Contributions](#External_Contributions)
+
+### Fixed Issues
+
+*   general:
+    *   [#305](https://github.com/pmd/pmd/issues/305): \[core] PMD not executing under git bash
+*   java:
+    *   [#309](https://github.com/pmd/pmd/issues/309): \[java] Parse error on method reference
+*   java-design
+    *   [#274](https://github.com/pmd/pmd/issues/274): \[java] AccessorMethodGeneration: Method inside static inner class incorrectly reported
+    *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
+    *   [#282](https://github.com/pmd/pmd/issues/282): \[java] UnnecessaryLocalBeforeReturn false positive when cloning Maps
+    *   [#291](https://github.com/pmd/pmd/issues/291): \[java] Improve quality of AccessorClassGeneration
+*   java-junit:
+    *   [#285](https://github.com/pmd/pmd/issues/285): \[java] JUnitTestsShouldIncludeAssertRule should support @Rule as well as @Test(expected = ...)
+*   java-optimizations:
+    *   [#222](https://github.com/pmd/pmd/issues/222): \[java] UseStringBufferForStringAppends: False Positive with ternary operator
+*   java-strings:
+    *   [#290](https://github.com/pmd/pmd/issues/290): \[java] InefficientEmptyStringCheck misses String.trim().isEmpty()
+
+### External Contributions
+
+*   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
+*   [#289](https://github.com/pmd/pmd/pull/289): \[apex] Complex SOQL Crud check bug fixes
+*   [#296](https://github.com/pmd/pmd/pull/296): \[apex] Adding String.IsNotBlank to the whitelist to prevent False positives
+*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty() 
+*   [#307](https://github.com/pmd/pmd/pull/307): \[java] Fix false positive with UseStringBufferForStringAppendsRule
+*   [#308](https://github.com/pmd/pmd/pull/308): \[java] JUnitTestsShouldIncludeAssertRule supports @Rule annotated ExpectedExceptions
+
+
+## 25-Februar-2017 - 5.5.4
+
+The PMD team is pleased to announce PMD 5.5.4
+
+
+### Table Of Contents
+
+*   [New and noteworthy](#New_and_noteworthy)
+    *   [New Rules](#New_Rules)
+    *   [Modified Rules](#Modified_Rules)
+*   [Fixed Issues](#Fixed_Issues)
+*   [External Contributions](#External_Contributions)
+
+
+### New and noteworthy
+
+#### New Rules
+
+##### AccessorMethodGeneration (java-design)
+
+When accessing a private field / method from another class, the Java compiler will generate a accessor methods
+with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
+be avoided by changing the visibility of the field / method from private to package-private.
+
+For instance, it would report violations on code such as:
+
+```
+public class OuterClass {
+    private int counter;
+    /* package */ int id;
+
+    public class InnerClass {
+        InnerClass() {
+            OuterClass.this.counter++; // wrong, accessor method will be generated
+        }
+
+        public int getOuterClassId() {
+            return OuterClass.this.id; // id is package-private, no accessor method needed
+        }
+    }
+}
+```
+
+This new rule is part of the `java-design` ruleset.
+
+#### Modified Rules
+
+*   The Java rule `UnusedModifier` (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
+    *   Annotations marked as `abstract`.
+    *   Nested annotations marked as `static`.
+    *   Nested annotations within another interface or annotation marked as `public`.
+    *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
+    *   Nested enums marked as `static`.
+
+*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) no longer requires the variable declaration
+    and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be
+    reported.
+
+### Fixed Issues
+
+*   General
+    *   [#234](https://github.com/pmd/pmd/issues/234): \[core] Zip file stream closes spuriously when loading rulesets
+    *   [#256](https://github.com/pmd/pmd/issues/256): \[core] shortnames option is broken with relative paths
+*   apex-complexity
+    *   [#251](https://github.com/pmd/pmd/issues/251): \[apex] NCSS Type length is incorrect when using method chaining
+*   apex-security
+    *   [#264](https://github.com/pmd/pmd/issues/264): \[apex] ApexXSSFromURLParamRule shouldn't enforce ESAPI usage. String.escapeHtml4 is sufficient.
+*   java-basic
+    *   [#232](https://github.com/pmd/pmd/issues/232): \[java] SimplifiedTernary: Incorrect ternary operation can be simplified.
+*   java-coupling
+    *   [#270](https://github.com/pmd/pmd/issues/270): \[java] LoD false positive
+*   java-design
+    *   [#933](https://sourceforge.net/p/pmd/bugs/933/): \[java] UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation
+    *   [#1496](https://sourceforge.net/p/pmd/bugs/1496/): \[java] New Rule: AccesorMethodGeneration - complements accessor class rule
+    *   [#216](https://github.com/pmd/pmd/issues/216): \[java] \[doc] NonThreadSafeSingleton: Be more explicit as to why double checked locking is not recommended
+    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeReturn: ClassCastException in switch case with local variable returned
+    *   [#240](https://github.com/pmd/pmd/issues/240): \[java] UnnecessaryLocalBeforeReturn: Enhance by checking usages
+*   java-optimizations
+    *   [#215](https://github.com/pmd/pmd/issues/215): \[java] RedundantFieldInitializer report for annotation field not explicitly marked as final
+*   java-unusedcode
+    *   [#246](https://github.com/pmd/pmd/issues/246): \[java] UnusedModifier doesn't check annotations
+    *   [#247](https://github.com/pmd/pmd/issues/247): \[java] UnusedModifier doesn't check annotations inner classes
+    *   [#248](https://github.com/pmd/pmd/issues/248): \[java] UnusedModifier doesn't check static keyword on nested enum declaration
+    *   [#257](https://github.com/pmd/pmd/issues/257): \[java] UnusedLocalVariable false positive
+
+
+### External Contributions
+
+*   [#227](https://github.com/pmd/pmd/pull/227): \[apex] Improving detection of getters
+*   [#228](https://github.com/pmd/pmd/pull/228): \[apex] Excluding count from CRUD/FLS checks
+*   [#229](https://github.com/pmd/pmd/pull/229): \[apex] Dynamic SOQL is safe against Integer, Boolean, Double
+*   [#231](https://github.com/pmd/pmd/pull/231): \[apex] CRUD/FLS rule - add support for fields
+*   [#266](https://github.com/pmd/pmd/pull/266): \[java] corrected invalid reporting of LoD violation
+*   [#268](https://github.com/pmd/pmd/pull/268): \[apex] Support safe escaping via String method
+*   [#273](https://github.com/pmd/pmd/pull/273): \[apex] Shade jackson on apex
+
+
+## 28-January-2017 - 5.5.3
+
+The PMD team is pleased to announce PMD 5.5.3
+
+The most significant changes are on analysis performance and a whole new **Apex Security Rule Set**.
+
+Multithread performance has been enhanced by reducing thread-contention on a
+bunch of areas. This is still an area of work, as the speedup of running
+multithreaded analysis is still relatively small (4 threads produce less
+than a 50% speedup). Future releases will keep improving on this area.
+
+Once again, *Symbol Table* has been an area of great performance improvements.
+This time we were able to further improve it's performance by roughly 10% on all
+supported languages. In *Java* in particular, several more improvements were possible,
+improving *Symbol Table* performance by a whooping 30%, that's over 5X faster
+than PMD 5.5.1, when we first started working on it.
+
+Java developers will also appreciate the revamp of `CloneMethodMustImplementCloneable`,
+making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
+
+### Table Of Contents
+
+* [New and noteworthy](#New_and_noteworthy)
+    * [Apex Security Rule Set](#Apex_Security_Rule_Set)
+    * [Modified Rules](#Modified_Rules)
+* [Fixed Issues](#Fixed_Issues)
+* [API Changes](#API_Changes)
+* [External Contributions](#External_Contributions)
+
+### New and noteworthy
+
+#### Apex Security Rule Set
+
+A new ruleset focused on security has been added, consisting of a wide range of rules
+to detect most common security problems.
+
+##### ApexBadCrypto
+
+The rule makes sure you are using randomly generated IVs and keys for `Crypto` calls.
+Hard-wiring these values greatly compromises the security of encrypted data.
+
+For instance, it would report violations on code such as:
+
+```
+public class without sharing Foo {
+    Blob hardCodedIV = Blob.valueOf('Hardcoded IV 123');
+    Blob hardCodedKey = Blob.valueOf('0000000000000000');
+    Blob data = Blob.valueOf('Data to be encrypted');
+    Blob encrypted = Crypto.encrypt('AES128', hardCodedKey, hardCodedIV, data);
+}
+
+```
+
+##### ApexCRUDViolation
+
+The rule validates you are checking for access permissions before a SOQL/SOSL/DML operation.
+Since Apex runs in system mode not having proper permissions checks results in escalation of 
+privilege and may produce runtime errors. This check forces you to handle such scenarios.
+
+For example, the following code is considered valid:
+
+```
+public class Foo {
+    public Contact foo(String status, String ID) {
+        Contact c = [SELECT Status__c FROM Contact WHERE Id=:ID];
+
+        // Make sure we can update the database before even trying
+        if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()) {
+            return null;
+        }
+
+        c.Status__c = status;
+        update c;
+        return c;
+    }
+}
+```
+
+##### ApexCSRF
+
+Check to avoid making DML operations in Apex class constructor/init method. This prevents
+modification of the database just by accessing a page.
+
+For instance, the following code would be invalid:
+
+```
+public class Foo {
+    public init() {
+        insert data;
+    }
+
+    public Foo() {
+        insert data;
+    }
+}
+```
+
+##### ApexDangerousMethods
+
+Checks against calling dangerous methods.
+
+For the time being, it reports:
+
+* Against `FinancialForce`'s `Configuration.disableTriggerCRUDSecurity()`. Disabling CRUD security
+opens the door to several attacks and requires manual validation, which is unreliable.
+* Calling `System.debug` passing sensitive data as parameter, which could lead to exposure
+of private data.
+
+##### ApexInsecureEndpoint
+
+Checks against accessing endpoints under plain **http**. You should always use
+**https** for security.
+
+##### ApexOpenRedirect
+
+Checks against redirects to user-controlled locations. This prevents attackers from
+redirecting users to phishing sites.
+
+For instance, the following code would be reported:
+
+```
+public class without sharing Foo {
+    String unsafeLocation = ApexPage.getCurrentPage().getParameters.get('url_param');
+    PageReference page() {
+       return new PageReference(unsafeLocation);
+    }
+}
+```
+
+##### ApexSharingViolations
+
+Detect classes declared without explicit sharing mode if DML methods are used. This
+forces the developer to take access restrictions into account before modifying objects.
+
+##### ApexSOQLInjection
+
+Detects the usage of untrusted / unescaped variables in DML queries.
+
+For instance, it would report on:
+
+```
+public class Foo {
+    public void test1(String t1) {
+        Database.query('SELECT Id FROM Account' + t1);
+    }
+}
+```
+
+##### ApexSuggestUsingNamedCred
+
+Detects hardcoded credentials used in requests to an endpoint.
+
+You should refrain from hardcoding credentials:
+  * They are hard to mantain by being mixed in application code
+  * Particularly hard to update them when used from different classes
+  * Granting a developer access to the codebase means granting knowledge
+     of credentials, keeping a two-level access is not possible.
+  * Using different credentials for different environments is troublesome
+     and error-prone.
+
+Instead, you should use *Named Credentials* and a callout endpoint.
+
+For more information, you can check [this](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_named_credentials.htm)
+
+##### ApexXSSFromEscapeFalse
+
+Reports on calls to `addError` with disabled escaping. The message passed to `addError`
+will be displayed directly to the user in the UI, making it prime ground for XSS
+attacks if unescaped.
+
+##### ApexXSSFromURLParam
+
+Makes sure that all values obtained from URL parameters are properly escaped / sanitized
+to avoid XSS attacks.
+
+#### Modified Rules
+
+The Java rule "UseLocaleWithCaseConversions" (ruleset java-design) has been modified, to detect calls
+to `toLowerCase` and to `toUpperCase` also within method call chains. This leads to more detected cases
+and potentially new false positives.
+See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
+
+
+### Fixed Issues
+
+*   General
+    *   [#1511](https://sourceforge.net/p/pmd/bugs/1511/): \[core] Inconsistent behavior of Rule.start/Rule.end
+*   apex-apexunit
+    *   [#1543](https://sourceforge.net/p/pmd/bugs/1543/): \[apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive
+*   apex-complexity
+    *   [#183](https://github.com/pmd/pmd/issues/183): \[apex] NCSS Method length is incorrect when using method chaining
+*   java
+    *   [#185](https://github.com/pmd/pmd/issues/185): \[java] CPD runs into NPE when analyzing Lucene
+    *   [#206](https://github.com/pmd/pmd/issues/206): \[java] Parse error on annotation fields with generics
+    *   [#207](https://github.com/pmd/pmd/issues/207): \[java] Parse error on method reference with generics
+    *   [#208](https://github.com/pmd/pmd/issues/208): \[java] Parse error with local class with 2 or more annotations
+    *   [#213](https://github.com/pmd/pmd/issues/213): \[java] CPD: OutOfMemory when analyzing Lucene
+    *   [#1542](https://sourceforge.net/p/pmd/bugs/1542/): \[java] CPD throws an NPE when parsing enums with -ignore-identifiers
+    *   [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
+*   java-design
+    *   [#1448](https://sourceforge.net/p/pmd/bugs/1448/): \[java] ImmutableField: Private field in inner class gives false positive with lambdas
+    *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeReturn with assert
+    *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
+    *   [#1556](https://sourceforge.net/p/pmd/bugs/1556/): \[java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)
+    *   [#177](https://github.com/pmd/pmd/issues/177): \[java] SingularField with lambdas as final fields
+*   java-imports
+    *   [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
+    *   [#1547](https://sourceforge.net/p/pmd/bugs/1547/): \[java] UnusedImportRule - False Positive for only usage in Javadoc - {@link ClassName#CONSTANT}
+    *   [#1555](https://sourceforge.net/p/pmd/bugs/1555/): \[java] UnnecessaryFullyQualifiedName: Really necessary fully qualified name
+*   java-logging-java
+    *   [#1541](https://sourceforge.net/p/pmd/bugs/1541/): \[java] InvalidSlf4jMessageFormat: False positive with placeholder and exception
+    *   [#1551](https://sourceforge.net/p/pmd/bugs/1551/): \[java] InvalidSlf4jMessageFormat: fails with NPE
+*   java-unnecessary
+    *   [#199](https://github.com/pmd/pmd/issues/199): \[java] UselessParentheses: Parentheses in return statement are incorrectly reported as useless
+*   java-strings
+    *   [#202](https://github.com/pmd/pmd/issues/202): \[java] \[doc] ConsecutiveAppendsShouldReuse is not really an optimization
+*   XML
+    *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
+*   psql
+    *   [#1549](https://sourceforge.net/p/pmd/bugs/1549/): \[plsql] Parse error for IS [NOT] NULL construct
+*   javascript
+    *   [#201](https://github.com/pmd/pmd/issues/201): \[javascript] template strings are not correctly parsed
+
+
+### API Changes
+
+*   `net.sourceforge.pmd.RuleSetFactory` is now immutable and its behavior cannot be changed anymore.
+    It provides constructors to create new adjusted instances. This allows to avoid synchronization in RuleSetFactory.
+    See [PR #131](https://github.com/pmd/pmd/pull/131).
+
+### External Contributions
+
+*   [#123](https://github.com/pmd/pmd/pull/123): \[apex] Changing method names to lowercase so casing doesn't matter
+*   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
+*   [#137](https://github.com/pmd/pmd/pull/137): \[apex] Adjusted remediation points
+*   [#146](https://github.com/pmd/pmd/pull/146): \[apex] Detection of missing Apex CRUD checks for SOQL/DML operations
+*   [#147](https://github.com/pmd/pmd/pull/147): \[apex] Adding XSS detection to return statements
+*   [#148](https://github.com/pmd/pmd/pull/148): \[apex] Improving detection of SOQL injection
+*   [#149](https://github.com/pmd/pmd/pull/149): \[apex] Whitelisting String.isEmpty and casting
+*   [#152](https://github.com/pmd/pmd/pull/152): \[java] fixes #1552 continue does not require break
+*   [#154](https://github.com/pmd/pmd/pull/154): \[java] Fix #1547: UnusedImports: Adjust regex to support underscores
+*   [#158](https://github.com/pmd/pmd/pull/158): \[apex] Reducing FPs in SOQL with VF getter methods
+*   [#160](https://github.com/pmd/pmd/pull/160): \[apex] Flagging of dangerous method call
+*   [#163](https://github.com/pmd/pmd/pull/163): \[apex] Flagging of System.debug
+*   [#165](https://github.com/pmd/pmd/pull/165): \[apex] Improving open redirect rule to avoid test classes/methods
+*   [#167](https://github.com/pmd/pmd/pull/167): \[apex] GC and thread safety changes
+*   [#169](https://github.com/pmd/pmd/pull/169): \[apex] Improving detection for DML with inline new object
+*   [#170](https://github.com/pmd/pmd/pull/170): \[core] Ant Task Formatter encoding issue with XMLRenderer
+*   [#172](https://github.com/pmd/pmd/pull/172): \[apex] Bug fix, detects both Apex fields and class members
+*   [#175](https://github.com/pmd/pmd/pull/175): \[apex] ApexXSSFromURLParam: Adding missing casting methods
+*   [#176](https://github.com/pmd/pmd/pull/176): \[apex] Bug fix for FP: open redirect for strings prefixed with / is safe
+*   [#179](https://github.com/pmd/pmd/pull/179): \[apex] Legacy test class declaration support
+*   [#181](https://github.com/pmd/pmd/pull/181): \[apex] Control flow based CRUD rule checking
+*   [#184](https://github.com/pmd/pmd/pull/184): \[apex] Improving open redirect detection for static fields & assignment operations
+*   [#189](https://github.com/pmd/pmd/pull/189): \[apex] Bug fix of SOQL concatenated vars detection
+*   [#191](https://github.com/pmd/pmd/pull/191): \[apex] Detection of sharing violation when Database. methods are used
+*   [#192](https://github.com/pmd/pmd/pull/192): \[apex] Dead code removal
+*   [#200](https://github.com/pmd/pmd/pull/200): \[javascript] Templatestring grammar fix
+*   [#204](https://github.com/pmd/pmd/pull/204): \[apex] Sharing violation SOQL detection bug fix
+*   [#214](https://github.com/pmd/pmd/pull/214): \[apex] Sharing violation improving reporting of the correct node, de-duping
+
+
+## 05-November-2016 - 5.5.2
+
+**Summary:**
+
+*   1 new language for CPD: Groovy
+*   1 new rule: plsql-strictsyntax/MisplacedPragma
+*   12 pull requests
+*   17 bug fixes
+
+**New Supported Languages:**
+
+*   CPD now supports Groovy. See [PR#107](https://github.com/pmd/pmd/pull/107).
+
+**Feature Requests and Improvements:**
+
+*   plsql
+    *   [#1539](https://sourceforge.net/p/pmd/bugs/1539/): \[plsql] Create new rule for strict syntax checking: MisplacedPragma
+
+**New Rules:**
+
+*   New Rules for plsql
+    *   plsql-strictsyntax: MisplacedPragma
+
+**Pull Requests:**
+
+*   [#106](https://github.com/pmd/pmd/pull/106): \[java] CPD: Keep constructor names under ignoreIdentifiers
+*   [#107](https://github.com/pmd/pmd/pull/107): \[groovy] Initial support for CPD Groovy
+*   [#110](https://github.com/pmd/pmd/pull/110): \[java] Fix parser error (issue 1530)
+*   [#111](https://github.com/pmd/pmd/pull/111): \[java] Fix BooleanInstantiationRule for Java 8
+*   [#112](https://github.com/pmd/pmd/pull/112): \[java] Fix ClassCastException on CloneMethodMustImplementCloneable
+*   [#113](https://github.com/pmd/pmd/pull/113): \[java] Fix ClassCastException on SignatureDeclareThrowsException
+*   [#114](https://github.com/pmd/pmd/pull/114): \[core] Remove multihreading workaround for JRE5, as no PMD version supports running on JRE5 anymore
+*   [#115](https://github.com/pmd/pmd/pull/115): \[java] Simplify lambda parsing
+*   [#116](https://github.com/pmd/pmd/pull/116): \[core] \[java] Improve collection usage
+*   [#117](https://github.com/pmd/pmd/pull/117): \[java] Improve symboltable performance
+*   [#118](https://github.com/pmd/pmd/pull/118): \[java] Simplify VariableDeclaratorId parsing
+*   [#119](https://github.com/pmd/pmd/pull/119): \[plsql] Fix PMD issue 1531- endless loop followed by OOM while parsing (PL)SQL
+
+**Bugfixes:**
+
+*   apex-apexunit
+    *   [#1521](https://sourceforge.net/p/pmd/bugs/1521/): \[apex] ApexUnitTestClassShouldHaveAsserts: Parsing error on APEX class: expected one element but was: <BlockStatement, BlockStatement>
+*   Java
+    *   [#1530](https://sourceforge.net/p/pmd/bugs/1530/): \[java] Parser exception on Java code
+    *   [#1490](https://sourceforge.net/p/pmd/bugs/1490/): \[java] PMD Error while processing - NullPointerException
+*   java-basic/BooleanInstantiation
+    *   [#1533](https://sourceforge.net/p/pmd/bugs/1533/): \[java] BooleanInstantiation: ClassCastException with Annotation
+*   java-comments
+    *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
+*   java-design/SingularField
+    *   [#1494](https://sourceforge.net/p/pmd/bugs/1494/): \[java] SingularField: lombok.Data false positive
+*   java-imports/UnusedImports
+    *   [#1529](https://sourceforge.net/p/pmd/bugs/1529/): \[java] UnusedImports: The created rule violation has no class name
+*   java-logging-java
+    *   [#1500](https://sourceforge.net/p/pmd/bugs/1500/) \[java] InvalidSlf4jMessageFormat: doesn't ignore exception param
+    *   [#1509](https://sourceforge.net/p/pmd/bugs/1509/) \[java] InvalidSlf4jMessageFormat: NPE
+*   java-typeresolution/CloneMethodMustImplementCloneable
+    *   [#1532](https://sourceforge.net/p/pmd/bugs/1532/): \[java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable
+    *   [#1534](https://sourceforge.net/p/pmd/bugs/1534/): \[java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)
+*   java-typeresolution/SignatureDeclareThrowsException
+    *   [#1535](https://sourceforge.net/p/pmd/bugs/1535/): \[java] SignatureDeclareThrowsException: ClassCastException with Annotation
+*   PLSQL
+    *   [#1520](https://sourceforge.net/p/pmd/bugs/1520/): \[plsql] Missing PL/SQL language constructs in parser: Is Of Type, Using
+    *   [#1527](https://sourceforge.net/p/pmd/bugs/1527/): \[plsql] PRAGMA AUTONOMOUS_TRANSACTION gives processing errors
+    *   [#1531](https://sourceforge.net/p/pmd/bugs/1531/): \[plsql] OOM/Endless loop while parsing (PL)SQL
+*   General
+    *   [#1506](https://sourceforge.net/p/pmd/bugs/1506/): \[core] When runing any RuleTst, start/end methods not called
+    *   [#1517](https://sourceforge.net/p/pmd/bugs/1517/): \[java] CPD reports on Java constructors when using ignoreIdentifiers
+
+
+## 27-July-2016 - 5.5.1
+
+**New Rules:**
+
+*   New rules for Salesforce.com Apex:
+    *   apex-apexunit: ApexUnitTestClassShouldHaveAsserts, ApexUnitTestShouldNotUseSeeAllDataTrue
+
+**Pull Requests:**
+
+*   [#101](https://github.com/pmd/pmd/pull/101): \[java] Improve multithreading performance: do not lock on classloader
+*   [#102](https://github.com/pmd/pmd/pull/102): \[apex] Restrict AvoidLogicInTrigger rule to max. 1 violation per file
+*   [#103](https://github.com/pmd/pmd/pull/103): \[java] \[apex] Fix for 1501: CyclomaticComplexity rule causes OOM when class reporting is disabled
+*   [#104](https://github.com/pmd/pmd/pull/104): \[core] \[java] Close opened file handles
+*   [apex #43](https://github.com/Up2Go/pmd/pull/43): \[apex] Basic apex unit test rules
+
+**Bugfixes:**
+
+*   Apex
+    *   [#1501](https://sourceforge.net/p/pmd/bugs/1501/): \[java] \[apex] CyclomaticComplexity rule causes OOM when class reporting is disabled
+*   Java
+    *   [#1501](https://sourceforge.net/p/pmd/bugs/1501/): \[java] \[apex] CyclomaticComplexity rule causes OOM when class reporting is disabled
+*   General
+    *   [#1499](https://sourceforge.net/p/pmd/bugs/1499/): \[core] CPD test break PMD 5.5.1 build on Windows
+    *   [#1508](https://sourceforge.net/p/pmd/bugs/1508/): \[core] \[java] PMD is leaking file handles
+
+
 ## 25-June-2016 - 5.5.0
 
 **System requirements:**
@@ -163,6 +657,215 @@ you'll need a java8 runtime environment.
     *   [#1488](https://sourceforge.net/p/pmd/bugs/1488/): \[apex] Windows line endings falsify the location of issues
     *   [#1491](https://sourceforge.net/p/pmd/bugs/1491/): \[core] CodeClimateRenderer: corrupt JSON output with real line breaks
     *   [#1492](https://sourceforge.net/p/pmd/bugs/1492/): \[core] PMD CLI: IncompatibleClassChangeError when running PMD
+
+
+## 27-March-2017 - 5.4.6
+
+The PMD team is pleased to announce PMD 5.4.6.
+
+This is a bug fixing release.
+
+### Table Of Contents
+
+* [Fixed Issues](#Fixed_Issues)
+* [External Contributions](#External_Contributions)
+
+### Fixed Issues
+
+*   general:
+    *   [#305](https://github.com/pmd/pmd/issues/305): \[core] PMD not executing under git bash
+*   java:
+    *   [#309](https://github.com/pmd/pmd/issues/309): \[java] Parse error on method reference
+*   java-design:
+    *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
+*   java-junit:
+    *   [#285](https://github.com/pmd/pmd/issues/285): \[java] JUnitTestsShouldIncludeAssertRule should support @Rule as well as @Test(expected = ...)
+*   java-optimizations:
+    *   [#222](https://github.com/pmd/pmd/issues/222): \[java] UseStringBufferForStringAppends: False Positive with ternary operator
+*   java-strings:
+    *   [#290](https://github.com/pmd/pmd/issues/290): \[java] InefficientEmptyStringCheck misses String.trim().isEmpty()
+
+### External Contributions
+
+*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty() 
+*   [#307](https://github.com/pmd/pmd/pull/307): \[java] Fix false positive with UseStringBufferForStringAppendsRule
+*   [#308](https://github.com/pmd/pmd/pull/308): \[java] JUnitTestsShouldIncludeAssertRule supports @Rule annotated ExpectedExceptions
+
+
+## 25-Februar-2017 - 5.4.5
+
+The PMD team is pleased to announce PMD 5.4.5
+
+This is a bug fixing release.
+
+### Table Of Contents
+
+* [New and noteworthy](#New_and_noteworthy)
+    *   [Modified Rules](#Modified_Rules)
+* [Fixed Issues](#Fixed_Issues)
+* [External Contributions](#External_Contributions)
+
+### New and noteworthy
+
+#### Modified Rules
+
+*   The Java rule `UnusedModifier` (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
+    *   Annotations marked as `abstract`.
+    *   Nested annotations marked as `static`.
+    *   Nested annotations within another interface or annotation marked as `public`.
+    *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
+    *   Nested enums marked as `static`.
+
+### Fixed Issues
+
+*   general
+    *   [#234](https://github.com/pmd/pmd/issues/234): \[core] Zip file stream closes spuriously when loading rulesets
+    *   [#256](https://github.com/pmd/pmd/issues/256): \[core] shortnames option is broken with relative paths
+*   java-basic
+    *   [#232](https://github.com/pmd/pmd/issues/232): \[java] SimplifiedTernary: Incorrect ternary operation can be simplified.
+*   java-coupling
+    *   [#270](https://github.com/pmd/pmd/issues/270): \[java] LoD false positive
+*   java-design
+    *   [#216](https://github.com/pmd/pmd/issues/216): \[java] \[doc] NonThreadSafeSingleton: Be more explicit as to why double checked locking is not recommended
+    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeReturn: ClassCastException in switch case with local variable returned
+*   java-optimizations
+    *   [#215](https://github.com/pmd/pmd/issues/215): \[java] RedundantFieldInitializer report for annotation field not explicitly marked as final
+*   java-unusedcode
+    *   [#246](https://github.com/pmd/pmd/issues/246): \[java] UnusedModifier doesn't check annotations
+    *   [#247](https://github.com/pmd/pmd/issues/247): \[java] UnusedModifier doesn't check annotations inner classes
+    *   [#248](https://github.com/pmd/pmd/issues/248): \[java] UnusedModifier doesn't check static keyword on nested enum declaration
+    *   [#257](https://github.com/pmd/pmd/issues/257): \[java] UnusedLocalVariable false positive
+
+
+### External Contributions
+
+*   [#266](https://github.com/pmd/pmd/pull/266): \[java] corrected invalid reporting of LoD violation
+
+
+## 28-January-2017 - 5.4.4
+
+The PMD team is pleased to announce PMD 5.4.4
+
+This is a bug fixing release. The most significant changes are on analysis performance.
+
+Multithread performance has been enhanced by reducing thread-contention on a
+bunch of areas. This is still an area of work, as the speedup of running
+multithreaded analysis is still relatively small (4 threads produce less
+than a 50% speedup). Future releases will keep improving on this area.
+
+Once again, *Symbol Table* has been an area of great performance improvements.
+This time we were able to further improve it's performance by roughly 10% on all
+supported languages. In *Java* in particular, several more improvements were possible,
+improving *Symbol Table* performance by a whooping 30%, that's over 5X faster
+than PMD 5.4.2, when we first started working on it.
+
+Java developers will also appreciate the revamp of `CloneMethodMustImplementCloneable`,
+making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
+
+### Table Of Contents
+
+* [New and noteworthy](#New_and_noteworthy)
+    * [Modified Rules](#Modified_Rules)
+* [Fixed Issues](#Fixed_Issues)
+* [API Changes](#API_Changes)
+* [External Contributions](#External_Contributions)
+
+### New and noteworthy
+
+This is a bug fixing release, no major changes were introduced.
+
+#### Modified Rules
+
+The Java rule "UseLocaleWithCaseConversions" (ruleset java-design) has been modified, to detect calls
+to `toLowerCase` and to `toUpperCase` also within method call chains. This leads to more detected cases
+and potentially new false positives.
+See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
+
+
+### Fixed Issues
+
+*   java
+    *   [#206](https://github.com/pmd/pmd/issues/206): \[java] Parse error on annotation fields with generics
+    *   [#207](https://github.com/pmd/pmd/issues/207): \[java] Parse error on method reference with generics
+    *   [#208](https://github.com/pmd/pmd/issues/208): \[java] Parse error with local class with 2 or more annotations
+    *   [#213](https://github.com/pmd/pmd/issues/213): \[java] CPD: OutOfMemory when analyzing Lucene
+*   java-design
+    *   [#1448](https://sourceforge.net/p/pmd/bugs/1448/): \[java] ImmutableField: Private field in inner class gives false positive with lambdas
+    *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeReturn with assert
+    *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
+    *   [#1556](https://sourceforge.net/p/pmd/bugs/1556/): \[java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)
+    *   [#177](https://github.com/pmd/pmd/issues/177): \[java] SingularField with lambdas as final fields
+*   java-imports
+    *   [#1546](https://sourceforge.net/p/pmd/bugs/1546/): \[java] UnnecessaryFullyQualifiedNameRule doesn't take into consideration conflict resolution
+    *   [#1547](https://sourceforge.net/p/pmd/bugs/1547/): \[java] UnusedImportRule - False Positive for only usage in Javadoc - {@link ClassName#CONSTANT}
+    *   [#1555](https://sourceforge.net/p/pmd/bugs/1555/): \[java] UnnecessaryFullyQualifiedName: Really necessary fully qualified name
+*   java-unnecessary
+    *   [#199](https://github.com/pmd/pmd/issues/199): \[java] UselessParentheses: Parentheses in return statement are incorrectly reported as useless
+*   java-strings
+    *   [#202](https://github.com/pmd/pmd/issues/202): \[java] \[doc] ConsecutiveAppendsShouldReuse is not really an optimization
+*   XML
+    *   [#1518](https://sourceforge.net/p/pmd/bugs/1518/): \[xml] Error while processing xml file with ".webapp" in the file or directory name
+*   psql
+    *   [#1549](https://sourceforge.net/p/pmd/bugs/1549/): \[plsql] Parse error for IS [NOT] NULL construct
+*   javascript
+    *   [#201](https://github.com/pmd/pmd/issues/201): \[javascript] template strings are not correctly parsed
+*   General
+    *   [#1511](https://sourceforge.net/p/pmd/bugs/1511/): \[core] Inconsistent behavior of Rule.start/Rule.end
+
+
+### External Contributions
+
+*   [#129](https://github.com/pmd/pmd/pull/129): \[plsql] Added correct parse of IS [NOT] NULL and multiline DML
+*   [#152](https://github.com/pmd/pmd/pull/152): \[java] fixes #1552 continue does not require break
+*   [#154](https://github.com/pmd/pmd/pull/154): \[java] Fix #1547: UnusedImports: Adjust regex to support underscores
+*   [#170](https://github.com/pmd/pmd/pull/170): \[core] Ant Task Formatter encoding issue with XMLRenderer
+*   [#200](https://github.com/pmd/pmd/pull/200): \[javascript] Templatestring grammar fix
+
+
+## 04-November-2016 - 5.4.3
+
+**Summary:**
+
+*   7 pull requests
+*   16 bug fixes
+
+**Pull Requests:**
+
+*   [#35](https://github.com/adangel/pmd/pull/35): \[javascript] Javascript tokenizer now ignores comment tokens.
+*   [#103](https://github.com/pmd/pmd/pull/103): \[java] Fix for 1501: CyclomaticComplexity rule causes OOM when class reporting is disabled
+*   [#110](https://github.com/pmd/pmd/pull/110): \[java] Fix parser error (issue 1530)
+*   [#111](https://github.com/pmd/pmd/pull/111): \[java] Fix BooleanInstantiationRule for Java 8
+*   [#112](https://github.com/pmd/pmd/pull/112): \[java] Fix ClassCastException on CloneMethodMustImplementCloneable
+*   [#113](https://github.com/pmd/pmd/pull/113): \[java] Fix ClassCastException on SignatureDeclareThrowsException
+*   [#119](https://github.com/pmd/pmd/pull/119): \[plsql] Fix PMD issue 1531- endless loop followed by OOM while parsing (PL)SQL
+
+**Bugfixes:**
+
+*   Java
+    *   [#1501](https://sourceforge.net/p/pmd/bugs/1501/): \[java] CyclomaticComplexity rule causes OOM when class reporting is disabled
+    *   [#1530](https://sourceforge.net/p/pmd/bugs/1530/): \[java] Parser exception on Java code
+    *   [#1490](https://sourceforge.net/p/pmd/bugs/1490/): \[java] PMD Error while processing - NullPointerException
+*   java-basic/BooleanInstantiation
+    *   [#1533](https://sourceforge.net/p/pmd/bugs/1533/): \[java] BooleanInstantiation: ClassCastException with Annotation
+*   java-comments
+    *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
+*   java-design/SingularField
+    *   [#1494](https://sourceforge.net/p/pmd/bugs/1494/): \[java] SingularField: lombok.Data false positive
+*   java-imports/UnusedImports
+    *   [#1529](https://sourceforge.net/p/pmd/bugs/1529/): \[java] UnusedImports: The created rule violation has no class name
+*   java-typeresolution/CloneMethodMustImplementCloneable
+    *   [#1532](https://sourceforge.net/p/pmd/bugs/1532/): \[java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable
+    *   [#1534](https://sourceforge.net/p/pmd/bugs/1534/): \[java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)
+*   java-typeresolution/SignatureDeclareThrowsException
+    *   [#1535](https://sourceforge.net/p/pmd/bugs/1535/): \[java] SignatureDeclareThrowsException: ClassCastException with Annotation
+*   PLSQL
+    *   [#1520](https://sourceforge.net/p/pmd/bugs/1520/): \[plsql] Missing PL/SQL language constructs in parser: Is Of Type, Using
+    *   [#1527](https://sourceforge.net/p/pmd/bugs/1527/): \[plsql] PRAGMA AUTONOMOUS_TRANSACTION gives processing errors
+    *   [#1531](https://sourceforge.net/p/pmd/bugs/1531/): \[plsql] OOM/Endless loop while parsing (PL)SQL
+*   General
+    *   [#1499](https://sourceforge.net/p/pmd/bugs/1499/): \[core] CPD test break PMD 5.5.1 build on Windows
+    *   [#1506](https://sourceforge.net/p/pmd/bugs/1506/): \[core] When runing any RuleTst, start/end methods not called
+    *   [#1508](https://sourceforge.net/p/pmd/bugs/1508/): \[core] \[java] PMD is leaking file handles
 
 
 ## 29-May-2016 - 5.4.2
@@ -468,6 +1171,67 @@ Ruleset snippet to activate the new rules:
     The method `findVariableHere` returns now
     a Set of NameDeclarations which match the given occurrence.  This is useful in case there are ambiguous declarations
     of methods.
+
+
+## 04-November-2016 - 5.3.8
+
+**Summary**
+
+*   1 feature requests
+*   6 pull requests
+*   17 bug fixes
+
+**Feature Requests and Improvements:**
+
+*   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): \[core] \[java] Provide backwards compatibility for PMD configuration file
+
+**Pull Requests:**
+
+*   [#35](https://github.com/adangel/pmd/pull/35): \[javascript] Javascript tokenizer now ignores comment tokens.
+*   [#103](https://github.com/pmd/pmd/pull/103): \[java] Fix for 1501: CyclomaticComplexity rule causes OOM when class reporting is disabled
+*   [#111](https://github.com/pmd/pmd/pull/111): \[java] Fix BooleanInstantiationRule for Java 8
+*   [#112](https://github.com/pmd/pmd/pull/112): \[java] Fix ClassCastException on CloneMethodMustImplementCloneable
+*   [#113](https://github.com/pmd/pmd/pull/113): \[java] Fix ClassCastException on SignatureDeclareThrowsException
+*   [#119](https://github.com/pmd/pmd/pull/119): \[plsql] Fix PMD issue 1531- endless loop followed by OOM while parsing (PL)SQL
+
+**Bugfixes:**
+
+*   java
+    *   [#1501](https://sourceforge.net/p/pmd/bugs/1501/): \[java] \[apex] CyclomaticComplexity rule causes OOM when class reporting is disabled
+*   java-basic/BooleanInstantiation
+    *   [#1533](https://sourceforge.net/p/pmd/bugs/1533/): \[java] BooleanInstantiation: ClassCastException with Annotation
+*   java-comments
+    *   [#1522](https://sourceforge.net/p/pmd/bugs/1522/): \[java] CommentRequired: false positive
+*   java-design/CloseResource
+    *   [#1479](https://sourceforge.net/p/pmd/bugs/1479/): \[java] CloseResource: false positive on Statement
+*   java-imports/UnusedImports
+    *   [#1529](https://sourceforge.net/p/pmd/bugs/1529/): \[java] UnusedImports: The created rule violation has no class name
+*   java-typeresolution/CloneMethodMustImplementCloneable
+    *   [#1532](https://sourceforge.net/p/pmd/bugs/1532/): \[java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable
+    *   [#1534](https://sourceforge.net/p/pmd/bugs/1534/): \[java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)
+*   java-typeresolution/SignatureDeclareThrowsException
+    *   [#1535](https://sourceforge.net/p/pmd/bugs/1535/): \[java] SignatureDeclareThrowsException: ClassCastException with Annotation
+*   java-unusedcode/UnusedLocalVariable
+    *   [#1484](https://sourceforge.net/p/pmd/bugs/1484/): \[java] UnusedLocalVariable: false positive - parenthesis
+*   java-unusedcode/UnusedModifier
+    *   [#1480](https://sourceforge.net/p/pmd/bugs/1480/): \[java] UnusedModifier: false positive on public modifier used with inner interface in enum
+*   plsql
+    *   [#1520](https://sourceforge.net/p/pmd/bugs/1520/): \[plsql] Missing PL/SQL language constructs in parser: Is Of Type, Using
+    *   [#1527](https://sourceforge.net/p/pmd/bugs/1527/): \[plsql] PRAGMA AUTONOMOUS_TRANSACTION gives processing errors
+    *   [#1531](https://sourceforge.net/p/pmd/bugs/1531/): \[plsql] OOM/Endless loop while parsing (PL)SQL
+*   General
+    *   [#1481](https://sourceforge.net/p/pmd/bugs/1481/): \[core] CPD: no problems found results in blank file instead of empty xml
+    *   [#1499](https://sourceforge.net/p/pmd/bugs/1499/): \[core] CPD test break PMD 5.5.1 build on Windows
+    *   [#1506](https://sourceforge.net/p/pmd/bugs/1506/): \[core] When runing any RuleTst, start/end methods not called
+    *   [#1508](https://sourceforge.net/p/pmd/bugs/1508/): \[core] \[java] PMD is leaking file handles
+
+**API Changes:**
+
+*   New command line parameter for PMD: `-norulesetcompatibility` - this disables the ruleset factory
+    compatibility filter and fails, if e.g. an old rule name is used in the ruleset.
+    See also [#1360](https://sourceforge.net/p/pmd/bugs/1360/).
+    This option is also available for the ant task: `<noRuleSetCompatibility>true</noRuleSetCompatibility>`.
+*   CPD: If no problems found, an empty report will be output instead of nothing. See also [#1481](https://sourceforge.net/p/pmd/bugs/1481/)
 
 
 ## 30-April-2016 - 5.3.7

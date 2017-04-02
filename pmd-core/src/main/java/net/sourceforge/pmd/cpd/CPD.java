@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
@@ -27,17 +28,18 @@ import net.sourceforge.pmd.util.database.SourceObject;
 public class CPD {
     private static final Logger LOGGER = Logger.getLogger(CPD.class.getName());
 
-	private CPDConfiguration configuration;
+    private CPDConfiguration configuration;
 
-	private Map<String, SourceCode> source = new TreeMap<>();
+    private Map<String, SourceCode> source = new TreeMap<>();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
     private Set<String> current = new HashSet<>();
 
     public CPD(CPDConfiguration theConfiguration) {
-    	configuration = theConfiguration;
-        // before we start any tokenizing (add(File...)), we need to reset the static TokenEntry status
+        configuration = theConfiguration;
+        // before we start any tokenizing (add(File...)), we need to reset the
+        // static TokenEntry status
         TokenEntry.clearImages();
     }
 
@@ -46,7 +48,7 @@ public class CPD {
     }
 
     public void go() {
-        matchAlgorithm = new MatchAlgorithm(source, tokens,configuration.getMinimumTileSize(),listener);
+        matchAlgorithm = new MatchAlgorithm(source, tokens, configuration.getMinimumTileSize(), listener);
         matchAlgorithm.findMatches();
     }
 
@@ -63,7 +65,7 @@ public class CPD {
     }
 
     public void add(List<File> files) throws IOException {
-        for (File f: files) {
+        for (File f : files) {
             add(f);
         }
     }
@@ -83,13 +85,15 @@ public class CPD {
             // TODO refactor this thing into a separate class
             String signature = file.getName() + '_' + file.length();
             if (current.contains(signature)) {
-                System.err.println("Skipping " + file.getAbsolutePath() + " since it appears to be a duplicate file and --skip-duplicate-files is set");
+                System.err.println("Skipping " + file.getAbsolutePath()
+                        + " since it appears to be a duplicate file and --skip-duplicate-files is set");
                 return;
             }
             current.add(signature);
         }
 
-        if (!FilenameUtils.equalsNormalizedOnSystem(file.getAbsoluteFile().getCanonicalPath(), file.getAbsolutePath())) {
+        if (!FilenameUtils.equalsNormalizedOnSystem(file.getAbsoluteFile().getCanonicalPath(),
+                file.getAbsolutePath())) {
             System.err.println("Skipping " + file + " since it appears to be a symlink");
             return;
         }
@@ -105,30 +109,25 @@ public class CPD {
 
     public void add(DBURI dburi) throws IOException {
 
-      try 
-      {
-        DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi) ; 
+        try {
+            DBMSMetadata dbmsmetadata = new DBMSMetadata(dburi);
 
-        List<SourceObject> sourceObjectList = dbmsmetadata.getSourceObjectList ();
-        LOGGER.log(Level.FINER, "Located {0} database source objects", sourceObjectList.size());
+            List<SourceObject> sourceObjectList = dbmsmetadata.getSourceObjectList();
+            LOGGER.log(Level.FINER, "Located {0} database source objects", sourceObjectList.size());
 
-        for (SourceObject sourceObject: sourceObjectList )
-        {
-          // Add DBURI as a faux-file 
-          String falseFilePath =  sourceObject.getPseudoFileName();
-          LOGGER.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
+            for (SourceObject sourceObject : sourceObjectList) {
+                // Add DBURI as a faux-file
+                String falseFilePath = sourceObject.getPseudoFileName();
+                LOGGER.log(Level.FINEST, "Adding database source object {0}", falseFilePath);
 
-          SourceCode sourceCode = configuration.sourceCodeFor( dbmsmetadata.getSourceCode(sourceObject) 
-                                                               ,falseFilePath
-                                                             );
-          add(sourceCode);
+                SourceCode sourceCode = configuration.sourceCodeFor(dbmsmetadata.getSourceCode(sourceObject),
+                        falseFilePath);
+                add(sourceCode);
+            }
+        } catch (Exception sqlException) {
+            LOGGER.log(Level.SEVERE, "Problem with Input URI", sqlException);
+            throw new RuntimeException("Problem with DBURI: " + dburi, sqlException);
         }
-      }
-      catch (Exception sqlException)
-      {
-        LOGGER.log(Level.SEVERE, "Problem with Input URI", sqlException);
-        throw new RuntimeException("Problem with DBURI: "+dburi , sqlException ) ; 
-      }
     }
 
     private void add(SourceCode sourceCode) throws IOException {
@@ -141,7 +140,7 @@ public class CPD {
 
     private void addAndThrowLexicalError(SourceCode sourceCode) throws IOException {
         configuration.tokenizer().tokenize(sourceCode, tokens);
-        listener.addedFile(1,  new File(sourceCode.getFileName()));
+        listener.addedFile(1, new File(sourceCode.getFileName()));
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
@@ -158,24 +157,23 @@ public class CPD {
 
     /**
      * List names/paths of each source to be processed.
-     * 
-     * @return names of sources to be processed 
+     *
+     * @return names of sources to be processed
      */
     public List<String> getSourcePaths() {
-        return new ArrayList<>(source.keySet());  
+        return new ArrayList<>(source.keySet());
     }
 
     /**
      * Get each Source to be processed.
-     * 
-     * @return all Sources to be processed 
+     *
+     * @return all Sources to be processed
      */
     public List<SourceCode> getSources() {
-        return new ArrayList<>(source.values());  
+        return new ArrayList<>(source.values());
     }
-    
-    
-	public static void main(String[] args) {
-		CPDCommandLineInterface.main(args);
-	}
+
+    public static void main(String[] args) {
+        CPDCommandLineInterface.main(args);
+    }
 }

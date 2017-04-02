@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import java.util.List;
@@ -10,9 +11,8 @@ import org.junit.Test;
 import org.mozilla.javascript.ast.AstRoot;
 
 /**
- * See the following bugs:
- * #1141 ECMAScript: getFinallyBlock() is buggy. 
- * #1142 ECMAScript: getCatchClause() is buggy 
+ * See the following bugs: #1141 ECMAScript: getFinallyBlock() is buggy. #1142
+ * ECMAScript: getCatchClause() is buggy
  */
 public class ASTTryStatementTest extends EcmascriptParserTestBase {
 
@@ -56,11 +56,9 @@ public class ASTTryStatementTest extends EcmascriptParserTestBase {
 
     @Test
     public void testMultipleCatchAndFinallyBlock() {
-        ASTTryStatement tryStmt = getTryStmt("function() { "
-                + "try { } "
-                + "catch (error if error instanceof BadError) { } "
-                + "catch (error2 if error2 instanceof OtherError) { } "
-                + "finally { } }");
+        ASTTryStatement tryStmt = getTryStmt(
+                "function() { " + "try { } " + "catch (error if error instanceof BadError) { } "
+                        + "catch (error2 if error2 instanceof OtherError) { } " + "finally { } }");
         Assert.assertNotNull(tryStmt.getCatchClause(0));
         Assert.assertNotNull(tryStmt.getCatchClause(1));
         Assert.assertTrue(tryStmt.hasCatch());

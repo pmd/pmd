@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements AccessNode {
@@ -119,8 +120,9 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements
         setModifier(isDefault, DEFAULT);
     }
 
-    @SuppressWarnings("PMD.UselessParentheses") //TODO: fix the rule - around binary expressions the parentheses are needed...
-    private final boolean isModifier(int mask) {
+    // TODO: fix the rule - around binary expressions the parentheses are needed...
+    @SuppressWarnings("PMD.UselessParentheses") 
+    private boolean isModifier(int mask) {
         return (modifiers & mask) == mask;
     }
 

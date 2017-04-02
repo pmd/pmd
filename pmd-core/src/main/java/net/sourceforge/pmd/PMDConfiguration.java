@@ -1,13 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import net.sourceforge.pmd.cache.AnalysisCache;
+import net.sourceforge.pmd.cache.FileAnalysisCache;
+import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -17,70 +22,61 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
- * This class contains the details for the runtime configuration of PMD.
- * There are several aspects to the configuration of PMD.
- * <p>
- * The aspects related to generic PMD behavior:
+ * This class contains the details for the runtime configuration of PMD. There
+ * are several aspects to the configuration of PMD.
+ *
+ * <p>The aspects related to generic PMD behavior:</p>
  * <ul>
- * 	<li>Suppress marker is used in source files to suppress a RuleViolation,
- *	    defaults to {@link PMD#SUPPRESS_MARKER}.
- *          {@link #getSuppressMarker()}</li>
- *  <li>The number of threads to create when invoking on multiple files,
- *      defaults one thread per available processor.
- *          {@link #getThreads()}</li>
- *  <li>A ClassLoader to use when loading classes during Rule processing
- *      (e.g. during type resolution), defaults to ClassLoader of the
- *      Configuration class.
- *          {@link #getClassLoader()}</li>
- *  <li>A means to configure a ClassLoader using a prepended classpath
- *     String, instead of directly setting it programmatically.
- *          {@link #prependClasspath(String)}</li>
- *  <li>A LanguageVersionDiscoverer instance, which defaults to using the
- *      default LanguageVersion of each Language.  Means are provided to
- *      change the LanguageVersion for each Language.
- *          {@link #getLanguageVersionDiscoverer()}</li>
+ * <li>Suppress marker is used in source files to suppress a RuleViolation,
+ * defaults to {@link PMD#SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
+ * <li>The number of threads to create when invoking on multiple files, defaults
+ * one thread per available processor. {@link #getThreads()}</li>
+ * <li>A ClassLoader to use when loading classes during Rule processing (e.g.
+ * during type resolution), defaults to ClassLoader of the Configuration class.
+ * {@link #getClassLoader()}</li>
+ * <li>A means to configure a ClassLoader using a prepended classpath String,
+ * instead of directly setting it programmatically.
+ * {@link #prependClasspath(String)}</li>
+ * <li>A LanguageVersionDiscoverer instance, which defaults to using the default
+ * LanguageVersion of each Language. Means are provided to change the
+ * LanguageVersion for each Language.
+ * {@link #getLanguageVersionDiscoverer()}</li>
  * </ul>
- * <p>
- * The aspects related to Rules and Source files are:
+ *
+ * <p>The aspects related to Rules and Source files are:</p>
  * <ul>
- *  <li>A comma separated list of RuleSets URIs.
- *          {@link #getRuleSets()}</li>
- *  <li>A minimum priority threshold when loading Rules from RuleSets,
- *      defaults to {@link RulePriority#LOW}.
- *          {@link #getMinimumPriority()}</li>
- *  <li>The character encoding of source files, defaults to the system default
- *      as returned by <code>System.getProperty("file.encoding")</code>.
- *          {@link #getSourceEncoding()}</li>
- *  <li>A comma separated list of input paths to process for source files.
- *      This may include files, directories, archives (e.g. ZIP files), etc.
- *          {@link #getInputPaths()}</li>
- *  <li>A flag which controls, whether {@link RuleSetFactoryCompatibility} filter
- *      should be used or not: #isRuleSetFactoryCompatibilityEnabled;
+ * <li>A comma separated list of RuleSets URIs. {@link #getRuleSets()}</li>
+ * <li>A minimum priority threshold when loading Rules from RuleSets, defaults
+ * to {@link RulePriority#LOW}. {@link #getMinimumPriority()}</li>
+ * <li>The character encoding of source files, defaults to the system default as
+ * returned by <code>System.getProperty("file.encoding")</code>.
+ * {@link #getSourceEncoding()}</li>
+ * <li>A comma separated list of input paths to process for source files. This
+ * may include files, directories, archives (e.g. ZIP files), etc.
+ * {@link #getInputPaths()}</li>
+ * <li>A flag which controls, whether {@link RuleSetFactoryCompatibility} filter
+ * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
- * <p>
+ *
  * <ul>
- *  <li>The renderer format to use for Reports.
- *          {@link #getReportFormat()}</li>
- *  <li>The file to which the Report should render.
- *          {@link #getReportFile()}</li>
- *  <li>An indicator of whether to use File short names in Reports, defaults
- *      to <code>false</code>.
- *          {@link #isReportShortNames()}</li>
- *  <li>The initialization properties to use when creating a Renderer instance.
- *          {@link #getReportProperties()}</li>
- *  <li>An indicator of whether to show suppressed Rule violations in Reports.
- *          {@link #isShowSuppressedViolations()}</li>
+ * <li>The renderer format to use for Reports. {@link #getReportFormat()}</li>
+ * <li>The file to which the Report should render. {@link #getReportFile()}</li>
+ * <li>An indicator of whether to use File short names in Reports, defaults to
+ * <code>false</code>. {@link #isReportShortNames()}</li>
+ * <li>The initialization properties to use when creating a Renderer instance.
+ * {@link #getReportProperties()}</li>
+ * <li>An indicator of whether to show suppressed Rule violations in Reports.
+ * {@link #isShowSuppressedViolations()}</li>
  * </ul>
- * <p>
- * The aspects related to special PMD behavior are:
+ *
+ * <p>The aspects related to special PMD behavior are:</p>
  * <ul>
- *  <li>An indicator of whether PMD should log debug information.
- *          {@link #isDebug()}</li>
- *  <li>An indicator of whether PMD should perform stress testing behaviors,
- *          such as randomizing the order of file processing.
- *          {@link #isStressTest()}</li>
- *  <li>An indicator of whether PMD should log benchmarking information.
- *          {@link #isBenchmark()}</li>
+ * <li>An indicator of whether PMD should log debug information.
+ * {@link #isDebug()}</li>
+ * <li>An indicator of whether PMD should perform stress testing behaviors, such
+ * as randomizing the order of file processing. {@link #isStressTest()}</li>
+ * <li>An indicator of whether PMD should log benchmarking information.
+ * {@link #isBenchmark()}</li>
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
@@ -109,10 +105,11 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     private boolean stressTest;
     private boolean benchmark;
+    private AnalysisCache analysisCache = new NoopAnalysisCache();
 
     /**
-     * Get the suppress marker. This is the source level marker used to indicate a
-     * RuleViolation should be suppressed.
+     * Get the suppress marker. This is the source level marker used to indicate
+     * a RuleViolation should be suppressed.
      *
      * @return The suppress marker.
      */
@@ -178,13 +175,15 @@ public class PMDConfiguration extends AbstractConfiguration {
      * the configuration. If no ClassLoader is currently configured, the
      * ClassLoader used to load the {@link PMDConfiguration} class will be used
      * as the parent ClassLoader of the created ClassLoader.
-     * <p>
-     * If the classpath String looks like a URL to a file (i.e. starts with
-     * <code>file://</code>) the file will be read with each line representing
-     * an entry on the classpath.
      *
-     * @param classpath The prepended classpath.
-     * @throws IOException if the given classpath is invalid (e.g. does not exist)
+     * <p>If the classpath String looks like a URL to a file (i.e. starts with
+     * <code>file://</code>) the file will be read with each line representing
+     * an entry on the classpath.</p>
+     *
+     * @param classpath
+     *            The prepended classpath.
+     * @throws IOException
+     *             if the given classpath is invalid (e.g. does not exist)
      * @see PMDConfiguration#setClassLoader(ClassLoader)
      * @see ClasspathClassLoader
      */
@@ -233,9 +232,10 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Get the LanguageVersion of the source file with given name. This depends
      * on the fileName extension, and the java version.
-     * <p/>
+     * <p>
      * For compatibility with older code that does not always pass in a correct
      * filename, unrecognized files are assumed to be java files.
+     * </p>
      *
      * @param fileName
      *            Name of the file, can be absolute, or simple.
@@ -266,7 +266,8 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Set the comma separated list of RuleSet URIs.
      *
-     * @param ruleSets the rulesets to set
+     * @param ruleSets
+     *            the rulesets to set
      */
     public void setRuleSets(String ruleSets) {
         this.ruleSets = ruleSets;
@@ -318,7 +319,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      * The input file path points to a single file, which contains a
      * comma-separated list of source file names to process.
      *
-     * @param inputFilePath path to the file
+     * @param inputFilePath
+     *            path to the file
      */
     public void setInputFilePath(String inputFilePath) {
         this.inputFilePath = inputFilePath;
@@ -377,7 +379,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      * If withReportWriter then we'll configure it with a writer for the
      * reportFile specified.
      *
-     * @param withReportWriter whether to configure a writer or not
+     * @param withReportWriter
+     *            whether to configure a writer or not
      * @return A Renderer instance.
      */
     public Renderer createRenderer(boolean withReportWriter) {
@@ -422,7 +425,8 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Set the file to which the report should render.
      *
-     * @param reportFile the file to set
+     * @param reportFile
+     *            the file to set
      */
     public void setReportFile(String reportFile) {
         this.reportFile = reportFile;
@@ -514,8 +518,9 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Whether PMD should exit with status 4 (the default behavior, true) if violations
-     * are found or just with 0 (to not break the build, e.g.).
+     * Whether PMD should exit with status 4 (the default behavior, true) if
+     * violations are found or just with 0 (to not break the build, e.g.).
+     *
      * @return failOnViolation
      */
     public boolean isFailOnViolation() {
@@ -523,9 +528,11 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Sets whether PMD should exit with status 4 (the default behavior, true) if violations
-     * are found or just with 0 (to not break the build, e.g.).
-     * @param failOnViolation failOnViolation
+     * Sets whether PMD should exit with status 4 (the default behavior, true)
+     * if violations are found or just with 0 (to not break the build, e.g.).
+     *
+     * @param failOnViolation
+     *            failOnViolation
      */
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
@@ -545,11 +552,49 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Sets the rule set factory compatibility feature enabled/disabled.
      *
-     * @param ruleSetFactoryCompatibilityEnabled <code>true</code> if the feature should be enabled
+     * @param ruleSetFactoryCompatibilityEnabled
+     *            <code>true</code> if the feature should be enabled
      *
      * @see RuleSetFactoryCompatibility
      */
     public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
         this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;
+    }
+
+    /**
+     * Retrieves the currently used analysis cache. Will never be null.
+     * 
+     * @return The currently used analysis cache. Never null.
+     */
+    public AnalysisCache getAnalysisCache() {
+        return analysisCache;
+    }
+    
+    /**
+     * Sets the analysis cache to be used. Setting a
+     * value of <code>null</code> will cause a Noop AnalysisCache to be used.
+     * 
+     * @param cache The analysis cache to be used.
+     */
+    public void setAnalysisCache(final AnalysisCache cache) {
+        if (cache == null) {
+            analysisCache = new NoopAnalysisCache();
+        } else {
+            analysisCache = cache;
+        }
+    }
+
+    /**
+     * Sets the location of the analysis cache to be used. This will automatically configure
+     * and appropriate AnalysisCache implementation.
+     * 
+     * @param cacheLocation The location of the analysis cache to be used.
+     */
+    public void setAnalysisCacheLocation(final String cacheLocation) {
+        if (cacheLocation == null) {
+            setAnalysisCache(new NoopAnalysisCache());
+        } else {
+            setAnalysisCache(new FileAnalysisCache(new File(cacheLocation)));
+        }
     }
 }

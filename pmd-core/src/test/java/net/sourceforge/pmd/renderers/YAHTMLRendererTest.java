@@ -1,13 +1,17 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
 import java.io.IOException;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report.ProcessingError;
-
 import org.junit.After;
 import org.junit.Before;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report.ProcessingError;
 
 public class YAHTMLRendererTest extends AbstractRendererTst {
 
@@ -35,7 +39,7 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
         // TODO: move to util class?
         File[] a = dir.listFiles();
         if (a != null) {
-            for (File f: a) {
+            for (File f : a) {
                 if (f.isDirectory()) {
                     deleteDirectory(f);
                 } else {
@@ -48,8 +52,8 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
 
     @Override
     public Renderer getRenderer() {
-	Renderer result = new YAHTMLRenderer();
-	result.setProperty(YAHTMLRenderer.OUTPUT_DIR, outputDir);
+        Renderer result = new YAHTMLRenderer();
+        result.setProperty(YAHTMLRenderer.OUTPUT_DIR, outputDir);
         return result;
     }
 
@@ -71,9 +75,5 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
     @Override
     public String getExpectedError(ProcessingError error) {
         return getExpected();
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(YAHTMLRendererTest.class);
     }
 }

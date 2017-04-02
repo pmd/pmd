@@ -1,40 +1,41 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.FunctionNode;
 
 public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
     public ASTFunctionNode(FunctionNode functionNode) {
-	super(functionNode);
-	super.setImage(functionNode.getName());
+        super(functionNode);
+        super.setImage(functionNode.getName());
     }
 
     /**
      * Accept the visitor.
      */
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
-	return visitor.visit(this, data);
+        return visitor.visit(this, data);
     }
 
     public int getNumParams() {
-	return node.getParams().size();
+        return node.getParams().size();
     }
 
     public ASTName getFunctionName() {
-	if (node.getFunctionName() != null) {
-	    return (ASTName) jjtGetChild(0);
-	}
-	return null;
+        if (node.getFunctionName() != null) {
+            return (ASTName) jjtGetChild(0);
+        }
+        return null;
     }
 
     public EcmascriptNode<?> getParam(int index) {
         int paramIndex = index;
-	if (node.getFunctionName() != null) {
-	    paramIndex = index + 1;
-	}
-	return (EcmascriptNode<?>) jjtGetChild(paramIndex);
+        if (node.getFunctionName() != null) {
+            paramIndex = index + 1;
+        }
+        return (EcmascriptNode<?>) jjtGetChild(paramIndex);
     }
 
     public EcmascriptNode<?> getBody() {
@@ -43,19 +44,19 @@ public class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
 
     @Deprecated // use getBody() instead
     public EcmascriptNode<?> getBody(int index) {
-	return getBody();
+        return getBody();
     }
 
     public boolean isClosure() {
-	return node.isExpressionClosure();
+        return node.isExpressionClosure();
     }
 
     public boolean isGetter() {
-	return node.isGetterMethod();
+        return node.isGetterMethod();
     }
 
     public boolean isSetter() {
-	return node.isSetterMethod();
+        return node.isSetterMethod();
     }
 
     public boolean isGetterOrSetter() {

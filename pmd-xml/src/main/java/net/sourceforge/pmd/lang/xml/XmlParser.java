@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.xml;
 
 import java.io.Reader;
@@ -19,23 +20,23 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 public class XmlParser extends AbstractParser {
 
     public XmlParser(ParserOptions parserOptions) {
-	super(parserOptions);
+        super(parserOptions);
     }
 
     @Override
     public TokenManager createTokenManager(Reader source) {
-	return null;
+        return null;
     }
 
     public boolean canParse() {
-	return true;
+        return true;
     }
 
     public Node parse(String fileName, Reader source) throws ParseException {
-	return new net.sourceforge.pmd.lang.xml.ast.XmlParser((XmlParserOptions) parserOptions).parse(source);
+        return new net.sourceforge.pmd.lang.xml.ast.XmlParser((XmlParserOptions) parserOptions).parse(source);
     }
 
     public Map<Integer, String> getSuppressMap() {
-	return new HashMap<>(); // FIXME
+        return new HashMap<>(); // FIXME
     }
 }

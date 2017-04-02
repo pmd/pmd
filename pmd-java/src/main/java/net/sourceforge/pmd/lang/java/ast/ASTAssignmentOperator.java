@@ -16,7 +16,6 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
         super(p, id);
     }
 
-
     public void setCompound() {
         isCompound = true;
     }
@@ -24,7 +23,6 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
     public boolean isCompound() {
         return this.isCompound;
     }
-
 
     /**
      * Accept the visitor. *

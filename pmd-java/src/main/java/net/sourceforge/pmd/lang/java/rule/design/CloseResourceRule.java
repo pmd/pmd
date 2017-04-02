@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -34,8 +37,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
-import org.jaxen.JaxenException;
-
 /**
  * Makes sure you close your database connections. It does this by looking for
  * code patterned like this:
@@ -47,10 +48,10 @@ import org.jaxen.JaxenException;
  *  } finally {
  *   c.close();
  *  }
+ * </pre>
  * 
  *  @author original author unknown
  *  @author Contribution from Pierre Mathien
- * </pre>
  */
 public class CloseResourceRule extends AbstractJavaRule {
 
@@ -127,7 +128,8 @@ public class CloseResourceRule extends AbstractJavaRule {
                     ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
 
                     if (clazz.getType() != null && types.contains(clazz.getType().getName())
-                            || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage())) && !clazz.isReferenceToClassSameCompilationUnit()
+                            || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
+                                    && !clazz.isReferenceToClassSameCompilationUnit()
                             || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
 
                         ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
@@ -184,9 +186,9 @@ public class CloseResourceRule extends AbstractJavaRule {
             // variable declaration and
             // the beginning of the try block.
             ASTBlockStatement tryBlock = t.getFirstParentOfType(ASTBlockStatement.class);
-            if (!hasNullInitializer(var) // no need to check for critical statements, if
-                                         // the variable has been initialized with null
-                && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
+            // no need to check for critical statements, if
+            // the variable has been initialized with null
+            if (!hasNullInitializer(var) && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
 
                 List<ASTBlockStatement> blocks = parentBlock.jjtGetParent().findChildrenOfType(ASTBlockStatement.class);
                 int parentBlockIndex = blocks.indexOf(parentBlock);
@@ -195,8 +197,8 @@ public class CloseResourceRule extends AbstractJavaRule {
 
                 for (int i = parentBlockIndex + 1; i < tryBlockIndex; i++) {
                     // assume variable declarations are not critical
-                    ASTLocalVariableDeclaration varDecl = blocks.get(i).getFirstDescendantOfType(
-                            ASTLocalVariableDeclaration.class);
+                    ASTLocalVariableDeclaration varDecl = blocks.get(i)
+                            .getFirstDescendantOfType(ASTLocalVariableDeclaration.class);
                     if (varDecl == null) {
                         criticalStatements = true;
                         break;

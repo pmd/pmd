@@ -1,47 +1,49 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.java.symboltable;
 
+package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Applier;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
- * This scope is the outer most scope of a Java file.
- * A Source File can contain one ore more classes.
+ * This scope is the outer most scope of a Java file. A Source File can contain
+ * one ore more classes.
  */
 public class SourceFileScope extends AbstractJavaScope {
 
-    private String packageImage;
-    private TypeSet types;
+    private final String packageImage;
+    private final TypeSet types;
 
-    public SourceFileScope() {
-        this("");
+    public SourceFileScope(final ClassLoader classLoader) {
+        this(classLoader, "");
     }
 
-    public SourceFileScope(String packageImage) {
+    public SourceFileScope(final ClassLoader classLoader, final String packageImage) {
+        this.types = new TypeSet(classLoader);
         this.packageImage = packageImage;
+        types.setASTCompilationUnitPackage(packageImage);
     }
 
     /**
      * Configures the type resolution for the symbol table.
-     * @param classLoader the class loader to use to find additional classes
-     * @param imports the import declarations
+     * 
+     * @param imports
+     *            the import declarations
      */
-    public void configureImports(ClassLoader classLoader, List<ASTImportDeclaration> imports) {
-        this.types = new TypeSet(classLoader);
-        types.setASTCompilationUnitPackage(packageImage);
+    public void configureImports(final List<ASTImportDeclaration> imports) {
         for (ASTImportDeclaration i : imports) {
             if (i.isImportOnDemand()) {
                 types.addImport(i.getImportedName() + ".*");
@@ -52,14 +54,16 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     public Set<String> getExplicitImports() {
-        return types != null ? types.getExplicitImports() : Collections.<String> emptySet();
+        return types.getExplicitImports();
     }
 
     /**
-     * Whether an auxclasspath has been configured or not.
-     * This can be used to enable/disable more detailed symbol table analysis and type resolution
+     * Whether an auxclasspath has been configured or not. This can be used to
+     * enable/disable more detailed symbol table analysis and type resolution
      * can be used - or to fall back to more simple implementation.
-     * @return <code>true</code> if the auxclasspath is configured and types can be resolved reliably.
+     * 
+     * @return <code>true</code> if the auxclasspath is configured and types can
+     *         be resolved reliably.
      * @see #resolveType(String)
      */
     public boolean hasAuxclasspath() {
@@ -68,15 +72,13 @@ public class SourceFileScope extends AbstractJavaScope {
 
     /**
      * Tries to resolve a class by name.
-     * @param name the name of the class
+     * 
+     * @param name
+     *            the name of the class
      * @return the class or <code>null</code> if no class could be found
      */
     public Class<?> resolveType(String name) {
-        try {
-            return types.findClass(name);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
+        return types.findClass(name);
     }
 
     public String getPackageName() {
@@ -85,7 +87,9 @@ public class SourceFileScope extends AbstractJavaScope {
 
     /**
      * {@inheritDoc}
-     * @throws IllegalArgumentException if declaration is not a {@link ClassNameDeclaration}
+     * 
+     * @throws IllegalArgumentException
+     *             if declaration is not a {@link ClassNameDeclaration}
      */
     @Override
     public void addDeclaration(NameDeclaration declaration) {
@@ -96,7 +100,9 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     /**
-     * Convenience method that casts the declarations to {@link ClassNameDeclaration}s.
+     * Convenience method that casts the declarations to
+     * {@link ClassNameDeclaration}s.
+     * 
      * @see #getDeclarations()
      * @return all class name declarations
      */
@@ -111,22 +117,22 @@ public class SourceFileScope extends AbstractJavaScope {
     public ClassNameDeclaration findClassNameDeclaration(String name) {
         ImageFinderFunction finder = new ImageFinderFunction(name);
         Applier.apply(finder, getClassDeclarations().keySet().iterator());
-        return (ClassNameDeclaration)finder.getDecl();
+        return (ClassNameDeclaration) finder.getDecl();
     }
 
     protected Set<NameDeclaration> findVariableHere(JavaNameOccurrence occ) {
-        Set<NameDeclaration> result = new HashSet<>();
         ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
         Applier.apply(finder, getDeclarations().keySet().iterator());
         if (finder.getDecl() != null) {
-            result.add(finder.getDecl());
+            return Collections.singleton(finder.getDecl());
         }
-        return result;
+        return Collections.emptySet();
     }
 
     /**
-     * Returns a set of all types defined within this source file.
-     * This includes all top-level types and nested types.
+     * Returns a set of all types defined within this source file. This includes
+     * all top-level types and nested types.
+     * 
      * @return set of all types in this source file.
      */
     public Map<String, Node> getQualifiedTypeNames() {
@@ -134,8 +140,13 @@ public class SourceFileScope extends AbstractJavaScope {
     }
 
     private Map<String, Node> getSubTypes(String qualifyingName, Scope subType) {
-        Map<String, Node> types = new HashMap<>();
-        for (ClassNameDeclaration c : subType.getDeclarations(ClassNameDeclaration.class).keySet()) {
+        Set<ClassNameDeclaration> classDeclarations = subType.getDeclarations(ClassNameDeclaration.class).keySet();
+        if (classDeclarations.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, Node> types = new HashMap<>((int) (classDeclarations.size() / 0.75f) + 1);
+        for (ClassNameDeclaration c : classDeclarations) {
             String typeName = c.getName();
             if (qualifyingName != null) {
                 typeName = qualifyingName + "." + typeName;

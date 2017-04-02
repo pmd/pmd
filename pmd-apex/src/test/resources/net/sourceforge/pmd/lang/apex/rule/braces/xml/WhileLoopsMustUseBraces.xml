@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+no braces
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class WhileLoopsNeedBraces1 {
+ void foo() {   
+  int x =0;
+  while (true)
+   x++;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+with braces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class WhileLoopsNeedBraces2 {
+ void foo() {   
+  int x =0;
+  while (true) {
+   x++;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

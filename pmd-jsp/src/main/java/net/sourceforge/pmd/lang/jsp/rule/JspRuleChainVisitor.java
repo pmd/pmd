@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp.rule;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class JspRuleChainVisitor extends AbstractRuleChainVisitor {
         };
 
         for (int i = 0; i < nodes.size(); i++) {
-            jspParserVisitor.visit((ASTCompilationUnit)nodes.get(i), ctx);
+            jspParserVisitor.visit((ASTCompilationUnit) nodes.get(i), ctx);
         }
     }
 

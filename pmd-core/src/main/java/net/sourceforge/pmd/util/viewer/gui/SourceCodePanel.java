@@ -1,8 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.util.viewer.gui;
 
+package net.sourceforge.pmd.util.viewer.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,7 +21,6 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
-
 /**
  * source code panel
  *
@@ -30,12 +29,12 @@ import net.sourceforge.pmd.util.viewer.util.NLS;
  */
 
 public class SourceCodePanel extends JPanel implements ViewerModelListener {
-	
+
     private ViewerModel model;
     private JTextArea sourceCodeArea;
 
     private static final Color HIGHLIGHT_COLOR = new Color(79, 237, 111);
-    
+
     public SourceCodePanel(ViewerModel model) {
         this.model = model;
         init();
@@ -61,22 +60,21 @@ public class SourceCodePanel extends JPanel implements ViewerModelListener {
     /**
      * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
+    @Override
     public void viewerModelChanged(ViewerModelEvent e) {
         if (e.getReason() == ViewerModelEvent.NODE_SELECTED) {
             final Node node = (Node) e.getParameter();
             SwingUtilities.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     try {
                         sourceCodeArea.getHighlighter().removeAllHighlights();
                         if (node == null) {
                             return;
                         }
-                        int startOffset =
-                                sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
-                                node.getBeginColumn() - 1;
-                        int end =
-                                sourceCodeArea.getLineStartOffset(node.getEndLine() - 1) +
-                                node.getEndColumn();
+                        int startOffset = sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1)
+                                + node.getBeginColumn() - 1;
+                        int end = sourceCodeArea.getLineStartOffset(node.getEndLine() - 1) + node.getEndColumn();
                         sourceCodeArea.getHighlighter().addHighlight(startOffset, end,
                                 new DefaultHighlighter.DefaultHighlightPainter(HIGHLIGHT_COLOR));
                         sourceCodeArea.moveCaretPosition(startOffset);
@@ -88,4 +86,3 @@ public class SourceCodePanel extends JPanel implements ViewerModelListener {
         }
     }
 }
-

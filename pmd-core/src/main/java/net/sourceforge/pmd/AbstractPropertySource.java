@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * Base class for objects which can be configured through properties. Rules and
  * Reports are such objects.
- * 
+ *
  * @author Brian Remedios
  */
 public abstract class AbstractPropertySource implements PropertySource {
@@ -28,30 +29,26 @@ public abstract class AbstractPropertySource implements PropertySource {
 
     /**
      * Creates a copied list of the property descriptors and returns it.
-     * 
+     *
      * @return a copy of the property descriptors.
      */
     protected List<PropertyDescriptor<?>> copyPropertyDescriptors() {
-        List<PropertyDescriptor<?>> copy = new ArrayList<>(propertyDescriptors.size());
-        copy.addAll(propertyDescriptors);
-        return copy;
+        return new ArrayList<>(propertyDescriptors);
     }
 
     /**
      * Creates a copied map of the values of the properties and returns it.
-     * 
+     *
      * @return a copy of the values
      */
     protected Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
-        Map<PropertyDescriptor<?>, Object> copy = new HashMap<>(
-                propertyValuesByDescriptor.size());
-        copy.putAll(propertyValuesByDescriptor);
-        return copy;
+        return new HashMap<>(propertyValuesByDescriptor);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public Set<PropertyDescriptor<?>> ignoredProperties() {
         return Collections.emptySet();
     }
@@ -59,6 +56,7 @@ public abstract class AbstractPropertySource implements PropertySource {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         // Check to ensure the property does not already exist.
         for (PropertyDescriptor<?> descriptor : propertyDescriptors) {
@@ -73,7 +71,9 @@ public abstract class AbstractPropertySource implements PropertySource {
     }
 
     /**
-     * Gets the name of the property source. This is e.g. the rule name or the report name.
+     * Gets the name of the property source. This is e.g. the rule name or the
+     * report name.
+     *
      * @return the name
      */
     public abstract String getName();
@@ -138,8 +138,8 @@ public abstract class AbstractPropertySource implements PropertySource {
 
     private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         if (!propertyDescriptors.contains(propertyDescriptor)) {
-            throw new IllegalArgumentException("Property descriptor not defined for Rule " + getName() + ": "
-                    + propertyDescriptor);
+            throw new IllegalArgumentException(
+                    "Property descriptor not defined for Rule " + getName() + ": " + propertyDescriptor);
         }
     }
 
@@ -152,8 +152,7 @@ public abstract class AbstractPropertySource implements PropertySource {
             return Collections.emptyMap();
         }
 
-        Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<>(
-                propertyDescriptors.size());
+        Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<>(propertyDescriptors.size());
         // Fill with existing explicitly values
         propertiesByPropertyDescriptor.putAll(this.propertyValuesByDescriptor);
 

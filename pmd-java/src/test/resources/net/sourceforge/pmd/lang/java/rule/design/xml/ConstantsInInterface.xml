@@ -42,4 +42,45 @@ public interface AnotherConstantInterface {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1505 [java] ConstantsInInterface false negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+package some.pkg;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public interface SomeInterfaceName {
+
+    /**
+     * The logger service managers can use to record traces.
+     */
+    Logger LOGGER = LoggerFactory.getLogger(SomeInterfaceName.class);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>clear rule violation (from AvoidConstantsInInterface)</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public static final int FOO = 2;
+ public static final String BAR = "bar";
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok (from AvoidConstantsInInterface)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public static final int FOO = 2;
+ public void buz();
+}
+     ]]></code>
+    </test-code>
 </test-data>

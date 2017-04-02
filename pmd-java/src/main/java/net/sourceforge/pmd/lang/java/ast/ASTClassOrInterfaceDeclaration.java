@@ -16,10 +16,10 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
     public ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
         super(p, id);
     }
-    
+
     @Override
     public boolean isFindBoundary() {
-	return isNested();
+        return isNested();
     }
 
     /**
@@ -31,7 +31,8 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
     }
 
     public boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration;
+        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
+                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
 
     public boolean isInterface() {

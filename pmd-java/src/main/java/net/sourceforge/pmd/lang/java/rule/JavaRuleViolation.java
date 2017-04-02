@@ -1,7 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
+
+import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -13,8 +16,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
@@ -91,7 +96,6 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
     }
 
     private void setClassNameFrom(JavaNode node) {
-
         String qualifiedName = null;
         for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
             String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
@@ -101,6 +105,21 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
                 qualifiedName = clsName + '$' + qualifiedName;
             }
         }
+
+        if (qualifiedName == null) {
+            Set<ClassNameDeclaration> classes = node.getScope().getEnclosingScope(SourceFileScope.class)
+                    .getClassDeclarations().keySet();
+            for (ClassNameDeclaration c : classes) {
+                // find the first public class/enum declaration
+                if (c.getAccessNodeParent() instanceof AccessNode) {
+                    if (((AccessNode) c.getAccessNodeParent()).isPublic()) {
+                        qualifiedName = c.getImage();
+                        break;
+                    }
+                }
+            }
+        }
+
         if (qualifiedName != null) {
             className = qualifiedName;
         }

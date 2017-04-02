@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.io.IOException;
@@ -15,20 +16,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.rule.MockRule;
-import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
-import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.StringUtil;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,12 +30,24 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
+import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML
  * content. By default Rules will be loaded using the ClassLoader for this
  * class, using the {@link RulePriority#LOW} priority, with Rule deprecation
- * warnings off.
- * By default, the ruleset compatibility filter is active, too. See {@link RuleSetFactoryCompatibility}.
+ * warnings off. By default, the ruleset compatibility filter is active, too.
+ * See {@link RuleSetFactoryCompatibility}.
  */
 public class RuleSetFactory {
 
@@ -55,53 +60,48 @@ public class RuleSetFactory {
     private static final String MESSAGE = "message";
     private static final String EXTERNAL_INFO_URL = "externalInfoUrl";
 
-    private ClassLoader classLoader = RuleSetFactory.class.getClassLoader();
-    private RulePriority minimumPriority = RulePriority.LOW;
-    private boolean warnDeprecated = false;
-    private RuleSetFactoryCompatibility compatibilityFilter = new RuleSetFactoryCompatibility();
+    private final ClassLoader classLoader;
+    private final RulePriority minimumPriority;
+    private final boolean warnDeprecated;
+    private final RuleSetFactoryCompatibility compatibilityFilter;
 
-    /**
-     * Set the ClassLoader to use when loading Rules.
-     *
-     * @param classLoader The ClassLoader to use.
-     */
-    public void setClassLoader(ClassLoader classLoader) {
+    public RuleSetFactory() {
+        this(RuleSetFactory.class.getClassLoader(), RulePriority.LOW, false, true);
+    }
+
+    public RuleSetFactory(final ClassLoader classLoader, final RulePriority minimumPriority,
+            final boolean warnDeprecated, final boolean enableCompatibility) {
         this.classLoader = classLoader;
-    }
-
-    /**
-     * Set the minimum rule priority threshold for all Rules which are loaded
-     * from RuleSets via reference.
-     * 
-     * @param minimumPriority The minimum priority.
-     */
-    public void setMinimumPriority(RulePriority minimumPriority) {
         this.minimumPriority = minimumPriority;
-    }
-
-    /**
-     * Set whether warning messages should be logged for usage of deprecated
-     * Rules.
-     * 
-     * @param warnDeprecated <code>true</code> to log warning messages.
-     */
-    public void setWarnDeprecated(boolean warnDeprecated) {
         this.warnDeprecated = warnDeprecated;
+
+        if (enableCompatibility) {
+            this.compatibilityFilter = new RuleSetFactoryCompatibility();
+        } else {
+            this.compatibilityFilter = null;
+        }
     }
 
     /**
-     * Disable the ruleset compatibility filter. Disabling this filter will cause
-     * exception when loading a ruleset, which uses references to old/not existing rules.
+     * Constructor copying all configuration from another factory.
+     * 
+     * @param factory
+     *            The factory whose configuration to copy.
+     * @param warnDeprecated
+     *            Whether deprecation warnings are to be produced by this
+     *            factory.
      */
-    public void disableCompatibilityFilter() {
-        compatibilityFilter = null;
+    public RuleSetFactory(final RuleSetFactory factory, final boolean warnDeprecated) {
+        this(factory.classLoader, factory.minimumPriority, warnDeprecated, factory.compatibilityFilter != null);
     }
 
     /**
-     * Gets the compatibility filter in order to adjust it, e.g. add additional filters.
+     * Gets the compatibility filter in order to adjust it, e.g. add additional
+     * filters.
+     *
      * @return the {@link RuleSetFactoryCompatibility}
      */
-    public RuleSetFactoryCompatibility getCompatibilityFilter() {
+    /* package */ RuleSetFactoryCompatibility getCompatibilityFilter() {
         return compatibilityFilter;
     }
 
@@ -110,6 +110,8 @@ public class RuleSetFactory {
      * "rulesets.properties" resource for each Language with Rule support.
      *
      * @return An Iterator of RuleSet objects.
+     * 
+     * @throws RuleSetNotFoundException if the ruleset file could not be found
      */
     public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
         String rulesetsProperties = null;
@@ -137,11 +139,13 @@ public class RuleSetFactory {
      * {@link #createRuleSets(List)}. The currently configured ClassLoader is
      * used.
      *
-     * @param referenceString A comma separated list of RuleSet reference IDs.
+     * @param referenceString
+     *            A comma separated list of RuleSet reference IDs.
      * @return The new RuleSets.
-     * @throws RuleSetNotFoundException if unable to find a resource.
+     * @throws RuleSetNotFoundException
+     *             if unable to find a resource.
      */
-    public synchronized RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
+    public RuleSets createRuleSets(String referenceString) throws RuleSetNotFoundException {
         return createRuleSets(RuleSetReferenceId.parse(referenceString));
     }
 
@@ -149,13 +153,13 @@ public class RuleSetFactory {
      * Create a RuleSets from a list of RuleSetReferenceIds. The currently
      * configured ClassLoader is used.
      *
-     * @param ruleSetReferenceIds The List of RuleSetReferenceId of the RuleSets
-     *            to create.
+     * @param ruleSetReferenceIds
+     *            The List of RuleSetReferenceId of the RuleSets to create.
      * @return The new RuleSets.
-     * @throws RuleSetNotFoundException if unable to find a resource.
+     * @throws RuleSetNotFoundException
+     *             if unable to find a resource.
      */
-    public synchronized RuleSets createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds)
-            throws RuleSetNotFoundException {
+    public RuleSets createRuleSets(List<RuleSetReferenceId> ruleSetReferenceIds) throws RuleSetNotFoundException {
         RuleSets ruleSets = new RuleSets();
         for (RuleSetReferenceId ruleSetReferenceId : ruleSetReferenceIds) {
             RuleSet ruleSet = createRuleSet(ruleSetReferenceId);
@@ -171,15 +175,17 @@ public class RuleSetFactory {
      * {@link #createRuleSet(RuleSetReferenceId)}. The currently configured
      * ClassLoader is used.
      *
-     * @param referenceString A comma separated list of RuleSet reference IDs.
+     * @param referenceString
+     *            A comma separated list of RuleSet reference IDs.
      * @return A new RuleSet.
-     * @throws RuleSetNotFoundException if unable to find a resource.
+     * @throws RuleSetNotFoundException
+     *             if unable to find a resource.
      */
-    public synchronized RuleSet createRuleSet(String referenceString) throws RuleSetNotFoundException {
+    public RuleSet createRuleSet(String referenceString) throws RuleSetNotFoundException {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(referenceString);
         if (references.isEmpty()) {
-            throw new RuleSetNotFoundException("No RuleSetReferenceId can be parsed from the string: <"
-                    + referenceString + ">");
+            throw new RuleSetNotFoundException(
+                    "No RuleSetReferenceId can be parsed from the string: <" + referenceString + ">");
         }
         return createRuleSet(references.get(0));
     }
@@ -188,19 +194,40 @@ public class RuleSetFactory {
      * Create a RuleSet from a RuleSetReferenceId. Priority filtering is ignored
      * when loading a single Rule. The currently configured ClassLoader is used.
      *
-     * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet to
-     *            create.
+     * @param ruleSetReferenceId
+     *            The RuleSetReferenceId of the RuleSet to create.
      * @return A new RuleSet.
-     * @throws RuleSetNotFoundException if unable to find a resource.
+     * @throws RuleSetNotFoundException
+     *             if unable to find a resource.
      */
-    public synchronized RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
+    public RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) throws RuleSetNotFoundException {
         return createRuleSet(ruleSetReferenceId, false);
     }
 
-    private synchronized RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId,
-            boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
-        return parseRuleSetNode(ruleSetReferenceId, ruleSetReferenceId.getInputStream(this.classLoader),
-                withDeprecatedRuleReferences);
+    private RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
+            throws RuleSetNotFoundException {
+        return parseRuleSetNode(ruleSetReferenceId, withDeprecatedRuleReferences);
+    }
+
+    /**
+     * Creates a new RuleSet for a single rule
+     * 
+     * @param rule
+     *            The rule being created
+     * @return The newly created RuleSet
+     */
+    public RuleSet createSingleRuleRuleSet(final Rule rule) {
+        final long checksum;
+        if (rule instanceof XPathRule) {
+            checksum = rule.getProperty(XPathRule.XPATH_DESCRIPTOR).hashCode();
+        } else {
+            // TODO : Is this good enough? all properties' values + rule name
+            checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
+        }
+
+        final RuleSetBuilder builder = new RuleSetBuilder(checksum);
+        builder.addRule(rule);
+        return builder.build();
     }
 
     /**
@@ -211,18 +238,20 @@ public class RuleSetFactory {
      * created. Deprecated rules are _not_ ignored, so that they can be
      * referenced.
      *
-     * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet with the
-     *            Rule to create.
-     * @param withDeprecatedRuleReferences Whether RuleReferences that are
-     *            deprecated should be ignored or not
+     * @param ruleSetReferenceId
+     *            The RuleSetReferenceId of the RuleSet with the Rule to create.
+     * @param withDeprecatedRuleReferences
+     *            Whether RuleReferences that are deprecated should be ignored
+     *            or not
      * @return A new Rule.
-     * @throws RuleSetNotFoundException if unable to find a resource.
+     * @throws RuleSetNotFoundException
+     *             if unable to find a resource.
      */
     private Rule createRule(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
             throws RuleSetNotFoundException {
         if (ruleSetReferenceId.isAllRules()) {
-            throw new IllegalArgumentException("Cannot parse a single Rule from an all Rule RuleSet reference: <"
-                    + ruleSetReferenceId + ">.");
+            throw new IllegalArgumentException(
+                    "Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
         }
         RuleSet ruleSet = createRuleSet(ruleSetReferenceId, withDeprecatedRuleReferences);
         return ruleSet.getRuleByName(ruleSetReferenceId.getRuleName());
@@ -230,21 +259,22 @@ public class RuleSetFactory {
 
     /**
      * Parse a ruleset node to construct a RuleSet.
-     * 
-     * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet being
-     *            parsed.
-     * @param inputStream InputStream containing the RuleSet XML configuration.
-     * @param withDeprecatedRuleReferences whether rule references that are
-     *            deprecated should be ignored or not
+     *
+     * @param ruleSetReferenceId
+     *            The RuleSetReferenceId of the RuleSet being parsed.
+     * @param withDeprecatedRuleReferences
+     *            whether rule references that are deprecated should be ignored
+     *            or not
      * @return The new RuleSet.
      */
-    private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId, InputStream inputStream,
-            boolean withDeprecatedRuleReferences) {
-        if (!ruleSetReferenceId.isExternal()) {
-            throw new IllegalArgumentException("Cannot parse a RuleSet from a non-external reference: <"
-                    + ruleSetReferenceId + ">.");
-        }
-        try {
+    private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
+            throws RuleSetNotFoundException {
+        try (CheckedInputStream inputStream = new CheckedInputStream(
+                ruleSetReferenceId.getInputStream(this.classLoader), new Adler32());) {
+            if (!ruleSetReferenceId.isExternal()) {
+                throw new IllegalArgumentException(
+                        "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
+            }
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             InputSource inputSource;
             if (compatibilityFilter != null) {
@@ -255,9 +285,9 @@ public class RuleSetFactory {
             Document document = builder.parse(inputSource);
             Element ruleSetElement = document.getDocumentElement();
 
-            RuleSet ruleSet = new RuleSet();
-            ruleSet.setFileName(ruleSetReferenceId.getRuleSetFileName());
-            ruleSet.setName(ruleSetElement.getAttribute("name"));
+            RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue())
+                    .withFileName(ruleSetReferenceId.getRuleSetFileName())
+                    .withName(ruleSetElement.getAttribute("name"));
 
             NodeList nodeList = ruleSetElement.getChildNodes();
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -265,13 +295,13 @@ public class RuleSetFactory {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     String nodeName = node.getNodeName();
                     if (DESCRIPTION.equals(nodeName)) {
-                        ruleSet.setDescription(parseTextNode(node));
+                        ruleSetBuilder.withDescription(parseTextNode(node));
                     } else if ("include-pattern".equals(nodeName)) {
-                        ruleSet.addIncludePattern(parseTextNode(node));
+                        ruleSetBuilder.addIncludePattern(parseTextNode(node));
                     } else if ("exclude-pattern".equals(nodeName)) {
-                        ruleSet.addExcludePattern(parseTextNode(node));
+                        ruleSetBuilder.addExcludePattern(parseTextNode(node));
                     } else if ("rule".equals(nodeName)) {
-                        parseRuleNode(ruleSetReferenceId, ruleSet, node, withDeprecatedRuleReferences);
+                        parseRuleNode(ruleSetReferenceId, ruleSetBuilder, node, withDeprecatedRuleReferences);
                     } else {
                         throw new IllegalArgumentException(UNEXPECTED_ELEMENT + node.getNodeName()
                                 + "> encountered as child of <ruleset> element.");
@@ -279,7 +309,7 @@ public class RuleSetFactory {
                 }
             }
 
-            return ruleSet;
+            return ruleSetBuilder.build();
         } catch (ClassNotFoundException cnfe) {
             return classNotFoundProblem(cnfe);
         } catch (InstantiationException ie) {
@@ -288,8 +318,6 @@ public class RuleSetFactory {
             return classNotFoundProblem(iae);
         } catch (ParserConfigurationException pce) {
             return classNotFoundProblem(pce);
-        } catch (RuleSetNotFoundException rsnfe) {
-            return classNotFoundProblem(rsnfe);
         } catch (IOException ioe) {
             return classNotFoundProblem(ioe);
         } catch (SAXException se) {
@@ -297,7 +325,7 @@ public class RuleSetFactory {
         }
     }
 
-    private static RuleSet classNotFoundProblem(Exception ex) throws RuntimeException {
+    private static RuleSet classNotFoundProblem(Exception ex) {
         ex.printStackTrace();
         throw new RuntimeException("Couldn't find the class " + ex.getMessage());
     }
@@ -305,24 +333,27 @@ public class RuleSetFactory {
     /**
      * Parse a rule node.
      *
-     * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet being
-     *            parsed.
-     * @param ruleSet The RuleSet being constructed.
-     * @param ruleNode Must be a rule element node.
-     * @param withDeprecatedRuleReferences whether rule references that are
-     *            deprecated should be ignored or not
+     * @param ruleSetReferenceId
+     *            The RuleSetReferenceId of the RuleSet being parsed.
+     * @param ruleSetBuilder
+     *            The RuleSet being constructed.
+     * @param ruleNode
+     *            Must be a rule element node.
+     * @param withDeprecatedRuleReferences
+     *            whether rule references that are deprecated should be ignored
+     *            or not
      */
-    private void parseRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSet ruleSet, Node ruleNode,
-            boolean withDeprecatedRuleReferences) throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException, RuleSetNotFoundException {
+    private void parseRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder, Node ruleNode,
+            boolean withDeprecatedRuleReferences)
+            throws ClassNotFoundException, InstantiationException, IllegalAccessException, RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
         if (ref.endsWith("xml")) {
-            parseRuleSetReferenceNode(ruleSetReferenceId, ruleSet, ruleElement, ref);
+            parseRuleSetReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleElement, ref);
         } else if (StringUtil.isEmpty(ref)) {
-            parseSingleRuleNode(ruleSetReferenceId, ruleSet, ruleNode);
+            parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode);
         } else {
-            parseRuleReferenceNode(ruleSetReferenceId, ruleSet, ruleNode, ref, withDeprecatedRuleReferences);
+            parseRuleReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, ref, withDeprecatedRuleReferences);
         }
     }
 
@@ -332,14 +363,17 @@ public class RuleSetFactory {
      * explicitly excluded, below the minimum priority threshold for this
      * RuleSetFactory, or which are deprecated.
      *
-     * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet being
-     *            parsed.
-     * @param ruleSet The RuleSet being constructed.
-     * @param ruleElement Must be a rule element node.
-     * @param ref The RuleSet reference.
+     * @param ruleSetReferenceId
+     *            The RuleSetReferenceId of the RuleSet being parsed.
+     * @param ruleSetBuilder
+     *            The RuleSet being constructed.
+     * @param ruleElement
+     *            Must be a rule element node.
+     * @param ref
+     *            The RuleSet reference.
      */
-    private void parseRuleSetReferenceNode(RuleSetReferenceId ruleSetReferenceId, RuleSet ruleSet, Element ruleElement,
-            String ref) throws RuleSetNotFoundException {
+    private void parseRuleSetReferenceNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
+            Element ruleElement, String ref) throws RuleSetNotFoundException {
         RuleSetReference ruleSetReference = new RuleSetReference();
         ruleSetReference.setAllRules(true);
         ruleSetReference.setRuleSetFileName(ref);
@@ -358,17 +392,15 @@ public class RuleSetFactory {
             }
         }
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        ruleSetFactory.setClassLoader(classLoader);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
         for (Rule rule : otherRuleSet.getRules()) {
             excludedRulesCheck.remove(rule.getName());
-            if (!ruleSetReference.getExcludes().contains(rule.getName())
-                    && rule.getPriority().compareTo(minimumPriority) <= 0 && !rule.isDeprecated()) {
+            if (!ruleSetReference.getExcludes().contains(rule.getName()) && !rule.isDeprecated()) {
                 RuleReference ruleReference = new RuleReference();
                 ruleReference.setRuleSetReference(ruleSetReference);
                 ruleReference.setRule(rule);
-                ruleSet.addRuleIfNotExists(ruleReference);
+                ruleSetBuilder.addRuleIfNotExists(ruleReference);
 
                 // override the priority
                 if (priority != null) {
@@ -377,8 +409,8 @@ public class RuleSetFactory {
             }
         }
         if (!excludedRulesCheck.isEmpty()) {
-            throw new IllegalArgumentException("Unable to exclude rules " + excludedRulesCheck
-                    + "; perhaps the rule name is mispelled?");
+            throw new IllegalArgumentException(
+                    "Unable to exclude rules " + excludedRulesCheck + "; perhaps the rule name is mispelled?");
         }
     }
 
@@ -386,13 +418,21 @@ public class RuleSetFactory {
      * Parse a rule node as a single Rule. The Rule has been fully defined
      * within the context of the current RuleSet.
      *
-     * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet being
-     *            parsed.
-     * @param ruleSet The RuleSet being constructed.
-     * @param ruleNode Must be a rule element node.
+     * @param ruleSetReferenceId
+     *            The RuleSetReferenceId of the RuleSet being parsed.
+     * @param ruleSet
+     *            The RuleSet being constructed.
+     * @param ruleNode
+     *            Must be a rule element node.
+     * @param ruleSetReferenceId
+     *            The RuleSetReferenceId of the RuleSet being parsed.
+     * @param ruleSetBuilder
+     *            The RuleSet being constructed.
+     * @param ruleNode
+     *            Must be a rule element node.
      */
-    private void parseSingleRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSet ruleSet, Node ruleNode)
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void parseSingleRuleNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
+            Node ruleNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         Element ruleElement = (Element) ruleNode;
 
         // Stop if we're looking for a particular Rule, and this element is not
@@ -422,8 +462,8 @@ public class RuleSetFactory {
 
         Language language = rule.getLanguage();
         if (language == null) {
-            throw new IllegalArgumentException("Rule " + rule.getName()
-                    + " does not have a Language; missing 'language' attribute?");
+            throw new IllegalArgumentException(
+                    "Rule " + rule.getName() + " does not have a Language; missing 'language' attribute?");
         }
 
         if (ruleElement.hasAttribute("minimumLanguageVersion")) {
@@ -451,11 +491,11 @@ public class RuleSetFactory {
         }
 
         if (rule.getMinimumLanguageVersion() != null && rule.getMaximumLanguageVersion() != null) {
-            throw new IllegalArgumentException("The minimum Language Version '"
-                    + rule.getMinimumLanguageVersion().getTerseName()
-                    + "' must be prior to the maximum Language Version '"
-                    + rule.getMaximumLanguageVersion().getTerseName() + FOR_RULE + rule.getName()
-                    + "; perhaps swap them around?");
+            throw new IllegalArgumentException(
+                    "The minimum Language Version '" + rule.getMinimumLanguageVersion().getTerseName()
+                            + "' must be prior to the maximum Language Version '"
+                            + rule.getMaximumLanguageVersion().getTerseName() + FOR_RULE + rule.getName()
+                            + "; perhaps swap them around?");
         }
 
         String since = ruleElement.getAttribute("since");
@@ -463,7 +503,7 @@ public class RuleSetFactory {
             rule.setSince(since);
         }
         rule.setMessage(ruleElement.getAttribute(MESSAGE));
-        rule.setRuleSetName(ruleSet.getName());
+        rule.setRuleSetName(ruleSetBuilder.getName());
         rule.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
 
         if (hasAttributeSetTrue(ruleElement, "dfa")) {
@@ -481,13 +521,13 @@ public class RuleSetFactory {
                 continue;
             }
             String nodeName = node.getNodeName();
-            if (nodeName.equals(DESCRIPTION)) {
+            if (DESCRIPTION.equals(nodeName)) {
                 rule.setDescription(parseTextNode(node));
-            } else if (nodeName.equals("example")) {
+            } else if ("example".equals(nodeName)) {
                 rule.addExample(parseTextNode(node));
-            } else if (nodeName.equals(PRIORITY)) {
+            } else if (PRIORITY.equals(nodeName)) {
                 rule.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node).trim())));
-            } else if (nodeName.equals("properties")) {
+            } else if ("properties".equals(nodeName)) {
                 parsePropertiesNode(rule, node);
             } else {
                 throw new IllegalArgumentException(UNEXPECTED_ELEMENT + nodeName
@@ -497,7 +537,7 @@ public class RuleSetFactory {
         }
         if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
                 || rule.getPriority().compareTo(minimumPriority) <= 0) {
-            ruleSet.addRule(rule);
+            ruleSetBuilder.addRule(rule);
         }
     }
 
@@ -510,16 +550,20 @@ public class RuleSetFactory {
      * which comes from another RuleSet with some of it's attributes potentially
      * overridden.
      *
-     * @param ruleSetReferenceId The RuleSetReferenceId of the RuleSet being
-     *            parsed.
-     * @param ruleSet The RuleSet being constructed.
-     * @param ruleNode Must be a rule element node.
-     * @param ref A reference to a Rule.
-     * @param withDeprecatedRuleReferences whether rule references that are
-     *            deprecated should be ignored or not
+     * @param ruleSetReferenceId
+     *            The RuleSetReferenceId of the RuleSet being parsed.
+     * @param ruleSetBuilder
+     *            The RuleSet being constructed.
+     * @param ruleNode
+     *            Must be a rule element node.
+     * @param ref
+     *            A reference to a Rule.
+     * @param withDeprecatedRuleReferences
+     *            whether rule references that are deprecated should be ignored
+     *            or not
      */
-    private void parseRuleReferenceNode(RuleSetReferenceId ruleSetReferenceId, RuleSet ruleSet, Node ruleNode,
-            String ref, boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
+    private void parseRuleReferenceNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
+            Node ruleNode, String ref, boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
 
         // Stop if we're looking for a particular Rule, and this element is not
@@ -529,8 +573,7 @@ public class RuleSetFactory {
             return;
         }
 
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        ruleSetFactory.setClassLoader(classLoader);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
@@ -539,15 +582,12 @@ public class RuleSetFactory {
             otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
             isSameRuleSet = true;
         }
-        Rule referencedRule = ruleSetFactory.createRule(otherRuleSetReferenceId, true); // do
-                                                                                        // not
-                                                                                        // ignore
-                                                                                        // deprecated
-                                                                                        // rule
-                                                                                        // references
+        // do not ignore deprecated rule references
+        Rule referencedRule = ruleSetFactory.createRule(otherRuleSetReferenceId, true);
+
         if (referencedRule == null) {
-            throw new IllegalArgumentException("Unable to find referenced rule "
-                    + otherRuleSetReferenceId.getRuleName() + "; perhaps the rule name is mispelled?");
+            throw new IllegalArgumentException("Unable to find referenced rule " + otherRuleSetReferenceId.getRuleName()
+                    + "; perhaps the rule name is mispelled?");
         }
 
         if (warnDeprecated && referencedRule.isDeprecated()) {
@@ -615,23 +655,25 @@ public class RuleSetFactory {
         if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
                 || referencedRule.getPriority().compareTo(minimumPriority) <= 0) {
             if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
-                ruleSet.addRuleReplaceIfExists(ruleReference);
+                ruleSetBuilder.addRuleReplaceIfExists(ruleReference);
             }
         }
     }
 
     /**
      * Check whether the given ruleName is contained in the given ruleset.
-     * 
-     * @param ruleSetReferenceId the ruleset to check
-     * @param ruleName the rule name to search for
+     *
+     * @param ruleSetReferenceId
+     *            the ruleset to check
+     * @param ruleName
+     *            the rule name to search for
      * @return <code>true</code> if the ruleName exists
      */
     private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
         boolean found = false;
-        try {
+        try (InputStream ruleSet = ruleSetReferenceId.getInputStream(classLoader)) {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse(ruleSetReferenceId.getInputStream(classLoader));
+            Document document = builder.parse(ruleSet);
             Element ruleSetElement = document.getDocumentElement();
 
             NodeList rules = ruleSetElement.getElementsByTagName("rule");
@@ -656,8 +698,10 @@ public class RuleSetFactory {
     /**
      * Parse a properties node.
      *
-     * @param rule The Rule to which the properties should be added.
-     * @param propertiesNode Must be a properties element node.
+     * @param rule
+     *            The Rule to which the properties should be added.
+     * @param propertiesNode
+     *            Must be a properties element node.
      */
     private static void parsePropertiesNode(Rule rule, Node propertiesNode) {
         for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
@@ -684,7 +728,8 @@ public class RuleSetFactory {
     /**
      * Parse a property node.
      *
-     * @param rule The Rule to which the property should be added. //@param
+     * @param rule
+     *            The Rule to which the property should be added. //@param
      *            propertyNode Must be a property element node.
      */
     // private static void parsePropertyNode(Rule rule, Node propertyNode) {
@@ -745,8 +790,8 @@ public class RuleSetFactory {
 
             PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
             if (propertyDescriptor == null) {
-                throw new IllegalArgumentException("Cannot set non-existant property '" + name + "' on Rule "
-                        + rule.getName());
+                throw new IllegalArgumentException(
+                        "Cannot set non-existant property '" + name + "' on Rule " + rule.getName());
             } else {
                 setValue(rule, propertyDescriptor, strValue);
             }
@@ -765,9 +810,8 @@ public class RuleSetFactory {
         for (Map.Entry<String, Boolean> entry : valueKeys.entrySet()) {
             String valueStr = propertyElement.getAttribute(entry.getKey());
             if (entry.getValue() && StringUtil.isEmpty(valueStr)) {
-                System.out.println("Missing required value for: " + entry.getKey()); // debug
-                                                                                     // pt
-                                                                                     // TODO
+                // TODO debug pt
+                System.out.println("Missing required value for: " + entry.getKey());
             }
             values.put(entry.getKey(), valueStr);
         }
@@ -782,7 +826,8 @@ public class RuleSetFactory {
     /**
      * Parse a String from a textually type node.
      *
-     * @param node The node.
+     * @param node
+     *            The node.
      * @return The String.
      */
     private static String parseTextNode(Node node) {
@@ -806,9 +851,11 @@ public class RuleSetFactory {
     /**
      * Determine if the specified rule element will represent a Rule with the
      * given name.
-     * 
-     * @param ruleElement The rule element.
-     * @param ruleName The Rule name.
+     *
+     * @param ruleElement
+     *            The rule element.
+     * @param ruleName
+     *            The Rule name.
      * @return <code>true</code> if the Rule would have the given name,
      *         <code>false</code> otherwise.
      */
