@@ -559,4 +559,5 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#313](https://github.com/pmd/pmd/pull/313): \[vf] Apex:iFrame not being detected - bug fix
 *   [#314](https://github.com/pmd/pmd/pull/314): \[vf] Bug fixes for incorrect Id detection and escaping
 *   [#316](https://github.com/pmd/pmd/pull/316): \[apex] Ignoring certain rules in Batch classes, Queueable, and install scripts
+*   [#317](https://github.com/pmd/pmd/pull/317): \[apex] Add support for safe ID assignment from URL param
 
