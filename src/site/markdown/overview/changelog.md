@@ -558,4 +558,5 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#308](https://github.com/pmd/pmd/pull/308): \[java] JUnitTestsShouldIncludeAssertRule supports @Rule annotated ExpectedExceptions
 *   [#313](https://github.com/pmd/pmd/pull/313): \[vf] Apex:iFrame not being detected - bug fix
 *   [#314](https://github.com/pmd/pmd/pull/314): \[vf] Bug fixes for incorrect Id detection and escaping
+*   [#317](https://github.com/pmd/pmd/pull/317): \[apex] Add support for safe ID assignment from URL param
 
