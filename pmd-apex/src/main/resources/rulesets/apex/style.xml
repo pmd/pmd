@@ -132,4 +132,24 @@ Many interfaces (e.g. Batch) required global modifiers in the past but don't req
     </example>
   </rule>
 
+<rule name="AvoidNonExistentAnnotations"
+          since="5.5.5"
+          message="Use of non existent annotations will lead to broken Apex code which will not compile in the future."
+          class="net.sourceforge.pmd.lang.apex.rule.style.AvoidNonExistentAnnotationsRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#AvoidNonExistentAnnotations">
+        <description>
+            Apex supported non existent annotations for legacy reasons.
+            In the future, use of such non-existent annotations could result in broken apex code that will not copile.
+            This will prevent users of garbage annotations from being able to use legitimate annotations added to apex in the future.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[@NonExistentAnnotation public class ClassWithNonexistentAnnotation {
+	@NonExistentAnnotation public void methodWithNonExistentAnnotation() {
+		// ...
+	}
+}
+]]>
+        </example>
+    </rule>
 </ruleset>

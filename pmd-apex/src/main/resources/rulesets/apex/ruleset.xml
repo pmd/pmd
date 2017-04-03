@@ -131,6 +131,15 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <rule ref="rulesets/apex/style.xml/AvoidNonExistentAnnotations" message="Use of non existent annotations will lead to broken Apex code which will not compile in the future.">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
    <!-- NAMING -->
    <rule ref="rulesets/apex/style.xml/ClassNamingConventions" message="Class names should begin with an uppercase character">
       <priority>3</priority>

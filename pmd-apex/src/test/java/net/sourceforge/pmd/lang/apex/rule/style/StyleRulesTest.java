@@ -14,6 +14,7 @@ public class StyleRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "AvoidGlobalModifier");
         addRule(RULESET, "AvoidLogicInTrigger");
+        addRule(RULESET, "AvoidNonExistentAnnotations");
         addRule(RULESET, "ClassNamingConventions");
         addRule(RULESET, "MethodNamingConventions");
         addRule(RULESET, "VariableNamingConventions");
