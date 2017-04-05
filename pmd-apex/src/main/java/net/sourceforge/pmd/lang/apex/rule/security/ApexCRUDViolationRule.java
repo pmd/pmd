@@ -96,6 +96,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
+        if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
+            return data; // stops all the rules
+        }
+
         for (ASTMethod n : node.findDescendantsOfType(ASTMethod.class)) {
             StringBuilder sb = new StringBuilder().append(n.getNode().getDefiningType().getApexName()).append(":")
                     .append(n.getNode().getMethodInfo().getCanonicalName()).append(":")

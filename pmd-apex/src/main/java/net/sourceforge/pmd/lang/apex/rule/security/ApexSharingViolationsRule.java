@@ -33,6 +33,11 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
+
+        if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
+            return data; // stops all the rules
+        }
+
         if (!Helper.isTestMethodOrClass(node)) {
             boolean sharingFound = isSharingPresent(node);
             checkForSharingDeclaration(node, data, sharingFound);

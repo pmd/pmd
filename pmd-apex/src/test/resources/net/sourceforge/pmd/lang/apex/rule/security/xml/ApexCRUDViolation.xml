@@ -3,6 +3,20 @@
 <test-data>
 
 	<test-code>
+		<description>Scheduled classes don't need crud, run as system
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+class FooBatchJob implements Database.Batchable < sObject > , Database.Stateful { 	
+	public void justGiveMeFoo() {
+	 	AggregateResult[] test = [SELECT Id FROM Opportunity];
+	} 
+} 
+]]></code>
+	</test-code>
+
+
+	<test-code>
 		<description>Complex SOQL</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
@@ -70,7 +84,8 @@ public class Foo {
 
 
 	<test-code>
-		<description>Proper CRUD checks for Aggregate Result return</description>
+		<description>Proper CRUD checks for Aggregate Result return
+		</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[ 
 public class Foo { 	
@@ -785,4 +800,4 @@ public class MyProfilePageController {
 	
 ]]></code>
 	</test-code>
- </test-data>
+</test-data>

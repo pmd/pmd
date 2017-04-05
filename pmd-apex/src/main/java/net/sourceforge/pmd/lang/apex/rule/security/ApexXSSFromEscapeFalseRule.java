@@ -29,8 +29,8 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        if (Helper.isTestMethodOrClass(node)) {
-            return data;
+        if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
+            return data; // stops all the rules
         }
 
         List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);

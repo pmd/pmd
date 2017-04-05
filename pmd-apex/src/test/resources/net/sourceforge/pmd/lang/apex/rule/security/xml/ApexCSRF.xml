@@ -16,7 +16,22 @@ public class Foo {
 		]]></code>
 	</test-code>
 
-<test-code>
+
+	<test-code>
+		<description>Queueable class</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo implements Queueable {
+
+	public Foo() {
+		List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+		upsert accounts;	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
 		<description>Apex CSRF in init method</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -29,7 +44,7 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
+
 	<test-code>
 		<description>Apex CSRF in init method</description>
 		<expected-problems>0</expected-problems>
@@ -43,8 +58,8 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
-		<test-code>
+
+	<test-code>
 		<description>Apex CSRF in constructor</description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
