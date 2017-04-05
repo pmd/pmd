@@ -512,4 +512,50 @@ No XSS with escaped EL
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+Quotes following quotes
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		sforce.console.setTabTitle('TabName' + ': {!JSENCODE(tabName)}');  
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+Escaped followed by safe
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		  Comps.method('{!JSENCODE($CurrentPage.parameters.someParamName)}', '{!$User.Id}');
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+Safe unquoted followed by safe quoted
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		  Comps.tasks({!JSENCODE(case.Id)}, '{!JSENCODE($User.Id)}', caseSubject)
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
 </test-data>
