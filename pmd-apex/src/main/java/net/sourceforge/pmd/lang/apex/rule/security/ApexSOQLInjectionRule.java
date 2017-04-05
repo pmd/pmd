@@ -143,6 +143,13 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             }
         }
 
+        final ASTMethodCallExpression methodCall = node.getFirstChildOfType(ASTMethodCallExpression.class);
+        if (methodCall != null) {
+            if (Helper.isMethodName(methodCall, STRING, ESCAPE_SINGLE_QUOTES)) {
+                isSafeVariable = true;
+            }
+        }
+
         final ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
         if (literal != null) {
 

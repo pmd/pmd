@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <test-data>
- 	<test-code>
+	<test-code>
 		<description>Potentially unsafe SOQL on concatenation of variables 1
 		</description>
 		<expected-problems>1</expected-problems>
@@ -191,6 +191,53 @@ public class Foo {
 	</test-code>
 
 	<test-code>
+		<description>Dynamic SOQL with Integer
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		Integer field1 = 4; 
+		Database.query('SELECT Id FROM Account LIMIT ' + field1);		
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Dynamic safe escaped SOQL with multipart
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		String name = 'Name';
+		String someQuery = 'SELECT Id, ' + name + ' FROM ' + String.escapeSingleQuotes(objectName);
+        Database.query(someQuery);
+        
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Dynamic safe escaped SOQL with multipart
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1(String objectName) {
+		String name = 'Name';
+		String someQuery = 'SELECT Id, ' + name + ' FROM ' + objectName;
+        Database.query(someQuery);
+        
+	}
+}
+		]]></code>
+	</test-code>
+
+
+	<test-code>
 		<description>Unsafe SOQL merged from many variables</description>
 		<expected-problems>1</expected-problems>
 		<code><![CDATA[
@@ -206,19 +253,5 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
-	
-	<test-code>
-		<description>Dynamic SOQL with Integer
-		</description>
-		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-public class Foo {
-	public void test1() {
-		Integer field1 = 4; 
-		Database.query('SELECT Id FROM Account LIMIT ' + field1);		
-	}
-}
-		]]></code>
-	</test-code>
-		
+
 </test-data>
