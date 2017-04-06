@@ -138,9 +138,17 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
             Map<String, List<NameOccurrence>> expectables) {
         
         if (expression != null) {
+            
             ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
             if (pe != null) {
-                String img = pe.jjtGetChild(0).jjtGetChild(0).getImage();
+                Node subChild = pe.jjtGetChild(0).jjtGetChild(0);
+
+                // case of eg AllocationExpression
+                if (!(subChild instanceof ASTName)) {
+                    return false;
+                }
+
+                String img = subChild.getImage();
                 if (img.indexOf(".") == -1) {
                     return false;
                 }
@@ -160,4 +168,3 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         return false;
     }
 }
-
