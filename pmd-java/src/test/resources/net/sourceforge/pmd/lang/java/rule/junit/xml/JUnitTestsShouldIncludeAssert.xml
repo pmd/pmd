@@ -312,4 +312,21 @@ public class SimpleExpectedExceptionTest {
  }
         ]]></code>
     </test-code>    
+    <test-code>
+        <description>#330 Rule treats AllocationExpression correctly</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+	
+import org.junit.*;
+import javafx.embed.swing.JFXPanel;
+
+public class BaseConsoleTest extends UART {
+    @Test 
+    public void testInitialize() throws InterruptedException {
+        new JFXPanel(); // AllocationExpression
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
