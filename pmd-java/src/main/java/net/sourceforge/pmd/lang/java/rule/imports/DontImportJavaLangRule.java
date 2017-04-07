@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class DontImportJavaLangRule extends AbstractJavaRule {
+    private static final String IMPORT_JAVA_LANG = "java.lang.";
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
@@ -17,11 +18,9 @@ public class DontImportJavaLangRule extends AbstractJavaRule {
         }
 
         String img = node.jjtGetChild(0).getImage();
-        if (img.startsWith("java.lang")) {
-            if (img.startsWith("java.lang.ref") || img.startsWith("java.lang.reflect")
-                    || img.startsWith("java.lang.annotation") || img.startsWith("java.lang.instrument")
-                    || img.startsWith("java.lang.management") || img.startsWith("java.lang.Thread.")
-                    || img.startsWith("java.lang.ProcessBuilder.") || img.startsWith("java.lang.invoke.")) {
+        if (img.startsWith(IMPORT_JAVA_LANG)) {
+            if (img.indexOf('.', IMPORT_JAVA_LANG.length() + 1) != -1) {
+                // Importing from a subpackage / inner class
                 return data;
             }
             addViolation(data, node);
