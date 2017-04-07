@@ -562,5 +562,6 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#316](https://github.com/pmd/pmd/pull/316): \[apex] Ignoring certain rules in Batch classes, Queueable, and install scripts
 *   [#317](https://github.com/pmd/pmd/pull/317): \[apex] Add support for safe ID assignment from URL param
 *   [#326](https://github.com/pmd/pmd/pull/326): \[vf] Quote detection improvement and method argument detection
+*   [#327](https://github.com/pmd/pmd/pull/327): \[apex] Fixed SOQL injection detection for escaped vars
 *   [#331](https://github.com/pmd/pmd/pull/331): \[java] JunitTestsShouldIncludeAssertRule now handles AllocationExpression correctly
 
