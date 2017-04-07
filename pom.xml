@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>5.3.9-SNAPSHOT</version>
+    <version>5.3.10-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
