@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
 import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
@@ -76,7 +77,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         boolean quoted = false;
 
         if (prevText != null) {
-            if (isUnbalanced(prevText.getImage(), "'") || isUnbalanced(prevText.getImage(), "\"")) {
+            if (isUnbalanced(prevText.getImage(), '\'') || isUnbalanced(prevText.getImage(), '\"')) {
                 quoted = true;
             }
         }
@@ -95,24 +96,26 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
     }
 
-    private boolean isUnbalanced(String image, String pattern) {
-        int occurance = 0;
-        int index = image.indexOf("=");
-        if (index < 0) {
-            index = image.indexOf(":");
+    private boolean isUnbalanced(String image, char pattern) {
+        char[] array = image.toCharArray();
+
+        boolean foundPattern = false;
+
+        for (int i = array.length - 1; i > 0; i--) {
+            if (array[i] == pattern) {
+                foundPattern = true;
+            }
+
+            if (array[i] == ';') {
+                if (foundPattern) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
 
-        index = image.indexOf(pattern, index + 1);
-        while (index >= 0) {
-            occurance++;
-            index = image.indexOf(pattern, index + 1);
-        }
-
-        if ((occurance % 2) != 0) {
-            return true;
-        }
-
-        return false;
+        return foundPattern;
     }
 
     @Override
@@ -399,6 +402,12 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "caseNumber":
                     return true;
                 default:
+                }
+            }
+
+            if (child instanceof ASTArguments) {
+                if (containsSafeFields((ASTArguments) child)) {
+                    return true;
                 }
             }
 
