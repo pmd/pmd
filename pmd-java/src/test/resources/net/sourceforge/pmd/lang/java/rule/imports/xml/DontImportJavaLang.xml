@@ -64,4 +64,13 @@ import java.lang.ProcessBuilder.Redirect;
 public class Foo {}
         ]]></code>
     </test-code>
+    <test-code>
+        <description>import java.lang.invoke.MethodHandles: #1031 false DontImportJavaLang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.invoke.MethodHandles;
+
+public class Foo {}
+        ]]></code>
+    </test-code>
 </test-data>

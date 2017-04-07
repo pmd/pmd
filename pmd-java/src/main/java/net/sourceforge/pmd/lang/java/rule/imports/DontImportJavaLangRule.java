@@ -21,7 +21,7 @@ public class DontImportJavaLangRule extends AbstractJavaRule {
             if (img.startsWith("java.lang.ref") || img.startsWith("java.lang.reflect")
                     || img.startsWith("java.lang.annotation") || img.startsWith("java.lang.instrument")
                     || img.startsWith("java.lang.management") || img.startsWith("java.lang.Thread.")
-                    || img.startsWith("java.lang.ProcessBuilder.")) {
+                    || img.startsWith("java.lang.ProcessBuilder.") || img.startsWith("java.lang.invoke.")) {
                 return data;
             }
             addViolation(data, node);
