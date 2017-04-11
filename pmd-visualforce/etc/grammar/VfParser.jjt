@@ -70,7 +70,7 @@ PARSER_END(VfParser)
 | <#XMLNAME: (<ALPHA_CHAR> | "_" | ":") (<IDENTIFIER_CHAR>)* >
 | <#QUOTED_STRING_NO_BREAKS: ( "'" ( ~["'", "\r", "\n"] )* "'" )
                     | ( "\"" ( ~["\"", "\r", "\n"] )* "\"" ) >
-| <#QUOTED_STRING: ( "'" ( ~["'"] )* "'" ) | ( "\"" ( ~["\""] )* "\"" ) >
+| <#QUOTED_STRING: ( "'" ( ~["'"] )* "'" ) | ( "\"" ( ~["\""] | "\\\"" )* "\"" ) >
 | <#WHITESPACE: ( " " | "\t" | "\n" | "\r" ) >
 | <#NEWLINE:    ( "\r\n" | "\r" | "\n" ) >
 | <#QUOTE:      ( "'" | "\"" )>
@@ -90,7 +90,7 @@ PARSER_END(VfParser)
   < (<WHITESPACE>)+ >
 }
 
-<AfterTagState, InTagState, HtmlScriptContentState, HtmlStyleContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElInScriptState > SPECIAL_TOKEN:
+<AfterTagState, InTagState, HtmlScriptContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElInScriptState > SPECIAL_TOKEN:
 {
   < (<WHITESPACE>)+ >
 }
@@ -104,7 +104,6 @@ PARSER_END(VfParser)
 | <DOCTYPE_DECL_START: 		"<!DOCTYPE" >	: DocTypeState
 | <CDATA_START:    			"<![CDATA[" >   : CDataState
 | <HTML_SCRIPT_START:       "<script"   >   : InTagState
-| <HTML_STYLE_START:       "<style"   >   : InTagState
 
 }
 
@@ -254,7 +253,7 @@ PARSER_END(VfParser)
 
 <CommentState> TOKEN :
 {
-  < COMMENT_END:  ("--" (" ")* ">" | "->") > : AfterTagState
+  < COMMENT_END:  ("--" (" ")* ">" ) > : AfterTagState
 | < COMMENT_TEXT: (~[]) >
 }
 
@@ -263,12 +262,6 @@ PARSER_END(VfParser)
 		  <HTML_SCRIPT_END_TAG : "</script>" > : AfterTagState
 		| <EL_EXPRESSION_IN_SCRIPT: "{!" (<WHITESPACES>)? > : ElInScriptState
 		| <HTML_SCRIPT_CONTENT: ( (~["{"]) | (["{"] ~["!"]) ) >
-}
-
-<HtmlStyleContentState> TOKEN :
-{
-		 <HTML_STYLE_CONTENT: (~[]) >
-		| <HTML_STYLE_END_TAG : "</style>" > : AfterTagState
 }
 
 /** *************************  VF GRAMMAR  **************************** */
@@ -328,11 +321,10 @@ void ContentElement() #void :
 {}
 {
 	(
-			CommentTag()
+		CommentTag()
 	  |	Element()
 	  | CData()
-    | HtmlScript()
-		| HtmlStyle()
+      | HtmlScript()
 	)
 }
 
@@ -745,26 +737,3 @@ void HtmlScriptContent() #Text :
 	{ jjtThis.setImage(content.toString()); }
 }
 
-
-void HtmlStyle() :
-{
-	StringBuffer content = new StringBuffer();
-	String tagName;
-	Token t;
-}
-{
-  	<HTML_STYLE_START>         {}
-  	(Attribute() )*             {}
-  	(
-  	  (
-  	   <TAG_END>				    {token_source.SwitchTo(HtmlStyleContentState);}
-  	   (t = <HTML_STYLE_CONTENT>  { content.append(t.image); })*
-	   <HTML_STYLE_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
-
-	  )
-	|
-	  (
-	    <TAG_SLASHEND>
-	  )
-	)
-}

@@ -229,14 +229,12 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
     }
 
     /**
-     * Test parsing of HTML &lt;script&gt; element.
+     * Test parsing of HTML &lt;style&gt; element.
      */
     @Test
     public void testInlineCss() {
         Set<ASTElement> elements = getNodes(ASTElement.class, TEST_INLINE_STYLE);
-        Set<ASTHtmlStyle> styles = getNodes(ASTHtmlStyle.class, TEST_INLINE_STYLE);
-        assertEquals("Two elements expected!", 2, elements.size());
-        assertEquals("One style expected!", 1, styles.size());
+        assertEquals("Two elements expected!", 3, elements.size());
     }
 
     /**

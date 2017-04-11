@@ -34,7 +34,6 @@
         <!-- Ensure generated using CharStream interface debugparser="true"
         		debugtokenmanager="true"-->
         <javacc static="false"
-        		
                 usercharstream="true"
                 unicodeinput="true"
                 javaunicodeescape="false"
