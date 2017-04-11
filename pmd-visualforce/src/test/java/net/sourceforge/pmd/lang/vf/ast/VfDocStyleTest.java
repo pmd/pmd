@@ -168,6 +168,25 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         assertEquals("Correct EL content expected!", "elInScript", id.getImage());
     }
     
+
+    /**
+     * Test parsing of inline comment in EL.
+     */
+    @Test
+    public void testInlineCommentInEL() {
+        Set<ASTHtmlScript> scripts = getNodes(ASTHtmlScript.class, TEST_EL_IN_HTML_SCRIPT_WITH_COMMENT);
+        assertEquals("One script expected!", 1, scripts.size());
+        ASTHtmlScript script = scripts.iterator().next();
+        ASTText text = script.getFirstChildOfType(ASTText.class);
+        assertEquals("Correct script content expected!", "vartext=", text.getImage());
+        ASTElExpression el = script.getFirstChildOfType(ASTElExpression.class);
+        List<ASTInlineCommentExpression> comments = el.findDescendantsOfType(ASTInlineCommentExpression.class);
+        assertEquals("Correct comment size expected!", 2, comments.size());       
+        ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
+        assertEquals("Correct EL content expected!", "elInScript", id.getImage());
+    }
+    
+    
     /**
      * Test parsing of quoted EL in HTML &lt;script&gt; element.
      */
@@ -653,8 +672,9 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
     private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH = "<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
 
     private static final String TEST_HTML_SCRIPT = "<html><head><script>Script!</script></head></html>";
-
+    
     private static final String TEST_EL_IN_HTML_SCRIPT = "<html><head><script>var text={!elInScript};</script></head></html>";
+    private static final String TEST_EL_IN_HTML_SCRIPT_WITH_COMMENT = "<html><head><script>var text={!/*junk1*/elInScript/*junk2*/};</script></head></html>";
 
     private static final String TEST_QUOTED_EL_IN_HTML_SCRIPT = "<html><head><script>var text='textHere{!elInScript}';</script></head></html>";
 

@@ -34,6 +34,7 @@
         <!-- Ensure generated using CharStream interface debugparser="true"
         		debugtokenmanager="true"-->
         <javacc static="false"
+        		
                 usercharstream="true"
                 unicodeinput="true"
                 javaunicodeescape="false"
@@ -43,7 +44,6 @@
         <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/Node.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/SimpleNode.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/CharStream.java" />
-        <delete file="${target}/net/sourceforge/pmd/lang/vf/ast/TokenMgrError.java" />
         <replace file="${target}/net/sourceforge/pmd/lang/vf/ast/VfParserTokenManager.java"
                  token="class VfParserTokenManager"
                  value="class VfParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />

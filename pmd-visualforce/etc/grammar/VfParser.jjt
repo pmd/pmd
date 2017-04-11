@@ -15,7 +15,7 @@ PARSER_BEGIN(VfParser)
 package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.vf.ast.TokenMgrError;
 
 public class VfParser {
 
@@ -115,7 +115,7 @@ PARSER_END(VfParser)
 
 <ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElAttribTagStateNQ, ElInScriptState> TOKEN :
 {
-		<NULL: "null" >
+	  <NULL: "null" >
 	| <TRUE: "true" >
 	| <FALSE: "false" >
 	| <LPAREN: "(" >
@@ -161,22 +161,23 @@ PARSER_END(VfParser)
 
 <ElAttribTagStateSQ> TOKEN :
 {
-			<END_OF_EL_ATTRIB_SQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenSingleQuotesState
+		<END_OF_EL_ATTRIB_SQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenSingleQuotesState
 }
 
 <ElAttribTagStateDQ> TOKEN :
-{
-			<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
+{	 	
+	<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
 }
 
 <ElAttribTagStateNQ> TOKEN :
 {
-			<END_OF_EL_ATTRIB_NQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueNoQuotesState
+   		<END_OF_EL_ATTRIB_NQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueNoQuotesState
 }
 
 <ElInScriptState> TOKEN :
 {
-	<END_OF_EL_SCRIPT: (<WHITESPACES>)? <CLOSEBRACE> > : HtmlScriptContentState
+	  <COMMENT_OPEN_SCRIPT: "/*" > : InlineCommentStateScript
+	| <END_OF_EL_SCRIPT: (<WHITESPACES>)? <CLOSEBRACE> > : HtmlScriptContentState
 }
 
 <DocTypeState, DocTypeExternalIdState> TOKEN :
@@ -231,7 +232,7 @@ PARSER_END(VfParser)
 {
      <ENDING_WHITESPACE: " " >: InTagState
 	|	<EL_EXPRESSION_IN_ATTRIBUTE_NQ: "{!" (<WHITESPACES>)? > : ElAttribTagStateNQ
-	| <UNPARSED_TEXT_NO_WHITESPACE: ( ~["{", " "] |(["{"] ~["!"]) )+ >
+	| <UNPARSED_TEXT_NO_WHITESPACE: ( ~["{", " "] | (["{"] ~["!"]) )+ >
 
 }
 
@@ -255,6 +256,12 @@ PARSER_END(VfParser)
 {
   < COMMENT_END:  ("--" (" ")* ">" ) > : AfterTagState
 | < COMMENT_TEXT: (~[]) >
+}
+
+<InlineCommentStateScript> TOKEN :
+{
+  < COMMENT_CLOSE_SCRIPT:  ("*/" ) > : ElInScriptState 
+| < COMMENT_INNER_TEXT_SCRIPT: (~[]) >
 }
 
 <HtmlScriptContentState> TOKEN :
@@ -401,7 +408,8 @@ void ElExpression() :
 void Expression() :
 {}
 {
-	ConditionalExpression() [ AssignmentOperator() Expression()  ]
+	ConditionalExpression() [ AssignmentOperator() Expression() ]
+|  	InlineCommentExpression() ( ConditionalExpression() | InlineCommentExpression() )*
 }
 
 void AssignmentOperator() #void :
@@ -481,17 +489,25 @@ void UnaryExpressionNotPlusMinus() #void :
 void PrimaryExpression() #void :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+   PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* 
+}
+
+void InlineCommentExpression() :
+{ 
+	StringBuffer content = new StringBuffer();
+	Token t; 
+}
+{
+  <COMMENT_OPEN_SCRIPT>  ( t = <COMMENT_INNER_TEXT_SCRIPT>  { content.append(t.image); })*  <COMMENT_CLOSE_SCRIPT>  { jjtThis.setImage(content.toString()); } 
 }
 
 void PrimaryPrefix() #void :
 {}
 {
-	 	Literal()
-	| Identifier()
+	  Literal()
+	| Identifier()	
 	| <LPAREN> Expression() <RPAREN>
 	| <LSQUARE> Expression() (<COMMA> Expression())*   <RSQUARE>
-
 }
 
 void PrimarySuffix() #void :
