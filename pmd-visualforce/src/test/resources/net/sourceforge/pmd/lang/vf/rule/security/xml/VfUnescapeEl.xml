@@ -557,5 +557,20 @@ Safe unquoted followed by safe quoted
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
+	<test-code>
+		<description><![CDATA[
+NOT method evaluates to safe boolean
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		if({!NOT(yes)}) { maskFormEls(); }
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
 
 </test-data>
