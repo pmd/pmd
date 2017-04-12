@@ -32,6 +32,28 @@ public class RuleSetFactoryCompatibilityTest {
         RuleSet createdRuleSet = createRulesetFromString(ruleset, factory);
         Assert.assertNotNull(createdRuleSet.getRuleByName("DummyBasicMockRule"));
     }
+    
+    @Test
+    public void testCorrectMovedAndRename() throws Exception {
+        final String ruleset = "<?xml version=\"1.0\"?>\n" + "\n" + "<ruleset name=\"Test\"\n"
+                + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n"
+                + "  <description>Test</description>\n" + "\n"
+                + " <rule ref=\"rulesets/dummy/notexisting.xml/OldDummyBasicMockRule\" />\n" + "</ruleset>\n";
+
+        RuleSetFactoryCompatibility rsfc = new RuleSetFactoryCompatibility();
+        rsfc.addFilterRuleMoved("dummy", "notexisting", "basic", "OldDummyBasicMockRule");
+        rsfc.addFilterRuleRenamed("dummy", "basic", "OldDummyBasicMockRule", "NewNameForDummyBasicMockRule");
+
+        InputStream stream = new ByteArrayInputStream(ruleset.getBytes(ISO_8859_1));
+        Reader filtered = rsfc.filterRuleSetFile(stream);
+        String out = IOUtils.toString(filtered);
+        
+        Assert.assertFalse(out.contains("notexisting.xml"));
+        Assert.assertFalse(out.contains("OldDummyBasicMockRule"));
+        Assert.assertTrue(out.contains("<rule ref=\"rulesets/dummy/basic.xml/NewNameForDummyBasicMockRule\" />"));
+    }
 
     @Test
     public void testExclusion() throws Exception {
