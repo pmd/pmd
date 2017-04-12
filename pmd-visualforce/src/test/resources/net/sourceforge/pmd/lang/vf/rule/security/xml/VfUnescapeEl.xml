@@ -575,15 +575,30 @@ NOT method evaluates to safe boolean
 
 	<test-code>
 		<description><![CDATA[
-JSON.parse method evaluates to safe JSON
+JSON.parse method evaluates quoted EL to safe JSON
      ]]></description>
 		<expected-problems>0</expected-problems>
 		<code><![CDATA[
 <apex:page>
 	<script>
+		var x = JSON.parse('{!yes}');
+		jQuery.parseJSON('{!yes}');
+		$.parseJSON('{!yes}');
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+
+	<test-code>
+		<description><![CDATA[
+JSON.parse method evaluates non quoted EL to unsafe XSS
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
 		var x = JSON.parse({!yes});
-		jQuery.parseJSON({!yes});
-		$.parseJSON({!yes});
 	</script>
 </apex:page>
 ]]></code>

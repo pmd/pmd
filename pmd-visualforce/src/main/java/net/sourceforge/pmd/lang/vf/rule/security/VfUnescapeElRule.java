@@ -85,22 +85,24 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
         if (quoted) {
             // check escaping too
-            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
+            if (!(jsonParse || startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
                 if (doesElContainAnyUnescapedIdentifiers(elExpression,
                         EnumSet.of(Escaping.JSENCODE, Escaping.JSINHTMLENCODE))) {
                     addViolation(data, elExpression);
                 }
             }
         } else {
-            if (!(jsonParse || startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
+            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
                 addViolation(data, elExpression);
             }
         }
     }
 
     private boolean isJsonParse(ASTText prevText) {
-        if (prevText.getImage().endsWith("JSON.parse(") || prevText.getImage().endsWith("jQuery.parseJSON(")
-                || prevText.getImage().endsWith("$.parseJSON(")) {
+        final String text = (prevText.getImage().endsWith("'") || prevText.getImage().endsWith("'"))
+                ? prevText.getImage().substring(0, prevText.getImage().length() - 1) : prevText.getImage();
+
+        if (text.endsWith("JSON.parse(") || text.endsWith("jQuery.parseJSON(") || text.endsWith("$.parseJSON(")) {
             return true;
         }
 
