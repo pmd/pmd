@@ -15,7 +15,7 @@ PARSER_BEGIN(VfParser)
 package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
-import net.sourceforge.pmd.lang.vf.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class VfParser {
 
@@ -250,9 +250,9 @@ PARSER_END(VfParser)
 
 <AttrValueBetweenDoubleQuotesState> TOKEN :
 {
-		<ENDING_DOUBLE_QUOTE: "\""> : InTagState
+	  <ENDING_DOUBLE_QUOTE: "\""> : InTagState
 	| <EL_EXPRESSION_IN_ATTRIBUTE_DQ: "{!" (<WHITESPACES>)? > : ElAttribTagStateDQ
-	|	<UNPARSED_TEXT_NO_DOUBLE_QUOTES:
+	| <UNPARSED_TEXT_NO_DOUBLE_QUOTES:
 		( (~["{", "\""]) | (["{"] ~["!", "\""]) )+ >
 }
 
