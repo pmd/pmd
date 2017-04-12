@@ -82,6 +82,8 @@ PARSER_END(VfParser)
 | <#TEXT_IN_EL: (~["}", "'", "\""])+ >
 | <#CLOSEBRACE: ("}")>
 | <#DOT: "." >
+| <#COMMNT_START: "/*" >
+| <#COMMNT_END: "*/" >
 }
 
 
@@ -161,12 +163,14 @@ PARSER_END(VfParser)
 
 <ElAttribTagStateSQ> TOKEN :
 {
-		<END_OF_EL_ATTRIB_SQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenSingleQuotesState
+	<COMMENT_OPEN_SQ: <COMMNT_START> > : InlineCommentStateSQ 	
+|	<END_OF_EL_ATTRIB_SQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenSingleQuotesState
 }
 
 <ElAttribTagStateDQ> TOKEN :
-{	 	
-	<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
+{	
+	<COMMENT_OPEN_DQ: <COMMNT_START> > : InlineCommentStateDQ 	
+|	<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
 }
 
 <ElAttribTagStateNQ> TOKEN :
@@ -176,7 +180,7 @@ PARSER_END(VfParser)
 
 <ElInScriptState> TOKEN :
 {
-	  <COMMENT_OPEN_SCRIPT: "/*" > : InlineCommentStateScript
+	  <COMMENT_OPEN_SCRIPT: <COMMNT_START> > : InlineCommentStateScript
 	| <END_OF_EL_SCRIPT: (<WHITESPACES>)? <CLOSEBRACE> > : HtmlScriptContentState
 }
 
@@ -260,8 +264,21 @@ PARSER_END(VfParser)
 
 <InlineCommentStateScript> TOKEN :
 {
-  < COMMENT_CLOSE_SCRIPT:  ("*/" ) > : ElInScriptState 
+  < COMMENT_CLOSE_SCRIPT:  (<COMMNT_END>) > : ElInScriptState 
 | < COMMENT_INNER_TEXT_SCRIPT: (~[]) >
+}
+
+<InlineCommentStateSQ> TOKEN :
+{
+  < COMMENT_CLOSE_SQ:  (<COMMNT_END>) > : ElAttribTagStateSQ 
+| < COMMENT_INNER_TEXT_SQ: (~[]) >
+}
+
+
+<InlineCommentStateDQ> TOKEN :
+{
+  < COMMENT_CLOSE_DQ:  (<COMMNT_END>) > : ElAttribTagStateDQ 
+| < COMMENT_INNER_TEXT_DQ: (~[]) >
 }
 
 <HtmlScriptContentState> TOKEN :
@@ -409,7 +426,10 @@ void Expression() :
 {}
 {
 	ConditionalExpression() [ AssignmentOperator() Expression() ]
-|  	InlineCommentExpression() ( ConditionalExpression() | InlineCommentExpression() )*
+|  	CommentExpression() ( ConditionalExpression() | CommentExpression() )*
+|  	ELDQCommentExpression() ( ConditionalExpression() | ELDQCommentExpression() )*
+|  	ELSQCommentExpression() ( ConditionalExpression() | ELSQCommentExpression() )*
+
 }
 
 void AssignmentOperator() #void :
@@ -492,7 +512,25 @@ void PrimaryExpression() #void :
    PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* 
 }
 
-void InlineCommentExpression() :
+void ELSQCommentExpression() #CommentExpression :
+{ 
+	StringBuffer content = new StringBuffer();
+	Token t; 
+}
+{
+  <COMMENT_OPEN_SQ>  ( t = <COMMENT_INNER_TEXT_SQ>  { content.append(t.image); })*  <COMMENT_CLOSE_SQ>  { jjtThis.setImage(content.toString()); } 
+}
+
+void ELDQCommentExpression() #CommentExpression :
+{ 
+	StringBuffer content = new StringBuffer();
+	Token t; 
+}
+{
+  <COMMENT_OPEN_DQ>  ( t = <COMMENT_INNER_TEXT_DQ>  { content.append(t.image); })*  <COMMENT_CLOSE_DQ>  { jjtThis.setImage(content.toString()); } 
+}
+
+void CommentExpression() :
 { 
 	StringBuffer content = new StringBuffer();
 	Token t; 

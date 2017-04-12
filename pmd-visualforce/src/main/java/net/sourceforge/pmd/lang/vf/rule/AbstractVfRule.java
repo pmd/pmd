@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
-import net.sourceforge.pmd.lang.vf.ast.ASTInlineCommentExpression;
+import net.sourceforge.pmd.lang.vf.ast.ASTCommentExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
@@ -133,7 +133,7 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
         return visit((VfNode) node, data);
     }
 
-    public Object visit(ASTInlineCommentExpression node, Object data) {
+    public Object visit(ASTCommentExpression node, Object data) {
         return visit((VfNode) node, data);
     }
 }

@@ -90,7 +90,7 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
     }
 
     @Override
-    public Object visit(ASTInlineCommentExpression node, Object data) {
+    public Object visit(ASTCommentExpression node, Object data) {
         return visit((VfNode) node, data);
     }
 }
