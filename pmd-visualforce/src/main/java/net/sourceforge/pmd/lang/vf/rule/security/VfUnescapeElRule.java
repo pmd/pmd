@@ -93,7 +93,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
         } else {
             if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
-                addViolation(data, elExpression);
+                final boolean hasUnscaped = doesElContainAnyUnescapedIdentifiers(elExpression,
+                        EnumSet.of(Escaping.JSENCODE, Escaping.JSINHTMLENCODE));
+                if (!(jsonParse && !hasUnscaped)) {
+                    addViolation(data, elExpression);
+                }
             }
         }
     }
