@@ -18,6 +18,7 @@ public class UnnecessaryRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UnnecessaryConversionTemporary");
         addRule(RULESET, "UnnecessaryReturn");
         addRule(RULESET, "UnnecessaryFinalModifier");
+        addRule(RULESET, "UnnecessaryModifier");
         addRule(RULESET, "UnusedNullCheckInEquals");
         addRule(RULESET, "UselessOverridingMethod");
         addRule(RULESET, "UselessOperationOnImmutable");
