@@ -75,8 +75,10 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     private void processElInScriptContext(ASTElExpression elExpression, ASTText prevText, Object data) {
         boolean quoted = false;
+        boolean jsonParse = false;
 
         if (prevText != null) {
+            jsonParse = isJsonParse(prevText);
             if (isUnbalanced(prevText.getImage(), '\'') || isUnbalanced(prevText.getImage(), '\"')) {
                 quoted = true;
             }
@@ -90,10 +92,19 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 }
             }
         } else {
-            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
+            if (!(jsonParse || startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
                 addViolation(data, elExpression);
             }
         }
+    }
+
+    private boolean isJsonParse(ASTText prevText) {
+        if (prevText.getImage().endsWith("JSON.parse(") || prevText.getImage().endsWith("jQuery.parseJSON(")
+                || prevText.getImage().endsWith("$.parseJSON(")) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isUnbalanced(String image, char pattern) {

@@ -557,6 +557,7 @@ Safe unquoted followed by safe quoted
 ]]></code>
 		<source-type>vf</source-type>
 	</test-code>
+
 	<test-code>
 		<description><![CDATA[
 NOT method evaluates to safe boolean
@@ -572,5 +573,21 @@ NOT method evaluates to safe boolean
 		<source-type>vf</source-type>
 	</test-code>
 
+	<test-code>
+		<description><![CDATA[
+JSON.parse method evaluates to safe JSON
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<apex:page>
+	<script>
+		var x = JSON.parse({!yes});
+		jQuery.parseJSON({!yes});
+		$.parseJSON({!yes});
+	</script>
+</apex:page>
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
 
 </test-data>
