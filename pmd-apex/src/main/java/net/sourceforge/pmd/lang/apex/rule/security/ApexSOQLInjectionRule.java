@@ -113,8 +113,8 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             case DECIMAL:
             case LONG:
             case DOUBLE:
-
                 safeVariables.add(Helper.getFQVariableName(p));
+                break;
             default:
                 break;
             }
@@ -165,6 +165,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             case LONG:
             case DOUBLE:
                 safeVariables.add(Helper.getFQVariableName(left));
+                break;
             default:
                 break;
             }
