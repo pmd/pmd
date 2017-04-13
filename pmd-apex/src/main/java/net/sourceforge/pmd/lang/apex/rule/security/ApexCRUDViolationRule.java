@@ -189,10 +189,12 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                         @SuppressWarnings("unchecked")
                         ArrayList<ClassTypeRef> inner = (ArrayList<ClassTypeRef>) optionalContainer.get();
                         if (!inner.isEmpty()) {
-                            ClassTypeRef innerClassRef = inner.get(0);
-                            List<Identifier> ids = innerClassRef.className;
-                            String argType = ids.get(0).value;
-                            addVariableToMapping(Helper.getFQVariableName(node), argType);
+                            if (inner.get(0) instanceof ClassTypeRef) {
+                                ClassTypeRef innerClassRef = inner.get(0);
+                                List<Identifier> ids = innerClassRef.className;
+                                String argType = ids.get(0).value;
+                                addVariableToMapping(Helper.getFQVariableName(node), argType);
+                            }
                         }
                     }
                 }
