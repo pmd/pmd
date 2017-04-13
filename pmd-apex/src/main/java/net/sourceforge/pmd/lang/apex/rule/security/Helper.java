@@ -35,6 +35,7 @@ import apex.jorje.semantic.ast.expression.MethodCallExpression;
 import apex.jorje.semantic.ast.expression.NewNameValueObjectExpression;
 import apex.jorje.semantic.ast.expression.VariableExpression;
 import apex.jorje.semantic.ast.member.Field;
+import apex.jorje.semantic.ast.member.Parameter;
 import apex.jorje.semantic.ast.statement.FieldDeclaration;
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
@@ -261,6 +262,12 @@ public final class Helper {
             break;
         }
         return false;
+    }
+
+    public static String getFQVariableName(Parameter p) {
+        StringBuffer sb = new StringBuffer();        
+        sb.append(p.getDefiningType()).append(":").append(p.getName().value);        
+        return sb.toString();
     }
 
 }
