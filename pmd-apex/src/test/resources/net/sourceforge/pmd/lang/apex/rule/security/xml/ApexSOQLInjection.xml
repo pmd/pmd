@@ -257,8 +257,7 @@ public class Foo {
 		<description>Literal concatenation in the query method is safe
 		</description>
 		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-		
+		<code><![CDATA[		
 public class Foo {
 
 	public List<SObject> test1(String objName) {
@@ -272,8 +271,7 @@ public class Foo {
 	<test-code>
 		<description>Integer is safe in query</description>
 		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-		
+		<code><![CDATA[		
 public class Foo {
 	public void test1(String objName, String limit) {
 		Integer nLimit = Integer.valueOf(limit);
@@ -286,8 +284,7 @@ public class Foo {
 	<test-code>
 		<description>ID var decl is safe in query</description>
 		<expected-problems>0</expected-problems>
-		<code><![CDATA[
-		
+		<code><![CDATA[		
 public class Foo {
 	public void test1() {
 		ID someId;
@@ -302,8 +299,7 @@ public class Foo {
 		<description>Safe ID and unsafe String from method signature
 		</description>
 		<expected-problems>1</expected-problems>
-		<code><![CDATA[
-		
+		<code><![CDATA[		
 public class Foo {
 	public void test1(ID someId, String name) {
 		List<SObject> res = Database.query('Select Id,' + name + ' From Account Where Id=' + someId);	
@@ -311,5 +307,20 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
+
+	<test-code>
+		<description>Ternary operator condition var is safe but resulting type
+			isn't
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1(String name) {
+		List<SObject> res = Database.query('Select Id,Name From ' + (name == 'Account' ? name : 'Cases');	
+	}
+}
+		]]></code>
+	</test-code>
+
 
 </test-data>

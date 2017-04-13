@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
@@ -32,6 +33,9 @@ import apex.jorje.semantic.ast.statement.VariableDeclaration;
  *
  */
 public class ApexSOQLInjectionRule extends AbstractApexRule {
+    private static final String DOUBLE = "double";
+    private static final String LONG = "long";
+    private static final String DECIMAL = "decimal";
     private static final String BOOLEAN = "boolean";
     private static final String ID = "id";
     private static final String INTEGER = "integer";
@@ -106,6 +110,10 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             case ID:
             case INTEGER:
             case BOOLEAN:
+            case DECIMAL:
+            case LONG:
+            case DOUBLE:
+
                 safeVariables.add(Helper.getFQVariableName(p));
             default:
                 break;
@@ -153,6 +161,9 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             case INTEGER:
             case ID:
             case BOOLEAN:
+            case DECIMAL:
+            case LONG:
+            case DOUBLE:
                 safeVariables.add(Helper.getFQVariableName(left));
             default:
                 break;
@@ -213,6 +224,13 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     }
 
     private void reportStrings(ASTMethodCallExpression m, Object data) {
+        final HashSet<ASTVariableExpression> setOfSafeVars = new HashSet<>();
+        final List<ASTStandardCondition> conditions = m.findDescendantsOfType(ASTStandardCondition.class);
+        for (ASTStandardCondition c : conditions) {
+            List<ASTVariableExpression> vars = c.findDescendantsOfType(ASTVariableExpression.class);
+            setOfSafeVars.addAll(vars);
+        }
+
         final List<ASTBinaryExpression> binaryExpr = m.findChildrenOfType(ASTBinaryExpression.class);
         for (ASTBinaryExpression b : binaryExpr) {
             List<ASTVariableExpression> vars = b.findDescendantsOfType(ASTVariableExpression.class);
@@ -226,7 +244,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                     }
                 }
 
-                if (safeVariables.contains(fqName)) {
+                if (setOfSafeVars.contains(v) || safeVariables.contains(fqName)) {
                     continue;
                 }
 
