@@ -18,7 +18,7 @@ forces the developer to take access restrictions into account before modifying o
 		<priority>3</priority>
 		<example>
             <![CDATA[
-public class without sharing Foo {
+public without sharing class Foo {
 // DML operation here
 }
     ]]>
@@ -36,7 +36,7 @@ redirecting users to phishing sites.
 		<priority>3</priority>
 		<example>
             <![CDATA[
-public class without sharing Foo {
+public without sharing class Foo {
     String unsafeLocation = ApexPage.getCurrentPage().getParameters.get('url_param');
     PageReference page() {
        return new PageReference(unsafeLocation);
@@ -58,7 +58,7 @@ Checks against accessing endpoints under plain **http**. You should always use
 		<priority>3</priority>
 		<example>
             <![CDATA[
-public class without sharing Foo {
+public without sharing class Foo {
     void foo() {
         HttpRequest req = new HttpRequest();
         req.setEndpoint('http://localhost:com');
@@ -79,7 +79,7 @@ to avoid XSS attacks.
 		<priority>3</priority>
 		<example>
             <![CDATA[
-public class without sharing Foo {
+public without sharing class Foo {
     String unescapedstring = ApexPage.getCurrentPage().getParameters.get('url_param');
     String usedLater = unescapedstring;
 }
@@ -100,7 +100,7 @@ attacks if unescaped.
 		<priority>3</priority>
 		<example>
             <![CDATA[
-public class without sharing Foo {
+public without sharing class Foo {
     Trigger.new[0].addError(vulnerableHTMLGoesHere, false);
 }
     ]]>
@@ -118,7 +118,7 @@ Hard-wiring these values greatly compromises the security of encrypted data.
 		<priority>3</priority>
 		<example>
             <![CDATA[
-public class without sharing Foo {
+public without sharing class Foo {
     Blob hardCodedIV = Blob.valueOf('Hardcoded IV 123');
     Blob hardCodedKey = Blob.valueOf('0000000000000000');
     Blob data = Blob.valueOf('Data to be encrypted');
