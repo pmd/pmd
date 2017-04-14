@@ -236,7 +236,6 @@ public class Foo {
 		]]></code>
 	</test-code>
 
-
 	<test-code>
 		<description>Unsafe SOQL merged from many variables</description>
 		<expected-problems>1</expected-problems>
@@ -253,5 +252,75 @@ public class Foo {
 }
 		]]></code>
 	</test-code>
+
+	<test-code>
+		<description>Literal concatenation in the query method is safe
+		</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+
+	public List<SObject> test1(String objName) {
+		String baseQuery = 'Select Id, Name From ' + String.escapeSingleQuotes(objName);
+		return Database.query(baseQuery + ' LIMIT 1');	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Integer is safe in query</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1(String objName, String limit) {
+		Integer nLimit = Integer.valueOf(limit);
+		List<SObject> res = Database.query('Select Id, Name From ' + String.escapeSingleQuotes(objName) + ' LIMIT ' + nLimit);	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>ID var decl is safe in query</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1() {
+		ID someId;
+		someId = getId();
+		List<SObject> res = Database.query('Select Id, Name From Account Where Id=' + someId);	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Safe ID and unsafe String from method signature
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1(ID someId, String name) {
+		List<SObject> res = Database.query('Select Id,' + name + ' From Account Where Id=' + someId);	
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Ternary operator condition var is safe but resulting type
+			isn't
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[		
+public class Foo {
+	public void test1(String name) {
+		List<SObject> res = Database.query('Select Id,Name From ' + (name == 'Account' ? name : 'Cases');	
+	}
+}
+		]]></code>
+	</test-code>
+
 
 </test-data>
