@@ -18,7 +18,7 @@ RELEASE_BODY=$(tail -n +3 src/site/markdown/overview/changelog.md) # skips the f
 RELEASE_BODY="${RELEASE_BODY//$'\\'/\\\\}"
 RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
 RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
-RELEASE_BODY="${RELEASE_BODY//$'"'/\\$'"'}"
+RELEASE_BODY="${RELEASE_BODY//'"'/\\\"}"
 cat > release-edit-request.json <<EOF
 {
   "name": "$RELEASE_NAME",
