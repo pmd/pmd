@@ -250,16 +250,51 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
                 if (!args.isEmpty()) {
                     switch (id.getImage().toLowerCase()) {
-                    case "$component":
-                    case "$objecttype":
-                    case "$label":
-                    case "$resource":
                     case "urlfor":
-                    case "$site":
-                    case "$page":
-                    case "$action":
                     case "casesafeid":
+                    case "begins":
+                    case "contains":
+                    case "len":
                     case "not":
+                    case "getrecordids":
+                    case "linkto":
+                    case "sqrt":
+                    case "round":
+                    case "mod":
+                    case "log":
+                    case "ln":
+                    case "exp":
+                    case "abs":
+                    case "floor":
+                    case "ceiling":
+                    case "nullvalue":
+                    case "isnumber":
+                    case "isnull":
+                    case "isnew":
+                    case "isblank":
+                    case "isclone":
+                    case "year":
+                    case "month":
+                    case "day":
+                    case "datetimevalue":
+                    case "datevalue":
+                    case "date":
+                    case "now":
+                    case "today":
+                        return true;
+
+                    default:
+                    }
+                } else {
+                    // has no arguments
+                    switch (id.getImage().toLowerCase()) {
+                    case "$action":
+                    case "$page":
+                    case "$site":
+                    case "$resource":
+                    case "$label":
+                    case "$objecttype":
+                    case "$component":
                     case "$remoteaction":
                         return true;
 
