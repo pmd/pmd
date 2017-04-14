@@ -20,7 +20,7 @@ than a 50% speedup). Future releases will keep improving on this area.
 Once again, *Symbol Table* has been an area of great performance improvements.
 This time we were able to further improve it's performance by roughly 10% on all
 supported languages. In *Java* in particular, several more improvements were possible,
-improving *Symbol Table* performance by a whooping 30%, that's over 5X faster
+improving *Symbol Table* performance by a whooping 80%, that's over 15X faster
 than PMD 5.5.1, when we first started working on it.
 
 Java developers will also appreciate the revamp of `CloneMethodMustImplementCloneable`,
