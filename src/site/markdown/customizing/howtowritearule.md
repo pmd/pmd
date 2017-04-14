@@ -326,6 +326,12 @@ classname to the violation report.
 
 ## I need some kind of Type Resolution for my rule!
 
+PMD supports determining the type of nodes on the AST. For this to work you need:
+
+1. Include the attribute `typeResolution="true"` when defining the `rule` node on the ruleset XML.
+2. The auxiliary classpath for PMD is setup correctly, so that PMD can actually find the (compiled)
+classes.
+
 ### Inside an XPath query
 
 PMD XPath syntax includes now a new function called `typeof` which determines if a node
@@ -360,12 +366,8 @@ Below an other sample of use of type resolution inside a java code:
         return super.visit(type, ruleCtx);
     }
 
-Note, that this will only work, if the auxiliary classpath for PMD is setup
-correctly, so that PMD can actually find the (compiled) class "com.forbidden.class" and
-you get the actual Class instance by calling getType().
-
-Otherwise, you'll have to string-compare the image, e.g.
-`"com.forbidden.class".equals(node.getImage())`
+Notice `getType()` will return a `Class` object of the proper type, therefore
+the need to have access to compiled classes in the auxiliar classpath.
 
 ## Thread safety, concurrency issues and reuse of rule instances
 
