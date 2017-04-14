@@ -75,15 +75,17 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     private void processElInScriptContext(ASTElExpression elExpression, ASTText prevText, Object data) {
         boolean quoted = false;
+        boolean jsonParse = false;
 
         if (prevText != null) {
+            jsonParse = isJsonParse(prevText);
             if (isUnbalanced(prevText.getImage(), '\'') || isUnbalanced(prevText.getImage(), '\"')) {
                 quoted = true;
             }
         }
         if (quoted) {
             // check escaping too
-            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
+            if (!(jsonParse || startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
                 if (doesElContainAnyUnescapedIdentifiers(elExpression,
                         EnumSet.of(Escaping.JSENCODE, Escaping.JSINHTMLENCODE))) {
                     addViolation(data, elExpression);
@@ -91,9 +93,24 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
         } else {
             if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
-                addViolation(data, elExpression);
+                final boolean hasUnscaped = doesElContainAnyUnescapedIdentifiers(elExpression,
+                        EnumSet.of(Escaping.JSENCODE, Escaping.JSINHTMLENCODE));
+                if (!(jsonParse && !hasUnscaped)) {
+                    addViolation(data, elExpression);
+                }
             }
         }
+    }
+
+    private boolean isJsonParse(ASTText prevText) {
+        final String text = (prevText.getImage().endsWith("'") || prevText.getImage().endsWith("'"))
+                ? prevText.getImage().substring(0, prevText.getImage().length() - 1) : prevText.getImage();
+
+        if (text.endsWith("JSON.parse(") || text.endsWith("jQuery.parseJSON(") || text.endsWith("$.parseJSON(")) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isUnbalanced(String image, char pattern) {
@@ -230,20 +247,24 @@ public class VfUnescapeElRule extends AbstractVfRule {
         if (expression != null) {
             final ASTIdentifier id = expression.getFirstChildOfType(ASTIdentifier.class);
             if (id != null) {
-                switch (id.getImage().toLowerCase()) {
-                case "$component":
-                case "$objecttype":
-                case "$label":
-                case "$resource":
-                case "urlfor":
-                case "$site":
-                case "$page":
-                case "$action":
-                case "casesafeid":
-                case "$remoteaction":
-                    return true;
+                List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
+                if (!args.isEmpty()) {
+                    switch (id.getImage().toLowerCase()) {
+                    case "$component":
+                    case "$objecttype":
+                    case "$label":
+                    case "$resource":
+                    case "urlfor":
+                    case "$site":
+                    case "$page":
+                    case "$action":
+                    case "casesafeid":
+                    case "not":
+                    case "$remoteaction":
+                        return true;
 
-                default:
+                    default:
+                    }
                 }
             }
 

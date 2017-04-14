@@ -145,7 +145,7 @@ PARSER_END(VfParser)
 	| <GE: ">=" >
 	| <LT: "<" >
 	| <GT: ">" >
-	| <EXCL: ("!"|"~"|"NOT") >
+	| <EXCL: ("!"|"~") >
 	| <PIPE_PIPE: "||" >
 	| <STRING_LITERAL: <QUOTED_STRING> >
 	| <DIGITS: (<NUM_CHAR>)+ (<DOT> (<NUM_CHAR>)+)? >
@@ -476,10 +476,10 @@ void UnaryExpression()  #void :
 {}
 {
 	  ( <PLUS> | <MINUS> ) UnaryExpression()
-	|  UnaryExpressionNotPlusMinus()
+	|  NegationExpression()
 }
 
-void UnaryExpressionNotPlusMinus() #void :
+void NegationExpression() #void :
 {}
 {
   ( <EXCL> ) UnaryExpression()
