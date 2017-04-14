@@ -435,6 +435,7 @@ You need to use this, if you have a large project with many files, and you hit t
     *   [#251](https://github.com/pmd/pmd/issues/251): \[apex] NCSS Type length is incorrect when using method chaining
 *   apex-security
     *   [#264](https://github.com/pmd/pmd/issues/264): \[apex] ApexXSSFromURLParamRule shouldn't enforce ESAPI usage. String.escapeHtml4 is sufficient.
+    *   [#315](https://github.com/pmd/pmd/issues/315): \[apex] Documentation flaw on Apex Sharing Violations
 *   java
     *   [#185](https://github.com/pmd/pmd/issues/185): \[java] CPD runs into NPE when analyzing Lucene
     *   [#206](https://github.com/pmd/pmd/issues/206): \[java] Parse error on annotation fields with generics
