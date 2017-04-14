@@ -512,31 +512,22 @@ void PrimaryExpression() #void :
    PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* 
 }
 
-void ELSQCommentExpression() #CommentExpression :
-{ 
-	StringBuffer content = new StringBuffer();
-	Token t; 
-}
+void ELSQCommentExpression() #void :
+{}
 {
-  <COMMENT_OPEN_SQ>  ( t = <COMMENT_INNER_TEXT_SQ>  { content.append(t.image); })*  <COMMENT_CLOSE_SQ>  { jjtThis.setImage(content.toString()); } 
+  <COMMENT_OPEN_SQ>  ( <COMMENT_INNER_TEXT_SQ> )*  <COMMENT_CLOSE_SQ> 
 }
 
-void ELDQCommentExpression() #CommentExpression :
-{ 
-	StringBuffer content = new StringBuffer();
-	Token t; 
-}
+void ELDQCommentExpression() #void :
+{}
 {
-  <COMMENT_OPEN_DQ>  ( t = <COMMENT_INNER_TEXT_DQ>  { content.append(t.image); })*  <COMMENT_CLOSE_DQ>  { jjtThis.setImage(content.toString()); } 
+  <COMMENT_OPEN_DQ>  (  <COMMENT_INNER_TEXT_DQ> )*  <COMMENT_CLOSE_DQ> 
 }
 
-void CommentExpression() :
-{ 
-	StringBuffer content = new StringBuffer();
-	Token t; 
-}
+void CommentExpression() #void :
+{}
 {
-  <COMMENT_OPEN_SCRIPT>  ( t = <COMMENT_INNER_TEXT_SCRIPT>  { content.append(t.image); })*  <COMMENT_CLOSE_SCRIPT>  { jjtThis.setImage(content.toString()); } 
+  <COMMENT_OPEN_SCRIPT>  ( <COMMENT_INNER_TEXT_SCRIPT> )*  <COMMENT_CLOSE_SCRIPT> 
 }
 
 void PrimaryPrefix() #void :
@@ -706,18 +697,10 @@ void Attribute() :
  	)
  }
 
-void CommentTag() :
+void CommentTag() #void :
+{}
 {
-	StringBuffer content = new StringBuffer();
-	Token t;
-}
-{
-  <COMMENT_START>
-  ( t = <COMMENT_TEXT> { content.append(t.image); } )*
-  <COMMENT_END>
-  	{
-		jjtThis.setImage(content.toString().trim());
-	}
+  <COMMENT_START> ( <COMMENT_TEXT> )* <COMMENT_END>
 }
 
 void Declaration() :

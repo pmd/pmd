@@ -129,18 +129,6 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
     }
 
     /**
-     * Test parsing of a XML comment.
-     *
-     */
-    @Test
-    public void testComment() {
-        Set<ASTCommentTag> comments = getNodes(ASTCommentTag.class, TEST_COMMENT);
-        assertEquals("One comment expected!", 1, comments.size());
-        ASTCommentTag comment = comments.iterator().next();
-        assertEquals("Correct comment content expected!", "comment", comment.getImage());
-    }
-
-    /**
      * Test parsing of HTML &lt;script&gt; element.
      */
     @Test
@@ -177,11 +165,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         ASTElExpression elExpr = element.getFirstDescendantOfType(ASTElExpression.class);
         ASTIdentifier id = elExpr.getFirstDescendantOfType(ASTIdentifier.class);
         assertEquals("Correct identifier expected", "init", id.getImage());
-        ASTCommentExpression comment = elExpr.getFirstDescendantOfType(ASTCommentExpression.class);
-        assertEquals("Correct comment expected!", "comment here", comment.getImage());
-
     }
-
 
     /**
      * Test parsing of EL in attribute of an element that also has a comment.
@@ -194,12 +178,9 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         ASTElExpression elExpr = element.getFirstDescendantOfType(ASTElExpression.class);
         ASTIdentifier id = elExpr.getFirstDescendantOfType(ASTIdentifier.class);
         assertEquals("Correct identifier expected", "init", id.getImage());
-        ASTCommentExpression comment = elExpr.getFirstDescendantOfType(ASTCommentExpression.class);
-        assertEquals("Correct comment expected!", "comment here", comment.getImage());
 
     }
-    
-    
+
     /**
      * Test parsing of EL in HTML &lt;script&gt; element.
      */
@@ -226,8 +207,6 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         ASTText text = script.getFirstChildOfType(ASTText.class);
         assertEquals("Correct script content expected!", "vartext=", text.getImage());
         ASTElExpression el = script.getFirstChildOfType(ASTElExpression.class);
-        List<ASTCommentExpression> comments = el.findDescendantsOfType(ASTCommentExpression.class);
-        assertEquals("Correct comment size expected!", 2, comments.size());
         ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
         assertEquals("Correct EL content expected!", "elInScript", id.getImage());
     }
@@ -288,8 +267,7 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
         ASTHtmlScript next = script.iterator().next();
         ASTText text = next.getFirstChildOfType(ASTText.class);
         assertTrue(text.getImage().contains("<!--"));
-        Set<ASTCommentTag> comments = getNodes(ASTCommentTag.class, TEST_COMPLEX_SCRIPT);
-        assertEquals("One comment expected!", 1, comments.size());
+
     }
 
     /**
@@ -711,8 +689,6 @@ public class VfDocStyleTest extends AbstractVfNodesTest {
     private static final String TEST_DOCTYPE = "<?xml version=\"1.0\" standalone='yes'?>\n"
             + "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" "
             + "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n" + "<greeting>Hello, world!</greeting>";
-
-    private static final String TEST_COMMENT = "<html><!-- comment --></html>";
 
     private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH = "<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
 
