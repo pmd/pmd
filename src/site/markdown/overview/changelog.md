@@ -428,6 +428,7 @@ You need to use this, if you have a large project with many files, and you hit t
     *   [#234](https://github.com/pmd/pmd/issues/234): \[core] Zip file stream closes spuriously when loading rulesets
     *   [#256](https://github.com/pmd/pmd/issues/256): \[core] shortnames option is broken with relative paths
     *   [#305](https://github.com/pmd/pmd/issues/305): \[core] PMD not executing under git bash
+    *   [#337](https://github.com/pmd/pmd/issues/337): \[core] Version 5.5.4 seems to hold file lock on rules JAR (affects Windows only)
 *   apex-apexunit
     *   [#1543](https://sourceforge.net/p/pmd/bugs/1543/): \[apex] ApexUnitTestClassShouldHaveAsserts assumes APEX is case sensitive
 *   apex-complexity

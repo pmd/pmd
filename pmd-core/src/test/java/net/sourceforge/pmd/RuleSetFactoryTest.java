@@ -55,6 +55,7 @@ public class RuleSetFactoryTest {
         InputStream in = ResourceLoader.loadResourceAsStream("net/sourceforge/pmd/rulesets/reference-ruleset.xml",
                 this.getClass().getClassLoader());
         Assert.assertNotNull("Test ruleset not found - can't continue with test!", in);
+        in.close();
 
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSets rs = rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
