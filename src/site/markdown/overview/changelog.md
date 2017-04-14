@@ -319,7 +319,7 @@ for (int i = 0; i < 42; i++) { // preferred approach
 
 ##### AccessorMethodGeneration (java-design)
 
-When accessing a private field / method from another class, the Java compiler will generate a accessor methods
+When accessing a private field / method from another class, the Java compiler will generate an accessor method
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
 
@@ -355,7 +355,7 @@ This new rule is part of the `java-design` ruleset.
     and potentially new false positives.
     See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
 
-*   The rule `AvoidConstantsInterface` (ruleset java-design) has been removed. It is completely replaced by
+*   The Java rule `AvoidConstantsInterface` (ruleset java-design) has been removed. It is completely replaced by
     the rule `ConstantsInInterface`.
 
 *   The Java rule `UnusedModifier` (ruleset java-unusedcode) has been moved to the ruleset java-unnecessary
@@ -366,6 +366,9 @@ This new rule is part of the `java-design` ruleset.
     *   Nested annotations within another interface or annotation marked as `public`.
     *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
     *   Nested enums marked as `static`.
+
+*   The Java rule `JUnitTestsShouldIncludeAssert` (ruleset java-junit) now accepts usage of `@Rule` `ExpectedException`
+    to set expectations on exceptions, and are considered as valid assertions.
 
 #### CPD Suppression
 
