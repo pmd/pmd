@@ -17,6 +17,10 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   General
+    *   [#324](https://github.com/pmd/pmd/issues/324): \[core] Automated release - github release notes missing
+
+
 ### API Changes
 
 ### External Contributions
