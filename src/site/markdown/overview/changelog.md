@@ -33,7 +33,6 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
     *   [Visualforce Support](#Visualforce_support)
     *   [Apex Security Rule Set](#Apex_Security_Rule_Set)
     *   [Apex Braces Rule Set](#Apex_Braces_Rule_Set)
-    *   [Apex Rule Suppression](#Apex_Rule_Suppression)
     *   [New Rules](#New_Rules)
     *   [Modified Rules](#Modified_Rules)
     *   [CPD Suppression](#CPD_Suppression)
@@ -316,22 +315,6 @@ for (int i = 0; i < 42; i++) { // preferred approach
 }
 ```
 
-#### Apex Rule Suppression
-
-Apex violations can now be suppressed very similarly to how it's done in Java, by making use of a
-`@SuppressWarnings` annotation.
-
-Supported syntax includes:
-
-```
-@SupressWarnings('PMD') // to supress all Apex rules
-@SupressWarnings('all') // to supress all Apex rules
-@SupressWarnings('PMD.ARuleName') // to supress only the rule named ARuleName
-@SupressWarnings('PMD.ARuleName, PMD.AnotherRuleName') // to supress only the rule named ARuleName or AnotherRuleName
-```
-
-Notice this last scenario is slightly different to the Java syntax. This is due to differences in the Apex grammar for annotations.
-
 #### New Rules
 
 ##### AccessorMethodGeneration (java-design)
@@ -556,7 +539,6 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#281](https://github.com/pmd/pmd/pull/281): \[apex] Add Braces Rule Set
 *   [#283](https://github.com/pmd/pmd/pull/283): \[vf] CSRF in VF controller pages
 *   [#284](https://github.com/pmd/pmd/pull/284): \[vf] Adding support for parsing EL in script tags
-*   [#287](https://github.com/pmd/pmd/pull/287): \[apex] Make Rule suppression work
 *   [#288](https://github.com/pmd/pmd/pull/288): \[vf] Setting the tab size to 4 for VF
 *   [#289](https://github.com/pmd/pmd/pull/289): \[apex] Complex SOQL Crud check bug fixes
 *   [#296](https://github.com/pmd/pmd/pull/296): \[apex] Adding String.IsNotBlank to the whitelist to prevent False positives
