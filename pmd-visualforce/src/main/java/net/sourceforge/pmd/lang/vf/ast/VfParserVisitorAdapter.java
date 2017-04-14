@@ -39,10 +39,6 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
         return visit((VfNode) node, data);
     }
 
-    public Object visit(ASTCommentTag node, Object data) {
-        return visit((VfNode) node, data);
-    }
-
     public Object visit(ASTDeclaration node, Object data) {
         return visit((VfNode) node, data);
     }
@@ -56,11 +52,6 @@ public class VfParserVisitorAdapter implements VfParserVisitor {
     }
 
     public Object visit(ASTHtmlScript node, Object data) {
-        return visit((VfNode) node, data);
-    }
-
-    @Override
-    public Object visit(ASTHtmlStyle node, Object data) {
         return visit((VfNode) node, data);
     }
 

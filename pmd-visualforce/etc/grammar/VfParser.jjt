@@ -70,7 +70,7 @@ PARSER_END(VfParser)
 | <#XMLNAME: (<ALPHA_CHAR> | "_" | ":") (<IDENTIFIER_CHAR>)* >
 | <#QUOTED_STRING_NO_BREAKS: ( "'" ( ~["'", "\r", "\n"] )* "'" )
                     | ( "\"" ( ~["\"", "\r", "\n"] )* "\"" ) >
-| <#QUOTED_STRING: ( "'" ( ~["'"] )* "'" ) | ( "\"" ( ~["\""] )* "\"" ) >
+| <#QUOTED_STRING: ( "'" ( ~["'"] )* "'" ) | ( "\"" ( ~["\""] | "\\\"" )* "\"" ) >
 | <#WHITESPACE: ( " " | "\t" | "\n" | "\r" ) >
 | <#NEWLINE:    ( "\r\n" | "\r" | "\n" ) >
 | <#QUOTE:      ( "'" | "\"" )>
@@ -82,6 +82,8 @@ PARSER_END(VfParser)
 | <#TEXT_IN_EL: (~["}", "'", "\""])+ >
 | <#CLOSEBRACE: ("}")>
 | <#DOT: "." >
+| <#COMMNT_START: "/*" >
+| <#COMMNT_END: "*/" >
 }
 
 
@@ -90,7 +92,7 @@ PARSER_END(VfParser)
   < (<WHITESPACE>)+ >
 }
 
-<AfterTagState, InTagState, HtmlScriptContentState, HtmlStyleContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElInScriptState > SPECIAL_TOKEN:
+<AfterTagState, InTagState, HtmlScriptContentState, ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElInScriptState > SPECIAL_TOKEN:
 {
   < (<WHITESPACE>)+ >
 }
@@ -104,7 +106,6 @@ PARSER_END(VfParser)
 | <DOCTYPE_DECL_START: 		"<!DOCTYPE" >	: DocTypeState
 | <CDATA_START:    			"<![CDATA[" >   : CDataState
 | <HTML_SCRIPT_START:       "<script"   >   : InTagState
-| <HTML_STYLE_START:       "<style"   >   : InTagState
 
 }
 
@@ -116,7 +117,7 @@ PARSER_END(VfParser)
 
 <ElTagState, ElAttribTagStateSQ, ElAttribTagStateDQ, ElAttribTagStateNQ, ElInScriptState> TOKEN :
 {
-		<NULL: "null" >
+	  <NULL: "null" >
 	| <TRUE: "true" >
 	| <FALSE: "false" >
 	| <LPAREN: "(" >
@@ -162,22 +163,25 @@ PARSER_END(VfParser)
 
 <ElAttribTagStateSQ> TOKEN :
 {
-			<END_OF_EL_ATTRIB_SQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenSingleQuotesState
+	<COMMENT_OPEN_SQ: <COMMNT_START> > : InlineCommentStateSQ 	
+|	<END_OF_EL_ATTRIB_SQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenSingleQuotesState
 }
 
 <ElAttribTagStateDQ> TOKEN :
-{
-			<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
+{	
+	<COMMENT_OPEN_DQ: <COMMNT_START> > : InlineCommentStateDQ 	
+|	<END_OF_EL_ATTRIB_DQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueBetweenDoubleQuotesState
 }
 
 <ElAttribTagStateNQ> TOKEN :
 {
-			<END_OF_EL_ATTRIB_NQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueNoQuotesState
+   		<END_OF_EL_ATTRIB_NQ: (<WHITESPACES>)? <CLOSEBRACE> > : AttrValueNoQuotesState
 }
 
 <ElInScriptState> TOKEN :
 {
-	<END_OF_EL_SCRIPT: (<WHITESPACES>)? <CLOSEBRACE> > : HtmlScriptContentState
+	  <COMMENT_OPEN_SCRIPT: <COMMNT_START> > : InlineCommentStateScript
+	| <END_OF_EL_SCRIPT: (<WHITESPACES>)? <CLOSEBRACE> > : HtmlScriptContentState
 }
 
 <DocTypeState, DocTypeExternalIdState> TOKEN :
@@ -232,7 +236,7 @@ PARSER_END(VfParser)
 {
      <ENDING_WHITESPACE: " " >: InTagState
 	|	<EL_EXPRESSION_IN_ATTRIBUTE_NQ: "{!" (<WHITESPACES>)? > : ElAttribTagStateNQ
-	| <UNPARSED_TEXT_NO_WHITESPACE: ( ~["{", " "] |(["{"] ~["!"]) )+ >
+	| <UNPARSED_TEXT_NO_WHITESPACE: ( ~["{", " "] | (["{"] ~["!"]) )+ >
 
 }
 
@@ -246,16 +250,35 @@ PARSER_END(VfParser)
 
 <AttrValueBetweenDoubleQuotesState> TOKEN :
 {
-		<ENDING_DOUBLE_QUOTE: "\""> : InTagState
+	  <ENDING_DOUBLE_QUOTE: "\""> : InTagState
 	| <EL_EXPRESSION_IN_ATTRIBUTE_DQ: "{!" (<WHITESPACES>)? > : ElAttribTagStateDQ
-	|	<UNPARSED_TEXT_NO_DOUBLE_QUOTES:
+	| <UNPARSED_TEXT_NO_DOUBLE_QUOTES:
 		( (~["{", "\""]) | (["{"] ~["!", "\""]) )+ >
 }
 
 <CommentState> TOKEN :
 {
-  < COMMENT_END:  ("--" (" ")* ">" | "->") > : AfterTagState
+  < COMMENT_END:  ("--" (" ")* ">" ) > : AfterTagState
 | < COMMENT_TEXT: (~[]) >
+}
+
+<InlineCommentStateScript> TOKEN :
+{
+  < COMMENT_CLOSE_SCRIPT:  (<COMMNT_END>) > : ElInScriptState 
+| < COMMENT_INNER_TEXT_SCRIPT: (~[]) >
+}
+
+<InlineCommentStateSQ> TOKEN :
+{
+  < COMMENT_CLOSE_SQ:  (<COMMNT_END>) > : ElAttribTagStateSQ 
+| < COMMENT_INNER_TEXT_SQ: (~[]) >
+}
+
+
+<InlineCommentStateDQ> TOKEN :
+{
+  < COMMENT_CLOSE_DQ:  (<COMMNT_END>) > : ElAttribTagStateDQ 
+| < COMMENT_INNER_TEXT_DQ: (~[]) >
 }
 
 <HtmlScriptContentState> TOKEN :
@@ -263,12 +286,6 @@ PARSER_END(VfParser)
 		  <HTML_SCRIPT_END_TAG : "</script>" > : AfterTagState
 		| <EL_EXPRESSION_IN_SCRIPT: "{!" (<WHITESPACES>)? > : ElInScriptState
 		| <HTML_SCRIPT_CONTENT: ( (~["{"]) | (["{"] ~["!"]) ) >
-}
-
-<HtmlStyleContentState> TOKEN :
-{
-		 <HTML_STYLE_CONTENT: (~[]) >
-		| <HTML_STYLE_END_TAG : "</style>" > : AfterTagState
 }
 
 /** *************************  VF GRAMMAR  **************************** */
@@ -328,11 +345,10 @@ void ContentElement() #void :
 {}
 {
 	(
-			CommentTag()
+		CommentTag()
 	  |	Element()
 	  | CData()
-    | HtmlScript()
-		| HtmlStyle()
+      | HtmlScript()
 	)
 }
 
@@ -409,7 +425,11 @@ void ElExpression() :
 void Expression() :
 {}
 {
-	ConditionalExpression() [ AssignmentOperator() Expression()  ]
+	ConditionalExpression() [ AssignmentOperator() Expression() ]
+|  	CommentExpression() ( ConditionalExpression() | CommentExpression() )*
+|  	ELDQCommentExpression() ( ConditionalExpression() | ELDQCommentExpression() )*
+|  	ELSQCommentExpression() ( ConditionalExpression() | ELSQCommentExpression() )*
+
 }
 
 void AssignmentOperator() #void :
@@ -489,17 +509,34 @@ void NegationExpression() #void :
 void PrimaryExpression() #void :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+   PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* 
+}
+
+void ELSQCommentExpression() #void :
+{}
+{
+  <COMMENT_OPEN_SQ>  ( <COMMENT_INNER_TEXT_SQ> )*  <COMMENT_CLOSE_SQ> 
+}
+
+void ELDQCommentExpression() #void :
+{}
+{
+  <COMMENT_OPEN_DQ>  (  <COMMENT_INNER_TEXT_DQ> )*  <COMMENT_CLOSE_DQ> 
+}
+
+void CommentExpression() #void :
+{}
+{
+  <COMMENT_OPEN_SCRIPT>  ( <COMMENT_INNER_TEXT_SCRIPT> )*  <COMMENT_CLOSE_SCRIPT> 
 }
 
 void PrimaryPrefix() #void :
 {}
 {
-	 	Literal()
-	| Identifier()
+	  Literal()
+	| Identifier()	
 	| <LPAREN> Expression() <RPAREN>
 	| <LSQUARE> Expression() (<COMMA> Expression())*   <RSQUARE>
-
 }
 
 void PrimarySuffix() #void :
@@ -660,18 +697,10 @@ void Attribute() :
  	)
  }
 
-void CommentTag() :
+void CommentTag() #void :
+{}
 {
-	StringBuffer content = new StringBuffer();
-	Token t;
-}
-{
-  <COMMENT_START>
-  ( t = <COMMENT_TEXT> { content.append(t.image); } )*
-  <COMMENT_END>
-  	{
-		jjtThis.setImage(content.toString().trim());
-	}
+  <COMMENT_START> ( <COMMENT_TEXT> )* <COMMENT_END>
 }
 
 void Declaration() :
@@ -745,26 +774,3 @@ void HtmlScriptContent() #Text :
 	{ jjtThis.setImage(content.toString()); }
 }
 
-
-void HtmlStyle() :
-{
-	StringBuffer content = new StringBuffer();
-	String tagName;
-	Token t;
-}
-{
-  	<HTML_STYLE_START>         {}
-  	(Attribute() )*             {}
-  	(
-  	  (
-  	   <TAG_END>				    {token_source.SwitchTo(HtmlStyleContentState);}
-  	   (t = <HTML_STYLE_CONTENT>  { content.append(t.image); })*
-	   <HTML_STYLE_END_TAG>		{ jjtThis.setImage(content.toString().trim());}
-
-	  )
-	|
-	  (
-	    <TAG_SLASHEND>
-	  )
-	)
-}

@@ -572,5 +572,6 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#327](https://github.com/pmd/pmd/pull/327): \[apex] Fixed SOQL injection detection for escaped vars
 *   [#331](https://github.com/pmd/pmd/pull/331): \[java] JunitTestsShouldIncludeAssertRule now handles AllocationExpression correctly
 *   [#332](https://github.com/pmd/pmd/pull/332): \[java] Future-proof DontImportJavaLangRule
+*   [#340](https://github.com/pmd/pmd/pull/340): \[vf] Multiple parser bug fixes
 *   [#341](https://github.com/pmd/pmd/pull/341): \[vf] JSON.parse(..) and NOT(..) are safely evaluated
 

@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttributeValue;
 import net.sourceforge.pmd.lang.vf.ast.ASTCData;
-import net.sourceforge.pmd.lang.vf.ast.ASTCommentTag;
 import net.sourceforge.pmd.lang.vf.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
 import net.sourceforge.pmd.lang.vf.ast.ASTDeclaration;
@@ -27,7 +26,6 @@ import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
 import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
-import net.sourceforge.pmd.lang.vf.ast.ASTHtmlStyle;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
@@ -72,7 +70,7 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
     public Object visit(ASTAttributeValue node, Object data) {
         return visit((VfNode) node, data);
     }
-    
+
     public Object visit(ASTElExpression node, Object data) {
         return visit((VfNode) node, data);
     }
@@ -86,10 +84,6 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
     }
 
     public Object visit(ASTAttribute node, Object data) {
-        return visit((VfNode) node, data);
-    }
-
-    public Object visit(ASTCommentTag node, Object data) {
         return visit((VfNode) node, data);
     }
 
@@ -108,10 +102,6 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
     public Object visit(ASTHtmlScript node, Object data) {
         return visit((VfNode) node, data);
     }
-    
-    public Object visit(ASTHtmlStyle node, Object data) {
-        return visit((VfNode) node, data);
-    }
 
     public Object visit(ASTLiteral node, Object data) {
         return visit((VfNode) node, data);
@@ -120,7 +110,7 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
     public Object visit(ASTIdentifier node, Object data) {
         return visit((VfNode) node, data);
     }
-    
+
     public Object visit(ASTExpression node, Object data) {
         return visit((VfNode) node, data);
     }
@@ -128,7 +118,7 @@ public abstract class AbstractVfRule extends AbstractRule implements VfParserVis
     public Object visit(ASTArguments node, Object data) {
         return visit((VfNode) node, data);
     }
-    
+
     public Object visit(ASTDotExpression node, Object data) {
         return visit((VfNode) node, data);
     }
