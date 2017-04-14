@@ -557,4 +557,5 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#340](https://github.com/pmd/pmd/pull/340): \[vf] Multiple parser bug fixes
 *   [#341](https://github.com/pmd/pmd/pull/341): \[vf] JSON.parse(..) and NOT(..) are safely evaluated
 *   [#343](https://github.com/pmd/pmd/pull/343): \[apex] int,id,boolean,ternary operator condition are not injection in Soql
+*   [#351](https://github.com/pmd/pmd/pull/351): \[vf] Fixing regression introduced by #341
 
