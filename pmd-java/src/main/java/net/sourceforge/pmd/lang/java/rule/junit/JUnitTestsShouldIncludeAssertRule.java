@@ -124,10 +124,13 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         if (expression != null) {
             ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
             if (pe != null) {
-                String img = pe.jjtGetChild(0).jjtGetChild(0).getImage();
-                if (img != null && (img.startsWith("assert") || img.startsWith("fail")
-                        || img.startsWith("Assert.assert") || img.startsWith("Assert.fail"))) {
-                    return true;
+                Node name = pe.getFirstDescendantOfType(ASTName.class);
+                if (name != null) {
+                    String img = name.getImage();
+                    if (img != null && (img.startsWith("assert") || img.startsWith("fail")
+                            || img.startsWith("Assert.assert") || img.startsWith("Assert.fail"))) {
+                        return true;
+                    }
                 }
             }
         }
@@ -141,14 +144,13 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
             
             ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
             if (pe != null) {
-                Node subChild = pe.jjtGetChild(0).jjtGetChild(0);
-                
-                // case of eg AllocationExpression
-                if (!(subChild instanceof ASTName)) {
+                Node name = pe.getFirstDescendantOfType(ASTName.class);
+                // case of an AllocationExpression
+                if (name == null) {
                     return false;
                 }
                 
-                String img = subChild.getImage();
+                String img = name.getImage();
                 if (img.indexOf(".") == -1) {
                     return false;
                 }
@@ -159,7 +161,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                 }
 
                 for (NameOccurrence occ : expectables.get(varname)) {
-                    if (occ.getLocation() == pe.jjtGetChild(0).jjtGetChild(0) && img.startsWith(varname + ".expect")) {
+                    if (occ.getLocation() == name && img.startsWith(varname + ".expect")) {
                         return true;
                     }
                 }
