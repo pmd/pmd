@@ -47,6 +47,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
+import apex.jorje.data.ast.TypeRef.ArrayTypeRef;
 import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -183,32 +184,33 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 classNameField.setAccessible(true);
                 typeArgsField.setAccessible(true);
 
-                if (typeArgsField.get(a) instanceof Optional<?>) {
-                    Optional<?> optionalContainer = (Optional<?>) typeArgsField.get(a);
-                    if (optionalContainer.isPresent()) {
-                        @SuppressWarnings("unchecked")
-                        ArrayList<ClassTypeRef> inner = (ArrayList<ClassTypeRef>) optionalContainer.get();
-                        if (!inner.isEmpty()) {
-                            if (inner.get(0) instanceof ClassTypeRef) {
-                                ClassTypeRef innerClassRef = inner.get(0);
-                                List<Identifier> ids = innerClassRef.className;
-                                String argType = ids.get(0).value;
-                                addVariableToMapping(Helper.getFQVariableName(node), argType);
-                            }
-                        }
-                    }
-                }
-
                 if (classNameField.get(a) instanceof ArrayList<?>) {
                     @SuppressWarnings("unchecked")
                     ArrayList<Identifier> innerField = (ArrayList<Identifier>) classNameField.get(a);
                     if (!innerField.isEmpty()) {
-                        String type = innerField.get(0).value;
-                        addVariableToMapping(Helper.getFQVariableName(node), type);
+                        StringBuffer sb = new StringBuffer();
+                        for (Identifier id : innerField) {
+                            sb.append(id.value).append(".");
+                        }
+                        sb.deleteCharAt(sb.length() - 1);
+
+                        switch (sb.toString().toLowerCase()) {
+                        case "list":
+                        case "map":
+                            if (typeArgsField.get(a) instanceof Optional<?>) {
+                                addParametersToMapping(node, a, typeArgsField);
+                            }
+                            break;
+                        default:
+                            varToTypeMapping.put(Helper.getFQVariableName(node), getSimpleType(sb.toString()));
+                            break;
+                        }
+
                     }
                 }
 
             } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException | SecurityException e) {
+                e.printStackTrace();
             }
 
         }
@@ -219,6 +221,36 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
         return data;
 
+    }
+
+    private void addParametersToMapping(final ASTFieldDeclaration node, TypeRef a, Field typeArgsField)
+            throws IllegalAccessException {
+        Optional<?> optionalContainer = (Optional<?>) typeArgsField.get(a);
+        if (optionalContainer.isPresent()) {
+            ArrayList<?> inner = (ArrayList<?>) optionalContainer.get();
+            for (int i = 0; i < inner.size(); i++) {
+                if (inner.get(i) instanceof ClassTypeRef) {
+                    innerAddParametrizedClassToMapping(node, (ClassTypeRef) inner.get(i));
+                }
+                if (inner.get(i) instanceof ArrayTypeRef) {
+                    ArrayTypeRef atr = (ArrayTypeRef) inner.get(i);
+                    if (atr.heldType instanceof ClassTypeRef) {
+                        innerAddParametrizedClassToMapping(node, (ClassTypeRef) atr.heldType);
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void innerAddParametrizedClassToMapping(final ASTFieldDeclaration node, final ClassTypeRef innerClassRef) {
+        List<Identifier> ids = innerClassRef.className;
+        StringBuffer argType = new StringBuffer();
+        for (Identifier id : ids) {
+            argType.append(id.value).append(".");
+        }
+        argType.deleteCharAt(argType.length() - 1);
+        addVariableToMapping(Helper.getFQVariableName(node), argType.toString());
     }
 
     @Override
