@@ -19,6 +19,7 @@ This is a bug fixing release.
 
 *   General
     *   [#324](https://github.com/pmd/pmd/issues/324): \[core] Automated release - github release notes missing
+    *   [#337](https://github.com/pmd/pmd/issues/337): \[core] Version 5.5.4 seems to hold file lock on rules JAR (affects Windows only)
 
 ### API Changes
 
