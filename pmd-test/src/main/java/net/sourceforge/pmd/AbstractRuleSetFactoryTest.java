@@ -222,7 +222,9 @@ public abstract class AbstractRuleSetFactoryTest {
         List<String> ruleSetFileNames = new ArrayList<>();
         try {
             Properties properties = new Properties();
-            properties.load(ResourceLoader.loadResourceAsStream("rulesets/" + language + "/rulesets.properties"));
+            try (InputStream is = ResourceLoader.loadResourceAsStream("rulesets/" + language + "/rulesets.properties")) {
+                properties.load(is);
+            }
             String fileNames = properties.getProperty("rulesets.filenames");
             StringTokenizer st = new StringTokenizer(fileNames, ",");
             while (st.hasMoreTokens()) {

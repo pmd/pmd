@@ -50,18 +50,19 @@ public class RuleSetFactoryTest {
 		assertNotNull(rs.getRuleByName("TestRuleRef"));
 	}
 
-	@Test
-	public void testExtendedReferences() throws Exception {
-	    InputStream in = ResourceLoader.loadResourceAsStream("net/sourceforge/pmd/rulesets/reference-ruleset.xml",
-		    this.getClass().getClassLoader());
-	    Assert.assertNotNull("Test ruleset not found - can't continue with test!", in);
+    @Test
+    public void testExtendedReferences() throws Exception {
+        InputStream in = ResourceLoader.loadResourceAsStream("net/sourceforge/pmd/rulesets/reference-ruleset.xml",
+                this.getClass().getClassLoader());
+        Assert.assertNotNull("Test ruleset not found - can't continue with test!", in);
+        in.close();
 
-	    RuleSetFactory rsf = new RuleSetFactory();
-	    RuleSets rs = rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
-	    // added by referencing a complete ruleset (TestRuleset1.xml)
-	    assertNotNull(rs.getRuleByName("MockRule1"));
-	    assertNotNull(rs.getRuleByName("MockRule2"));
-	    assertNotNull(rs.getRuleByName("MockRule3"));
+        RuleSetFactory rsf = new RuleSetFactory();
+        RuleSets rs = rsf.createRuleSets("net/sourceforge/pmd/rulesets/reference-ruleset.xml");
+        // added by referencing a complete ruleset (TestRuleset1.xml)
+        assertNotNull(rs.getRuleByName("MockRule1"));
+        assertNotNull(rs.getRuleByName("MockRule2"));
+        assertNotNull(rs.getRuleByName("MockRule3"));
         assertNotNull(rs.getRuleByName("TestRuleRef"));
 
 	    // added by specific reference

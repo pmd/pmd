@@ -11,7 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  */
@@ -36,10 +38,14 @@ public final class ResourceLoader {
     }
 
     /**
-     * Method to find a file, first by finding it as a file
-     * (either by the absolute or relative path), then as
-     * a URL, and then finally seeing if it is on the classpath.
-     * @param name String
+     * Method to find a file, first by finding it as a file (either by the
+     * absolute or relative path), then as a URL, and then finally seeing if it
+     * is on the classpath.
+     * <p>
+     * Caller is responsible for closing the {@link InputStream}.
+     *
+     * @param name
+     *            String
      * @return InputStream
      * @throws RuleSetNotFoundException
      */
@@ -52,10 +58,15 @@ public final class ResourceLoader {
     }
 
     /**
-     * Uses the ClassLoader passed in to attempt to load the
-     * resource if it's not a File or a URL
-     * @param name String
-     * @param loader ClassLoader
+     * Uses the ClassLoader passed in to attempt to load the resource if it's
+     * not a File or a URL
+     * <p>
+     * Caller is responsible for closing the {@link InputStream}.
+     *
+     * @param name
+     *            String
+     * @param loader
+     *            ClassLoader
      * @return InputStream
      * @throws RuleSetNotFoundException
      */
@@ -83,8 +94,30 @@ public final class ResourceLoader {
                     if (resource == null) {
                         // Don't throw RuleSetNotFoundException, keep API compatibility
                         return null;
+                    } else {
+                        final URLConnection connection = resource.openConnection();
+                        final InputStream inputStream = connection.getInputStream();
+                        if (connection instanceof JarURLConnection) {
+                            // Wrap the InputStream to also close the underlying JarFile if from a JarURLConnection.
+                            // See https://github.com/pmd/pmd/issues/337
+                            return new InputStream() {
+                                @Override
+                                public int read() throws IOException {
+                                    return inputStream.read();
+                                }
+
+                                @Override
+                                public void close() throws IOException {
+                                    inputStream.close();
+                                    if (connection instanceof JarURLConnection) {
+                                        ((JarURLConnection) connection).getJarFile().close();
+                                    }
+                                }
+                            };
+                        } else {
+                            return inputStream;
+                        }
                     }
-                    return resource.openStream();
                 } catch (IOException e1) {
                     // Ignored
                 }
