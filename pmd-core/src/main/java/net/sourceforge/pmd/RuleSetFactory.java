@@ -118,7 +118,9 @@ public class RuleSetFactory {
             for (Language language : LanguageRegistry.findWithRuleSupport()) {
                 Properties props = new Properties();
                 rulesetsProperties = "rulesets/" + language.getTerseName() + "/rulesets.properties";
-                props.load(ResourceLoader.loadResourceAsStream(rulesetsProperties));
+                try (InputStream inputStream = ResourceLoader.loadResourceAsStream(rulesetsProperties);) {
+                    props.load(inputStream);
+                }
                 String rulesetFilenames = props.getProperty("rulesets.filenames");
                 ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
             }
