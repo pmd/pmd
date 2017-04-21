@@ -131,4 +131,24 @@ public class Example extends View {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Array initializer is not a class body
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private class Bar {
+        private int size;
+
+        private Bar() {
+        }
+
+        void bar() {
+            new Bar[size];
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

@@ -453,6 +453,7 @@ You need to use this, if you have a large project with many files, and you hit t
     *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
     *   [#282](https://github.com/pmd/pmd/issues/282): \[java] UnnecessaryLocalBeforeReturn false positive when cloning Maps
     *   [#291](https://github.com/pmd/pmd/issues/291): \[java] Improve quality of AccessorClassGeneration
+    *   [#352](https://github.com/pmd/pmd/issues/352): \[java] AccessorClassGeneration throws ClassCastException when seeing array construction
 *   java-imports
     *   [#338](https://github.com/pmd/pmd/issues/338): \[java] False positive on DontImportJavaLang when importing java.lang.ProcessBuilder
     *   [#339](https://github.com/pmd/pmd/issues/339): \[java] False positive on DontImportJavaLang when importing Java 7's java.lang.invoke.MethodHandles
