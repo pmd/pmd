@@ -328,5 +328,16 @@ public class BaseConsoleTest extends UART {
 }
         ]]></code>
     </test-code>
-
+    <test-code>
+        <description>#330 NPE accessing local field / method with this.XXX</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Test
+    public void testName() {
+        this.field = null;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
