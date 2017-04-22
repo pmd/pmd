@@ -346,7 +346,9 @@ This new rule is part of the `java-design` ruleset.
 
 #### Modified Rules
 
-*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) no longer requires the variable declaration
+*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) now has a new property `statementOrderMatters`.
+    It is enabled by default to stay backwards compatible. But if this property is set to `false`, this rule
+    no longer requires the variable declaration
     and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be
     reported.
 
@@ -453,6 +455,7 @@ You need to use this, if you have a large project with many files, and you hit t
     *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
     *   [#282](https://github.com/pmd/pmd/issues/282): \[java] UnnecessaryLocalBeforeReturn false positive when cloning Maps
     *   [#291](https://github.com/pmd/pmd/issues/291): \[java] Improve quality of AccessorClassGeneration
+    *   [#310](https://github.com/pmd/pmd/issues/310): \[java] UnnecessaryLocalBeforeReturn enhancement is overly restrictive -- method order matters
     *   [#352](https://github.com/pmd/pmd/issues/352): \[java] AccessorClassGeneration throws ClassCastException when seeing array construction
 *   java-imports
     *   [#338](https://github.com/pmd/pmd/issues/338): \[java] False positive on DontImportJavaLang when importing java.lang.ProcessBuilder
