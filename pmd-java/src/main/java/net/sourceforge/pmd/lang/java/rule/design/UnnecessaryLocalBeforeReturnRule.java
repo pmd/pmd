@@ -27,8 +27,9 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
     private static final BooleanProperty STATEMENT_ORDER_MATTERS = new BooleanProperty("statementOrderMatters",
-            "When there are other statements between obtaining the value for the local and returning the local, "
-            + "that must be preserved, then the local is considered valid.", true, 1.0f);
+            "If set to false this rule no longer requires the variable declaration and return statement to be "
+            + "on consecutive lines. Any variable that is used solely in a return statement will be reported.",
+            true, 1.0f);
 
     public UnnecessaryLocalBeforeReturnRule() {
         definePropertyDescriptor(STATEMENT_ORDER_MATTERS);
