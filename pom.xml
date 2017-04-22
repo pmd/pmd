@@ -277,6 +277,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <config.basedir>${basedir}/pmd-core</config.basedir>
         <pmd.dogfood.ruleset>${config.basedir}/src/main/resources/rulesets/internal/dogfood.xml</pmd.dogfood.ruleset>
+        <pmd.build-tools.version>1.0.1</pmd.build-tools.version>
     </properties>
 
     <build>
@@ -429,7 +430,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                     <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-build</artifactId>
-                    <version>0.10</version>
+                    <version>${pmd.build-tools.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -609,7 +610,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-build-tools-config</artifactId>
-                        <version>1.0.0-SNAPSHOT</version>
+                        <version>${pmd.build-tools.version}</version>
                     </dependency>
                 </dependencies>
                 <configuration>
