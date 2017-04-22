@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -18,11 +19,20 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
+
+    private static final BooleanProperty STATEMENT_ORDER_MATTERS = new BooleanProperty("statementOrderMatters",
+            "When there are other statements between obtaining the value for the local and returning the local, "
+            + "that must be preserved, then the local is considered valid.", true, 1.0f);
+
+    public UnnecessaryLocalBeforeReturnRule() {
+        definePropertyDescriptor(STATEMENT_ORDER_MATTERS);
+    }
 
     @Override
     public Object visit(ASTMethodDeclaration meth, Object data) {
@@ -61,14 +71,31 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
                     if (var.indexOf('.') != -1) {
                         var = var.substring(0, var.indexOf('.'));
                     }
+
                     // Is the variable initialized with another member that is later used?
-                    if (!isInitDataModifiedAfterInit(variableDeclaration, rtn)) {
+                    if (!isInitDataModifiedAfterInit(variableDeclaration, rtn)
+                            && !statementsBeforeReturn(variableDeclaration, rtn)) {
                         addViolation(data, rtn, var);
                     }
                 }
             }
         }
         return data;
+    }
+
+    private boolean statementsBeforeReturn(VariableNameDeclaration variableDeclaration, ASTReturnStatement returnStatement) {
+        if (!getProperty(STATEMENT_ORDER_MATTERS)) {
+            return false;
+        }
+
+        ASTBlockStatement declarationStatement = variableDeclaration.getAccessNodeParent().getFirstParentOfType(ASTBlockStatement.class);
+        ASTBlockStatement returnBlockStatement = returnStatement.getFirstParentOfType(ASTBlockStatement.class);
+
+        // double check: we should now be at the same level in the AST - both block statements are children of the same parent
+        if (declarationStatement.jjtGetParent() == returnBlockStatement.jjtGetParent()) {
+            return returnBlockStatement.jjtGetChildIndex() - declarationStatement.jjtGetChildIndex() > 1;
+        }
+        return false;
     }
 
     private boolean isInitDataModifiedAfterInit(final VariableNameDeclaration variableDeclaration,
