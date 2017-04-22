@@ -800,4 +800,15 @@ public class MyProfilePageController {
 	
 ]]></code>
 	</test-code>
+
+	<test-code>
+		<description>ClassCastException detection</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[ 
+public class Foo {    
+    public list<A.B[]> bar;
+    public map<Id,A.B[]> baz;                
+}
+]]></code>
+	</test-code>
 </test-data>
