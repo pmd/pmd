@@ -1,6 +1,6 @@
 # PMD Release Notes
 
-## ????? - 5.6.0-SNAPSHOT
+## 22-April-2017 - 5.6.0
 
 The PMD team is pleased to announce PMD 5.6.0.
 
@@ -36,7 +36,7 @@ making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
     *   [New Rules](#New_Rules)
     *   [Modified Rules](#Modified_Rules)
     *   [CPD Suppression](#CPD_Suppression)
-    *   [CPD filelist command line option)(#CPD_filelist_command_line_option)
+    *   [CPD filelist command line option](#CPD_filelist_command_line_option)
 *   [Fixed Issues](#Fixed_Issues)
 *   [API Changes](#API_Changes)
 *   [External Contributions](#External_Contributions)
