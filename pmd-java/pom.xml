@@ -111,7 +111,7 @@
 
             <plugin>
                 <groupId>net.sourceforge.pmd</groupId>
-                <artifactId>pmd-build</artifactId>
+                <artifactId>pmd-build-tools-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
