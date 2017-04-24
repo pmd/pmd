@@ -17,6 +17,9 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   General
+    *   [#363](https://github.com/pmd/pmd/issues/363): \[core] Rule documentation pages are missing
+
 ### API Changes
 
 ### External Contributions
