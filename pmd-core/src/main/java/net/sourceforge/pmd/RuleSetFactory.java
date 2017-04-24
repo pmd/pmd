@@ -269,8 +269,11 @@ public class RuleSetFactory {
      *            or not
      * @return The new RuleSet.
      */
-    private RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
-            throws RuleSetNotFoundException {
+    // note: this method needs to be synchronized, so that other threads don't close
+    // the underlying file of the stream. This might happen, if the stream is
+    // created from a JarURLConnection. The file handles seem to be reused, if possible.
+    private synchronized RuleSet parseRuleSetNode(RuleSetReferenceId ruleSetReferenceId,
+            boolean withDeprecatedRuleReferences) throws RuleSetNotFoundException {
         try (CheckedInputStream inputStream = new CheckedInputStream(
                 ruleSetReferenceId.getInputStream(this.classLoader), new Adler32());) {
             if (!ruleSetReferenceId.isExternal()) {
