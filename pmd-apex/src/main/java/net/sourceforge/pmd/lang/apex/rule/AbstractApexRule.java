@@ -102,7 +102,7 @@ import net.sourceforge.pmd.renderers.CodeClimateRule;
 public abstract class AbstractApexRule extends AbstractRule
         implements ApexParserVisitor, ImmutableLanguage, CodeClimateRule {
 
-    private static final IntegerProperty CODACY_MINUTES_TO_FIX = new IntegerProperty("codacy_minutes_to_fix",
+    public static final IntegerProperty CODACY_MINUTES_TO_FIX = new IntegerProperty("codacy_minutes_to_fix",
         "Codacy.com Time to fix in minutes", 0, Integer.MAX_VALUE, 5, 1.0f);
 
     public AbstractApexRule() {
