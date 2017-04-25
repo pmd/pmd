@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -99,27 +98,12 @@ public final class ResourceLoader {
                         return null;
                     } else {
                         final URLConnection connection = resource.openConnection();
+                        // This avoids reusing the underlaying file, if the resource is loaded from a Jar file.
+                        // The file is closed with the input stream then thus not leaving a leaked resource behind.
+                        // See https://github.com/pmd/pmd/issues/364 and https://github.com/pmd/pmd/issues/337
+                        connection.setUseCaches(false);
                         final InputStream inputStream = connection.getInputStream();
-                        if (connection instanceof JarURLConnection) {
-                            // Wrap the InputStream to also close the underlying JarFile if from a JarURLConnection.
-                            // See https://github.com/pmd/pmd/issues/337
-                            return new InputStream() {
-                                @Override
-                                public int read() throws IOException {
-                                    return inputStream.read();
-                                }
-
-                                @Override
-                                public void close() throws IOException {
-                                    inputStream.close();
-                                    if (connection instanceof JarURLConnection) {
-                                        ((JarURLConnection) connection).getJarFile().close();
-                                    }
-                                }
-                            };
-                        } else {
-                            return inputStream;
-                        }
+                        return inputStream;
                     }
                 } catch (IOException e1) {
                     // Ignored
