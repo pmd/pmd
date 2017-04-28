@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -209,6 +210,56 @@ public class RuleSetFactory {
     private RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
             throws RuleSetNotFoundException {
         return parseRuleSetNode(ruleSetReferenceId, withDeprecatedRuleReferences);
+    }
+
+    /**
+     * Creates a copy of the given ruleset. All properties like name, description, fileName
+     * and exclude/include patterns are copied.
+     *
+     * <p><strong>Note:</strong> The rule instances are shared between the original
+     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
+     * if the original ruleset and the new ruleset are used in different threads.
+     * </p>
+     *
+     * @param original the original rule set to copy from
+     * @return the copy
+     */
+    public RuleSet createRuleSetCopy(RuleSet original) {
+        RuleSetBuilder builder = new RuleSetBuilder(original);
+        return builder.build();
+    }
+
+    /**
+     * Creates a new ruleset with the given metadata such as name, description,
+     * fileName, exclude/include patterns are used. The rules are taken from the given
+     * collection.
+     *
+     * <p><strong>Note:</strong> The rule instances are shared between the collection
+     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
+     * if the rules of the collection are also referenced by other rulesets and used
+     * in different threads.
+     * </p>
+     *
+     * @param name the name of the ruleset
+     * @param description the description
+     * @param fileName the filename
+     * @param excludePatterns list of exclude patterns
+     * @param includePatterns list of include patterns
+     * @param rules the collection with the rules to add to the new ruleset
+     * @return the new ruleset
+     */
+    public RuleSet createNewRuleSet(String name, String description, String fileName, Collection<String> excludePatterns,
+            Collection<String> includePatterns, Collection<Rule> rules) {
+        RuleSetBuilder builder = new RuleSetBuilder(0L); // TODO: checksum missing
+        builder.withName(name)
+            .withDescription(description)
+            .withFileName(fileName)
+            .setExcludePatterns(excludePatterns)
+            .setIncludePatterns(includePatterns);
+        for (Rule rule : rules) {
+            builder.addRule(rule);
+        }
+        return builder.build();
     }
 
     /**

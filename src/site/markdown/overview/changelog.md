@@ -20,6 +20,7 @@ This is a bug fixing release.
 *   General
     *   [#363](https://github.com/pmd/pmd/issues/363): \[core] Rule documentation pages are missing
     *   [#364](https://github.com/pmd/pmd/issues/364): \[core] Stream closed exception when running through maven
+    *   [#373](https://github.com/pmd/pmd/issues/373): \[core] RuleSetFactory - add more helper methods
 
 ### API Changes
 

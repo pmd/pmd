@@ -66,6 +66,7 @@ public class RuleSet implements ChecksumAware {
         fileName = builder.fileName;
         name = builder.name;
         description = builder.description;
+        // TODO: ideally, the rules would be unmodifiable, too. But removeDysfunctionalRules might change the rules.
         rules = builder.rules;
         excludePatterns = Collections.unmodifiableList(builder.excludePatterns);
         includePatterns = Collections.unmodifiableList(builder.includePatterns);
@@ -85,6 +86,17 @@ public class RuleSet implements ChecksumAware {
 
         /* package */ RuleSetBuilder(final long checksum) {
             this.checksum = checksum;
+        }
+
+        /** Copy constructor. Takes the same checksum as the original ruleset. */
+        /* package */ RuleSetBuilder(final RuleSet original) {
+            checksum = original.getChecksum();
+            this.withName(original.getName())
+                .withDescription(original.getDescription())
+                .withFileName(original.getFileName())
+                .setExcludePatterns(original.getExcludePatterns())
+                .setIncludePatterns(original.getIncludePatterns());
+            addRuleSet(original);
         }
 
         /**
@@ -186,7 +198,7 @@ public class RuleSet implements ChecksumAware {
         }
 
         /**
-         * Add a whole RuleSet to this RuleSet
+         * Add all rules of a whole RuleSet to this RuleSet
          *
          * @param ruleSet
          *            the RuleSet to add
