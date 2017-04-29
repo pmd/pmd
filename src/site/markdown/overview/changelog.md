@@ -17,6 +17,9 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   General
+    *   [#364](https://github.com/pmd/pmd/issues/364): \[core] Stream closed exception when running through maven
+
 ### API Changes
 
 ### External Contributions
