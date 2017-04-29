@@ -586,6 +586,18 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#351](https://github.com/pmd/pmd/pull/351): \[vf] Fixing regression introduced by #341
 
 
+## 29-April-2017 - 5.5.7
+
+The PMD team is pleased to announce PMD 5.5.7.
+
+This is a bug fixing release.
+
+### Fixed Issues
+
+*   General
+    *   [#364](https://github.com/pmd/pmd/issues/364): \[core] Stream closed exception when running through maven
+
+
 ## 19-April-2017 - 5.5.6
 
 The PMD team is pleased to announce PMD 5.5.6.
