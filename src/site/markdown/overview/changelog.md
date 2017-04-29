@@ -1,19 +1,10 @@
 # PMD Release Notes
 
-## ????? - 5.6.1-SNAPSHOT
+## 29-April-2017 - 5.6.1
 
 The PMD team is pleased to announce PMD 5.6.1.
 
 This is a bug fixing release.
-
-### Table Of Contents
-
-* [New and noteworthy](#New_and_noteworthy)
-* [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
-* [External Contributions](#External_Contributions)
-
-### New and noteworthy
 
 ### Fixed Issues
 
@@ -21,7 +12,3 @@ This is a bug fixing release.
     *   [#363](https://github.com/pmd/pmd/issues/363): \[core] Rule documentation pages are missing
     *   [#364](https://github.com/pmd/pmd/issues/364): \[core] Stream closed exception when running through maven
     *   [#373](https://github.com/pmd/pmd/issues/373): \[core] RuleSetFactory - add more helper methods
-
-### API Changes
-
-### External Contributions
