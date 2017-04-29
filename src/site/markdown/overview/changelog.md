@@ -1,10 +1,10 @@
 # PMD Release Notes
 
-## ????? - 5.6.2-SNAPSHOT
+## ????? - 5.7.0-SNAPSHOT
 
-The PMD team is pleased to announce PMD 5.6.2.
+The PMD team is pleased to announce PMD 5.7.0.
 
-This is a bug fixing release.
+This is a minor release.
 
 ### Table Of Contents
 
