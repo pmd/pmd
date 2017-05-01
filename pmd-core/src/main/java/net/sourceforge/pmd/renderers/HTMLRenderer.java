@@ -129,7 +129,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                     + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
 
-            String d = StringUtil.htmlEncode(rv.getDescription());
+            String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
 
             String infoUrl = rv.getRule().getExternalInfoUrl();
             if (StringUtil.isNotEmpty(infoUrl)) {
