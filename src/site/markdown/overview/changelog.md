@@ -25,3 +25,4 @@ This is a minor release.
 ### External Contributions
 
 *   [#368](https://github.com/pmd/pmd/pull/368): \[vf] Adding proper AST support for negation expressions
+*   [#372](https://github.com/pmd/pmd/pull/372): \[core] Fix XSS in HTML renderer
