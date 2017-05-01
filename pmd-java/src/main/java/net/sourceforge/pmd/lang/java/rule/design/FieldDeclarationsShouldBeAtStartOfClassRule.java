@@ -49,6 +49,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
         definePropertyDescriptor(ignoreEnumDeclarations);
         definePropertyDescriptor(ignoreAnonymousClassDeclarations);
+        definePropertyDescriptor(ignoreInterfaceDeclarations);
     }
 
     @Override

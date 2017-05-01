@@ -197,4 +197,34 @@ public class MyEntity {
 }
     ]]></code>
   </test-code>
+
+  <test-code>
+    <description>#345 [java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces - default case</description>
+    <expected-problems>1</expected-problems>
+    <expected-linenumbers>6</expected-linenumbers>
+    <code><![CDATA[
+public class TestFieldDeclarations {
+    public interface StartCaptureListener {
+        void onStartCapture(boolean shouldUploadMediaToTba);
+    }
+
+    private static final int TAKE_PHOTO_RC = 334; // line 6
+}
+    ]]></code>
+  </test-code>
+
+  <test-code>
+    <description>#345 [java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces - ignore interfaces</description>
+    <expected-problems>0</expected-problems>
+    <rule-property name="ignoreInterfaceDeclarations">true</rule-property>
+    <code><![CDATA[
+public class TestFieldDeclarations {
+    public interface StartCaptureListener {
+        void onStartCapture(boolean shouldUploadMediaToTba);
+    }
+
+    private static final int TAKE_PHOTO_RC = 334; // line 6
+}
+    ]]></code>
+  </test-code>
 </test-data>
