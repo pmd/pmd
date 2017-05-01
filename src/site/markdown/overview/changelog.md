@@ -15,7 +15,15 @@ This is a minor release.
 
 ### New and noteworthy
 
+#### Modified Rules
+
+*   The rule "FieldDeclarationsShouldBeAtStartOfClass" of the java-design ruleset has a new property `ignoreInterfaceDeclarations`.
+    Setting this property to `true` ignores interface declarations, that precede fields.
+
 ### Fixed Issues
+
+*   java-design
+    *   [#345](https://github.com/pmd/pmd/issues/345): \[java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces
 
 ### API Changes
 
@@ -26,3 +34,4 @@ This is a minor release.
 
 *   [#368](https://github.com/pmd/pmd/pull/368): \[vf] Adding proper AST support for negation expressions
 *   [#372](https://github.com/pmd/pmd/pull/372): \[core] Fix XSS in HTML renderer
+*   [#374](https://github.com/pmd/pmd/pull/374): \[java] Add property to ignore interfaces in FieldDeclarationsShouldBeAtStartOfClassRule
