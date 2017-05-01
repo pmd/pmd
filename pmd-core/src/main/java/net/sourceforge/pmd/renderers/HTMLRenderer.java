@@ -9,6 +9,8 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
@@ -122,7 +124,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
             buf.append("<td width=\"*%\">"
-                    + maybeWrap(rv.getFilename(),
+                    + maybeWrap(StringEscapeUtils.escapeHtml4(rv.getFilename()),
                             linePrefix == null ? "" : linePrefix + Integer.toString(rv.getBeginLine()))
                     + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
