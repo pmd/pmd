@@ -19,6 +19,15 @@ This is a minor release.
 
 *   The rule "FieldDeclarationsShouldBeAtStartOfClass" of the java-design ruleset has a new property `ignoreInterfaceDeclarations`.
     Setting this property to `true` ignores interface declarations, that precede fields.
+    Example usage:
+
+
+    <rule ref="rulesets/java/design.xml/FieldDeclarationsShouldBeAtStartOfClass">
+        <properties>
+            <property name="ignoreInterfaceDeclarations" value="true"/>
+        </properties>
+    </rule>
+
 
 ### Fixed Issues
 
