@@ -231,7 +231,10 @@ public final class StringUtil {
      * @param string
      *            String
      * @return String
+     *
+     * @deprecated Use StringEscapeUtils#escapeHtml4 instead
      */
+    @Deprecated
     public static String htmlEncode(String string) {
         String encoded = replaceString(string, '&', "&amp;");
         encoded = replaceString(encoded, '<', "&lt;");
@@ -247,11 +250,6 @@ public final class StringUtil {
      *            should be replaced with entities ( <code>false</code>) or
      *            should be included as is ( <code>true</code>).
      * @see #appendXmlEscaped(StringBuilder, String)
-     *
-     *      TODO - unify the method above with the one below
-     *
-     *      public to support unit testing - make this package private, once the
-     *      unit test classes are in the same package.
      */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;

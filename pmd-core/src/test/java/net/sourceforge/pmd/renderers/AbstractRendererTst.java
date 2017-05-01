@@ -41,28 +41,32 @@ public abstract class AbstractRendererTst {
         return expected;
     }
 
+    protected String getSourceCodeFilename() {
+        return "n/a";
+    }
+
     @Test(expected = NullPointerException.class)
     public void testNullPassedIn() throws Exception {
         getRenderer().renderFileReport(null);
     }
 
-    private static Report reportOneViolation() {
+    private Report reportOneViolation() {
         Report report = new Report();
         report.addRuleViolation(newRuleViolation(1));
         return report;
     }
 
-    private static Report reportTwoViolations() {
+    private Report reportTwoViolations() {
         Report report = new Report();
         report.addRuleViolation(newRuleViolation(1));
         report.addRuleViolation(newRuleViolation(2));
         return report;
     }
 
-    private static RuleViolation newRuleViolation(int endColumn) {
+    private RuleViolation newRuleViolation(int endColumn) {
         DummyNode node = createNode(endColumn);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("n/a");
+        ctx.setSourceCodeFilename(getSourceCodeFilename());
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
     }
 
@@ -79,7 +83,7 @@ public abstract class AbstractRendererTst {
     public void testRuleWithProperties() throws Exception {
         DummyNode node = createNode(1);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("n/a");
+        ctx.setSourceCodeFilename(getSourceCodeFilename());
         Report report = new Report();
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
