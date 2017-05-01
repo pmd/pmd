@@ -146,7 +146,7 @@ PARSER_END(VfParser)
 	| <GE: ">=" >
 	| <LT: "<" >
 	| <GT: ">" >
-	| <EXCL: ("!"|"~") >
+	| <EXCL: ("!"|"~"|"NOT") >
 	| <PIPE_PIPE: "||" >
 	| <STRING_LITERAL: <QUOTED_STRING> >
 	| <DIGITS: (<NUM_CHAR>)+ (<DOT> (<NUM_CHAR>)+)? >
@@ -496,14 +496,7 @@ void UnaryExpression()  #void :
 {}
 {
 	  ( <PLUS> | <MINUS> ) UnaryExpression()
-	|  NegationExpression()
-}
-
-void NegationExpression() #void :
-{}
-{
-  ( <EXCL> ) UnaryExpression()
-|  PrimaryExpression()
+	|  PrimaryExpression()
 }
 
 void PrimaryExpression() #void :
@@ -537,6 +530,7 @@ void PrimaryPrefix() #void :
 	| Identifier()	
 	| <LPAREN> Expression() <RPAREN>
 	| <LSQUARE> Expression() (<COMMA> Expression())*   <RSQUARE>
+	| NegationExpression()
 }
 
 void PrimarySuffix() #void :
@@ -546,6 +540,13 @@ void PrimarySuffix() #void :
 	| DotExpression()
 	| Arguments()
 }
+
+void NegationExpression() :
+{}
+{
+  ( <EXCL> ) Expression()
+}
+
 
 void DotExpression() :
 {}

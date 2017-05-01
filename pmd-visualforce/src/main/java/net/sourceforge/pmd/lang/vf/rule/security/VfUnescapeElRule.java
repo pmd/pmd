@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
@@ -245,6 +246,11 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private boolean startsWithSafeResource(final ASTElExpression el) {
         final ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
         if (expression != null) {
+            final ASTNegationExpression negation = expression.getFirstChildOfType(ASTNegationExpression.class);
+            if (negation != null) {
+                return true;
+            }
+            
             final ASTIdentifier id = expression.getFirstChildOfType(ASTIdentifier.class);
             if (id != null) {
                 List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
@@ -254,8 +260,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     case "casesafeid":
                     case "begins":
                     case "contains":
-                    case "len":
-                    case "not":
+                    case "len":                    
                     case "getrecordids":
                     case "linkto":
                     case "sqrt":
