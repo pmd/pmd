@@ -20,3 +20,5 @@ This is a minor release.
 ### API Changes
 
 ### External Contributions
+
+*   [#368](https://github.com/pmd/pmd/pull/368): \[vf] Adding proper AST support for negation expressions

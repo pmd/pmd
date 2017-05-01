@@ -567,6 +567,7 @@ NOT method evaluates to safe boolean
 <apex:page>
 	<script>
 		if({!NOT(yes)}) { maskFormEls(); }
+		if({!NOT foo(yes)}) { maskFormEls(); }
 	</script>
 </apex:page>
 ]]></code>
