@@ -51,6 +51,6 @@
 
 ## Articles
 
-*   <a href="http://www.unixgarden.com/index.php/gnu-linux-magazine/verifier-votre-code-java-avec-pmd">An introduction
+*   <a href="http://connect.ed-diamond.com/GNU-Linux-Magazine/GLMF-105/Verifier-votre-code-Java-avec-PMD">An introduction
     to PMD (in French)</a>
 
