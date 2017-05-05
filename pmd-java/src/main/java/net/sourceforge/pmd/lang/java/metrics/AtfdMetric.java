@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.Signature.Visibility;
 
@@ -17,16 +18,13 @@ import net.sourceforge.pmd.lang.java.metrics.Signature.Visibility;
  */
 public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
     
-    static {
-        operationMask = new OperationSigMask();
-        operationMask.setAllVisibility();
-        operationMask.setAllRoles();
-        operationMask.remove(Role.CONSTRUCTOR);
+    public AtfdMetric(){
+        isAbstractHandler = false;
     }
     
     @Override
-    public double computeFor(ASTMethodDeclaration node, PackageStats holder) {
-        if (!checkMaskIsMatching(node)) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder) {
+        if (isNotSupported(node)) {
             return Double.NaN;
         }
 
