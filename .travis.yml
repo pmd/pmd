@@ -9,9 +9,7 @@ language: java
 jdk: oraclejdk8
 before_install:
   - bash .travis/setup-secrets.sh
-  - bash .travis/install-configure-maven.sh
-  - export M2_HOME=$HOME/apache-maven-3.3.9
-  - export PATH=$HOME/apache-maven-3.3.9/bin:${PATH}
+  - bash .travis/configure-maven.sh
 install: true
 before_script: true
 script:

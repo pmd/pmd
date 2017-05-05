@@ -1,3 +1,3 @@
 #!/bin/bash
 set -ev
-mvn verify -B -V
+./mvnw verify -B -V

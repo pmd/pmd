@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-RELEASE_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 
 # Deploy to ossrh has already been done with the usual build. See build-push.sh
 
