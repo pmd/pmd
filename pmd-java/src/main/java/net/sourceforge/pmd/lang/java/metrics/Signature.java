@@ -19,7 +19,11 @@ public class Signature {
         public static final Visibility[] ALL = new Visibility[] { PUBLIC, PACKAGE, PROTECTED, PRIVATE };
 
     }
-    
+
+    public Signature(Visibility visibility) {
+        this.visibility = visibility;
+    }
+
     public static Visibility getVisibility(AbstractJavaAccessNode node) {
         return node.isPublic() ? Visibility.PUBLIC
                 : node.isPackagePrivate() ? Visibility.PACKAGE
@@ -27,8 +31,5 @@ public class Signature {
                                 : node.isPrivate() ? Visibility.PRIVATE : Visibility.UNDEF;
     }
 
-    public Signature(Visibility visibility) {
-        this.visibility = visibility;
-    }
-    
+
 }

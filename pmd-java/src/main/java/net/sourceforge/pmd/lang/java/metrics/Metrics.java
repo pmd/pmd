@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 
 /**
  * @author Clément Fournier (clement.fournier@insa-rennes.fr)
@@ -61,18 +62,10 @@ public class Metrics {
     }
 
     /**
-     * Computes a metric identified by its code on the method AST node being
+     * Computes a metric identified by its code on the operation AST node being
      * passed.
      */
-    public static double get(OperationMetricKey key, ASTMethodDeclaration node) {
-        return key.getCalculator().computeFor(node, m_holder);
-    }
-
-    /**
-     * Computes a metric identified by its code on the method AST node being
-     * passed.
-     */
-    public static double get(OperationMetricKey key, ASTConstructorDeclaration node) {
+    public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
         return key.getCalculator().computeFor(node, m_holder);
     }
 
