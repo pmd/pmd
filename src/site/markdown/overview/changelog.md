@@ -28,11 +28,18 @@ This is a minor release.
         </properties>
     </rule>
 
+#### Removed Rules
+
+*   The deprecated rule "UseSingleton" has been removed from the ruleset "java-design". The rule has been renamed
+    long time ago to "UseUtilityClass".
+
 
 ### Fixed Issues
 
 *   General
     *   [#377](https://github.com/pmd/pmd/issues/377): \[core] Use maven wrapper and upgrade to maven 3.5.0
+*   java
+    *   [#1513](https://sourceforge.net/p/pmd/bugs/1513/): \[java] Remove deprecated rule UseSingleton
 *   java-design
     *   [#345](https://github.com/pmd/pmd/issues/345): \[java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces
 
