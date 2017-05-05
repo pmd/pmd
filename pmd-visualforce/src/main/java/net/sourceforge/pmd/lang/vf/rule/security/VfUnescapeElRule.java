@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.vf.ast.ASTArguments;
 import net.sourceforge.pmd.lang.vf.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
 import net.sourceforge.pmd.lang.vf.ast.ASTDotExpression;
@@ -20,6 +21,7 @@ import net.sourceforge.pmd.lang.vf.ast.ASTExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTHtmlScript;
 import net.sourceforge.pmd.lang.vf.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.vf.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.vf.ast.ASTNegationExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTText;
 import net.sourceforge.pmd.lang.vf.ast.AbstractVFNode;
 import net.sourceforge.pmd.lang.vf.rule.AbstractVfRule;
@@ -74,15 +76,17 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     private void processElInScriptContext(ASTElExpression elExpression, ASTText prevText, Object data) {
         boolean quoted = false;
+        boolean jsonParse = false;
 
         if (prevText != null) {
-            if (isUnbalanced(prevText.getImage(), "'") || isUnbalanced(prevText.getImage(), "\"")) {
+            jsonParse = isJsonParse(prevText);
+            if (isUnbalanced(prevText.getImage(), '\'') || isUnbalanced(prevText.getImage(), '\"')) {
                 quoted = true;
             }
         }
         if (quoted) {
             // check escaping too
-            if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
+            if (!(jsonParse || startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
                 if (doesElContainAnyUnescapedIdentifiers(elExpression,
                         EnumSet.of(Escaping.JSENCODE, Escaping.JSINHTMLENCODE))) {
                     addViolation(data, elExpression);
@@ -90,29 +94,46 @@ public class VfUnescapeElRule extends AbstractVfRule {
             }
         } else {
             if (!(startsWithSafeResource(elExpression) || containsSafeFields(elExpression))) {
-                addViolation(data, elExpression);
+                final boolean hasUnscaped = doesElContainAnyUnescapedIdentifiers(elExpression,
+                        EnumSet.of(Escaping.JSENCODE, Escaping.JSINHTMLENCODE));
+                if (!(jsonParse && !hasUnscaped)) {
+                    addViolation(data, elExpression);
+                }
             }
         }
     }
 
-    private boolean isUnbalanced(String image, String pattern) {
-        int occurance = 0;
-        int index = image.indexOf("=");
-        if (index < 0) {
-            index = image.indexOf(":");
-        }
+    private boolean isJsonParse(ASTText prevText) {
+        final String text = (prevText.getImage().endsWith("'") || prevText.getImage().endsWith("'"))
+                ? prevText.getImage().substring(0, prevText.getImage().length() - 1) : prevText.getImage();
 
-        index = image.indexOf(pattern, index + 1);
-        while (index >= 0) {
-            occurance++;
-            index = image.indexOf(pattern, index + 1);
-        }
-
-        if ((occurance % 2) != 0) {
+        if (text.endsWith("JSON.parse(") || text.endsWith("jQuery.parseJSON(") || text.endsWith("$.parseJSON(")) {
             return true;
         }
 
         return false;
+    }
+
+    private boolean isUnbalanced(String image, char pattern) {
+        char[] array = image.toCharArray();
+
+        boolean foundPattern = false;
+
+        for (int i = array.length - 1; i > 0; i--) {
+            if (array[i] == pattern) {
+                foundPattern = true;
+            }
+
+            if (array[i] == ';') {
+                if (foundPattern) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return foundPattern;
     }
 
     @Override
@@ -225,22 +246,65 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private boolean startsWithSafeResource(final ASTElExpression el) {
         final ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
         if (expression != null) {
+            final ASTNegationExpression negation = expression.getFirstChildOfType(ASTNegationExpression.class);
+            if (negation != null) {
+                return true;
+            }
+            
             final ASTIdentifier id = expression.getFirstChildOfType(ASTIdentifier.class);
             if (id != null) {
-                switch (id.getImage().toLowerCase()) {
-                case "$component":
-                case "$objecttype":
-                case "$label":
-                case "$resource":
-                case "urlfor":
-                case "$site":
-                case "$page":
-                case "$action":
-                case "casesafeid":
-                case "$remoteaction":
-                    return true;
+                List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
+                if (!args.isEmpty()) {
+                    switch (id.getImage().toLowerCase()) {
+                    case "urlfor":
+                    case "casesafeid":
+                    case "begins":
+                    case "contains":
+                    case "len":                    
+                    case "getrecordids":
+                    case "linkto":
+                    case "sqrt":
+                    case "round":
+                    case "mod":
+                    case "log":
+                    case "ln":
+                    case "exp":
+                    case "abs":
+                    case "floor":
+                    case "ceiling":
+                    case "nullvalue":
+                    case "isnumber":
+                    case "isnull":
+                    case "isnew":
+                    case "isblank":
+                    case "isclone":
+                    case "year":
+                    case "month":
+                    case "day":
+                    case "datetimevalue":
+                    case "datevalue":
+                    case "date":
+                    case "now":
+                    case "today":
+                        return true;
 
-                default:
+                    default:
+                    }
+                } else {
+                    // has no arguments
+                    switch (id.getImage().toLowerCase()) {
+                    case "$action":
+                    case "$page":
+                    case "$site":
+                    case "$resource":
+                    case "$label":
+                    case "$objecttype":
+                    case "$component":
+                    case "$remoteaction":
+                        return true;
+
+                    default:
+                    }
                 }
             }
 
@@ -399,6 +463,12 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 case "caseNumber":
                     return true;
                 default:
+                }
+            }
+
+            if (child instanceof ASTArguments) {
+                if (containsSafeFields((ASTArguments) child)) {
+                    return true;
                 }
             }
 

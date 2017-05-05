@@ -21,7 +21,7 @@ echo "Releasing PMD"
 echo "-------------------------------------------"
 
 # see also https://gist.github.com/pdunnavant/4743895
-CURRENT_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 CURRENT_BUILD_NUMBER=$(echo ${RELEASE_VERSION} | sed -e 's/[0-9]*\.//g')
 NEXT_BUILD_NUMBER=$(expr ${CURRENT_BUILD_NUMBER} + 1)
@@ -68,7 +68,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     git push
 )
 
-mvn -B release:clean release:prepare \
+./mvnw -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
     -DdevelopmentVersion=${DEVELOPMENT_VERSION}

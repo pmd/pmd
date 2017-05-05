@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-RELEASE_VERSION=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 
 # Deploy to ossrh has already been done with the usual build. See build-push.sh
 
@@ -15,10 +15,10 @@ curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&defaul
 RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
 RELEASE_NAME="PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
 RELEASE_BODY=$(tail -n +3 src/site/markdown/overview/changelog.md) # skips the first 2 lines - the heading 'PMD Release Notes'
-RELEASE_BODY="${RELEASE_BODY//$'\\'/\\\\}"
+RELEASE_BODY="${RELEASE_BODY//'\'/\\\\}"
 RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
 RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
-RELEASE_BODY="${RELEASE_BODY//$'"'/\\$'"'}"
+RELEASE_BODY="${RELEASE_BODY//'"'/\\\"}"
 cat > release-edit-request.json <<EOF
 {
   "name": "$RELEASE_NAME",

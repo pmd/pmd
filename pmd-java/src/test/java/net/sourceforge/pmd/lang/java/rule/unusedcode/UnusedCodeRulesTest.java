@@ -22,6 +22,5 @@ public class UnusedCodeRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "UnusedLocalVariable");
         addRule(RULESET, "UnusedPrivateField");
         addRule(RULESET, "UnusedPrivateMethod");
-        addRule(RULESET, "UnusedModifier");
     }
 }

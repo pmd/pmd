@@ -13,12 +13,17 @@ import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+
+import apex.jorje.semantic.ast.member.Parameter;
+import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 /**
  * Detects if variables in Database.query(variable) is escaped with
@@ -28,6 +33,12 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  *
  */
 public class ApexSOQLInjectionRule extends AbstractApexRule {
+    private static final String DOUBLE = "double";
+    private static final String LONG = "long";
+    private static final String DECIMAL = "decimal";
+    private static final String BOOLEAN = "boolean";
+    private static final String ID = "id";
+    private static final String INTEGER = "integer";
     private static final String JOIN = "join";
     private static final String ESCAPE_SINGLE_QUOTES = "escapeSingleQuotes";
     private static final String STRING = "String";
@@ -48,6 +59,11 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
             return data; // stops all the rules
+        }
+
+        final List<ASTMethod> methodExpr = node.findDescendantsOfType(ASTMethod.class);
+        for (ASTMethod m : methodExpr) {
+            findSafeVariablesInSignature(m);
         }
 
         final List<ASTFieldDeclaration> fieldExpr = node.findDescendantsOfType(ASTFieldDeclaration.class);
@@ -87,6 +103,26 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
         return data;
     }
 
+    private void findSafeVariablesInSignature(ASTMethod m) {
+        List<Parameter> parameters = m.getNode().getMethodInfo().getParameters();
+        for (Parameter p : parameters) {
+            switch (p.getType().getApexName().toLowerCase()) {
+            case ID:
+            case INTEGER:
+            case BOOLEAN:
+            case DECIMAL:
+            case LONG:
+            case DOUBLE:
+                safeVariables.add(Helper.getFQVariableName(p));
+                break;
+            default:
+                break;
+            }
+
+        }
+
+    }
+
     private void findSanitizedVariables(AbstractApexNode<?> node) {
         final ASTVariableExpression left = node.getFirstChildOfType(ASTVariableExpression.class);
         final ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
@@ -118,6 +154,22 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                 }
             }
         }
+
+        if (node instanceof ASTVariableDeclaration) {
+            VariableDeclaration o = (VariableDeclaration) node.getNode();
+            switch (o.getLocalInfo().getType().getApexName().toLowerCase()) {
+            case INTEGER:
+            case ID:
+            case BOOLEAN:
+            case DECIMAL:
+            case LONG:
+            case DOUBLE:
+                safeVariables.add(Helper.getFQVariableName(left));
+                break;
+            default:
+                break;
+            }
+        }
     }
 
     private void findSelectContainingVariables(AbstractApexNode<?> node) {
@@ -143,6 +195,13 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             }
         }
 
+        final ASTMethodCallExpression methodCall = node.getFirstChildOfType(ASTMethodCallExpression.class);
+        if (methodCall != null) {
+            if (Helper.isMethodName(methodCall, STRING, ESCAPE_SINGLE_QUOTES)) {
+                isSafeVariable = true;
+            }
+        }
+
         final ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
         if (literal != null) {
 
@@ -152,6 +211,8 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                     if (!isSafeVariable) {
                         // select literal + other unsafe vars
                         selectContainingVariables.put(Helper.getFQVariableName(var), Boolean.FALSE);
+                    } else {
+                        safeVariables.add(Helper.getFQVariableName(var));
                     }
                 }
             }
@@ -164,6 +225,13 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     }
 
     private void reportStrings(ASTMethodCallExpression m, Object data) {
+        final HashSet<ASTVariableExpression> setOfSafeVars = new HashSet<>();
+        final List<ASTStandardCondition> conditions = m.findDescendantsOfType(ASTStandardCondition.class);
+        for (ASTStandardCondition c : conditions) {
+            List<ASTVariableExpression> vars = c.findDescendantsOfType(ASTVariableExpression.class);
+            setOfSafeVars.addAll(vars);
+        }
+
         final List<ASTBinaryExpression> binaryExpr = m.findChildrenOfType(ASTBinaryExpression.class);
         for (ASTBinaryExpression b : binaryExpr) {
             List<ASTVariableExpression> vars = b.findDescendantsOfType(ASTVariableExpression.class);
@@ -177,7 +245,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                     }
                 }
 
-                if (safeVariables.contains(fqName)) {
+                if (setOfSafeVars.contains(v) || safeVariables.contains(fqName)) {
                     continue;
                 }
 

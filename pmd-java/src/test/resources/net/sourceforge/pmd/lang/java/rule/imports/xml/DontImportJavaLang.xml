@@ -31,6 +31,7 @@ import java.lang.reflect.*;
 import java.lang.annotation.*;
 import java.lang.instrument.*;
 import java.lang.management.*;
+import java.lang.ProcessBuilder.*;
 public class Foo {}
      ]]></code>
     </test-code>
@@ -60,6 +61,15 @@ public class Foo {}
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.lang.ProcessBuilder.Redirect;
+
+public class Foo {}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>import java.lang.invoke.MethodHandles: #339 false DontImportJavaLang</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.invoke.MethodHandles;
 
 public class Foo {}
         ]]></code>

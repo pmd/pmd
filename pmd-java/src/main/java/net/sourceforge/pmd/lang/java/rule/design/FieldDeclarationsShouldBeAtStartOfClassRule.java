@@ -40,6 +40,8 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             "Ignore Enum Declarations that precede fields.", true, 1.0f);
     private BooleanProperty ignoreAnonymousClassDeclarations = new BooleanProperty("ignoreAnonymousClassDeclarations",
             "Ignore Field Declarations, that are initialized with anonymous class declarations", true, 2.0f);
+    private BooleanProperty ignoreInterfaceDeclarations = new BooleanProperty("ignoreInterfaceDeclarations",
+            "Ignore Interface Declarations that precede fields.", false, 3.0f);
 
     /**
      * Initializes the rule {@link FieldDeclarationsShouldBeAtStartOfClassRule}.
@@ -47,6 +49,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
         definePropertyDescriptor(ignoreEnumDeclarations);
         definePropertyDescriptor(ignoreAnonymousClassDeclarations);
+        definePropertyDescriptor(ignoreInterfaceDeclarations);
     }
 
     @Override
@@ -67,10 +70,19 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
                     && getProperty(ignoreAnonymousClassDeclarations).booleanValue()) {
                 continue;
             }
-            if (child instanceof ASTClassOrInterfaceDeclaration || child instanceof ASTMethodDeclaration
-                    || child instanceof ASTConstructorDeclaration || child instanceof ASTAnnotationTypeDeclaration) {
+            if (child instanceof ASTMethodDeclaration || child instanceof ASTConstructorDeclaration
+                    || child instanceof ASTAnnotationTypeDeclaration) {
                 addViolation(data, node);
                 break;
+            }
+            if (child instanceof ASTClassOrInterfaceDeclaration) {
+                ASTClassOrInterfaceDeclaration declaration = (ASTClassOrInterfaceDeclaration) child;
+                if (declaration.isInterface() && getProperty(ignoreInterfaceDeclarations).booleanValue()) {
+                    continue;
+                } else {
+                    addViolation(data, node);
+                    break;
+                }
             }
             if (child instanceof ASTEnumDeclaration && !getProperty(ignoreEnumDeclarations).booleanValue()) {
                 addViolation(data, node);

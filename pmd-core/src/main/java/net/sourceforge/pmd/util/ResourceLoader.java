@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
@@ -41,6 +42,8 @@ public final class ResourceLoader {
      * Method to find a file, first by finding it as a file (either by the
      * absolute or relative path), then as a URL, and then finally seeing if it
      * is on the classpath.
+     * <p>
+     * Caller is responsible for closing the {@link InputStream}.
      *
      * @param name
      *            String
@@ -59,6 +62,8 @@ public final class ResourceLoader {
     /**
      * Uses the ClassLoader passed in to attempt to load the resource if it's
      * not a File or a URL
+     * <p>
+     * Caller is responsible for closing the {@link InputStream}.
      *
      * @param name
      *            String
@@ -91,8 +96,15 @@ public final class ResourceLoader {
                     if (resource == null) {
                         // Don't throw RuleSetNotFoundException, keep API compatibility
                         return null;
+                    } else {
+                        final URLConnection connection = resource.openConnection();
+                        // This avoids reusing the underlaying file, if the resource is loaded from a Jar file.
+                        // The file is closed with the input stream then thus not leaving a leaked resource behind.
+                        // See https://github.com/pmd/pmd/issues/364 and https://github.com/pmd/pmd/issues/337
+                        connection.setUseCaches(false);
+                        final InputStream inputStream = connection.getInputStream();
+                        return inputStream;
                     }
-                    return resource.openStream();
                 } catch (IOException e1) {
                     // Ignored
                 }

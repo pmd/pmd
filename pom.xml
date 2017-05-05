@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>5.6.0-SNAPSHOT</version>
+    <version>5.7.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -262,7 +262,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.18.1</surefire.version>
         <checkstyle.version>2.17</checkstyle.version>
-        <pmd.plugin.version>3.7</pmd.plugin.version>
+        <pmd.plugin.version>3.8</pmd.plugin.version>
         <java.version>1.7</java.version>
         <jacoco.version>0.7.5.201505241946</jacoco.version>
         <ant.version>1.9.6</ant.version>
@@ -277,6 +277,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <config.basedir>${basedir}/pmd-core</config.basedir>
         <pmd.dogfood.ruleset>${config.basedir}/src/main/resources/rulesets/internal/dogfood.xml</pmd.dogfood.ruleset>
+        <pmd.build-tools.version>1.0.1</pmd.build-tools.version>
     </properties>
 
     <build>
@@ -428,8 +429,8 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 </plugin>
                 <plugin>
                     <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-build</artifactId>
-                    <version>0.10</version>
+                    <artifactId>pmd-build-tools-plugin</artifactId>
+                    <version>${pmd.build-tools.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -465,18 +466,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${pmd.plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>net.sourceforge.pmd</groupId>
-                            <artifactId>pmd-core</artifactId>
-                            <version>5.5.4</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>net.sourceforge.pmd</groupId>
-                            <artifactId>pmd-java</artifactId>
-                            <version>5.5.4</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
@@ -609,7 +598,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-build-tools-config</artifactId>
-                        <version>1.0.0-SNAPSHOT</version>
+                        <version>${pmd.build-tools.version}</version>
                     </dependency>
                 </dependencies>
                 <configuration>

@@ -8,7 +8,7 @@ export PING_PID_FILE=/tmp/build-site-ping.pid
 source .travis/background-job-funcs.sh
 
 # Run the build, redirect output into the file
-mvn site site:stage -Psite -B -V >> $BUILD_OUTPUT 2>&1
+./mvnw site site:stage -Psite -B -V >> $BUILD_OUTPUT 2>&1
 
 # The build finished without returning an error so dump a tail of the output
 dump_output

@@ -72,19 +72,22 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
             final List<ASTConstructorDeclaration> constructors = privateConstructors.get(type.getImage());
 
             if (constructors != null) {
-                final ASTArguments callArguments = (ASTArguments) node.jjtGetChild(1);
-                final ClassScope enclosingScope = node.getScope().getEnclosingScope(ClassScope.class);
-
-                for (final ASTConstructorDeclaration cd : constructors) {
-                    // Are we within the same class scope?
-                    if (cd.getScope().getEnclosingScope(ClassScope.class) == enclosingScope) {
-                        break;
-                    }
-
-                    if (cd.getParameterCount() == callArguments.getArgumentCount()) {
-                        // TODO : Check types
-                        addViolation(data, node);
-                        break;
+                final ASTArguments callArguments = node.getFirstChildOfType(ASTArguments.class);
+                // Is this really a constructor call and not an array?
+                if (callArguments != null) {
+                    final ClassScope enclosingScope = node.getScope().getEnclosingScope(ClassScope.class);
+    
+                    for (final ASTConstructorDeclaration cd : constructors) {
+                        // Are we within the same class scope?
+                        if (cd.getScope().getEnclosingScope(ClassScope.class) == enclosingScope) {
+                            break;
+                        }
+    
+                        if (cd.getParameterCount() == callArguments.getArgumentCount()) {
+                            // TODO : Check types
+                            addViolation(data, node);
+                            break;
+                        }
                     }
                 }
             }

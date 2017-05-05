@@ -9,10 +9,8 @@ language: java
 jdk: oraclejdk8
 before_install:
   - bash .travis/setup-secrets.sh
-  - bash .travis/install-configure-maven.sh
-  - export M2_HOME=$HOME/apache-maven-3.3.9
-  - export PATH=$HOME/apache-maven-3.3.9/bin:${PATH}
-install: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - bash .travis/configure-maven.sh
+install: true
 before_script: true
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash .travis/build-pull-request.sh; fi'

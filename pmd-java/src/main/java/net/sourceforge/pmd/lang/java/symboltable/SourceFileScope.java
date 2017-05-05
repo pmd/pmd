@@ -26,6 +26,7 @@ public class SourceFileScope extends AbstractJavaScope {
 
     private final String packageImage;
     private final TypeSet types;
+    private Map<String, Node> qualifiedTypeNames;
 
     public SourceFileScope(final ClassLoader classLoader) {
         this(classLoader, "");
@@ -136,7 +137,12 @@ public class SourceFileScope extends AbstractJavaScope {
      * @return set of all types in this source file.
      */
     public Map<String, Node> getQualifiedTypeNames() {
-        return getSubTypes(null, this);
+        if (qualifiedTypeNames != null) {
+            return qualifiedTypeNames;
+        }
+
+        qualifiedTypeNames = getSubTypes(null, this);
+        return qualifiedTypeNames;
     }
 
     private Map<String, Node> getSubTypes(String qualifyingName, Scope subType) {

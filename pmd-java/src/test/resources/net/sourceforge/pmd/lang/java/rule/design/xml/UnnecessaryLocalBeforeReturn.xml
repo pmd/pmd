@@ -94,10 +94,11 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Detect violation even if not on consecutive lines</description>
         <expected-problems>1</expected-problems>
+        <rule-property name="statementOrderMatters">false</rule-property>
         <code><![CDATA[
 public class Foo {
     public int bar() {
@@ -110,10 +111,27 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>No violations on multiple uses of the variable</description>
         <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething(res);
+        return res;
+    }
+    
+    public void doSomething(int x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violations on multiple uses of the variable - statement order does not matter</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="statementOrderMatters">false</rule-property>
         <code><![CDATA[
 public class Foo {
     public int bar() {
@@ -163,6 +181,50 @@ public class CustomerErrorCollector {
         final Map<String, String> copy = new HashMap<>(customerErrors);
         customerErrors.clear();
         return copy; // PMD complains that variable could be avoided
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#310 UnnecessaryLocalBeforeReturn enhancement is overly restrictive -- method order matters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnFP {
+    public int example1() {
+        int i = compute(); // might throw
+        markComputationDone();
+        return i; // PMD complains that variable could be avoided
+    }
+
+    public int example2() {
+        Mutable m = new Mutable();
+        int i = compute(m);
+        sideEffect(m);
+        return i;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#310 UnnecessaryLocalBeforeReturn statement order does not matter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnFP {
+    public int example1() {
+        int i = compute(); // might throw
+        markComputationDone();
+        return i; // PMD complains that variable could be avoided
+    }
+
+    public int example2() {
+        Mutable m = new Mutable();
+        int i = compute(m);
+        sideEffect(m);
+        return i;
     }
 }
         ]]></code>
