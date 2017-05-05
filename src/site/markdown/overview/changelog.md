@@ -31,6 +31,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   General
+    *   [#377](https://github.com/pmd/pmd/issues/377): \[core] Use maven wrapper and upgrade to maven 3.5.0
 *   java-design
     *   [#345](https://github.com/pmd/pmd/issues/345): \[java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces
 
