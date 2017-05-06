@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a PackageStats.
@@ -33,6 +35,10 @@ public abstract class AbstractMetric {
      * @return True if the metric can be computed, false otherwise.
      */
     protected boolean isSupported(ASTMethodOrConstructorDeclaration node) {
+        if (isAbstractHandler) {
+            return true;
+        }
+
         if (node instanceof ASTMethodDeclaration) {
             return ((ASTMethodDeclaration) node).isAbstract();
         } else {

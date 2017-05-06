@@ -25,7 +25,7 @@ public abstract class Signature {
     public enum Visibility {
         PUBLIC, PACKAGE, PROTECTED, PRIVATE, UNDEF;
 
-        public static final Visibility[] ALL = new Visibility[]{PUBLIC, PACKAGE, PROTECTED, PRIVATE};
+        public static final Visibility[] ALL = {PUBLIC, PACKAGE, PROTECTED, PRIVATE};
 
         /**
          * Returns the Visibility enum key for a node

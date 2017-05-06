@@ -1,6 +1,7 @@
 /**
- *
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.oom;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -12,5 +13,7 @@ import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
  * @author Clément Fournier
  */
 public interface ClassMetric extends Metric {
+
     double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder);
+
 }

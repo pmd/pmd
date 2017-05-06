@@ -20,7 +20,7 @@ public class PackageStats {
     private Map<String, ClassStats> classes = new HashMap<>();
 
     public PackageStats getSubPackage(String[] qname, int index) {
-        // ...
+        // TODO
         // recursive navigation method
         return null;
     }
@@ -30,6 +30,7 @@ public class PackageStats {
     }
 
     public boolean hasMatchingSig(String qname, OperationSigMask sigMask) {
+        // TODO
         // navigate to the class in the tree
         // return true if the signature of the qualified name is covered by the
         // mask.

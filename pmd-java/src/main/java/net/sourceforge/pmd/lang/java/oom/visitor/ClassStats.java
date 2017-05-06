@@ -15,4 +15,6 @@ import java.util.Map;
  */
 public class ClassStats {
     private Map<OperationSignature, List<String>> operations = new HashMap<>();
+
+    //TODO
 }

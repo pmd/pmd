@@ -9,5 +9,5 @@ package net.sourceforge.pmd.lang.java.oom.visitor;
  * @author Clément Fournier
  */
 public class FieldSigMask extends SigMask<FieldSignature> {
-
+    //TODO
 }

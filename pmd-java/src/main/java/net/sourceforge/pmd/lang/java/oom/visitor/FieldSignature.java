@@ -21,15 +21,18 @@ public class FieldSignature extends Signature {
     
     @Override
     public boolean equals(Object o) {
-        if (o instanceof FieldSignature) {
-            // TODO
-            return true;
-        }
-        return false;
+        //TODO
+        return o instanceof FieldSignature;
     }
     
     public FieldSignature buildFor(ASTFieldDeclaration node) {
         return new FieldSignature(Visibility.get(node), node.isStatic(), node.isFinal());
+    }
+
+    @Override
+    public int hashCode(){
+        //TODO
+        return 0;
     }
 
 }

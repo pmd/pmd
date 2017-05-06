@@ -16,7 +16,7 @@ public class WmcMetric extends AbstractMetric implements ClassMetric {
 
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder) {
-        // TODO Auto-generated method stub
+        // TODO
         return 0;
     }
     

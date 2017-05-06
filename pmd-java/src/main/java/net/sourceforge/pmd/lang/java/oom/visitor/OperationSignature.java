@@ -50,11 +50,7 @@ public class OperationSignature extends Signature {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof OperationSignature) {
-            // TODO
-            return true;
-        }
-        return false;
+        return o instanceof OperationSignature;
     }
 
     @Override
@@ -68,7 +64,7 @@ public class OperationSignature extends Signature {
     public enum Role {
         GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC;
 
-        public static final Role[] ALL = new Role[]{GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC};
+        public static final Role[] ALL = {GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC};
     }
 
 }
