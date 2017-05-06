@@ -223,7 +223,7 @@ creates a new String object just to check its size. Consider creating a static f
 loops through a string, checking Character.isWhitespace() on each character and returning
 false if a non-whitespace character is found. Note that Apache's commons-lang library includes
 the isBlank function, which does exactly that. You can also copy the source code of the function
-(https://commons.apache.org/proper/commons-lang/apidocs/src-html/org/apache/commons/lang3/StringUtils.html#line.296)
+(https://github.com/apache/commons-lang/blob/4777c3a5e4291af2420db57d008152c70c4a8f24/src/main/java/org/apache/commons/lang3/StringUtils.java#L296-L307)
 if you'd rather not add the library to your classpath.
     </description>
        <priority>3</priority>
