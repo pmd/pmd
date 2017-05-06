@@ -1,14 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.java.metrics;
 
-import java.util.ArrayList;
-import java.util.List;
+package net.sourceforge.pmd.lang.java.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a PackageStats.
@@ -25,7 +26,13 @@ public abstract class AbstractMetric {
         return result;
     }
 
-    protected boolean isNotSupported(ASTMethodOrConstructorDeclaration node) {
+    /**
+     * Checks if the metric can be computed on that node.
+     *
+     * @param node The node to check for
+     * @return True if the metric can be computed, false otherwise.
+     */
+    protected boolean isSupported(ASTMethodOrConstructorDeclaration node) {
         if (node instanceof ASTMethodDeclaration) {
             return ((ASTMethodDeclaration) node).isAbstract();
         } else {

@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Clément Fournier
+ * Statistics about a class. Gathers information about the contained members and their signatures, subclasses and
+ * superclasses.
  *
+ * @author Clément Fournier
  */
 public class ClassStats {
     private Map<OperationSignature, List<String>> operations = new HashMap<>();

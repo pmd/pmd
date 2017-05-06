@@ -4,8 +4,9 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 /**
- * @author Clément Fournier
+ * Signature mask for a field
  *
+ * @author Clément Fournier
  */
 public class FieldSigMask extends SigMask<FieldSignature> {
 

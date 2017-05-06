@@ -8,8 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Clément Fournier
+ * Package statistics. This recursive data structure mirrors the package structure of the analysed project and stores
+ * information about the classes and subpackages it contains.
  *
+ * @author Clément Fournier
+ * @see ClassStats
  */
 public class PackageStats {
 
@@ -21,11 +24,11 @@ public class PackageStats {
         // recursive navigation method
         return null;
     }
-    
+
     public ClassStats getClassStats(String name) {
         return classes.get(name);
     }
-    
+
     public boolean hasMatchingSig(String qname, OperationSigMask sigMask) {
         // navigate to the class in the tree
         // return true if the signature of the qualified name is covered by the

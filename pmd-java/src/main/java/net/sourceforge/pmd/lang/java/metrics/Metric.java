@@ -4,8 +4,9 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 /**
- * @author Clément Fournier
+ * Umbrella marker interface.
  *
+ * @author Clément Fournier
  */
 public interface Metric {
 

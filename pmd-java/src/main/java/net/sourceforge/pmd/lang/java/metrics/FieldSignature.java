@@ -29,7 +29,7 @@ public class FieldSignature extends Signature {
     }
     
     public FieldSignature buildFor(ASTFieldDeclaration node) {
-        return new FieldSignature(getVisibility(node), node.isStatic(), node.isFinal());
+        return new FieldSignature(Visibility.get(node), node.isStatic(), node.isFinal());
     }
 
 }

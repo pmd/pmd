@@ -4,34 +4,35 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
+import net.sourceforge.pmd.lang.java.metrics.OperationSignature.Role;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.metrics.OperationSignature.Role;
-
 /**
- * @author Clément Fournier
+ * Signature mask for an operation.
  *
+ * @author Clément Fournier
  */
 public class OperationSigMask extends SigMask<OperationSignature> {
 
-    private Set<Role> roleMask           = new HashSet<>();
-    private boolean   isAbstractIncluded = false;
-    
+    private Set<Role> roleMask = new HashSet<>();
+    private boolean isAbstractIncluded = false;
+
     public void setRoleMask(Role... roles) {
         roleMask.clear();
         roleMask.addAll(Arrays.asList(roles));
     }
-    
+
     public void setAbstractIncluded(boolean isAbstractIncluded) {
         this.isAbstractIncluded = isAbstractIncluded;
     }
-    
+
     public void setAllRoles() {
         roleMask.addAll(Arrays.asList(Role.ALL));
     }
-    
+
     public void remove(Role... roles) {
         roleMask.removeAll(Arrays.asList(roles));
     }

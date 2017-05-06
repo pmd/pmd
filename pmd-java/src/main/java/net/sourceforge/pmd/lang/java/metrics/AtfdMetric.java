@@ -4,34 +4,34 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.Signature.Visibility;
 
+import java.util.List;
+
 /**
- * @author Clément Fournier
+ * Access to Foreign Data. Quantifies the number of foreign fields accessed directly or via accessors.
  *
+ * @author Clément Fournier
  */
 public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
-    
-    public AtfdMetric(){
+
+    public AtfdMetric() {
         isAbstractHandler = false;
     }
-    
+
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder) {
-        if (isNotSupported(node)) {
+        if (!isSupported(node)) {
             return Double.NaN;
         }
 
         OperationSigMask targetOps = new OperationSigMask();
         targetOps.setVisibilityMask(Visibility.PUBLIC);
         targetOps.setRoleMask(Role.GETTER_OR_SETTER);
-        
+
         List<String> callQNames = findAllCalls(node);
         int foreignCalls = 0;
         for (String name : callQNames) {
@@ -42,7 +42,7 @@ public class AtfdMetric extends AbstractMetric implements ClassMetric, Operation
 
         return foreignCalls / callQNames.size();
     }
-    
+
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder) {
         // TODO
