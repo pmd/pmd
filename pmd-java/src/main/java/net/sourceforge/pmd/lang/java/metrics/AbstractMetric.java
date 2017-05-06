@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 /**
  * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a PackageStats.
  *
- * @author Clément Fournier (clement.fournier@insa-rennes.fr)
+ * @author Clément Fournier
  */
 public abstract class AbstractMetric {
 

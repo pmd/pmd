@@ -11,7 +11,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.java.metrics.OperationSignature.Role;
 
 /**
- * @author Clément Fournier (clement.fournier@insa-rennes.fr)
+ * @author Clément Fournier
  *
  */
 public class OperationSigMask extends SigMask<OperationSignature> {

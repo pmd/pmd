@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Clément Fournier (clement.fournier@insa-rennes.fr)
+ * @author Clément Fournier
  *
  */
 public class PackageStats {
 
-    private Map<String, PackageStats> m_subPackages = new HashMap<>();
-    private Map<String, ClassStats>   m_classes     = new HashMap<>();
+    private Map<String, PackageStats> subPackages = new HashMap<>();
+    private Map<String, ClassStats> classes = new HashMap<>();
 
     public PackageStats getSubPackage(String[] qname, int index) {
         // ...
@@ -23,7 +23,7 @@ public class PackageStats {
     }
     
     public ClassStats getClassStats(String name) {
-        return m_classes.get(name);
+        return classes.get(name);
     }
     
     public boolean hasMatchingSig(String qname, OperationSigMask sigMask) {

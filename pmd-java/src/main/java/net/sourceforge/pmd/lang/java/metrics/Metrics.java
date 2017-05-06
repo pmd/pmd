@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 
 /**
- * @author Clément Fournier (clement.fournier@insa-rennes.fr)
+ * @author Clément Fournier
  *
  */
 public class Metrics {

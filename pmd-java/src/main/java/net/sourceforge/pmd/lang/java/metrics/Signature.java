@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 
 /**
- * @author Clément Fournier (clement.fournier@insa-rennes.fr)
+ * @author Clément Fournier
  *
  */
 public class Signature {

@@ -10,7 +10,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.java.metrics.Signature.Visibility;
 
 /**
- * @author Clément Fournier (clement.fournier@insa-rennes.fr)
+ * @author Clément Fournier
  *
  */
 public abstract class SigMask<T extends Signature> {

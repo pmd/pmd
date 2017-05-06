@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.metrics.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.Signature.Visibility;
 
 /**
- * @author Clément Fournier (clement.fournier@insa-rennes.fr)
+ * @author Clément Fournier
  *
  */
 public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {

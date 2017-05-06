@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Clément Fournier (clement.fournier@insa-rennes.fr)
+ * @author Clément Fournier
  *
  */
 public class ClassStats {
-    private Map<OperationSignature, List<String>> m_operations = new HashMap<>();
+    private Map<OperationSignature, List<String>> operations = new HashMap<>();
 }
