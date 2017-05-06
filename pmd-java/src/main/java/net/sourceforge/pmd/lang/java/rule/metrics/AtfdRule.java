@@ -4,8 +4,8 @@
 package net.sourceforge.pmd.lang.java.rule.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.Metrics;
-import net.sourceforge.pmd.lang.java.metrics.Metrics.ClassMetricKey;
+import net.sourceforge.pmd.lang.java.oom.Metrics;
+import net.sourceforge.pmd.lang.java.oom.Metrics.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**

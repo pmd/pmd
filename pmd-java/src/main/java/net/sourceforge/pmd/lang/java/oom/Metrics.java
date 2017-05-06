@@ -1,10 +1,13 @@
 /**
  *
  */
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.oom;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
+import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
 
 /**
  * Façade of the Metrics Framework.

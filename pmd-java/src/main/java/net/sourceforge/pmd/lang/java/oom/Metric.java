@@ -1,7 +1,7 @@
 /**
  *
  */
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.oom;
 
 /**
  * Umbrella marker interface.

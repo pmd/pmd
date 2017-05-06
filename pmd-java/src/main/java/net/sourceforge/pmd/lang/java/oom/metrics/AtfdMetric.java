@@ -2,12 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.OperationSignature.Role;
-import net.sourceforge.pmd.lang.java.metrics.Signature.Visibility;
+import net.sourceforge.pmd.lang.java.oom.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.visitor.OperationSigMask;
+import net.sourceforge.pmd.lang.java.oom.visitor.OperationSignature.Role;
+import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.visitor.Signature.Visibility;
 
 import java.util.List;
 

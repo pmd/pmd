@@ -2,13 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.oom.visitor;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import net.sourceforge.pmd.lang.java.metrics.Signature.Visibility;
 
 /**
  * Generic signature mask.
@@ -19,14 +17,14 @@ public abstract class SigMask<T extends Signature> {
     /**
      * Visibility mask
      */
-    protected Set<Visibility> visMask = new HashSet<>();
+    protected Set<Signature.Visibility> visMask = new HashSet<>();
 
     /**
      * Clears the visibility mask and adds all parameters.
      *
      * @param visibilities The visibilities to add
      */
-    public void setVisibilityMask(Visibility... visibilities) {
+    public void setVisibilityMask(Signature.Visibility... visibilities) {
         visMask.clear();
         visMask.addAll(Arrays.asList(visibilities));
     }
@@ -35,7 +33,7 @@ public abstract class SigMask<T extends Signature> {
      * Sets the mask to cover all visibilities.
      */
     public void setAllVisibility() {
-        visMask.addAll(Arrays.asList(Visibility.ALL));
+        visMask.addAll(Arrays.asList(Signature.Visibility.ALL));
     }
 
     /**
@@ -43,7 +41,7 @@ public abstract class SigMask<T extends Signature> {
      *
      * @param visibilities The visibilities to remove
      */
-    public void remove(Visibility... visibilities) {
+    public void remove(Signature.Visibility... visibilities) {
         visMask.removeAll(Arrays.asList(visibilities));
     }
 

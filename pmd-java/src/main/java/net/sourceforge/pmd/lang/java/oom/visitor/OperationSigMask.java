@@ -2,9 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
-
-import net.sourceforge.pmd.lang.java.metrics.OperationSignature.Role;
+package net.sourceforge.pmd.lang.java.oom.visitor;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,10 +15,10 @@ import java.util.Set;
  */
 public class OperationSigMask extends SigMask<OperationSignature> {
 
-    private Set<Role> roleMask = new HashSet<>();
+    private Set<OperationSignature.Role> roleMask = new HashSet<>();
     private boolean isAbstractIncluded = false;
 
-    public void setRoleMask(Role... roles) {
+    public void setRoleMask(OperationSignature.Role... roles) {
         roleMask.clear();
         roleMask.addAll(Arrays.asList(roles));
     }
@@ -30,10 +28,10 @@ public class OperationSigMask extends SigMask<OperationSignature> {
     }
 
     public void setAllRoles() {
-        roleMask.addAll(Arrays.asList(Role.ALL));
+        roleMask.addAll(Arrays.asList(OperationSignature.Role.ALL));
     }
 
-    public void remove(Role... roles) {
+    public void remove(OperationSignature.Role... roles) {
         roleMask.removeAll(Arrays.asList(roles));
     }
 
