@@ -10,7 +10,6 @@ The Design ruleset contains rules that flag suboptimal code implementations. Alt
 are suggested.
   </description>
 
-  <rule deprecated="true" name="UseSingleton" ref="UseUtilityClass"/>
   <rule name="UseUtilityClass"
   		  since="0.3"
         message="All methods are static.  Consider using a utility class instead. Alternatively, you could add a private constructor or make the class abstract to silence this warning."
