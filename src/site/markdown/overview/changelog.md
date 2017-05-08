@@ -47,3 +47,4 @@ This is a minor release.
 *   [#368](https://github.com/pmd/pmd/pull/368): \[vf] Adding proper AST support for negation expressions
 *   [#372](https://github.com/pmd/pmd/pull/372): \[core] Fix XSS in HTML renderer
 *   [#374](https://github.com/pmd/pmd/pull/374): \[java] Add property to ignore interfaces in FieldDeclarationsShouldBeAtStartOfClassRule
+*   [#381](https://github.com/pmd/pmd/pull/381): \[core] Fix broken link in the site's doc
