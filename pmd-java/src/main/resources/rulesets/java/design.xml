@@ -1426,7 +1426,7 @@ and unintentional empty constructors.
           <property name="xpath">
               <value>
     <![CDATA[
-//ConstructorDeclaration[@Private='false'][count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+    //ConstructorDeclaration[@Private='false'][count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false' and (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Inject']) = 'false']
  ]]>
              </value>
           </property>

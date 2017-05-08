@@ -2,6 +2,19 @@
 <test-data>
     <test-code>
         <description><![CDATA[
+@Inject is okay
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
+        <code><![CDATA[
+public class Foo {
+ @Inject Foo() {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 simple failure
      ]]></description>
         <expected-problems>1</expected-problems>
