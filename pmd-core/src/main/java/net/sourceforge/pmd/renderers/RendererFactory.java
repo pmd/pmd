@@ -42,6 +42,7 @@ public class RendererFactory {
         map.put(YAHTMLRenderer.NAME, YAHTMLRenderer.class);
         map.put(SummaryHTMLRenderer.NAME, SummaryHTMLRenderer.class);
         map.put(VBHTMLRenderer.NAME, VBHTMLRenderer.class);
+        map.put(EmptyRenderer.NAME, EmptyRenderer.class);
         REPORT_FORMAT_TO_RENDERER = Collections.unmodifiableMap(map);
     }
 

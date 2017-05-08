@@ -28,6 +28,10 @@ This is a minor release.
         </properties>
     </rule>
 
+#### Renderers
+
+*   Added the 'empty' renderer which will write nothing.  Does not affect other behaviors, for example the command line PMD exit status
+    will still indicate whether violations were found.
 
 ### Fixed Issues
 
