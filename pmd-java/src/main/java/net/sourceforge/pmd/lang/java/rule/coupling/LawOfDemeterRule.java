@@ -93,6 +93,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private static final String SCOPE_STATIC_CHAIN = "static-chain";
         private static final String SUPER = "super";
         private static final String THIS = "this";
+        private static final String PREFIX_EXCLUSION_PATTERN = "^.*(b|B)uilder$";
 
         private ASTPrimaryExpression expression;
         private String baseName;
@@ -101,6 +102,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         private String baseTypeName;
         private Class<?> baseType;
         private boolean violation;
+        private boolean baseNameInWhitelist;
         private String violationReason;
 
         /**
@@ -216,6 +218,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
                 } else {
                     methodName = baseName.substring(dot + 1);
                     baseName = baseName.substring(0, dot);
+                    baseNameInWhitelist = baseName.matches(PREFIX_EXCLUSION_PATTERN);
                 }
 
             } else {
@@ -236,7 +239,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             violation = false;
             violationReason = null;
 
-            if (SCOPE_LOCAL.equals(baseScope)) {
+            if (baseNameInWhitelist) {
+                return;
+            } else if (SCOPE_LOCAL.equals(baseScope)) {
                 Assignment lastAssignment = determineLastAssignment();
                 if (lastAssignment != null && !lastAssignment.allocation && !lastAssignment.iterator
                         && !lastAssignment.forLoop) {
