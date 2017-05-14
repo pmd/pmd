@@ -18,11 +18,11 @@ import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
 public class Metrics {
 
     /**
-     * Holds sufficient statistics gathered by the visitor
+     * Holds sufficient statistics and memoises results
      */
-    private static PackageStats topPackageStats; // TODO
+    private static PackageStats topLevelPackage;
 
-    private Metrics() {
+    private Metrics() { // Cannot be instantiated
 
     }
 
@@ -31,7 +31,10 @@ public class Metrics {
      * passed.
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
-        return key.getCalculator().computeFor(node, topPackageStats);
+        String qname = node.getQualifiedName(); //TODO
+        double memoized = topLevelPackage.getMemo(key, qname);
+
+        return memoized == Double.NaN ? key.getCalculator().computeFor(node, topLevelPackage) : memoized;
     }
 
     /**
@@ -39,7 +42,10 @@ public class Metrics {
      * passed.
      */
     public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
-        return key.getCalculator().computeFor(node, topPackageStats);
+        String qname = node.getQualifiedName(); //TODO
+        double memoized = topLevelPackage.getMemo(key, qname);
+
+        return memoized == Double.NaN ? key.getCalculator().computeFor(node, topLevelPackage) : memoized;
     }
 
     /**
