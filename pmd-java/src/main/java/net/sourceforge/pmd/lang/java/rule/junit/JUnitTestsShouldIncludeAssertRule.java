@@ -52,7 +52,8 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     private boolean containsExpectOrAssert(Node n, Map<String, List<NameOccurrence>> expectables) {
         if (n instanceof ASTStatementExpression) {
             if (isExpectStatement((ASTStatementExpression) n, expectables)
-                    || isAssertOrFailStatement((ASTStatementExpression) n)) {
+                    || isAssertOrFailStatement((ASTStatementExpression) n)
+                    || isVerifyStatement((ASTStatementExpression) n)) {
                 return true;
             }
         } else {
@@ -129,6 +130,25 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                     String img = name.getImage();
                     if (img != null && (img.startsWith("assert") || img.startsWith("fail")
                             || img.startsWith("Assert.assert") || img.startsWith("Assert.fail"))) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tells if the expression is verify statement or not
+     */
+    private boolean isVerifyStatement(ASTStatementExpression expression) {
+        if (expression != null) {
+            ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
+            if (pe != null) {
+                Node name = pe.getFirstDescendantOfType(ASTName.class);
+                if (name != null) {
+                    String img = name.getImage();
+                    if (img != null && (img.startsWith("verify") || img.startsWith("Mockito.verify"))) {
                         return true;
                     }
                 }
