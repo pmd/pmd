@@ -1,6 +1,17 @@
 #!/bin/bash
 set -ev
 
+source .travis/common-functions.h
+
+VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
+echo "Building PMD Sonar ${VERSION} on branch ${TRAVIS_BRANCH}"
+
+if [ ! travis_isPush() ]; then
+    echo "Not updating sonar, since this is not a push!"
+    exit 0
+fi
+
+
 export PING_SLEEP=30s
 export BUILD_OUTPUT=/tmp/build-sonar.out
 export PING_PID_FILE=/tmp/build-sonar-ping.pid
