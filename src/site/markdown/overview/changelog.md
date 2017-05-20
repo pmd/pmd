@@ -38,6 +38,8 @@ This is a minor release.
 *   General
     *   [#377](https://github.com/pmd/pmd/issues/377): \[core] Use maven wrapper and upgrade to maven 3.5.0
     *   [#376](https://github.com/pmd/pmd/issues/376): \[core] Improve build time on travis
+*   java-coupling
+    *   [#1427](https://sourceforge.net/p/pmd/bugs/1427/): \[java] Law of Demeter violations for the Builder pattern
 *   java-design
     *   [#345](https://github.com/pmd/pmd/issues/345): \[java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces
     *   [#389](https://github.com/pmd/pmd/issues/389): \[java] RuleSetCompatibility - not taking rename of UnusedModifier into account
@@ -61,3 +63,4 @@ This is a minor release.
 *   [#383](https://github.com/pmd/pmd/pull/383): \[jsp] Fixed JspEncoding false positive
 *   [#390](https://github.com/pmd/pmd/pull/390): \[java] Remove trailing whitespaces in design.xml
 *   [#391](https://github.com/pmd/pmd/pull/391): \[apex] Fix documentation typo
+*   [#392](https://github.com/pmd/pmd/pull/392): \[java] False positive for Law Of Demeter (Builder pattern)
