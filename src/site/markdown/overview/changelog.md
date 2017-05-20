@@ -60,3 +60,4 @@ This is a minor release.
 *   [#382](https://github.com/pmd/pmd/pull/382): \[java] Added documentation details on InefficientEmptyStringCheck
 *   [#383](https://github.com/pmd/pmd/pull/383): \[jsp] Fixed JspEncoding false positive
 *   [#390](https://github.com/pmd/pmd/pull/390): \[java] Remove trailing whitespaces in design.xml
+*   [#391](https://github.com/pmd/pmd/pull/391): \[apex] Fix documentation typo
