@@ -37,6 +37,8 @@ This is a minor release.
 *   java-design
     *   [#345](https://github.com/pmd/pmd/issues/345): \[java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces
     *   [#389](https://github.com/pmd/pmd/issues/389): \[java] RuleSetCompatibility - not taking rename of UnusedModifier into account
+*   java-strings
+    *   [#334](https://github.com/pmd/pmd/issues/334): \[java] \[doc] Add suggestion to use StringUtils#isBlank for InefficientEmptyStringCheck
 
 ### API Changes
 
@@ -49,3 +51,4 @@ This is a minor release.
 *   [#372](https://github.com/pmd/pmd/pull/372): \[core] Fix XSS in HTML renderer
 *   [#374](https://github.com/pmd/pmd/pull/374): \[java] Add property to ignore interfaces in FieldDeclarationsShouldBeAtStartOfClassRule
 *   [#381](https://github.com/pmd/pmd/pull/381): \[core] Fix broken link in the site's doc
+*   [#382](https://github.com/pmd/pmd/pull/382): \[java] Added documentation details on InefficientEmptyStringCheck
