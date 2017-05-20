@@ -38,6 +38,8 @@ This is a minor release.
 *   General
     *   [#377](https://github.com/pmd/pmd/issues/377): \[core] Use maven wrapper and upgrade to maven 3.5.0
     *   [#376](https://github.com/pmd/pmd/issues/376): \[core] Improve build time on travis
+*   java
+    *   [#378](https://github.com/pmd/pmd/issues/378): \[java] Parser Error for empty statements
 *   java-coupling
     *   [#1427](https://sourceforge.net/p/pmd/bugs/1427/): \[java] Law of Demeter violations for the Builder pattern
 *   java-design

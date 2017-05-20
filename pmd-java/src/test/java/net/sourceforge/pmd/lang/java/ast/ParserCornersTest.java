@@ -194,6 +194,29 @@ public class ParserCornersTest extends ParserTst {
         Assert.assertEquals(0, cu.findDescendantsOfType(ASTCastExpression.class).size());
     }
 
+    /**
+     * Empty statements should be allowed.
+     * @throws Exception
+     * @see https://github.com/pmd/pmd/issues/378
+     */
+    @Test
+    public void testParseEmptyStatements() throws Exception {
+        String code = "import a;;import b; public class Foo {}";
+        ASTCompilationUnit cu = parseJava18(code);
+        assertNotNull(cu);
+        Assert.assertEquals(ASTEmptyStatement.class, cu.jjtGetChild(1).getClass());
+
+        String code2 = "package c;; import a; import b; public class Foo {}";
+        ASTCompilationUnit cu2 = parseJava18(code2);
+        assertNotNull(cu2);
+        Assert.assertEquals(ASTEmptyStatement.class, cu2.jjtGetChild(1).getClass());
+
+        String code3 = "package c; import a; import b; public class Foo {};";
+        ASTCompilationUnit cu3 = parseJava18(code3);
+        assertNotNull(cu3);
+        Assert.assertEquals(ASTEmptyStatement.class, cu3.jjtGetChild(4).getClass());
+    }
+
     private String readAsString(String resource) {
         InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
         try {
