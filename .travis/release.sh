@@ -2,11 +2,8 @@
 set -e
 
 echo "BUILD: $BUILD"
-if [ "${BUILD}" != "deploy" ]; then
-    echo "Skipping deployment script, it needs to run only once"
-    exit 0
-fi
 
+if [ "${BUILD}" = "deploy" ]; then
 
 RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 
@@ -46,7 +43,10 @@ else
     echo "Update OK"
 fi
 
+fi
 
+
+if [ "${BUILD}" = "site" ]; then
 
 echo "Adding the site to pmd.github.io..."
 # clone pmd.github.io. Note: This uses the ssh key setup earlier
@@ -70,4 +70,6 @@ mkdir pmd.github.io
     git commit -q -m "Copying pmd-${RELEASE_VERSION} to latest"
     git push origin master
 )
+
+fi
 
