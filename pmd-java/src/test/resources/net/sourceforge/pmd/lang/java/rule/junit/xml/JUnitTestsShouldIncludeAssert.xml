@@ -340,4 +340,57 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#358 Treat Mockito's verify as assert expressions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+@RunWith(MockitoJUnitRunner.class)
+public class FooTest {
+
+    @Mock
+    private Bar bar;
+
+    @Test
+    public void testFooCallsBar() {
+        Foo foo = new Foo(bar);
+        foo.doTask();
+
+        verify(bar, times(1)).actuallyDoTask();
+    }
+}]]></code>
+    </test-code>
+    <test-code>
+        <description>#358 Treat Mockito's Mockito.verify as assert expressions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+
+
+@RunWith(MockitoJUnitRunner.class)
+public class FooTest {
+
+    @Mock
+    private Bar bar;
+
+    @Test
+    public void testFooCallsBar() {
+        Foo foo = new Foo(bar);
+        foo.doTask();
+
+        Mockito.verify(bar, Mockito.times(1)).actuallyDoTask();
+    }
+}]]></code>
+    </test-code>
 </test-data>
