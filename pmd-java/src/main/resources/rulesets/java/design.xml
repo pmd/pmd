@@ -50,7 +50,7 @@ the conditional test can be returned instead.
     <example>
 <![CDATA[
 public boolean isBarEqualTo(int x) {
-   
+
 	if (bar == x) {		 // this bit of code...
 		return true;
 	} else {
@@ -185,8 +185,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.design.SwitchDensityRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SwitchDensity">
       <description>
-A high ratio of statements to labels in a switch statement implies that the switch statement 
-is overloaded.  Consider moving the statements into new methods or creating subclasses based 
+A high ratio of statements to labels in a switch statement implies that the switch statement
+is overloaded.  Consider moving the statements into new methods or creating subclasses based
 on the switch variable.
       </description>
         <priority>3</priority>
@@ -215,12 +215,12 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ConstructorCallsOverridableMethod">
       <description>
-Calling overridable methods during construction poses a risk of invoking methods on an incompletely 
+Calling overridable methods during construction poses a risk of invoking methods on an incompletely
 constructed object and can be difficult to debug.
-It may leave the sub-class unable to construct its superclass or forced to replicate the construction 
-process completely within itself, losing the ability to call super().  If the default constructor 
-contains a call to an overridable method, the subclass may be completely uninstantiable.   Note that 
-this includes method calls throughout the control flow graph - i.e., if a constructor Foo() calls a 
+It may leave the sub-class unable to construct its superclass or forced to replicate the construction
+process completely within itself, losing the ability to call super().  If the default constructor
+contains a call to an overridable method, the subclass may be completely uninstantiable.   Note that
+this includes method calls throughout the control flow graph - i.e., if a constructor Foo() calls a
 private method bar() that calls a public method buz(), this denotes a problem.
       </description>
         <priority>1</priority>
@@ -254,10 +254,10 @@ public class JuniorClass extends SeniorClass {
           class="net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AccessorClassGeneration">
       <description>
-Instantiation by way of private constructors from outside of the constructor's class often causes the 
-generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this 
-situation. The generated class file is actually an interface.  It gives the accessing class the ability 
-to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter. 
+Instantiation by way of private constructors from outside of the constructor's class often causes the
+generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
+situation. The generated class file is actually an interface.  It gives the accessing class the ability
+to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
 This turns a private constructor effectively into one with package scope, and is challenging to discern.
       </description>
       <priority>3</priority>
@@ -282,7 +282,7 @@ public class Outer {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#FinalFieldCouldBeStatic">
       <description>
-If a final field is assigned to a compile-time constant, it could be made static, thus saving overhead 
+If a final field is assigned to a compile-time constant, it could be made static, thus saving overhead
 in each object at runtime.
       </description>
       <priority>3</priority>
@@ -343,8 +343,8 @@ public class Bar {
            class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#NonStaticInitializer">
        <description>
-A non-static initializer block will be called any time a constructor is invoked (just prior to 
-invoking the constructor).  While this is a valid language construct, it is rarely used and is 
+A non-static initializer block will be called any time a constructor is invoked (just prior to
+invoking the constructor).  While this is a valid language construct, it is rarely used and is
 confusing.
        </description>
        <priority>3</priority>
@@ -477,11 +477,11 @@ PrimarySuffix/Arguments/ArgumentList/Expression
       <example>
   <![CDATA[
 List foos = getFoos();
-  
+
     // inefficient, the array will be discarded
 Foo[] fooArray = foos.toArray(new Foo[0]);
-    
-    // much better; this one sizes the destination array, 
+
+    // much better; this one sizes the destination array,
     // avoiding of a new one via reflection
 Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
   ]]>
@@ -556,7 +556,7 @@ String x = "foo";
 if (x.equals(null)) { // bad form
    	doSomething();
 	}
-	
+
 if (x == null) { 	// preferred
    	doSomething();
 	}
@@ -576,7 +576,7 @@ Avoid negation within an "if" expression with an "else" clause.  For example, re
 as:
   if (x == y) same(); else diff();
 
-Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this 
+Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
 as "does the error case go first?" or "does the common case go first?".
         </description>
@@ -687,7 +687,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ImmutableField">
       <description>
-Identifies private fields whose values never change once they are initialized either in the declaration 
+Identifies private fields whose values never change once they are initialized either in the declaration
 of the field or by a constructor.  This helps in converting existing classes to becoming immutable ones.
       </description>
         <priority>3</priority>
@@ -892,8 +892,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidSynchronizedAtMethodLevel">
       <description>
-Method-level synchronization can cause problems when new code is added to the method.  
-Block-level synchronization helps to ensure that only the code that needs synchronization 
+Method-level synchronization can cause problems when new code is added to the method.
+Block-level synchronization helps to ensure that only the code that needs synchronization
 gets it.
       </description>
       <priority>3</priority>
@@ -921,7 +921,7 @@ public class Foo {
   // Try to avoid this for static methods:
   static synchronized void fooStatic() {
   }
-  
+
   // Prefer this:
   static void barStatic() {
     synchronized(Foo.class) {
@@ -1185,7 +1185,7 @@ class Foo {
   class="net.sourceforge.pmd.lang.rule.XPathRule"
   externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PositionLiteralsFirstInComparisons">
   <description>
-Position literals first in comparisons, if the second argument is null then NullPointerExceptions 
+Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
   </description>
   <priority>3</priority>
@@ -1232,7 +1232,7 @@ class Foo {
   class="net.sourceforge.pmd.lang.rule.XPathRule"
   externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PositionLiteralsFirstInCaseInsensitiveComparisons">
   <description>
-Position literals first in comparisons, if the second argument is null then NullPointerExceptions 
+Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
   </description>
   <priority>3</priority>
@@ -1332,7 +1332,7 @@ public static Foo getFoo() {
 		class="net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule">
 <description>
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
-is that the instance created using the overloaded method is not cached and so, 
+is that the instance created using the overloaded method is not cached and so,
  for each call and new objects will be created for every invocation.
 </description>
 <priority>2</priority>
@@ -1340,9 +1340,9 @@ is that the instance created using the overloaded method is not cached and so,
 public class Singleton {
 
    private static Singleton singleton = new Singleton( );
-   
+
   private Singleton(){ }
-   
+
 public static Singleton getInstance( ) {
 	  return singleton;
 }
@@ -1362,7 +1362,7 @@ public static Singleton getInstance(Object obj){
 		class="net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule">
 <description>
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
-is that the instance created using the overloaded method is not cached and so, 
+is that the instance created using the overloaded method is not cached and so,
  for each call and new objects will be created for every invocation.
 </description>
 <priority>2</priority>
@@ -1371,7 +1371,7 @@ class Singleton {
 	private static Singleton instance = null;
 	public static Singleton getInstance() {
 	synchronized(Singleton.class){
-		return new Singleton();					
+		return new Singleton();
 	}
 	}
 }
@@ -1448,7 +1448,7 @@ public Foo() {
       externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UnsynchronizedStaticDateFormatter">
       <description>
 SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
-for each thread. If multiple threads must access a static formatter, the formatter must be 
+for each thread. If multiple threads must access a static formatter, the formatter must be
 synchronized either on method or block level.
       </description>
       <priority>3</priority>
@@ -1474,7 +1474,7 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PreserveStackTrace">
       <description>
 Throwing a new exception from a catch block without passing the original exception into the
-new exception will cause the original stack trace to be lost making it difficult to debug 
+new exception will cause the original stack trace to be lost making it difficult to debug
 effectively.
       </description>
       <priority>3</priority>
@@ -1543,7 +1543,7 @@ public class Foo {
           message="A class which only has private constructors should be final"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ClassWithOnlyPrivateConstructorsShouldBeFinal">
         <description>
-A class with only private constructors should be final, unless the private constructor 
+A class with only private constructors should be final, unless the private constructor
 is invoked by a inner class.
         </description>
         <priority>1</priority>
@@ -1573,7 +1573,7 @@ public class Foo {  //Should be final
           message="An empty method in an abstract class should be abstract instead"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#EmptyMethodInAbstractClassShouldBeAbstract">
         <description>
-Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate 
+Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate
 usage by developers who should be implementing their own versions in the concrete subclasses.
         </description>
         <priority>1</priority>
@@ -1646,7 +1646,7 @@ public class Foo {
         	message="Return an empty array rather than 'null'."
         	externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ReturnEmptyArrayRatherThanNull">
         <description>
-For any method that returns an array, it is a better to return an empty array rather than a 
+For any method that returns an array, it is a better to return an empty array rather than a
 null reference. This removes the need for null checking all results and avoids inadvertent
 NullPointerExceptions.
         </description>
@@ -1689,8 +1689,8 @@ public class Example {
         	message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
         	externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AbstractClassWithoutAnyMethod">
         <description>
-If an abstract class does not provides any methods, it may be acting as a simple data container 
-that is not meant to be instantiated. In this case, it is probably better to use a private or 
+If an abstract class does not provides any methods, it may be acting as a simple data container
+that is not meant to be instantiated. In this case, it is probably better to use a private or
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
 	   </description>
         <priority>1</priority>
@@ -1724,7 +1724,7 @@ public class abstract Example {
             message="A switch with less than three branches is inefficient, use a 'if statement' instead."
             externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#TooFewBranchesForASwitchStatement">
         <description>
-Switch statements are indended to be used to support complex branching behaviour. Using a switch for only a few 
+Switch statements are indended to be used to support complex branching behaviour. Using a switch for only a few
 cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
 if-then statement to increase code readability.
         </description>
@@ -1758,7 +1758,7 @@ public class Foo {
             ]]>
         </example>
     </rule>
-    
+
 
 	<rule 	name="LogicInversion"
 	        language="java"
@@ -1805,8 +1805,8 @@ public boolean bar(int a, int b) {
          class="net.sourceforge.pmd.lang.rule.XPathRule"
 	  		externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseVarargs">
         <description>
-Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic 
-sugar provides flexibility for users of these methods and constructors, allowing them to avoid 
+Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
+sugar provides flexibility for users of these methods and constructors, allowing them to avoid
 having to deal with the creation of an array.
 </description>
         <priority>4</priority>
@@ -1844,7 +1844,7 @@ public class Foo {
 }
         ]]></example>
     </rule>
-   
+
   <rule name="FieldDeclarationsShouldBeAtStartOfClass"
       language="java"
       since="5.0"
@@ -1872,7 +1872,7 @@ public class HelloWorldBean {
       ]]>
     </example>
   </rule>
- 	 
+
     <rule name="GodClass"
         language="java"
         since="5.0"
@@ -1890,7 +1890,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
         </description>
         <priority>3</priority>
     </rule>
-    
+
     <rule name="AvoidProtectedMethodInFinalClassNotExtending"
    		language="java"
              since="5.1"
@@ -1898,7 +1898,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
              class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidProtectedMethodInFinalClassNotExtending">
          <description>
-Do not use protected methods in most final classes since they cannot be subclassed. This should 
+Do not use protected methods in most final classes since they cannot be subclassed. This should
 only be allowed in final classes that extend other classes with protected methods (whose
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
          </description>
@@ -1918,12 +1918,12 @@ visibility cannot be reduced). Clarify your intent by using private or package a
 <![CDATA[
 public final class Foo {
   private int bar() {}
-  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible? 
+  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
 }
  ]]>
          </example>
        </rule>
-    
+
     <rule name="ConstantsInInterface"
    		  language="java"
           since="5.5"
@@ -1957,14 +1957,14 @@ public interface ConstantInterface {
 // with ignoreIfHasMethods = false
 public interface AnotherConstantInterface {
     public static final int CONST1 = 1; // violation, no fields allowed in interface!
-    
+
     int anyMethod();
 }
 
 // with ignoreIfHasMethods = true
 public interface YetAnotherConstantInterface {
     public static final int CONST1 = 1; // no violation
-    
+
     int anyMethod();
 }
  ]]>
@@ -1988,12 +1988,12 @@ be avoided by changing the visibility of the field / method from private to pack
 public class OuterClass {
     private int counter;
     /* package */ int id;
-    
+
     public class InnerClass {
         InnerClass() {
             OuterClass.this.counter++; // wrong accessor method will be generated
         }
-        
+
         public int getOuterClassId() {
             return OuterClass.this.id; // id is package-private, no accessor method needed
         }

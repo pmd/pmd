@@ -59,3 +59,4 @@ This is a minor release.
 *   [#381](https://github.com/pmd/pmd/pull/381): \[core] Fix broken link in the site's doc
 *   [#382](https://github.com/pmd/pmd/pull/382): \[java] Added documentation details on InefficientEmptyStringCheck
 *   [#383](https://github.com/pmd/pmd/pull/383): \[jsp] Fixed JspEncoding false positive
+*   [#390](https://github.com/pmd/pmd/pull/390): \[java] Remove trailing whitespaces in design.xml
