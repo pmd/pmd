@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+echo "BUILD: $BUILD"
+if [ "${BUILD}" != "deploy" ]; then
+    echo "Skipping deployment script, it needs to run only once"
+    exit 0
+fi
+
+
 RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 
 # Deploy to ossrh has already been done with the usual build. See build-deploy.sh
