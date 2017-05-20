@@ -14,16 +14,16 @@ echo "TRAVIS_ALLOW_FAILURE: $TRAVIS_ALLOW_FAILURE"
 
 function travis_isPullRequest() {
     if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-        return true
+        return 0
     else
-        return false
+        return 1
     fi
 }
 
 function travis_isPush() {
     if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]; then
-        return true
+        return 0
     else
-        return false
+        return 1
     fi
 }
