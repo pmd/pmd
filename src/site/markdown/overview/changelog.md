@@ -39,6 +39,8 @@ This is a minor release.
     *   [#389](https://github.com/pmd/pmd/issues/389): \[java] RuleSetCompatibility - not taking rename of UnusedModifier into account
 *   java-strings
     *   [#334](https://github.com/pmd/pmd/issues/334): \[java] \[doc] Add suggestion to use StringUtils#isBlank for InefficientEmptyStringCheck
+*   jsp-basic
+    *   [#369](https://github.com/pmd/pmd/issues/369): \[jsp] Wrong issue "JSP file should use UTF-8 encoding"
 
 ### API Changes
 
@@ -52,3 +54,4 @@ This is a minor release.
 *   [#374](https://github.com/pmd/pmd/pull/374): \[java] Add property to ignore interfaces in FieldDeclarationsShouldBeAtStartOfClassRule
 *   [#381](https://github.com/pmd/pmd/pull/381): \[core] Fix broken link in the site's doc
 *   [#382](https://github.com/pmd/pmd/pull/382): \[java] Added documentation details on InefficientEmptyStringCheck
+*   [#383](https://github.com/pmd/pmd/pull/383): \[jsp] Fixed JspEncoding false positive
