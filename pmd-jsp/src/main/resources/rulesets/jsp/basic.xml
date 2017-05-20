@@ -239,7 +239,7 @@ A missing 'meta' tag or page directive will trigger this rule, as well as a non-
 			<property name="xpath">
 				<value>
 					<![CDATA[
-//Content[
+//CompilationUnit/Content[
 not(Element[@Name="meta"][
    Attribute[@Name="content"]/AttributeValue[contains(lower-case(@Image),"charset=utf-8")]
 ]) 
