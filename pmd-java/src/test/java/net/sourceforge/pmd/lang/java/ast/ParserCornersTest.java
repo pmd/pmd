@@ -197,7 +197,7 @@ public class ParserCornersTest extends ParserTst {
     /**
      * Empty statements should be allowed.
      * @throws Exception
-     * @see https://github.com/pmd/pmd/issues/378
+     * @see <a href="https://github.com/pmd/pmd/issues/378">github issue 378</a>
      */
     @Test
     public void testParseEmptyStatements() throws Exception {
