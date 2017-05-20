@@ -6,11 +6,11 @@ source .travis/common-functions.sh
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
-if [ travis_isPullRequest() ]; then
+if [ travis_isPullRequest ]; then
 
     ./mvnw verify -B -V
 
-elif [ travis_isPush() ]; then
+elif [ travis_isPush ]; then
 
     if [[ "$VERSION" != *-SNAPSHOT && "$TRAVIS_TAG" != "" ]]; then
         # release build
