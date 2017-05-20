@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-source .travis/common-functions.h
+source .travis/common-functions.sh
 
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
