@@ -43,6 +43,8 @@ This is a minor release.
 *   java-design
     *   [#345](https://github.com/pmd/pmd/issues/345): \[java] FieldDeclarationsShouldBeAtStartOfClass: Add ability to ignore interfaces
     *   [#389](https://github.com/pmd/pmd/issues/389): \[java] RuleSetCompatibility - not taking rename of UnusedModifier into account
+*   java-junit
+    *   [#358](https://github.com/pmd/pmd/issues/358): \[java] Mockito verify method is not taken into account in JUnitTestsShouldIncludeAssert rule
 *   java-strings
     *   [#334](https://github.com/pmd/pmd/issues/334): \[java] \[doc] Add suggestion to use StringUtils#isBlank for InefficientEmptyStringCheck
 *   jsp-basic
@@ -64,3 +66,4 @@ This is a minor release.
 *   [#390](https://github.com/pmd/pmd/pull/390): \[java] Remove trailing whitespaces in design.xml
 *   [#391](https://github.com/pmd/pmd/pull/391): \[apex] Fix documentation typo
 *   [#392](https://github.com/pmd/pmd/pull/392): \[java] False positive for Law Of Demeter (Builder pattern)
+*   [#395](https://github.com/pmd/pmd/pull/395): \[java] Mockito verify method is not taken into account in JUnitTestsShouldIncludeAssert rule
