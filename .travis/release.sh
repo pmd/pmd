@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ev
+set -e
 
 RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 

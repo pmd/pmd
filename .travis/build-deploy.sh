@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ev
+set -e
 
 source .travis/common-functions.sh
 
@@ -8,18 +8,20 @@ echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
 if [ travis_isPullRequest ]; then
 
+    echo "This is a pull-request build"
     ./mvnw verify -B -V
 
 elif [ travis_isPush ]; then
 
     if [[ "$VERSION" != *-SNAPSHOT && "$TRAVIS_TAG" != "" ]]; then
-        # release build
+        echo "This is a release build for tag $TRAVIS_TAG"
         ./mvnw deploy -Possrh,pmd-release -B -V
     elif [[ "$VERSION" == *-SNAPSHOT ]]; then
-        # snapshot build
+        echo "This is a snapshot build"
         ./mvnw deploy -Possrh -B -V
     else
         # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.
+        echo "This is some other build, probably during release: commit with a non-snapshot version on branch master..."
         ./mvnw verify -Possrh -B -V
         # we stop here - no need to execute further steps
         exit 0
