@@ -1,6 +1,6 @@
 # PMD Release Notes
 
-## ????? - 5.7.0-SNAPSHOT
+## 20-Mai-2017 - 5.7.0
 
 The PMD team is pleased to announce PMD 5.7.0.
 
