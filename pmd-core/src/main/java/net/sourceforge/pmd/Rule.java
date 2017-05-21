@@ -284,6 +284,21 @@ public interface Rule extends PropertySource {
     boolean usesTypeResolution();
 
     /**
+     * Sets whether this Rule uses Object Oriented Metrics.
+     */
+    // FUTURE Use JavaBean conventions for boolean attributes
+    void setUsesOOMetrics();
+
+    /**
+     * Gets whether this Rule uses Object Oriented Metrics.
+     *
+     * @return <code>true</code> if the Metrics Framework is used.
+     */
+    // FUTURE Use JavaBean conventions for boolean attributes
+    boolean usesOOMetrics();
+
+
+    /**
      * Gets whether this Rule uses the RuleChain.
      *
      * @return <code>true</code> if RuleChain is used.
