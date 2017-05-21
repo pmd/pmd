@@ -21,11 +21,13 @@ echo "Releasing PMD"
 echo "-------------------------------------------"
 
 # see also https://gist.github.com/pdunnavant/4743895
-CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
+CURRENT_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec|tail -1)
 RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
-CURRENT_BUILD_NUMBER=$(echo ${RELEASE_VERSION} | sed -e 's/[0-9]*\.//g')
-NEXT_BUILD_NUMBER=$(expr ${CURRENT_BUILD_NUMBER} + 1)
-DEVELOPMENT_VERSION=$(echo ${RELEASE_VERSION} | sed -e "s/[0-9][0-9]*\([^0-9]*\)$/${NEXT_BUILD_NUMBER}/")
+MAJOR=$(echo $RELEASE_VERSION | cut -d . -f 1)
+MINOR=$(echo $RELEASE_VERSION | cut -d . -f 2)
+PATCH=$(echo $RELEASE_VERSION | cut -d . -f 3)
+NEXT_MINOR=$(expr ${MINOR} + 1)
+DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.0"
 DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
 
 # http://stackoverflow.com/questions/1593051/how-to-programmatically-determine-the-current-checked-out-git-branch

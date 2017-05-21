@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ev
+set -e
 
 echo "MAVEN_OPTS='-Xms1g -Xmx1g'" > $HOME/.mavenrc
 mkdir -p .m2

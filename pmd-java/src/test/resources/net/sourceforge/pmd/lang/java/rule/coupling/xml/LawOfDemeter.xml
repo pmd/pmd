@@ -254,4 +254,19 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1427 False Positive for Law of Demeter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void bar() {
+        // Builder pattern
+        final Builder builder = Builder.newBuilder();
+        builder.withFoo();
+        final FooBuilder fooBuilder = FooBuilder.newBuilder();
+        fooBuilder.withBar();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

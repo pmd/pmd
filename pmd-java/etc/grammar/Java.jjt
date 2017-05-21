@@ -1,4 +1,9 @@
 /**
+ * Allow empty statements (";") between package, import
+ * and type declarations.
+ * Bug #378
+ * Andreas Dangel 05/2017
+ *====================================================================
  * Allow method references to specify generics also for
  * constructor references ("new").
  * Bug #309
@@ -1252,9 +1257,9 @@ TOKEN :
 ASTCompilationUnit CompilationUnit() :
 {}
 {
-  [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ]
-  ( ImportDeclaration() )*
-  ( TypeDeclaration() )*
+  [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ( EmptyStatement() )* ]
+  ( ImportDeclaration() ( EmptyStatement() )* )*
+  ( TypeDeclaration() ( EmptyStatement() )* )*
   ( < "\u001a" > )?
   ( < "~[]" > )?
   <EOF>
@@ -1317,8 +1322,6 @@ void TypeDeclaration():
    int modifiers;
 }
 {
-  ";"
-|
   modifiers = Modifiers()
   (
      ClassOrInterfaceDeclaration(modifiers)
