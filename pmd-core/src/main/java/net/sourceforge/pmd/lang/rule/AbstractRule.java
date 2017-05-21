@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sourceforge.pmd.AbstractPropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -15,6 +12,9 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule
@@ -406,7 +406,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolation(Object data, Node node) {
         RuleContext ruleContext = (RuleContext) data;
@@ -416,17 +416,17 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolation(Object data, Node node, String arg) {
         RuleContext ruleContext = (RuleContext) data;
         ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, this.getMessage(), new Object[] { arg });
+                this, node, this.getMessage(), new Object[]{arg});
     }
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolation(Object data, Node node, Object[] args) {
         RuleContext ruleContext = (RuleContext) data;
@@ -436,7 +436,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolationWithMessage(Object data, Node node, String message) {
         RuleContext ruleContext = (RuleContext) data;
@@ -446,7 +446,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolationWithMessage(Object data, Node node, String message, int beginLine, int endLine) {
         RuleContext ruleContext = (RuleContext) data;
@@ -456,7 +456,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
         RuleContext ruleContext = (RuleContext) data;

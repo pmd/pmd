@@ -567,6 +567,10 @@ public class RuleSetFactory {
             rule.setUsesTypeResolution();
         }
 
+        if (hasAttributeSetTrue(ruleElement, "metrics")) {
+            rule.setUsesMetrics();
+        }
+
         final NodeList nodeList = ruleElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
