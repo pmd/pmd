@@ -40,6 +40,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private RulePriority priority = RulePriority.LOW;
     private boolean usesDFA;
     private boolean usesTypeResolution;
+    private boolean usesMetrics;
     private List<String> ruleChainVisits = new ArrayList<>();
 
     public AbstractRule() {
@@ -65,6 +66,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         otherRule.propertyValuesByDescriptor = copyPropertyValues();
         otherRule.usesDFA = usesDFA;
         otherRule.usesTypeResolution = usesTypeResolution;
+        otherRule.usesMetrics = usesMetrics;
         otherRule.ruleChainVisits = copyRuleChainVisits();
     }
 
@@ -331,6 +333,23 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public boolean usesTypeResolution() {
         return usesTypeResolution;
     }
+
+    /**
+     * @see Rule#setUsesMetrics()
+     */
+    @Override
+    public void setUsesMetrics() {
+        usesMetrics = true;
+    }
+
+    /**
+     * @see Rule#usesMetrics()
+     */
+    @Override
+    public boolean usesMetrics() {
+        return usesMetrics;
+    }
+
 
     /**
      * @see Rule#usesRuleChain()
