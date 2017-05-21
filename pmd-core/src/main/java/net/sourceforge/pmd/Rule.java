@@ -287,7 +287,7 @@ public interface Rule extends PropertySource {
      * Sets whether this Rule uses Object Oriented Metrics.
      */
     // FUTURE Use JavaBean conventions for boolean attributes
-    void setUsesOOMetrics();
+    void setUsesMetrics();
 
     /**
      * Gets whether this Rule uses Object Oriented Metrics.
@@ -295,7 +295,7 @@ public interface Rule extends PropertySource {
      * @return <code>true</code> if the Metrics Framework is used.
      */
     // FUTURE Use JavaBean conventions for boolean attributes
-    boolean usesOOMetrics();
+    boolean usesMetrics();
 
 
     /**
