@@ -201,6 +201,16 @@ public class RuleSets {
         return false;
     }
 
+    public boolean usesMetrics(Language language) {
+        for (RuleSet ruleSet : ruleSets) {
+            if (ruleSet.usesMetrics(language)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Remove and collect any rules that report problems.
      *
