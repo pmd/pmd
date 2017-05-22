@@ -4,15 +4,19 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import net.sourceforge.pmd.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertySource;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Base class for Rule implementations which delegate to another Rule instance.

@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractPropertySource;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -12,9 +15,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule

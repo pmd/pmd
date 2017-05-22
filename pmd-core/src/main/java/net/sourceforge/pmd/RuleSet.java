@@ -4,6 +4,17 @@
 
 package net.sourceforge.pmd;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.cache.ChecksumAware;
@@ -15,11 +26,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;
-
-import java.io.File;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class represents a collection of rules along with some optional filter
@@ -361,7 +367,7 @@ public class RuleSet implements ChecksumAware {
                 throw new IllegalArgumentException(MISSING_RULE);
             }
 
-            for (final Iterator<Rule> it = rules.iterator(); it.hasNext(); ) {
+            for (final Iterator<Rule> it = rules.iterator(); it.hasNext();) {
                 final Rule r = it.next();
                 if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
                     it.remove();
