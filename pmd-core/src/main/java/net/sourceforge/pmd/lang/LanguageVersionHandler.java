@@ -79,6 +79,16 @@ public interface LanguageVersionHandler {
     VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
 
     /**
+     * Get the Metrics Framework visitor.
+     *
+     * @param classLoader
+     *            A ClassLoader to use for resolving Types.
+     * @return VisitorStarter
+     */
+    VisitorStarter getMetricsVisitorFacade(ClassLoader classLoader);
+
+
+    /**
      * Get the DumpFacade.
      *
      * @param writer
