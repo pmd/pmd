@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.oom.visitor;
 
-import net.sourceforge.pmd.lang.java.oom.Metrics;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import net.sourceforge.pmd.lang.java.oom.Metrics;
 
 /**
  * Package statistics. This recursive data structure mirrors the package structure of the analysed project and stores
@@ -21,14 +21,14 @@ public class PackageStats {
     private Map<String, PackageStats> subPackages = new HashMap<>();
     private Map<String, ClassStats> classes = new HashMap<>();
 
-    public double getMemo(Metrics.ClassMetricKey key, String qname){
+    public double getMemo(Metrics.ClassMetricKey key, String qname) {
         // TODO
         // Looks for a memoized result
 
         return Double.NaN;
     }
 
-    public double getMemo(Metrics.OperationMetricKey key, String qname){
+    public double getMemo(Metrics.OperationMetricKey key, String qname) {
         // TODO
         // Looks for a memoized result
 

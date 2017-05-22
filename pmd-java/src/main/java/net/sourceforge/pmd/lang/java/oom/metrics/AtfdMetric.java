@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
+import java.util.List;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
@@ -12,8 +14,6 @@ import net.sourceforge.pmd.lang.java.oom.visitor.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.visitor.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
 import net.sourceforge.pmd.lang.java.oom.visitor.Signature.Visibility;
-
-import java.util.List;
 
 /**
  * Access to Foreign Data. Quantifies the number of foreign fields accessed directly or via accessors.

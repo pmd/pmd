@@ -31,7 +31,7 @@ public class Metrics {
      * passed.
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
-        String qname = node.getQualifiedName(); //TODO
+        String qname = ""; // node.getQualifiedName(); //TODO
         double memoized = topLevelPackage.getMemo(key, qname);
 
         return memoized == Double.NaN ? key.getCalculator().computeFor(node, topLevelPackage) : memoized;
@@ -42,7 +42,7 @@ public class Metrics {
      * passed.
      */
     public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
-        String qname = node.getQualifiedName(); //TODO
+        String qname = ""; // node.getQualifiedName(); //TODO
         double memoized = topLevelPackage.getMemo(key, qname);
 
         return memoized == Double.NaN ? key.getCalculator().computeFor(node, topLevelPackage) : memoized;
@@ -73,9 +73,7 @@ public class Metrics {
      */
     public enum OperationMetricKey {
 
-        ATFD(new AtfdMetric()),
-        // ...
-        ;
+        ATFD(new AtfdMetric());
 
         /* The object used to calculate the metric */
         private final OperationMetric calculator;
