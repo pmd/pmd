@@ -151,7 +151,7 @@ public class SourceCodeProcessor {
             languageVersion.getLanguageVersionHandler().getTypeResolutionFacade(configuration.getClassLoader())
                     .start(rootNode);
             long end = System.nanoTime();
-            Benchmarker.mark(Benchmark.TypeResolution, end - start, 0);
+            Benchmarker.mark(Benchmark.Metrics, end - start, 0);
         }
     }
 
