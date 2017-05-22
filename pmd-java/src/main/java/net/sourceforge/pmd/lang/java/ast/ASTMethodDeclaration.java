@@ -108,4 +108,26 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         }
         return null;
     }
+
+    @Override
+    public String getQualifiedName() {
+        StringBuilder qname = new StringBuilder();
+        qname.append(this.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class).getQualifiedName());
+        qname.append(METHOD_DELIMITER);
+        qname.append(getMethodName());
+
+        qname.append(LEFT_PARAM_DELIMITER);
+        ASTFormalParameters params = this.getFirstChildOfType(ASTFormalParameters.class);
+        int lastParam = params.jjtGetNumChildren() - 1;
+        for (int i = 0; i < lastParam; i++) {
+            qname.append(params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage());
+            qname.append(PARAMLIST_DELIMITER);
+
+        }
+
+        qname.append(params.jjtGetChild(lastParam).getFirstDescendantOfType(ASTType.class).getTypeImage());
+        qname.append(RIGHT_PARAM_DELIMITER);
+
+        return qname.toString();
+    }
 }

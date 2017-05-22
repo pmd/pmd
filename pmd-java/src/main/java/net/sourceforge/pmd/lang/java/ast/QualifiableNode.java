@@ -7,6 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * @author Clément Fournier
  */
-public interface ASTMethodOrConstructorDeclaration extends QualifiableNode {
+public interface QualifiableNode {
+
+    char METHOD_DELIMITER = '$';
+    char NESTED_CLASS_DELIMITER = '.';
+
+    String getQualifiedName();
 
 }
