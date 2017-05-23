@@ -26,7 +26,7 @@ public class FieldSignature extends Signature {
         return o instanceof FieldSignature;
     }
     
-    public FieldSignature buildFor(ASTFieldDeclaration node) {
+    public static FieldSignature buildFor(ASTFieldDeclaration node) {
         return new FieldSignature(Visibility.get(node), node.isStatic(), node.isFinal());
     }
 
