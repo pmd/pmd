@@ -37,7 +37,7 @@ public class QualifiedNameTest extends ParserTst {
             assertEquals(LEFT_CLASS_SEP + "Foo", qname.toString());
             assertNull(qname.getPackages());
             assertEquals(1, qname.getClasses().length);
-            assertNull(qname.getSuffix());
+            assertNull(qname.getOperation());
         }
     }
 
@@ -52,7 +52,7 @@ public class QualifiedNameTest extends ParserTst {
             assertEquals("foo" + PACKAGE_SEP + "bar" + LEFT_CLASS_SEP + "Bzaz", qname.toString());
             assertEquals(2, qname.getPackages().length);
             assertEquals(1, qname.getClasses().length);
-            assertNull(qname.getSuffix());
+            assertNull(qname.getOperation());
         }
     }
 
@@ -116,8 +116,8 @@ public class QualifiedNameTest extends ParserTst {
             assertEquals("bar" + LEFT_CLASS_SEP
                             + "Bzaz" + METHOD_SEP + "foo" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP,
                     qname.toString());
-            assertNotNull(qname.getSuffix());
-            assertEquals("foo" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP, qname.getSuffix());
+            assertNotNull(qname.getOperation());
+            assertEquals("foo" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP, qname.getOperation());
 
         }
     }
@@ -135,8 +135,8 @@ public class QualifiedNameTest extends ParserTst {
             assertEquals("bar" + LEFT_CLASS_SEP
                             + "Bzaz" + METHOD_SEP + "Bzaz" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP,
                     qname.toString());
-            assertNotNull(qname.getSuffix());
-            assertEquals("Bzaz" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP, qname.getSuffix());
+            assertNotNull(qname.getOperation());
+            assertEquals("Bzaz" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP, qname.getOperation());
 
         }
     }
@@ -154,8 +154,8 @@ public class QualifiedNameTest extends ParserTst {
             assertEquals("bar" + LEFT_CLASS_SEP
                             + "Bzaz" + METHOD_SEP + "Bzaz" + LEFT_PARAM_SEP + "int" + PARAMLIST_SEP + "String" + RIGHT_PARAM_SEP,
                     qname.toString());
-            assertNotNull(qname.getSuffix());
-            assertEquals("Bzaz" + LEFT_PARAM_SEP + "int" + PARAMLIST_SEP + "String" + RIGHT_PARAM_SEP, qname.getSuffix());
+            assertNotNull(qname.getOperation());
+            assertEquals("Bzaz" + LEFT_PARAM_SEP + "int" + PARAMLIST_SEP + "String" + RIGHT_PARAM_SEP, qname.getOperation());
 
         }
     }

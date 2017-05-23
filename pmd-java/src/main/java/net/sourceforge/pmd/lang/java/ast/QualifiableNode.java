@@ -11,8 +11,6 @@ import java.util.Arrays;
  */
 public interface QualifiableNode {
 
-    // non canonical symbols but probably better for regex parsing if need be
-    // anyway can be changed
     char LEFT_CLASS_SEP = '$';
     char METHOD_SEP = '#';
     char NESTED_CLASS_SEP = ':';
@@ -20,28 +18,23 @@ public interface QualifiableNode {
     char RIGHT_PARAM_SEP = ')';
     char PARAMLIST_SEP = ',';
     char PACKAGE_SEP = '.';
-    char FIELD_SEP = '!';
 
     QualifiedName getQualifiedName();
 
     class QualifiedName {
         private String[] packages = null; // unnamed package
         private String[] classes = new String[1];
-        /** Either method name or field name */
-        private String suffix = null;
-        private boolean isField = false;
+        private String operation = null;
 
         public QualifiedName() {
         }
 
-        public static QualifiedName makeOperationOf(QualifiedName parentClass, String operationName,
-                                                    String[] paramTypes) {
+        public static QualifiedName makeOperationOf(QualifiedName parentClass, String operationName, String[] paramTypes) {
             QualifiedName qname = new QualifiedName();
             qname.packages = parentClass.packages;
             qname.classes = parentClass.classes;
 
-            qname.suffix = getMethodNameOf(operationName, paramTypes);
-            qname.isField = false;
+            qname.setOperation(operationName, paramTypes);
             return qname;
         }
 
@@ -58,24 +51,44 @@ public interface QualifiableNode {
             return qname;
         }
 
-        public static QualifiedName makeFieldOf(QualifiedName parentClass, String fieldName) {
-            QualifiedName qname = new QualifiedName();
-            qname.packages = parentClass.packages;
-            qname.classes = parentClass.classes;
-            qname.suffix = fieldName;
-            qname.isField = true;
-            return qname;
+        public boolean isClass() {
+            return classes[0] != null && operation == null;
         }
 
-        /**
-         * Returns a normalized method name based on parameter types and method name.
-         *
-         * @param methodName Name of the method.
-         * @param paramTypes Type of parameters.
-         *
-         * @return Normalized method name.
-         */
-        public static String getMethodNameOf(String methodName, String[] paramTypes) {
+        public void setClass(String className) {
+            classes[0] = className;
+        }
+
+        public boolean isNestedClass() {
+            return classes.length > 1 && operation == null;
+        }
+
+        public boolean isOperation() {
+            return operation != null;
+        }
+
+        public String[] getPackages() {
+            return packages;
+        }
+
+        public void setPackages(String[] packs) {
+            packages = packs;
+        }
+
+        public String[] getClasses() {
+            return classes;
+        }
+
+        public void setClasses(String[] classes) {
+            this.classes = classes;
+        }
+
+        public String getOperation() {
+            return operation;
+        }
+
+
+        public void setOperation(String methodName, String[] paramTypes) {
             StringBuilder sb = new StringBuilder();
             sb.append(methodName);
             sb.append(LEFT_PARAM_SEP);
@@ -91,48 +104,7 @@ public interface QualifiableNode {
 
             sb.append(RIGHT_PARAM_SEP);
 
-            return sb.toString();
-        }
-
-        public boolean isClass() {
-            return classes[0] != null && suffix == null;
-        }
-
-        public void setClass(String className) {
-            classes[0] = className;
-        }
-
-        public boolean isNestedClass() {
-            return classes.length > 1 && suffix == null;
-        }
-
-        public boolean isOperation() {
-            return suffix != null && !isField;
-        }
-
-        public boolean isField() {
-            return suffix != null && isField;
-        }
-
-        public void setField(String fieldName) {
-            suffix = fieldName;
-            isField = true;
-        }
-
-        public String[] getPackages() {
-            return packages;
-        }
-
-        public void setPackages(String[] packages) {
-            this.packages = packages;
-        }
-
-        public String[] getClasses() {
-            return classes;
-        }
-
-        public String getSuffix() {
-            return suffix;
+            this.operation = sb.toString();
         }
 
         @Override
@@ -158,9 +130,9 @@ public interface QualifiableNode {
 
             sb.append(classes[last]);
 
-            if (suffix != null) {
-                sb.append(isField ? FIELD_SEP : METHOD_SEP);
-                sb.append(suffix);
+            if (operation != null) {
+                sb.append(METHOD_SEP);
+                sb.append(operation);
             }
 
             return sb.toString();
@@ -190,8 +162,8 @@ public interface QualifiableNode {
                     hash += p.hashCode();
                 }
             }
-            if (suffix != null)
-                hash += suffix.hashCode();
+            if (operation != null)
+                hash += operation.hashCode();
             return hash;
         }
     }
