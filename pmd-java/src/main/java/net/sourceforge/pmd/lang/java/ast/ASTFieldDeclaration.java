@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable {
+public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, QualifiableNode {
 
     public ASTFieldDeclaration(int id) {
         super(id);
@@ -136,5 +136,12 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
             return decl.getImage();
         }
         return null;
+    }
+
+    @Override
+    public QualifiedName getQualifiedName() {
+       QualifiedName parent = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getQualifiedName();
+
+       return QualifiedName.makeFieldOf(parent, getVariableName());
     }
 }
