@@ -89,12 +89,6 @@ public interface QualifiableNode {
             return sb.toString();
         }
 
-        /** Is this QName describing a class? */
-        // Probably useless
-        public boolean isClass() {
-            return classes[0] != null && operation == null;
-        }
-
         /** Sets the class to the specified name, truncates the array to length of one */
         public void setClass(String className) {
             if (classes.length == 1) {
@@ -104,16 +98,6 @@ public interface QualifiableNode {
 
             classes = new String[]{className};
 
-        }
-
-        // Probably useless
-        public boolean isNestedClass() {
-            return classes.length > 1 && operation == null;
-        }
-
-        // Probably useless
-        public boolean isOperation() {
-            return operation != null;
         }
 
         public String[] getPackages() {
@@ -128,10 +112,6 @@ public interface QualifiableNode {
             return classes;
         }
 
-        // Probably useless
-        public void setClasses(String[] classes) {
-            this.classes = classes;
-        }
 
         public String getOperation() {
             return operation;
