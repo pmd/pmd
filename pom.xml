@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>5.3.10-SNAPSHOT</version>
+    <version>5.3.11-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -411,8 +411,8 @@
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>1.9.1</version>
                 </plugin>
-                <!-- As Clover can be quite an hassle, know that you can skip 
-                    it by using the following option when running mvn: $ mvn clean -Dmaven.clover.skip=true 
+                <!-- As Clover can be quite an hassle, know that you can skip
+                    it by using the following option when running mvn: $ mvn clean -Dmaven.clover.skip=true
                     site -->
                 <plugin>
                     <groupId>com.atlassian.maven.plugins</groupId>
@@ -469,7 +469,7 @@
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${pmd.plugin.version}</version>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -627,11 +627,11 @@
                 </configuration>
             </plugin>
 
-            <!-- Emma is a test coverage tools to be used instead of clover. 
-                As the mvn2 plugin is not released yet, the plugin is commented out, so you 
-                build won't fail: You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762 
+            <!-- Emma is a test coverage tools to be used instead of clover.
+                As the mvn2 plugin is not released yet, the plugin is commented out, so you
+                build won't fail: You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762
                 Download the tarball, extract, cd into dir, run $ mvn install. -->
-            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId> 
+            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId>
                 </plugin> -->
 
             <plugin>
