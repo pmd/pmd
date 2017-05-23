@@ -105,6 +105,22 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
+method in lambda expression is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo(String s) {
+  addActionListener(() -> bar());
+  addActionListener(() -> { bar(); });
+  addActionListener((a) -> { bar(); });
+ }
+ public void bar() {}
+}
+     ]]></code>
+    </test-code>    
+    <test-code>
+        <description><![CDATA[
 bug report 975407
      ]]></description>
         <expected-problems>0</expected-problems>
