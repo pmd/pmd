@@ -4,23 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.oom;
 
+import static net.sourceforge.pmd.lang.java.oom.visitor.MetricsVisitorFacade.topLevelPackage;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
-import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
+
 
 /**
- * Façade of the Metrics Framework.
+ * User bound façade of the Metrics Framework. Provides a uniform interface for the calculation of
+ * metrics.
  *
  * @author Clément Fournier
  */
 public class Metrics {
-
-    /**
-     * Holds sufficient statistics and memoises results
-     */
-    private static PackageStats topLevelPackage;
 
     private Metrics() { // Cannot be instantiated
 

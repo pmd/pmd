@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-
+import net.sourceforge.pmd.lang.java.ast.QualifiableNode.QualifiedName;
 
 
 /**
@@ -22,8 +22,10 @@ public abstract class AbstractMetric {
 
     protected boolean isAbstractHandler = false;
 
-    protected List<String> findAllCalls(ASTMethodOrConstructorDeclaration node) {
-        List<String> result = new ArrayList<>();
+    protected List<QualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
+        List<QualifiedName> result = new ArrayList<>();
+        // TODO
+        // Needs TypeRes!!
         // Find the qualified names of all methods called in that method's block
         return result;
     }

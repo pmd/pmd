@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.QualifiableNode.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.visitor.OperationSigMask;
@@ -36,9 +37,9 @@ public class AtfdMetric extends AbstractMetric implements ClassMetric, Operation
         targetOps.setVisibilityMask(Visibility.PUBLIC);
         targetOps.setRoleMask(Role.GETTER_OR_SETTER);
 
-        List<String> callQNames = findAllCalls(node);
+        List<QualifiedName> callQNames = findAllCalls(node);
         int foreignCalls = 0;
-        for (String name : callQNames) {
+        for (QualifiedName name : callQNames) {
             if (holder.hasMatchingSig(name, targetOps)) {
                 foreignCalls++;
             }

@@ -127,7 +127,7 @@ public class PackageStats {
         return classes.get(name);
     }
 
-    public boolean hasMatchingSig(String qname, OperationSigMask sigMask) {
+    public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
         // TODO
         // navigate to the class in the tree
         // return true if the signature of the qualified name is covered by the
