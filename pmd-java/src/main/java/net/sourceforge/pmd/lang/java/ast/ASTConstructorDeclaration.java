@@ -42,24 +42,18 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
     }
 
     @Override
-    public String getQualifiedName() {
-        StringBuilder qname = new StringBuilder();
-        ASTClassOrInterfaceDeclaration parent = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        qname.append(parent.getQualifiedName());
-        qname.append(METHOD_DELIMITER);
-        qname.append(parent.getImage()); // Constructors have the name of the class
-        qname.append(LEFT_PARAM_DELIMITER);
+    public QualifiedName getQualifiedName() {
+        ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 
-        ASTFormalParameters params = this.getParameters();
-        int lastParam = params.jjtGetNumChildren() - 1;
-        for (int i = 0; i < lastParam; i++) {
-            qname.append(params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage());
-            qname.append(PARAMLIST_DELIMITER);
+        ASTFormalParameters params = this.getFirstChildOfType(ASTFormalParameters.class);
+        int numParams = params.jjtGetNumChildren();
+        String[] types = new String[numParams];
+
+        for (int i = 0; i < numParams; i++) {
+            types[i] = params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage();
         }
 
-        qname.append(params.jjtGetChild(lastParam).getFirstDescendantOfType(ASTType.class).getTypeImage());
-        qname.append(RIGHT_PARAM_DELIMITER);
 
-        return qname.toString();
+        return QualifiedName.makeOperationOf(parent.getQualifiedName(), parent.getImage(), types);
     }
 }

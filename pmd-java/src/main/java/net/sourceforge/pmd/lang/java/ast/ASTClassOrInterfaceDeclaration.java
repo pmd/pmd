@@ -44,22 +44,24 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
     }
 
     @Override
-    public String getQualifiedName() {
-        StringBuilder qname = new StringBuilder();
+    public QualifiedName getQualifiedName() {
+
         if (isNested()) {
             ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            qname.append(parent.getQualifiedName());
-            qname.append(NESTED_CLASS_DELIMITER);
-        } else {
-            ASTPackageDeclaration pkg = this.getFirstParentOfType(ASTCompilationUnit.class)
-                    .getFirstChildOfType(ASTPackageDeclaration.class);
-
-            qname.append(pkg.getPackageNameImage());
-            qname.append(CLASS_DELIMITER);
+            QualifiedName parentQN = parent.getQualifiedName();
+            return QualifiedName.makeClassOf(parentQN, this.getImage());
         }
 
-        qname.append(this.getImage());
+        QualifiedName qname = new QualifiedName();
+        ASTPackageDeclaration pkg = this.getFirstParentOfType(ASTCompilationUnit.class)
+                .getFirstChildOfType(ASTPackageDeclaration.class);
 
-        return qname.toString();
+        if (pkg != null) {
+            qname.setPackages(pkg.getPackageNameImage().split("\\."));
+        }
+
+        qname.setClass(this.getImage());
+
+        return qname;
     }
 }
