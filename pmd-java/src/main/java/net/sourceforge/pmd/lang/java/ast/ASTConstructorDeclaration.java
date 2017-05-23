@@ -45,7 +45,7 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
     public QualifiedName getQualifiedName() {
         ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 
-        ASTFormalParameters params = this.getFirstChildOfType(ASTFormalParameters.class);
+        ASTFormalParameters params = this.getFirstDescendantOfType(ASTFormalParameters.class);
         int numParams = params.jjtGetNumChildren();
         String[] types = new String[numParams];
 

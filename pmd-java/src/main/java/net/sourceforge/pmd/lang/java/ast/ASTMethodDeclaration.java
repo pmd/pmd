@@ -113,7 +113,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
     public QualifiedName getQualifiedName() {
         QualifiedName parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getQualifiedName();
 
-        ASTFormalParameters params = this.getFirstChildOfType(ASTFormalParameters.class);
+        ASTFormalParameters params = this.getFirstDescendantOfType(ASTFormalParameters.class);
         int numParams = params.jjtGetNumChildren();
         String[] types = new String[numParams];
 

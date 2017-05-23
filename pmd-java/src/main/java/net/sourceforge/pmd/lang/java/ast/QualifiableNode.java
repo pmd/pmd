@@ -11,13 +11,13 @@ import java.util.Arrays;
  */
 public interface QualifiableNode {
 
-    char CLASS_DELIMITER = '$';
-    char METHOD_DELIMITER = '#';
-    char NESTED_CLASS_DELIMITER = ':';
-    char LEFT_PARAM_DELIMITER = '(';
-    char RIGHT_PARAM_DELIMITER = ')';
-    char PARAMLIST_DELIMITER = ',';
-    char PACKAGE_DELIMITER = '.';
+    char LEFT_CLASS_SEP = '$';
+    char METHOD_SEP = '#';
+    char NESTED_CLASS_SEP = ':';
+    char LEFT_PARAM_SEP = '(';
+    char RIGHT_PARAM_SEP = ')';
+    char PARAMLIST_SEP = ',';
+    char PACKAGE_SEP = '.';
 
     QualifiedName getQualifiedName();
 
@@ -83,21 +83,22 @@ public interface QualifiableNode {
             return operation;
         }
 
+
         public void setOperation(String methodName, String[] paramTypes) {
             StringBuilder sb = new StringBuilder();
             sb.append(methodName);
-            sb.append(LEFT_PARAM_DELIMITER);
+            sb.append(LEFT_PARAM_SEP);
             int last = paramTypes.length - 1;
             for (int i = 0; i < last; i++) {
                 sb.append(paramTypes[i]);
-                sb.append(PARAMLIST_DELIMITER);
+                sb.append(PARAMLIST_SEP);
             }
 
             if (last > -1) {
                 sb.append(paramTypes[last]);
             }
 
-            sb.append(RIGHT_PARAM_DELIMITER);
+            sb.append(RIGHT_PARAM_SEP);
 
             this.operation = sb.toString();
         }
@@ -110,27 +111,56 @@ public interface QualifiableNode {
                 int last = packages.length - 1;
                 for (int i = 0; i < last; i++) {
                     sb.append(packages[i]);
-                    sb.append(PACKAGE_DELIMITER);
+                    sb.append(PACKAGE_SEP);
                 }
 
                 sb.append(packages[last]);
             }
-            sb.append(CLASS_DELIMITER); // class delimiter is there anyway
+            sb.append(LEFT_CLASS_SEP); // class delimiter is there anyway
 
             int last = classes.length - 1;
             for (int i = 0; i < last; i++) {
                 sb.append(classes[i]);
-                sb.append(NESTED_CLASS_DELIMITER);
+                sb.append(NESTED_CLASS_SEP);
             }
 
             sb.append(classes[last]);
 
             if (operation != null) {
-                sb.append(METHOD_DELIMITER);
+                sb.append(METHOD_SEP);
                 sb.append(operation);
             }
 
             return sb.toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof QualifiedName) {
+                return this.toString().equals(o.toString());
+            } else if (o instanceof String) {
+                return this.toString().equals(o);
+            }
+
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 0;
+            if (packages != null) {
+                for (String p : packages) {
+                    hash += p.hashCode();
+                }
+            }
+            for (String p : classes) {
+                if (p != null) {
+                    hash += p.hashCode();
+                }
+            }
+            if (operation != null)
+                hash += operation.hashCode();
+            return hash;
         }
 
     }
