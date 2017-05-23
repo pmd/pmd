@@ -23,10 +23,6 @@ import net.sourceforge.pmd.lang.java.oom.visitor.Signature.Visibility;
  */
 public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
-    public AtfdMetric() {
-        isAbstractHandler = false;
-    }
-
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder) {
         if (!isSupported(node)) {
