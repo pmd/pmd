@@ -28,14 +28,16 @@ public class ClassStats {
 
     /**
      * Adds a ClassStats to the children of this class. This cannot be a nested class, for that see
-     * {@see PackageStats#addClass}
+     * {@see PackageStats#getNestedClassStats}
      *
-     * @param className Name of the nested class.
+     * @param className        Name of the nested class.
+     * @param createIfNotFound Create ClassStats if missing.
      *
-     * @return The new ClassStats or the ones that were found.
+     * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is
+     * unset.
      */
-    public ClassStats addClass(String className) {
-        if (!nestedClasses.containsKey(className)) {
+    public ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
+        if (createIfNotFound && !nestedClasses.containsKey(className)) {
             nestedClasses.put(className, new ClassStats());
         }
         return nestedClasses.get(className);

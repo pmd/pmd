@@ -28,38 +28,75 @@ public class PackageStats {
 
     }
 
-    /**
-     * Adds a class to this package if it doesn't exist yet, and returns it.
-     *
-     * @param className The name of the class
-     *
-     * @return The ClassStats that was created, or found.
-     */
-    public ClassStats addClass(String className) {
-        if (!classes.containsKey(className)) {
-            classes.put(className, new ClassStats());
-        }
-        return classes.get(className);
-    }
 
     /**
-     * Adds a ClassStats to the hierarchy and returns it. The class can be nested.
+     * Gets the ClassStats corresponding to the named resource. The class can be nested. If the
+     * createIfNotFound parameter is set, the method also creates the hierarchy if it doesn't exist.
      *
-     * @param qname The qualified name of the class
+     * @param qname            The qualified name of the class
+     * @param createIfNotFound Create hierarchy if missing
      *
-     * @return
+     * @return The new ClassStats, or the one that was found. Can return null only if
+     * createIfNotFound is unset.
      */
-    public ClassStats addClass(QualifiedName qname) {
-        PackageStats container = createPathFor(qname);
-        ClassStats top = container.addClass(qname.getClasses()[0]);
+    public ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
+        PackageStats container = getSubPackage(qname, createIfNotFound);
+
+        if (container == null) {
+            return null;
+        }
+
+        String topClassName = qname.getClasses()[0];
+        if (createIfNotFound && classes.get(topClassName) == null) {
+            classes.put(topClassName, new ClassStats());
+        }
+
+        ClassStats next = classes.get(topClassName);
+
+        if (next == null) {
+            return null;
+        }
+
         String[] classes = qname.getClasses();
 
-        for (int i = 1; i < classes.length; i++) {
-            top = top.addClass(classes[i]);
+        for (int i = 1; i < classes.length && next != null; i++) {
+            // Delegate search for nested classes to ClassStats
+            next = next.getNestedClassStats(classes[i], createIfNotFound);
         }
 
-        return top;
+        return next;
     }
+
+
+    /**
+     * Returns the deepest PackageStats that contains the named resource. If the second parameter is
+     * set, creates the missing PackageStats along the way.
+     *
+     * @param qname            The qualified name of the resource
+     * @param createIfNotFound If set to true, the hierarch is created if non existent
+     *
+     * @return The deepest package that contains this resource. Can only return null if
+     * createIfNotFound is unset.
+     */
+    public PackageStats getSubPackage(QualifiedName qname, boolean createIfNotFound) {
+        if (qname.getPackages() == null) {
+            return this; // the toplevel
+        }
+
+        String[] packagePath = qname.getPackages();
+        PackageStats next = this;
+
+        for (int i = 0; i < packagePath.length && next != null; i++) {
+            if (createIfNotFound && next.subPackages.get(packagePath[i]) == null) {
+                next.subPackages.put(packagePath[i], new PackageStats());
+            }
+
+            next = next.subPackages.get(packagePath[i]);
+        }
+
+        return next;
+    }
+
 
     public double getMemo(Metrics.ClassMetricKey key, String qname) {
         // TODO
@@ -73,58 +110,6 @@ public class PackageStats {
         // Looks for a memoized result
 
         return Double.NaN;
-    }
-
-    /**
-     * Finds the PackageStats for the package passed as parameter.
-     *
-     * @param qname The qualified name of the resource to fetch the package for.
-     *
-     * @return The PackageStats describing the named resource, or null if it can't be found
-     */
-    public PackageStats getSubPackage(QualifiedName qname) {
-        if (qname.getPackages() == null) {
-            return this; // the toplevel
-        }
-        String[] packagePath = qname.getPackages();
-        PackageStats top = subPackages.get(packagePath[0]);
-
-        for (int i = 1; i < packagePath.length && top != null; i++) {
-            top = top.subPackages.get(packagePath[i]);
-        }
-
-        return top;
-    }
-
-
-    /**
-     * Creates the package hierarchy for this resource if it doesn't exist  and returns the deepest
-     * package that contains the resource.
-     *
-     * @param qname The qualified name of the resource
-     *
-     * @return The deepest package that contains this resource
-     */
-    public PackageStats createPathFor(QualifiedName qname) {
-        if (qname.getPackages() == null) {
-            return this; // the toplevel
-        }
-        String[] packagePath = qname.getPackages();
-        PackageStats top = this;
-
-        for (int i = 0; i < packagePath.length; i++) {
-            if (top.subPackages.get(packagePath[i]) == null) {
-                top.subPackages.put(packagePath[i], new PackageStats());
-            }
-
-            top = top.subPackages.get(packagePath[i]);
-        }
-
-        return top;
-    }
-
-    public ClassStats getClassStats(String name) {
-        return classes.get(name);
     }
 
     public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
