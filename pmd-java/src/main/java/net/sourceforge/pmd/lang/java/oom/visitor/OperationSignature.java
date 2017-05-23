@@ -28,12 +28,15 @@ public class OperationSignature extends Signature {
      * Builds an operation signature from a method declaration.
      *
      * @param node The method declaration
+     *
      * @return The signature of the parameter
      */
     public static OperationSignature buildFor(ASTMethodDeclaration node) {
         // TODO better getter or setter detection
-        boolean isGetterOrSetter = node.getName().startsWith("get") || node.getName().startsWith("set");
-        Role role = isGetterOrSetter ? Role.GETTER_OR_SETTER : node.isStatic() ? Role.STATIC : Role.METHOD;
+        boolean isGetterOrSetter = node.getName().startsWith("get")
+                || node.getName().startsWith("set");
+        Role role = isGetterOrSetter ? Role.GETTER_OR_SETTER :
+                node.isStatic() ? Role.STATIC : Role.METHOD;
 
         return new OperationSignature(Visibility.get(node), role, node.isAbstract());
     }
@@ -42,6 +45,7 @@ public class OperationSignature extends Signature {
      * Builds an operation signature from a constructor declaration.
      *
      * @param node The constructor declaration
+     *
      * @return The signature of the parameter
      */
     public static OperationSignature buildFor(ASTConstructorDeclaration node) {
@@ -50,12 +54,16 @@ public class OperationSignature extends Signature {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof OperationSignature;
+        if (o instanceof OperationSignature) {
+            return super.equals(o) && role == ((OperationSignature) o).role
+                    && isAbstract == ((OperationSignature) o).isAbstract;
+        }
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return role.hashCode() * 2 + visibility.hashCode() * 4 + (isAbstract ? 1 : 0);
+        return super.hashCode() * 2 + role.hashCode() * 4 + (isAbstract ? 1 : 0);
     }
 
     /**

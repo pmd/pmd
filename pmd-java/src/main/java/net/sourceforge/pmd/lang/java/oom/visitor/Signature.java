@@ -19,6 +19,19 @@ public abstract class Signature {
         this.visibility = visibility;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Signature) {
+            return visibility == ((Signature) o).visibility;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return visibility.hashCode() * 2;
+    }
+
     /**
      * The visibility of a node.
      */
@@ -31,6 +44,7 @@ public abstract class Signature {
          * Returns the Visibility enum key for a node
          *
          * @param node A node
+         *
          * @return The visibility enum key for a node
          */
         public static Visibility get(AbstractJavaAccessNode node) {
