@@ -52,15 +52,19 @@ public interface QualifiableNode {
         }
 
         public boolean isClass() {
-            return operation == null;
+            return classes[0] != null && operation == null;
         }
 
         public void setClass(String className) {
             classes[0] = className;
         }
 
+        public boolean isNestedClass() {
+            return classes.length > 1 && operation == null;
+        }
+
         public boolean isOperation() {
-            return !isClass();
+            return operation != null;
         }
 
         public String[] getPackages() {
