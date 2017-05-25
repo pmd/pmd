@@ -15,7 +15,7 @@ company_name: PMD Open Source Project
 github_editme_path: pmd/pmd/blob/master/docs/
 # if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
-disqus_shortname: 
+disqus_shortname:
 # if you're using disqus for comments, add the shortname here. if not, leave this value blank.
 
 host: 127.0.0.1
@@ -31,7 +31,7 @@ exclude:
 
 feedback_subject_line: PMD Source Code Analyzer
 
-feedback_email: 
+feedback_email:
 # used as a contact email for the Feedback link in the top navigation bar
 
 # feedback_disable: true
@@ -68,7 +68,7 @@ defaults:
       layout: "page"
       comments: true
       search: true
-      sidebar: home_sidebar
+      sidebar: pmd_sidebar
   -
     scope:
       path: ""
@@ -87,16 +87,12 @@ defaults:
       layout: "post"
       comments: true
       search: true
-      sidebar: home_sidebar
+      sidebar: pmd_sidebar
 
 # these are defaults used for the frontmatter for these file types
 
 sidebars:
-- home_sidebar
-- mydoc_sidebar
-- product1_sidebar
-- product2_sidebar
-- other
+- pmd_sidebar
 
 description: "Intended as a documentation theme based on Jekyll for technical writers documenting software and other technical products, this theme has all the elements you would need to handle multiple products with both multi-level sidebar navigation, tags, and other documentation features."
 # the description is used in the feed.xml file

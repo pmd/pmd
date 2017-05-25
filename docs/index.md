@@ -2,7 +2,7 @@
 title: PMD Introduction
 keywords: java
 tags: [getting_started]
-sidebar: mydoc_sidebar
+sidebar: pmd_sidebar
 permalink: index.html
 summary: Welcome to PMD, an OpenSource project for analyzing source code.
 ---
