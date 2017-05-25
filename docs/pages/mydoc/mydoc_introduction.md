@@ -3,12 +3,7 @@ title: Introduction
 sidebar: mydoc_sidebar
 permalink: mydoc_introduction.html
 folder: mydoc
-published: true
 ---
-
-## Hey There 
-
-Some new text
 
 ## Overview
 

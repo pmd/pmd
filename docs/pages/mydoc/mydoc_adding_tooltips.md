@@ -16,7 +16,7 @@ Suppose you have a glossary.yml file inside your \_data folder. You could pull i
 
 {% raw %}
 ```html
-<a href="#" data-toggle="tooltip" data-original-title="{{site.data.glossary.jekyll_platform}}">Jekyll</a> is my favorite tool for building websites.</a>
+<a href="#" data-toggle="tooltip" data-original-title="{{site.data.glossary.jekyll_platform}}">Jekyll</a> is my favorite tool for building websites.
 ```
 {% endraw %}
 

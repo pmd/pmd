@@ -161,9 +161,7 @@ table > colgroup + thead > tr:first-child > td,
 table > thead:first-child > tr:first-child > td {
     border-top: 0;
 }
-table > tbody + tbody {
-    b
-}
+
 table > tbody > tr:nth-of-type(odd) {
     background-color: #f9f9f9;
 }
@@ -198,7 +196,7 @@ table tr td {
 p.external a {
     text-align:right;
     font-size:12px;
-    font-color: #0088cc;
+    color: #0088cc;
     display:inline;
 }
 
@@ -228,7 +226,7 @@ ul#results-container a {
     background-color: transparent;
 }
 
-ul#results-container a: hover {
+ul#results-container a:hover {
     color: black;
 }
 
@@ -369,7 +367,7 @@ a.accordion-toggle, a.accordion-collapsed {
 .nav li > a > span:after {
     content: '\25be';
 }
-.nav li.open > a > span:after {
+.nav li.active > a > span:after {
     content: '\25b4';
 }
 
@@ -665,8 +663,6 @@ div.tags {padding: 10px 5px;}
 }
 
 hr {
-    border: 0;
-    border-bottom: 1px dashed #ccc;
     background: #999;
     margin: 30px 0px;
     width: 90%;
@@ -722,7 +718,7 @@ ol.series li {
     text-align: center;
     margin-bottom: 20px;
     font-family: courier;
-    font-color: silver;
+    color: silver;
     color: #444;
     display:block;
 }
@@ -896,6 +892,28 @@ span.soft {
     max-height: 100%;
 }
 
+
+.post-content img {
+    margin: 12px 0px 3px 0px;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+.col-md-9 img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+.post-content img {
+    margin: 12px 0px 3px 0px;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
 .videoThumbs img {
     float: left;
     margin:15px 15px 15px 0px;
@@ -904,7 +922,7 @@ span.soft {
 }
 
 
-@media only screen and (min-width: 900px), @media only screen and (min-device-width: 900px) {
+@media only screen and (min-width: 900px), only screen and (min-device-width: 900px) {
     .col-md-9 img {
         max-width: 700px;
         max-height: 700px;

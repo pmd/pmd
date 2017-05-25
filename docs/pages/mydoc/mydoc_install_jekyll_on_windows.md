@@ -92,4 +92,16 @@ Although you can use the default command prompt with Windows, it's recommended t
 
    Unfortunately, the Command Prompt doesn't allow you to easily copy and paste the URL, so you'll have to type it manually.
 
+## Resolving Github Metadata errors {#githuberror}
+
+After making an edit, Jekyll auto-rebuilds the site. If you have the Gemfile in the theme with the github-pages gem, you may see the following error:
+
+```
+GitHub Metadata: No GitHub API authentication could be found. Some fields may be missing or have incorrect data.
+```
+
+If so, you will need to take some additional steps to resolve it. (Note that this error only appears if you have the github-pages gem in your gemfile.) The resolution involves adding a Github token and a cert file.
+
+See this post on [Knight Codes](http://knightcodes.com/miscellaneous/2016/09/13/fix-github-metadata-error.html) for instructions on how to fix the error. You basically generate a personal token on Github and set it as a system variable. You also download a certification file and set it as a system variable. This resolves the issue.
+
 {% include links.html %}

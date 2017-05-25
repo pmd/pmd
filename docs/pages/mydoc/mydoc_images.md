@@ -11,7 +11,7 @@ folder: mydoc
 
 ## Image Include Template
 
-Instead of using Markdown or HMTL syntax directly in your page for images, the syntax for images has been extracted out into an image include that allows you to pass the parameters you need. Include the image.html like this:
+Instead of using Markdown or HTML syntax directly in your page for images, the syntax for images has been extracted out into an image include that allows you to pass the parameters you need. Include the image.html like this:
 
 ```liquid
 {% raw %}

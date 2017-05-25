@@ -35,7 +35,7 @@ I've found that include the `body` field in the search creates too many problems
 
 {% raw %}
 ```json
-      "body": "{{ page.content | strip_html | strip_newlines | replace: '\', '\\\\' | replace: '"', '\\"' | replace: '^t', '    '  }}",
+      "body": "{{ page.content | strip_html | strip_newlines | replace: '\', '\\\\' | replace: '"', '\\"' | replace: '	', '    '  }}",
 ```
 {% endraw %}
 

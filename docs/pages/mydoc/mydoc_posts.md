@@ -9,6 +9,8 @@ permalink: mydoc_posts.html
 folder: mydoc
 ---
 
+hello there. 
+ 
 ## About posts
 
 Posts are typically used for blogs or other news information because they contain a date and are sorted in reverse chronological order.

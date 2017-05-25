@@ -199,13 +199,13 @@ And here's the shortcode:
 
 {% raw %}
 ```
-{{site.data.alerts.callout_info}This is a special callout information message.
+{{site.data.alerts.callout_info}This is a special callout information message.{{site.data.alerts.end}}
 {% endraw %}
 ```
 
 Here's the result:
 
-{{site.data.alerts.callout_info}}This is a special callout information message.
+{{site.data.alerts.callout_info}}This is a special callout information message.{{site.data.alerts.end}}
 
 You can use any of the following:
 {% raw %}

@@ -10,7 +10,7 @@ folder: mydoc
 ---
 
 
-{% include custom/series_acme.html %}
+{% include custom/series_acme_next.html %}
 
 This is the second post in the series.
 
@@ -20,6 +20,5 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel sollicitudi
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel sollicitudin felis. Sed eu arcu sed ipsum semper luctus eu a tortor. Suspendisse id leo eu metus laoreet varius. Mauris consequat accumsan ex, a iaculis metus fermentum a. Praesent sit amet fermentum leo.
 
-{% include custom/series_acme_next.html %}
 
 {% include links.html %}

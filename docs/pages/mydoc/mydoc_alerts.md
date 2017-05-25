@@ -10,11 +10,12 @@ folder: mydoc
 ---
 
 ## About alerts
+
 Alerts are little warnings, info, or other messages that you have called out in special formatting. In order to use these alerts or callouts, reference the appropriate value stored in the alerts.yml file as described in the following sections.
 
 ## Alerts
 
-Similar to [inserting images][mydoc_images]), you insert alerts through various includes that have been developed. These includes provide templates through which you pass parameters to easily populate the right HTML code.
+Similar to [inserting images][mydoc_images], you insert alerts through various includes that have been developed. These includes provide templates through which you pass parameters to easily populate the right HTML code.
 
 ```
 {%raw%}{% include note.html content="This is my note. All the content I type here is treated as a single paragraph." %}{% endraw%}
@@ -118,7 +119,7 @@ Here's the result:
 
 ## Use Liquid variables inside parameters with includes
 
-Suppose you have a product name or some other property that you're storing as a variable in your configuration file (\_congfig.yml), and you want to use this variable in the `content` parameter for your alert or callout. You will get an error if you use Liquid syntax inside a include parameter. For example, this syntax will produce an error:
+Suppose you have a product name or some other property that you're storing as a variable in your configuration file (\_config.yml), and you want to use this variable in the `content` parameter for your alert or callout. You will get an error if you use Liquid syntax inside a include parameter. For example, this syntax will produce an error:
 
 ```
 {%raw%}{% include note.html content="The {{site.company}} is pleased to announce an upcoming release." %}{%endraw%}

@@ -13,7 +13,7 @@ folder: mydoc
 
 Before you get into exploring Jekyll as a potential platform for help content, you may be wondering if it supports some basic features needed to fulfill your tech doc requirements. The following table shows what is supported in Jekyll and this theme.
 
-## Supported feautres
+## Supported features
 
 Features | Supported | Notes
 --------|-----------|-----------

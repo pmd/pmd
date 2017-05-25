@@ -21,13 +21,13 @@ By default, WebStorm comes packaged with a lot more functionality than you proba
 
 You can set the way the tab works, and whether it uses spaces or a tab character. For details, see [Code Style. JavaScript](https://www.jetbrains.com/help/webstorm/2016.1/code-style-javascript.html?origin=old_help#d658997e132) in WebStorm's help.
 
-On a Mac, go to **WebStorm | Preferences | Editor | Code Style | Other File Types**. Don't select the "Use tab character" check box. Set **3** for the **Tab size** and **Indent** check boxes.
+On a Mac, go to **WebStorm > Preferences > Editor > Code Style > Other File Types**. Don't select the "Use tab character" check box. Set **4** for the **Tab size** and **Indent** check boxes.
 
-On Windows, go to **File | Settings | Editor | Code Style | Other File Types** to access the same menu.
+On Windows, go to **File > Settings > Editor > Code Style > Other File Types** to access the same menu.
 
 ## Add the Markdown Support plugin
 
-Since you'll be writing in Markdown, having color coding and other support for Markdown is important. Install the Markdown Support plugin by going to **WebStorm > Preferences > Plugins** and clicking **Install JetBrains Plugin**. Search for **Markdown Support**. (I would avoid the Multimarkdown plugin &mdash; it seemed to make all my dashes in frontmatter tags extend half way across the page.)
+Since you'll be writing in Markdown, having color coding and other support for Markdown is important. Install the Markdown Support plugin by going to **WebStorm > Preferences > Plugins** and clicking **Install JetBrains Plugin**. Search for **Markdown Support**. You can also implement the Markdown Navigator plugin.
 
 ## Enable Soft Wraps (word wrapping)
 
@@ -37,11 +37,10 @@ Most likely you'll want to enable soft wraps, which wraps lines rather than exte
 
 When you're searching for content, you don't want to edit any file that appears in the \_site directory. You can exclude a directory from Webstorm by right-clicking the directory and choosing **Mark Directory As** and then selecting **Excluded**.
 
-## Set tabs to 3 spaces
+## Set tabs to 4 spaces
 
-You can set the default number of spaces a tab sets, including whether Webstorm uses a tab character or spaces. You want spaces, and you want to set this to default number of spaces to ```3``` spaces instead of 4. Note that this is due to the way Kramdown handles the continuation of lists.
-
-When you intercept a list with a paragraph or code sample, the indentation of the intercepting paragraph or list must align with the beginning of the first character after the space in the list item numbering. This is typically 3 spaces, not 4. Note that this style differs from the Github-flavored Markdown style. (Welcome to the world of subtle and infuriating discrepancies between Markdown flavors.)
+You can set the default number of spaces a tab sets, including whether Webstorm uses a tab character or spaces. You want spaces, and you want to set this to default number of spaces to ```4```. Note that this is due to the way Kramdown handles the continuation 
+of lists.
 
 To set the indentation, see the "Tabs and Indents" topic in this [Code Style. Javascript](https://www.jetbrains.com/help/webstorm/2016.1/code-style-javascript.html?origin=old_help#d658997e132) topic in Webstorm's help.
 

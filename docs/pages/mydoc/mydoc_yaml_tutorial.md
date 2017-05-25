@@ -7,6 +7,17 @@ sidebar: mydoc_sidebar
 permalink: mydoc_yaml_tutorial.html
 folder: mydoc
 ---
+
+<style>
+.result {
+background-color: #f0f0f0;
+border: 1px solid #dedede;
+padding: 10px;
+margin-top: 10px;
+margin-bottom: 10px;
+}
+</style>
+
 ## Overview
 One of the most interesting features of Jekyll is the ability to separate out data elements from formatting elements using a combination of YAML and Liquid. This setup is most common when you're trying to create a table of contents.
 
@@ -51,21 +62,19 @@ name:
 
 **Markdown + Liquid:**
 
-{% raw %}
 ```liquid
-Husband's name: {{site.data.samplelist.name.husband}}
-
-Wife's name: {{site.data.samplelist.name.wife}}
+{% raw %}<p>Husband's name: {{site.data.samplelist.name.husband}}</p>
+<p>Wife's name: {{site.data.samplelist.name.wife}}</p>{% endraw %}
 ```
-{% endraw %}
 
 Notice that in order to access the data file, you use `site.data.samplelist`. `mydoc` is the folder, and `samplelist` is the name of the YAML file.
 
 **Result:**
 
-Husband's name: {{site.data.samplelist.name.husband}}
-
-Wife's name: {{site.data.samplelist.name.wife}}
+<div class="result">
+<p>Husband's name: {{site.data.samplelist.name.husband}}</p>
+<p>Wife's name: {{site.data.samplelist.name.wife}}</p>
+</div>
 
 ## Example 2: Line breaks
 
@@ -88,20 +97,22 @@ block: |
 **Markdown:**
 
 ```liquid
-**Feedback**
-{{site.data.samplelist.feedback}}
+{% raw %}<p><b>Feedback</b></p>
+<p>{{site.data.samplelist.feedback}}</p>
 
-**Block**
-{{site.data.samplelist.block}}
+<p><b>Block</b></p>
+<p>{{site.data.samplelist.block}}</p>{% endraw %}
 ```
 
 **Result:**
 
-**Feedback**
-{{site.data.samplelist.feedback}}
+<div class="result">
+<p><b>Feedback</b></p>
+<p>{{site.data.samplelist.feedback}}</p>
 
-**Block**
-{{site.data.samplelist.block}}
+<p><b>Block</b></p>
+<p>{{site.data.samplelist.block}}</p>
+</div>
 
 The right angle bracket `>` allows you to put the value on the next lines (which must be indented). Even if you create a line break, the output will remove all of those line breaks, creating one paragraph.
 
@@ -120,19 +131,24 @@ bikes:
 
 **Markdown + Liquid:**
 
-{% raw %}
+
 ```liquid
+{% raw %}<ul>
 {% for item in site.data.samplelist.bikes %}
-* {{item.title}}
+<li>{{item.title}}</li>
 {% endfor %}
+</ul>{% endraw %}
 ```
-{% endraw %}
 
 **Result:**
 
+<div class="result">
+<ul>
 {% for item in site.data.samplelist.bikes %}
-* {{item.title}}
+<li>{{item.title}}</li>
 {% endfor %}
+</ul>
+</div>
 
 Here we use a "for" loop to get each item in the bikes list. By using `.title` we only get the `title` property from each list item.
 
@@ -165,14 +181,17 @@ salesteams:
 {% endraw %}
 
 **Result:**
+
+<div class="result">
 {% for item in site.data.samplelist.salesteams %}
 <h3>{{item.title}}</h3>
 <ul>
-{% for entry in item.subitems %}
+{% for entry in item.subfolderitems %}
 <li>{{entry.location}}</li>
 {% endfor %}
 </ul>
 {% endfor %}
+</div>
 
 Hopefully you can start to see how to wrap more complex formatting around the YAML content. When you use a "for" loop, you choose the variable of what to call the list items. The variable you choose to use becomes how you access the properties of each list item. In this case, I decided to use the variable `item`. In order to get each property of the list item, I used `item.subitems`.
 
@@ -218,6 +237,7 @@ toc:
 
 **Result:**
 
+<div class="result">
 {% for item in site.data.samplelist.toc %}
 <h3>{{item.title}}</h3>
 <ul>
@@ -226,6 +246,7 @@ toc:
 {% endfor %}
 </ul>
 {% endfor %}
+</div>
 
 This example is similar to the previous one, but it's more developed as a real table of contents.
 
@@ -248,7 +269,9 @@ myref: *hello
 
 **Result:**
 
+<div class="result">
 {{ site.data.samplelist.myref }}
+</div>
 
 This example is notably different. Here I'm showing how to reuse content in YAML file. If you have the same value that you want to repeat in other mappings, you can create a variable using the `&` symbol. Then when you want to refer to that variable's value, you use an asterisk `*` followed by the name of the variable.
 
@@ -270,15 +293,14 @@ about:
 
 **Markdown:**
 
-{% raw %}
 ```
-{{ site.data.samplelist.about[0] }}
+{% raw %}{{ site.data.samplelist.about[0] }}{% endraw %}
 ```
-{% endraw %}
 
 **Result:**
-
+<div class="result">
 {{ site.data.samplelist.about[0] }}
+</div>
 
 You can see that I'm accessing one of the items in the list using `[0]`. This refers to the position in the array where a list item is. Like most programming languages, you start counting at zero, not one.
 
@@ -309,8 +331,9 @@ numbercolors:
 {% endraw %}
 
 **Result:**
-
+<div class="result">
 {{ site.data.samplelist.numbercolors[0].properties }}
+</div>
 
 This example is similar as before; however, in this case were getting a specific property from the list item in the zero position.
 
@@ -344,48 +367,60 @@ mypages:
 
 **Markdown + Liquid:**
 
-{% raw %}
+
 ```liquid
+{% raw %}<ul>
 {% for sec in site.data.samplelist.mypages %}
 {% if sec.audience == "writers" %}
-* {{sec.url}}
+<li>{{sec.url}}</li>
 {% endif %}
 {% endfor %}
-```
+</ul>
 {% endraw %}
+```
+
 
 **Result:**
-
+<div class="result">
+<ul>
 {% for sec in site.data.samplelist.mypages %}
 {% if sec.audience == "writers" %}
-* {{sec.url}}
+<li>{{sec.url}}</li>
 {% endif %}
 {% endfor %}
+</ul>
+</div>
 
 This example shows how you can use conditions in order to selectively get the YAML content. In your table of contents, you might have a lot of different pages. However, you might only want to get the pages for a particular audience. Conditions lets you get only the items that meet those audience attributes.
 
 Now let's adjust the condition just a little. Let's add a second condition so that the `audience` property has to be `writers` and the `product` property has to be gizmo. This is how you would write it:
 
-{% raw %}
+
 ```liquid
+{% raw %}<ul>
 {% for sec in site.data.samplelist.mypages %}
 {% if sec.audience == "writers" and sec.product == "gizmo" %}
-* {{sec.url}}
+<li>{{sec.url}}</li>
 {% endif %}
 {% endfor %}
+</ul>{% endraw %}
 ```
-{% endraw %}
+
 
 And here is the result:
 
+<div class="result">
+<ul>
 {% for sec in site.data.samplelist.mypages %}
 {% if sec.audience == "writers" and sec.product == "gizmo" %}
-* {{sec.url}}
+<li>{{sec.url}}</li>
 {% endif %}
 {% endfor %}
+</ul>
+</div>
 
 ## More resources
 
-For more examples and explanations, see this helpful post on tournemille.com: [How to create data-driven navigation in Jekyll](http://www.tournemille.com/blog/How-to-create-data-driven-navigation-in-Jekyll/).
+For more examples and explanations, see this helpful post on tournemille.com: [How to create data-driven navigation in Jekyll](http://www.tournemille.com/blog/How-to-create-data-driven-navigation-in-Jekyll).
 
 {% include links.html %}

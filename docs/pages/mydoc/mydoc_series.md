@@ -11,7 +11,7 @@ folder: mydoc
 
 ## Using series for pages
 
-You create a series by looking for all pages within a tag namespace that contain certain frontmatter. Here's a [demo][mydoc_seriesdemo1]</a>.
+You create a series by looking for all pages within a tag namespace that contain certain frontmatter. Here's a <a href="mydoc_seriesdemo1.html">demo</a>.
 
 ## 1. Create the series button
 

@@ -10,20 +10,6 @@ permalink: mydoc_tables.html
 folder: mydoc
 ---
 
-{% unless site.output == "pdf" %}
-<script>
-$(document).ready(function(){
-
-    $('table.display').DataTable( {
-        paging: true,
-        stateSave: true,
-        searching: true
-    }
-        );
-});
-</script>
-{% endunless %}
-
 ## Multimarkdown Tables
 
 You can use Multimarkdown syntax for tables. The following shows a sample:
@@ -48,7 +34,7 @@ You can use Multimarkdown syntax for tables. The following shows a sample:
 
 ## HTML Tables {#htmltables}
 
-If you need a more sophisticated table syntax, use HTML syntax for the table. Although you're using HTML, you can use Markdown inside the table cells by adding `markdown="1"` as an attribute for the `td` tag, as shown in the following table. You can also control the column widths.
+If you need a more sophisticated table syntax, use HTML syntax for the table. Although you're using HTML, you can use Markdown inside the table cells by adding `markdown="span"` as an attribute for the `td` tag, as shown in the following table. You can also control the column widths.
 
 ```html
 <table>
@@ -58,27 +44,24 @@ If you need a more sophisticated table syntax, use HTML syntax for the table. Al
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">Field</th>
-<th align="left">Description</th>
+<th>Field</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left" markdown="1">First column **fields**</td>
-<td align="left" markdown="1">Some descriptive text. This is a markdown link to [Google](http://google.com). Or see [some link][mydoc_tags].</td>
+<td markdown="span">First column **fields**</td>
+<td markdown="span">Some descriptive text. This is a markdown link to [Google](http://google.com). Or see [some link][mydoc_tags].</td>
 </tr>
 <tr>
-<td align="left" markdown="1">Second column **fields**</td>
-<td align="left" markdown="1">Some more descriptive text. Here we have a Markdown-formatted list:
-
-* first item
-* second item
-* third item
+<td markdown="span">Second column **fields**</td>
+<td markdown="span">Some more descriptive text.
 </td>
 </tr>
 </tbody>
 </table>
 ```
+
 **Result:**
 <table>
 <colgroup>
@@ -87,138 +70,63 @@ If you need a more sophisticated table syntax, use HTML syntax for the table. Al
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">Field</th>
-<th align="left">Description</th>
+<th>Field</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left" markdown="1">First column **fields**</td>
-<td align="left" markdown="1">Some descriptive text. This is a markdown link to [Google](http://google.com). Or see [some link][mydoc_tags].</td>
+<td markdown="span">First column **fields**</td>
+<td markdown="span">Some descriptive text. This is a markdown link to [Google](http://google.com). Or see [some link][mydoc_tags].</td>
 </tr>
 <tr>
-<td align="left" markdown="1">Second column **fields**</td>
-<td align="left" markdown="1">Some more descriptive text. Here we have a Markdown-formatted list:
-
-* first item
-* second item
-* third item
+<td markdown="span">Second column **fields**</td>
+<td markdown="span">Some more descriptive text. 
 </td>
 </tr>
 </tbody>
 </table>
 
-## jQuery datables
+## jQuery DataTables
 
-You also have the option of using a [jQuery datatable](https://www.datatables.net/), which gives you some more options. If you want to use a jQuery datatable, then add `datatable: true` in a page's frontmatter. This will load the right jQuery datatable scripts for the table on that page only (rather than loading the scripts on every page of the site.)
+You also have the option of using a [jQuery DataTable](https://www.datatables.net/), which gives you some additional capabilities. To use a jQuery DataTable in a page, include `datatable: true` in a page's frontmatter. This tells the default layout to load the necessary CSS and javascript bits and to include a `$(document).ready()` function that initializes the DataTables library.
 
-Also, you need to add this script to trigger the jQuery table on your page:
+You can change the options used to initialize the DataTables library by editing the call to `$('table.display').DataTable()` in the default layout.  The available options for Datatables are described in the [DataTable documentation](https://www.datatables.net/manual/options), which is excellent.
 
-```js
-<script>
-$(document).ready(function(){
+You also must add a class of `display` to your tables.  You can change the class, but then you'll need to change the trigger defined in the `$(document).ready()` function in the default layout from `table.display` to the class you prefer.
 
-    $('table.display').DataTable( {
-        paging: true,
-        stateSave: true,
-        searching: true
-    }
-        );
-});
-</script>
+You can also add page-specific triggers (by copying the `<script></script>` block from the default layout into the page) and classes, which lets you use different options on different tables.
+
+If you use an HTML table, adding `class="display"` to the `<table>` tag is sufficient.
+
+Markdown, however, doesn't allow you to add classes to tables, so you'll need to use a trick: add `<div class="datatable-begin"></div>` before the table and `<div class="datatable-end"></div>` after the table.  The default layout includes a jQuery snippet that automagically adds the `display` class to any table it finds between those two markers.  So you can start with this (we've trimmed the descriptions for display):
+
+```markdown
+<div class="datatable-begin"></div>
+
+Food    | Description                           | Category | Sample type
+------- | ------------------------------------- | -------- | -----------
+Apples  | A small, somewhat round ...           | Fruit    | Fuji
+Bananas | A long and curved, often-yellow ...   | Fruit    | Snow
+Kiwis   | A small, hairy-skinned sweet ...      | Fruit    | Golden
+Oranges | A spherical, orange-colored sweet ... | Fruit    | Navel
+
+<div class="datatable-end"></div>
 ```
 
-The available options for the datable are described in the [datatable documentation](https://www.datatables.net/manual/options), which is excellent.
+and get this:
 
-Additionally, you must add a class of `display` to your tables. (You can change the class, but then you'll need to change the trigger above from `table.display` to whatever class you want to you. You might have different triggers with different options for different tables.)
+<div class="datatable-begin"></div>
 
-Since Markdown doesn't allow you to add classes to tables, you'll need to use HTML for any datatables. Here's an example:
+Food    | Description                                                                                       | Category | Sample type
+------- | ------------------------------------------------------------------------------------------------- | -------- | -----------
+Apples  | A small, somewhat round and often red-colored, crispy fruit grown on trees.                       | Fruit    | Fuji
+Bananas | A long and curved, often-yellow, sweet and soft fruit that grows in bunches in tropical climates. | Fruit    | Snow
+Kiwis   | A small, hairy-skinned sweet fruit with green-colored insides and seeds.                          | Fruit    | Golden
+Oranges | A spherical, orange-colored sweet fruit commonly grown in Florida and California.                 | Fruit    | Navel
 
-```html
-<table id="sampleTable" class="display">
-   <thead>
-      <tr>
-         <th>Parameter</th>
-         <th>Description</th>
-         <th>Type</th>
-         <th>Default Value</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td>Parameter 1</td>
-         <td>Sample description
-         </td>
-         <td>Sample type</td>
-         <td>Sample default value</td>
-      </tr>
-      <tr>
-         <td>Parameter 2</td>
-         <td>Sample description
-         </td>
-         <td>Sample type</td>
-         <td>Sample default value</td>
-      </tr>
-    <tr>
-       <td>Parameter 3</td>
-       <td>Sample description
-       </td>
-       <td>Sample type</td>
-       <td>Sample default value</td>
-    </tr>
-      <tr>
-         <td>Parameter 4</td>
-         <td>Sample description
-         </td>
-         <td>Sample type</td>
-         <td>Sample default value</td>
-      </tr>
-   </tbody>
-</table>
-```
+<div class="datatable-end"></div>
 
-This renders to the following:
-
-<table id="sampleTable" class="display">
-   <thead>
-      <tr>
-         <th>Food</th>
-         <th>Description</th>
-         <th>Category</th>
-         <th>Sample type</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td>Apples</td>
-         <td>A small, somewhat round and often red-colored, crispy fruit grown on trees.
-         </td>
-         <td>Fruit</td>
-         <td>Fuji</td>
-      </tr>
-      <tr>
-         <td>Bananas</td>
-         <td>A long and curved, often-yellow, sweet and soft fruit that grows in bunches in tropical climates.
-         </td>
-         <td>Fruit</td>
-         <td>Snow</td>
-      </tr>
-      <tr>
-         <td>Kiwis</td>
-         <td>A small, hairy-skinned sweet fruit with green-colored insides and seeds.
-         </td>
-         <td>Fruit</td>
-         <td>Golden</td>
-      </tr>
-        <tr>
-           <td>Oranges</td>
-           <td>A spherical, orange-colored sweet fruit commonly grown in Florida and California.
-           </td>
-           <td>Fruit</td>
-           <td>Navel</td>
-        </tr>
-   </tbody>
-</table>
 
 Notice a few features:
 
@@ -226,7 +134,7 @@ Notice a few features:
 * You can sort the column order.
 * You can page the results so that you show only a certain number of values on the first page and then require users to click next to see more entries.
 
-Read more of the [datatable documentation](https://www.datatables.net/manual/options) to get a sense of the options you can configure. You should probably only use datatables when you have long, massive tables full of information.
+Read more of the [DataTable documentation](https://www.datatables.net/manual/options) to get a sense of the options you can configure. You should probably only use DataTables when you have long, massive tables full of information.
 
 {% include note.html content=" Try to keep the columns to 3 or 4 columns only. If you add 5+ columns, your table may create horizontal scrolling with the theme. Additionally, keep the column heading titles short." %}
 

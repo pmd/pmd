@@ -13,43 +13,76 @@ folder: mydoc
 For syntax highlighting, use fenced code blocks optionally followed by the language syntax you want:
 
 <pre>
-```ruby
-    def foo
-      puts 'foo'
-    end
+```java
+import java.util.Scanner;
+
+public class ScannerAndKeyboard
+{
+
+	public static void main(String[] args)
+	{	Scanner s = new Scanner(System.in);
+		System.out.print( "Enter your name: "  );
+		String name = s.nextLine();
+		System.out.println( "Hello " + name + "!" );
+	}
+}
 ```
 </pre>
 
 This looks as follows:
 
-```ruby
-    def foo
-      puts 'foo'
-    end
+```java
+import java.util.Scanner;
+
+public class ScannerAndKeyboard
+{
+
+	public static void main(String[] args)
+	{	Scanner s = new Scanner(System.in);
+		System.out.print( "Enter your name: "  );
+		String name = s.nextLine();
+		System.out.println( "Hello " + name + "!" );
+	}
+}
 ```
 
 Fenced code blocks require a blank line before and after.
 
-If you're using an HTML file, you can also use the `highlight` command with Liquid markup:
+If you're using an HTML file, you can also use the `highlight` command with Liquid markup.
 
-{% raw %}
 <pre>
-{% highlight ruby %}
-    def foo
-      puts 'foo'
-    end
+{% raw %}{% highlight java %}
+import java.util.Scanner;
+
+public class ScannerAndKeyboard
+{
+
+	public static void main(String[] args)
+	{	Scanner s = new Scanner(System.in);
+		System.out.print( "Enter your name: "  );
+		String name = s.nextLine();
+		System.out.println( "Hello " + name + "!" );
+	}
+}
+{% endhighlight %}{% endraw %}
+</pre> 
+
+Result: 
+
+{% highlight java %}
+import java.util.Scanner;
+
+public class ScannerAndKeyboard
+{
+
+	public static void main(String[] args)
+	{	Scanner s = new Scanner(System.in);
+		System.out.print( "Enter your name: "  );
+		String name = s.nextLine();
+		System.out.println( "Hello " + name + "!" );
+	}
+}
 {% endhighlight %}
-</pre>
-{% endraw %}
-
-It renders the same:
-
-{% highlight ruby %}
-    def foo
-      puts 'foo'
-    end
-{% endhighlight %}
-
 
 The theme has syntax highlighting specified in the configuration file as follows:
 

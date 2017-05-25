@@ -39,7 +39,7 @@ A collection is another content type that extends Jekyll beyond the use of pages
 
 Add the following information to your configuration file to declare your collection:
 
-```liquid
+```
 collections:
   tooltips:
     output: false
@@ -65,19 +65,19 @@ Create pages inside your new tooltips collection (that is, inside the \_tooltips
 
 Here's an example:
 
-{% highlight yaml %}
-{% raw %}```liquid
+```yaml
+{% raw %}
 ---
-id: basketball
+doc_id: basketball
 product: mydoc
 ---
 
 {{site.data.definitions.basketball}}{% endraw %}
 ```
-{% endhighlight %}
 
+(Note: Avoid using `id`, as it seems to generate out as `/tooltips/basketball` instead of just `basketball.)
 
-You need to create a separate page for each tooltip you want to deliver.  
+You need to create a separate file for each tooltip you want to deliver.  
 
 The product attribute is required in the frontmatter to distinguish the tooltips produced here from the tooltips for other products in the same \_tooltips folder. When creating the JSON file, Jekyll will iterate through all the pages inside \_tooltips, regardless of any subfolders included here.
 
@@ -90,46 +90,44 @@ Inside your project's pages directory (e.g., mydoc), add a file called "tooltips
 {% raw %}
 ```liquid
 ---
-layout: none
+layout: null
 search: exclude
 ---
+
 {
 "entries":
 [
 {% for page in site.tooltips %}
-{% if page.product == "mydoc" %}
 {
-"id"    : "{{ page.id }}",
+"doc_id": "{{ page.doc_id }}",
 "body": "{{ page.content | strip_newlines | replace: '\', '\\\\' | replace: '"', '\\"' }}"
 } {% unless forloop.last %},{% endunless %}
-{% endif %}
 {% endfor %}
 ]
 }
+
 ```
 {% endraw %}
 
-Change "mydoc" to the product name you used in each of the tooltip files. The template here will only include content in the JSON file if it meets the `product` attribute requirements. We need this `if` statement to prevent tooltips from other products from being included in the JSON file.
-
 This code will loop through all pages in the tooltips collection and insert the `id` and `body` into key-value pairs for the JSON code. Here's an example of what that looks like after it's processed by Jekyll in the site build:
 
-```
+```json
 {
   "entries": [
     {
-      "id": "baseball",
+      "doc_id": "baseball",
       "body": "{{site.data.definitions.baseball}}"
     },
     {
-      "id": "basketball",
+      "doc_id": "basketball",
       "body": "{{site.data.definitions.basketball}}"
     },
     {
-      "id": "football",
+      "doc_id": "football",
       "body": "{{site.data.definitions.football}}"
     },
     {
-      "id": "soccer",
+      "doc_id": "soccer",
       "body": "{{site.data.definitions.soccer}}"
     }
   ]
@@ -138,7 +136,7 @@ This code will loop through all pages in the tooltips collection and insert the 
 
 You can also view the same JSON file here: <a target="_blank" href="tooltips.json">tooltips.json</a>.
 
-You can add different fields depending on how you want the JSON to be structured. Here we just have to fields: `id` and `body`. And the JSON is looking just in the tooltips collection that we created.
+You can add different fields depending on how you want the JSON to be structured. Here we just have to fields: `doc_id` and `body`. And the JSON is looking just in the tooltips collection that we created.
 
 {% include tip.html content="Check out [Google's style guide](https://google-styleguide.googlecode.com/svn/trunk/jsoncstyleguide.xml) for JSON. These best practices can help you keep your JSON file valid." %}
 
@@ -148,7 +146,7 @@ By chunking up your JSON files, you can provide a quicker lookup. (I'm not sure 
 
 ## 5. Build your site and look for the JSON file
 
-When you build your site, Jekyll will iterate through every page in your \_tooltips folder and put the page id and body into this format. In the output, look for the JSON file in the tooltips.json file. You'll see that Jekyll has populated it with content. This is because of the triple hyphen lines in the JSON file &mdash; this instructs Jekyll to process the file.
+When you build your site, Jekyll will iterate through every page in your _tooltips folder and put the page id and body into this format. In the output, look for the JSON file in the tooltips.json file. You'll see that Jekyll has populated it with content. This is because of the triple hyphen lines in the JSON file &mdash; this instructs Jekyll to process the file.
 
 ## 6. Allow CORS access to your help if stored on a remote server
 
@@ -207,30 +205,38 @@ If you don't have CORS enabled, users will see a CORS error/warning message in t
 
 ## 7. Explain how developers can access the help
 
-Developers can access the help using the `.get` method from jQuery, among other methods. Here's an example of how to get a page with the ID of `basketball`:
+Developers can access the help using the `.get` method from jQuery, among other methods. Here's an example of how to get tooltips for basketball, baseball, football, and soccer:
 
 ```js
-{% raw %}<script type="text/javascript">
-$(document).ready(function(){
-
-var url = "mydoc_tooltips_source.json";
-
-
-$.get( url, function( data ) {
-
-        $.each(data.entries, function(i, page) {
-            if (page.id == "basketball") {
-            $( "#basketball" ).attr( "data-content", page.body );
-            }
-
-        });
-    });
-
-});
-</script>{% endraw %}
+{% raw %}var url = "tooltips.json";
+         
+         $.get( url, function( data ) {
+         
+          /* Bootstrap popover text is defined inside a data-content attribute inside an element. That's 
+          why I'm using attr here. If you just want to insert content on the page, use append and remove the data-content argument from the parentheses.*/
+         
+             $.each(data.entries, function(i, page) {
+                 if (page.doc_id == "basketball") {
+                     $( "#basketball" ).attr( "data-content", page.body );
+                 }
+         
+                 if (page.doc_id == "baseball") {
+                     $( "#baseball" ).attr( "data-content", page.body );
+                 }
+                 if (page.doc_id == "football") {
+                     $( "#football" ).attr( "data-content", page.body );
+                 }
+         
+                 if (page.doc_id == "soccer") {
+                     $( "#soccer" ).attr( "data-content", page.body );
+                 }
+         
+         
+                 });
+             });{% endraw %}
 ```
 
-View the <a target="_blank" href="tooltips.html" class="noCrossRef">tooltip demo</a> for a demonstration.
+View the <a target="_blank" href="tooltips.html" class="noCrossRef">tooltip demo</a> for a demonstration. See the source code for full code details.
 
 The `url` in the demo is relative, but you could equally point it to an absolute path on a remote host assuming CORS is enabled on the host.
 
@@ -264,7 +270,7 @@ $(document).ready(function(){
     });
 ```
 
-Again, see the <a class="noCrossRef" href="/tooltips">Tooltip Demo</a> for a demo of the full code.
+Again, see the <a class="noCrossRef" href="tooltips.html">Tooltip Demo</a> for a demo of the full code.
 
 Note that even though you reference a Bootstrap JS script, Bootstrap's popovers require you to initialize them using the above code as well &mdash; they aren't turned on by default.
 

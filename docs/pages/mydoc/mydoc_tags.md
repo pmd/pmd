@@ -49,8 +49,7 @@ Tags have a few components.
      - publishing
      - single_sourcing
      - special_layouts
-     - content type
-	 - release_notes
+     - content types
    ```
 
 3. Create a tag archive file for each tag in your tags_doc.yml list. Name the file following the same pattern in the tags folder, like this: tag_collaboration.html.
