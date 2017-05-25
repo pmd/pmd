@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements QualifiableNode {
 
     private boolean isInterface;
+    private QualifiedName qualifiedName;
 
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
@@ -45,6 +46,9 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
 
     @Override
     public QualifiedName getQualifiedName() {
+        if (qualifiedName != null) {
+            return qualifiedName;
+        }
 
         if (isNested()) {
             ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
@@ -62,6 +66,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
 
         qname.setClass(this.getImage());
 
-        return qname;
+        qualifiedName = qname;
+        return qualifiedName;
     }
 }

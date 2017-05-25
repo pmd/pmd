@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements ASTMethodOrConstructorDeclaration {
 
     private boolean containsComment;
+    private QualifiedName qualifiedName;
 
     public ASTConstructorDeclaration(int id) {
         super(id);
@@ -43,6 +44,10 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
 
     @Override
     public QualifiedName getQualifiedName() {
+        if (qualifiedName != null) {
+            return qualifiedName;
+        }
+
         ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 
         ASTFormalParameters params = this.getFirstDescendantOfType(ASTFormalParameters.class);
@@ -54,6 +59,7 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
         }
 
 
-        return QualifiedName.makeOperationOf(parent.getQualifiedName(), parent.getImage(), types);
+        qualifiedName = QualifiedName.makeOperationOf(parent.getQualifiedName(), parent.getImage(), types);
+        return qualifiedName;
     }
 }

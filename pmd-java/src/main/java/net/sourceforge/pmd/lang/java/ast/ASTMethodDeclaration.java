@@ -9,6 +9,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod, ASTMethodOrConstructorDeclaration {
+
+    private QualifiedName qualifiedName;
+
     public ASTMethodDeclaration(int id) {
         super(id);
     }
@@ -111,6 +114,10 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
 
     @Override
     public QualifiedName getQualifiedName() {
+        if (qualifiedName != null) {
+            return qualifiedName;
+        }
+
         QualifiedName parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getQualifiedName();
 
         ASTFormalParameters params = this.getFirstDescendantOfType(ASTFormalParameters.class);
@@ -122,6 +129,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         }
 
 
-        return QualifiedName.makeOperationOf(parent, getMethodName(), types);
+        qualifiedName = QualifiedName.makeOperationOf(parent, getMethodName(), types);
+        return qualifiedName;
     }
 }
