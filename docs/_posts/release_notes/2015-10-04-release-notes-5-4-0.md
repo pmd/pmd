@@ -4,14 +4,14 @@ tags: [release_notes]
 keywords: release notes, announcements, what's new, new features
 last_updated: December 4, 2015
 summary: "Version 5.4.0 of the PMD Open Source Project, released October 4, 2015."
-sidebar: mydoc_sidebar
+sidebar: pmd_sidebar
 permalink: 2015-10-04-release-notes-5-4-0.html
 folder: mydoc
 ---
 
 ## Note
     PMD 5.4.0 requires JDK 1.7 or above.
-	
+
 
 **Summary:**
 
@@ -52,7 +52,7 @@ folder: mydoc
         Verifies that only the default types (jar, war, …) for dependencies are used.
 
 		Ruleset snippet to activate the new rules:
-			
+
 			<pre class="prettyprint linenums"><rule ref="rulesets/java/basic.xml/SimplifiedTernary"/>
 			<rule ref="rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName"/>
 			<rule ref="rulesets/java/clone.xml/CloneMethodMustBePublic"/>

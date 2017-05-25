@@ -4,25 +4,25 @@ tags: [release_notes]
 keywords: release notes, announcements, what's new, new features
 last_updated: May 29, 2016
 summary: "Version 5.4.2 of the PMD Open Source Project, released May 29, 2016."
-sidebar: mydoc_sidebar
+sidebar: pmd_sidebar
 permalink: 2016-05-29-release-notes-5-4-2.html
 folder: mydoc
 ---
 
-## New Supported Languages 
+## New Supported Languages
 
 *   CPD supports now Swift (see [PR#33](https://github.com/adangel/pmd/pull/33)).
 
-## Feature Request and Improvements 
+## Feature Request and Improvements
 
 *   A JSON-renderer for PMD which is compatible with CodeClimate. See [PR#83](https://github.com/pmd/pmd/pull/83).
 *   [#1360](https://sourceforge.net/p/pmd/bugs/1360/): Provide backwards compatibility for PMD configuration file
 
-## Modified Rules 
+## Modified Rules
 
 *   java-design/UseVargs: public static void main method is ignored now and so are methods, that are annotated with Override. See [PR#79](https://github.com/pmd/pmd/pull/79).
 
-## Pull Requests 
+## Pull Requests
 
 *   [#27](https://github.com/adangel/pmd/pull/27): Added support for Raw String Literals (C++11).
 *   [#29](https://github.com/adangel/pmd/pull/29): Added support for files with UTF-8 BOM to JSP tokenizer.
@@ -35,7 +35,7 @@ folder: mydoc
 *   [#83](https://github.com/pmd/pmd/pull/83): Adds new Code Climate-compliant JSON renderer
 *   [#85](https://github.com/pmd/pmd/pull/85): #1340 UseStringBufferForStringAppends False Positive with Ternary Operator
 
-## Bugfixes 
+## Bugfixes
 
 *   java-basic/DoubleCheckedLocking:
     *   [#1471](https://sourceforge.net/p/pmd/bugs/1471/): False positives for DoubleCheckedLocking
@@ -75,7 +75,7 @@ folder: mydoc
     *   [#1470](https://sourceforge.net/p/pmd/bugs/1470/): Error with type-bound lambda
     *   [#1481](https://sourceforge.net/p/pmd/bugs/1481/): no problems found results in blank file instead of empty xml
 
-## CLI Changes 
+## CLI Changes
 
 *   CPD: If a complete filename is specified, the language dependent filename filter is not applied. This allows to scan files, that are not using the standard file extension. If a directory is specified, the filename filter is still applied and only those files with the correct file extension of the language are scanned.
 *   CPD: If no problems found, an empty report will be output instead of nothing. See also [#1481](https://sourceforge.net/p/pmd/bugs/1481/)

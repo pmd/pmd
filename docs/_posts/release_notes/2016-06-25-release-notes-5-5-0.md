@@ -4,7 +4,7 @@ tags: [release_notes]
 keywords: release notes, announcements, what's new, new features
 last_updated: June 25, 2016
 summary: "Version 5.5.0 of the PMD Open Source Project, released June 25, 2016."
-sidebar: mydoc_sidebar
+sidebar: pmd_sidebar
 permalink: 2016-06-25-release-notes-5-5-0.html
 folder: mydoc
 ---
