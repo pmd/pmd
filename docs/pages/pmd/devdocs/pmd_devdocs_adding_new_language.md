@@ -5,7 +5,7 @@ tags: [customizing]
 summary: Adding a New Language to PMD
 last_updated: July 3, 2016
 sidebar: pmd_sidebar
-permalink: adding_new_language.html
+permalink: pmd_devdocs_adding_new_language.html
 folder: pmd/devdocs
 ---
 
