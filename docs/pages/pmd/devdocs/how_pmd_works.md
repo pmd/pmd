@@ -5,6 +5,7 @@ summary: How PMD Works
 last_updated: July 3, 2016
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_how_pmd_works.html
+folder: pmd/devdocs
 ---
 
 # How it works

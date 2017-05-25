@@ -6,6 +6,7 @@ summary: Info for PMD Developers
 last_updated: July 3, 2016
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_info_for_developers.html
+folder: pmd/devdocs
 ---
 
 # Information for PMD Developers

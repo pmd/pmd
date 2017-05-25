@@ -5,6 +5,7 @@ summary: Rule Guidelines
 last_updated: July 3, 2016
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_rule_guidelines.html
+folder: pmd/devdocs
 ---
 
 # Rule Guidelines

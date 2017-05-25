@@ -6,7 +6,6 @@ last_updated: May 29, 2016
 summary: "Version 5.4.2 of the PMD Open Source Project, released May 29, 2016."
 sidebar: pmd_sidebar
 permalink: 2016-05-29-release-notes-5-4-2.html
-folder: mydoc
 ---
 
 ## New Supported Languages

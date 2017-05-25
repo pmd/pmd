@@ -5,6 +5,7 @@ summary: "Writing XPath rules for PMD"
 last_updated: July 3, 2016
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_writing_xpath_rules.html
+folder: pmd/devdocs
 ---
 
 # XPath Rule tutorial

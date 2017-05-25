@@ -2,6 +2,7 @@
 title: Building PMD from source
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_building.html
+folder: pmd/devdocs
 ---
 
 # Compiling PMD

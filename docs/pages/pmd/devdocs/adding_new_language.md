@@ -6,6 +6,7 @@ summary: Adding a New Language to PMD
 last_updated: July 3, 2016
 sidebar: pmd_sidebar
 permalink: adding_new_language.html
+folder: pmd/devdocs
 ---
 
 # How to Add a New Language to PMD

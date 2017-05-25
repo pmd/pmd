@@ -5,6 +5,7 @@ summary: Making Custom Rulesets for PMD
 last_updated: July 3, 2016
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_making_rulesets.html
+folder: pmd/devdocs
 ---
 
 # How to make a new rule set

@@ -5,6 +5,7 @@ summary: PMD Apex Rules
 sidebar: pmd_sidebar
 permalink: pmd_rules_apex.html
 last_updated: July 3, 2016
+folder: pmd/rules
 ---
 
 ## PMD Has the Following Rules for Apex *(Salesforce)*

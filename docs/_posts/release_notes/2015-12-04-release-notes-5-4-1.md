@@ -6,7 +6,6 @@ last_updated: December 4, 2015
 summary: "Version 5.4.1 of the PMD Open Source Project, released December 4, 2015."
 sidebar: pmd_sidebar
 permalink: 2015-12-04-release-notes-5-4-1.html
-folder: mydoc
 ---
 
 ## Feature Request and Improvements
