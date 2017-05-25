@@ -16,7 +16,6 @@ Run `bundle exec jekyll serve --watch` to fire up Jekyll on local machine
 
 One time: `docker build --no-cache -t mydocs .`
 
-Now run the site with `docker run -v "$PWD:/src" -p 4005:4005 mydocs serve -H 0.0.0.0`
+Now run the site with `docker run --rm=true -v "$PWD:/src" -p 4005:4005 mydocs serve -H 0.0.0.0`
 
 Go to: http://localhost:4005/
-
