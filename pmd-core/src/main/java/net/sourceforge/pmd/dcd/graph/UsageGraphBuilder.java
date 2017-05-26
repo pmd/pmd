@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.dcd.graph;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureReader;
+
 import net.sourceforge.pmd.dcd.asm.PrintVisitor;
 import net.sourceforge.pmd.dcd.asm.TypeSignatureVisitor;
 import net.sourceforge.pmd.util.filter.Filter;
@@ -29,7 +31,7 @@ import net.sourceforge.pmd.util.filter.Filter;
 public class UsageGraphBuilder {
 
     /**
-     * Should trace level logging be enabled.  This is a development debugging
+     * Should trace level logging be enabled. This is a development debugging
      * option.
      */
     private static final boolean TRACE = false;
@@ -50,8 +52,8 @@ public class UsageGraphBuilder {
             if (classFilter.filter(className)) {
                 if (!usageGraph.isClass(className)) {
                     usageGraph.defineClass(className);
-                    InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(
-                            classResourceName + ".class");
+                    InputStream inputStream = this.getClass().getClassLoader()
+                            .getResourceAsStream(classResourceName + ".class");
                     ClassReader classReader = new ClassReader(inputStream);
                     try {
                         classReader.accept(getNewClassVisitor(), 0);
@@ -76,6 +78,12 @@ public class UsageGraphBuilder {
     // ASM visitor to on Class files to build a UsageGraph
     class MyClassVisitor extends ClassVisitor {
         private final PrintVisitor p;
+        private String className;
+
+        MyClassVisitor() {
+            super(Opcodes.ASM5);
+            p = new PrintVisitor();
+        }
 
         protected void println(String s) {
             p.println(s);
@@ -85,14 +93,9 @@ public class UsageGraphBuilder {
             p.printlnIndent(s);
         }
 
-        public MyClassVisitor() {
-            super(Opcodes.ASM5);
-            p = new PrintVisitor();
-        }
-
-        private String className;
-
-        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        @Override
+        public void visit(int version, int access, String name, String signature, String superName,
+                String[] interfaces) {
             if (TRACE) {
                 println("visit:");
                 printlnIndent("version: " + version);
@@ -105,6 +108,7 @@ public class UsageGraphBuilder {
             this.className = getClassName(name);
         }
 
+        @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
             if (TRACE) {
                 println("visitAnnotation:");
@@ -114,6 +118,7 @@ public class UsageGraphBuilder {
             return null;
         }
 
+        @Override
         public void visitAttribute(Attribute attr) {
             if (TRACE) {
                 println("visitAttribute:");
@@ -121,12 +126,14 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitEnd() {
             if (TRACE) {
                 println("visitEnd:");
             }
         }
 
+        @Override
         public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
             if (TRACE) {
                 println("visitField:");
@@ -149,6 +156,7 @@ public class UsageGraphBuilder {
             return null;
         }
 
+        @Override
         public void visitInnerClass(String name, String outerName, String innerName, int access) {
             if (TRACE) {
                 println("visitInnerClass:");
@@ -160,6 +168,7 @@ public class UsageGraphBuilder {
             index(name);
         }
 
+        @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
             MemberNode memberNode = null;
             if (TRACE) {
@@ -176,6 +185,7 @@ public class UsageGraphBuilder {
             return getNewMethodVisitor(p, memberNode);
         }
 
+        @Override
         public void visitOuterClass(String owner, String name, String desc) {
             if (TRACE) {
                 println("visitOuterClass:");
@@ -185,6 +195,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitSource(String source, String debug) {
             if (TRACE) {
                 println("visitSource:");
@@ -217,6 +228,7 @@ public class UsageGraphBuilder {
             this.usingMemberNode = usingMemberNode;
         }
 
+        @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
             if (TRACE) {
                 println("visitAnnotation:");
@@ -226,6 +238,7 @@ public class UsageGraphBuilder {
             return null;
         }
 
+        @Override
         public AnnotationVisitor visitAnnotationDefault() {
             if (TRACE) {
                 println("visitAnnotationDefault:");
@@ -233,6 +246,7 @@ public class UsageGraphBuilder {
             return null;
         }
 
+        @Override
         public void visitAttribute(Attribute attr) {
             if (TRACE) {
                 println("visitAttribute:");
@@ -240,18 +254,21 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitCode() {
             if (TRACE) {
                 println("visitCode:");
             }
         }
 
+        @Override
         public void visitEnd() {
             if (TRACE) {
                 println("visitEnd:");
             }
         }
 
+        @Override
         public void visitFieldInsn(int opcode, String owner, String name, String desc) {
             if (TRACE) {
                 println("visitFieldInsn:");
@@ -266,6 +283,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitFrame(int type, int local, Object[] local2, int stack, Object[] stack2) {
             if (TRACE) {
                 println("visitFrame:");
@@ -277,6 +295,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitIincInsn(int var, int increment) {
             if (TRACE) {
                 println("visitIincInsn:");
@@ -285,6 +304,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitInsn(int opcode) {
             if (TRACE) {
                 println("visitInsn:");
@@ -292,6 +312,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitIntInsn(int opcode, int operand) {
             if (TRACE) {
                 println("visitIntInsn:");
@@ -300,6 +321,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitJumpInsn(int opcode, Label label) {
             if (TRACE) {
                 println("visitJumpInsn:");
@@ -308,6 +330,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitLabel(Label label) {
             if (TRACE) {
                 println("visitLabel:");
@@ -315,6 +338,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitLdcInsn(Object cst) {
             if (TRACE) {
                 println("visitLdcInsn:");
@@ -322,6 +346,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitLineNumber(int line, Label start) {
             if (TRACE) {
                 println("visitLineNumber:");
@@ -330,6 +355,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
             if (TRACE) {
                 println("visitLocalVariable:");
@@ -342,6 +368,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
             if (TRACE) {
                 println("visitLookupSwitchInsn:");
@@ -351,6 +378,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitMaxs(int maxStack, int maxLocals) {
             if (TRACE) {
                 println("visitMaxs:");
@@ -359,6 +387,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
             if (TRACE) {
                 println("visitMethodInsn:");
@@ -374,6 +403,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitMultiANewArrayInsn(String desc, int dims) {
             if (TRACE) {
                 println("visitMultiANewArrayInsn:");
@@ -382,6 +412,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
             if (TRACE) {
                 println("visitParameterAnnotation:");
@@ -392,7 +423,8 @@ public class UsageGraphBuilder {
             return null;
         }
 
-        public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
+        @Override
+        public void visitTableSwitchInsn(int min, int max, Label dflt, Label... labels) {
             if (TRACE) {
                 println("visitTableSwitchInsn:");
                 printlnIndent("min: " + min);
@@ -402,6 +434,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
             if (TRACE) {
                 println("visitTryCatchBlock:");
@@ -412,6 +445,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitTypeInsn(int opcode, String desc) {
             if (TRACE) {
                 println("visitTypeInsn:");
@@ -420,6 +454,7 @@ public class UsageGraphBuilder {
             }
         }
 
+        @Override
         public void visitVarInsn(int opcode, int var) {
             if (TRACE) {
                 println("visitVarInsn:");
@@ -440,7 +475,7 @@ public class UsageGraphBuilder {
     private static List<Integer> asList(int[] array) {
         List<Integer> list = null;
         if (array != null) {
-            list = new ArrayList<Integer>(array.length);
+            list = new ArrayList<>(array.length);
             for (int i : array) {
                 list.add(i);
             }

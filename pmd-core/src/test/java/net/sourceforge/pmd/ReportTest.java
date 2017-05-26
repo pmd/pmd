@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
@@ -12,6 +13,8 @@ import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
@@ -20,18 +23,17 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
 
-import org.junit.Test;
-
-
 public class ReportTest implements ReportListener {
 
     private boolean violationSemaphore;
     private boolean metricSemaphore;
 
+    @Override
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         violationSemaphore = true;
     }
 
+    @Override
     public void metricAdded(Metric metric) {
         metricSemaphore = true;
     }
@@ -66,34 +68,34 @@ public class ReportTest implements ReportListener {
 
     // Files are grouped together now.
     @Test
-    public void testSortedReport_File() throws IOException {
+    public void testSortedReportFile() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
         Node s = getNode(10, 5);
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<Node>(rule1, ctx, s, rule1.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
         ctx.setSourceCodeFilename("bar");
         Node s1 = getNode(10, 5);
         Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<Node>(rule2, ctx, s1, rule2.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
 
     @Test
-    public void testSortedReport_Line() throws IOException {
+    public void testSortedReportLine() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
         Node s = getNode(10, 5);
         Rule rule1 = new MockRule("rule2", "rule2", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<Node>(rule1, ctx, s, rule1.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
         ctx.setSourceCodeFilename("foo2");
         Node s1 = getNode(20, 5);
         Rule rule2 = new MockRule("rule1", "rule1", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<Node>(rule2, ctx, s1, rule2.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, s1, rule2.getMessage()));
         Renderer rend = new XMLRenderer();
         String result = render(rend, r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
@@ -108,7 +110,7 @@ public class ReportTest implements ReportListener {
         ctx.setSourceCodeFilename("file");
         Node s = getNode(5, 5);
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
-        rpt.addRuleViolation(new ParametricRuleViolation<Node>(rule1, ctx, s, rule1.getMessage()));
+        rpt.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
         assertTrue(violationSemaphore);
 
         metricSemaphore = false;
@@ -124,13 +126,13 @@ public class ReportTest implements ReportListener {
         ctx.setSourceCodeFilename("foo1");
         Node s = getNode(5, 5);
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new ParametricRuleViolation<Node>(rule, ctx, s, rule.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, s, rule.getMessage()));
         ctx.setSourceCodeFilename("foo2");
         Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
         Node s1 = getNode(20, 5);
         Node s2 = getNode(30, 5);
-        r.addRuleViolation(new ParametricRuleViolation<Node>(mr, ctx, s1, mr.getMessage()));
-        r.addRuleViolation(new ParametricRuleViolation<Node>(mr, ctx, s2, mr.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s1, mr.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(mr, ctx, s2, mr.getMessage()));
         Map<String, Integer> summary = r.getSummary();
         assertEquals(summary.keySet().size(), 2);
         assertTrue(summary.values().contains(Integer.valueOf(1)));
@@ -143,9 +145,9 @@ public class ReportTest implements ReportListener {
         RuleContext ctx = new RuleContext();
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Node node1 = getNode(5, 5, true);
-        r.addRuleViolation(new ParametricRuleViolation<Node>(rule, ctx, node1, rule.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node1, rule.getMessage()));
         Node node2 = getNode(5, 6, true);
-        r.addRuleViolation(new ParametricRuleViolation<Node>(rule, ctx, node2, rule.getMessage()));
+        r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, node2, rule.getMessage()));
 
         Iterator<RuleViolation> violations = r.iterator();
         int violationCount = 0;
@@ -163,23 +165,23 @@ public class ReportTest implements ReportListener {
         }
         assertEquals(2, treeCount);
     }
-    
-    private static Node getNode(int line, int column){
+
+    private static Node getNode(int line, int column) {
         DummyNode s = new DummyNode(2);
         DummyNode parent = new DummyNode(1);
-        parent.testingOnly__setBeginLine(line);
-        parent.testingOnly__setBeginColumn(column);
+        parent.testingOnlySetBeginLine(line);
+        parent.testingOnlySetBeginColumn(column);
         s.jjtSetParent(parent);
-        s.testingOnly__setBeginLine(10);
-        s.testingOnly__setBeginColumn(5);
+        s.testingOnlySetBeginLine(10);
+        s.testingOnlySetBeginColumn(5);
         return s;
     }
 
     private static Node getNode(int line, int column, boolean nextLine) {
-        DummyNode s = (DummyNode)getNode(line, column);
+        DummyNode s = (DummyNode) getNode(line, column);
         if (nextLine) {
-            s.testingOnly__setBeginLine(line + 1);
-            s.testingOnly__setBeginColumn(column + 4);
+            s.testingOnlySetBeginLine(line + 1);
+            s.testingOnlySetBeginColumn(column + 4);
         }
         return s;
     }

@@ -64,4 +64,24 @@ Good meta header 2
      ]]></code>
         <source-type>jsp</source-type>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Issue #369
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Meal list</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+</html>
+     ]]></code>
+        <source-type>jsp</source-type>
+    </test-code>
 </test-data>

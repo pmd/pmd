@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<ruleset name="553"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+This ruleset contains links to rules that are new in PMD v5.5.3
+  </description>
+
+    <rule ref="rulesets/apex/security.xml/ApexSharingViolations"/>
+    <rule ref="rulesets/apex/security.xml/ApexOpenRedirect"/>
+    <rule ref="rulesets/apex/security.xml/ApexInsecureEndpoint"/>
+    <rule ref="rulesets/apex/security.xml/ApexXSSFromURLParam"/>
+    <rule ref="rulesets/apex/security.xml/ApexXSSFromEscapeFalse"/>
+    <rule ref="rulesets/apex/security.xml/ApexBadCrypto"/>
+    <rule ref="rulesets/apex/security.xml/ApexCSRF"/>
+    <rule ref="rulesets/apex/security.xml/ApexSOQLInjection"/>
+    <rule ref="rulesets/apex/security.xml/ApexCRUDViolation"/>
+    <rule ref="rulesets/apex/security.xml/ApexDangerousMethods"/>
+    <rule ref="rulesets/apex/security.xml/ApexSuggestUsingNamedCred"/>
+
+</ruleset>
+

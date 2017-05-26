@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
@@ -41,11 +42,7 @@ public class RuleReference extends AbstractDelegateRule {
     private RulePriority priority;
     private RuleSetReference ruleSetReference;
 
-    private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<PropertyDescriptor<?>>(0);
-
-    public Language getOverriddenLanguage() {
-        return language;
-    }
+    private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = new ArrayList<>(0);
 
     public RuleReference() {
     }
@@ -53,6 +50,10 @@ public class RuleReference extends AbstractDelegateRule {
     public RuleReference(Rule theRule, RuleSetReference theRuleSetReference) {
         setRule(theRule);
         ruleSetReference = theRuleSetReference;
+    }
+
+    public Language getOverriddenLanguage() {
+        return language;
     }
 
     @Override
@@ -180,7 +181,7 @@ public class RuleReference extends AbstractDelegateRule {
         // Only override if different than current values.
         if (!contains(super.getExamples(), example)) {
             if (examples == null) {
-                examples = new ArrayList<String>(1);
+                examples = new ArrayList<>(1);
             }
             // TODO Fix later. To keep example overrides from being unbounded,
             // we're only going to keep track of the last one.
@@ -230,7 +231,7 @@ public class RuleReference extends AbstractDelegateRule {
         // to check if the property is already overridden at this level.
         super.definePropertyDescriptor(propertyDescriptor);
         if (propertyDescriptors == null) {
-            propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
+            propertyDescriptors = new ArrayList<>();
         }
         propertyDescriptors.add(propertyDescriptor);
     }
@@ -244,7 +245,7 @@ public class RuleReference extends AbstractDelegateRule {
         // Only override if different than current value.
         if (!isSame(super.getProperty(propertyDescriptor), value)) {
             if (propertyValues == null) {
-                propertyValues = new HashMap<PropertyDescriptor<?>, Object>();
+                propertyValues = new HashMap<>();
             }
             propertyValues.put(propertyDescriptor, value);
             super.setProperty(propertyDescriptor, value);
@@ -286,6 +287,7 @@ public class RuleReference extends AbstractDelegateRule {
         return false;
     }
 
+    @Override
     public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
         return propertyDescriptors != null && propertyDescriptors.contains(descriptor)
                 || super.hasDescriptor(descriptor);
@@ -295,6 +297,7 @@ public class RuleReference extends AbstractDelegateRule {
         return propertyValues != null && propertyValues.containsKey(descriptor);
     }
 
+    @Override
     public boolean usesDefaultValues() {
 
         List<PropertyDescriptor<?>> descriptors = getOverriddenPropertyDescriptors();
@@ -315,6 +318,7 @@ public class RuleReference extends AbstractDelegateRule {
         return true;
     }
 
+    @Override
     public void useDefaultValueFor(PropertyDescriptor<?> desc) {
 
         // not sure if we should go all the way through to the real thing?

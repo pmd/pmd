@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Ok, all cases
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+if (x) {
+}
+while (x) {
+}
+do {
+} while(x);
+for (var i = 0; i < 10; i++) {
+}
+x ? true : false;
+x ? true : false;
+x ? true : false;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, assignment, all cases
+     ]]></description>
+        <expected-problems>7</expected-problems>
+        <code><![CDATA[
+if (x = true) {
+}
+while (x = true) {
+}
+do {
+} while(x = true);
+for (var i = 0; x = true; i++) {
+}
+(x = true) ? true : false;
+x ? x = true : false;
+x ? true : x = false;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow assignment, if
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="allowIf">true</rule-property>
+        <code><![CDATA[
+if (x = true) {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow assignment, while
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="allowWhile">true</rule-property>
+        <code><![CDATA[
+while (x = true) {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow assignment, do
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="allowWhile">true</rule-property>
+        <code><![CDATA[
+do {
+} while(x = true);
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow assignment, for
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="allowFor">true</rule-property>
+        <code><![CDATA[
+for (var i = 0; x = true; i++) {
+}
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow assignment, ternary
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="allowTernary">true</rule-property>
+        <code><![CDATA[
+(x = true) ? true : false;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow assignment, ternary results
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="allowTernaryResults">true</rule-property>
+        <code><![CDATA[
+x ? x = true : false;
+x ? true : x = false;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad, increment/decrement, all cases
+     ]]></description>
+        <expected-problems>28</expected-problems>
+        <code><![CDATA[
+if (++x || --x || x++ || x--) {
+}
+for (;++x || --x || x++ || x--;) {
+}
+while (++x || --x || x++ || x--) {
+}
+do {
+} while (++x || --x || x++ || x--);
+(++x || --x || x++ || x--) ? true : false;
+x ? (++x || --x || x++ || x--) : false;
+x ? true : (++x || --x || x++ || x--);
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, allow increment/decrement, all cases
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="allowIncrementDecrement">true</rule-property>
+        <code><![CDATA[
+if (++x || --x || x++ || x--) {
+}
+for (;++x || --x || x++ || x--;) {
+}
+while (++x || --x || x++ || x--) {
+}
+do {
+} while (++x || --x || x++ || x--);
+(++x || --x || x++ || x--) ? true : false;
+x ? (++x || --x || x++ || x--) : false;
+x ? true : (++x || --x || x++ || x--);
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

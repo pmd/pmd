@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTConstructorDeclaration extends AbstractJavaAccessNode {
+
+    private boolean containsComment;
+
     public ASTConstructorDeclaration(int id) {
         super(id);
     }
@@ -15,22 +18,20 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode {
     }
 
     public ASTFormalParameters getParameters() {
-        return (ASTFormalParameters) (jjtGetChild(0) instanceof ASTFormalParameters?jjtGetChild(0):jjtGetChild(1));
+        return (ASTFormalParameters) (jjtGetChild(0) instanceof ASTFormalParameters ? jjtGetChild(0) : jjtGetChild(1));
     }
 
     public int getParameterCount() {
         return getParameters().getParameterCount();
     }
 
-
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
-    private boolean containsComment;
 
     public boolean containsComment() {
         return this.containsComment;

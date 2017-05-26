@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -36,27 +37,27 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
- * Searches through all methods and constructors called from constructors.  It
+ * Searches through all methods and constructors called from constructors. It
  * marks as dangerous any call to overridable methods from non-private
- * constructors.  It marks as dangerous any calls to dangerous private constructors
- * from non-private constructors.
+ * constructors. It marks as dangerous any calls to dangerous private
+ * constructors from non-private constructors.
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  *
- * TODO match parameter types.  Aggressively strips off any package names.  Normal
- * compares the names as is.
- * TODO What about interface declarations which can have internal classes
+ *         TODO match parameter types. Aggressively strips off any package
+ *         names. Normal compares the names as is. TODO What about interface
+ *         declarations which can have internal classes
  */
 public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRule {
     /**
      * 2: method();
      * ASTPrimaryPrefix
-     * ASTName			image = "method"
+     * ASTName image = "method"
      * ASTPrimarySuffix
      * *ASTArguments
      * 3: a.method();
      * ASTPrimaryPrefix ->
-     * ASTName			image = "a.method" ???
+     * ASTName image = "a.method" ???
      * ASTPrimarySuffix -> ()
      * ASTArguments
      * 3: this.method();
@@ -86,7 +87,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * <p/>
      * 4: ClassName.this.method();
      * ASTPrimaryPrefix
-     * ASTName	image = "ClassName"
+     * ASTName image = "ClassName"
      * ASTPrimarySuffix -> this image=null
      * ASTPrimarySuffix -> image = "method"
      * ASTPrimarySuffix -> ()
@@ -133,19 +134,19 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * OuterClass.InnerClass.this.a.method().method().method();
      * ASTPrimaryPrefix
      * ASTName image = "OuterClass.InnerClass"
-     * ASTPrimarySuffix -> this		image=null
-     * ASTPrimarySuffix -> a			image='a'
-     * ASTPrimarySuffix -> method		image='method'
-     * ASTPrimarySuffix -> ()			image=null
+     * ASTPrimarySuffix -> this image=null
+     * ASTPrimarySuffix -> a image='a'
+     * ASTPrimarySuffix -> method image='method'
+     * ASTPrimarySuffix -> () image=null
      * ASTArguments
-     * ASTPrimarySuffix -> method		image='method'
-     * ASTPrimarySuffix -> ()			image=null
+     * ASTPrimarySuffix -> method image='method'
+     * ASTPrimarySuffix -> () image=null
      * ASTArguments
-     * ASTPrimarySuffix -> method		image='method'
-     * ASTPrimarySuffix -> ()			image=null
+     * ASTPrimarySuffix -> method image='method'
+     * ASTPrimarySuffix -> () image=null
      * ASTArguments
      * <p/>
-     * 3..n:	Class.InnerClass[0].InnerClass[n].this.method();
+     * 3..n: Class.InnerClass[0].InnerClass[n].this.method();
      * ASTPrimaryPrefix
      * ASTName image = "Class[0]..InnerClass[n]"
      * ASTPrimarySuffix -> image=null
@@ -159,6 +160,15 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * <p/>
      * Evaluate right to left
      */
+
+    private static final NullEvalPackage NULL_EVAL_PACKAGE = new NullEvalPackage();
+
+    /**
+     * 1 package per class.
+     */
+    // could use java.util.Stack
+    private final List<EvalPackage> evalPackages = new ArrayList<>();
+
     private static class MethodInvocation {
         private String name;
         private ASTPrimaryExpression ape;
@@ -168,7 +178,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private List<String> argumentTypes;
         private boolean superCall;
 
-        private MethodInvocation(ASTPrimaryExpression ape, List<String> qualifierNames, List<String> referenceNames, String name, int argumentSize, List<String> argumentTypes, boolean superCall) {
+        private MethodInvocation(ASTPrimaryExpression ape, List<String> qualifierNames, List<String> referenceNames,
+                String name, int argumentSize, List<String> argumentTypes, boolean superCall) {
             this.ape = ape;
             this.qualifierNames = qualifierNames;
             this.referenceNames = referenceNames;
@@ -195,7 +206,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
 
         public List<String> getReferenceNames() {
-            return referenceNames;//new ArrayList(variableNames);
+            return referenceNames; // new ArrayList(variableNames);
         }
 
         public List<String> getQualifierNames() {
@@ -209,14 +220,17 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         public static MethodInvocation getMethod(ASTPrimaryExpression node) {
             MethodInvocation meth = null;
             int i = node.jjtGetNumChildren();
-            if (i > 1) {//should always be at least 2, probably can eliminate this check
-                //start at end which is guaranteed, work backwards
+            if (i > 1) {
+                // should always be at least 2, probably can eliminate this check
+                // start at end which is guaranteed, work backwards
                 Node lastNode = node.jjtGetChild(i - 1);
-                if (lastNode.jjtGetNumChildren() == 1 && lastNode.jjtGetChild(0) instanceof ASTArguments) { //could be ASTExpression for instance 'a[4] = 5';
-                    //start putting method together
-                    //					System.out.println("Putting method together now");
-                    List<String> varNames = new ArrayList<String>();
-                    List<String> packagesAndClasses = new ArrayList<String>(); //look in JLS for better name here;
+                // could be ASTExpression for instance 'a[4] = 5';
+                if (lastNode.jjtGetNumChildren() == 1 && lastNode.jjtGetChild(0) instanceof ASTArguments) {
+                    // start putting method together
+                    // System.out.println("Putting method together now");
+                    List<String> varNames = new ArrayList<>();
+                    // look in JLS for better name here
+                    List<String> packagesAndClasses = new ArrayList<>();
                     String methodName = null;
                     ASTArguments args = (ASTArguments) lastNode.jjtGetChild(0);
                     int numOfArguments = args.getArgumentCount();
@@ -225,93 +239,128 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     int thisIndex = -1;
 
                     FIND_SUPER_OR_THIS: {
-                        //search all nodes except last for 'this' or 'super'.  will be at: (node 0 | node 1 | nowhere)
-                        //this is an ASTPrimarySuffix with a null image and does not have child (which will be of type ASTArguments)
-                        //this is an ASTPrimaryPrefix with a null image and an ASTName that has a null image
-                        //super is an ASTPrimarySuffix with a null image and does not have child (which will be of type ASTArguments)
-                        //super is an ASTPrimaryPrefix with a non-null image
+                        // search all nodes except last for 'this' or 'super'.
+                        // will be at: (node 0 | node 1 | nowhere)
+                        // this is an ASTPrimarySuffix with a null image and
+                        // does not have child (which will be of type
+                        // ASTArguments)
+                        // this is an ASTPrimaryPrefix with a null image and an
+                        // ASTName that has a null image
+                        // super is an ASTPrimarySuffix with a null image and
+                        // does not have child (which will be of type
+                        // ASTArguments)
+                        // super is an ASTPrimaryPrefix with a non-null image
                         for (int x = 0; x < i - 1; x++) {
                             Node child = node.jjtGetChild(x);
-                            if (child instanceof ASTPrimarySuffix) { //check suffix type match
+                            // check suffix type match
+                            if (child instanceof ASTPrimarySuffix) {
                                 ASTPrimarySuffix child2 = (ASTPrimarySuffix) child;
-                                //								String name = getNameFromSuffix((ASTPrimarySuffix)child);
-                                //								System.out.println("found name suffix of : " + name);
+                                // String name =
+                                // getNameFromSuffix((ASTPrimarySuffix)child);
+                                // System.out.println("found name suffix of : "
+                                // + name);
                                 if (child2.getImage() == null && child2.jjtGetNumChildren() == 0) {
                                     thisIndex = x;
                                     break;
                                 }
-                                //could be super, could be this.  currently we cant tell difference so we miss super when
-                                //XYZ.ClassName.super.method();
-                                //still works though.
-                            } else if (child instanceof ASTPrimaryPrefix) { //check prefix type match
+                                // could be super, could be this. currently we
+                                // cant tell difference so we miss super when
+                                // XYZ.ClassName.super.method();
+                                // still works though.
+                            } else if (child instanceof ASTPrimaryPrefix) {
+                                // check prefix type match
                                 ASTPrimaryPrefix child2 = (ASTPrimaryPrefix) child;
                                 if (getNameFromPrefix(child2) == null) {
                                     if (child2.getImage() == null) {
                                         thisIndex = x;
                                         break;
-                                    } else {//happens when super is used [super.method(): image = 'method']
+                                    } else {
+                                        // happens when super is used
+                                        // [super.method(): image = 'method']
                                         superFirst = true;
                                         thisIndex = x;
-                                        //the true super is at an unusable index because super.method() has only 2 nodes [method=0,()=1]
-                                        //as opposed to the 3 you might expect and which this.method() actually has. [this=0,method=1.()=2]
+                                        // the true super is at an unusable
+                                        // index because super.method() has only
+                                        // 2 nodes [method=0,()=1]
+                                        // as opposed to the 3 you might expect
+                                        // and which this.method() actually has.
+                                        // [this=0,method=1.()=2]
                                         break;
                                     }
                                 }
                             }
-                            //							else{
-                            //								System.err.println("Bad Format error"); //throw exception, quit evaluating this compilation node
-                            //							}
+                            // else{
+                            // System.err.println("Bad Format error"); //throw
+                            // exception, quit evaluating this compilation node
+                            // }
                         }
                     }
 
                     if (thisIndex != -1) {
-                        //						System.out.println("Found this or super: " + thisIndex);
-                        //Hack that must be removed if and when the patters of super.method() begins to logically match the rest of the patterns !!!
-                        if (superFirst) { //this is when super is the first node of statement.  no qualifiers, all variables or method
-                            //							System.out.println("super first");
-                            FIRSTNODE:{
+                        // System.out.println("Found this or super: " +
+                        // thisIndex);
+                        // Hack that must be removed if and when the patters of
+                        // super.method() begins to logically match the rest of
+                        // the patterns !!!
+                        if (superFirst) {
+                            // this is when super is the first
+                            // node of statement. no qualifiers,
+                            // all variables or method
+                            // System.out.println("super first");
+                            FIRSTNODE: {
                                 ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
-                                String name = child.getImage();//special case
-                                if (i == 2) { //last named node = method name
+                                String name = child.getImage(); // special case
+                                if (i == 2) { // last named node = method name
                                     methodName = name;
-                                } else { //not the last named node so its only var name
+                                } else {
+                                    // not the last named node so its only
+                                    // var name
                                     varNames.add(name);
                                 }
                             }
-                            OTHERNODES:{ //variables
+                            OTHERNODES: { // variables
                                 for (int x = 1; x < i - 1; x++) {
                                     Node child = node.jjtGetChild(x);
                                     ASTPrimarySuffix ps = (ASTPrimarySuffix) child;
                                     if (!ps.isArguments()) {
                                         String name = ((ASTPrimarySuffix) child).getImage();
-                                        if (x == i - 2) {//last node
+                                        if (x == i - 2) { // last node
                                             methodName = name;
-                                        } else {//not the last named node so its only var name
+                                        } else {
+                                            // not the last named node so
+                                            // its only var name
                                             varNames.add(name);
                                         }
                                     }
                                 }
                             }
-                        } else {//not super call
-                            FIRSTNODE:{
-                                if (thisIndex == 1) {//qualifiers in node 0
+                        } else {
+                            // not super call
+                            FIRSTNODE: {
+                                if (thisIndex == 1) { // qualifiers in node 0
                                     ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
                                     String toParse = getNameFromPrefix(child);
-                                    //									System.out.println("parsing for class/package names in : " + toParse);
+                                    // System.out.println("parsing for
+                                    // class/package names in : " + toParse);
                                     java.util.StringTokenizer st = new java.util.StringTokenizer(toParse, ".");
                                     while (st.hasMoreTokens()) {
                                         packagesAndClasses.add(st.nextToken());
                                     }
                                 }
                             }
-                            OTHERNODES:{ //other methods called in this statement are grabbed here
-                                //this is at 0, then no Qualifiers
-                                //this is at 1, the node 0 contains qualifiers
-                                for (int x = thisIndex + 1; x < i - 1; x++) {//everything after this is var name or method name
+                            OTHERNODES: {
+                                // other methods called in this
+                                // statement are grabbed here
+                                // this is at 0, then no Qualifiers
+                                // this is at 1, the node 0 contains qualifiers
+                                for (int x = thisIndex + 1; x < i - 1; x++) {
+                                    // everything after this is var name or method name
                                     ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
-                                    if (!child.isArguments()) { //skip the () of method calls
+                                    if (!child.isArguments()) {
+                                        // skip the () of method calls
                                         String name = child.getImage();
-                                        //										System.out.println("Found suffix: " + suffixName);
+                                        // System.out.println("Found suffix: " +
+                                        // suffixName);
                                         if (x == i - 2) {
                                             methodName = name;
                                         } else {
@@ -321,27 +370,38 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                                 }
                             }
                         }
-                    } else { //if no this or super found, everything is method name or variable
-                        //System.out.println("no this found:");
-                        FIRSTNODE:{ //variable names are in the prefix + the first method call [a.b.c.x()]
+                    } else {
+                        // if no this or super found, everything is method
+                        // name or variable
+                        // System.out.println("no this found:");
+                        FIRSTNODE: {
+                            // variable names are in the prefix + the
+                            // first method call [a.b.c.x()]
                             ASTPrimaryPrefix child = (ASTPrimaryPrefix) node.jjtGetChild(0);
                             String toParse = getNameFromPrefix(child);
-                            //							System.out.println("parsing for var names in : " + toParse);
+                            // System.out.println("parsing for var names in : "
+                            // + toParse);
                             java.util.StringTokenizer st = new java.util.StringTokenizer(toParse, ".");
                             while (st.hasMoreTokens()) {
                                 String value = st.nextToken();
                                 if (!st.hasMoreTokens()) {
-                                    if (i == 2) {//if this expression is 2 nodes long, then the last part of prefix is method name
+                                    if (i == 2) {
+                                        // if this expression is 2
+                                        // nodes long, then the last
+                                        // part of prefix is method
+                                        // name
                                         methodName = value;
                                     } else {
                                         varNames.add(value);
                                     }
-                                } else { //variable name
+                                } else { // variable name
                                     varNames.add(value);
                                 }
                             }
                         }
-                        OTHERNODES:{ //other methods called in this statement are grabbed here
+                        OTHERNODES: {
+                            // other methods called in this statement
+                            // are grabbed here
                             for (int x = 1; x < i - 1; x++) {
                                 ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
                                 if (!child.isArguments()) {
@@ -355,8 +415,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             }
                         }
                     }
-                    meth = new MethodInvocation(node, packagesAndClasses, varNames, methodName, numOfArguments, argumentTypes, superFirst);
-//                    meth.show();
+                    meth = new MethodInvocation(node, packagesAndClasses, varNames, methodName, numOfArguments,
+                            argumentTypes, superFirst);
+                    // meth.show();
                 }
             }
             return meth;
@@ -365,13 +426,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         public void show() {
             System.out.println("<MethodInvocation>");
             System.out.println("  <Qualifiers>");
-            for (String name: getQualifierNames()) {
+            for (String name : getQualifierNames()) {
                 System.out.println("    " + name);
             }
             System.out.println("  </Qualifiers>");
             System.out.println("  <Super>" + isSuper() + "</Super>");
             System.out.println("  <References>");
-            for (String name: getReferenceNames()) {
+            for (String name : getReferenceNames()) {
                 System.out.println("    " + name);
             }
             System.out.println("  </References>");
@@ -386,9 +447,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private ASTExplicitConstructorInvocation eci;
         private String name;
         private int count = 0;
-        private List<String> argumentTypes = new ArrayList<String>();
+        private List<String> argumentTypes = new ArrayList<>();
 
-        public ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
+        ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
             this.eci = eci;
             List<ASTArguments> l = eci.findChildrenOfType(ASTArguments.class);
             if (!l.isEmpty()) {
@@ -421,7 +482,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private boolean dangerous;
         private String called;
 
-        public MethodHolder(ASTMethodDeclarator amd) {
+        MethodHolder(ASTMethodDeclarator amd) {
             this.amd = amd;
         }
 
@@ -452,7 +513,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         private ConstructorInvocation ci;
         private boolean ciInitialized;
 
-        public ConstructorHolder(ASTConstructorDeclaration cd) {
+        ConstructorHolder(ASTConstructorDeclaration cd) {
             this.cd = cd;
         }
 
@@ -479,11 +540,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
 
         private void initCI() {
-            List<ASTExplicitConstructorInvocation> expressions = cd.findChildrenOfType(ASTExplicitConstructorInvocation.class); //only 1...
+            // only 1...
+            List<ASTExplicitConstructorInvocation> expressions = cd
+                    .findChildrenOfType(ASTExplicitConstructorInvocation.class);
             if (!expressions.isEmpty()) {
                 ASTExplicitConstructorInvocation eci = expressions.get(0);
                 ci = new ConstructorInvocation(eci);
-                //System.out.println("Const call " + eci.getImage()); //super or this???
+                // System.out.println("Const call " + eci.getImage()); //super
+                // or this???
             }
             ciInitialized = true;
         }
@@ -507,12 +571,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static class MethodHolderComparator implements Comparator<MethodHolder> {
+        @Override
         public int compare(MethodHolder o1, MethodHolder o2) {
             return compareNodes(o1.getASTMethodDeclarator(), o2.getASTMethodDeclarator());
         }
     }
 
     private static class ConstructorHolderComparator implements Comparator<ConstructorHolder> {
+        @Override
         public int compare(ConstructorHolder o1, ConstructorHolder o2) {
             return compareNodes(o1.getASTConstructorDeclaration(), o2.getASTConstructorDeclaration());
         }
@@ -522,16 +588,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * 1 package per class. holds info for evaluating a single class.
      */
     private static class EvalPackage {
-        public EvalPackage() {
-        }
-
-        public EvalPackage(String className) {
-            this.className = className;
-            this.calledMethods = new ArrayList<MethodInvocation>();//meths called from constructor
-            this.allMethodsOfClass = new TreeMap<MethodHolder, List<MethodInvocation>>(new MethodHolderComparator());
-            this.calledConstructors = new ArrayList<ConstructorInvocation>();//all constructors called from constructor
-            this.allPrivateConstructorsOfClass = new TreeMap<ConstructorHolder, List<MethodInvocation>>(new ConstructorHolderComparator());
-        }
 
         public String className;
         public List<MethodInvocation> calledMethods;
@@ -539,10 +595,24 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
         public List<ConstructorInvocation> calledConstructors;
         public Map<ConstructorHolder, List<MethodInvocation>> allPrivateConstructorsOfClass;
+
+        EvalPackage() {
+        }
+
+        EvalPackage(String className) {
+            this.className = className;
+            // meths called from constructor
+            this.calledMethods = new ArrayList<>();
+            this.allMethodsOfClass = new TreeMap<>(new MethodHolderComparator());
+            // all constructors called from constructor
+            this.calledConstructors = new ArrayList<>();
+            this.allPrivateConstructorsOfClass = new TreeMap<>(new ConstructorHolderComparator());
+        }
+
     }
 
     private static final class NullEvalPackage extends EvalPackage {
-        public NullEvalPackage() {
+        NullEvalPackage() {
             className = "";
             calledMethods = Collections.emptyList();
             allMethodsOfClass = Collections.emptyMap();
@@ -550,14 +620,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             allPrivateConstructorsOfClass = Collections.emptyMap();
         }
     }
-
-    private static final NullEvalPackage NULL_EVAL_PACKAGE = new NullEvalPackage();
-
-
-    /**
-     * 1 package per class.
-     */
-    private final List<EvalPackage> evalPackages = new ArrayList<EvalPackage>();//could use java.util.Stack
 
     private EvalPackage getCurrentEvalPackage() {
         return evalPackages.get(evalPackages.size() - 1);
@@ -589,21 +651,27 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         } else {
             putEvalPackage(NULL_EVAL_PACKAGE);
         }
-        //store any errors caught from other passes.
+        // store any errors caught from other passes.
         super.visit(node, data);
 
-        //skip this class if it has no evaluation package
+        // skip this class if it has no evaluation package
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
-            //evaluate danger of all methods in class, this method will return false when all methods have been evaluated
-            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) { } //NOPMD
-            //evaluate danger of constructors
-            evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass, getCurrentEvalPackage().allMethodsOfClass.keySet());
-            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) { } //NOPMD
+            // evaluate danger of all methods in class, this method will return
+            // false when all methods have been evaluated
+            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) {
+            } // NOPMD
 
-            //get each method called on this object from a non-private constructor, if its dangerous flag it
-            for (MethodInvocation meth: getCurrentEvalPackage().calledMethods) {
-                //check against each dangerous method in class
-                for (MethodHolder h: getCurrentEvalPackage().allMethodsOfClass.keySet()) {
+            // evaluate danger of constructors
+            evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass,
+                    getCurrentEvalPackage().allMethodsOfClass.keySet());
+            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) {
+            } // NOPMD
+
+            // get each method called on this object from a non-private
+            // constructor, if its dangerous flag it
+            for (MethodInvocation meth : getCurrentEvalPackage().calledMethods) {
+                // check against each dangerous method in class
+                for (MethodHolder h : getCurrentEvalPackage().allMethodsOfClass.keySet()) {
                     if (h.isDangerous()) {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
@@ -615,55 +683,65 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     }
                 }
             }
-            //get each unsafe private constructor, and check if its called from any non private constructors
-            for (ConstructorHolder ch: getCurrentEvalPackage().allPrivateConstructorsOfClass.keySet()) {
-                if (ch.isDangerous()) { //if its dangerous check if its called from any non-private constructors
-                    //System.out.println("visitClassDec Evaluating dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
+            // get each unsafe private constructor, and check if its called from
+            // any non private constructors
+            for (ConstructorHolder ch : getCurrentEvalPackage().allPrivateConstructorsOfClass.keySet()) {
+                if (ch.isDangerous()) {
+                    // if its dangerous check if its called
+                    // from any non-private constructors
+                    // System.out.println("visitClassDec Evaluating dangerous
+                    // constructor with " +
+                    // ch.getASTConstructorDeclaration().getParameterCount() + "
+                    // params");
                     int paramCount = ch.getASTConstructorDeclaration().getParameterCount();
-                    for (ConstructorInvocation ci: getCurrentEvalPackage().calledConstructors) {
+                    for (ConstructorInvocation ci : getCurrentEvalPackage().calledConstructors) {
                         if (ci.getArgumentCount() == paramCount) {
-                            //match name  super / this !?
+                            // match name super / this !?
                             addViolation(data, ci.getASTExplicitConstructorInvocation(), "constructor");
                         }
                     }
                 }
             }
         }
-        //finished evaluating this class, move up a level
+        // finished evaluating this class, move up a level
         removeCurrentEvalPackage();
         return data;
     }
 
     /**
      * Check the methods called on this class by each of the methods on this
-     * class.  If a method calls an unsafe method, mark the calling method as
-     * unsafe.  This changes the list of unsafe methods which necessitates
-     * another pass.  Keep passing until you make a clean pass in which no
-     * methods are changed to unsafe.
-     * For speed it is possible to limit the number of passes.
+     * class. If a method calls an unsafe method, mark the calling method as
+     * unsafe. This changes the list of unsafe methods which necessitates
+     * another pass. Keep passing until you make a clean pass in which no
+     * methods are changed to unsafe. For speed it is possible to limit the
+     * number of passes.
      * <p/>
      * Impossible to tell type of arguments to method, so forget method matching
-     * on types.  just use name and num of arguments.  will be some false hits,
+     * on types. just use name and num of arguments. will be some false hits,
      * but oh well.
      *
      * TODO investigate limiting the number of passes through config.
      */
     private boolean evaluateDangerOfMethods(Map<MethodHolder, List<MethodInvocation>> classMethodMap) {
-        //check each method if it calls overridable method
+        // check each method if it calls overridable method
         boolean found = false;
-        for (Map.Entry<MethodHolder, List<MethodInvocation>> entry: classMethodMap.entrySet()) {
+        for (Map.Entry<MethodHolder, List<MethodInvocation>> entry : classMethodMap.entrySet()) {
             MethodHolder h = entry.getKey();
             List<MethodInvocation> calledMeths = entry.getValue();
-            for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !h.isDangerous();) {
-                //if this method matches one of our dangerous methods, mark it dangerous
+            for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext()
+                    && !h.isDangerous();) {
+                // if this method matches one of our dangerous methods, mark it
+                // dangerous
                 MethodInvocation meth = calledMethsIter.next();
-                //System.out.println("Called meth is " + meth);
-                for (MethodHolder h3: classMethodMap.keySet()) { //need to skip self here h == h3
+                // System.out.println("Called meth is " + meth);
+                for (MethodHolder h3 : classMethodMap.keySet()) {
+                    // need to skip self here h == h3
                     if (h3.isDangerous()) {
                         String matchMethodName = h3.getASTMethodDeclarator().getImage();
                         int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
                         List<String> parameterTypes = getMethodDeclaratorParameterTypes(h3.getASTMethodDeclarator());
-                        //System.out.println("matching " + matchMethodName + " to " + meth.getName());
+                        // System.out.println("matching " + matchMethodName + "
+                        // to " + meth.getName());
                         if (matchMethodName.equals(meth.getName()) && matchMethodParamCount == meth.getArgumentCount()
                                 && parameterTypes.equals(meth.getArgumentTypes())) {
                             h.setDangerous();
@@ -679,25 +757,34 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     /**
-     * marks constructors dangerous if they call any dangerous methods
-     * Requires only a single pass as methods are already marked
+     * marks constructors dangerous if they call any dangerous methods Requires
+     * only a single pass as methods are already marked
      *
      * TODO optimize by having methods already evaluated somehow!?
      */
-    private void evaluateDangerOfConstructors1(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap, Set<MethodHolder> evaluatedMethods) {
-        //check each constructor in the class
-        for (Map.Entry<ConstructorHolder, List<MethodInvocation>> entry: classConstructorMap.entrySet()) {
+    private void evaluateDangerOfConstructors1(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap,
+            Set<MethodHolder> evaluatedMethods) {
+        // check each constructor in the class
+        for (Map.Entry<ConstructorHolder, List<MethodInvocation>> entry : classConstructorMap.entrySet()) {
             ConstructorHolder ch = entry.getKey();
-            if (!ch.isDangerous()) {//if its not dangerous then evaluate if it should be
-                //if it calls dangerous method mark it as dangerous
+            if (!ch.isDangerous()) {
+                // if its not dangerous then evaluate if it
+                // should be
+                // if it calls dangerous method mark it as dangerous
                 List<MethodInvocation> calledMeths = entry.getValue();
-                //check each method it calls
-                for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !ch.isDangerous();) {//but thee are diff objects which represent same thing but were never evaluated, they need reevaluation
-                    MethodInvocation meth = calledMethsIter.next();//CCE
+                // check each method it calls
+                for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext()
+                        && !ch.isDangerous();) {
+                    // but thee are diff objects
+                    // which represent same thing
+                    // but were never evaluated,
+                    // they need reevaluation
+                    MethodInvocation meth = calledMethsIter.next(); // CCE
                     String methName = meth.getName();
                     int methArgCount = meth.getArgumentCount();
-                    //check each of the already evaluated methods: need to optimize this out
-                    for (MethodHolder h: evaluatedMethods) {
+                    // check each of the already evaluated methods: need to
+                    // optimize this out
+                    for (MethodHolder h : evaluatedMethods) {
                         if (h.isDangerous()) {
                             String matchName = h.getASTMethodDeclarator().getImage();
                             int matchParamCount = h.getASTMethodDeclarator().getParameterCount();
@@ -705,7 +792,10 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             if (methName.equals(matchName) && methArgCount == matchParamCount
                                     && parameterTypes.equals(meth.getArgumentTypes())) {
                                 ch.setDangerous(true);
-                                //System.out.println("evaluateDangerOfConstructors1 setting dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
+                                // System.out.println("evaluateDangerOfConstructors1
+                                // setting dangerous constructor with " +
+                                // ch.getASTConstructorDeclaration().getParameterCount()
+                                // + " params");
                                 break;
                             }
                         }
@@ -717,25 +807,28 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     /**
      * Constructor map should contain a key for each private constructor, and
-     * maps to a List which contains all called constructors of that key.
-     * marks dangerous if call dangerous private constructor
-     * we ignore all non-private constructors here.  That is, the map passed in
-     * should not contain any non-private constructors.
-     * we return boolean in order to limit the number of passes through this method
-     * but it seems as if we can forgo that and just process it till its done.
+     * maps to a List which contains all called constructors of that key. marks
+     * dangerous if call dangerous private constructor we ignore all non-private
+     * constructors here. That is, the map passed in should not contain any
+     * non-private constructors. we return boolean in order to limit the number
+     * of passes through this method but it seems as if we can forgo that and
+     * just process it till its done.
      */
     private boolean evaluateDangerOfConstructors2(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap) {
-        boolean found = false;//triggers on danger state change
-        //check each constructor in the class
-        for (ConstructorHolder ch: classConstructorMap.keySet()) {
+        boolean found = false; // triggers on danger state change
+        // check each constructor in the class
+        for (ConstructorHolder ch : classConstructorMap.keySet()) {
             ConstructorInvocation calledC = ch.getCalledConstructor();
             if (calledC == null || ch.isDangerous()) {
                 continue;
             }
-            //if its not dangerous then evaluate if it should be
-            //if it calls dangerous constructor mark it as dangerous
+            // if its not dangerous then evaluate if it should be
+            // if it calls dangerous constructor mark it as dangerous
             int cCount = calledC.getArgumentCount();
-            for (Iterator<ConstructorHolder> innerConstIter = classConstructorMap.keySet().iterator(); innerConstIter.hasNext() && !ch.isDangerous();) { //forget skipping self because that introduces another check for each, but only 1 hit
+            for (Iterator<ConstructorHolder> innerConstIter = classConstructorMap.keySet().iterator(); innerConstIter
+                    .hasNext() && !ch.isDangerous();) {
+                // forget skipping self because that introduces another
+                // check for each, but only 1 hit
                 ConstructorHolder h2 = innerConstIter.next();
                 if (h2.isDangerous()) {
                     int matchConstArgCount = h2.getASTConstructorDeclaration().getParameterCount();
@@ -743,7 +836,10 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     if (matchConstArgCount == cCount && parameterTypes.equals(calledC.getArgumentTypes())) {
                         ch.setDangerous(true);
                         found = true;
-                        //System.out.println("evaluateDangerOfConstructors2 setting dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
+                        // System.out.println("evaluateDangerOfConstructors2
+                        // setting dangerous constructor with " +
+                        // ch.getASTConstructorDeclaration().getParameterCount()
+                        // + " params");
                     }
                 }
             }
@@ -764,7 +860,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     /**
-     * This check must be evaluated independently for each class.  Inner classes
+     * This check must be evaluated independently for each class. Inner classes
      * get their own EvalPackage in order to perform independent evaluation.
      */
     @Override
@@ -773,46 +869,53 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             return visitClassDec(node, data);
         } else {
             putEvalPackage(NULL_EVAL_PACKAGE);
-            Object o = super.visit(node, data);//interface may have inner classes, possible? if not just skip whole interface
+            // interface may have inner
+            // classes, possible? if not just
+            // skip whole interface
+            Object o = super.visit(node, data);
             removeCurrentEvalPackage();
             return o;
         }
     }
 
-
     /**
      * Non-private constructor's methods are added to a list for later safety
-     * evaluation.  Non-private constructor's calls on private constructors
-     * are added to a list for later safety evaluation.  Private constructors
-     * are added to a list so their safety to be called can be later evaluated.
-     * <p/>
-     * Note: We are not checking private constructor's calls on non-private
-     * constructors because all non-private constructors will be evaluated for
-     * safety anyway.  This means we wont flag a private constructor as unsafe
-     * just because it calls an unsafe public constructor.  We want to show only
-     * 1 instance of an error, and this would be 2 instances of the same error.
+     * evaluation. Non-private constructor's calls on private constructors are
+     * added to a list for later safety evaluation. Private constructors are
+     * added to a list so their safety to be called can be later evaluated.
      *
-     * TODO eliminate the redundancy
+     * <p>Note: We are not checking private constructor's calls on non-private
+     * constructors because all non-private constructors will be evaluated for
+     * safety anyway. This means we wont flag a private constructor as unsafe
+     * just because it calls an unsafe public constructor. We want to show only
+     * 1 instance of an error, and this would be 2 instances of the same error.</p>
+     *
+     * <p>TODO eliminate the redundancy</p>
      */
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
-            List<MethodInvocation> calledMethodsOfConstructor = new ArrayList<MethodInvocation>();
+        if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
+            // only evaluate if we have an eval package for this class
+            List<MethodInvocation> calledMethodsOfConstructor = new ArrayList<>();
             ConstructorHolder ch = new ConstructorHolder(node);
             addCalledMethodsOfNode(node, calledMethodsOfConstructor, getCurrentEvalPackage().className);
             if (!node.isPrivate()) {
-                //these calledMethods are what we will evaluate for being called badly
+                // these calledMethods are what we will evaluate for being
+                // called badly
                 getCurrentEvalPackage().calledMethods.addAll(calledMethodsOfConstructor);
-                //these called private constructors are what we will evaluate for being called badly
-                //we add all constructors invoked by non-private constructors
-                //but we are only interested in the private ones.  We just can't tell the difference here
+                // these called private constructors are what we will evaluate
+                // for being called badly
+                // we add all constructors invoked by non-private constructors
+                // but we are only interested in the private ones. We just can't
+                // tell the difference here
                 ASTExplicitConstructorInvocation eci = ch.getASTExplicitConstructorInvocation();
                 if (eci != null && eci.isThis()) {
                     getCurrentEvalPackage().calledConstructors.add(ch.getCalledConstructor());
                 }
             } else {
-                //add all private constructors to list for later evaluation on if they are safe to call from another constructor
-                //store this constructorHolder for later evaluation
+                // add all private constructors to list for later evaluation on
+                // if they are safe to call from another constructor
+                // store this constructorHolder for later evaluation
                 getCurrentEvalPackage().allPrivateConstructorsOfClass.put(ch, calledMethodsOfConstructor);
             }
         }
@@ -820,42 +923,44 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     /**
-     * Create a MethodHolder to hold the method.
-     * Store the MethodHolder in the Map as the key
-     * Store each method called by the current method as a List in the Map as the Object
+     * Create a MethodHolder to hold the method. Store the MethodHolder in the
+     * Map as the key Store each method called by the current method as a List
+     * in the Map as the Object
      */
     @Override
     public Object visit(ASTMethodDeclarator node, Object data) {
-        if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
+        if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
+            // only evaluate if we have an eval package for this class
             AccessNode parent = (AccessNode) node.jjtGetParent();
             MethodHolder h = new MethodHolder(node);
-            if (!parent.isAbstract() && !parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) { //Skip abstract methods, have a separate rule for that
-                h.setDangerous();//this method is overridable
+            if (!parent.isAbstract() && !parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) {
+                // Skip abstract methods, have a separate rule for that
+                h.setDangerous(); // this method is overridable
                 ASTMethodDeclaration decl = node.getFirstParentOfType(ASTMethodDeclaration.class);
                 h.setCalledMethod(decl.getMethodName());
             }
-            List<MethodInvocation> l = new ArrayList<MethodInvocation>();
-            addCalledMethodsOfNode((Node)parent, l, getCurrentEvalPackage().className);
+            List<MethodInvocation> l = new ArrayList<>();
+            addCalledMethodsOfNode(parent, l, getCurrentEvalPackage().className);
             getCurrentEvalPackage().allMethodsOfClass.put(h, l);
         }
         return super.visit(node, data);
     }
 
-
     /**
      * Adds all methods called on this instance from within this Node.
      */
     private static void addCalledMethodsOfNode(Node node, List<MethodInvocation> calledMethods, String className) {
-        List<ASTPrimaryExpression> expressions = new ArrayList<ASTPrimaryExpression>();
+        List<ASTPrimaryExpression> expressions = new ArrayList<>();
         node.findDescendantsOfType(ASTPrimaryExpression.class, expressions, !(node instanceof AccessNode));
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
 
-    private static void addCalledMethodsOfNodeImpl(List<ASTPrimaryExpression> expressions, List<MethodInvocation> calledMethods, String className) {
-        for (ASTPrimaryExpression ape: expressions) {
+    private static void addCalledMethodsOfNodeImpl(List<ASTPrimaryExpression> expressions,
+            List<MethodInvocation> calledMethods, String className) {
+        for (ASTPrimaryExpression ape : expressions) {
             MethodInvocation meth = findMethod(ape, className);
             if (meth != null) {
-                //System.out.println("Adding call " + methName);
+                // System.out.println("Adding call " + methName);
                 calledMethods.add(meth);
             }
         }
@@ -863,29 +968,29 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     /**
      * @return A method call on the class passed in, or null if no method call
-     *         is found.
-     * TODO Need a better way to match the class and package name to the actual
-     * method being called.
+     *         is found. TODO Need a better way to match the class and package
+     *         name to the actual method being called.
      */
     private static MethodInvocation findMethod(ASTPrimaryExpression node, String className) {
-        if (node.jjtGetNumChildren() > 0
-                && node.jjtGetChild(0).jjtGetNumChildren() > 0
+        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0).jjtGetNumChildren() > 0
                 && node.jjtGetChild(0).jjtGetChild(0) instanceof ASTLiteral) {
             return null;
         }
         MethodInvocation meth = MethodInvocation.getMethod(node);
         boolean found = false;
-        //		if(meth != null){
-        //			meth.show();
-        //		}
+        // if(meth != null){
+        // meth.show();
+        // }
         if (meth != null) {
-            //if it's a call on a variable, or on its superclass ignore it.
+            // if it's a call on a variable, or on its superclass ignore it.
             if (meth.getReferenceNames().isEmpty() && !meth.isSuper()) {
-                //if this list does not contain our class name, then its not referencing our class
-                //this is a cheezy test... but it errs on the side of less false hits.
+                // if this list does not contain our class name, then its not
+                // referencing our class
+                // this is a cheezy test... but it errs on the side of less
+                // false hits.
                 List<String> packClass = meth.getQualifierNames();
                 if (!packClass.isEmpty()) {
-                    for (String name: packClass) {
+                    for (String name : packClass) {
                         if (name.equals(className)) {
                             found = true;
                             break;
@@ -905,10 +1010,12 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      */
     private static String getNameFromPrefix(ASTPrimaryPrefix node) {
         String name = null;
-        //should only be 1 child, if more I need more knowledge
-        if (node.jjtGetNumChildren() == 1) { //safety check
+        // should only be 1 child, if more I need more knowledge
+        if (node.jjtGetNumChildren() == 1) { // safety check
             Node nnode = node.jjtGetChild(0);
-            if (nnode instanceof ASTName) { //just as easy as null check and it should be an ASTName anyway
+            if (nnode instanceof ASTName) {
+                // just as easy as null check and it
+                // should be an ASTName anyway
                 name = ((ASTName) nnode).getImage();
             }
         }
@@ -916,8 +1023,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static List<String> getMethodDeclaratorParameterTypes(Node methodOrConstructorDeclarator) {
-        List<ASTFormalParameter> parameters = methodOrConstructorDeclarator.findDescendantsOfType(ASTFormalParameter.class);
-        List<String> parameterTypes = new ArrayList<String>();
+        List<ASTFormalParameter> parameters = methodOrConstructorDeclarator
+                .findDescendantsOfType(ASTFormalParameter.class);
+        List<String> parameterTypes = new ArrayList<>();
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {
                 ASTType type = p.getFirstChildOfType(ASTType.class);
@@ -934,7 +1042,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static List<String> getArgumentTypes(ASTArguments args) {
-        List<String> argumentTypes = new ArrayList<String>();
+        List<String> argumentTypes = new ArrayList<>();
         ASTArgumentList argumentList = args.getFirstChildOfType(ASTArgumentList.class);
         if (argumentList != null) {
             for (int a = 0; a < argumentList.jjtGetNumChildren(); a++) {

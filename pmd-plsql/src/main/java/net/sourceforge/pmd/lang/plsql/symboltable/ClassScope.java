@@ -1,11 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,14 +16,17 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
+import net.sourceforge.pmd.lang.symboltable.Applier;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ClassScope extends AbstractScope {
-    private final static Logger LOGGER = Logger.getLogger(ClassScope.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ClassScope.class.getName());
 
     // FIXME - this breaks given sufficiently nested code
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
+        @Override
         protected Integer initialValue() {
             return Integer.valueOf(1);
         }
@@ -34,11 +40,11 @@ public class ClassScope extends AbstractScope {
     }
 
     /**
-     * This is only for anonymous inner classes
-     * <p/>
-     * FIXME - should have name like Foo$1, not Anonymous$1 to get this working
+     * This is only for anonymous inner classes.
+     *
+     * <p>FIXME - should have name like Foo$1, not Anonymous$1 to get this working
      * right, the parent scope needs to be passed in when instantiating a
-     * ClassScope
+     * ClassScope</p>
      */
     public ClassScope() {
         // this.className = getParent().getEnclosingClassScope().getClassName()
@@ -57,36 +63,39 @@ public class ClassScope extends AbstractScope {
     }
 
     @Override
-    public NameDeclaration addNameOccurrence(NameOccurrence occ) {
+    public Set<NameDeclaration> addNameOccurrence(NameOccurrence occ) {
         PLSQLNameOccurrence occurrence = (PLSQLNameOccurrence) occ;
-        NameDeclaration decl = findVariableHere(occurrence);
+        Set<NameDeclaration> declarations = findVariableHere(occurrence);
         Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = getMethodDeclarations();
-        if (decl != null && occurrence.isMethodOrConstructorInvocation()) {
-            List<NameOccurrence> nameOccurrences = methodNames.get(decl);
-            if (nameOccurrences == null) {
-                // TODO may be a class name: Foo.this.super();
-            } else {
-                nameOccurrences.add(occurrence);
-                Node n = occurrence.getLocation();
-                if (n instanceof ASTName) {
-                    ((ASTName) n).setNameDeclaration(decl);
-                } // TODO what to do with PrimarySuffix case?
+        if (!declarations.isEmpty() && occurrence.isMethodOrConstructorInvocation()) {
+            for (NameDeclaration decl : declarations) {
+                List<NameOccurrence> nameOccurrences = methodNames.get(decl);
+                if (nameOccurrences == null) {
+                    // TODO may be a class name: Foo.this.super();
+                } else {
+                    nameOccurrences.add(occurrence);
+                    Node n = occurrence.getLocation();
+                    if (n instanceof ASTName) {
+                        ((ASTName) n).setNameDeclaration(decl);
+                    } // TODO what to do with PrimarySuffix case?
+                }
             }
-
-        } else if (decl != null && !occurrence.isThisOrSuper()) {
+        } else if (!declarations.isEmpty() && !occurrence.isThisOrSuper()) {
             Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = getVariableDeclarations();
-            List<NameOccurrence> nameOccurrences = variableNames.get(decl);
-            if (nameOccurrences == null) {
-                // TODO may be a class name
-            } else {
-                nameOccurrences.add(occurrence);
-                Node n = occurrence.getLocation();
-                if (n instanceof ASTName) {
-                    ((ASTName) n).setNameDeclaration(decl);
-                } // TODO what to do with PrimarySuffix case?
+            for (NameDeclaration decl : declarations) {
+                List<NameOccurrence> nameOccurrences = variableNames.get(decl);
+                if (nameOccurrences == null) {
+                    // TODO may be a class name
+                } else {
+                    nameOccurrences.add(occurrence);
+                    Node n = occurrence.getLocation();
+                    if (n instanceof ASTName) {
+                        ((ASTName) n).setNameDeclaration(decl);
+                    } // TODO what to do with PrimarySuffix case?
+                }
             }
         }
-        return decl;
+        return declarations;
     }
 
     public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
@@ -109,7 +118,8 @@ public class ClassScope extends AbstractScope {
         return this.className;
     }
 
-    protected NameDeclaration findVariableHere(PLSQLNameOccurrence occurrence) {
+    protected Set<NameDeclaration> findVariableHere(PLSQLNameOccurrence occurrence) {
+        Set<NameDeclaration> result = new HashSet<>();
         Map<VariableNameDeclaration, List<NameOccurrence>> variableDeclarations = getVariableDeclarations();
         Map<MethodNameDeclaration, List<NameOccurrence>> methodDeclarations = getMethodDeclarations();
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
@@ -118,7 +128,7 @@ public class ClassScope extends AbstractScope {
                 // public class Foo {
                 // private String x = super.toString();
                 // }
-                return null;
+                return result;
             }
             // return any name declaration, since all we really want is to get
             // the scope
@@ -130,9 +140,11 @@ public class ClassScope extends AbstractScope {
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
             if (!variableDeclarations.isEmpty()) {
-                return variableDeclarations.keySet().iterator().next();
+                result.add(variableDeclarations.keySet().iterator().next());
+                return result;
             }
-            return methodDeclarations.keySet().iterator().next();
+            result.add(methodDeclarations.keySet().iterator().next());
+            return result;
         }
 
         if (occurrence.isMethodOrConstructorInvocation()) {
@@ -146,14 +158,14 @@ public class ClassScope extends AbstractScope {
                         // discrimination
                         // or, failing that, mark this as a usage of all those
                         // methods
-                        return mnd;
+                        result.add(mnd);
                     }
                 }
             }
-            return null;
+            return result;
         }
 
-        List<String> images = new ArrayList<String>();
+        List<String> images = new ArrayList<>();
         images.add(occurrence.getImage());
 
         if (null == occurrence.getImage()) {
@@ -168,9 +180,13 @@ public class ClassScope extends AbstractScope {
         }
         ImageFinderFunction finder = new ImageFinderFunction(images);
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
-        return finder.getDecl();
+        if (finder.getDecl() != null) {
+            result.add(finder.getDecl());
+        }
+        return result;
     }
 
+    @Override
     public String toString() {
         String res = "ClassScope (" + className + "): ";
         Map<ClassNameDeclaration, List<NameOccurrence>> classNames = getClassDeclarations();

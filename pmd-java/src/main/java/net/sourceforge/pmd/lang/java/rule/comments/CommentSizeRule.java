@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.comments;
 
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ import net.sourceforge.pmd.util.StringUtil;
 public class CommentSizeRule extends AbstractCommentRule {
 
     public static final IntegerProperty MAX_LINES = new IntegerProperty("maxLines", "Maximum lines", 2, 200, 6, 2.0f);
-    public static final IntegerProperty MAX_LINE_LENGTH = new IntegerProperty("maxLineLength", "Maximum line length",
-            1, 200, 80, 2.0f);
+    public static final IntegerProperty MAX_LINE_LENGTH = new IntegerProperty("maxLineLength", "Maximum line length", 1,
+            200, 80, 2.0f);
 
     private static final String CR = "\n";
 
@@ -70,7 +71,7 @@ public class CommentSizeRule extends AbstractCommentRule {
 
         int maxLength = getProperty(MAX_LINE_LENGTH);
 
-        List<Integer> indicies = new ArrayList<Integer>();
+        List<Integer> indicies = new ArrayList<>();
         String[] lines = comment.getImage().split(CR);
 
         int offset = comment.getBeginLine();

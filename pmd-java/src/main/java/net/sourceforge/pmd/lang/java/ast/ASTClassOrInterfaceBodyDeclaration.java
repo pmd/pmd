@@ -19,7 +19,7 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractJavaNode impleme
 
     @Override
     public boolean isFindBoundary() {
-	return isAnonymousInnerClass();
+        return isAnonymousInnerClass();
     }
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {

@@ -1312,4 +1312,14 @@ public class SomeClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#215 - False positive for annotation fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface SomeAnnotation {
+    int CONSTANT = 0;
+}
+        ]]></code>
+    </test-code>
 </test-data>

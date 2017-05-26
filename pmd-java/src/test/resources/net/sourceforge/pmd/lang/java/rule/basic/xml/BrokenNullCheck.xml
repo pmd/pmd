@@ -155,7 +155,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-Assigments in checks are OK
+Assignments in checks are OK
         ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

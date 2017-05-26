@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -9,7 +13,7 @@ import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
  * ability to catch creation errors (illegal args), flag out-of-range test
  * values, and serialize/deserialize groups of double values onto/from a string
  * buffer.
- * 
+ *
  * @author Brian Remedios
  */
 public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
@@ -24,61 +28,76 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 
     /**
      * Creates and returns (count) number of legal Double values
-     * 
-     * @param count int
+     *
+     * @param count
+     *            int
      * @return Object
      */
+    @Override
     protected Object createValue(int count) {
 
-        if (count == 1)
+        if (count == 1) {
             return Double.valueOf(randomDouble(MIN, MAX));
+        }
 
         Double[] values = new Double[count];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = (Double) createValue(1);
+        }
         return values;
     }
 
     /**
      * Creates and returns (count) number of out-of-range values
-     * 
-     * @param count int
+     *
+     * @param count
+     *            int
      * @return Object
      */
+    @Override
     protected Object createBadValue(int count) {
 
-        if (count == 1)
-            return Double.valueOf(randomBool() ? randomDouble(MIN - SHIFT, MIN - 0.01) : randomDouble(MAX + 0.01, MAX
-                    + SHIFT));
+        if (count == 1) {
+            return Double.valueOf(
+                    randomBool() ? randomDouble(MIN - SHIFT, MIN - 0.01) : randomDouble(MAX + 0.01, MAX + SHIFT));
+        }
 
         Double[] values = new Double[count];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = (Double) createBadValue(1);
+        }
         return values;
     }
 
     /**
      * Creates and returns a property with a (maxCount) value cardinality.
-     * 
-     * @param multiValue boolean
+     *
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
+    @Override
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
-        return multiValue ? new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX, new Double[] { -1d,
-                0d, 1d, 2d }, 1.0f) : new DoubleProperty("testDouble", "Test double property", MIN, MAX, 9.0, 1.0f);
+        return multiValue
+                ? new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX,
+                        new Double[] { -1d, 0d, 1d, 2d }, 1.0f)
+                : new DoubleProperty("testDouble", "Test double property", MIN, MAX, 9.0, 1.0f);
     }
 
     /**
      * Attempts to create a property with invalid constructor arguments.
-     * 
-     * @param multiValue boolean
+     *
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
+    @Override
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
-        return multiValue ? new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX, new Double[] {
-                MIN - SHIFT, MIN, MIN + SHIFT, MAX + SHIFT }, 1.0f) : new DoubleProperty("testDouble",
-                "Test double property", MAX, MIN, 9.0, 1.0f);
+        return multiValue
+                ? new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX,
+                        new Double[] { MIN - SHIFT, MIN, MIN + SHIFT, MAX + SHIFT }, 1.0f)
+                : new DoubleProperty("testDouble", "Test double property", MAX, MIN, 9.0, 1.0f);
     }
 }

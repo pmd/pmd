@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.migrating;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
             if (child instanceof ASTMethodDeclaration) {
                 boolean isJUnitMethod = isJUnitMethod((ASTMethodDeclaration) child, data);
                 if (inAnnotation || isJUnitMethod) {
-                    List<Node> found = new ArrayList<Node>();
+                    List<Node> found = new ArrayList<>();
                     found.addAll((List<Node>) visit((ASTMethodDeclaration) child, data));
                     for (Node name : found) {
                         addViolation(data, name);
@@ -73,7 +74,7 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         List<ASTTryStatement> catches = node.findDescendantsOfType(ASTTryStatement.class);
-        List<Node> found = new ArrayList<Node>();
+        List<Node> found = new ArrayList<>();
         if (catches.isEmpty()) {
             return found;
         }

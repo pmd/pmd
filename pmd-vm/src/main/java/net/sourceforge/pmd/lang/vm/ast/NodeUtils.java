@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 import org.apache.commons.lang3.text.StrBuilder;
@@ -21,7 +22,6 @@ import org.apache.commons.lang3.text.StrBuilder;
  * under the License.    
  */
 
-
 /**
  * Utilities for dealing with the AST node structure.
  * 
@@ -30,13 +30,16 @@ import org.apache.commons.lang3.text.StrBuilder;
  * @version $Id: NodeUtils.java 687386 2008-08-20 16:57:07Z nbubna $
  */
 public class NodeUtils {
+    private NodeUtils() { }
 
     /**
-     * Collect all the <SPECIAL_TOKEN>s that are carried along with a token. Special tokens do not participate in
-     * parsing but can still trigger certain lexical actions. In some cases you may want to retrieve these special
-     * tokens, this is simply a way to extract them.
+     * Collect all the <SPECIAL_TOKEN>s that are carried along with a token.
+     * Special tokens do not participate in parsing but can still trigger
+     * certain lexical actions. In some cases you may want to retrieve these
+     * special tokens, this is simply a way to extract them.
      * 
-     * @param t the Token
+     * @param t
+     *            the Token
      * @return StrBuilder with the special tokens.
      */
     private static StrBuilder getSpecialText(final Token t) {
@@ -77,15 +80,13 @@ public class NodeUtils {
                              * if we see a \, keep going
                              */
                             continue;
-                        }
-                        else if (cc == '$') {
+                        } else if (cc == '$') {
                             /*
                              * a $ ends it correctly
                              */
                             term = true;
                             ok = false;
-                        }
-                        else {
+                        } else {
                             /*
                              * nah...
                              */
@@ -116,11 +117,9 @@ public class NodeUtils {
         // Look at kind of token and return "" when it's a multiline comment
         if (t.kind == VmParserConstants.MULTI_LINE_COMMENT) {
             return "";
-        }
-        else if (t.specialToken == null || t.specialToken.image.startsWith("##")) {
+        } else if (t.specialToken == null || t.specialToken.image.startsWith("##")) {
             return t.image;
-        }
-        else {
+        } else {
             final StrBuilder special = getSpecialText(t);
             if (special.length() > 0) {
                 return special.append(t.image).toString();
@@ -129,4 +128,4 @@ public class NodeUtils {
         }
     }
 
- }
+}

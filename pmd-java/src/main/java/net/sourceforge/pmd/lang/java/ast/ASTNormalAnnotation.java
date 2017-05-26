@@ -14,7 +14,6 @@ public class ASTNormalAnnotation extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

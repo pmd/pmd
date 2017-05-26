@@ -14,7 +14,6 @@ public class ASTFinallyStatement extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

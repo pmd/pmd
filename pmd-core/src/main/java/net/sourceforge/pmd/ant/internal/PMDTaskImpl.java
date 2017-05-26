@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant.internal;
 
 import java.io.File;
@@ -32,6 +33,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -50,8 +52,8 @@ public class PMDTaskImpl {
 
     private Path classpath;
     private Path auxClasspath;
-    private final List<Formatter> formatters = new ArrayList<Formatter>();
-    private final List<FileSet> filesets = new ArrayList<FileSet>();
+    private final List<Formatter> formatters = new ArrayList<>();
+    private final List<FileSet> filesets = new ArrayList<>();
     private final PMDConfiguration configuration = new PMDConfiguration();
     private boolean failOnError;
     private boolean failOnRuleViolation;
@@ -76,11 +78,12 @@ public class PMDTaskImpl {
         configuration.setThreads(task.getThreads());
         this.failuresPropertyName = task.getFailuresPropertyName();
         configuration.setMinimumPriority(RulePriority.valueOf(task.getMinimumPriority()));
+        configuration.setAnalysisCacheLocation(task.getCacheLocation());
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
-            LanguageVersion languageVersion = LanguageRegistry.findLanguageVersionByTerseName(version.getName() + " "
-                    + version.getVersion());
+            LanguageVersion languageVersion = LanguageRegistry
+                    .findLanguageVersionByTerseName(version.getName() + " " + version.getVersion());
             if (languageVersion == null) {
                 throw new BuildException("The following language is not supported:" + version + ".");
             }
@@ -100,23 +103,15 @@ public class PMDTaskImpl {
         setupClassLoader();
 
         // Setup RuleSetFactory and validate RuleSets
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        ruleSetFactory.setClassLoader(configuration.getClassLoader());
-        if (!configuration.isRuleSetFactoryCompatibilityEnabled()) {
-            ruleSetFactory.disableCompatibilityFilter();
-        }
+        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration);
         try {
-            // This is just used to validate and display rules. Each thread will
-            // create its own ruleset
-            ruleSetFactory.setMinimumPriority(configuration.getMinimumPriority());
-            ruleSetFactory.setWarnDeprecated(true);
+            // This is just used to validate and display rules. Each thread will create its own ruleset
             String ruleSets = configuration.getRuleSets();
             if (StringUtil.isNotEmpty(ruleSets)) {
                 // Substitute env variables/properties
                 configuration.setRuleSets(project.replaceProperties(ruleSets));
             }
             RuleSets rules = ruleSetFactory.createRuleSets(configuration.getRuleSets());
-            ruleSetFactory.setWarnDeprecated(false);
             logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage(), e);
@@ -143,7 +138,7 @@ public class PMDTaskImpl {
         final String separator = System.getProperty("file.separator");
 
         for (FileSet fs : filesets) {
-            List<DataSource> files = new LinkedList<DataSource>();
+            List<DataSource> files = new LinkedList<>();
             DirectoryScanner ds = fs.getDirectoryScanner(project);
             String[] srcFiles = ds.getIncludedFiles();
             for (String srcFile : srcFiles) {
@@ -155,14 +150,18 @@ public class PMDTaskImpl {
             configuration.setInputPaths(inputPaths);
 
             Renderer logRenderer = new AbstractRenderer("log", "Logging renderer") {
+                @Override
                 public void start() {
                     // Nothing to do
                 }
 
+                @Override
                 public void startFileAnalysis(DataSource dataSource) {
-                    project.log("Processing file " + dataSource.getNiceFileName(false, inputPaths), Project.MSG_VERBOSE);
+                    project.log("Processing file " + dataSource.getNiceFileName(false, inputPaths),
+                            Project.MSG_VERBOSE);
                 }
 
+                @Override
                 public void renderFileReport(Report r) {
                     int size = r.size();
                     if (size > 0) {
@@ -170,15 +169,17 @@ public class PMDTaskImpl {
                     }
                 }
 
+                @Override
                 public void end() {
                     // Nothing to do
                 }
 
+                @Override
                 public String defaultFileExtension() {
                     return null;
                 } // not relevant
             };
-            List<Renderer> renderers = new LinkedList<Renderer>();
+            List<Renderer> renderers = new ArrayList<>(formatters.size() + 1);
             renderers.add(logRenderer);
             for (Formatter formatter : formatters) {
                 renderers.add(formatter.getRenderer());
@@ -237,9 +238,9 @@ public class PMDTaskImpl {
             classpath = new Path(project);
         }
         /*
-         * 'basedir' is added to the path to make sure that relative paths
-         * such as "<ruleset>resources/custom_ruleset.xml</ruleset>" still
-         * work when ant is invoked from a different directory using "-f"
+         * 'basedir' is added to the path to make sure that relative paths such
+         * as "<ruleset>resources/custom_ruleset.xml</ruleset>" still work when
+         * ant is invoked from a different directory using "-f"
          */
         classpath.add(new Path(null, project.getBaseDir().toString()));
 
@@ -248,8 +249,8 @@ public class PMDTaskImpl {
         // are loaded twice
         // and exist in multiple class loaders
         boolean parentFirst = true;
-        configuration.setClassLoader(new AntClassLoader(Thread.currentThread().getContextClassLoader(), project,
-                classpath, parentFirst));
+        configuration.setClassLoader(
+                new AntClassLoader(Thread.currentThread().getContextClassLoader(), project, classpath, parentFirst));
 
         try {
             if (auxClasspath != null) {

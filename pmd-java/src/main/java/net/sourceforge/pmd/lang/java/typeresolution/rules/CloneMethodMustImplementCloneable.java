@@ -1,9 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,66 +33,71 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(final ASTClassOrInterfaceDeclaration node, final Object data) {
         if (extendsOrImplementsCloneable(node)) {
             return data;
         }
         return super.visit(node, data);
     }
 
-    private boolean extendsOrImplementsCloneable(ASTClassOrInterfaceDeclaration node) {
-        ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
-        if (impl != null && impl.jjtGetParent().equals(node)) {
+    private boolean extendsOrImplementsCloneable(final ASTClassOrInterfaceDeclaration node) {
+        if (node.getType() != null) {
+            return Cloneable.class.isAssignableFrom(node.getType());
+        }
+
+        // From this point on, this is a best effort, the auxclasspath is incomplete.
+        
+        // TODO : Should we really care about this?
+        // Shouldn't the type resolver / symbol table report missing classes and the user
+        // know results are dependent on running under proper arguments?
+        final ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
+        if (impl != null) {
             for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
-                Node child = impl.jjtGetChild(ix);
+                final Node child = impl.jjtGetChild(ix);
 
                 if (child.getClass() != ASTClassOrInterfaceType.class) {
                     continue;
                 }
 
-                ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) child;
+                final ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) child;
                 if (type.getType() == null) {
                     if ("Cloneable".equals(type.getImage())) {
                         return true;
                     }
-                } else if (type.getType().equals(Cloneable.class)) {
-                    return true;
                 } else if (Cloneable.class.isAssignableFrom(type.getType())) {
                     return true;
-                } else {
-                    List<Class<?>> implementors = Arrays.asList(type.getType().getInterfaces());
-                    if (implementors.contains(Cloneable.class)) {
-                        return true;
-                    }
                 }
             }
         }
+
         if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0) instanceof ASTExtendsList) {
-            ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
-            Class<?> clazz = type.getType();
-            if (clazz != null && clazz.equals(Cloneable.class)) {
-                return true;
-            }
-            while (clazz != null && !Object.class.equals(clazz)) {
-                if (Arrays.asList(clazz.getInterfaces()).contains(Cloneable.class)) {
-                    return true;
-                }
-                clazz = clazz.getSuperclass();
+            final ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
+            final Class<?> clazz = type.getType();
+            if (clazz != null) {
+                return Cloneable.class.isAssignableFrom(clazz);
             }
         }
+
         return false;
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        ASTClassOrInterfaceDeclaration classOrInterface = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+    public Object visit(final ASTMethodDeclaration node, final Object data) {
+        // Is this a clone method?
+        final ASTMethodDeclarator methodDeclarator = node.getFirstChildOfType(ASTMethodDeclarator.class);
+        if (!isCloneMethod(methodDeclarator)) {
+            return data;
+        }
+
+        // Is the clone method just throwing CloneNotSupportedException?
+        final ASTClassOrInterfaceDeclaration classOrInterface = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         if (classOrInterface != null && //Don't analyze enums, which cannot subclass clone()
             (node.isFinal() || classOrInterface.isFinal())) {
             if (node.findDescendantsOfType(ASTBlock.class).size() == 1) {
-                List<ASTBlockStatement> blocks = node.findDescendantsOfType(ASTBlockStatement.class);
+                final List<ASTBlockStatement> blocks = node.findDescendantsOfType(ASTBlockStatement.class);
                 if (blocks.size() == 1) {
-                    ASTBlockStatement block = blocks.get(0);
-                    ASTClassOrInterfaceType type = block.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+                    final ASTBlockStatement block = blocks.get(0);
+                    final ASTClassOrInterfaceType type = block.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
                     if (type != null && type.getType() != null && type.getNthParent(9).equals(node)
                             && type.getType().equals(CloneNotSupportedException.class)) {
                         return data;
@@ -104,43 +109,49 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
             }
         }
 
-        // Now check other whether implemented or extended classes are defined inside the same file
-        if (classOrInterface != null) {
-            Set<String> classesNames = determineTopLevelCloneableClasses(classOrInterface);
+        // TODO : Should we really care about this? It can only happen with an incomplete auxclasspath
+        if (classOrInterface != null && classOrInterface.getType() == null) {
+            // Now check other whether implemented or extended classes are defined inside the same file
+            final Set<String> classesNames = determineTopLevelCloneableClasses(classOrInterface);
 
-            ASTImplementsList implementsList = classOrInterface.getFirstChildOfType(ASTImplementsList.class);
+            final ASTImplementsList implementsList = classOrInterface.getFirstChildOfType(ASTImplementsList.class);
             if (implementsList != null) {
-                List<ASTClassOrInterfaceType> types = implementsList.findChildrenOfType(ASTClassOrInterfaceType.class);
-                for (ASTClassOrInterfaceType t : types) {
+                final List<ASTClassOrInterfaceType> types = implementsList.findChildrenOfType(ASTClassOrInterfaceType.class);
+                for (final ASTClassOrInterfaceType t : types) {
                     if (classesNames.contains(t.getImage())) {
                         return data;
                     }
                 }
             }
 
-            ASTExtendsList extendsList = classOrInterface.getFirstChildOfType(ASTExtendsList.class);
+            final ASTExtendsList extendsList = classOrInterface.getFirstChildOfType(ASTExtendsList.class);
             if (extendsList != null) {
-                ASTClassOrInterfaceType type = extendsList.getFirstChildOfType(ASTClassOrInterfaceType.class);
+                final ASTClassOrInterfaceType type = extendsList.getFirstChildOfType(ASTClassOrInterfaceType.class);
                 if (classesNames.contains(type.getImage())) {
                     return data;
                 }
             }
         }
 
-        return super.visit(node, data);
+        // Nothing can save us now
+        addViolation(data, node);
+        return data;
     }
 
     /**
-     * Determines all the class/interface declarations inside this compilation unit,
-     * which implement Cloneable
-     * @param currentClass the node of the class, that is currently analyzed (inside this compilation unit)
+     * Determines all the class/interface declarations inside this compilation
+     * unit, which implement Cloneable
+     * 
+     * @param currentClass
+     *            the node of the class, that is currently analyzed (inside this
+     *            compilation unit)
      * @return a Set of class/interface names
      */
-    private Set<String> determineTopLevelCloneableClasses(ASTClassOrInterfaceDeclaration currentClass) {
-        List<ASTClassOrInterfaceDeclaration> classes = currentClass.getFirstParentOfType(ASTCompilationUnit.class)
+    private Set<String> determineTopLevelCloneableClasses(final ASTClassOrInterfaceDeclaration currentClass) {
+        final List<ASTClassOrInterfaceDeclaration> classes = currentClass.getFirstParentOfType(ASTCompilationUnit.class)
                 .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
-        Set<String> classesNames = new HashSet<String>();
-        for (ASTClassOrInterfaceDeclaration c : classes) {
+        final Set<String> classesNames = new HashSet<String>();
+        for (final ASTClassOrInterfaceDeclaration c : classes) {
             if (c != currentClass && extendsOrImplementsCloneable(c)) {
                 classesNames.add(c.getImage());
             }
@@ -148,16 +159,14 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
         return classesNames;
     }
 
-    @Override
-    public Object visit(ASTMethodDeclarator node, Object data) {
+    public boolean isCloneMethod(final ASTMethodDeclarator node) {
         if (!"clone".equals(node.getImage())) {
-            return data;
+            return false;
         }
-        int countParams = ((ASTFormalParameters) node.jjtGetChild(0)).jjtGetNumChildren();
+        final int countParams = ((ASTFormalParameters) node.jjtGetChild(0)).jjtGetNumChildren();
         if (countParams != 0) {
-            return data;
+            return false;
         }
-        addViolation(data, node);
-        return data;
+        return true;
     }
 }

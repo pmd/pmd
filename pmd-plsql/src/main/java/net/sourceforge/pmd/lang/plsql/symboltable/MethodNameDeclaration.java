@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.logging.Level;
@@ -15,7 +16,7 @@ import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
-    private final static Logger LOGGER = Logger.getLogger(MethodNameDeclaration.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MethodNameDeclaration.class.getName());
 
     public MethodNameDeclaration(ASTMethodDeclarator node) {
         super(node);
@@ -83,7 +84,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
         // compare parameter count - this catches the case where there are no
         // params, too
-        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
+        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node)
+                .getParameterCount()) {
             return false;
         }
 
@@ -138,14 +140,13 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     @Override
     public int hashCode() {
         try {
-            return node.hashCode(); // SRT node.getImage().hashCode() +
-                                    // ((ASTMethodDeclarator)
-                                    // node).getParameterCount();
+            // SRT node.getImage().hashCode() + ((ASTMethodDeclarator)node).getParameterCount();
+            return node.hashCode();
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("MethodNameDeclaration problem for " + node + " of class "
-                        + node.getClass().getCanonicalName() + " => " + node.getBeginLine() + "/"
-                        + node.getBeginColumn());
+                LOGGER.finest(
+                        "MethodNameDeclaration problem for " + node + " of class " + node.getClass().getCanonicalName()
+                                + " => " + node.getBeginLine() + "/" + node.getBeginColumn());
             }
             // @TODO SRT restore the thrown exception - throw e;
             return 0;

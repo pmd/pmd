@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.util.ArrayList;
@@ -31,21 +32,27 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
+ * <pre>
  * void method() {
- * if(x == null) {
- * synchronized(this){
- * if(x == null) {
- * x = new | method();
+ *   if (x == null) {
+ *     synchronized(this){
+ *       if (x == null) {
+ *         x = new | method();
+ *       }
+ *     }
+ *   }
  * }
- * }
- * }
- * 1.  The error is when one uses the value assigned within a synchronized
- * section, outside of a synchronized section.
- * if(x == null) is outside of synchronized section
- * x = new | method();
- * <p/>
- * <p/>
- * Very very specific check for double checked locking.
+ * </pre>
+ *
+ * <p>The error is when one uses the value assigned within a synchronized
+ * section, outside of a synchronized section.</p>
+ * 
+ * <pre>
+ * if (x == null) // is outside of synchronized section
+ *   x = new | method();
+ * </pre>
+ *
+ * <p>Very very specific check for double checked locking.</p>
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
@@ -64,7 +71,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit compilationUnit, Object data) {
         if (this.volatileFields == null) {
-            this.volatileFields = new ArrayList<String>(0);
+            this.volatileFields = new ArrayList<>(0);
         } else {
             this.volatileFields.clear();
         }
@@ -110,7 +117,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         if (returnVariableName == null || this.volatileFields.contains(returnVariableName)) {
             return super.visit(node, data);
         }
-        // if the return variable is local and only written with the volatile field, then it's ok, too
+        // if the return variable is local and only written with the volatile
+        // field, then it's ok, too
         if (checkLocalVariableUsage(node, returnVariableName)) {
             return super.visit(node, data);
         }
@@ -129,9 +137,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                             List<ASTStatementExpression> sel = is2.findDescendantsOfType(ASTStatementExpression.class);
                             if (sel.size() == 1) {
                                 ASTStatementExpression se = sel.get(0);
-                                if (se.jjtGetNumChildren() == 3) { // primaryExpression,
-                                                                   // AssignmentOperator,
-                                                                   // Expression
+                                if (se.jjtGetNumChildren() == 3) {
+                                    // primaryExpression, AssignmentOperator, Expression
                                     if (se.jjtGetChild(0) instanceof ASTPrimaryExpression) {
                                         ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
                                         if (matchName(pe, returnVariableName)) {
@@ -161,7 +168,9 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             }
         }
         // the return variable name doesn't seem to be a local variable
-        if (initializer == null) return false;
+        if (initializer == null) {
+            return false;
+        }
 
         // verify the value with which the local variable is initialized
         if (initializer.jjtGetNumChildren() > 0 && initializer.jjtGetChild(0) instanceof ASTExpression
@@ -171,7 +180,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                 && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimaryPrefix
                 && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() > 0
                 && initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
-            ASTName name = (ASTName)initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+            ASTName name = (ASTName) initializer.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
             if (name == null || !volatileFields.contains(name.getImage())) {
                 return false;
             }
@@ -183,10 +192,14 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         // now check every usage/assignment of the variable
         List<ASTName> names = node.findDescendantsOfType(ASTName.class);
         for (ASTName n : names) {
-            if (!n.hasImageEqualTo(returnVariableName)) continue;
+            if (!n.hasImageEqualTo(returnVariableName)) {
+                continue;
+            }
 
             Node expression = n.getNthParent(3);
-            if (expression instanceof ASTEqualityExpression) continue;
+            if (expression instanceof ASTEqualityExpression) {
+                continue;
+            }
             if (expression instanceof ASTStatementExpression) {
                 if (expression.jjtGetNumChildren() > 2 && expression.jjtGetChild(1) instanceof ASTAssignmentOperator) {
                     ASTName value = expression.jjtGetChild(2).getFirstDescendantOfType(ASTName.class);

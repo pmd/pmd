@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
@@ -14,12 +15,12 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 /**
  * Maintains a pair of boundary limit values between which all values managed by
  * the subclasses must fit.
- * 
+ *
  * @author Brian Remedios
  * @param <T>
  */
-public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T> implements
-        NumericPropertyDescriptor<T> {
+public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T>
+        implements NumericPropertyDescriptor<T> {
 
     private Number lowerLimit;
     private Number upperLimit;
@@ -28,7 +29,7 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
             .expectedFieldTypesWith(new String[] { MIN, MAX }, new Boolean[] { Boolean.TRUE, Boolean.TRUE });
 
     /**
-     * 
+     *
      * @param theName
      * @param theDescription
      * @param lower
@@ -51,10 +52,11 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 
     /**
      * Returns the minimum value that instances of the property can have
-     * 
+     *
      * @return The minimum value.
      * @see net.sourceforge.pmd.NumericPropertyDescriptor#lowerLimit()
      */
+    @Override
     public Number lowerLimit() {
         return lowerLimit;
     }
@@ -62,16 +64,18 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
     /**
      * @return String
      */
+    @Override
     protected String defaultAsString() {
         return defaultValue().toString();
     }
 
     /**
      * Returns the maximum value that instances of the property can have
-     * 
+     *
      * @return The maximum value.
      * @see net.sourceforge.pmd.NumericPropertyDescriptor#upperLimit()
      */
+    @Override
     public Number upperLimit() {
         return upperLimit;
     }
@@ -88,10 +92,12 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
     /**
      * Returns a string describing any error the value may have when
      * characterized by the receiver.
-     * 
-     * @param value Object
+     *
+     * @param value
+     *            Object
      * @return String
      */
+    @Override
     protected String valueErrorFor(Object value) {
 
         double number = ((Number) value).doubleValue();
@@ -103,11 +109,7 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
         return null;
     }
 
-    /**
-     * Method addAttributesTo.
-     * 
-     * @param attributes Map<String,String>
-     */
+    @Override
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);
 

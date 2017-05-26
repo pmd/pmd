@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript.rule;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -18,14 +19,14 @@ public class EcmascriptXPathRule extends XPathRule {
     private static final EnumeratedProperty<EcmascriptParserOptions.Version> RHINO_LANGUAGE_VERSION = EcmascriptParserOptions.RHINO_LANGUAGE_VERSION;
 
     public EcmascriptXPathRule() {
-	super.setLanguage(LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME));
-	definePropertyDescriptor(RECORDING_COMMENTS_DESCRIPTOR);
-	definePropertyDescriptor(RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
-	definePropertyDescriptor(RHINO_LANGUAGE_VERSION);
+        super.setLanguage(LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME));
+        definePropertyDescriptor(RECORDING_COMMENTS_DESCRIPTOR);
+        definePropertyDescriptor(RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
+        definePropertyDescriptor(RHINO_LANGUAGE_VERSION);
     }
 
     @Override
     public ParserOptions getParserOptions() {
-	return new EcmascriptParserOptions(this);
+        return new EcmascriptParserOptions(this);
     }
 }

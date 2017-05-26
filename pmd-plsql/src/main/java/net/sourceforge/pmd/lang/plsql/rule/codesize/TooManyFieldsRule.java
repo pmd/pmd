@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import java.util.HashMap;
@@ -34,8 +35,8 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     @Override
     public Object visit(ASTInput node, Object data) {
 
-        stats = new HashMap<String, Integer>(5);
-        nodes = new HashMap<String, PLSQLNode>(5);
+        stats = new HashMap<>(5);
+        nodes = new HashMap<>(5);
 
         return super.visit(node, data);
     }

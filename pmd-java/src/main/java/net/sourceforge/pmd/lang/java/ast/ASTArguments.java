@@ -14,7 +14,6 @@ public class ASTArguments extends AbstractJavaNode {
         super(p, id);
     }
 
-
     public int getArgumentCount() {
         if (this.jjtGetNumChildren() == 0) {
             return 0;

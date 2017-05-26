@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.finalizers;
 
 import java.util.HashSet;
@@ -17,7 +18,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 
-    private Set<MethodScope> checked = new HashSet<MethodScope>();
+    private Set<MethodScope> checked = new HashSet<>();
 
     public Object visit(ASTCompilationUnit acu, Object ctx) {
         checked.clear();

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strictexception;
 
 import java.util.Collections;
@@ -16,9 +17,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
- * <p/>
  *
- * @author <a mailto:trondandersen@c2i.net>Trond Andersen</a>
+ * @author <a href="mailto:trondandersen@c2i.net">Trond Andersen</a>
  * @version 1.0
  * @since 1.2
  */
@@ -43,7 +43,8 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
-        if ((methodDeclaration.getMethodName().equals("setUp") || methodDeclaration.getMethodName().equals("tearDown")) && junitImported) {
+        if ((methodDeclaration.getMethodName().equals("setUp") || methodDeclaration.getMethodName().equals("tearDown"))
+                && junitImported) {
             return super.visit(methodDeclaration, o);
         }
 
@@ -62,7 +63,6 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
         return super.visit(methodDeclaration, o);
     }
 
-
     @Override
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
         List<ASTName> exceptionList = constructorDeclaration.findDescendantsOfType(ASTName.class);
@@ -73,13 +73,15 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     }
 
     /**
-     * Checks all exceptions for possible violation on the exception declaration.
+     * Checks all exceptions for possible violation on the exception
+     * declaration.
      *
-     * @param exceptionList containing all exception for declaration
+     * @param exceptionList
+     *            containing all exception for declaration
      * @param context
      */
     private void evaluateExceptions(List<ASTName> exceptionList, Object context) {
-        for (ASTName exception: exceptionList) {
+        for (ASTName exception : exceptionList) {
             if (hasDeclaredExceptionInSignature(exception)) {
                 addViolation(context, exception);
             }
@@ -87,10 +89,11 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     }
 
     /**
-     * Checks if the given value is defined as <code>Exception</code> and the parent is either
-     * a method or constructor declaration.
+     * Checks if the given value is defined as <code>Exception</code> and the
+     * parent is either a method or constructor declaration.
      *
-     * @param exception to evaluate
+     * @param exception
+     *            to evaluate
      * @return true if <code>Exception</code> is declared and has proper parents
      */
     private boolean hasDeclaredExceptionInSignature(ASTName exception) {
@@ -100,7 +103,9 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     /**
      * Checks if the given exception is declared in the method or constructor
      * signature.
-     * @param exception to evaluate
+     * 
+     * @param exception
+     *            to evaluate
      * @return true if parent node is either a method or constructor declaration
      */
     private boolean isParentSignatureDeclaration(ASTName exception) {

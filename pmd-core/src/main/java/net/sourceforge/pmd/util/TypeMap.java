@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util;
 
 import java.util.HashMap;
@@ -8,10 +9,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * A specialized map that stores types by both their full and short (without package prefixes) names.
- * If an incoming type shares the same name (but different package/prefix) with a type already in the
- * map then an IllegalArgumentException will be thrown since any subsequent retrievals by said short
- * name could be in error.
+ * A specialized map that stores types by both their full and short (without
+ * package prefixes) names. If an incoming type shares the same name (but
+ * different package/prefix) with a type already in the map then an
+ * IllegalArgumentException will be thrown since any subsequent retrievals by
+ * said short name could be in error.
  *
  * @author Brian Remedios
  */
@@ -22,16 +24,18 @@ public class TypeMap {
     /**
      * Constructor for TypeMap.
      *
-     * @param initialSize int
+     * @param initialSize
+     *            int
      */
     public TypeMap(int initialSize) {
-        typesByName = new HashMap<String, Class<?>>(initialSize);
+        typesByName = new HashMap<>(initialSize);
     }
 
     /**
      * Constructor for TypeMap that takes in an initial set of types.
      *
-     * @param types Class[]
+     * @param types
+     *            Class[]
      */
     public TypeMap(Class<?>... types) {
         this(types.length);
@@ -43,7 +47,8 @@ public class TypeMap {
      * short names. Throws an exception if the short name of the argument
      * matches an existing one already in the map for a different class.
      *
-     * @param type Class
+     * @param type
+     *            Class
      * @throws IllegalArgumentException
      */
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -57,15 +62,16 @@ public class TypeMap {
         }
 
         if (existingType != type) {
-            throw new IllegalArgumentException("Short name collision between existing " + existingType + " and new "
-                    + type);
+            throw new IllegalArgumentException(
+                    "Short name collision between existing " + existingType + " and new " + type);
         }
     }
 
     /**
      * Returns whether the type is known to the receiver.
      *
-     * @param type Class
+     * @param type
+     *            Class
      * @return boolean
      */
     public boolean contains(Class<?> type) {
@@ -75,7 +81,8 @@ public class TypeMap {
     /**
      * Returns whether the typeName is known to the receiver.
      *
-     * @param typeName String
+     * @param typeName
+     *            String
      * @return boolean
      */
     public boolean contains(String typeName) {
@@ -85,7 +92,8 @@ public class TypeMap {
     /**
      * Returns the type for the typeName specified.
      *
-     * @param typeName String
+     * @param typeName
+     *            String
      * @return Class
      */
     public Class<?> typeFor(String typeName) {
@@ -95,7 +103,8 @@ public class TypeMap {
     /**
      * Adds an array of types to the receiver at once.
      *
-     * @param types Class[]
+     * @param types
+     *            Class[]
      */
     public void add(Class<?>... types) {
         for (Class<?> element : types) {
@@ -110,11 +119,11 @@ public class TypeMap {
      * @return Map
      */
     public Map<Class<?>, String> asInverseWithShortName() {
-        Map<Class<?>, String> inverseMap = new HashMap<Class<?>, String>(typesByName.size() / 2);
+        Map<Class<?>, String> inverseMap = new HashMap<>(typesByName.size() / 2);
 
-        Iterator<Map.Entry<String,Class<?>>> iter = typesByName.entrySet().iterator();
+        Iterator<Map.Entry<String, Class<?>>> iter = typesByName.entrySet().iterator();
         while (iter.hasNext()) {
-            Map.Entry<String,Class<?>> entry = iter.next();
+            Map.Entry<String, Class<?>> entry = iter.next();
             storeShortest(inverseMap, entry.getValue(), entry.getKey());
         }
 

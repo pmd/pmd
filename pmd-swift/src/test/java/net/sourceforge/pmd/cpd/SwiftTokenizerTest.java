@@ -1,16 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 public class SwiftTokenizerTest extends AbstractTokenizerTest {
 
@@ -25,8 +25,8 @@ public class SwiftTokenizerTest extends AbstractTokenizerTest {
 
     @Override
     public String getSampleCode() throws IOException {
-         return IOUtils.toString(SwiftTokenizer.class.getResourceAsStream(FILENAME));
-     }
+        return IOUtils.toString(SwiftTokenizer.class.getResourceAsStream(FILENAME));
+    }
 
     @Test
     public void tokenizeTest() throws IOException {
@@ -34,4 +34,3 @@ public class SwiftTokenizerTest extends AbstractTokenizerTest {
         super.tokenizeTest();
     }
 }
-

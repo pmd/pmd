@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedReader;
@@ -8,6 +9,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Properties;
+
+import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -17,8 +20,6 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.cpp.ast.Token;
 import net.sourceforge.pmd.util.IOUtil;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * The C++ tokenizer.
@@ -31,7 +32,9 @@ public class CPPTokenizer implements Tokenizer {
 
     /**
      * Sets the possible options for the C++ tokenizer.
-     * @param properties the properties
+     * 
+     * @param properties
+     *            the properties
      * @see #OPTION_SKIP_BLOCKS
      * @see #OPTION_SKIP_BLOCKS_PATTERN
      */
@@ -58,8 +61,9 @@ public class CPPTokenizer implements Tokenizer {
                     .getDefaultVersion().getLanguageVersionHandler();
             reader = new StringReader(maybeSkipBlocks(buffer.toString()));
             reader = IOUtil.skipBOM(reader);
-            TokenManager tokenManager = languageVersionHandler.getParser(
-                    languageVersionHandler.getDefaultParserOptions()).getTokenManager(sourceCode.getFileName(), reader);
+            TokenManager tokenManager = languageVersionHandler
+                    .getParser(languageVersionHandler.getDefaultParserOptions())
+                    .getTokenManager(sourceCode.getFileName(), reader);
             Token currentToken = (Token) tokenManager.getNextToken();
             while (currentToken.image.length() > 0) {
                 tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));
@@ -98,7 +102,8 @@ public class CPPTokenizer implements Tokenizer {
             if (!skip) {
                 filtered.append(line);
             }
-            filtered.append(PMD.EOL); // always add a new line to keep the line-numbering
+            // always add a new line to keep the line-numbering
+            filtered.append(PMD.EOL); 
         }
         return filtered.toString();
     }

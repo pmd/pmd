@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import java.io.IOException;
@@ -27,19 +28,19 @@ import org.junit.Test;
 @Ignore
 public class DBMSMetadataTest {
 
-    final static String C_ORACLE_THIN_1 = "jdbc:oracle:thin:scott/tiger@//192.168.100.21:5521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
+    static final String C_ORACLE_THIN_1 = "jdbc:oracle:thin:scott/tiger@//192.168.100.21:5521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
 
-    final static String C_ORACLE_THIN_3 = "jdbc:oracle:thin:scott/oracle@//192.168.100.21:1521/orcl?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
+    static final String C_ORACLE_THIN_3 = "jdbc:oracle:thin:scott/oracle@//192.168.100.21:1521/orcl?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
 
-    final static String C_ORACLE_THIN_4 = "jdbc:oracle:thin:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
+    static final String C_ORACLE_THIN_4 = "jdbc:oracle:thin:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
 
-    final static String C_ORACLE_THIN_5 = "jdbc:oracle:thin:@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25&amp;user=system&amp;password=oracle";
+    static final String C_ORACLE_THIN_5 = "jdbc:oracle:thin:@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25&amp;user=system&amp;password=oracle";
 
     /**
      * URI with minimum information, relying on defaults in
      * testdefaults.properties
      */
-    final static String C_TEST_DEFAULTS = "jdbc:oracle:testdefault://192.168.100.21:1521/ORCL";
+    static final String C_TEST_DEFAULTS = "jdbc:oracle:testdefault://192.168.100.21:1521/ORCL";
 
     private DBURI dbURI;
     private DBURI dbURI4;
@@ -107,7 +108,7 @@ public class DBMSMetadataTest {
         } catch (SQLException ex) {
             Logger.getLogger(DBMSMetadataTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.format("...\n]\n", description);
+        System.out.format("...\n]\n");
     }
 
     /**
@@ -185,10 +186,10 @@ public class DBMSMetadataTest {
          * result.read(charArray)) > 0 ) {
          * System.out.println("Reader.read(CharArray)=="+readChars);
          * stringBuilder.append(charArray, 0, readChars); } result.close();
-         * 
-         * System.out.println("getSourceCode()==\""+stringBuilder.toString()+"\""
-         * );
-         * 
+         *
+         * System.out.println("getSourceCode()==\""+stringBuilder.toString()+
+         * "\"" );
+         *
          * assertTrue(stringBuilder.toString().startsWith("\n  CREATE "));
          */
 

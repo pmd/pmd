@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public class MatchAlgorithm {
 
-    private final static int MOD = 37;
+    private static final int MOD = 37;
     private int lastHash;
     private int lastMod = 1;
 
@@ -63,6 +64,7 @@ public class MatchAlgorithm {
         for (Iterator<Object> i = markGroups.values().iterator(); i.hasNext();) {
             Object o = i.next();
             if (o instanceof List) {
+                @SuppressWarnings("unchecked")
                 List<TokenEntry> l = (List<TokenEntry>) o;
                 Collections.reverse(l);
                 matchCollector.collect(l);
@@ -71,18 +73,15 @@ public class MatchAlgorithm {
         }
         cpdListener.phaseUpdate(CPDListener.GROUPING);
         matches = matchCollector.getMatches();
-        matchCollector = null;
+
         for (Match match : matches) {
-        	for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
-                Mark mark = occurrences.next();
+            for (Mark mark : match) {
                 TokenEntry token = mark.getToken();
                 int lineCount = tokens.getLineCount(token, match);
 
                 mark.setLineCount(lineCount);
                 SourceCode sourceCode = source.get(token.getTokenSrcID());
-                String code = sourceCode.getSlice(mark.getBeginLine(), mark.getEndLine());
-
-                mark.setSoureCodeSlice(code);
+                mark.setSourceCode(sourceCode);
             }
         }
         cpdListener.phaseUpdate(CPDListener.DONE);
@@ -90,7 +89,7 @@ public class MatchAlgorithm {
 
     @SuppressWarnings("PMD.JumbledIncrementer")
     private Map<TokenEntry, Object> hash() {
-        Map<TokenEntry, Object> markGroups = new HashMap<TokenEntry, Object>(tokens.size());
+        Map<TokenEntry, Object> markGroups = new HashMap<>(tokens.size());
         for (int i = code.size() - 1; i >= 0; i--) {
             TokenEntry token = code.get(i);
             if (token != TokenEntry.EOF) {
@@ -99,16 +98,18 @@ public class MatchAlgorithm {
                 token.setHashCode(lastHash);
                 Object o = markGroups.get(token);
 
-                // Note that this insertion method is worthwhile since the vast majority
+                // Note that this insertion method is worthwhile since the vast
+                // majority
                 // markGroup keys will have only one value.
                 if (o == null) {
                     markGroups.put(token, token);
                 } else if (o instanceof TokenEntry) {
-                    List<TokenEntry> l = new ArrayList<TokenEntry>();
+                    List<TokenEntry> l = new ArrayList<>();
                     l.add((TokenEntry) o);
                     l.add(token);
                     markGroups.put(token, l);
                 } else {
+                    @SuppressWarnings("unchecked")
                     List<TokenEntry> l = (List<TokenEntry>) o;
                     l.add(token);
                 }

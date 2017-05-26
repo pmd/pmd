@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer.util;
 
 import java.util.ResourceBundle;
@@ -12,20 +13,22 @@ import java.util.ResourceBundle;
  * @version $Id$
  */
 public class NLS {
-    private final static ResourceBundle BUNDLE;
+    private static final ResourceBundle BUNDLE;
 
     static {
         BUNDLE = ResourceBundle.getBundle("net.sourceforge.pmd.util.viewer.resources.viewer_strings");
     }
 
+    private NLS() { }
+
     /**
      * translates the given key to the message
      *
-     * @param key key to be translated
+     * @param key
+     *            key to be translated
      * @return translated string
      */
     public static String nls(String key) {
         return BUNDLE.getString(key);
     }
 }
-

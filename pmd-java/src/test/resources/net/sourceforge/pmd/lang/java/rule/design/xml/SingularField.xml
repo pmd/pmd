@@ -533,4 +533,76 @@ public enum Supplier {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1494 [java] SingularField: lombok.Data false positive - part1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+@Data
+public class MyClass {
+
+    private String field1;
+
+    public MyClass(String field1) {
+        this.field1 = field1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1494 [java] SingularField: lombok.Data false positive - part2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+
+public class MyClass {
+
+    @Getter
+    private String field1;
+
+    public MyClass(String field1) {
+        this.field1 = field1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>#177 [java] SingularField with lambdas as final fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/** Dummy class. */
+public final class Test {
+  private Timer timer1;
+  private Timer timer2;
+
+  /** Dummy constructor. */
+  public Timer() {
+    this.timer1 = new Timer(0, e -> {
+      // do nothing for now
+    });
+    this.timer2 = new Timer(0, e -> {
+      // do nothing for now
+    });
+  }
+
+  /** Use a lambda expression to reference timer1 -- triggers SingularField error. */
+  private final Runnable play1 = () -> {
+    this.timer1.start();
+  };
+
+  /** Use an anonymous class to reference timer2 -- no error. */
+  private final Runnable play2 = new Runnable() {
+    @Override
+    public void run() {
+      this.timer2.start();
+    }
+  };
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.xml.ast;
 
 import java.io.IOException;
@@ -17,19 +18,19 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.xml.XmlParserOptions;
-
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.xml.XmlParserOptions;
+
 public class XmlParser {
     protected final XmlParserOptions parserOptions;
-    protected Map<Node, XmlNode> nodeCache = new HashMap<Node, XmlNode>();
+    protected Map<Node, XmlNode> nodeCache = new HashMap<>();
 
     public XmlParser(XmlParserOptions parserOptions) {
         this.parserOptions = parserOptions;
@@ -77,7 +78,7 @@ public class XmlParser {
         }
 
         // TODO Change Parser interface to take ClassLoader?
-        LinkedHashSet<Class<?>> interfaces = new LinkedHashSet<Class<?>>();
+        LinkedHashSet<Class<?>> interfaces = new LinkedHashSet<>();
         interfaces.add(XmlNode.class);
         if (node instanceof Document) {
             interfaces.add(RootNode.class);
@@ -91,7 +92,7 @@ public class XmlParser {
     }
 
     public void addAllInterfaces(Set<Class<?>> interfaces, Class<?> clazz) {
-        interfaces.addAll(Arrays.asList((Class<?>[]) clazz.getInterfaces()));
+        interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
         if (clazz.getSuperclass() != null) {
             addAllInterfaces(interfaces, clazz.getSuperclass());
         }

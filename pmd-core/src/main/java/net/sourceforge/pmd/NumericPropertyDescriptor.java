@@ -1,26 +1,29 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 /**
- * Defines a descriptor type whose instance values are required lie within specified upper and 
- * lower limits.
- *  
+ * Defines a descriptor type whose instance values are required lie within
+ * specified upper and lower limits.
+ *
  * @author Brian Remedios
  *
- * @param <T>
+ * @param <T> type of the property value
  */
-public interface NumericPropertyDescriptor<T extends Object > extends PropertyDescriptor<T> {
+public interface NumericPropertyDescriptor<T extends Object> extends PropertyDescriptor<T> {
 
     /**
-     *  Returns the maximum value that instances of the property can have
+     * Returns the maximum value that instances of the property can have
+     *
      * @return Number
      */
     Number upperLimit();
-    
+
     /**
-     *  Returns the minimum value that instances of the property can have
+     * Returns the minimum value that instances of the property can have
+     *
      * @return Number
      */
     Number lowerLimit();

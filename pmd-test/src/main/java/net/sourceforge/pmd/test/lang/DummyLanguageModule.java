@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.test.lang;
 
 import java.io.Reader;
@@ -25,7 +26,6 @@ import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
-
 
 /**
  * Dummy language used for testing PMD.
@@ -53,11 +53,12 @@ public class DummyLanguageModule extends BaseLanguageModule {
         protected void visit(Rule rule, Node node, RuleContext ctx) {
             rule.apply(Arrays.asList(node), ctx);
         }
+
         @Override
         protected void indexNodes(List<Node> nodes, RuleContext ctx) {
             for (Node n : nodes) {
                 indexNode(n);
-                List<Node> childs = new ArrayList<Node>();
+                List<Node> childs = new ArrayList<>();
                 for (int i = 0; i < n.jjtGetNumChildren(); i++) {
                     childs.add(n.jjtGetChild(i));
                 }
@@ -65,32 +66,35 @@ public class DummyLanguageModule extends BaseLanguageModule {
             }
         }
     }
-    
+
     public static class Handler extends AbstractLanguageVersionHandler {
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();
         }
-        
+
         @Override
         public Parser getParser(ParserOptions parserOptions) {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
                     DummyNode node = new DummyNode(1);
-                    node.testingOnly__setBeginLine(1);
-                    node.testingOnly__setBeginColumn(1);
+                    node.testingOnlySetBeginLine(1);
+                    node.testingOnlySetBeginColumn(1);
                     node.setImage("Foo");
                     return node;
                 }
+
                 @Override
                 public Map<Integer, String> getSuppressMap() {
                     return Collections.emptyMap();
                 }
+
                 @Override
                 public boolean canParse() {
                     return true;
                 }
+
                 @Override
                 protected TokenManager createTokenManager(Reader source) {
                     return null;
@@ -104,12 +108,14 @@ public class DummyLanguageModule extends BaseLanguageModule {
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
             return createRuleViolation(rule, ruleContext, node, message, 0, 0);
         }
+
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
                 int beginLine, int endLine) {
             ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
                 {
-                    this.packageName = "foo"; // just for testing variable expansion
+                    // just for testing variable expansion
+                    this.packageName = "foo"; 
                 }
             };
             rv.setLines(beginLine, endLine);

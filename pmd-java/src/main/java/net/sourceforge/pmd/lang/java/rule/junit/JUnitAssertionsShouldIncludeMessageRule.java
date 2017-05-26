@@ -1,7 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.junit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -9,16 +13,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
 
     private class AssertionCall {
         private final int argumentsCount;
         private final String assertionName;
 
-        public AssertionCall(String assertionName, int argumentsCount) {
+        AssertionCall(String assertionName, int argumentsCount) {
             this.argumentsCount = argumentsCount;
             this.assertionName = assertionName;
         }
@@ -27,8 +28,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
             if (node.getArgumentCount() == argumentsCount
                     && node.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
                 ASTPrimaryExpression primary = (ASTPrimaryExpression) node.jjtGetParent().jjtGetParent();
-                if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix
-                        && primary.jjtGetChild(0).jjtGetNumChildren() > 0
+                if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix && primary.jjtGetChild(0).jjtGetNumChildren() > 0
                         && primary.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
                     ASTName name = (ASTName) primary.jjtGetChild(0).jjtGetChild(0);
 
@@ -47,7 +47,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJUnitRule {
         }
     }
 
-    private List<AssertionCall> checks = new ArrayList<AssertionCall>();
+    private List<AssertionCall> checks = new ArrayList<>();
 
     public JUnitAssertionsShouldIncludeMessageRule() {
         checks.add(new AssertionCall("assertArrayEquals", 2));

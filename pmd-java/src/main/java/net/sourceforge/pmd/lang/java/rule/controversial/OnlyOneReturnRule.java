@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.controversial;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class OnlyOneReturnRule extends AbstractJavaRule {
             return data;
         }
 
-        List<ASTReturnStatement> returnNodes = new ArrayList<ASTReturnStatement>();
+        List<ASTReturnStatement> returnNodes = new ArrayList<>();
         node.findDescendantsOfType(ASTReturnStatement.class, returnNodes, false);
         returnNodes = filterLambdaExpressions(returnNodes);
 
@@ -56,7 +57,7 @@ public class OnlyOneReturnRule extends AbstractJavaRule {
      * @return all return statements, that are NOT within a lambda expression.
      */
     private List<ASTReturnStatement> filterLambdaExpressions(List<ASTReturnStatement> returnNodes) {
-        List<ASTReturnStatement> filtered = new ArrayList<ASTReturnStatement>();
+        List<ASTReturnStatement> filtered = new ArrayList<>();
         for (ASTReturnStatement ret : returnNodes) {
             if (ret.getFirstParentOfType(ASTLambdaExpression.class) == null) {
                 filtered.add(ret);

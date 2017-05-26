@@ -1,19 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.sourceforge.pmd.PMD;
-
 import org.junit.Test;
+
+import net.sourceforge.pmd.PMD;
 
 public class MatchAlgorithmTest {
 
@@ -27,26 +27,19 @@ public class MatchAlgorithmTest {
     private static final String LINE_8 = "}";
 
     private static String getSampleCode() {
-        return
-                LINE_1 + PMD.EOL +
-                LINE_2 + PMD.EOL +
-                LINE_3 + PMD.EOL +
-                LINE_4 + PMD.EOL +
-                LINE_5 + PMD.EOL +
-                LINE_6 + PMD.EOL +
-                LINE_7 + PMD.EOL +
-                LINE_8;
+        return LINE_1 + PMD.EOL + LINE_2 + PMD.EOL + LINE_3 + PMD.EOL + LINE_4 + PMD.EOL + LINE_5 + PMD.EOL + LINE_6
+                + PMD.EOL + LINE_7 + PMD.EOL + LINE_8;
     }
 
     @Test
-    public void testSimple() throws Throwable {
+    public void testSimple() {
         JavaTokenizer tokenizer = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
         Tokens tokens = new Tokens();
         TokenEntry.clearImages();
         tokenizer.tokenize(sourceCode, tokens);
         assertEquals(41, tokens.size());
-        Map<String, SourceCode> codeMap = new HashMap<String, SourceCode>();
+        Map<String, SourceCode> codeMap = new HashMap<>();
         codeMap.put("Foo.java", sourceCode);
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
@@ -70,7 +63,7 @@ public class MatchAlgorithmTest {
     }
 
     @Test
-    public void testIgnore() throws Throwable {
+    public void testIgnore() {
         JavaTokenizer tokenizer = new JavaTokenizer();
         tokenizer.setIgnoreLiterals(true);
         tokenizer.setIgnoreIdentifiers(true);
@@ -78,7 +71,7 @@ public class MatchAlgorithmTest {
         Tokens tokens = new Tokens();
         TokenEntry.clearImages();
         tokenizer.tokenize(sourceCode, tokens);
-        Map<String, SourceCode> codeMap = new HashMap<String, SourceCode>();
+        Map<String, SourceCode> codeMap = new HashMap<>();
         codeMap.put("Foo.java", sourceCode);
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.io.IOException;
@@ -18,19 +19,20 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Provides a simple filter mechanism to avoid failing to parse an old ruleset, which references rules, that
- * have either been removed from PMD already or renamed or moved to another ruleset.
+ * Provides a simple filter mechanism to avoid failing to parse an old ruleset,
+ * which references rules, that have either been removed from PMD already or
+ * renamed or moved to another ruleset.
  *
  * @see <a href="https://sourceforge.net/p/pmd/bugs/1360/">issue 1360</a>
  */
 public class RuleSetFactoryCompatibility {
     private static final Logger LOG = Logger.getLogger(RuleSetFactoryCompatibility.class.getName());
 
-    private List<RuleSetFilter> filters = new LinkedList<RuleSetFilter>();
+    private List<RuleSetFilter> filters = new LinkedList<>();
 
     /**
-     * Creates a new instance of the compatibility filter with the built-in filters for the
-     * modified PMD rules.
+     * Creates a new instance of the compatibility filter with the built-in
+     * filters for the modified PMD rules.
      */
     public RuleSetFactoryCompatibility() {
         // PMD 5.3.0
@@ -59,26 +61,34 @@ public class RuleSetFactoryCompatibility {
         addFilterRuleMoved("java", "basic", "unnecessary", "UselessOperationOnImmutable");
         addFilterRuleMoved("java", "basic", "unnecessary", "UnusedNullCheckInEquals");
         addFilterRuleMoved("java", "basic", "unnecessary", "UselessParentheses");
+        
+        // PMD 5.6.0
+        addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
+        // unused/UnusedModifier moved AND renamed, order is important!
+        addFilterRuleMoved("java", "unusedcode", "unnecessary", "UnusedModifier");
+        addFilterRuleRenamed("java", "unnecessary", "UnusedModifier", "UnnecessaryModifier");
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {
         filters.add(RuleSetFilter.ruleRenamed(language, ruleset, oldName, newName));
     }
+
     void addFilterRuleMoved(String language, String oldRuleset, String newRuleset, String ruleName) {
         filters.add(RuleSetFilter.ruleMoved(language, oldRuleset, newRuleset, ruleName));
     }
+
     void addFilterRuleRemoved(String language, String ruleset, String name) {
         filters.add(RuleSetFilter.ruleRemoved(language, ruleset, name));
     }
 
     /**
-     * Applies all configured filters against the given input stream.
-     * The resulting reader will contain the original ruleset modified by
-     * the filters.
+     * Applies all configured filters against the given input stream. The
+     * resulting reader will contain the original ruleset modified by the
+     * filters.
      *
-     * @param stream
-     * @return
-     * @throws IOException
+     * @param stream the original ruleset file input stream
+     * @return a reader, from which the filtered ruleset can be read
+     * @throws IOException if the stream couldn't be read
      */
     public Reader filterRuleSetFile(InputStream stream) throws IOException {
         byte[] bytes = IOUtils.toByteArray(stream);
@@ -99,15 +109,18 @@ public class RuleSetFactoryCompatibility {
     }
 
     private static final Pattern ENCODING_PATTERN = Pattern.compile("encoding=\"([^\"]+)\"");
+
     /**
-     * Determines the encoding of the given bytes, assuming this is a XML document, which specifies
-     * the encoding in the first 1024 bytes.
-     * 
-     * @param bytes the input bytes, might be more or less than 1024 bytes
+     * Determines the encoding of the given bytes, assuming this is a XML
+     * document, which specifies the encoding in the first 1024 bytes.
+     *
+     * @param bytes
+     *            the input bytes, might be more or less than 1024 bytes
      * @return the determined encoding, falls back to the default UTF-8 encoding
      */
     String determineEncoding(byte[] bytes) {
-        String firstBytes = new String(bytes, 0, bytes.length > 1024 ? 1024 : bytes.length, Charset.forName("ISO-8859-1"));
+        String firstBytes = new String(bytes, 0, bytes.length > 1024 ? 1024 : bytes.length,
+                Charset.forName("ISO-8859-1"));
         Matcher matcher = ENCODING_PATTERN.matcher(firstBytes);
         String encoding = Charset.forName("UTF-8").name();
         if (matcher.find()) {
@@ -122,6 +135,7 @@ public class RuleSetFactoryCompatibility {
         private Pattern exclusionPattern;
         private String exclusionReplacement;
         private final String logMessage;
+
         private RuleSetFilter(String refPattern, String replacement, String logMessage) {
             this.logMessage = logMessage;
             if (replacement != null) {
@@ -144,19 +158,23 @@ public class RuleSetFactoryCompatibility {
 
         public static RuleSetFilter ruleRenamed(String language, String ruleset, String oldName, String newName) {
             String base = "rulesets/" + language + "/" + ruleset + ".xml/";
-            RuleSetFilter filter = new RuleSetFilter(base + oldName, base + newName,
-                    "The rule \"" + oldName + "\" has been renamed to \"" + newName + "\". Please change your ruleset!");
+            RuleSetFilter filter = new RuleSetFilter(base + oldName, base + newName, "The rule \"" + oldName
+                    + "\" has been renamed to \"" + newName + "\". Please change your ruleset!");
             filter.setExclusionPattern(oldName, newName);
             return filter;
         }
+
         public static RuleSetFilter ruleMoved(String language, String oldRuleset, String newRuleset, String ruleName) {
             String base = "rulesets/" + language + "/";
             return new RuleSetFilter(base + oldRuleset + ".xml/" + ruleName, base + newRuleset + ".xml/" + ruleName,
-                    "The rule \"" + ruleName + "\" has been moved from ruleset \"" + oldRuleset + "\" to \"" + newRuleset + "\". Please change your ruleset!");
+                    "The rule \"" + ruleName + "\" has been moved from ruleset \"" + oldRuleset + "\" to \""
+                            + newRuleset + "\". Please change your ruleset!");
         }
+
         public static RuleSetFilter ruleRemoved(String language, String ruleset, String name) {
             RuleSetFilter filter = new RuleSetFilter("rulesets/" + language + "/" + ruleset + ".xml/" + name, null,
-                    "The rule \"" + name + "\" in ruleset \"" + ruleset + "\" has been removed from PMD and no longer exists. Please change your ruleset!");
+                    "The rule \"" + name + "\" in ruleset \"" + ruleset
+                            + "\" has been removed from PMD and no longer exists. Please change your ruleset!");
             filter.setExclusionPattern(name, null);
             return filter;
         }
@@ -173,7 +191,9 @@ public class RuleSetFactoryCompatibility {
                 }
             }
 
-            if (exclusionPattern == null) return result;
+            if (exclusionPattern == null) {
+                return result;
+            }
 
             Matcher exclusions = exclusionPattern.matcher(result);
             if (exclusions.find()) {

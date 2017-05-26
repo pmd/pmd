@@ -60,4 +60,27 @@ public class ShortMethodName3 {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1361 ShortMethodName configuration - 7 characters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <rule-property name="minimum">7</rule-property>
+        <code><![CDATA[
+public class ShortMethodName {
+    public void longMethodName() {}
+    public void foobar() {} // too short
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1361 ShortMethodName configuration - 1 characters</description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="minimum">1</rule-property>
+        <code><![CDATA[
+public class ShortMethodName {
+    public void longMethodName() {}
+    public void bar() {} // that's ok now
+}
+        ]]></code>
+    </test-code>
 </test-data>

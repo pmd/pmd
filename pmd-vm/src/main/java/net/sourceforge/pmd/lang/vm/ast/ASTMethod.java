@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
  * under the License.    
  */
 
-
 /**
  * ASTMethod.java
  * 
@@ -32,7 +32,8 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * introspection is now done at render time.
  * 
- * Please look at the Parser.jjt file which is what controls the generation of this class.
+ * Please look at the Parser.jjt file which is what controls the generation of
+ * this class.
  * 
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
@@ -54,29 +55,27 @@ public class ASTMethod extends AbstractVmNode {
         super(p, id);
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.node.SimpleNode#jjtAccept(org.apache.velocity.runtime.parser.node.VmParserVisitor,
-     *      java.lang.Object)
-     */
     @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);
     }
 
     /**
-     * Internal class used as key for method cache. Combines ASTMethod fields with array of parameter classes. Has
-     * public access (and complete constructor) for unit test purposes.
+     * Internal class used as key for method cache. Combines ASTMethod fields
+     * with array of parameter classes. Has public access (and complete
+     * constructor) for unit test purposes.
      * 
      * @since 1.5
      */
     public static class MethodCacheKey {
         private final String methodName;
 
-        private final Class[] params;
+        private final Class<?>[] params;
 
-        public MethodCacheKey(final String methodName, final Class[] params) {
+        public MethodCacheKey(final String methodName, final Class<?>[] params) {
             /**
-             * Should never be initialized with nulls, but to be safe we refuse to accept them.
+             * Should never be initialized with nulls, but to be safe we refuse
+             * to accept them.
              */
             this.methodName = (methodName != null) ? methodName : StringUtils.EMPTY;
             this.params = (params != null) ? params : ArrayUtils.EMPTY_CLASS_ARRAY;
@@ -88,7 +87,8 @@ public class ASTMethod extends AbstractVmNode {
         @Override
         public boolean equals(final Object o) {
             /**
-             * note we skip the null test for methodName and params due to the earlier test in the constructor
+             * note we skip the null test for methodName and params due to the
+             * earlier test in the constructor
              */
             if (o instanceof MethodCacheKey) {
                 final MethodCacheKey other = (MethodCacheKey) o;
@@ -98,8 +98,7 @@ public class ASTMethod extends AbstractVmNode {
                             if (params[i] != other.params[i]) {
                                 return false;
                             }
-                        }
-                        else if (!params[i].equals(other.params[i])) {
+                        } else if (!params[i].equals(other.params[i])) {
                             return false;
                         }
                     }
@@ -117,10 +116,11 @@ public class ASTMethod extends AbstractVmNode {
             int result = 17;
 
             /**
-             * note we skip the null test for methodName and params due to the earlier test in the constructor
+             * note we skip the null test for methodName and params due to the
+             * earlier test in the constructor
              */
             for (int i = 0; i < params.length; ++i) {
-                final Class param = params[i];
+                final Class<?> param = params[i];
                 if (param != null) {
                     result = result * 37 + param.hashCode();
                 }

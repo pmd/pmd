@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Arrays;
@@ -26,6 +27,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
 
+    private static Map<String, String> inverse = new HashMap<>();
+
     public abstract boolean appliesToClassName(String name);
 
     public abstract boolean isTargetMethod(JavaNameOccurrence occ);
@@ -36,7 +39,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @return map
      */
     public Map<String, List<String>> getComparisonTargets() {
-        Map<String, List<String>> rules = new HashMap<String, List<String>>();
+        Map<String, List<String>> rules = new HashMap<>();
         rules.put("==", Arrays.asList("0"));
         rules.put("!=", Arrays.asList("0"));
         rules.put(">", Arrays.asList("0"));
@@ -44,7 +47,6 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
         return rules;
     }
 
-    private static Map<String, String> inverse = new HashMap<String, String>();
     static {
         inverse.put("<", ">");
         inverse.put(">", "<");
@@ -54,6 +56,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
         inverse.put("!=", "!=");
     }
 
+    @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         Node nameNode = node.getTypeNameNode();
         if (nameNode == null || nameNode instanceof ASTPrimitiveType
@@ -82,11 +85,11 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @param location
      *            the node location to report
      * @param expr
-     *            the ==, <, > expression
+     *            the ==, &lt;, &gt; expression
      */
     protected void checkNodeAndReport(Object data, Node location, Node expr) {
-        if ((expr instanceof ASTEqualityExpression || expr instanceof ASTRelationalExpression
-                && getComparisonTargets().containsKey(expr.getImage()))
+        if ((expr instanceof ASTEqualityExpression
+                || expr instanceof ASTRelationalExpression && getComparisonTargets().containsKey(expr.getImage()))
                 && isCompare(expr)) {
             addViolation(data, location);
         }
@@ -144,10 +147,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @see #getComparisonTargets()
      */
     private boolean checkComparison(String operator, Node equality, int i) {
-        Node target = equality
-                .jjtGetChild(i)
-                .jjtGetChild(0)
-                .jjtGetChild(0);
+        Node target = equality.jjtGetChild(i).jjtGetChild(0).jjtGetChild(0);
         return target instanceof ASTLiteral && getComparisonTargets().get(operator).contains(target.getImage());
     }
 

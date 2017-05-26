@@ -1,13 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.dcd.asm;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureVisitor;
+
 import net.sourceforge.pmd.dcd.ClassLoaderUtil;
 
 public class TypeSignatureVisitor extends SignatureVisitor {
@@ -38,17 +41,9 @@ public class TypeSignatureVisitor extends SignatureVisitor {
     private Class<?> returnType;
 
     // Completed Parameter Types are stored here
-    private List<Class<?>> parameterTypes = new ArrayList<Class<?>>(0);
+    private List<Class<?>> parameterTypes = new ArrayList<>(0);
 
     private final PrintVisitor p;
-
-    protected void println(String s) {
-        p.println(s);
-    }
-
-    protected void printlnIndent(String s) {
-        p.printlnIndent(s);
-    }
 
     public TypeSignatureVisitor() {
         super(Opcodes.ASM5);
@@ -60,6 +55,14 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         super(Opcodes.ASM5);
         p = new PrintVisitor(parent);
         init();
+    }
+
+    protected void println(String s) {
+        p.println(s);
+    }
+
+    protected void printlnIndent(String s) {
+        p.printlnIndent(s);
     }
 
     public void init() {
@@ -103,19 +106,19 @@ public class TypeSignatureVisitor extends SignatureVisitor {
 
     private void popType() {
         switch (typeType) {
-            case NO_TYPE:
-                break;
-            case FIELD_TYPE:
-                fieldType = getType();
-                break;
-            case RETURN_TYPE:
-                returnType = getType();
-                break;
-            case PARAMETER_TYPE:
-                parameterTypes.add(getType());
-                break;
-            default:
-                throw new RuntimeException("Unknown type type: " + typeType);
+        case NO_TYPE:
+            break;
+        case FIELD_TYPE:
+            fieldType = getType();
+            break;
+        case RETURN_TYPE:
+            returnType = getType();
+            break;
+        case PARAMETER_TYPE:
+            parameterTypes.add(getType());
+            break;
+        default:
+            throw new RuntimeException("Unknown type type: " + typeType);
         }
 
         typeType = NO_TYPE;
@@ -136,6 +139,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return type;
     }
 
+    @Override
     public SignatureVisitor visitArrayType() {
         if (TRACE) {
             println("visitArrayType:");
@@ -144,44 +148,46 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public void visitBaseType(char descriptor) {
         if (TRACE) {
             println("visitBaseType:");
             printlnIndent("descriptor: " + descriptor);
         }
         switch (descriptor) {
-            case 'B':
-                type = Byte.TYPE;
-                break;
-            case 'C':
-                type = Character.TYPE;
-                break;
-            case 'D':
-                type = Double.TYPE;
-                break;
-            case 'F':
-                type = Float.TYPE;
-                break;
-            case 'I':
-                type = Integer.TYPE;
-                break;
-            case 'J':
-                type = Long.TYPE;
-                break;
-            case 'S':
-                type = Short.TYPE;
-                break;
-            case 'Z':
-                type = Boolean.TYPE;
-                break;
-            case 'V':
-                type = Void.TYPE;
-                break;
-            default:
-                throw new RuntimeException("Unknown baseType descriptor: " + descriptor);
+        case 'B':
+            type = Byte.TYPE;
+            break;
+        case 'C':
+            type = Character.TYPE;
+            break;
+        case 'D':
+            type = Double.TYPE;
+            break;
+        case 'F':
+            type = Float.TYPE;
+            break;
+        case 'I':
+            type = Integer.TYPE;
+            break;
+        case 'J':
+            type = Long.TYPE;
+            break;
+        case 'S':
+            type = Short.TYPE;
+            break;
+        case 'Z':
+            type = Boolean.TYPE;
+            break;
+        case 'V':
+            type = Void.TYPE;
+            break;
+        default:
+            throw new RuntimeException("Unknown baseType descriptor: " + descriptor);
         }
     }
 
+    @Override
     public SignatureVisitor visitClassBound() {
         if (TRACE) {
             println("visitClassBound:");
@@ -189,6 +195,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public void visitClassType(String name) {
         if (TRACE) {
             println("visitClassType:");
@@ -198,6 +205,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         this.type = ClassLoaderUtil.getClass(name);
     }
 
+    @Override
     public void visitEnd() {
         if (TRACE) {
             println("visitEnd:");
@@ -205,6 +213,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         popType();
     }
 
+    @Override
     public SignatureVisitor visitExceptionType() {
         if (TRACE) {
             println("visitExceptionType:");
@@ -212,6 +221,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public void visitFormalTypeParameter(String name) {
         if (TRACE) {
             println("visitFormalTypeParameter:");
@@ -219,6 +229,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         }
     }
 
+    @Override
     public void visitInnerClassType(String name) {
         if (TRACE) {
             println("visitInnerClassType:");
@@ -226,6 +237,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         }
     }
 
+    @Override
     public SignatureVisitor visitInterface() {
         if (TRACE) {
             println("visitInterface:");
@@ -233,6 +245,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public SignatureVisitor visitInterfaceBound() {
         if (TRACE) {
             println("visitInterfaceBound:");
@@ -240,6 +253,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public SignatureVisitor visitParameterType() {
         if (TRACE) {
             println("visitParameterType:");
@@ -249,6 +263,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public SignatureVisitor visitReturnType() {
         if (TRACE) {
             println("visitReturnType:");
@@ -258,6 +273,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public SignatureVisitor visitSuperclass() {
         if (TRACE) {
             println("visitSuperclass:");
@@ -265,12 +281,14 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public void visitTypeArgument() {
         if (TRACE) {
             println("visitTypeArgument:");
         }
     }
 
+    @Override
     public SignatureVisitor visitTypeArgument(char wildcard) {
         if (TRACE) {
             println("visitTypeArgument:");
@@ -279,6 +297,7 @@ public class TypeSignatureVisitor extends SignatureVisitor {
         return this;
     }
 
+    @Override
     public void visitTypeVariable(String name) {
         if (TRACE) {
             println("visitTypeVariable:");

@@ -1,15 +1,20 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
+import net.sourceforge.pmd.lang.symboltable.Applier;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -30,17 +35,19 @@ public class MethodScope extends AbstractScope {
     }
 
     @Override
-    public NameDeclaration addNameOccurrence(NameOccurrence occ) {
-        PLSQLNameOccurrence occurrence = (PLSQLNameOccurrence)occ;
-        NameDeclaration decl = findVariableHere(occurrence);
-        if (decl != null && !occurrence.isThisOrSuper()) {
-            getVariableDeclarations().get(decl).add(occurrence);
-            Node n = occurrence.getLocation();
-            if (n instanceof ASTName) {
-                ((ASTName) n).setNameDeclaration(decl);
-            } // TODO what to do with PrimarySuffix case?
+    public Set<NameDeclaration> addNameOccurrence(NameOccurrence occ) {
+        PLSQLNameOccurrence occurrence = (PLSQLNameOccurrence) occ;
+        Set<NameDeclaration> declarations = findVariableHere(occurrence);
+        if (!declarations.isEmpty() && !occurrence.isThisOrSuper()) {
+            for (NameDeclaration decl : declarations) {
+                getVariableDeclarations().get(decl).add(occurrence);
+                Node n = occurrence.getLocation();
+                if (n instanceof ASTName) {
+                    ((ASTName) n).setNameDeclaration(decl);
+                } // TODO what to do with PrimarySuffix case?
+            }
         }
-        return decl;
+        return declarations;
     }
 
     @Override
@@ -51,17 +58,21 @@ public class MethodScope extends AbstractScope {
         super.addDeclaration(declaration);
     }
 
-    public NameDeclaration findVariableHere(PLSQLNameOccurrence occurrence) {
+    public Set<NameDeclaration> findVariableHere(PLSQLNameOccurrence occurrence) {
+        Set<NameDeclaration> result = new HashSet<>();
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
-            return null;
+            return result;
         }
         ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
-        return finder.getDecl();
+        if (finder.getDecl() != null) {
+            result.add(finder.getDecl());
+        }
+        return result;
     }
 
     public String getName() {
-        return ( (AbstractPLSQLNode) node.jjtGetChild(1) ) .getCanonicalImage();
+        return ((AbstractPLSQLNode) node.jjtGetChild(1)).getCanonicalImage();
     }
 
     public String toString() {

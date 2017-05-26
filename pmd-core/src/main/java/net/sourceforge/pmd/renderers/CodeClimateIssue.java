@@ -4,19 +4,21 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.PMD;
 
 /**
- * Structure for the Code Climate Issue spec (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)
+ * Structure for the Code Climate Issue spec
+ * (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)
  */
 public class CodeClimateIssue {
     public final String type = "issue";
-    public String check_name;
+    public String check_name; // SUPPRESS CHECKSTYLE underscore is required per codeclimate format
     public String description;
     public Content content;
-    public final String[] categories = { "Style" };
+    public String[] categories;
     public Location location;
     public String severity;
+    public int remediation_points; // SUPPRESS CHECKSTYLE underscore is required per codeclimate format
 
     /**
      * Location structure
@@ -46,7 +48,8 @@ public class CodeClimateIssue {
 
         /**
          * Strip out all newlines from the body
-         * @param {String} body The text to compose the content from
+         *
+         * @param body The text to compose the content from
          */
         public Content(String body) {
             this.body = body.replace(PMD.EOL, " ");

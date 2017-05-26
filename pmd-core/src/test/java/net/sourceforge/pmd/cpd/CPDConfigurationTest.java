@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class CPDConfigurationTest {
 
     @Test
     public void testRenderers() {
-        Map<String, Class<? extends Renderer>> renderersToTest = new HashMap<String, Class<? extends Renderer>>();
+        Map<String, Class<? extends Renderer>> renderersToTest = new HashMap<>();
         renderersToTest.put("csv", CSVRenderer.class);
         renderersToTest.put("xml", XMLRenderer.class);
         renderersToTest.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);

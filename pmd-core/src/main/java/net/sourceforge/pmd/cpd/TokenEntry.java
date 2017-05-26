@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -19,13 +20,13 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private int identifier;
     private int hashCode;
 
-    private static final ThreadLocal<Map<String, Integer>> TOKENS = new ThreadLocal<Map<String, Integer>>(){
+    private static final ThreadLocal<Map<String, Integer>> TOKENS = new ThreadLocal<Map<String, Integer>>() {
         @Override
         protected Map<String, Integer> initialValue() {
-            return new HashMap<String, Integer>();
+            return new HashMap<>();
         }
     };
-    private static final ThreadLocal<AtomicInteger> TOKEN_COUNT = new ThreadLocal<AtomicInteger>(){
+    private static final ThreadLocal<AtomicInteger> TOKEN_COUNT = new ThreadLocal<AtomicInteger>() {
         @Override
         protected AtomicInteger initialValue() {
             return new AtomicInteger(0);
@@ -38,12 +39,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
     }
 
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
-        Integer i = TOKENS.get().get(image);
-        if (i == null) {
-            i = TOKENS.get().size() + 1;
-            TOKENS.get().put(image, i);
-        }
-        this.identifier = i.intValue();
+        setImage(image);
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
         this.index = TOKEN_COUNT.get().getAndIncrement();
@@ -59,19 +55,22 @@ public class TokenEntry implements Comparable<TokenEntry> {
         TOKENS.remove();
         TOKEN_COUNT.remove();
     }
+
     /**
-     * Helper class to preserve and restore the current state
-     * of the token entries.
+     * Helper class to preserve and restore the current state of the token
+     * entries.
      */
     public static class State {
         private int tokenCount;
         private Map<String, Integer> tokens;
         private List<TokenEntry> entries;
+
         public State(List<TokenEntry> entries) {
             this.tokenCount = TokenEntry.TOKEN_COUNT.get().intValue();
-            this.tokens = new HashMap<String, Integer>(TokenEntry.TOKENS.get());
-            this.entries = new ArrayList<TokenEntry>(entries);
+            this.tokens = new HashMap<>(TokenEntry.TOKENS.get());
+            this.entries = new ArrayList<>(entries);
         }
+
         public List<TokenEntry> restore() {
             TokenEntry.TOKEN_COUNT.get().set(tokenCount);
             TOKENS.get().clear();
@@ -96,6 +95,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return this.index;
     }
 
+    @Override
     public int hashCode() {
         return hashCode;
     }
@@ -104,6 +104,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.hashCode = hashCode;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof TokenEntry)) {
             return false;
@@ -112,6 +113,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return other.hashCode == hashCode;
     }
 
+    @Override
     public int compareTo(TokenEntry other) {
         return getIndex() - other.getIndex();
     }
@@ -127,5 +129,14 @@ public class TokenEntry implements Comparable<TokenEntry> {
             }
         }
         return "--unkown--";
+    }
+
+    final void setImage(String image) {
+        Integer i = TOKENS.get().get(image);
+        if (i == null) {
+            i = TOKENS.get().size() + 1;
+            TOKENS.get().put(image, i);
+        }
+        this.identifier = i.intValue();
     }
 }

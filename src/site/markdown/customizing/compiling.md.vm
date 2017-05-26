@@ -10,6 +10,7 @@
 *   JDK 1.7 or higher
 *   [Apache Maven](http://maven.apache.org) 3 or later.
 
+
 ## Compiling PMD
 
 You'll need to either check out the source code or download the latest source release.

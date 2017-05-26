@@ -11,6 +11,13 @@ public class ASTFormalParameter extends AbstractJavaAccessNode implements Dimens
 
     private boolean isVarargs;
 
+    public ASTFormalParameter(int id) {
+        super(id);
+    }
+
+    public ASTFormalParameter(JavaParser p, int id) {
+        super(p, id);
+    }
 
     public void setVarargs() {
         isVarargs = true;
@@ -24,18 +31,12 @@ public class ASTFormalParameter extends AbstractJavaAccessNode implements Dimens
         return getDecl().isExplicitReceiverParameter();
     }
 
-    public ASTFormalParameter(int id) {
-        super(id);
-    }
-
-    public ASTFormalParameter(JavaParser p, int id) {
-        super(p, id);
-    }
-
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
@@ -48,10 +49,12 @@ public class ASTFormalParameter extends AbstractJavaAccessNode implements Dimens
         return false;
     }
 
+    @Override
     public boolean isArray() {
         return checkType() + checkDecl() > 0;
     }
 
+    @Override
     public int getArrayDepth() {
         if (!isArray()) {
             return 0;
@@ -74,9 +77,10 @@ public class ASTFormalParameter extends AbstractJavaAccessNode implements Dimens
 
     protected ASTVariableDeclaratorId getDecl() {
         try {
-            return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren()-1);
+            return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1);
         } catch (ClassCastException c) {
-            System.out.println("CLASS CAST: " + this.getBeginLine() + ":" + this.getBeginColumn() + " " + this.toString());
+            System.out.println(
+                    "CLASS CAST: " + this.getBeginLine() + ":" + this.getBeginColumn() + " " + this.toString());
             return null;
         }
     }

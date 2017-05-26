@@ -403,18 +403,25 @@ public class MyTestCase extends TestCase {
 	<rule name="UseAssertTrueInsteadOfAssertEquals"
 		language="java"
 		since="5.0"
-		message="Use assertTrue(x)/assertFalse(x) instead of assertEquals(true, x)/assertEquals(false, x)."
+		message="Use assertTrue(x)/assertFalse(x) instead of assertEquals(true, x)/assertEquals(false, x)
+		or assertEquals(Boolean.TRUE, x)/assertEquals(Boolean.FALSE, x)."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
 		externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#UseAssertTrueInsteadOfAssertEquals">
 		<description>
-When asserting a value is the same as a boolean literal, use assertTrue/assertFalse, instead of assertEquals.
+When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
 		</description>
 		<priority>3</priority>
 		<properties>
 			<property name="xpath">
 				<value>
 <![CDATA[
-//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']][PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
+//PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']]
+[
+  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+  or
+  PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
+  /Name[(@Image = 'Boolean.TRUE' or @Image = 'Boolean.FALSE')]
+]
 ]]>
 			</value>
 			</property>
@@ -430,6 +437,10 @@ public class MyTestCase extends TestCase {
 		assertEquals("myVar is true", true, myVar);
 		// Bad
 		assertEquals("myVar is false", false, myVar);
+		// Bad
+		assertEquals("myVar is true", Boolean.TRUE, myVar);
+		// Bad
+		assertEquals("myVar is false", Boolean.FALSE, myVar);
 	}
 }
 ]]>

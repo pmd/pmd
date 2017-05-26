@@ -17,18 +17,19 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
+
 package org.sonar.plugins.scala.cpd;
 
 import java.util.List;
+
+import org.sonar.plugins.scala.compiler.Lexer;
+import org.sonar.plugins.scala.compiler.Token;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-
-import org.sonar.plugins.scala.compiler.Lexer;
-import org.sonar.plugins.scala.compiler.Token;
 
 /**
  * Scala tokenizer for PMD CPD.
@@ -42,10 +43,9 @@ public final class ScalaTokenizer implements Tokenizer {
 
         try {
             Lexer lexer = new Lexer();
-            List<Token> tokens =  lexer.getTokensOfFile(filename);
+            List<Token> tokens = lexer.getTokensOfFile(filename);
             for (Token token : tokens) {
-                String tokenVal =
-                    token.tokenVal() != null ? token.tokenVal()  : Integer.toString(token.tokenType());
+                String tokenVal = token.tokenVal() != null ? token.tokenVal() : Integer.toString(token.tokenType());
 
                 TokenEntry cpdToken = new TokenEntry(tokenVal, filename, token.line());
                 cpdTokens.add(cpdToken);
@@ -53,11 +53,13 @@ public final class ScalaTokenizer implements Tokenizer {
             cpdTokens.add(TokenEntry.getEOF());
         } catch (RuntimeException e) {
             e.printStackTrace();
-            // Wrap exceptions of the Scala tokenizer in a TokenMgrError, so they are correctly handled
-            // when CPD is executed with the '--skipLexicalErrors' command line option
+            // Wrap exceptions of the Scala tokenizer in a TokenMgrError, so
+            // they are correctly handled
+            // when CPD is executed with the '--skipLexicalErrors' command line
+            // option
             throw new TokenMgrError(
-                "Lexical error in file " + filename + ". The scala tokenizer exited with error: " + e.getMessage(),
-                TokenMgrError.LEXICAL_ERROR);
+                    "Lexical error in file " + filename + ". The scala tokenizer exited with error: " + e.getMessage(),
+                    TokenMgrError.LEXICAL_ERROR);
         }
     }
 

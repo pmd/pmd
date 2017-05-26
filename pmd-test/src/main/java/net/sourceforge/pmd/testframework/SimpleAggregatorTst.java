@@ -1,14 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.testframework;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
-
 import org.junit.runner.RunWith;
+
+import net.sourceforge.pmd.Rule;
 
 /**
  * Standard methods for (simple) testcases.
@@ -16,10 +17,12 @@ import org.junit.runner.RunWith;
 @RunWith(PMDTestRunner.class)
 public abstract class SimpleAggregatorTst extends RuleTst {
 
+    private List<Rule> rules = new ArrayList<>();
+
     /**
      * Configure the rule tests to be executed. Implement this method in
      * subclasses by calling adRule.
-     * 
+     *
      * @see #addRule(String, String)
      */
     protected void setUp() {
@@ -53,8 +56,6 @@ public abstract class SimpleAggregatorTst extends RuleTst {
         }
     }
 
-    private List<Rule> rules = new ArrayList<Rule>();
-
     /**
      * Add new XML tests associated with the rule to the test suite. This should
      * be called from the setup method.
@@ -65,7 +66,7 @@ public abstract class SimpleAggregatorTst extends RuleTst {
 
     /**
      * Gets all configured rules.
-     * 
+     *
      * @return all configured rules.
      */
     protected List<Rule> getRules() {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm.rule.basic;
 
 import java.util.HashSet;
@@ -17,7 +18,7 @@ public class AvoidReassigningParametersRule extends AbstractVmRule {
     @Override
     public Object visit(final ASTDirective node, final Object data) {
         if ("macro".equals(node.getDirectiveName())) {
-            final Set<String> paramNames = new HashSet<String>();
+            final Set<String> paramNames = new HashSet<>();
             final List<ASTReference> params = node.findChildrenOfType(ASTReference.class);
             for (final ASTReference param : params) {
                 paramNames.add(param.getFirstToken().toString());

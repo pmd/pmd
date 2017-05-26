@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<ruleset name="540"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+This ruleset contains links to rules that are new in PMD v5.4.0
+  </description>
+
+    <rule ref="rulesets/java/basic.xml/SimplifiedTernary"/>
+    <rule ref="rulesets/java/clone.xml/CloneMethodReturnTypeMustMatchClassName"/>
+    <rule ref="rulesets/java/clone.xml/CloneMethodMustBePublic"/>
+    <rule ref="rulesets/java/comments.xml/CommentDefaultAccessModifier"/>
+    <rule ref="rulesets/java/design.xml/SingleMethodSingleton"/>
+    <rule ref="rulesets/java/design.xml/SingletonClassReturningNewInstance"/>
+    <rule ref="rulesets/java/unnecessary.xml/UselessQualifiedThis"/>
+
+    <rule ref="rulesets/pom/basic.xml/ProjectVersionAsDependencyVersion"/>
+    <rule ref="rulesets/pom/basic.xml/InvalidDependencyTypes"/>
+</ruleset>
+

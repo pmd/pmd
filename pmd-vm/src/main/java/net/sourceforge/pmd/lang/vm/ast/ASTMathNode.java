@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 /*
@@ -23,7 +24,8 @@ package net.sourceforge.pmd.lang.vm.ast;
  * Helps handle math<br>
  * <br>
  * 
- * Please look at the Parser.jjt file which is what controls the generation of this class.
+ * Please look at the Parser.jjt file which is what controls the generation of
+ * this class.
  * 
  * @author <a href="mailto:wglass@forio.com">Will Glass-Husain</a>
  * @author <a href="mailto:pero@antaramusic.de">Peter Romianowski</a>

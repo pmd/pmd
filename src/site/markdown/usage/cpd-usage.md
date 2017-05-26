@@ -91,6 +91,12 @@ The options "minimum-tokens" and "files" are the two required options; there are
         <td></td>
     </tr>
     <tr>
+        <td>--filelist</td>
+        <td>Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `--files`.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
         <td>--language</td>
         <td>Sources code language. Default value is `java`</td>
         <td>no</td>
@@ -129,6 +135,13 @@ The options "minimum-tokens" and "files" are the two required options; there are
     <tr>
         <td>--format</td>
         <td>Report format. Default value is `text`.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>--failOnViolation {true|false}</td>
+        <td>By default CPD exits with status 4 if code duplications are found.
+            Disable this option with '--failOnViolation false' to exit with 0 instead and just write the report.</td>
         <td>no</td>
         <td></td>
     </tr>
@@ -236,6 +249,13 @@ If you specify a source directory but don't want to scan the sub-directories, yo
 
 Please note that if CPD detects duplicated source code, it will exit with status 4 (since 5.0).
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
+
+<table>
+<tr><td>0</td><td>Everything is fine, now code duplications found</td></tr>
+<tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless '--failOnViolation false' is used.</td></tr>
+</table>
+
 
 ### Supported Languages
 
@@ -429,9 +449,33 @@ Here's a [screenshot](../images/screenshot_cpd.png) of CPD after running on the 
 
 ## Suppression
 
-By adding the annotations **@SuppressWarnings("CPD-START")** and **@SuppressWarnings("CPD-END")**
-all code within will be ignored by CPD - thus you can avoid false positivs.
-This provides the ability to ignore sections of source code, such as switch/case statements or parameterized factories.
+Arbitrary blocks of code can be ignored through comments on **Java** by including the keywords `CPD-OFF` and `CPD-ON`.
+
+    public Object someParameterizedFactoryMethod(int x) throws Exception {
+        // some unignored code
+
+        // tell cpd to start ignoring code - CPD-OFF
+
+        // mission critical code, manually loop unroll
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+        goDoSomethingAwesome(x + x / 2);
+
+        // resume CPD analysis - CPD-ON
+
+        // further code will *not* be ignored
+    }
+
+
+Additionally, **Java** allows to toggle suppression by adding the annotations
+**`@SuppressWarnings("CPD-START")`** and **`@SuppressWarnings("CPD-END")`**
+all code within will be ignored by CPD.
+
+This approach however, is limited to the locations were `@SuppressWarnings` is accepted.
+It's legacy and the new comment's based approch should be favored.
 
     //enable suppression
     @SuppressWarnings("CPD-START")
@@ -443,3 +487,6 @@ This provides the ability to ignore sections of source code, such as switch/case
     public void nextMethod() {
     }
 
+
+Other languages currently have no support to suppress CPD reports. In the future,
+the comment based approach will be extended to those of them that can support it.

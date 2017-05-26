@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.List;
@@ -16,28 +17,29 @@ public abstract class AbstractTokenizer implements Tokenizer {
     // better to make private and setup via explicit hook methods
 
     protected List<String> stringToken; // List<String>, should be set by sub
-                                        // classes
+    // classes
     protected List<String> ignorableCharacter; // List<String>, should be set by
-                                               // sub classes
-                                               // FIXME:Maybe an array of 'char'
-                                               // would be better for
-                                               // performance ?
+    // sub classes
+    // FIXME:Maybe an array of 'char'
+    // would be better for
+    // performance ?
     protected List<String> ignorableStmt; // List<String>, should be set by sub
-                                          // classes
+    // classes
     protected char oneLineCommentChar = '#'; // Most script languages ( shell,
-                                             // ruby, python,...) use this
-                                             // symbol for comment line
+    // ruby, python,...) use this
+    // symbol for comment line
 
     private List<String> code;
     private int lineNumber = 0;
     private String currentLine;
 
     protected boolean spanMultipleLinesString = true; // Most languages do, so
-                                                      // default is true
+    // default is true
     protected Character spanMultipleLinesLineContinuationCharacter = null;
 
     private boolean downcaseString = true;
 
+    @Override
     public void tokenize(SourceCode tokens, Tokens tokenEntries) {
         code = tokens.getCode();
 
@@ -76,7 +78,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
                 } else if (isString(tok)) {
                     if (token.length() > 0) {
                         return j; // we need to now parse the string as a
-                                  // separate token.
+                        // separate token.
                     } else {
                         // we are at the start of a string
                         return parseString(token, j, tok);
@@ -117,13 +119,13 @@ public abstract class AbstractTokenizer implements Tokenizer {
         // Handling multiple lines string
         if (!done && // ... we didn't find the end of the string
                 loc >= currentLine.length() && // ... we have reach the end of
-                                               // the line ( the String is
-                                               // incomplete, for the moment at
-                                               // least)
+                // the line ( the String is
+                // incomplete, for the moment at
+                // least)
                 spanMultipleLinesString && // ... the language allow multiple
-                                           // line span Strings
+                // line span Strings
                 lineNumber < code.size() - 1 // ... there is still more lines to
-                                             // parse
+        // parse
         ) {
             // removes last character, if it is the line continuation (e.g.
             // backslash) character

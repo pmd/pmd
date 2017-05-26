@@ -1,23 +1,25 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Base class for any {@link Scope}.
- * Provides useful default implementations.
+ * Base class for any {@link Scope}. Provides useful default implementations.
  */
 public abstract class AbstractScope implements Scope {
 
     private Scope parent;
     /** Stores the name declaration already sorted by class. */
-    private Map<Class<? extends NameDeclaration>, Map<NameDeclaration, List<NameOccurrence>>> nameDeclarations =
-            new LinkedHashMap<Class<? extends NameDeclaration>, Map<NameDeclaration,List<NameOccurrence>>>();
+    private Map<Class<? extends NameDeclaration>, Map<NameDeclaration, List<NameOccurrence>>> nameDeclarations = new LinkedHashMap<>();
 
     @Override
     public Scope getParent() {
@@ -31,7 +33,7 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public Map<NameDeclaration, List<NameOccurrence>> getDeclarations() {
-        Map<NameDeclaration, List<NameOccurrence>> result = new LinkedHashMap<NameDeclaration, List<NameOccurrence>>();
+        Map<NameDeclaration, List<NameOccurrence>> result = new LinkedHashMap<>();
         for (Map<NameDeclaration, List<NameOccurrence>> e : nameDeclarations.values()) {
             result.putAll(e);
         }
@@ -41,9 +43,9 @@ public abstract class AbstractScope implements Scope {
     @Override
     public <T extends NameDeclaration> Map<T, List<NameOccurrence>> getDeclarations(Class<T> clazz) {
         @SuppressWarnings("unchecked")
-        Map<T, List<NameOccurrence>> result = (Map<T, List<NameOccurrence>>)nameDeclarations.get(clazz);
+        Map<T, List<NameOccurrence>> result = (Map<T, List<NameOccurrence>>) nameDeclarations.get(clazz);
         if (result == null) {
-            result = new LinkedHashMap<T, List<NameOccurrence>>();
+            result = Collections.emptyMap();
         }
         return result;
     }
@@ -62,33 +64,31 @@ public abstract class AbstractScope implements Scope {
     public void addDeclaration(NameDeclaration declaration) {
         Map<NameDeclaration, List<NameOccurrence>> declarationsPerClass = nameDeclarations.get(declaration.getClass());
         if (declarationsPerClass == null) {
-            declarationsPerClass = new LinkedHashMap<NameDeclaration, List<NameOccurrence>>();
+            declarationsPerClass = new LinkedHashMap<>();
             nameDeclarations.put(declaration.getClass(), declarationsPerClass);
         }
         declarationsPerClass.put(declaration, new ArrayList<NameOccurrence>());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends Scope> T getEnclosingScope(Class<T> clazz) {
-        T result = null;
         Scope current = this;
-        while (result == null && current != null) {
+        while (current != null) {
             if (clazz.isAssignableFrom(current.getClass())) {
-                @SuppressWarnings("unchecked")
-                T cast = (T)current;
-                result = cast;
+                return (T) current;
             }
             current = current.getParent();
         }
-        return result;
+        return null;
     }
 
     @Override
-    public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
-        NameDeclaration result = null;
+    public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
+        Set<NameDeclaration> result = new HashSet<>();
         for (Map.Entry<NameDeclaration, List<NameOccurrence>> e : getDeclarations().entrySet()) {
             if (e.getKey().getImage().equals(occurrence.getImage())) {
-                result = e.getKey();
+                result.add(e.getKey());
                 e.getValue().add(occurrence);
             }
         }

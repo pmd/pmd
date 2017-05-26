@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp;
 
 import java.io.Reader;
@@ -16,14 +17,14 @@ public class JspTokenManager implements TokenManager {
     private final JspParserTokenManager tokenManager;
 
     public JspTokenManager(Reader source) {
-	tokenManager = new JspParserTokenManager(new JavaCharStream(source));
+        tokenManager = new JspParserTokenManager(new JavaCharStream(source));
     }
 
     public Object getNextToken() {
-	return tokenManager.getNextToken();
+        return tokenManager.getNextToken();
     }
 
     public void setFileName(String fileName) {
-	tokenManager.setFileName(fileName);
+        JspParserTokenManager.setFileName(fileName);
     }
 }

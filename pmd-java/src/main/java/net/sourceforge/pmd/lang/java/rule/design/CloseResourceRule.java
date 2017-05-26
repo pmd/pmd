@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -34,8 +37,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
-import org.jaxen.JaxenException;
-
 /**
  * Makes sure you close your database connections. It does this by looking for
  * code patterned like this:
@@ -47,17 +48,17 @@ import org.jaxen.JaxenException;
  *  } finally {
  *   c.close();
  *  }
+ * </pre>
  * 
  *  @author original author unknown
  *  @author Contribution from Pierre Mathien
- * </pre>
  */
 public class CloseResourceRule extends AbstractJavaRule {
 
-    private Set<String> types = new HashSet<String>();
-    private Set<String> simpleTypes = new HashSet<String>();
+    private Set<String> types = new HashSet<>();
+    private Set<String> simpleTypes = new HashSet<>();
 
-    private Set<String> closeTargets = new HashSet<String>();
+    private Set<String> closeTargets = new HashSet<>();
     private static final StringMultiProperty CLOSE_TARGETS_DESCRIPTOR = new StringMultiProperty("closeTargets",
             "Methods which may close this resource", new String[] {}, 1.0f, ',');
 
@@ -115,7 +116,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private void checkForResources(Node node, Object data) {
         List<ASTLocalVariableDeclaration> vars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
-        List<ASTVariableDeclaratorId> ids = new ArrayList<ASTVariableDeclaratorId>();
+        List<ASTVariableDeclaratorId> ids = new ArrayList<>();
 
         // find all variable references to Connection objects
         for (ASTLocalVariableDeclaration var : vars) {
@@ -127,7 +128,8 @@ public class CloseResourceRule extends AbstractJavaRule {
                     ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
 
                     if (clazz.getType() != null && types.contains(clazz.getType().getName())
-                            || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage())) && !clazz.isReferenceToClassSameCompilationUnit()
+                            || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
+                                    && !clazz.isReferenceToClassSameCompilationUnit()
                             || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
 
                         ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
@@ -184,9 +186,9 @@ public class CloseResourceRule extends AbstractJavaRule {
             // variable declaration and
             // the beginning of the try block.
             ASTBlockStatement tryBlock = t.getFirstParentOfType(ASTBlockStatement.class);
-            if (!hasNullInitializer(var) // no need to check for critical statements, if
-                                         // the variable has been initialized with null
-                && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
+            // no need to check for critical statements, if
+            // the variable has been initialized with null
+            if (!hasNullInitializer(var) && parentBlock.jjtGetParent() == tryBlock.jjtGetParent()) {
 
                 List<ASTBlockStatement> blocks = parentBlock.jjtGetParent().findChildrenOfType(ASTBlockStatement.class);
                 int parentBlockIndex = blocks.indexOf(parentBlock);
@@ -195,8 +197,8 @@ public class CloseResourceRule extends AbstractJavaRule {
 
                 for (int i = parentBlockIndex + 1; i < tryBlockIndex; i++) {
                     // assume variable declarations are not critical
-                    ASTLocalVariableDeclaration varDecl = blocks.get(i).getFirstDescendantOfType(
-                            ASTLocalVariableDeclaration.class);
+                    ASTLocalVariableDeclaration varDecl = blocks.get(i)
+                            .getFirstDescendantOfType(ASTLocalVariableDeclaration.class);
                     if (varDecl == null) {
                         criticalStatements = true;
                         break;
@@ -230,7 +232,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                     break;
                 }
 
-                List<ASTStatementExpression> exprs = new ArrayList<ASTStatementExpression>();
+                List<ASTStatementExpression> exprs = new ArrayList<>();
                 f.findDescendantsOfType(ASTStatementExpression.class, exprs, true);
                 for (ASTStatementExpression stmt : exprs) {
                     ASTPrimaryExpression expr = stmt.getFirstChildOfType(ASTPrimaryExpression.class);
@@ -273,7 +275,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                             // in the other class since there is no way to
                             // really check it.
                             if (!closed) {
-                                List<ASTPrimarySuffix> suffixes = new ArrayList<ASTPrimarySuffix>();
+                                List<ASTPrimarySuffix> suffixes = new ArrayList<>();
                                 expr.findDescendantsOfType(ASTPrimarySuffix.class, suffixes, true);
                                 for (ASTPrimarySuffix oSuffix : suffixes) {
                                     String suff = oSuffix.getImage();
@@ -299,7 +301,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             // See if the variable is returned by the method, which means the
             // method is a utility for creating the db resource, which means of
             // course it can't be closed by the method, so it isn't an error.
-            List<ASTReturnStatement> returns = new ArrayList<ASTReturnStatement>();
+            List<ASTReturnStatement> returns = new ArrayList<>();
             top.findDescendantsOfType(ASTReturnStatement.class, returns, true);
             for (ASTReturnStatement returnStatement : returns) {
                 ASTName name = returnStatement.getFirstDescendantOfType(ASTName.class);
@@ -320,7 +322,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean variableIsPassedToMethod(ASTPrimaryExpression expr, String variable) {
-        List<ASTName> methodParams = new ArrayList<ASTName>();
+        List<ASTName> methodParams = new ArrayList<>();
         expr.findDescendantsOfType(ASTName.class, methodParams, true);
         for (ASTName pName : methodParams) {
             String paramName = pName.getImage();

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.logging;
 
 import java.util.ArrayList;
@@ -11,20 +12,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jaxen.JaxenException;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.optimizations.AbstractOptimizationRule;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
-import org.jaxen.JaxenException;
-
 /**
  * Check that log.debug, log.trace, log.error, etc... statements are guarded by
  * some test expression on log.isDebugEnabled() or log.isTraceEnabled().
  * 
- * @author Romain Pelisse - <belaran@gmail.com>
- * @author Heiko Rupp - <hwr@pilhuhn.de>
+ * @author Romain Pelisse - &lt;belaran@gmail.com&gt;
+ * @author Heiko Rupp - &lt;hwr@pilhuhn.de&gt;
  * @author Tammo van Lessen - provided original XPath expression
  * 
  */
@@ -36,7 +37,7 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     public static final StringMultiProperty GUARD_METHODS = new StringMultiProperty("guardsMethods",
             "method use to guard the log statement", new String[] {}, 2.0f, ',');
 
-    protected Map<String, String> guardStmtByLogLevel = new HashMap<String, String>(5);
+    protected Map<String, String> guardStmtByLogLevel = new HashMap<>(5);
 
     private static final String XPATH_EXPRESSION = "//PrimaryPrefix[ends-with(Name/@Image, 'LOG_LEVEL')]"
             + "[count(../descendant::AdditiveExpression) > 0]"
@@ -57,7 +58,7 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
 
     protected void findViolationForEachLogStatement(ASTCompilationUnit unit, Object data, String xpathExpression) {
         for (Entry<String, String> entry : guardStmtByLogLevel.entrySet()) {
-            List<Node> nodes = findViolations(unit, entry.getKey(), entry.getValue(), xpathExpression);
+            List<? extends Node> nodes = findViolations(unit, entry.getKey(), entry.getValue(), xpathExpression);
             for (Node node : nodes) {
                 super.addViolation(data, node);
             }
@@ -65,11 +66,12 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     }
 
     @SuppressWarnings("unchecked")
-    private List<Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard, String xpathExpression) {
+    private List<? extends Node> findViolations(ASTCompilationUnit unit, String logLevel, String guard,
+            String xpathExpression) {
         try {
-            return unit.findChildNodesWithXPath(xpathExpression
-                    .replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase()).replaceAll("LOG_LEVEL", logLevel)
-                    .replaceAll("GUARD", guard));
+            return unit
+                    .findChildNodesWithXPath(xpathExpression.replaceAll("LOG_LEVEL_UPPERCASE", logLevel.toUpperCase())
+                            .replaceAll("LOG_LEVEL", logLevel).replaceAll("GUARD", guard));
         } catch (JaxenException e) {
             e.printStackTrace();
         }
@@ -94,8 +96,8 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     protected void extractProperties() {
         if (guardStmtByLogLevel.isEmpty()) {
 
-            List<String> logLevels = new ArrayList<String>(Arrays.asList(super.getProperty(LOG_LEVELS)));
-            List<String> guardMethods = new ArrayList<String>(Arrays.asList(super.getProperty(GUARD_METHODS)));
+            List<String> logLevels = new ArrayList<>(Arrays.asList(super.getProperty(LOG_LEVELS)));
+            List<String> guardMethods = new ArrayList<>(Arrays.asList(super.getProperty(GUARD_METHODS)));
 
             if (guardMethods.isEmpty() && !logLevels.isEmpty()) {
                 throw new IllegalArgumentException("Can't specify guardMethods without specifiying logLevels.");

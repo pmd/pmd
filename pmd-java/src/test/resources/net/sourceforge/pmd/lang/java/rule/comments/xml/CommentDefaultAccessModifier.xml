@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <code-fragment id="some-methods-fields-with-default-access-modifier"><![CDATA[
+public class Foo {
+	public final String stringValue = "stringValue";      // should not be reported
+	final String otherStringValue = "otherStringValue";   // should be reported
+	/* default */ final String otherValue = "otherValue"; // should not be reported
+	/* 		default		 */ final String anotherValue = "anotherValue"; // should not be reported
+
+	public void test() { // should not be reported
+	}
+
+	void test2() { // should be reported
+	}
+
+	/* default */ void test3() { // should not be reported
+	}
+
+	/*	 default 	*/ void test4() { // should not be reported
+	}
+}
+    ]]>
+    </code-fragment>
+    <test-code>
+        <description>Some methods and Fields with default access modifier in a class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
+        <code-ref id="some-methods-fields-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="all-methods-fields-with-default-access-modifier"><![CDATA[
+public class Foo {
+	final String stringValue = "stringValue";
+	final String otherStringValue = "otherStringValue";
+	final String otherValue = "otherValue";
+
+	void test() {
+	}
+
+	void test2() {
+	}
+
+	void test3() {
+	}
+}
+    ]]>
+    </code-fragment>
+    <test-code>
+        <description>All methods and Field with default access modifier in a class</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>2,3,4,6,9,12</expected-linenumbers>
+        <code-ref id="all-methods-fields-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="all-methods-fields-without-default-access-modifier"><![CDATA[
+public class Foo {
+	private final String stringValue = "stringValue";
+	private final String otherStringValue = "otherStringValue";
+	private final String otherValue = "otherValue";
+
+	public void test() {
+	}
+
+	public void test2() {
+	}
+
+	public void test3() {
+	}
+}
+    ]]>
+    </code-fragment>
+    <test-code>
+        <description>All methods and Field without default access modifier in a class</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="all-methods-fields-without-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="interface-with-methods-with-default-access-modifier"><![CDATA[
+public interface Foo {
+	void test();
+	public void test2();
+	void test3();
+}
+    ]]></code-fragment>
+    <test-code>
+        <description>Methods with default access modifier in an Interface</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="interface-with-methods-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="nested-class-with-default-access-modifier"><![CDATA[
+public class Foo {
+	private final String stringValue = "stringValue";
+
+	public void test() {
+	}
+
+	class NestedClass {
+	}
+
+	static class OtherNestedClass {
+	}
+
+	public class AnotherNestedClass {
+	}
+}
+    ]]></code-fragment>
+    <test-code>
+        <description>Nested classes with default access modifier</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,10</expected-linenumbers>
+        <code-ref id="nested-class-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="own-regex-to-default-access-modifier-rule"><![CDATA[
+public class Foo {
+	/* default */ final String stringValue = "stringValue";
+
+	void test() {
+	}
+
+	/* package-private */ class NestedClass {
+	}
+
+	/*	 package-private	 */ class OtherNestedClass {
+	}
+
+	static class AnotherNestedClass {
+	}
+}
+    ]]></code-fragment>
+    <test-code>
+        <description>Test own regex to default access modifier rule</description>
+        <rule-property name="regex">\/\*\s+package-private\s+\*\/</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,4,13</expected-linenumbers>
+        <code-ref id="own-regex-to-default-access-modifier-rule"/>
+    </test-code>
+
+    <test-code>
+        <description>Declarations inside an enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum TestEnum {
+    FOO;
+
+    public String getName() { return "foo"; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1430 CommentDefaultAccessModifier triggers on field annotated with @VisibleForTesting</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
+</test-data>

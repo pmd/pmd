@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties;
 
 import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * of the Java language. Rule developers can limit the range of permissible
  * items by specifying portions of their package names in the constructor. If
  * the legalPackageNames value is set to null then no restrictions are made.
- * 
+ *
  * @author Brian Remedios
  * @param <T>
  */
@@ -29,13 +30,8 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     protected static final Map<String, Boolean> PACKAGED_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
             .expectedFieldTypesWith(new String[] { LEGAL_PACKAGES }, new Boolean[] { Boolean.FALSE });
 
-    protected static String[] packageNamesIn(Map<String, String> params) {
-        // TODO
-        return null;
-    }
-
     /**
-     * 
+     *
      * @param theName
      * @param theDescription
      * @param theDefault
@@ -52,9 +48,12 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
         legalPackageNames = theLegalPackageNames;
     }
 
-    /**
-     * @param attributes Map<String,String>
-     */
+    protected static String[] packageNamesIn(Map<String, String> params) {
+        // TODO
+        return null;
+    }
+
+    @Override
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);
 
@@ -64,7 +63,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     /**
      * @return String
      */
-    private final String delimitedPackageNames() {
+    private String delimitedPackageNames() {
 
         if (legalPackageNames == null || legalPackageNames.length == 0) {
             return "";
@@ -84,7 +83,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     /**
      * Evaluates the names of the items against the allowable name prefixes. If
      * one or more do not have valid prefixes then an exception will be thrown.
-     * 
+     *
      * @param item
      * @param legalNamePrefixes
      * @throws IllegalArgumentException
@@ -101,7 +100,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
         }
 
         String[] names = new String[items.length];
-        Set<String> nameSet = new HashSet<String>(items.length);
+        Set<String> nameSet = new HashSet<>(items.length);
         String name = null;
 
         for (int i = 0; i < items.length; i++) {
@@ -127,16 +126,18 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
     /**
      * Method itemTypeName.
-     * 
+     *
      * @return String
      */
-    abstract protected String itemTypeName();
+    protected abstract String itemTypeName();
 
     /**
      *
-     * @param value Object
+     * @param value
+     *            Object
      * @return String
      */
+    @Override
     protected String valueErrorFor(Object value) {
 
         if (value == null) {
@@ -163,10 +164,11 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
     /**
      *
-     * @param item Object
+     * @param item
+     *            Object
      * @return String
      */
-    abstract protected String packageNameOf(Object item);
+    protected abstract String packageNameOf(Object item);
 
     /**
      *

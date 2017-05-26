@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class Tokens {
 
-    private List<TokenEntry> tokens = new ArrayList<TokenEntry>();
+    private List<TokenEntry> tokens = new ArrayList<>();
 
     public void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);

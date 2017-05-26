@@ -1,19 +1,20 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.dfa.report;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractReportNode {
-    private List<AbstractReportNode> childNodes = new ArrayList<AbstractReportNode>();
+    private List<AbstractReportNode> childNodes = new ArrayList<>();
     private AbstractReportNode parentNode = null;
 
     /*
-    * Number of all RuleViolations down to this node. At the moment it will
-    * only be calculated by running the ReportHTMLPrintVisitor.
-    * */
+     * Number of all RuleViolations down to this node. At the moment it will
+     * only be calculated by running the ReportHTMLPrintVisitor.
+     */
     private int numberOfViolations;
 
     /**

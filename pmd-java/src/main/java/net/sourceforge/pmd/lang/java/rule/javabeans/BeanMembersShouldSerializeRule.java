@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.javabeans;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
         Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
                 .getMethodDeclarations();
-        List<ASTMethodDeclarator> getSetMethList = new ArrayList<ASTMethodDeclarator>(methods.size());
+        List<ASTMethodDeclarator> getSetMethList = new ArrayList<>(methods.size());
         for (MethodNameDeclaration d : methods.keySet()) {
             ASTMethodDeclarator mnd = d.getMethodNameDeclaratorNode();
             if (isBeanAccessor(mnd)) {
@@ -71,8 +72,8 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
         Arrays.sort(methNameArray);
 
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(
-                VariableNameDeclaration.class);
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
         for (VariableNameDeclaration decl : vars.keySet()) {
             AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (vars.get(decl).isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()) {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.jaxen;
 
 import static org.junit.Assert.assertEquals;
@@ -10,6 +11,12 @@ import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 import java.util.List;
+
+import org.jaxen.BaseXPath;
+import org.jaxen.JaxenException;
+import org.jaxen.UnsupportedAxisException;
+import org.junit.Before;
+import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -25,15 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.UnsupportedAxisException;
-import org.junit.Before;
-import org.junit.Test;
-
-
 public class DocumentNavigatorTest extends RuleTst {
-
 
     private TestRule rule;
 
@@ -46,7 +45,8 @@ public class DocumentNavigatorTest extends RuleTst {
         private Node primaryExpression;
 
         /**
-         * @see net.sourceforge.pmd.lang.java.ast.JavaParserVisitor#visit(ASTCompilationUnit, Object)
+         * @see net.sourceforge.pmd.lang.java.ast.JavaParserVisitor#visit(ASTCompilationUnit,
+         *      Object)
          */
         public Object visit(ASTCompilationUnit node, Object data) {
             this.compilationUnit = node;
@@ -74,7 +74,7 @@ public class DocumentNavigatorTest extends RuleTst {
         }
     }
 
-    @Before 
+    @Before
     public void setUp() throws Exception {
         try {
             rule = new TestRule();
@@ -89,7 +89,7 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testChildAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getChildAxisIterator(rule.compilationUnit);
+        Iterator<Node> iter = nav.getChildAxisIterator(rule.compilationUnit);
         assertSame(rule.compilationUnit.jjtGetChild(0), iter.next());
         assertSame(rule.compilationUnit.jjtGetChild(1), iter.next());
         assertFalse(iter.hasNext());
@@ -98,7 +98,7 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testParentAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getParentAxisIterator(rule.importDeclaration);
+        Iterator<Node> iter = nav.getParentAxisIterator(rule.importDeclaration);
         assertSame(rule.importDeclaration.jjtGetParent(), iter.next());
         assertFalse(iter.hasNext());
     }
@@ -106,14 +106,14 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testParentAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getParentAxisIterator(rule.compilationUnit);
+        Iterator<Node> iter = nav.getParentAxisIterator(rule.compilationUnit);
         assertFalse(iter.hasNext());
     }
 
     @Test
     public void testDescendantAxisIterator() throws UnsupportedAxisException {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getDescendantAxisIterator(rule.statement);
+        Iterator<?> iter = nav.getDescendantAxisIterator(rule.statement);
         Node statementExpression = rule.statement.jjtGetChild(0);
         assertSame(statementExpression, iter.next());
         Node primaryExpression = statementExpression.jjtGetChild(0);
@@ -121,18 +121,18 @@ public class DocumentNavigatorTest extends RuleTst {
         Node primaryPrefix = primaryExpression.jjtGetChild(0);
         assertSame(primaryPrefix, iter.next());
         Node primarySuffix = primaryExpression.jjtGetChild(1);
-//        assertSame(primarySuffix, iter.next());
+        // assertSame(primarySuffix, iter.next());
         Node name = primaryPrefix.jjtGetChild(0);
-//        assertSame(name, iter.next());
+        // assertSame(name, iter.next());
         Node arguments = primarySuffix.jjtGetChild(0);
-//        assertSame(arguments, iter.next());
-//        assertFalse(iter.hasNext());
+        // assertSame(arguments, iter.next());
+        // assertFalse(iter.hasNext());
     }
 
     @Test
     public void testDescendantAxisIterator2() throws UnsupportedAxisException {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getDescendantAxisIterator(rule.primaryPrefix);
+        Iterator<?> iter = nav.getDescendantAxisIterator(rule.primaryPrefix);
         Node name = rule.primaryPrefix.jjtGetChild(0);
         assertSame(name, iter.next());
         assertFalse(iter.hasNext());
@@ -141,7 +141,7 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testFollowingSiblingAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
+        Iterator<Node> iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
         assertSame(rule.primaryExpression.jjtGetChild(1), iter.next());
         assertFalse(iter.hasNext());
     }
@@ -149,14 +149,14 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testFollowingSiblingAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
+        Iterator<Node> iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
         assertFalse(iter.hasNext());
     }
 
     @Test
     public void testPrecedingSiblingAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
+        Iterator<Node> iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
         assertSame(rule.primaryExpression.jjtGetChild(0), iter.next());
         assertFalse(iter.hasNext());
     }
@@ -164,42 +164,28 @@ public class DocumentNavigatorTest extends RuleTst {
     @Test
     public void testPrecedingSiblingAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
-        Iterator iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
+        Iterator<Node> iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
         assertFalse(iter.hasNext());
     }
 
     @Test
     public void testXPath() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
-        List matches = xPath.selectNodes(rule.statement);
+        List<?> matches = xPath.selectNodes(rule.statement);
         assertEquals(6, matches.size());
     }
 
     @Test
     public void testXPath2() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
-        List matches = xPath.selectNodes(rule.importDeclaration);
+        List<?> matches = xPath.selectNodes(rule.importDeclaration);
         assertEquals(1, matches.size());
     }
 
-
-    public static final String TEST =
-            "import java.io.*;" + PMD.EOL +
-            "public class Foo {" + PMD.EOL +
-            " public Foo() {" + PMD.EOL +
-            "  try {" + PMD.EOL +
-            "   FileReader fr = new FileReader(\"/dev/null\");" + PMD.EOL +
-            "  } catch (Exception e) {}" + PMD.EOL +
-            "  try {" + PMD.EOL +
-            "   FileReader fr = new FileReader(\"/dev/null\");" + PMD.EOL +
-            "  } catch (Exception e) {" + PMD.EOL +
-            "   e.printStackTrace();" + PMD.EOL +
-            "   // this shouldn't show up on the report" + PMD.EOL +
-            "  }" + PMD.EOL +
-            " }" + PMD.EOL +
-            "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(DocumentNavigatorTest.class);
-    }
+    public static final String TEST = "import java.io.*;" + PMD.EOL + "public class Foo {" + PMD.EOL + " public Foo() {"
+            + PMD.EOL + "  try {" + PMD.EOL + "   FileReader fr = new FileReader(\"/dev/null\");" + PMD.EOL
+            + "  } catch (Exception e) {}" + PMD.EOL + "  try {" + PMD.EOL
+            + "   FileReader fr = new FileReader(\"/dev/null\");" + PMD.EOL + "  } catch (Exception e) {" + PMD.EOL
+            + "   e.printStackTrace();" + PMD.EOL + "   // this shouldn't show up on the report" + PMD.EOL + "  }"
+            + PMD.EOL + " }" + PMD.EOL + "}";
 }

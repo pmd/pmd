@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import java.util.logging.Level;
@@ -20,78 +21,77 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author Stuart Turton
  */
 public class NcssObjectCountRule extends AbstractNcssCountRule {
-    private final static String CLASS_NAME =NcssObjectCountRule.class.getName(); 
-    private final static Logger LOGGER = Logger.getLogger(NcssObjectCountRule.class.getName()); 
+    private static final String CLASS_NAME = NcssObjectCountRule.class.getName();
+    private static final Logger LOGGER = Logger.getLogger(NcssObjectCountRule.class.getName());
 
     /**
-     * Count type declarations. This includes Oracle Objects. 
+     * Count type declarations. This includes Oracle Objects.
      */
     public NcssObjectCountRule() {
-	super(OracleObject.class);
-	setProperty(MINIMUM_DESCRIPTOR, 1500d);
+        super(OracleObject.class);
+        setProperty(MINIMUM_DESCRIPTOR, 1500d);
     }
 
-
-
-    //@Override
+    // @Override
     public Object visit(OracleObject node, Object data) {
-        LOGGER.entering(CLASS_NAME,"visit(NcssObjectCountRule)");
-        //Treat Schema-level ProgramUnits as Oracle Objects, otherwise as subprograms
-        if (node.jjtGetParent() instanceof  ASTGlobal ) {
+        LOGGER.entering(CLASS_NAME, "visit(NcssObjectCountRule)");
+        // Treat Schema-level ProgramUnits as Oracle Objects, otherwise as
+        // subprograms
+        if (node.jjtGetParent() instanceof ASTGlobal) {
             LOGGER.fine("Schema-level");
-	    return super.visit(node, data);
-	}
+            return super.visit(node, data);
+        }
 
         LOGGER.fine("not Schema-level");
-	return countNodeChildren(node, data);
+        return countNodeChildren(node, data);
     }
 
-    /** Override super.visit(PLSQLNode, Object) for ASTProgramUnit nodes,
-     *only adding DataPoints for Schema-level Functions and Procedures 
+    /**
+     * Override super.visit(PLSQLNode, Object) for ASTProgramUnit nodes, only
+     * adding DataPoints for Schema-level Functions and Procedures
      */
+    @Override
     public Object visit(ASTProgramUnit node, Object data) {
-	int numNodes = 0;
+        int numNodes = 0;
 
-	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-		PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
-	    Integer treeSize = (Integer) n.jjtAccept(this, data);
-	    numNodes += treeSize.intValue();
-	}
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
+            Integer treeSize = (Integer) n.jjtAccept(this, data);
+            numNodes += treeSize.intValue();
+        }
 
-        //This override is necessary because only Schema-level OracleObject 
-        //instances should result in DataPoints 
-	if (node instanceof OracleObject 
-            && node.jjtGetParent() instanceof ASTGlobal
-           ) {
-          
-	    // Add 1 to account for base node
-	    numNodes++;
-	    DataPoint point = new DataPoint();
-	    point.setNode(node);
-	    point.setScore(1.0 * numNodes);
-	    point.setMessage(getMessage());
-	    addDataPoint(point);
-	    if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("Running score is " +  point.getScore());
-	    }
-	}
+        // This override is necessary because only Schema-level OracleObject
+        // instances should result in DataPoints
+        if (node instanceof OracleObject && node.jjtGetParent() instanceof ASTGlobal) {
 
-	return Integer.valueOf(numNodes);
+            // Add 1 to account for base node
+            numNodes++;
+            DataPoint point = new DataPoint();
+            point.setNode(node);
+            point.setScore(1.0 * numNodes);
+            point.setMessage(getMessage());
+            addDataPoint(point);
+            if (LOGGER.isLoggable(Level.FINE)) {
+                LOGGER.fine("Running score is " + point.getScore());
+            }
+        }
+
+        return Integer.valueOf(numNodes);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        LOGGER.entering(CLASS_NAME,"visit(ASTFieldDeclaration)");
-	return NumericConstants.ONE;
+        LOGGER.entering(CLASS_NAME, "visit(ASTFieldDeclaration)");
+        return NumericConstants.ONE;
     }
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
-        LOGGER.entering(CLASS_NAME,"visit(getViolationParameters)");
+        LOGGER.entering(CLASS_NAME, "visit(getViolationParameters)");
         if (LOGGER.isLoggable(Level.FINE)) {
-        LOGGER.fine("Node Count ==" + point.getScore() );
+            LOGGER.fine("Node Count ==" + point.getScore());
         }
-	return new String[] { String.valueOf((int) point.getScore()) };
+        return new String[] { String.valueOf((int) point.getScore()) };
     }
 
 }

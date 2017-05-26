@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<ruleset name="550"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+This ruleset contains links to rules that are new in PMD v5.5.0
+  </description>
+
+    <rule ref="rulesets/java/design.xml/ConstantsInInterface" />
+    <rule ref="rulesets/java/logging-java.xml/InvalidSlf4jMessageFormat" />
+
+    <rule ref="rulesets/apex/complexity.xml/AvoidDeeplyNestedIfStmts" />
+    <rule ref="rulesets/apex/complexity.xml/ExcessiveParameterList" />
+    <rule ref="rulesets/apex/complexity.xml/ExcessiveClassLength" />
+    <rule ref="rulesets/apex/complexity.xml/NcssMethodCount" />
+    <rule ref="rulesets/apex/complexity.xml/NcssTypeCount" />
+    <rule ref="rulesets/apex/complexity.xml/NcssConstructorCount" />
+    <rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity" />
+    <rule ref="rulesets/apex/complexity.xml/TooManyFields" />
+    <rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount" />
+    <rule ref="rulesets/apex/complexity.xml/AvoidDmlStatementsInLoops" />
+    <rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" />
+    <rule ref="rulesets/apex/style.xml/VariableNamingConventions" />
+    <rule ref="rulesets/apex/style.xml/MethodNamingConventions" />
+    <rule ref="rulesets/apex/style.xml/ClassNamingConventions" />
+    <rule ref="rulesets/apex/style.xml/MethodWithSameNameAsEnclosingClass" />
+    <rule ref="rulesets/apex/style.xml/AvoidLogicInTrigger" />
+    <rule ref="rulesets/apex/style.xml/AvoidGlobalModifier" />
+
+    <rule ref="rulesets/ecmascript/unnecessary.xml/NoElseReturn" />
+</ruleset>
+

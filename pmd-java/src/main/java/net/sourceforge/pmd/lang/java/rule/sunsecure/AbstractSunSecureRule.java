@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.sunsecure;
 
 import java.util.List;
@@ -64,7 +65,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
     protected final String getReturnedVariableName(ASTReturnStatement ret) {
         if (hasTernaryCondition(ret) && hasTernaryNullCheck(ret)) {
             return ret.getFirstDescendantOfType(ASTConditionalExpression.class).jjtGetChild(0)
-                        .getFirstDescendantOfType(ASTName.class).getImage();
+                    .getFirstDescendantOfType(ASTName.class).getImage();
         }
 
         final ASTName n = ret.getFirstDescendantOfType(ASTName.class);
@@ -118,10 +119,11 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
 
     /**
      * Gets the image of the ASTName node found by
-     * {@link Node#getFirstDescendantOfType(Class)}
-     * if it is the greatgrandchild of the given node.
+     * {@link Node#getFirstDescendantOfType(Class)} if it is the greatgrandchild
+     * of the given node.
      *
      * E.g.
+     * 
      * <pre>
      * n = Expression || StatementExpression
      *       PrimaryExpression

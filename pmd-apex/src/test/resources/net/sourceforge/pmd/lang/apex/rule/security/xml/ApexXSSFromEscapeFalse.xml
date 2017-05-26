@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data>
+	<test-code>
+		<description>Add error variable with escape false</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1(String bad) {
+		Trigger.new[0].addError(bad, false);
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Add error literal with escape false</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		Trigger.new[0].addError('something else', false);
+	}		
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Add error literal and variable with escape false
+		</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void test1() {
+		Trigger.new[0].addError('something else' + bad, false);
+	}		
+}
+		]]></code>
+	</test-code>
+
+</test-data>

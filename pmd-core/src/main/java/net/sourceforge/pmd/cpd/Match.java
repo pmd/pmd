@@ -1,46 +1,51 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.PMD;
+package net.sourceforge.pmd.cpd;
 
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Match implements Comparable<Match> {
+import net.sourceforge.pmd.PMD;
+
+public class Match implements Comparable<Match>, Iterable<Mark> {
 
     private int tokenCount;
-    private Set<Mark> markSet = new TreeSet<Mark>();    
+    private Set<Mark> markSet = new TreeSet<>();
     private String label;
-    
+
     public static final Comparator<Match> MATCHES_COMPARATOR = new Comparator<Match>() {
-    	public int compare(Match ma, Match mb) {
-    		return mb.getMarkCount() - ma.getMarkCount();
-    	}
+        @Override
+        public int compare(Match ma, Match mb) {
+            return mb.getMarkCount() - ma.getMarkCount();
+        }
     };
-    
+
     public static final Comparator<Match> LINES_COMPARATOR = new Comparator<Match>() {
-    	public int compare(Match ma, Match mb) {
-    		return mb.getLineCount() - ma.getLineCount();
-    	}
+        @Override
+        public int compare(Match ma, Match mb) {
+            return mb.getLineCount() - ma.getLineCount();
+        }
     };
-    
+
     public static final Comparator<Match> LABEL_COMPARATOR = new Comparator<Match>() {
-    	public int compare(Match ma, Match mb) {
-    		if (ma.getLabel() == null) {
-    		    return 1;
-    		}
-    		if (mb.getLabel() == null) {
-    		    return -1;
-    		}
-    		return mb.getLabel().compareTo(ma.getLabel());
-    	}
+        @Override
+        public int compare(Match ma, Match mb) {
+            if (ma.getLabel() == null) {
+                return 1;
+            }
+            if (mb.getLabel() == null) {
+                return -1;
+            }
+            return mb.getLabel().compareTo(ma.getLabel());
+        }
     };
-    
+
     public static final Comparator<Match> LENGTH_COMPARATOR = new Comparator<Match>() {
+        @Override
         public int compare(Match ma, Match mb) {
             return mb.getLineCount() - ma.getLineCount();
         }
@@ -72,10 +77,12 @@ public class Match implements Comparable<Match> {
         return this.getMark(0).getSourceCodeSlice();
     }
 
+    @Override
     public Iterator<Mark> iterator() {
         return markSet.iterator();
     }
 
+    @Override
     public int compareTo(Match other) {
         int diff = other.getTokenCount() - getTokenCount();
         if (diff != 0) {
@@ -92,6 +99,7 @@ public class Match implements Comparable<Match> {
         return getMark(1);
     }
 
+    @Override
     public String toString() {
         return "Match: " + PMD.EOL + "tokenCount = " + tokenCount + PMD.EOL + "marks = " + markSet.size();
     }
@@ -109,21 +117,21 @@ public class Match implements Comparable<Match> {
     }
 
     public void setLabel(String aLabel) {
-    	label = aLabel;
+        label = aLabel;
     }
-    
+
     public String getLabel() {
-    	return label;
+        return label;
     }
-    
-    public void addTokenEntry(TokenEntry entry){
-        markSet.add(new Mark(entry));                
+
+    public void addTokenEntry(TokenEntry entry) {
+        markSet.add(new Mark(entry));
     }
-    
+
     private Mark getMark(int index) {
         Mark result = null;
         int i = 0;
-        for (Iterator<Mark> it = markSet.iterator(); it.hasNext() && i < index + 1; ){            
+        for (Iterator<Mark> it = markSet.iterator(); it.hasNext() && i < index + 1;) {
             result = it.next();
             i++;
         }

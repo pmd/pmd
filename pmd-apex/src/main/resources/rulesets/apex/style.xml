@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<ruleset name="Style"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+  <description>
+The Style Ruleset contains rules regarding preferred usage of names and identifiers.
+  </description>
+
+    <rule name="VariableNamingConventions"
+    since="5.5.0"
+    message="{0} variable {1} should begin with {2}"
+    class="net.sourceforge.pmd.lang.apex.rule.style.VariableNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#VariableNamingConventions">
+        <description>
+A variable naming conventions rule - customize this to your liking.  Currently, it
+checks for final variables that should be fully capitalized and non-final variables
+that should not include underscores.
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[public class Foo {
+	public static final Integer MY_NUM = 0;
+	public String myTest = '';
+	DataModule dmTest = new DataModule();
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="MethodNamingConventions"
+          since="5.5.0"
+          message="Method name does not begin with a lower case character."
+          class="net.sourceforge.pmd.lang.apex.rule.style.MethodNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#MethodNamingConventions">
+          <description>
+Method names should always begin with a lower case character, and should not contain underscores.
+          </description>
+          <priority>1</priority>
+          <example>
+<![CDATA[public class Foo {
+	public void fooStuff() {
+	}
+}
+]]>
+          </example>
+        </rule>
+
+    <rule name="ClassNamingConventions"
+          since="5.5.0"
+          message="Class names should begin with an uppercase character"
+          class="net.sourceforge.pmd.lang.apex.rule.style.ClassNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#ClassNamingConventions">
+      <description>
+Class names should always begin with an upper case character.
+      </description>
+      <priority>1</priority>
+      <example>
+<![CDATA[public class Foo {}
+]]>
+      </example>
+    </rule>
+
+    <rule name="MethodWithSameNameAsEnclosingClass"
+          since="5.5.0"
+          message="Classes should not have non-constructor methods with the same name as the class"
+          class="net.sourceforge.pmd.lang.apex.rule.style.MethodWithSameNameAsEnclosingClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#MethodWithSameNameAsEnclosingClass">
+       <description>
+Non-constructor methods should not have the same name as the enclosing class.
+       </description>
+        <priority>3</priority>
+       <example>
+<![CDATA[public class MyClass {
+	// this is OK because it is a constructor
+	public MyClass() {}
+	// this is bad because it is a method
+	public void MyClass() {}
+}
+]]>
+       </example>
+     </rule>
+     
+     <rule name="AvoidLogicInTrigger"
+        since="5.5.0"
+        message="Avoid logic in triggers"
+        class="net.sourceforge.pmd.lang.apex.rule.style.AvoidLogicInTriggerRule"
+        externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#AvoidLogicInTrigger">
+    <description>
+As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.
+Therefore delegate the triggers work to a regular class (often called Trigger handler class).
+
+See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+	for(Account acc : Trigger.new) {           
+		if(Trigger.isInsert) {
+			...
+		}
+		
+		...
+		
+		if(Trigger.isDelete) {
+			...
+		}
+	}
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="AvoidGlobalModifier"
+        since="5.5.0"
+        message="Avoid using global modifier"
+        class="net.sourceforge.pmd.lang.apex.rule.style.AvoidGlobalModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/style.html#AvoidGlobalModifier">
+    <description>
+Global classes should be avoided (especially in managed packages) as they can never be deleted or changed in signature. Always check twice if something needs to be global.
+Many interfaces (e.g. Batch) required global modifiers in the past but don't require this anymore. Don't lock yourself in.
+    </description>
+      <priority>3</priority>
+    <example>
+<![CDATA[global class Unchangeable {
+	global UndeletableType unchangable(UndeletableType param) {
+		// ...
+	}
+}
+]]>
+    </example>
+  </rule>
+
+</ruleset>

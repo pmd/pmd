@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.cpp;
 
 import java.io.IOException;
@@ -31,7 +32,9 @@ public class ContinuationReader extends Reader {
 
     /**
      * Creates a new {@link ContinuationReader} which filters the given reader.
-     * @param in the given reader
+     * 
+     * @param in
+     *            the given reader
      */
     public ContinuationReader(Reader in) {
         this.in = new PushbackReader(in, 2);

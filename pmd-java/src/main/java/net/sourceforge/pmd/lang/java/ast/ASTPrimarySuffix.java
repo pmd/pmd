@@ -6,6 +6,10 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTPrimarySuffix extends AbstractJavaNode {
+
+    private boolean isArguments;
+    private boolean isArrayDereference;
+
     public ASTPrimarySuffix(int id) {
         super(id);
     }
@@ -13,9 +17,6 @@ public class ASTPrimarySuffix extends AbstractJavaNode {
     public ASTPrimarySuffix(JavaParser p, int id) {
         super(p, id);
     }
-
-    private boolean isArguments;
-    private boolean isArrayDereference;
 
     public void setIsArrayDereference() {
         isArrayDereference = true;
@@ -34,17 +35,18 @@ public class ASTPrimarySuffix extends AbstractJavaNode {
     }
 
     /**
-     * Get the number of arguments for this primary suffix.  One should call
-     * {@link #isArguments()} to see if there are arguments.  If this method is
+     * Get the number of arguments for this primary suffix. One should call
+     * {@link #isArguments()} to see if there are arguments. If this method is
      * called when there are no arguments it returns <code>-1</code>.
+     * 
      * @return A non-negative argument number when there are arguments,
-     * <code>-1</code> otherwise.
+     *         <code>-1</code> otherwise.
      */
     public int getArgumentCount() {
         if (!this.isArguments()) {
             return -1;
         }
-        return ((ASTArguments)jjtGetChild(jjtGetNumChildren()-1)).getArgumentCount();
+        return ((ASTArguments) jjtGetChild(jjtGetNumChildren() - 1)).getArgumentCount();
     }
 
     /**

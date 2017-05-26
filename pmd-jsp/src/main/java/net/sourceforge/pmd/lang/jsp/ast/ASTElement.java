@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTElement extends AbstractJspNode {
 
-/* BEGIN CUSTOM CODE */
-
     /**
      * Name of the element-tag. Cannot be null.
      */
@@ -18,39 +16,46 @@ public class ASTElement extends AbstractJspNode {
      * Flag indicating that the element consists of one tag ("<... />").
      */
     private boolean empty; //
-    
+
     /**
-     * Flag indicating that the parser did not find a proper ending marker 
-     * or ending tag for this element
+     * Flag indicating that the parser did not find a proper ending marker or
+     * ending tag for this element
      */
     private boolean unclosed;
 
-	/**
-     * @return boolean - true if the element has a namespace-prefix, false otherwise
+    public ASTElement(int id) {
+        super(id);
+    }
+
+    public ASTElement(JspParser p, int id) {
+        super(p, id);
+    }
+
+    /**
+     * @return boolean - true if the element has a namespace-prefix, false
+     *         otherwise
      */
     public boolean isHasNamespacePrefix() {
         return name.indexOf(':') >= 0;
     }
 
     /**
-     * @return String - the part of the name that is before the (first) colon (":")
+     * @return String - the part of the name that is before the (first) colon
+     *         (":")
      */
     public String getNamespacePrefix() {
         int colonIndex = name.indexOf(':');
-        return colonIndex >= 0
-                ? name.substring(0, colonIndex)
-                : "";
+        return colonIndex >= 0 ? name.substring(0, colonIndex) : "";
     }
 
     /**
-     * @return String - The part of the name that is after the first colon (":").
-     *         If the name does not contain a colon, the full name is returned.
+     * @return String - The part of the name that is after the first colon
+     *         (":"). If the name does not contain a colon, the full name is
+     *         returned.
      */
     public String getLocalName() {
         int colonIndex = name.indexOf(':');
-        return colonIndex >= 0
-                ? name.substring(colonIndex + 1)
-                : name;
+        return colonIndex >= 0 ? name.substring(colonIndex + 1) : name;
     }
 
     /**
@@ -61,7 +66,8 @@ public class ASTElement extends AbstractJspNode {
     }
 
     /**
-     * @param name The name to set.
+     * @param name
+     *            The name to set.
      */
     public void setName(String name) {
         this.name = name;
@@ -75,35 +81,25 @@ public class ASTElement extends AbstractJspNode {
     }
 
     public boolean isUnclosed() {
-		return unclosed;
-	}
+        return unclosed;
+    }
 
-	public void setUnclosed(boolean unclosed) {
-		this.unclosed = unclosed;
-	}
+    public void setUnclosed(boolean unclosed) {
+        this.unclosed = unclosed;
+    }
 
     /**
-     * @param empty The empty to set.
+     * @param empty
+     *            The empty to set.
      */
     public void setEmpty(boolean empty) {
         this.empty = empty;
     }
-/* END CUSTOM CODE */
-
-
-
-    public ASTElement(int id) {
-        super(id);
-    }
-
-    public ASTElement(JspParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

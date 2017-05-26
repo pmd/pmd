@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.dfa;
 
 import java.util.ArrayList;
@@ -20,43 +21,41 @@ public class DFAPLSQLGraphRule extends AbstractPLSQLRule implements DFAGraphRule
     private List<DFAGraphMethod> executables;
 
     public DFAPLSQLGraphRule() {
-	super();
-	super.setUsesDFA();
+        super();
+        super.setUsesDFA();
     }
 
     public List<DFAGraphMethod> getMethods() {
         return this.executables;
     }
 
-
     @Override
     public Object visit(ASTTriggerUnit node, Object data) {
-	executables.add(node);
-	return super.visit(node, data);
+        executables.add(node);
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTProgramUnit node, Object data) {
-	executables.add(node);
-	return super.visit(node, data);
-    }
-   
-    @Override
-    public Object visit(ASTTypeMethod node, Object data) {
-	executables.add(node);
-	return super.visit(node, data);
+        executables.add(node);
+        return super.visit(node, data);
     }
 
-   
+    @Override
+    public Object visit(ASTTypeMethod node, Object data) {
+        executables.add(node);
+        return super.visit(node, data);
+    }
+
     @Override
     public Object visit(ASTTriggerTimingPointSection node, Object data) {
-	executables.add(node);
-	return super.visit(node, data);
+        executables.add(node);
+        return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTInput acu, Object data) {
-        executables = new ArrayList<DFAGraphMethod>();
+        executables = new ArrayList<>();
         return super.visit(acu, data);
     }
 }

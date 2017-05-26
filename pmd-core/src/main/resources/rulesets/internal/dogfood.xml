@@ -47,7 +47,6 @@
 		<exclude name="AtLeastOneConstructor"/>
 		<exclude name="CallSuperInConstructor"/>
 		<exclude name="DefaultPackage"/>
-		<exclude name="BooleanInversion"/>
 		<exclude name="DataflowAnomalyAnalysis"/>
 		<exclude name="AvoidFinalLocalVariable"/>
 		<exclude name="DataflowAnomalyAnalysis"/>

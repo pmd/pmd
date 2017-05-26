@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTInitializer extends AbstractJavaNode {
+
+    private boolean isStatic;
+
     public ASTInitializer(int id) {
         super(id);
     }
@@ -14,15 +17,13 @@ public class ASTInitializer extends AbstractJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
-    private boolean isStatic;
 
     public boolean isStatic() {
         return isStatic;

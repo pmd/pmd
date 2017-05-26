@@ -7,9 +7,16 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTJspDirectiveAttribute extends AbstractJspNode {
 
-    /* BEGIN CUSTOM CODE */
     private String name;
     private String value;
+
+    public ASTJspDirectiveAttribute(int id) {
+        super(id);
+    }
+
+    public ASTJspDirectiveAttribute(JspParser p, int id) {
+        super(p, id);
+    }
 
     /**
      * @return Returns the name.
@@ -19,7 +26,8 @@ public class ASTJspDirectiveAttribute extends AbstractJspNode {
     }
 
     /**
-     * @param name The name to set.
+     * @param name
+     *            The name to set.
      */
     public void setName(String name) {
         this.name = name;
@@ -33,25 +41,17 @@ public class ASTJspDirectiveAttribute extends AbstractJspNode {
     }
 
     /**
-     * @param value The value to set.
+     * @param value
+     *            The value to set.
      */
     public void setValue(String value) {
         this.value = value;
     }
-/* END CUSTOM CODE */
-
-    public ASTJspDirectiveAttribute(int id) {
-        super(id);
-    }
-
-    public ASTJspDirectiveAttribute(JspParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

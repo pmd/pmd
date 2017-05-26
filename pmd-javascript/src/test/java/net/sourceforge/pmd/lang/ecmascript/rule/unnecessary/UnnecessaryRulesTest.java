@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript.rule.unnecessary;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
@@ -13,5 +14,6 @@ public class UnnecessaryRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "UnnecessaryBlock");
         addRule(RULESET, "UnnecessaryParentheses");
+        addRule(RULESET, "NoElseReturn");
     }
 }

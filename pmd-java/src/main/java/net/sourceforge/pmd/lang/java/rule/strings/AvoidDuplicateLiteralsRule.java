@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.strings;
 
 import java.io.BufferedReader;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -27,8 +30,6 @@ import net.sourceforge.pmd.lang.rule.properties.FileProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
-
-import org.apache.commons.io.IOUtils;
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
@@ -60,7 +61,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         }
 
         public Set<String> parse(String s) {
-            Set<String> result = new HashSet<String>();
+            Set<String> result = new HashSet<>();
             StringBuilder currentToken = new StringBuilder();
             boolean inEscapeMode = false;
             for (int i = 0; i < s.length(); i++) {
@@ -87,8 +88,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         }
     }
 
-    private Map<String, List<ASTLiteral>> literals = new HashMap<String, List<ASTLiteral>>();
-    private Set<String> exceptions = new HashSet<String>();
+    private Map<String, List<ASTLiteral>> literals = new HashMap<>();
+    private Set<String> exceptions = new HashSet<>();
     private int minLength;
 
     public AvoidDuplicateLiteralsRule() {
@@ -112,7 +113,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             ExceptionParser p = new ExceptionParser(getProperty(SEPARATOR_DESCRIPTOR));
             exceptions = p.parse(getProperty(EXCEPTION_LIST_DESCRIPTOR));
         } else if (getProperty(EXCEPTION_FILE_DESCRIPTOR) != null) {
-            exceptions = new HashSet<String>();
+            exceptions = new HashSet<>();
             LineNumberReader reader = null;
             try {
                 reader = getLineReader();
@@ -146,7 +147,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                 ASTLiteral first = occurrences.get(0);
                 String rawImage = first.getEscapedStringLiteral();
                 Object[] args = new Object[] { rawImage, Integer.valueOf(occurrences.size()),
-                        Integer.valueOf(first.getBeginLine()) };
+                    Integer.valueOf(first.getBeginLine()), };
                 addViolation(data, first, args);
             }
         }
@@ -179,7 +180,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             List<ASTLiteral> occurrences = literals.get(image);
             occurrences.add(node);
         } else {
-            List<ASTLiteral> occurrences = new ArrayList<ASTLiteral>();
+            List<ASTLiteral> occurrences = new ArrayList<>();
             occurrences.add(node);
             literals.put(image, occurrences);
         }

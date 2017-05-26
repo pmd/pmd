@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -17,7 +19,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     public static final String IPV6 = "IPv6";
     public static final String IPV4_MAPPED_IPV6 = "IPv4 mapped IPv6";
 
-    public static final EnumeratedMultiProperty<String> CHECK_ADDRESS_TYPES_DESCRIPTOR = new EnumeratedMultiProperty<String>(
+    public static final EnumeratedMultiProperty<String> CHECK_ADDRESS_TYPES_DESCRIPTOR = new EnumeratedMultiProperty<>(
             "checkAddressTypes", "Check for IP address types.", new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 },
             new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 }, new int[] { 0, 1, 2 }, 2.0f);
 
@@ -112,7 +114,8 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
         }
     }
 
-    protected boolean isIPv6(final char firstChar, String s, final boolean checkIPv6, final boolean checkIPv4MappedIPv6) {
+    protected boolean isIPv6(final char firstChar, String s, final boolean checkIPv6,
+            final boolean checkIPv4MappedIPv6) {
         // Quick check before using Regular Expression
         // 1) At least 3 characters
         // 2) 1st must be a Hex number or a : (colon)

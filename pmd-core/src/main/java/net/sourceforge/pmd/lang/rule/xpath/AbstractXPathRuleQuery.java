@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.util.ArrayList;
@@ -34,11 +35,12 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * Subclasses can manage RuleChain visits via this list.
      */
-    protected final List<String> ruleChainVisits = new ArrayList<String>();
+    protected final List<String> ruleChainVisits = new ArrayList<>();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setXPath(String xpath) {
         this.xpath = xpath;
     }
@@ -46,10 +48,11 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setVersion(String version) throws UnsupportedOperationException {
         if (!isSupportedVersion(version)) {
-            throw new UnsupportedOperationException(this.getClass().getSimpleName()
-                    + " does not support XPath version: " + version);
+            throw new UnsupportedOperationException(
+                    this.getClass().getSimpleName() + " does not support XPath version: " + version);
         }
         this.version = version;
     }
@@ -57,8 +60,9 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * Subclasses should implement to indicate whether an XPath version is
      * supported.
-     * 
-     * @param version The XPath version.
+     *
+     * @param version
+     *            The XPath version.
      * @return <code>true</code> if the XPath version is supported,
      *         <code>false</code> otherwise.
      */
@@ -67,6 +71,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setProperties(Map<PropertyDescriptor<?>, Object> properties) {
         this.properties = properties;
     }
@@ -74,6 +79,7 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getRuleChainVisits() {
         return ruleChainVisits;
     }
@@ -81,5 +87,6 @@ public abstract class AbstractXPathRuleQuery implements XPathRuleQuery {
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract List<Node> evaluate(Node node, RuleContext data);
 }

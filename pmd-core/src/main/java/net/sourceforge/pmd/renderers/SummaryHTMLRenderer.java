@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         definePropertyDescriptor(HTMLRenderer.LINE_PREFIX);
     }
 
+    @Override
     public String defaultFileExtension() {
         return "html";
     }

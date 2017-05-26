@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.typeresolution.rules.imports;
 
 import java.util.Iterator;
@@ -16,37 +17,37 @@ public class UnusedImports extends UnusedImportsRule {
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
-	if (node.isImportOnDemand()) {
-	    ASTName importedType = (ASTName) node.jjtGetChild(0);
-	    imports.add(new ImportWrapper(importedType.getImage(), null, node, node.getType(), node.isStatic()));
-	} else {
-	    super.visit(node, data);
-	}
-	return data;
+        if (node.isImportOnDemand()) {
+            ASTName importedType = (ASTName) node.jjtGetChild(0);
+            imports.add(new ImportWrapper(importedType.getImage(), null, node, node.getType(), node.isStatic()));
+        } else {
+            super.visit(node, data);
+        }
+        return data;
     }
 
     @Override
     protected void check(Node node) {
-	if (imports.isEmpty()) {
-	    return;
-	}
-	ImportWrapper candidate = getImportWrapper(node);
-	Iterator<ImportWrapper> it = imports.iterator();
-	while (it.hasNext()) {
-	    ImportWrapper i = it.next();
-	    if (i.matches(candidate)) {
-	        it.remove();
-	        return;
-	    }
-	}
-	if (TypeNode.class.isAssignableFrom(node.getClass()) && ((TypeNode) node).getType() != null) {
-	    Class<?> c = ((TypeNode) node).getType();
-	    if (c.getPackage() != null) {
-		candidate = new ImportWrapper(c.getPackage().getName(), null);
-		if (imports.contains(candidate)) {
-		    imports.remove(candidate);
-		}
-	    }
-	}
+        if (imports.isEmpty()) {
+            return;
+        }
+        ImportWrapper candidate = getImportWrapper(node);
+        Iterator<ImportWrapper> it = imports.iterator();
+        while (it.hasNext()) {
+            ImportWrapper i = it.next();
+            if (i.matches(candidate)) {
+                it.remove();
+                return;
+            }
+        }
+        if (TypeNode.class.isAssignableFrom(node.getClass()) && ((TypeNode) node).getType() != null) {
+            Class<?> c = ((TypeNode) node).getType();
+            if (c.getPackage() != null) {
+                candidate = new ImportWrapper(c.getPackage().getName(), null);
+                if (imports.contains(candidate)) {
+                    imports.remove(candidate);
+                }
+            }
+        }
     }
 }

@@ -154,7 +154,8 @@ sb.append('a');		// use this instead
         class="net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveAppendsShouldReuseRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/java/strings.html#ConsecutiveAppendsShouldReuse">
     <description>
-Consecutively calls to StringBuffer/StringBuilder .append should reuse the target object. This can improve the performance.
+Consecutive calls to StringBuffer/StringBuilder .append should be chained, reusing the target object. This can improve the performance
+by producing a smaller bytecode, reducing overhead and improving inlining. A complete analysis can be found [here](https://github.com/pmd/pmd/issues/202#issuecomment-274349067)
     </description>
     <priority>3</priority>
     <example>
@@ -220,7 +221,8 @@ if (s.indexOf('d') {}
 String.trim().length() is an inefficient way to check if a String is really empty, as it
 creates a new String object just to check its size. Consider creating a static function that
 loops through a string, checking Character.isWhitespace() on each character and returning
-false if a non-whitespace character is found.
+false if a non-whitespace character is found. You can refer to Apache's StringUtils#isBlank (in commons-lang)
+or Spring's StringUtils#hasText (in the Springs framework) for existing implementations.
     </description>
        <priority>3</priority>
     <example>

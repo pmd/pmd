@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.rule.codesize;
 
 import java.util.ArrayList;
@@ -39,8 +40,8 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author Jason Bennett
  */
 public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
-    private final static String CLASS_NAME = NPathComplexityRule.class.getCanonicalName();
-    private final static Logger LOGGER = Logger.getLogger(NPathComplexityRule.class.getName());
+    private static final String CLASS_NAME = NPathComplexityRule.class.getCanonicalName();
+    private static final Logger LOGGER = Logger.getLogger(NPathComplexityRule.class.getName());
 
     public NPathComplexityRule() {
         super();
@@ -175,7 +176,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
         int complexity = 0;
 
-        List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
+        List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class
                     || node.jjtGetChild(i).getClass() == ASTElsifClause.class
@@ -225,7 +226,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
         int complexity = 0;
 
-        List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
+        List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
                 statementChildren.add((PLSQLNode) node.jjtGetChild(i));
@@ -261,7 +262,7 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
         int complexity = 0;
 
-        List<PLSQLNode> statementChildren = new ArrayList<PLSQLNode>();
+        List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
                 statementChildren.add((PLSQLNode) node.jjtGetChild(i));
@@ -396,11 +397,11 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
 
     /**
      * Calculate the boolean complexity of the given expression. NPath boolean
-     * complexity is the sum of && and || tokens. This is calculated by summing
-     * the number of children of the &&'s (minus one) and the children of the
+     * complexity is the sum of &amp;&amp; and || tokens. This is calculated by summing
+     * the number of children of the &amp;&amp;'s (minus one) and the children of the
      * ||'s (minus one).
-     * <p>
-     * Note that this calculation applies to Cyclomatic Complexity as well.
+     *
+     * <p>Note that this calculation applies to Cyclomatic Complexity as well.</p>
      *
      * @param expr
      *            control structure expression
@@ -435,6 +436,6 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
     @Override
     public Object[] getViolationParameters(DataPoint point) {
         return new String[] { ((ExecutableCode) point.getNode()).getMethodName(),
-                String.valueOf((int) point.getScore()) };
+            String.valueOf((int) point.getScore()), };
     }
 }

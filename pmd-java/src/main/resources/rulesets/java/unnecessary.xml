@@ -230,11 +230,13 @@ public class Test {
     count(*)=1 and
     count(./CastExpression)=0 and
     count(./EqualityExpression/MultiplicativeExpression)=0 and
+    count(./ConditionalExpression[@Ternary='true'])=0 and
     count(./ConditionalOrExpression)=0]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
     count(./CastExpression)=0 and
+    count(./ConditionalExpression[@Ternary='true'])=0 and
     count(./EqualityExpression/MultiplicativeExpression)=0]
 |
 //Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
@@ -242,7 +244,7 @@ public class Test {
     count(./CastExpression)=0 and
     count(./EqualityExpression)=0]
 |
-//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral = 'true'])]/PrimaryExpression[1]/PrimaryPrefix/Expression[
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])]/PrimaryExpression[1]/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
     not(./AdditiveExpression[@Image = '-']) and
@@ -263,6 +265,7 @@ public class Test {
     count(./AndExpression)=0 and
     count(./InclusiveOrExpression)=0 and
     count(./ExclusiveOrExpression)=0 and
+    count(./ConditionalExpression)=0 and
     count(./ConditionalAndExpression)=0 and
     count(./ConditionalOrExpression)=0 and
     count(./EqualityExpression)=0]
@@ -286,5 +289,94 @@ public class Foo {
     ]]>
     </example>
   </rule>
-  
+
+  <rule name="UselessQualifiedThis"
+      language="java"
+      since="5.4.0"
+      message="Useless qualified this usage in the same class."
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessQualifiedThis">
+    <description>Look for qualified this usages in the same class.</description>
+    <priority>3</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+//PrimaryExpression
+[PrimaryPrefix/Name[@Image]]
+[PrimarySuffix[@Arguments='false']]
+[not(PrimarySuffix/MemberSelector)]
+[ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
+/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <example>
+    <![CDATA[
+public class Foo {
+    final Foo otherFoo = Foo.this;  // use "this" directly
+
+    public void doSomething() {
+         final Foo anotherFoo = Foo.this;  // use "this" directly
+    }
+
+    private ActionListener returnListener() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doSomethingWithQualifiedThis(Foo.this);  // This is fine
+            }
+        };
+    }
+
+    private class Foo3 {
+        final Foo myFoo = Foo.this;  // This is fine
+    }
+
+    private class Foo2 {
+        final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
+    }
+}
+    ]]>
+    </example>
+  </rule>
+
+<rule name="UnnecessaryModifier"
+          language="java"
+          since="1.02"
+          message="Avoid modifiers which are implied by the context"
+          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryModifier">
+     <description>
+Fields in interfaces and annotations are automatically `public static final`, and methods are `public abstract`.
+Classes, interfaces or annotations nested in an interface or annotation are automatically `public static`
+(all nested interfaces and annotations are automatically static).
+Nested enums are automatically `static`.
+For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
+     </description>
+        <priority>3</priority>
+     <example>
+ <![CDATA[
+ public @interface Annotation {
+  public abstract void bar(); 		// both abstract and public are ignored by the compiler
+  public static final int X = 0; 	// public, static, and final all ignored
+  public static class Bar {} 		// public, static ignored
+  public static interface Baz {} 	// ditto
+}
+public interface Foo {
+  public abstract void bar(); 		// both abstract and public are ignored by the compiler
+  public static final int X = 0; 	// public, static, and final all ignored
+  public static class Bar {} 		// public, static ignored
+  public static interface Baz {} 	// ditto
+}
+public class Bar {
+  public static interface Baz {} // static ignored
+  public static enum FoorBar { // static ignored
+    FOO;
+  }
+}
+ ]]>
+     </example>
+     </rule>
 </ruleset>

@@ -1,16 +1,23 @@
-# Changelog
+# PMD Release Notes
 
-## ????? - 5.3.9-SNAPSHOT
+## ????? - 5.8.0-SNAPSHOT
 
-**New Supported Languages:**
+The PMD team is pleased to announce PMD 5.8.0.
 
-**Feature Requests and Improvements:**
+This is a minor release.
 
-**New/Modified/Deprecated Rules:**
+### Table Of Contents
 
-**Pull Requests:**
+* [New and noteworthy](#New_and_noteworthy)
+* [Fixed Issues](#Fixed_Issues)
+* [API Changes](#API_Changes)
+* [External Contributions](#External_Contributions)
 
-**Bugfixes:**
+### New and noteworthy
 
-**API Changes:**
+### Fixed Issues
+
+### API Changes
+
+### External Contributions
 

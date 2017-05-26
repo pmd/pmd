@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.processor;
 
 import java.io.BufferedInputStream;
@@ -8,126 +9,101 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.SourceCodeProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-public class PmdRunnable extends PMD implements Callable<Report> {
+public class PmdRunnable implements Callable<Report> {
 
-	private static final Logger LOG = Logger.getLogger(PmdRunnable.class.getName());
+    private static final Logger LOG = Logger.getLogger(PmdRunnable.class.getName());
 
-	private final ExecutorService executor;
-	private final DataSource dataSource;
-	private final String fileName;
-	private final List<Renderer> renderers;
+    private static final ThreadLocal<ThreadContext> LOCAL_THREAD_CONTEXT = new ThreadLocal<>();
 
-	public PmdRunnable(ExecutorService executor,
-			PMDConfiguration configuration, DataSource dataSource,
-			String fileName, List<Renderer> renderers) {
-		super(configuration);
-		this.executor = executor;
-		this.dataSource = dataSource;
-		this.fileName = fileName;
-		this.renderers = renderers;
-	}
+    private final PMDConfiguration configuration;
+    private final DataSource dataSource;
+    private final String fileName;
+    private final List<Renderer> renderers;
+    private final RuleContext ruleContext;
+    private final RuleSetFactory ruleSetFactory;
+    private final SourceCodeProcessor sourceCodeProcessor;
 
-	// If we ever end up having a ReportUtil class, this method should be moved there...
-	private static void addError(Report report, Exception ex, String fileName) {
-		report.addError(
-				new Report.ProcessingError(ex.getMessage(),
-				fileName)
-				);
-	}
+    public PmdRunnable(PMDConfiguration configuration, DataSource dataSource, String fileName,
+            List<Renderer> renderers, RuleContext ruleContext, RuleSetFactory ruleSetFactory,
+            SourceCodeProcessor sourceCodeProcessor) {
+        this.configuration = configuration;
+        this.dataSource = dataSource;
+        this.fileName = fileName;
+        this.renderers = renderers;
+        this.ruleContext = ruleContext;
+        this.ruleSetFactory = ruleSetFactory;
+        this.sourceCodeProcessor = sourceCodeProcessor;
+    }
 
-	private void addErrorAndShutdown(Report report, Exception e, String errorMessage) {
-		// unexpected exception: log and stop executor service
-		LOG.log(Level.FINE, errorMessage, e);
-		addError(report, e, fileName);
-		executor.shutdownNow();
-	}
-	
-	public Report call() {
-		PmdThread thread = (PmdThread) Thread.currentThread();
+    public static void reset() {
+        LOCAL_THREAD_CONTEXT.remove();
+    }
 
-		RuleContext ctx = thread.getRuleContext();
-		RuleSets rs = thread.getRuleSets(configuration.getRuleSets());
+    private void addError(Report report, Exception e, String errorMessage) {
+        // unexpected exception: log and stop executor service
+        LOG.log(Level.FINE, errorMessage, e);
+        report.addError(new Report.ProcessingError(e.getMessage(), fileName));
+    }
 
-		Report report = setupReport(rs, ctx, fileName);
-		
-		if (LOG.isLoggable(Level.FINE)) {
-			LOG.fine("Processing " + ctx.getSourceCodeFilename());
-		}
-		for (Renderer r : renderers) {
-			r.startFileAnalysis(dataSource);
-		}
+    @Override
+    public Report call() {
+        ThreadContext tc = LOCAL_THREAD_CONTEXT.get();
+        if (tc == null) {
+            try {
+                tc = new ThreadContext(ruleSetFactory.createRuleSets(configuration.getRuleSets()),
+                        new RuleContext(ruleContext));
+            } catch (RuleSetNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            LOCAL_THREAD_CONTEXT.set(tc);
+        }
 
-		try {
-			InputStream stream = new BufferedInputStream(
-					dataSource.getInputStream());
-			ctx.setLanguageVersion(null);
-			this.getSourceCodeProcessor().processSourceCode(stream, rs, ctx);
-		} catch (PMDException pmde) {
-		    if (LOG.isLoggable(Level.FINE)) {
-			LOG.log(Level.FINE, "Error while processing file: "+fileName, pmde.getCause());
-		    }
-			addError(report, pmde, fileName);
-		} catch (IOException ioe) {
-			addErrorAndShutdown(report, ioe, "IOException during processing of "+ fileName );
+        Report report = PMD.setupReport(tc.ruleSets, tc.ruleContext, fileName);
 
-		} catch (RuntimeException re) {
-			addErrorAndShutdown(report, re,"RuntimeException during processing of " + fileName);
-		}
-		return report;
-	}
-	
-	private static class PmdThread extends Thread {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("Processing " + tc.ruleContext.getSourceCodeFilename());
+        }
+        for (Renderer r : renderers) {
+            r.startFileAnalysis(dataSource);
+        }
 
-		public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory,
-				RuleContext ctx) {
-			super(r, "PmdThread " + id);
-			this.id = id;
-			context = new RuleContext(ctx);
-			this.ruleSetFactory = ruleSetFactory;
-		}
+        try {
+            InputStream stream = new BufferedInputStream(dataSource.getInputStream());
+            tc.ruleContext.setLanguageVersion(null);
+            sourceCodeProcessor.processSourceCode(stream, tc.ruleSets, tc.ruleContext);
+        } catch (PMDException pmde) {
+            addError(report, pmde, "Error while processing file: " + fileName);
+        } catch (IOException ioe) {
+            addError(report, ioe, "IOException during processing of " + fileName);
+        } catch (RuntimeException re) {
+            addError(report, re, "RuntimeException during processing of " + fileName);
+        }
 
-		private final int id;
-		private RuleContext context;
-		private RuleSets rulesets;
-		private final RuleSetFactory ruleSetFactory;
+        return report;
+    }
 
-		public RuleContext getRuleContext() {
-			return context;
-		}
+    private static class ThreadContext {
+        /* default */ final RuleSets ruleSets;
+        /* default */ final RuleContext ruleContext;
 
-		public RuleSets getRuleSets(String rsList) {
-			if (rulesets == null) {
-				try {
-					rulesets = ruleSetFactory.createRuleSets(rsList);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			return rulesets;
-		}
-
-		@Override
-		public String toString() {
-			return "PmdThread " + id;
-		}
-	}
-
-	public static Thread createThread(int id, Runnable r,
-			RuleSetFactory ruleSetFactory, RuleContext ctx) {
-		return new PmdThread(id, r,ruleSetFactory, ctx);
-	}
+        ThreadContext(RuleSets ruleSets, RuleContext ruleContext) {
+            this.ruleSets = ruleSets;
+            this.ruleContext = ruleContext;
+        }
+    }
 }

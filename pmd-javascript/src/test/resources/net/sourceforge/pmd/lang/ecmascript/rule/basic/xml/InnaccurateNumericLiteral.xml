@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Ok integer
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad integer
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+var x = 999999999999999999999999;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok float
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1.1234567890123;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad float
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+var z = 1.12345678901234567;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok float w/ exponent
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1.12e-4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bad float w/ exponent
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+var x = 1.12345678901234567e-4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

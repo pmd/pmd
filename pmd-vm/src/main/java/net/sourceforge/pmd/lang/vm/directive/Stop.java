@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.directive;
 
 /*
@@ -20,39 +21,35 @@ package net.sourceforge.pmd.lang.vm.directive;
  */
 
 /**
- * This class implements the #stop directive which allows
- * a user to stop the merging and rendering process. The #stop directive
- * will accept a single message argument with info about the reason for
- * stopping.
+ * This class implements the #stop directive which allows a user to stop the
+ * merging and rendering process. The #stop directive will accept a single
+ * message argument with info about the reason for stopping.
  */
-public class Stop extends Directive
-{  
+public class Stop extends Directive {
 
     /**
      * Return name of this directive.
+     * 
      * @return The name of this directive.
      */
-    public String getName()
-    {
+    public String getName() {
         return "stop";
     }
 
     /**
      * Return type of this directive.
+     * 
      * @return The type of this directive.
      */
-    public int getType()
-    {
+    public int getType() {
         return LINE;
     }
 
     /**
-     * Since there is no processing of content,
-     * there is never a need for an internal scope.
+     * Since there is no processing of content, there is never a need for an
+     * internal scope.
      */
-    public boolean isScopeProvided()
-    {
+    public boolean isScopeProvided() {
         return false;
     }
 }
-

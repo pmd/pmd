@@ -6,6 +6,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTAssignmentOperator extends AbstractJavaNode {
+    private boolean isCompound;
+
     public ASTAssignmentOperator(int id) {
         super(id);
     }
@@ -13,8 +15,6 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
     public ASTAssignmentOperator(JavaParser p, int id) {
         super(p, id);
     }
-
-    private boolean isCompound;
 
     public void setCompound() {
         isCompound = true;
@@ -24,10 +24,10 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
         return this.isCompound;
     }
 
-
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

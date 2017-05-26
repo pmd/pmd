@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -12,7 +13,7 @@ public class FooRule extends AbstractJavaRule {
     public FooRule() {
         setMessage("No Foo allowed");
     }
-    
+
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
         if (c.getImage().equalsIgnoreCase("Foo")) {

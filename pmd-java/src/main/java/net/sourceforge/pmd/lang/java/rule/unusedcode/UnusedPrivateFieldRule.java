@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.unusedcode;
 
 import java.util.ArrayList;
@@ -18,22 +19,25 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
-public class UnusedPrivateFieldRule extends AbstractJavaRule {
+public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getDeclarations(
-                VariableNameDeclaration.class);
+        boolean classHasLombok = hasLombokAnnotation(node);
+
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (!accessNodeParent.isPrivate() || isOK(decl.getImage())) {
+            if (!accessNodeParent.isPrivate() || isOK(decl.getImage()) || classHasLombok
+                    || hasLombokAnnotation(accessNodeParent)) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
@@ -62,7 +66,8 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
     private boolean usedInOuterClass(ASTClassOrInterfaceDeclaration node, NameDeclaration decl) {
         List<ASTClassOrInterfaceDeclaration> outerClasses = node.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
         for (ASTClassOrInterfaceDeclaration outerClass : outerClasses) {
-            ASTClassOrInterfaceBody classOrInterfaceBody = outerClass.getFirstChildOfType(ASTClassOrInterfaceBody.class);
+            ASTClassOrInterfaceBody classOrInterfaceBody = outerClass
+                    .getFirstChildOfType(ASTClassOrInterfaceBody.class);
             if (usedInOuter(decl, classOrInterfaceBody)) {
                 return true;
             }
@@ -73,9 +78,8 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
     private boolean usedInOuter(NameDeclaration decl, JavaNode body) {
         List<ASTClassOrInterfaceBodyDeclaration> classOrInterfaceBodyDeclarations = body
                 .findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        List<ASTEnumConstant> enumConstants = body
-                .findChildrenOfType(ASTEnumConstant.class);
-        List<JavaNode> nodes = new ArrayList<JavaNode>();
+        List<ASTEnumConstant> enumConstants = body.findChildrenOfType(ASTEnumConstant.class);
+        List<JavaNode> nodes = new ArrayList<>();
         nodes.addAll(classOrInterfaceBodyDeclarations);
         nodes.addAll(enumConstants);
 
@@ -115,6 +119,6 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
     }
 
     private boolean isOK(String image) {
-        return image.equals("serialVersionUID") || image.equals("serialPersistentFields") || image.equals("IDENT");
+        return "serialVersionUID".equals(image) || "serialPersistentFields".equals(image) || "IDENT".equals(image);
     }
 }

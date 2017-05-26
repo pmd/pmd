@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm.rule;
 
 import net.sourceforge.pmd.Rule;
@@ -22,14 +23,14 @@ public final class VmRuleViolationFactory extends AbstractRuleViolationFactory {
     @Override
     protected RuleViolation createRuleViolation(final Rule rule, final RuleContext ruleContext, final Node node,
             final String message) {
-        return new ParametricRuleViolation<AbstractVmNode>(rule, ruleContext, (AbstractVmNode) node, message);
+        return new ParametricRuleViolation<>(rule, ruleContext, (AbstractVmNode) node, message);
     }
 
     @Override
     protected RuleViolation createRuleViolation(final Rule rule, final RuleContext ruleContext, final Node node,
             final String message, final int beginLine, final int endLine) {
-        final ParametricRuleViolation<AbstractVmNode> violation = new ParametricRuleViolation<AbstractVmNode>(rule,
-                ruleContext, (AbstractVmNode) node, message);
+        final ParametricRuleViolation<AbstractVmNode> violation = new ParametricRuleViolation<>(rule, ruleContext,
+                (AbstractVmNode) node, message);
         violation.setLines(beginLine, endLine);
         return violation;
     }

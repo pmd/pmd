@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -22,13 +23,13 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     public boolean isVarargs() {
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
-        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
-            if (p.isVarargs()) {
-            	return true;
-            }
+        if (params.getParameterCount() == 0) {
+            return false;
         }
-        return false;
+
+        // If it's a varargs, it HAS to be the last parameter
+        ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(params.getParameterCount() - 1);
+        return p.isVarargs();
     }
 
     public ASTMethodDeclarator getMethodNameDeclaratorNode() {
@@ -36,15 +37,15 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     }
 
     public String getParameterDisplaySignature() {
-    	StringBuilder sb = new StringBuilder("(");
+        StringBuilder sb = new StringBuilder("(");
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
         // TODO - this can be optimized - add [0] then ,[n] in a loop.
-        //        no need to trim at the end
+        // no need to trim at the end
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
             sb.append(p.getTypeNode().getTypeImage());
             if (p.isVarargs()) {
-            	sb.append("...");
+                sb.append("...");
             }
             sb.append(',');
         }
@@ -68,8 +69,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             return false;
         }
 
-        // compare parameter count - this catches the case where there are no params, too
-        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
+        // compare parameter count - this catches the case where there are no
+        // params, too
+        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node)
+                .getParameterCount()) {
             return false;
         }
 
@@ -82,7 +85,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
             // Compare vararg
             if (myParam.isVarargs() != otherParam.isVarargs()) {
-            	return false;
+                return false;
             }
 
             Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
@@ -111,18 +114,37 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
                 return false;
             }
 
-            // if type is ASTPrimitiveType and is an array, make sure the other one is also
+            // if type is ASTPrimitiveType and is an array, make sure the other
+            // one is also
         }
         return true;
     }
 
     @Override
     public int hashCode() {
-        return node.getImage().hashCode() + ((ASTMethodDeclarator) node).getParameterCount();
+        int hash = node.getImage().hashCode() * 31 + ((ASTMethodDeclarator) node).getParameterCount();
+
+        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
+        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
+            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
+            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
+
+            String myTypeImg;
+            if (myTypeNode instanceof ASTPrimitiveType) {
+                myTypeImg = myTypeNode.getImage();
+            } else {
+                myTypeImg = myTypeNode.jjtGetChild(0).getImage();
+            }
+
+            hash = hash * 31 + myTypeImg.hashCode();
+        }
+
+        return hash;
     }
 
     @Override
     public String toString() {
-        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
+        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = "
+                + ((ASTMethodDeclarator) node).getParameterCount();
     }
 }

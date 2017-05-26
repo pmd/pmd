@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -9,7 +13,7 @@ import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
  * ability to catch creation errors (illegal args), flag out-of-range test
  * values, and serialize/deserialize groups of float values onto/from a string
  * buffer.
- * 
+ *
  * @author Brian Remedios
  */
 public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
@@ -32,59 +36,73 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 
     /**
      * Method createValue.
-     * 
-     * @param count int
+     *
+     * @param count
+     *            int
      * @return Object
      */
+    @Override
     protected Object createValue(int count) {
 
-        if (count == 1)
+        if (count == 1) {
             return Float.valueOf(randomFloat(MIN, MAX));
+        }
 
         Float[] values = new Float[count];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = (Float) createValue(1);
+        }
         return values;
     }
 
     /**
      * Creates and returns (count) number of out-of-range float values
-     * 
-     * @param count int
+     *
+     * @param count
+     *            int
      * @return Object
      */
+    @Override
     protected Object createBadValue(int count) {
 
-        if (count == 1)
+        if (count == 1) {
             return Float.valueOf(randomBool() ? randomFloat(MIN - SHIFT, MIN) : randomFloat(MAX, MAX + SHIFT));
+        }
 
         Float[] values = new Float[count];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = (Float) createBadValue(1);
+        }
         return values;
     }
 
     /**
      * Method createProperty.
-     * 
-     * @param multiValue boolean
+     *
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
+    @Override
     protected PropertyDescriptor createProperty(boolean multiValue) {
 
-        return multiValue ? new FloatMultiProperty("testFloat", "Test float property", MIN, MAX, new Float[] { -1f, 0f,
-                1f, 2f }, 1.0f) : new FloatProperty("testFloat", "Test float property", MIN, MAX, 9.0f, 1.0f);
+        return multiValue ? new FloatMultiProperty("testFloat", "Test float property", MIN, MAX,
+                new Float[] { -1f, 0f, 1f, 2f }, 1.0f)
+                : new FloatProperty("testFloat", "Test float property", MIN, MAX, 9.0f, 1.0f);
     }
 
     /**
      * Method createBadProperty.
-     * 
-     * @param multiValue boolean
+     *
+     * @param multiValue
+     *            boolean
      * @return PropertyDescriptor
      */
+    @Override
     protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
-        return multiValue ? new FloatMultiProperty("testFloat", "Test float property", 0f, 5f, new Float[] { -1f, 0f,
-                1f, 2f }, 1.0f) : new FloatProperty("testFloat", "Test float property", 5f, 4f, 9.0f, 1.0f);
+        return multiValue ? new FloatMultiProperty("testFloat", "Test float property", 0f, 5f,
+                new Float[] { -1f, 0f, 1f, 2f }, 1.0f)
+                : new FloatProperty("testFloat", "Test float property", 5f, 4f, 9.0f, 1.0f);
     }
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -18,8 +19,8 @@ public class PLSQLNameOccurrence implements NameOccurrence {
     private boolean isMethodOrConstructorInvocation;
     private int argumentCount;
 
-    private final static String THIS = "this";
-    private final static String SUPER = "super";
+    private static final String THIS = "this";
+    private static final String SUPER = "super";
 
     public PLSQLNameOccurrence(PLSQLNode location, String image) {
         this.location = location;
@@ -54,6 +55,7 @@ public class PLSQLNameOccurrence implements NameOccurrence {
         return qualifiedName != null;
     }
 
+    @Override
     public PLSQLNode getLocation() {
         return location;
     }
@@ -127,8 +129,9 @@ public class PLSQLNameOccurrence implements NameOccurrence {
      */
 
     /**
-     * Assert it the occurrence is a self assignment such as: <code>
-     * 		i += 3;
+     * Assert it the occurrence is a self assignment such as:
+     * <code>
+     * i += 3;
      * </code>
      *
      * @return true, if the occurrence is self-assignment, false, otherwise.
@@ -201,6 +204,7 @@ public class PLSQLNameOccurrence implements NameOccurrence {
         return getImage().hashCode();
     }
 
+    @Override
     public String getImage() {
         return image;
     }

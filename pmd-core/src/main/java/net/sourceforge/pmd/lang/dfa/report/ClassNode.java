@@ -1,8 +1,8 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.dfa.report;
 
+package net.sourceforge.pmd.lang.dfa.report;
 
 public class ClassNode extends AbstractReportNode {
 
@@ -16,6 +16,7 @@ public class ClassNode extends AbstractReportNode {
         return className;
     }
 
+    @Override
     public boolean equalsNode(AbstractReportNode arg0) {
         if (!(arg0 instanceof ClassNode)) {
             return false;

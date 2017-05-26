@@ -1,12 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 
-
-public class TextPadRendererTest extends AbstractRendererTst{
+public class TextPadRendererTest extends AbstractRendererTst {
 
     @Override
     public Renderer getRenderer() {
@@ -32,12 +32,3 @@ public class TextPadRendererTest extends AbstractRendererTst{
         return new junit.framework.JUnit4TestAdapter(TextPadRendererTest.class);
     }
 }
-
-
-
-
-
-
-
-
-

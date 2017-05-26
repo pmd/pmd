@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
@@ -8,12 +9,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.Collection;
 
-import junit.framework.JUnit4TestAdapter;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import junit.framework.JUnit4TestAdapter;
 
 @RunWith(Parameterized.class)
 public class ReadableDurationTest {
@@ -28,12 +29,8 @@ public class ReadableDurationTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
-                {"0s", 35},
-                {"25s", (25 * 1000)},
-                {"5m 0s", (60 * 1000 * 5)},
-                {"2h 0m 0s", (60 * 1000 * 120)}
-        });
+        return Arrays.asList(new Object[][] { { "0s", 35 }, { "25s", (25 * 1000) }, { "5m 0s", (60 * 1000 * 5) },
+            { "2h 0m 0s", (60 * 1000 * 120) }, });
     }
 
     @Test

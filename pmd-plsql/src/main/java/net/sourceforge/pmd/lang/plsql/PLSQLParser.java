@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql;
 
 import java.io.Reader;
@@ -48,6 +49,6 @@ public class PLSQLParser extends AbstractParser {
     }
 
     public Map<Integer, String> getSuppressMap() {
-        return new HashMap<Integer, String>(); // FIXME
+        return new HashMap<>(); // FIXME
     }
 }

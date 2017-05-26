@@ -1,19 +1,25 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.symboltable.Applier;
+import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * A Method Scope can have variable declarations and class declarations within it.
+ * A Method Scope can have variable declarations and class declarations within
+ * it.
  */
 public class MethodScope extends AbstractJavaScope {
 
@@ -27,33 +33,39 @@ public class MethodScope extends AbstractJavaScope {
         return getDeclarations(VariableNameDeclaration.class);
     }
 
-    public NameDeclaration addNameOccurrence(NameOccurrence occurrence) {
-        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence)occurrence;
-        NameDeclaration decl = findVariableHere(javaOccurrence);
-        if (decl != null && !javaOccurrence.isThisOrSuper()) {
-            getVariableDeclarations().get(decl).add(javaOccurrence);
-            Node n = javaOccurrence.getLocation();
-            if (n instanceof ASTName) {
-                ((ASTName) n).setNameDeclaration(decl);
-            } // TODO what to do with PrimarySuffix case?
+    public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
+        JavaNameOccurrence javaOccurrence = (JavaNameOccurrence) occurrence;
+        Set<NameDeclaration> declarations = findVariableHere(javaOccurrence);
+        if (!declarations.isEmpty() && !javaOccurrence.isThisOrSuper()) {
+            for (NameDeclaration decl : declarations) {
+                getVariableDeclarations().get(decl).add(javaOccurrence);
+                Node n = javaOccurrence.getLocation();
+                if (n instanceof ASTName) {
+                    ((ASTName) n).setNameDeclaration(decl);
+                } // TODO what to do with PrimarySuffix case?
+            }
         }
-        return decl;
+        return declarations;
     }
 
     public void addDeclaration(NameDeclaration variableDecl) {
         if (!(variableDecl instanceof VariableNameDeclaration || variableDecl instanceof ClassNameDeclaration)) {
-            throw new IllegalArgumentException("A MethodScope can contain only VariableNameDeclarations or ClassNameDeclarations");
+            throw new IllegalArgumentException(
+                    "A MethodScope can contain only VariableNameDeclarations or ClassNameDeclarations");
         }
         super.addDeclaration(variableDecl);
     }
 
-    public NameDeclaration findVariableHere(JavaNameOccurrence occurrence) {
+    public Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
-            return null;
+            return Collections.emptySet();
         }
         ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
         Applier.apply(finder, getVariableDeclarations().keySet().iterator());
-        return finder.getDecl();
+        if (finder.getDecl() != null) {
+            return Collections.singleton(finder.getDecl());
+        }
+        return Collections.emptySet();
     }
 
     public String getName() {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.properties.factories;
 
 import java.util.Collections;
@@ -33,20 +34,22 @@ import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 /**
- * 
+ *
  * @author Brian Remedios
  */
 public class PropertyDescriptorUtil {
 
     public static final Comparator<PropertyDescriptor<?>> COMPARATOR_BY_ORDER = new Comparator<PropertyDescriptor<?>>() {
+        @Override
         public int compare(PropertyDescriptor<?> pd1, PropertyDescriptor<?> pd2) {
             return pd2.uiOrder() > pd1.uiOrder() ? -1 : 1;
         }
     };
 
     private static final Map<String, PropertyDescriptorFactory> DESCRIPTOR_FACTORIES_BY_TYPE;
+
     static {
-        Map<String, PropertyDescriptorFactory> temp = new HashMap<String, PropertyDescriptorFactory>(18);
+        Map<String, PropertyDescriptorFactory> temp = new HashMap<>(18);
 
         temp.put("Boolean", BooleanProperty.FACTORY);
         temp.put("Boolean[]", BooleanMultiProperty.FACTORY);
@@ -77,6 +80,8 @@ public class PropertyDescriptorUtil {
 
         DESCRIPTOR_FACTORIES_BY_TYPE = Collections.unmodifiableMap(temp);
     }
+
+    private PropertyDescriptorUtil() { }
 
     public static PropertyDescriptorFactory factoryFor(String typeId) {
         return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);

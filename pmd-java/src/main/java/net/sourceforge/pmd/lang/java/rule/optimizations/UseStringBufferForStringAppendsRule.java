@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -14,11 +15,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
-
+    
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node, String.class) || node.isArray()) {
@@ -28,7 +29,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
         if (!(parent instanceof ASTLocalVariableDeclaration)) {
             return data;
         }
-        for (NameOccurrence no: node.getUsages()) {
+        for (NameOccurrence no : node.getUsages()) {
             Node name = no.getLocation();
             ASTStatementExpression statement = name.getFirstParentOfType(ASTStatementExpression.class);
             if (statement == null) {
@@ -45,20 +46,28 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 continue;
             }
             ASTConditionalExpression conditional = name.getFirstParentOfType(ASTConditionalExpression.class);
-            if (conditional != null && name.jjtGetParent().jjtGetParent().jjtGetParent() == conditional && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
-                // is used in ternary as only option (not appendend to other string)
-                continue;
+
+            if (conditional != null) {
+                Node thirdParent = name.jjtGetParent().jjtGetParent().jjtGetParent();
+                if ((thirdParent == conditional || thirdParent.jjtGetParent() == conditional)
+                        && conditional.getFirstParentOfType(ASTStatementExpression.class) == statement) {
+                    // is used in ternary as only option (not appended to other
+                    // string)
+                    continue;
+                }
             }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0) instanceof ASTPrimaryExpression) {
                 ASTName astName = statement.jjtGetChild(0).getFirstDescendantOfType(ASTName.class);
-                if(astName != null){
+                if (astName != null) {
                     if (astName.equals(name)) {
-                        ASTAssignmentOperator assignmentOperator = statement.getFirstDescendantOfType(ASTAssignmentOperator.class);
+                        ASTAssignmentOperator assignmentOperator = statement
+                                .getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && assignmentOperator.isCompound()) {
                             addViolation(data, assignmentOperator);
                         }
-                    } else if(astName.getImage().equals(name.getImage())){
-                        ASTAssignmentOperator assignmentOperator = statement.getFirstDescendantOfType(ASTAssignmentOperator.class);
+                    } else if (astName.getImage().equals(name.getImage())) {
+                        ASTAssignmentOperator assignmentOperator = statement
+                                .getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && !assignmentOperator.isCompound()) {
                             addViolation(data, astName);
                         }

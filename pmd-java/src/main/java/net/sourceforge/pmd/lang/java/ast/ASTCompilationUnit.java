@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode {
 
     private ClassTypeResolver classTypeResolver;
+    private List<Comment> comments;
 
     public ASTCompilationUnit(int id) {
         super(id);
@@ -23,8 +24,6 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     public ASTCompilationUnit(JavaParser p, int id) {
         super(p, id);
     }
-
-    private List<Comment> comments;
 
     public List<Comment> getComments() {
         return comments;

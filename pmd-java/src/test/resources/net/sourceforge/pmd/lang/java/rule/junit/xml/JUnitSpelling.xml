@@ -15,7 +15,7 @@ public class Foo extends TestCase {
     </test-code>
     <test-code>
         <description><![CDATA[
-tearDown mispellings
+tearDown misspellings
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[

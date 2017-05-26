@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.migrating;
 
 import java.util.HashSet;
@@ -18,22 +19,25 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
- * This is a rule, that detects unnecessary casts when using Java 1.5 generics and
- * collections.
+ * This is a rule, that detects unnecessary casts when using Java 1.5 generics
+ * and collections.
  *
- * <p>Example:
+ * <p>Example:</p>
+ * 
  * <pre>
- * List<Double> list = new ArrayList<Double>();
+ * List&lt;Double&gt; list = new ArrayList&lt;Double&gt;();
  * ...
  * Double d = (Double) list.get(0); //The cast is unnecessary on this typed array.
  * </pre>
  *
- * @see <a href="http://sourceforge.net/p/pmd/discussion/188192/thread/276fd6f0">Java 5 rules: Unnecessary casts/Iterators</a>
+ * @see <a href=
+ *      "http://sourceforge.net/p/pmd/discussion/188192/thread/276fd6f0">Java 5
+ *      rules: Unnecessary casts/Iterators</a>
  */
-//TODO This is not referenced by any RuleSet?
+// TODO This is not referenced by any RuleSet?
 public class UnnecessaryCastRule extends AbstractJavaRule {
 
-    private static Set<String> implClassNames = new HashSet<String>();
+    private static Set<String> implClassNames = new HashSet<>();
 
     static {
         implClassNames.add("List");
@@ -81,7 +85,7 @@ public class UnnecessaryCastRule extends AbstractJavaRule {
         }
         ASTVariableDeclaratorId decl = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         List<NameOccurrence> usages = decl.getUsages();
-        for (NameOccurrence no: usages) {
+        for (NameOccurrence no : usages) {
             ASTName name = (ASTName) no.getLocation();
             Node n = name.jjtGetParent().jjtGetParent().jjtGetParent();
             if (n instanceof ASTCastExpression) {

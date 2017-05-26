@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm.rule.basic;
 
 import java.util.HashSet;
@@ -18,7 +19,7 @@ public class UnusedMacroParameterRule extends AbstractVmRule {
     @Override
     public Object visit(final ASTDirective node, final Object data) {
         if ("macro".equals(node.getDirectiveName())) {
-            final Set<String> paramNames = new HashSet<String>();
+            final Set<String> paramNames = new HashSet<>();
             final List<ASTReference> params = node.findChildrenOfType(ASTReference.class);
             for (final ASTReference param : params) {
                 paramNames.add(param.literal());
@@ -41,7 +42,7 @@ public class UnusedMacroParameterRule extends AbstractVmRule {
     }
 
     private void checkForParameter(final Set<String> paramNames, final String nameToSearch) {
-        final Set<String> paramsContained = new HashSet<String>();
+        final Set<String> paramsContained = new HashSet<>();
         for (final String param : paramNames) {
             if (containsAny(nameToSearch, formatNameVariations(param))) {
                 paramsContained.add(param);
@@ -61,7 +62,7 @@ public class UnusedMacroParameterRule extends AbstractVmRule {
 
     private String[] formatNameVariations(final String param) {
         final String actualName = param.substring(1);
-        return new String[] {param, "${" + actualName + "}", "${" + actualName + ".", "$!" + actualName,
-                "$!{" + actualName + ".", "$!{" + actualName + "}"};
+        return new String[] { param, "${" + actualName + "}", "${" + actualName + ".", "$!" + actualName,
+            "$!{" + actualName + ".", "$!{" + actualName + "}", };
     }
 }

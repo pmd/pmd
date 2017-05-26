@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.imports;
 
 import java.util.HashSet;
@@ -22,7 +23,29 @@ import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class UnusedImportsRule extends AbstractJavaRule {
 
-    protected Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
+    protected Set<ImportWrapper> imports = new HashSet<>();
+
+    /*
+     * Patterns to match the following constructs:
+     *
+     * @see package.class#member(param, param) label {@linkplain
+     * package.class#member(param, param) label} {@link
+     * package.class#member(param, param) label} {@link package.class#field}
+     * {@value package.class#field}
+     * 
+     * @throws package.class label
+     */
+    private static final Pattern SEE_PATTERN = Pattern
+            .compile("@see\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([\\w\\s,]*)\\))?)?");
+
+    private static final Pattern LINK_PATTERNS = Pattern
+            .compile("\\{@link(?:plain)?\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
+
+    private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\w*)[\\s#\\}]");
+
+    private static final Pattern THROWS_PATTERN = Pattern.compile("@throws\\s+(\\p{Alpha}\\w*)");
+
+    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -30,12 +53,13 @@ public class UnusedImportsRule extends AbstractJavaRule {
         super.visit(node, data);
         visitComments(node);
 
-        /* special handling for Bug 2606609 : False "UnusedImports" positive in package-info.java
-         * package annotations are processed before the import clauses so they need to be examined
-         * again later on.
+        /*
+         * special handling for Bug 2606609 : False "UnusedImports" positive in
+         * package-info.java package annotations are processed before the import
+         * clauses so they need to be examined again later on.
          */
-        if (node.jjtGetNumChildren()>0 && node.jjtGetChild(0) instanceof ASTPackageDeclaration) {
-            visit((ASTPackageDeclaration)node.jjtGetChild(0), data);
+        if (node.jjtGetNumChildren() > 0 && node.jjtGetChild(0) instanceof ASTPackageDeclaration) {
+            visit((ASTPackageDeclaration) node.jjtGetChild(0), data);
         }
         for (ImportWrapper wrapper : imports) {
             addViolation(data, wrapper.getNode(), wrapper.getFullName());
@@ -43,39 +67,15 @@ public class UnusedImportsRule extends AbstractJavaRule {
         return data;
     }
 
-    /*
-     * Patterns to match the following constructs:
-     *
-     * @see  package.class#member(param, param)  label
-     * {@linkplain  package.class#member(param, param)  label}
-     * {@link  package.class#member(param, param)  label}
-     * {@link  package.class#field}
-     * {@value  package.class#field}
-     * @throws package.class label
-     */
-    private static final Pattern SEE_PATTERN = Pattern.compile(
-            "@see\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([\\w\\s,]*)\\))?)?");
-
-    private static final Pattern LINK_PATTERNS = Pattern.compile(
-            "\\{@link(?:plain)?\\s+(\\p{Alpha}\\p{Alnum}*)(?:#\\p{Alnum}*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
-
-    private static final Pattern VALUE_PATTERN = Pattern.compile(
-            "\\{@value\\s+(\\p{Alpha}\\p{Alnum}*)[\\s#\\}]");
-
-    private static final Pattern THROWS_PATTERN = Pattern.compile(
-            "@throws\\s+(\\p{Alpha}\\p{Alnum}*)");
-
-    private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN, THROWS_PATTERN };
-
     private void visitComments(ASTCompilationUnit node) {
         if (imports.isEmpty()) {
             return;
         }
-        for (Comment comment: node.getComments()) {
+        for (Comment comment : node.getComments()) {
             if (!(comment instanceof FormalComment)) {
                 continue;
             }
-            for (Pattern p: PATTERNS) {
+            for (Pattern p : PATTERNS) {
                 Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
                     String s = m.group(1);

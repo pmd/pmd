@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.ast;
 
 /*
@@ -24,24 +25,27 @@ import net.sourceforge.pmd.lang.vm.util.LogUtil;
 /**
  * This is an extension of the ParseException, which also takes a template name.
  * 
- * @see org.apache.velocity.runtime.parser.ParseException
+ * <p>see also the original <code>org.apache.velocity.runtime.parser.ParseException</code></p>
  * 
  * @author <a href="hps@intermeta.de">Henning P. Schmiedehausen</a>
- * @version $Id: TemplateParseException.java 703544 2008-10-10 18:15:53Z nbubna $
+ * @version $Id: TemplateParseException.java 703544 2008-10-10 18:15:53Z nbubna
+ *          $
  * @since 1.5
  */
 public class TemplateParseException extends ParseException {
     private static final long serialVersionUID = -3146323135623083918L;
 
     /**
-     * This is the name of the template which contains the parsing error, or null if not defined.
+     * This is the name of the template which contains the parsing error, or
+     * null if not defined.
      */
     private final String templateName;
-    
+
     private boolean specialConstructor = false;
 
     /**
-     * This constructor is used to add a template name to info cribbed from a ParseException generated in the parser.
+     * This constructor is used to add a template name to info cribbed from a
+     * ParseException generated in the parser.
      * 
      * @param currentTokenVal
      * @param expectedTokenSequencesVal
@@ -56,11 +60,14 @@ public class TemplateParseException extends ParseException {
     }
 
     /**
-     * This constructor is used by the method "generateParseException" in the generated parser. Calling this constructor
-     * generates a new object of this type with the fields "currentToken", "expectedTokenSequences", and "tokenImage"
-     * set. The boolean flag "specialConstructor" is also set to true to indicate that this constructor was used to
-     * create this object. This constructor calls its super class with the empty string to force the "toString" method
-     * of parent class "Throwable" to print the error message in the form: ParseException: <result of getMessage>
+     * This constructor is used by the method "generateParseException" in the
+     * generated parser. Calling this constructor generates a new object of this
+     * type with the fields "currentToken", "expectedTokenSequences", and
+     * "tokenImage" set. The boolean flag "specialConstructor" is also set to
+     * true to indicate that this constructor was used to create this object.
+     * This constructor calls its super class with the empty string to force the
+     * "toString" method of parent class "Throwable" to print the error message
+     * in the form: ParseException: &lt;result of getMessage&gt;
      * 
      * @param currentTokenVal
      * @param expectedTokenSequencesVal
@@ -74,10 +81,12 @@ public class TemplateParseException extends ParseException {
     }
 
     /**
-     * The following constructors are for use by you for whatever purpose you can think of. Constructing the exception
-     * in this manner makes the exception behave in the normal way - i.e., as documented in the class "Throwable". The
-     * fields "errorToken", "expectedTokenSequences", and "tokenImage" do not contain relevant information. The JavaCC
-     * generated code does not use these constructors.
+     * The following constructors are for use by you for whatever purpose you
+     * can think of. Constructing the exception in this manner makes the
+     * exception behave in the normal way - i.e., as documented in the class
+     * "Throwable". The fields "errorToken", "expectedTokenSequences", and
+     * "tokenImage" do not contain relevant information. The JavaCC generated
+     * code does not use these constructors.
      */
     public TemplateParseException() {
         super();
@@ -87,7 +96,8 @@ public class TemplateParseException extends ParseException {
     /**
      * Creates a new TemplateParseException object.
      * 
-     * @param message TODO: DOCUMENT ME!
+     * @param message
+     *            TODO: DOCUMENT ME!
      */
     public TemplateParseException(final String message) {
         super(message);
@@ -111,8 +121,7 @@ public class TemplateParseException extends ParseException {
     public int getLineNumber() {
         if (currentToken != null && currentToken.next != null) {
             return currentToken.next.beginLine;
-        }
-        else {
+        } else {
             return -1;
         }
     }
@@ -125,18 +134,19 @@ public class TemplateParseException extends ParseException {
     public int getColumnNumber() {
         if (currentToken != null && currentToken.next != null) {
             return currentToken.next.beginColumn;
-        }
-        else {
+        } else {
             return -1;
         }
     }
 
     /**
-     * This method has the standard behavior when this object has been created using the standard constructors.
-     * Otherwise, it uses "currentToken" and "expectedTokenSequences" to generate a parse error message and returns it.
-     * If this object has been created due to a parse error, and you do not catch it (it gets thrown from the parser),
-     * then this method is called during the printing of the final stack trace, and hence the correct error message gets
-     * displayed.
+     * This method has the standard behavior when this object has been created
+     * using the standard constructors. Otherwise, it uses "currentToken" and
+     * "expectedTokenSequences" to generate a parse error message and returns
+     * it. If this object has been created due to a parse error, and you do not
+     * catch it (it gets thrown from the parser), then this method is called
+     * during the printing of the final stack trace, and hence the correct error
+     * message gets displayed.
      * 
      * @return The error message.
      */
@@ -190,12 +200,12 @@ public class TemplateParseException extends ParseException {
 
         if (expectedTokenSequences.length == 1) {
             retval.append("Was expecting:").append(eol).append("    ");
-        }
-        else {
+        } else {
             retval.append("Was expecting one of:").append(eol).append("    ");
         }
 
-        // avoid JDK 1.3 StringBuffer.append(Object o) vs 1.4 StringBuffer.append(StringBuffer sb) gotcha.
+        // avoid JDK 1.3 StringBuffer.append(Object o) vs 1.4
+        // StringBuffer.append(StringBuffer sb) gotcha.
         retval.append(expected.toString());
         return retval.toString();
     }

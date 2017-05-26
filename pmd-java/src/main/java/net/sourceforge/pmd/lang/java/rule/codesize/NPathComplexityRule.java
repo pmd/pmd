@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
 import java.util.ArrayList;
@@ -88,8 +89,7 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
         // (npath of if + npath of else (or 1) + bool_comp of if) * npath of
         // next
 
-
-        List<JavaNode> statementChildren = new ArrayList<JavaNode>();
+        List<JavaNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
                 statementChildren.add((JavaNode) node.jjtGetChild(i));
@@ -224,13 +224,14 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
 
     /**
      * Calculate the boolean complexity of the given expression. NPath boolean
-     * complexity is the sum of && and || tokens. This is calculated by summing
-     * the number of children of the &&'s (minus one) and the children of the
+     * complexity is the sum of &amp;&amp; and || tokens. This is calculated by summing
+     * the number of children of the &amp;&amp;'s (minus one) and the children of the
      * ||'s (minus one).
-     * <p>
-     * Note that this calculation applies to Cyclomatic Complexity as well.
      * 
-     * @param expr control structure expression
+     * <p>Note that this calculation applies to Cyclomatic Complexity as well.</p>
+     * 
+     * @param expr
+     *            control structure expression
      * @return complexity of the boolean expression
      */
     public static int sumExpressionComplexity(ASTExpression expr) {
@@ -259,6 +260,6 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
     @Override
     public Object[] getViolationParameters(DataPoint point) {
         return new String[] { ((ASTMethodDeclaration) point.getNode()).getMethodName(),
-                String.valueOf((int) point.getScore()) };
+            String.valueOf((int) point.getScore()), };
     }
 }

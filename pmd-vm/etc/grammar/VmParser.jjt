@@ -309,7 +309,7 @@ TOKEN_MGR_DECLS:
     /**
      *  pushes the current state onto the 'state stack',
      *  and maintains the parens counts
-     *  public because we need it in PD & VM handling
+     *  public because we need it in PD &amp; VM handling
      *
      *  @return boolean : success.  It can fail if the state machine
      *     gets messed up (do don't mess it up :)
@@ -1205,7 +1205,7 @@ void EscapedDirective() : {}
  *  Used to catch and process escape sequences in grammatical constructs
  *  as escapes outside of VTL are just characters.  Right now we have both
  *  this and the EscapeDirective() construction because in the EscapeDirective()
- *  case, we want to suck in the #<directive> and here we don't.  We just want
+ *  case, we want to suck in the #&lt;directive&gt; and here we don't.  We just want
  *  the escapes to render correctly
  */
 void Escape() : {}

@@ -76,5 +76,50 @@ A rule for the politically correct... we don't want to offend anyone.
   </example>
    </rule>
 
+  <rule name="CommentDefaultAccessModifier"
+      since="5.4.0"
+      class="net.sourceforge.pmd.lang.java.rule.comments.CommentDefaultAccessModifierRule"
+      message="Missing commented default access modifier"
+      externalInfoUrl="${pmd.website.baseurl}/rules/java/comments.html#CommentDefaultAccessModifier">
+    <description>
+        To avoid mistakes if we want that a Method, Field or Nested class have a default access modifier
+        we must add a comment at the beginning of the Method, Field or Nested class.
+        By default the comment must be /* default */, if you want another, you have to provide a regex.
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="regex">
+            <value>
+                <![CDATA[
+\/\*\s+default\s+\*\/
+                ]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+        <![CDATA[
+        public class Foo {
+            final String stringValue = "some string";
+            String getString() {
+               return stringValue;
+            }
+
+            class NestedFoo {
+            }
+        }
+
+        // should be
+        public class Foo {
+            /* default */ final String stringValue = "some string";
+            /* default */ String getString() {
+               return stringValue;
+            }
+
+            /* default */ class NestedFoo {
+            }
+        }
+        ]]>
+    </example>
+  </rule>
 
  </ruleset>

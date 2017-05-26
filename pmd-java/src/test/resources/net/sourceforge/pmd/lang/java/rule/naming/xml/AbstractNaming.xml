@@ -22,6 +22,7 @@ public abstract class Foo {}
         <description><![CDATA[
 ok, concrete class named AbstractFoo
      ]]></description>
+        <rule-property name="strict">false</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class AbstractFoo {}
@@ -35,5 +36,12 @@ ok, concrete class named Foo
         <code><![CDATA[
 public class Foo {}
      ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1344 AbstractNaming should check reverse</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class AbstractFoo {}
+        ]]></code>
     </test-code>
 </test-data>

@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTDoctypeExternalId extends AbstractJspNode {
 
-/* BEGIN CUSTOM CODE */
-
     /**
      * URI of the external entity. Cannot be null.
      */
@@ -18,6 +16,14 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
      * Public ID of the external entity. This is optional.
      */
     private String publicId;
+
+    public ASTDoctypeExternalId(int id) {
+        super(id);
+    }
+
+    public ASTDoctypeExternalId(JspParser p, int id) {
+        super(p, id);
+    }
 
     public boolean isHasPublicId() {
         return null != publicId;
@@ -31,41 +37,33 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
     }
 
     /**
-     * @param name The name to set.
+     * @param name
+     *            The name to set.
      */
     public void setUri(String name) {
         this.uri = name;
     }
 
     /**
-     * @return Returns the publicId (or an empty string if there is none
-     *         for this external entity id).
+     * @return Returns the publicId (or an empty string if there is none for
+     *         this external entity id).
      */
     public String getPublicId() {
         return null == publicId ? "" : publicId;
     }
 
     /**
-     * @param publicId The publicId to set.
+     * @param publicId
+     *            The publicId to set.
      */
     public void setPublicId(String publicId) {
         this.publicId = publicId;
     }
-/* END CUSTOM CODE */
-
-
-    public ASTDoctypeExternalId(int id) {
-        super(id);
-    }
-
-    public ASTDoctypeExternalId(JspParser p, int id) {
-        super(p, id);
-    }
-
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -14,7 +14,6 @@ public class ASTText extends AbstractJspNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */

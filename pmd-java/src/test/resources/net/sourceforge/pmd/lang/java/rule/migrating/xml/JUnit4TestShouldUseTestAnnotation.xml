@@ -40,7 +40,7 @@ public class Foo extends TestCase{
     </test-code>
     <test-code>
         <description><![CDATA[
-One test propper, the other incorrect
+One test proper, the other incorrect
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

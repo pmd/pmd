@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.dfa;
 
 /**
@@ -19,9 +20,7 @@ public class VariableAccess {
     public VariableAccess(int accessType, String varName) {
         this.accessType = accessType;
         int dotPos = varName.indexOf('.');
-        variableName = dotPos < 0 ? 
-        	varName :
-        	varName.substring(0, dotPos);
+        variableName = dotPos < 0 ? varName : varName.substring(0, dotPos);
     }
 
     // TODO completely encapsulate this somehow?
@@ -49,6 +48,7 @@ public class VariableAccess {
         return variableName;
     }
 
+    @Override
     public String toString() {
         if (isDefinition()) {
             return "Definition(" + variableName + ")";

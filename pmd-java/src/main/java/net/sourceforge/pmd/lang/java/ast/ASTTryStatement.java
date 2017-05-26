@@ -5,7 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 public class ASTTryStatement extends AbstractJavaNode {
 
     public ASTTryStatement(int id) {
@@ -38,7 +37,8 @@ public class ASTTryStatement extends AbstractJavaNode {
                 return (ASTFinallyStatement) jjtGetChild(i);
             }
         }
-        throw new RuntimeException("ASTTryStatement.getFinally called but this try stmt doesn't contain a finally block");
+        throw new RuntimeException(
+                "ASTTryStatement.getFinally called but this try stmt doesn't contain a finally block");
     }
 
 }

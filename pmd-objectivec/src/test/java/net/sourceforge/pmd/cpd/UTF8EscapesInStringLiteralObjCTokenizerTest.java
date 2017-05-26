@@ -1,16 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-
-import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 //Tests if the ObjectiveC tokenizer supports UTF-8 escapes in string literals
 public class UTF8EscapesInStringLiteralObjCTokenizerTest extends AbstractTokenizerTest {

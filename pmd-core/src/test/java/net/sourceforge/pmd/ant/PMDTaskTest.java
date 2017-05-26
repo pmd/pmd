@@ -1,36 +1,65 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant;
 
-import org.apache.tools.ant.BuildFileTest;
+import static org.junit.Assert.fail;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.BuildFileRule;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class PMDTaskTest extends BuildFileTest {
+public class PMDTaskTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        configureProject("src/test/resources/net/sourceforge/pmd/ant/xml/pmdtasktest.xml");
+    @Rule
+    public final BuildFileRule buildRule = new BuildFileRule();
+
+    @Before
+    public void setUp() {
+        buildRule.configureProject("src/test/resources/net/sourceforge/pmd/ant/xml/pmdtasktest.xml");
     }
 
     @Test
     public void testFormatterWithNoToFileAttribute() {
-        expectBuildExceptionContaining("testFormatterWithNoToFileAttribute", "Valid Error Message", "toFile or toConsole needs to be specified in Formatter");
+        try {
+            buildRule.executeTarget("testFormatterWithNoToFileAttribute");
+            fail("This should throw an exception");
+        } catch (BuildException ex) {
+            Assert.assertEquals("toFile or toConsole needs to be specified in Formatter", ex.getMessage());
+        }
     }
 
     @Test
     public void testNoRuleSets() {
-        expectBuildExceptionContaining("testNoRuleSets", "Valid Error Message", "No rulesets specified");
+        try {
+            buildRule.executeTarget("testNoRuleSets");
+            fail("This should throw an exception");
+        } catch (BuildException ex) {
+            Assert.assertEquals("No rulesets specified", ex.getMessage());
+        }
     }
 
     @Test
     public void testBasic() {
-        executeTarget("testBasic");
+        buildRule.executeTarget("testBasic");
     }
 
     @Test
     public void testInvalidLanguageVersion() {
-        expectBuildExceptionContaining("testInvalidLanguageVersion", "Fail requested.", "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.");
+        try {
+            buildRule.executeTarget("testInvalidLanguageVersion");
+            Assert.assertEquals(
+                    "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.",
+                    buildRule.getLog());
+            fail("This should throw an exception");
+        } catch (BuildException ex) {
+            Assert.assertEquals(
+                    "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.",
+                    ex.getMessage());
+        }
     }
 }

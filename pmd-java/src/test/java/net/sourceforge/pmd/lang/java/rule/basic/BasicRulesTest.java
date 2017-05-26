@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.basic;
 
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
@@ -19,7 +20,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "AvoidMultipleUnaryOperators");
         addRule(RULESET, "AvoidThreadGroup");
         addRule(RULESET, "AvoidUsingHardCodedIP");
-//        addRule(RULESET, "AvoidUsingHardCodedURL");
+        // addRule(RULESET, "AvoidUsingHardCodedURL");
         addRule(RULESET, "AvoidUsingOctalValues");
         addRule(RULESET, "BigIntegerInstantiation");
         addRule(RULESET, "BooleanInstantiation");
@@ -37,5 +38,6 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "ReturnFromFinallyBlock");
         addRule(RULESET, "DontCallThreadRun");
         addRule(RULESET, "DontUseFloatTypeForLoopIndices");
+        addRule(RULESET, "SimplifiedTernary");
     }
 }

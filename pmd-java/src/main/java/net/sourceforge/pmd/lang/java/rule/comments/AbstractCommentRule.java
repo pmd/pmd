@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.comments;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
             return Collections.emptyList();
         }
 
-        List<Integer> ints = new ArrayList<Integer>();
+        List<Integer> ints = new ArrayList<>();
         ints.add(atPos);
 
         atPos = comments.indexOf('@', atPos + 1);
@@ -97,7 +98,7 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
     private static String multiLinesIn(String comment) {
 
         String[] lines = comment.split("\n");
-        List<String> filteredLines = new ArrayList<String>(lines.length);
+        List<String> filteredLines = new ArrayList<>(lines.length);
 
         for (String rawLine : lines) {
             String line = rawLine.trim();
@@ -127,10 +128,10 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
     private String formalLinesIn(String comment) {
 
         String[] lines = comment.split("\n");
-        List<String> filteredLines = new ArrayList<String>(lines.length);
+        List<String> filteredLines = new ArrayList<>(lines.length);
 
-        for (String line : lines) {
-            line = line.trim();
+        for (String origLine : lines) {
+            String line = origLine.trim();
 
             if (line.endsWith("*/")) {
                 filteredLines.add(line.substring(0, line.length() - 2));
@@ -182,23 +183,23 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
         if (n1 == null || n2 == null || node == null) {
             return true;
         }
-        boolean isNotWithinNode2 = !(n1.getEndLine() < n2.getEndLine() || n1.getEndLine() == n2.getEndLine()
-                && n1.getEndColumn() < n2.getEndColumn());
+        boolean isNotWithinNode2 = !(n1.getEndLine() < n2.getEndLine()
+                || n1.getEndLine() == n2.getEndLine() && n1.getEndColumn() < n2.getEndColumn());
         boolean isNotSameClass = node.getFirstParentOfType(ASTClassOrInterfaceBody.class) != n2
                 .getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        boolean isNodeWithinNode2 = (node.getEndLine() < n2.getEndLine() || node.getEndLine() == n2.getEndLine()
-                && node.getEndColumn() < n2.getEndColumn());
+        boolean isNodeWithinNode2 = (node.getEndLine() < n2.getEndLine()
+                || node.getEndLine() == n2.getEndLine() && node.getEndColumn() < n2.getEndColumn());
         return isNotWithinNode2 || isNotSameClass || isNodeWithinNode2;
     }
 
     private boolean isCommentBefore(FormalComment n1, Node n2) {
-        return n1.getEndLine() < n2.getBeginLine() || n1.getEndLine() == n2.getBeginLine()
-                && n1.getEndColumn() < n2.getBeginColumn();
+        return n1.getEndLine() < n2.getBeginLine()
+                || n1.getEndLine() == n2.getBeginLine() && n1.getEndColumn() < n2.getBeginColumn();
     }
 
     protected SortedMap<Integer, Node> orderedCommentsAndDeclarations(ASTCompilationUnit cUnit) {
 
-        SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<Integer, Node>();
+        SortedMap<Integer, Node> itemsByLineNumber = new TreeMap<>();
 
         List<ASTClassOrInterfaceDeclaration> packageDecl = cUnit
                 .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);

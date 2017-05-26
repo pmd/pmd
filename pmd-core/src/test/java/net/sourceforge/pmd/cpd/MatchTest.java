@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
@@ -25,9 +26,9 @@ public class MatchTest {
         Match match = new Match(1, mark1, mark2);
 
         assertEquals(1, match.getTokenCount());
-        //Returns the line count of the first mark
+        // Returns the line count of the first mark
         assertEquals(lineCount1, match.getLineCount());
-        //Returns the source code of the first mark
+        // Returns the source code of the first mark
         assertEquals(codeFragment1, match.getSourceCodeSlice());
         Iterator<Mark> i = match.iterator();
         Mark occurrence1 = i.next();
@@ -46,7 +47,8 @@ public class MatchTest {
 
     @Test
     public void testCompareTo() {
-        Match m1 = new Match(1, new TokenEntry("public", "/var/Foo.java", 1), new TokenEntry("class", "/var/Foo.java", 1));
+        Match m1 = new Match(1, new TokenEntry("public", "/var/Foo.java", 1),
+                new TokenEntry("class", "/var/Foo.java", 1));
         Match m2 = new Match(2, new TokenEntry("Foo", "/var/Foo.java", 1), new TokenEntry("{", "/var/Foo.java", 1));
         assertTrue(m2.compareTo(m1) < 0);
     }
@@ -55,10 +57,9 @@ public class MatchTest {
         Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
 
         result.setLineCount(lineCount);
-        result.setSoureCodeSlice(code);
+        result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
         return result;
     }
-
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(MatchTest.class);

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm;
 
 import java.io.Reader;
@@ -39,6 +40,6 @@ public class VmParser extends AbstractParser {
     }
 
     public Map<Integer, String> getSuppressMap() {
-        return new HashMap<Integer, String>(); // FIXME
+        return new HashMap<>(); // FIXME
     }
 }

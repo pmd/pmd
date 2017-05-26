@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -19,8 +20,8 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Renderer the results to a comma-delimited text format. All available columns
- * are present by default. IDEs can enable/disable columns individually (cmd-line
- * control to follow eventually)
+ * are present by default. IDEs can enable/disable columns individually
+ * (cmd-line control to follow eventually)
  */
 public class CSVRenderer extends AbstractIncrementingRenderer {
 
@@ -31,72 +32,103 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     private static final String DEFAULT_SEPARATOR = ",";
 
-    private static final Map<String, BooleanProperty> PROPERTY_DESCRIPTORS_BY_ID = new HashMap<String, BooleanProperty>();
+    private static final Map<String, BooleanProperty> PROPERTY_DESCRIPTORS_BY_ID = new HashMap<>();
 
     public static final String NAME = "csv";
 
     @SuppressWarnings("unchecked")
-	private static final ColumnDescriptor<RuleViolation>[] ALL_COLUMNS = new ColumnDescriptor[] {
-    	new ColumnDescriptor<RuleViolation>("problem", 	"Problem", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return Integer.toString(idx); }} ),
-    	new ColumnDescriptor<RuleViolation>("package",	"Package", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getPackageName(); }} ),
-    	new ColumnDescriptor<RuleViolation>("file",		"File", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getFilename(); }} ),
-    	new ColumnDescriptor<RuleViolation>("priority",	"Priority", 	new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return Integer.toString(rv.getRule().getPriority().getPriority()); }} ),
-    	new ColumnDescriptor<RuleViolation>("line",		"Line", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return Integer.toString(rv.getBeginLine()); }} ),
-    	new ColumnDescriptor<RuleViolation>("desc",		"Description", 	new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return StringUtil.replaceString(rv.getDescription(), '\"', "'"); }} ),
-    	new ColumnDescriptor<RuleViolation>("ruleSet",	"Rule set", 	new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getRule().getRuleSetName(); }} ),
-    	new ColumnDescriptor<RuleViolation>("rule",		"Rule", 		new Accessor<RuleViolation>() { public String get(int idx, RuleViolation rv, String cr) { return rv.getRule().getName(); }} )
-    	};
+    private static final ColumnDescriptor<RuleViolation>[] ALL_COLUMNS = new ColumnDescriptor[] {
+        new ColumnDescriptor<>("problem", "Problem", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return Integer.toString(idx);
+            }
+        }), new ColumnDescriptor<>("package", "Package", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return rv.getPackageName();
+            }
+        }), new ColumnDescriptor<>("file", "File", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return rv.getFilename();
+            }
+        }), new ColumnDescriptor<>("priority", "Priority", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return Integer.toString(rv.getRule().getPriority().getPriority());
+            }
+        }), new ColumnDescriptor<>("line", "Line", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return Integer.toString(rv.getBeginLine());
+            }
+        }), new ColumnDescriptor<>("desc", "Description", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return StringUtil.replaceString(rv.getDescription(), '\"', "'");
+            }
+        }), new ColumnDescriptor<>("ruleSet", "Rule set", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return rv.getRule().getRuleSetName();
+            }
+        }), new ColumnDescriptor<>("rule", "Rule", new Accessor<RuleViolation>() {
+            @Override
+            public String get(int idx, RuleViolation rv, String cr) {
+                return rv.getRule().getName();
+            }
+        }), };
 
+    public CSVRenderer(ColumnDescriptor<RuleViolation>[] columns, String theSeparator, String theCR) {
+        super(NAME, "Comma-separated values tabular format.");
+
+        separator = theSeparator;
+        cr = theCR;
+
+        for (ColumnDescriptor<RuleViolation> desc : columns) {
+            definePropertyDescriptor(booleanPropertyFor(desc.id, desc.title));
+        }
+    }
+
+    public CSVRenderer() {
+        this(ALL_COLUMNS, DEFAULT_SEPARATOR, PMD.EOL);
+    }
 
     private static BooleanProperty booleanPropertyFor(String id, String label) {
 
-    	BooleanProperty prop = PROPERTY_DESCRIPTORS_BY_ID.get(id);
-    	if (prop != null) {
-    	    return prop;
-    	}
+        BooleanProperty prop = PROPERTY_DESCRIPTORS_BY_ID.get(id);
+        if (prop != null) {
+            return prop;
+        }
 
-    	prop = new BooleanProperty(id, "Include " + label + " column", true, 1.0f);
-    	PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
-    	return prop;
-    }
-
-    public CSVRenderer(ColumnDescriptor<RuleViolation>[] columns, String theSeparator, String theCR) {
-    	super(NAME, "Comma-separated values tabular format.");
-
-    	separator = theSeparator;
-    	cr = theCR;
-
-    	for (ColumnDescriptor<RuleViolation> desc : columns) {
-    		definePropertyDescriptor(booleanPropertyFor(desc.id, desc.title));
-    		}
+        prop = new BooleanProperty(id, "Include " + label + " column", true, 1.0f);
+        PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
+        return prop;
     }
 
     private List<ColumnDescriptor<RuleViolation>> activeColumns() {
 
-    	List<ColumnDescriptor<RuleViolation>> actives = new ArrayList<ColumnDescriptor<RuleViolation>>();
+        List<ColumnDescriptor<RuleViolation>> actives = new ArrayList<>();
 
-     	for (ColumnDescriptor<RuleViolation> desc : ALL_COLUMNS) {
-    		BooleanProperty prop = booleanPropertyFor(desc.id, null);
-    		if (getProperty(prop)) {
-    			actives.add(desc);
-    			} else {
-//    				System.out.println("disabled: " + prop);
-    			}
-    		}
-     	return actives;
+        for (ColumnDescriptor<RuleViolation> desc : ALL_COLUMNS) {
+            BooleanProperty prop = booleanPropertyFor(desc.id, null);
+            if (getProperty(prop)) {
+                actives.add(desc);
+            } else {
+                // System.out.println("disabled: " + prop);
+            }
+        }
+        return actives;
     }
 
     private CSVWriter<RuleViolation> csvWriter() {
-    	if (csvWriter != null) {
-    	    return csvWriter;
-    	}
+        if (csvWriter != null) {
+            return csvWriter;
+        }
 
-    	csvWriter = new CSVWriter<RuleViolation>(activeColumns(), separator, cr);
-    	return csvWriter;
-    }
-
-    public CSVRenderer() {
-    	this( ALL_COLUMNS, DEFAULT_SEPARATOR, PMD.EOL);
+        csvWriter = new CSVWriter<>(activeColumns(), separator, cr);
+        return csvWriter;
     }
 
     /**
@@ -104,26 +136,29 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
      */
     @Override
     public void start() throws IOException {
-    	csvWriter().writeTitles(getWriter());
+        csvWriter().writeTitles(getWriter());
     }
 
-    public String defaultFileExtension() { return "csv"; }
+    @Override
+    public String defaultFileExtension() {
+        return "csv";
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-    	csvWriter().writeData(getWriter(), violations);
+        csvWriter().writeData(getWriter(), violations);
     }
 
-	 /**
-	  * We can't show any violations if we don't have any visible columns.
-	  *
-	  * @see PropertySource#dysfunctionReason()
-	  */
+    /**
+     * We can't show any violations if we don't have any visible columns.
+     *
+     * @see PropertySource#dysfunctionReason()
+     */
     @Override
-	 public String dysfunctionReason() {
-		 return activeColumns().isEmpty() ? "No columns selected" : null;
-	 }
+    public String dysfunctionReason() {
+        return activeColumns().isEmpty() ? "No columns selected" : null;
+    }
 }

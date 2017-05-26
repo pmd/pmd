@@ -797,24 +797,56 @@ public class Count {
     </example>
   </rule>
 
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyCatchBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyIfStmt" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyWhileStmt" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyTryBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyFinallyBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptySwitchStatements" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptySynchronizedBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyStatementNotInLoop" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyInitializer" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyStatementBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyStaticInitializer" />
+  <rule name="SimplifiedTernary"
+    language="java"
+    since="5.4.0"
+    message="Ternary operators that can be simplified with || or &amp;&amp;"
+    class="net.sourceforge.pmd.lang.rule.XPathRule"
+    externalInfoUrl="${pmd.website.baseurl}/rules/java/basic.html#SimplifiedTernary">
+    <description>
+        <![CDATA[
+Look for ternary operators with the form `condition ? literalBoolean : foo`
+or `condition ? foo : literalBoolean`.
 
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryConversionTemporary" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryReturn" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryFinalModifier" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessOverridingMethod" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnusedNullCheckInEquals" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessParentheses" />
+These expressions can be simplified respectively to
+`condition || foo`  when the literalBoolean is true
+`!condition && foo` when the literalBoolean is false
+or
+`!condition || foo` when the literalBoolean is true
+`condition && foo`  when the literalBoolean is false
+        ]]>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value><![CDATA[
+//ConditionalExpression[@Ternary='true'][not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
+|
+//ConditionalExpression[@Ternary='true'][not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+        <![CDATA[
+public class Foo {
+    public boolean test() {
+        return condition ? true : something(); // can be as simple as return condition || something();
+    }
 
+    public void test2() {
+        final boolean value = condition ? false : something(); // can be as simple as value = !condition && something();
+    }
+
+    public boolean test3() {
+        return condition ? something() : true; // can be as simple as return !condition || something();
+    }
+
+    public void test4() {
+        final boolean otherValue = condition ? something() : false; // can be as simple as condition && something();
+    }
+}
+        ]]>
+    </example>
+  </rule>
 </ruleset>

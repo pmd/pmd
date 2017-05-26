@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant;
 
 import java.util.ArrayList;
@@ -8,20 +9,20 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
+import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
+
 public class PMDTask extends Task {
 
     private Path classpath;
     private Path auxClasspath;
-    private final List<Formatter> formatters = new ArrayList<Formatter>();
-    private final List<FileSet> filesets = new ArrayList<FileSet>();
+    private final List<Formatter> formatters = new ArrayList<>();
+    private final List<FileSet> filesets = new ArrayList<>();
     private boolean failOnError;
     private boolean failOnRuleViolation;
     private boolean shortFilenames;
@@ -34,7 +35,8 @@ public class PMDTask extends Task {
     private int maxRuleViolations = 0;
     private String failuresPropertyName;
     private SourceLanguage sourceLanguage;
-    private final Collection<RuleSetWrapper> nestedRules = new ArrayList<RuleSetWrapper>();
+    private String cacheLocation;
+    private final Collection<RuleSetWrapper> nestedRules = new ArrayList<>();
 
     @Override
     public void execute() throws BuildException {
@@ -243,5 +245,13 @@ public class PMDTask extends Task {
 
     public void setNoRuleSetCompatibility(boolean noRuleSetCompatibility) {
         this.noRuleSetCompatibility = noRuleSetCompatibility;
+    }
+
+    public String getCacheLocation() {
+        return cacheLocation;
+    }
+
+    public void setCacheLocation(String cacheLocation) {
+        this.cacheLocation = cacheLocation;
     }
 }

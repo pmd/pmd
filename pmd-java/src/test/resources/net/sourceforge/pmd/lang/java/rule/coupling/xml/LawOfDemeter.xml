@@ -43,7 +43,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Simple Method calls with chaining</description>
         <expected-problems>1</expected-problems>
@@ -55,7 +55,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Simple Method calls with local created object</description>
         <expected-problems>0</expected-problems>
@@ -68,7 +68,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>Simple Method calls with local created object and other variable assignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example() {
+        String something;
+        C c = new C();
+        c.doIt();
+        something = "no worries";
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>Simple Method calls with local created object and variables</description>
         <expected-problems>0</expected-problems>
@@ -82,7 +97,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Simple Method call on local created object within nesting local scopes</description>
         <expected-problems>0</expected-problems>
@@ -99,7 +114,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>Example documentation</description>
         <expected-problems>2</expected-problems>
@@ -111,18 +126,18 @@ public class Foo {
     public void example(Bar b) {
         // this method call is ok, as b is a parameter of "example"
         C c = b.getC();
-        
+
         // this method call is a violation, as we are using c, which we got from B.
         // We should ask b directly instead, e.g. "b.doItOnC();"
         c.doIt();
-        
+
         // this is also a violation, just differently expressed as a method chain without temporary variables.
         b.getC().doIt();
-        
+
         // that's a constructor call, not a method call.
         D d = new D();
         // this method call is ok, because we have create the new instance of D locally.
-        d.doSomethingElse(); 
+        d.doSomethingElse();
     }
 }
         ]]></code>
@@ -170,7 +185,7 @@ public class Foo {
                 }
             }
         }
-        
+
         List&lt;String&gt; anotherList = calcList();
         for (String s : anotherList) {
             if (!s.isEmpty()) {
@@ -235,6 +250,21 @@ public class Test {
         // Create a Connection
         final Connection connection = connectionFactory.createConnection();
         connection.start();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1427 False Positive for Law of Demeter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void bar() {
+        // Builder pattern
+        final Builder builder = Builder.newBuilder();
+        builder.withFoo();
+        final FooBuilder fooBuilder = FooBuilder.newBuilder();
+        fooBuilder.withBar();
     }
 }
         ]]></code>

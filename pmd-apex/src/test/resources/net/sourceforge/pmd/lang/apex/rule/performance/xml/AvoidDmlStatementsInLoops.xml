@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data>
+
+    <test-code>
+        <description>Problematic Dml Statement in for each</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void foo() {
+		for(Integer i : new List<Integer>{1,2}) {
+			Account account = new Account();
+			insert account;
+		}
+	}
+}
+		]]></code>
+	</test-code>
+    
+	<test-code>
+        <description>Problematic Dml Statement in for loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void foo() {
+		for(;;) {
+			Account account = new Account();
+			insert account;
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Problematic Dml Statement in While loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void foo() {
+		while(true) {
+			Account account = new Account();
+			insert account;
+		}
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Problematic Dml Statement in do loop</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void foo() {
+		do {
+			Account account = new Account();
+			insert account;
+		} while(true);
+	}
+}
+		]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Best Practice: Batch up data into a list and invoke your DML once on that list of data.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void foo() {
+		List<Account> accounts = new List<Account>();
+		
+		while(true) {
+			Account account = new Account();
+			accounts.add(account);
+		}
+		
+		insert accounts;
+	}
+}
+		]]></code>
+    </test-code>
+    
+</test-data>

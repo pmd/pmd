@@ -7,27 +7,10 @@ package net.sourceforge.pmd.lang.jsp.ast;
 
 public class ASTDoctypeDeclaration extends AbstractJspNode {
 
-    /* BEGIN CUSTOM CODE */
-
     /**
      * Name of the document type. Cannot be null.
      */
     private String name;
-
-    /**
-     * @return Returns the name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name The name to set.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-/* END CUSTOM CODE */
 
     public ASTDoctypeDeclaration(int id) {
         super(id);
@@ -37,10 +20,25 @@ public class ASTDoctypeDeclaration extends AbstractJspNode {
         super(p, id);
     }
 
+    /**
+     * @return Returns the name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name
+     *            The name to set.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JspParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

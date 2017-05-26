@@ -1,0 +1,14 @@
+*       text=auto
+*.java  text
+*.xml   text
+*.jjt   text
+*.jj    text
+*.g4    text
+*.md    text
+*.sh    text eol=lf
+*.bat   text eol=crlf
+mvnw.cmd text eol=crlf
+*.png   -text
+*.jpg   -text
+*.svgz  -text
+*.jar   -text

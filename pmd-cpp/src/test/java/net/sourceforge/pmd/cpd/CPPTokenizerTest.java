@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
@@ -8,10 +9,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 
-import net.sourceforge.pmd.PMD;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
+import net.sourceforge.pmd.PMD;
 
 public class CPPTokenizerTest {
 
@@ -24,25 +25,16 @@ public class CPPTokenizerTest {
 
     @Test
     public void testUnicodeSupport() {
-        String code = "\ufeff" +
-                "#include <iostream>\n" +
-                "#include <string>\n" +
-                "\n" +
-                "// example\n" +
-                "\n" +
-                "int main()\n" +
-                "{\n" +
-                "    std::string text(\"ąęćśźńó\");\n" +
-                "    std::cout << text;\n" +
-                "    return 0;\n" +
-                "}\n";
+        String code = "\ufeff" + "#include <iostream>\n" + "#include <string>\n" + "\n" + "// example\n" + "\n"
+                + "int main()\n" + "{\n" + "    std::string text(\"ąęćśźńó\");\n" + "    std::cout << text;\n"
+                + "    return 0;\n" + "}\n";
         Tokens tokens = parse(code);
         assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
         assertEquals(24, tokens.size());
     }
 
     @Test
-    public void testMultiLineMacros() throws Throwable {
+    public void testMultiLineMacros() {
         Tokens tokens = parse(TEST1);
         assertEquals(7, tokens.size());
     }
@@ -63,15 +55,15 @@ public class CPPTokenizerTest {
     }
 
     @Test
-    public void testContinuation_IntraToken() {
-    	Tokens tokens = parse(TEST5);
+    public void testContinuationIntraToken() {
+        Tokens tokens = parse(TEST5);
         assertEquals(7, tokens.size());
     }
-    
+
     @Test
-    public void testContinuation_InterToken() {
-    	Tokens tokens = parse(TEST6);
-    	assertEquals(17, tokens.size());
+    public void testContinuationInterToken() {
+        Tokens tokens = parse(TEST6);
+        assertEquals(17, tokens.size());
     }
 
     @Test
@@ -96,7 +88,7 @@ public class CPPTokenizerTest {
     }
 
     @Test
-    //ASM code containing the '@' character
+    // ASM code containing the '@' character
     public void testAsmWithAtSign() {
         Tokens tokens = parse(TEST7);
         assertEquals(22, tokens.size());
@@ -124,17 +116,13 @@ public class CPPTokenizerTest {
         Tokens tokens = parse("szPath = m_sdcacheDir + _T(\"\\    oMedia\");" + PMD.EOL);
         assertEquals(10, tokens.size());
     }
-    
+
     @Test
     public void testRawStringLiteral() {
-        String code =
-                "const char* const KDefaultConfig = R\"(\n" +
-                "    [Sinks.1]\n" +
-                "    Destination=Console\n" +
-                "    AutoFlush=true\n" +
-                "    Format=\"[%TimeStamp%] %ThreadId% %QueryIdHigh% %QueryIdLow% %LoggerFile%:%Line% (%Severity%) - %Message%\"\n" +
-                "    Filter=\"%Severity% >= WRN\"\n" +
-                ")\";\n";
+        String code = "const char* const KDefaultConfig = R\"(\n" + "    [Sinks.1]\n" + "    Destination=Console\n"
+                + "    AutoFlush=true\n"
+                + "    Format=\"[%TimeStamp%] %ThreadId% %QueryIdHigh% %QueryIdLow% %LoggerFile%:%Line% (%Severity%) - %Message%\"\n"
+                + "    Filter=\"%Severity% >= WRN\"\n" + ")\";\n";
         Tokens tokens = parse(code);
         assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
         assertEquals(9, tokens.size());
@@ -143,9 +131,11 @@ public class CPPTokenizerTest {
     private Tokens parse(String snippet) {
         return parse(snippet, false);
     }
+
     private Tokens parse(String snippet, boolean skipBlocks) {
         return parse(snippet, skipBlocks, null);
     }
+
     private Tokens parse(String snippet, boolean skipBlocks, String skipPattern) {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
@@ -162,61 +152,24 @@ public class CPPTokenizerTest {
         return tokens;
     }
 
-    private static final String TEST1 =
-            "#define FOO a +\\" + PMD.EOL +
-            "            b +\\" + PMD.EOL +
-            "            c +\\" + PMD.EOL +
-            "            d +\\" + PMD.EOL +
-            "            e +\\" + PMD.EOL +
-            "            f +\\" + PMD.EOL +
-            "            g" + PMD.EOL +
-            " void main() {}";
+    private static final String TEST1 = "#define FOO a +\\" + PMD.EOL + "            b +\\" + PMD.EOL
+            + "            c +\\" + PMD.EOL + "            d +\\" + PMD.EOL + "            e +\\" + PMD.EOL
+            + "            f +\\" + PMD.EOL + "            g" + PMD.EOL + " void main() {}";
 
-    private static final String TEST2 =
-            " void main() { int x$y = 42; }";
+    private static final String TEST2 = " void main() { int x$y = 42; }";
 
-    private static final String TEST3 =
-            " void main() { int $x = 42; }";
+    private static final String TEST3 = " void main() { int $x = 42; }";
 
-    private static final String TEST4 =
-            " void main() { char x = L'a'; }";
-    
-    private static final String TEST5 =
-            "v\\" + PMD.EOL +
-            "o\\" + PMD.EOL +
-            "i\\" + PMD.EOL +
-            "d\\" + PMD.EOL +
-            " \\" + PMD.EOL +
-            "m\\" + PMD.EOL +
-            "a\\" + PMD.EOL +
-            "i\\" + PMD.EOL +
-            "n\\" + PMD.EOL +
-            "(\\" + PMD.EOL +
-            ")\\" + PMD.EOL +
-            " \\" + PMD.EOL +
-            "{\\" + PMD.EOL +
-            " \\" + PMD.EOL +
-            "}\\" + PMD.EOL;
-    
-    private static final String TEST6 =
-            "#include <iostream>" + PMD.EOL +
-            PMD.EOL +
-            "int main()" + PMD.EOL +
-            "{" + PMD.EOL +
-            "   std::cout << \"Hello, \" \\" + PMD.EOL +
-            "                \"world!\\n\";" + PMD.EOL +
-            "   return 0;" + PMD.EOL +
-            "}";
+    private static final String TEST4 = " void main() { char x = L'a'; }";
 
-    private static final String TEST7 =
-            "asm void eSPI_boot()" + PMD.EOL +
-            "{" + PMD.EOL +
-            "  // setup stack pointer" + PMD.EOL +
-            "  lis r1, _stack_addr@h" + PMD.EOL +
-            "  ori r1, r1, _stack_addr@l"  + PMD.EOL +
-            "}";
+    private static final String TEST5 = "v\\" + PMD.EOL + "o\\" + PMD.EOL + "i\\" + PMD.EOL + "d\\" + PMD.EOL + " \\"
+            + PMD.EOL + "m\\" + PMD.EOL + "a\\" + PMD.EOL + "i\\" + PMD.EOL + "n\\" + PMD.EOL + "(\\" + PMD.EOL + ")\\"
+            + PMD.EOL + " \\" + PMD.EOL + "{\\" + PMD.EOL + " \\" + PMD.EOL + "}\\" + PMD.EOL;
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(CPPTokenizerTest.class);
-    }
+    private static final String TEST6 = "#include <iostream>" + PMD.EOL + PMD.EOL + "int main()" + PMD.EOL + "{"
+            + PMD.EOL + "   std::cout << \"Hello, \" \\" + PMD.EOL + "                \"world!\\n\";" + PMD.EOL
+            + "   return 0;" + PMD.EOL + "}";
+
+    private static final String TEST7 = "asm void eSPI_boot()" + PMD.EOL + "{" + PMD.EOL + "  // setup stack pointer"
+            + PMD.EOL + "  lis r1, _stack_addr@h" + PMD.EOL + "  ori r1, r1, _stack_addr@l" + PMD.EOL + "}";
 }

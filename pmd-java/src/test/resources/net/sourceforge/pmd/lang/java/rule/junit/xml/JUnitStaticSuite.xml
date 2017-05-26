@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-nonstatic is bad
+non-static is bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

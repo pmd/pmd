@@ -323,14 +323,67 @@ public class InitialPageComponent extends BaseExecutionCourseComponent {
         <description>#1436 UnnecessaryFullyQualifiedName false positive on clashing static imports with enums</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.ENUM2;
 import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.ENUM1.*;
 import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.ENUM2.*;
 
 public class UnnecessaryFullyQualifiedName {
     public static void main(String[] args) {
-        System.out.println(ENUM1.values());
+        System.out.println(A);
+        System.out.println(D);
         System.out.println(ENUM2.values());
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.PhonyMockito;
+import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.PhonyMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.PhonyPowerMockito.*;
+
+public class Foo {
+  private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) is ambiguous (compile error)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.PhonyMockito;
+import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.PhonyMockito.*;
+import static net.sourceforge.pmd.lang.java.rule.imports.ImportsRulesTest.PhonyPowerMockito.mock;
+
+public class Foo {
+  private Bar bar = Mockito.mock(Bar.class); // doing simply mock(Bar.class) would use a differen method than intended
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1555 - UnnecessaryFullyQualifiedName for conflict resolution with inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+final class Test {
+  private Test() { }
+
+  private static class Locale {
+    public final java.util.Locale locale; // Here we need to fully qualify
+    public Locale(final String tag) {
+      this.locale = java.util.Locale.forLanguageTag(tag);
+    }
+  }
+
+  public static void main(String[] args) {
+    final Locale l = new Locale("fr-CA");
+    System.out.println(l.toString());
+  }
 }
         ]]></code>
     </test-code>

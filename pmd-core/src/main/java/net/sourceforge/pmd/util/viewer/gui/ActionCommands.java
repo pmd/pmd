@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.viewer.gui;
 
 /**
@@ -12,4 +13,6 @@ package net.sourceforge.pmd.util.viewer.gui;
 public final class ActionCommands {
     public static final String COMPILE_ACTION = "Compile";
     public static final String EVALUATE_ACTION = "Evaluate";
+
+    private ActionCommands() { }
 }

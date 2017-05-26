@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.regex;
 
 import java.util.ArrayList;
@@ -26,20 +27,21 @@ public final class RegexHelper {
     /**
      * Compiles a list of regex into a list of patterns.
      * 
-     * @param list the regex list
+     * @param list
+     *            the regex list
      * @return the pattern list
      */
     public static List<Pattern> compilePatternsFromList(List<String> list) {
         List<Pattern> patterns;
         if (list != null && !list.isEmpty()) {
-            patterns = new ArrayList<Pattern>(list.size());
+            patterns = new ArrayList<>(list.size());
             for (String stringPattern : list) {
                 if (stringPattern != null && !"".equals(stringPattern)) {
                     patterns.add(Pattern.compile(stringPattern));
                 }
             }
         } else {
-            patterns = new ArrayList<Pattern>(0);
+            patterns = new ArrayList<>(0);
         }
         return patterns;
     }
@@ -49,8 +51,10 @@ public final class RegexHelper {
      * code, and to decrease import in the calling class). Provide a pattern and
      * a subject, it'll do the proper matching.
      * 
-     * @param pattern a compiled regex pattern
-     * @param subject a String to match
+     * @param pattern
+     *            a compiled regex pattern
+     * @param subject
+     *            a String to match
      * @return {@code true} if there is a match; {@code false} otherwise
      */
     public static boolean isMatch(Pattern pattern, String subject) {

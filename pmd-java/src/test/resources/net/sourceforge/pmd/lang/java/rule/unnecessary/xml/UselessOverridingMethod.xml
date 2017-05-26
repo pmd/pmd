@@ -373,5 +373,28 @@ public class Example extends PersistentObject {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+ClassCastException in statement cast
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Comparator;
+import javax.annotation.Nonnull;
 
+public class AnonymousClassConstructor {
+
+	public void method() {
+		@SuppressWarnings("unused")
+		final Comparator<Long> comparator = new Comparator<Long>() {
+
+			@Override
+			public int compare(@Nonnull Long o1, @Nonnull Long o2) {
+				return 0;
+			}
+		};
+	}
+}
+     ]]></code>
+    </test-code>
 </test-data>

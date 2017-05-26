@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.vm.util;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
@@ -37,9 +38,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
  * contain only ASCII characters (without unicode processing).
  */
 
-public final class VelocityCharStream
-implements CharStream
-{
+public final class VelocityCharStream implements CharStream {
     public static final boolean STATIC_FLAG = false;
     int bufsize;
     private int nextBufExpand;
@@ -47,8 +46,8 @@ implements CharStream
     int tokenBegin;
 
     public int bufpos = -1;
-    private int bufline[];
-    private int bufcolumn[];
+    private int[] bufline;
+    private int[] bufcolumn;
 
     private int column = 0;
     private int line = 1;
@@ -62,19 +61,62 @@ implements CharStream
     private int maxNextCharInd = 0;
     private int inBuf = 0;
 
-    private void ExpandBuff(boolean wrapAround)
-    {
-        char[] newbuffer = new char[bufsize + nextBufExpand];
-        int newbufline[] = new int[bufsize + nextBufExpand];
-        int newbufcolumn[] = new int[bufsize + nextBufExpand];
+    /**
+     * @param dstream
+     * @param startline
+     * @param startcolumn
+     * @param buffersize
+     */
+    public VelocityCharStream(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
+        this(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
+    }
 
-        try
-        {
-            if (wrapAround)
-            {
+    /**
+     * @param dstream
+     * @param startline
+     * @param startcolumn
+     */
+    public VelocityCharStream(java.io.InputStream dstream, int startline, int startcolumn) {
+        this(dstream, startline, startcolumn, 4096);
+    }
+
+    /**
+     * @param dstream
+     * @param startline
+     * @param startcolumn
+     * @param buffersize
+     */
+    public VelocityCharStream(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
+        inputStream = dstream;
+        line = startline;
+        column = startcolumn - 1;
+
+        available = buffersize;
+        bufsize = buffersize;
+        nextBufExpand = buffersize;
+        buffer = new char[buffersize];
+        bufline = new int[buffersize];
+        bufcolumn = new int[buffersize];
+    }
+
+    /**
+     * @param dstream
+     * @param startline
+     * @param startcolumn
+     */
+    public VelocityCharStream(java.io.Reader dstream, int startline, int startcolumn) {
+        this(dstream, startline, startcolumn, 4096);
+    }
+
+    private void expandBuff(boolean wrapAround) {
+        char[] newbuffer = new char[bufsize + nextBufExpand];
+        int[] newbufline = new int[bufsize + nextBufExpand];
+        int[] newbufcolumn = new int[bufsize + nextBufExpand];
+
+        try {
+            if (wrapAround) {
                 System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
-                System.arraycopy(buffer, 0, newbuffer,
-                        bufsize - tokenBegin, bufpos);
+                System.arraycopy(buffer, 0, newbuffer, bufsize - tokenBegin, bufpos);
                 buffer = newbuffer;
 
                 System.arraycopy(bufline, tokenBegin, newbufline, 0, bufsize - tokenBegin);
@@ -85,10 +127,9 @@ implements CharStream
                 System.arraycopy(bufcolumn, 0, newbufcolumn, bufsize - tokenBegin, bufpos);
                 bufcolumn = newbufcolumn;
 
-                maxNextCharInd = (bufpos += bufsize - tokenBegin);
-            }
-            else
-            {
+                bufpos += bufsize - tokenBegin;
+                maxNextCharInd = bufpos;
+            } else {
                 System.arraycopy(buffer, tokenBegin, newbuffer, 0, bufsize - tokenBegin);
                 buffer = newbuffer;
 
@@ -98,14 +139,12 @@ implements CharStream
                 System.arraycopy(bufcolumn, tokenBegin, newbufcolumn, 0, bufsize - tokenBegin);
                 bufcolumn = newbufcolumn;
 
-                maxNextCharInd = (bufpos -= tokenBegin);
+                bufpos -= tokenBegin;
+                maxNextCharInd = bufpos;
             }
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             throw new Error(t.getMessage());
         }
-
 
         bufsize += nextBufExpand;
         nextBufExpand = bufsize;
@@ -113,72 +152,50 @@ implements CharStream
         tokenBegin = 0;
     }
 
-    private void FillBuff() throws java.io.IOException
-    {
-        if (maxNextCharInd == available)
-        {
-            if (available == bufsize)
-            {
-                if (tokenBegin > nextBufExpand)
-                {
-                    bufpos = maxNextCharInd = 0;
+    private void fillBuff() throws java.io.IOException {
+        if (maxNextCharInd == available) {
+            if (available == bufsize) {
+                if (tokenBegin > nextBufExpand) {
+                    bufpos = 0;
+                    maxNextCharInd = 0;
                     available = tokenBegin;
+                } else if (tokenBegin < 0) {
+                    bufpos = 0;
+                    maxNextCharInd = 0;
+                } else {
+                    expandBuff(false);
                 }
-                else if (tokenBegin < 0)
-                {
-                    bufpos = maxNextCharInd = 0;
-                }
-                else
-                {
-                    ExpandBuff(false);
-                }
-            }
-            else if (available > tokenBegin)
-            {
+            } else if (available > tokenBegin) {
                 available = bufsize;
-            }
-            else if ((tokenBegin - available) < nextBufExpand)
-            {
-                ExpandBuff(true);
-            }
-            else
-            {
+            } else if ((tokenBegin - available) < nextBufExpand) {
+                expandBuff(true);
+            } else {
                 available = tokenBegin;
             }
         }
 
         int i;
-        try 
-        {
+        try {
             i = inputStream.read(buffer, maxNextCharInd, available - maxNextCharInd);
-            if (i == -1)
-            {
+            if (i == -1) {
                 inputStream.close();
                 throw new java.io.IOException();
-            }
-            else
-            {
+            } else {
                 maxNextCharInd += i;
             }
             return;
-        }
-        catch(java.io.IOException e) 
-        {
+        } catch (java.io.IOException e) {
             --bufpos;
             backup(0);
-            if (tokenBegin == -1)
-            {
+            if (tokenBegin == -1) {
                 tokenBegin = bufpos;
             }
             throw e;
         }
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#BeginToken()
-     */
-    public char BeginToken() throws java.io.IOException
-    {
+    @Override
+    public char BeginToken() throws java.io.IOException {
         tokenBegin = -1;
         char c = readChar();
         tokenBegin = bufpos;
@@ -186,41 +203,35 @@ implements CharStream
         return c;
     }
 
-    private void UpdateLineColumn(char c)
-    {
+    private void updateLineColumn(char c) {
         column++;
 
-        if (prevCharIsLF)
-        {
+        if (prevCharIsLF) {
             prevCharIsLF = false;
-            line += (column = 1);
-        }
-        else if (prevCharIsCR)
-        {
+            column = 1;
+            line += 1;
+        } else if (prevCharIsCR) {
             prevCharIsCR = false;
-            if (c == '\n')
-            {
+            if (c == '\n') {
                 prevCharIsLF = true;
-            }
-            else
-            {
-                line += (column = 1);
+            } else {
+                column = 1;
+                line += 1;
             }
         }
 
-        switch (c)
-        {
-        case '\r' :
+        switch (c) {
+        case '\r':
             prevCharIsCR = true;
             break;
-        case '\n' :
+        case '\n':
             prevCharIsLF = true;
             break;
-        case '\t' :
+        case '\t':
             column--;
             column += 8 - (column & 07);
             break;
-        default :
+        default:
             break;
         }
 
@@ -228,91 +239,77 @@ implements CharStream
         bufcolumn[bufpos] = column;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#readChar()
-     */
-    public char readChar() throws java.io.IOException
-    {
-        if (inBuf > 0)
-        {
+    @Override
+    public char readChar() throws java.io.IOException {
+        if (inBuf > 0) {
             --inBuf;
 
             /*
-             *  was : return (char)((char)0xff & buffer[(bufpos == bufsize - 1) ? (bufpos = 0) : ++bufpos]);
+             * was : return (char)((char)0xff & buffer[(bufpos == bufsize - 1) ?
+             * (bufpos = 0) : ++bufpos]);
              */
-            return  buffer[(bufpos == bufsize - 1) ? (bufpos = 0) : ++bufpos];
+            if (bufpos == bufsize - 1) {
+                bufpos = 0;
+            } else {
+                bufpos++;
+            }
+            return buffer[bufpos];
         }
 
         bufpos++;
-        if (bufpos >= maxNextCharInd)
-        {
-            FillBuff();
+        if (bufpos >= maxNextCharInd) {
+            fillBuff();
         }
 
         /*
-         *  was : char c = (char)((char)0xff & buffer[bufpos]);
+         * was : char c = (char)((char)0xff & buffer[bufpos]);
          */
         char c = buffer[bufpos];
 
-        UpdateLineColumn(c);
+        updateLineColumn(c);
         return c;
     }
 
     /**
-     * @see org.apache.velocity.runtime.parser.CharStream#getColumn()
      * @deprecated
      */
-    public int getColumn() 
-    {
+    @Deprecated
+    @Override
+    public int getColumn() {
         return bufcolumn[bufpos];
     }
 
     /**
-     * @see org.apache.velocity.runtime.parser.CharStream#getLine()
      * @deprecated
      */
-    public int getLine() 
-    {
+    @Deprecated
+    @Override
+    public int getLine() {
         return bufline[bufpos];
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#getEndColumn()
-     */
-    public int getEndColumn() 
-    {
+    @Override
+    public int getEndColumn() {
         return bufcolumn[bufpos];
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#getEndLine()
-     */
-    public int getEndLine() 
-    {
+    @Override
+    public int getEndLine() {
         return bufline[bufpos];
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#getBeginColumn()
-     */
-    public int getBeginColumn() 
-    {
+    @Override
+    public int getBeginColumn() {
         return bufcolumn[tokenBegin];
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#getBeginLine()
-     */
-    public int getBeginLine() 
-    {
+    @Override
+    public int getBeginLine() {
         return bufline[tokenBegin];
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#backup(int)
-     */
-    public void backup(int amount) 
-    {
+    @Override
+    public void backup(int amount) {
 
         inBuf += amount;
         bufpos -= amount;
@@ -327,51 +324,24 @@ implements CharStream
      * @param startcolumn
      * @param buffersize
      */
-    public VelocityCharStream(java.io.Reader dstream, int startline,
-            int startcolumn, int buffersize)
-    {
+    public void reInit(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
         inputStream = dstream;
         line = startline;
         column = startcolumn - 1;
 
-        available = bufsize = nextBufExpand = buffersize;
-        buffer = new char[buffersize];
-        bufline = new int[buffersize];
-        bufcolumn = new int[buffersize];
-    }
-
-    /**
-     * @param dstream
-     * @param startline
-     * @param startcolumn
-     */
-    public VelocityCharStream(java.io.Reader dstream, int startline,
-            int startcolumn)
-    {
-        this(dstream, startline, startcolumn, 4096);
-    }
-    /**
-     * @param dstream
-     * @param startline
-     * @param startcolumn
-     * @param buffersize
-     */
-    public void ReInit(java.io.Reader dstream, int startline,
-            int startcolumn, int buffersize)
-    {
-        inputStream = dstream;
-        line = startline;
-        column = startcolumn - 1;
-
-        if (buffer == null || buffersize != buffer.length)
-        {
-            available = bufsize = nextBufExpand = buffersize;
+        if (buffer == null || buffersize != buffer.length) {
+            available = buffersize;
+            bufsize = buffersize;
+            nextBufExpand = buffersize;
             buffer = new char[buffersize];
             bufline = new int[buffersize];
             bufcolumn = new int[buffersize];
         }
-        prevCharIsLF = prevCharIsCR = false;
-        tokenBegin = inBuf = maxNextCharInd = 0;
+        prevCharIsLF = false;
+        prevCharIsCR = false;
+        tokenBegin = 0;
+        inBuf = 0;
+        maxNextCharInd = 0;
         bufpos = -1;
     }
 
@@ -380,32 +350,8 @@ implements CharStream
      * @param startline
      * @param startcolumn
      */
-    public void ReInit(java.io.Reader dstream, int startline,
-            int startcolumn)
-    {
-        ReInit(dstream, startline, startcolumn, 4096);
-    }
-    /**
-     * @param dstream
-     * @param startline
-     * @param startcolumn
-     * @param buffersize
-     */
-    public VelocityCharStream(java.io.InputStream dstream, int startline,
-            int startcolumn, int buffersize)
-    {
-        this(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
-    }
-
-    /**
-     * @param dstream
-     * @param startline
-     * @param startcolumn
-     */
-    public VelocityCharStream(java.io.InputStream dstream, int startline,
-            int startcolumn)
-    {
-        this(dstream, startline, startcolumn, 4096);
+    public void reInit(java.io.Reader dstream, int startline, int startcolumn) {
+        reInit(dstream, startline, startcolumn, 4096);
     }
 
     /**
@@ -414,63 +360,44 @@ implements CharStream
      * @param startcolumn
      * @param buffersize
      */
-    public void ReInit(java.io.InputStream dstream, int startline,
-            int startcolumn, int buffersize)
-    {
-        ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
+    public void reInit(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
+        reInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
     }
+
     /**
      * @param dstream
      * @param startline
      * @param startcolumn
      */
-    public void ReInit(java.io.InputStream dstream, int startline,
-            int startcolumn)
-    {
-        ReInit(dstream, startline, startcolumn, 4096);
+    public void reInit(java.io.InputStream dstream, int startline, int startcolumn) {
+        reInit(dstream, startline, startcolumn, 4096);
     }
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#GetImage()
-     */
-    public String GetImage()
-    {
-        if (bufpos >= tokenBegin)
-        {
+
+    @Override
+    public String GetImage() {
+        if (bufpos >= tokenBegin) {
             return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
-        }
-        else
-        {
-            return new String(buffer, tokenBegin, bufsize - tokenBegin) +
-            new String(buffer, 0, bufpos + 1);
+        } else {
+            return new String(buffer, tokenBegin, bufsize - tokenBegin) + new String(buffer, 0, bufpos + 1);
         }
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#GetSuffix(int)
-     */
-    public char[] GetSuffix(int len)
-    {
+    @Override
+    public char[] GetSuffix(int len) {
         char[] ret = new char[len];
 
-        if ((bufpos + 1) >= len)
-        {
+        if ((bufpos + 1) >= len) {
             System.arraycopy(buffer, bufpos - len + 1, ret, 0, len);
-        }
-        else
-        {
-            System.arraycopy(buffer, bufsize - (len - bufpos - 1), ret, 0,
-                    len - bufpos - 1);
+        } else {
+            System.arraycopy(buffer, bufsize - (len - bufpos - 1), ret, 0, len - bufpos - 1);
             System.arraycopy(buffer, 0, ret, len - bufpos - 1, bufpos + 1);
         }
 
         return ret;
     }
 
-    /**
-     * @see org.apache.velocity.runtime.parser.CharStream#Done()
-     */
-    public void Done()
-    {
+    @Override
+    public void Done() {
         buffer = null;
         bufline = null;
         bufcolumn = null;
@@ -478,46 +405,43 @@ implements CharStream
 
     /**
      * Method to adjust line and column numbers for the start of a token.<BR>
+     * 
      * @param newLine
      * @param newCol
      */
-    public void adjustBeginLineColumn(int newLine, int newCol)
-    {
+    public void adjustBeginLineColumn(int newLine, int newCol) {
         int start = tokenBegin;
         int len;
 
-        if (bufpos >= tokenBegin)
-        {
+        if (bufpos >= tokenBegin) {
             len = bufpos - tokenBegin + inBuf + 1;
-        }
-        else
-        {
+        } else {
             len = bufsize - tokenBegin + bufpos + 1 + inBuf;
         }
 
         int i = 0;
-        int j = 0;
-        int k = 0;
+        int j = start % bufsize;
+        int k = (start + 1) % bufsize;
         int nextColDiff = 0;
         int columnDiff = 0;
 
-        while (i < len &&
-                bufline[j = start % bufsize] == bufline[k = ++start % bufsize])
-        {
+        while (i < len && bufline[j] == bufline[k]) {
             bufline[j] = newLine;
             nextColDiff = columnDiff + bufcolumn[k] - bufcolumn[j];
             bufcolumn[j] = newCol + columnDiff;
             columnDiff = nextColDiff;
             i++;
+
+            start++;
+            j = start % bufsize;
+            k = (start + 1) % bufsize;
         }
 
-        if (i < len)
-        {
+        if (i < len) {
             bufline[j] = newLine++;
             bufcolumn[j] = newCol + columnDiff;
 
-            while (i++ < len)
-            {
+            while (i++ < len) {
                 j = start % bufsize;
                 start++;
                 if (bufline[j] != bufline[start % bufsize]) {
@@ -533,4 +457,3 @@ implements CharStream
     }
 
 }
-

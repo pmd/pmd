@@ -1,11 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp;
 
 import java.io.Writer;
 
-import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -17,6 +17,8 @@ import net.sourceforge.pmd.lang.jsp.ast.DumpFacade;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+
+import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Implementation of LanguageVersionHandler for the JSP parser.

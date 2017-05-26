@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang;
 
 /**
@@ -28,8 +32,9 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
     }
 
     /**
-     * Get the name of this LanguageVersion.  This is Language name
-     * appended with the LanguageVersion version if not an empty String.
+     * Get the name of this LanguageVersion. This is Language name appended with
+     * the LanguageVersion version if not an empty String.
+     *
      * @return The name of this LanguageVersion.
      */
     public String getName() {
@@ -37,8 +42,9 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
     }
 
     /**
-     * Get the short name of this LanguageVersion.  This is Language short name
+     * Get the short name of this LanguageVersion. This is Language short name
      * appended with the LanguageVersion version if not an empty String.
+     *
      * @return The short name of this LanguageVersion.
      */
     public String getShortName() {
@@ -46,8 +52,9 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
     }
 
     /**
-     * Get the terse name of this LanguageVersion.  This is Language terse name
+     * Get the terse name of this LanguageVersion. This is Language terse name
      * appended with the LanguageVersion version if not an empty String.
+     *
      * @return The terse name of this LanguageVersion.
      */
     public String getTerseName() {
@@ -56,12 +63,12 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
 
     @Override
     public int compareTo(LanguageVersion o) {
-        if(o == null) {
+        if (o == null) {
             return 1;
         }
 
         int comp = getName().compareTo(o.getName());
-        if(comp != 0) {
+        if (comp != 0) {
             return comp;
         }
 

@@ -33,8 +33,8 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
     public String getMethodName() {
         ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
         if (md != null) {
-	    return md.getImage();
-	}
+            return md.getImage();
+        }
         return null;
     }
 
@@ -83,7 +83,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         for (int i = 0; i < jjtGetNumChildren(); i++) {
             Node n = jjtGetChild(i);
             if (n instanceof ASTBlock) {
-                return (ASTBlock)n;
+                return (ASTBlock) n;
             }
         }
         return null;
@@ -98,11 +98,12 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
                 break;
             }
         }
-        // the throws declaration is immediately followed by the MethodDeclarator
+        // the throws declaration is immediately followed by the
+        // MethodDeclarator
         if (jjtGetNumChildren() > declaratorIndex + 1) {
             Node n = jjtGetChild(declaratorIndex + 1);
             if (n instanceof ASTNameList) {
-                return (ASTNameList)n;
+                return (ASTNameList) n;
             }
         }
         return null;

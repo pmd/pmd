@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTReferenceType extends AbstractJavaTypeNode implements Dimensionable {
+
+    private int arrayDepth;
+
     public ASTReferenceType(int id) {
         super(id);
     }
@@ -14,24 +17,24 @@ public class ASTReferenceType extends AbstractJavaTypeNode implements Dimensiona
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
-    private int arrayDepth;
 
     public void bumpArrayDepth() {
         arrayDepth++;
     }
 
+    @Override
     public int getArrayDepth() {
         return arrayDepth;
     }
 
+    @Override
     public boolean isArray() {
         return arrayDepth > 0;
     }

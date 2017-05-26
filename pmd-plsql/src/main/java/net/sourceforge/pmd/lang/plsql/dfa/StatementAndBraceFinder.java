@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.dfa;
 
 import java.util.List;
@@ -47,14 +48,14 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
 
 /**
+ * Sublayer of DataFlowFacade. Finds all data flow nodes and stores the
+ * type information (@see StackObject). At last it uses this information
+ * to link the nodes.
+ *
  * @author raik
- *         <p/>
- *         Sublayer of DataFlowFacade. Finds all data flow nodes and stores the
- *         type information (@see StackObject). At last it uses this information
- *         to link the nodes.
  */
 public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
-    private final static Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(StatementAndBraceFinder.class.getName());
 
     private final DataFlowHandler dataFlowHandler;
     private Structure dataFlow;
@@ -100,6 +101,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         LOGGER.exiting(this.getClass().getCanonicalName(), "buildDataFlowFor");
     }
 
+    @Override
     public Object visit(ASTSqlStatement node, Object data) {
         if (!(data instanceof Structure)) {
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -111,12 +113,13 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("createNewNode ASTSqlStatement: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
+            LOGGER.finest(
+                    "createNewNode ASTSqlStatement: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
         }
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTEmbeddedSqlStatement node, Object data) {
         if (!(data instanceof Structure)) {
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -134,6 +137,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTCloseStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -147,6 +151,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTOpenStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -160,6 +165,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTFetchStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -173,6 +179,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTPipelineStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -188,6 +195,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
 
     /* */
 
+    @Override
     public Object visit(ASTVariableOrConstantDeclarator node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -201,6 +209,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTExpression node, Object data) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("Entry ASTExpression: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
@@ -222,9 +231,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
                         + node.getBeginColumn());
             }
             dataFlow.createNewNode(node);
-        } else
-        // TODO what about throw stmts?
-        if (node.jjtGetParent() instanceof ASTIfStatement) {
+        } else if (node.jjtGetParent() instanceof ASTIfStatement) {
+            // TODO what about throw stmts?
             dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -233,7 +241,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
             }
         } else if (node.jjtGetParent() instanceof ASTElsifClause) {
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("parent (Elsif) IF_EXPR at  " + node.getBeginLine() + ", column " + node.getBeginColumn());
+                LOGGER.finest(
+                        "parent (Elsif) IF_EXPR at  " + node.getBeginLine() + ", column " + node.getBeginColumn());
             }
             dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
@@ -268,8 +277,8 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
                 }
             }
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("parent (ASTForStatement): line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
+                LOGGER.finest(
+                        "parent (ASTForStatement): line " + node.getBeginLine() + ", column " + node.getBeginColumn());
             }
         } else if (node.jjtGetParent() instanceof ASTLoopStatement) {
             dataFlow.createNewNode(node); // DO EXPR
@@ -283,12 +292,13 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTLabelledStatement node, Object data) {
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.LABEL_STATEMENT, dataFlow.getLast());
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack LABEL_STATEMENT: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
+            LOGGER.finest(
+                    "pushOnStack LABEL_STATEMENT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
         }
         return super.visit(node, data);
     }
@@ -300,6 +310,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
      * expression, so the Java control processing (on the expression) does not
      * fire. The best way to cope it to push a DO_EXPR after the loop.
      */
+    @Override
     public Object visit(ASTLoopStatement node, Object data) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("entry ASTLoopStatement: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
@@ -332,6 +343,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
      * best way to cope it to push a WHILE_LAST_STATEMENT after the
      * WhileStatement has been processed.
      */
+    @Override
     public Object visit(ASTWhileStatement node, Object data) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("entry ASTWhileStatement: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
@@ -353,6 +365,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
     // ----------------------------------------------------------------------------
     // BRANCH OUT
 
+    @Override
     public Object visit(ASTStatement node, Object data) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("entry ASTStatement: line " + node.getBeginLine() + ", column " + node.getBeginColumn()
@@ -462,6 +475,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTUnlabelledStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -478,6 +492,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTCaseStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -494,14 +509,13 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
          * statement ( see visit(ASTExpression)), but a SEARCHED CASE statement
          * must have an atificial start node
          */
-        if (null == node.getFirstChildOfType(ASTExpression.class) // CASE is
-                                                                  // "searched case statement"
-        ) {
+        // CASE is "searched case statement"
+        if (null == node.getFirstChildOfType(ASTExpression.class)) {
             dataFlow.createNewNode(node);
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
             if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack SWITCH_START: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
+                LOGGER.finest(
+                        "pushOnStack SWITCH_START: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
             }
         }
 
@@ -514,6 +528,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTCaseWhenClause node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -539,6 +554,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTIfStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -556,11 +572,9 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
          */
         List<ASTElsifClause> elsifs = node.findChildrenOfType(ASTElsifClause.class);
         ASTElseClause elseClause = node.getFirstChildOfType(ASTElseClause.class);
-        if (null == elseClause && elsifs.isEmpty()) // The IF statements has no
-                                                    // ELSE or ELSIF statements
-                                                    // and this is the last
-                                                    // Statement
-        {
+        // The IF statements have no ELSE or ELSIF statements and this is the last
+        // statement
+        if (null == elseClause && elsifs.isEmpty()) {
             dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("pushOnStack (ASTIfClause - no ELSIFs) IF_LAST_STATEMENT_WITHOUT_ELSE: line "
@@ -581,8 +595,9 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
                     if (lastElsifClause.equals(elsifClause) && elseClause == null) {
                         dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
                         if (LOGGER.isLoggable(Level.FINEST)) {
-                            LOGGER.finest("pushOnStack (ASTIfClause - with ELSIFs) IF_LAST_STATEMENT_WITHOUT_ELSE: line "
-                                    + node.getBeginLine() + ", column " + node.getBeginColumn());
+                            LOGGER.finest(
+                                    "pushOnStack (ASTIfClause - with ELSIFs) IF_LAST_STATEMENT_WITHOUT_ELSE: line "
+                                            + node.getBeginLine() + ", column " + node.getBeginColumn());
                         }
                     }
 
@@ -608,6 +623,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTElseClause node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -635,6 +651,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return data;
     }
 
+    @Override
     public Object visit(ASTElsifClause node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -658,6 +675,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
      * @param data
      * @return
      */
+    @Override
     public Object visit(ASTContinueStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -679,6 +697,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
      * @param data
      * @return
      */
+    @Override
     public Object visit(ASTExitStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -700,6 +719,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
      * @param data
      * @return
      */
+    @Override
     public Object visit(ASTGotoStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -714,6 +734,7 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTReturnStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
@@ -722,12 +743,13 @@ public class StatementAndBraceFinder extends PLSQLParserVisitorAdapter {
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack RETURN_STATEMENT: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
+            LOGGER.finest(
+                    "pushOnStack RETURN_STATEMENT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
         }
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTRaiseStatement node, Object data) {
         if (!(data instanceof Structure)) {
             return data;

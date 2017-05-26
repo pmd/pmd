@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.benchmark;
 
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
@@ -32,17 +35,21 @@ import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
-import org.apache.commons.io.IOUtils;
-
 /**
  *
  *
  */
 public class Benchmarker {
 
+    private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
+
+    private Benchmarker() { }
+
     /**
-     * @param args String[]
-     * @param name String
+     * @param args
+     *            String[]
+     * @param name
+     *            String
      * @return boolean
      */
     private static boolean findBooleanSwitch(String[] args, String name) {
@@ -56,9 +63,12 @@ public class Benchmarker {
 
     /**
      *
-     * @param args String[]
-     * @param name String
-     * @param defaultValue String
+     * @param args
+     *            String[]
+     * @param name
+     *            String
+     * @param defaultValue
+     *            String
      * @return String
      */
     private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
@@ -72,7 +82,8 @@ public class Benchmarker {
 
     /**
      *
-     * @param args String[]
+     * @param args
+     *            String[]
      * @throws RuleSetNotFoundException
      * @throws IOException
      * @throws PMDException
@@ -83,7 +94,7 @@ public class Benchmarker {
         Language language = LanguageRegistry.getLanguage("Java");
         LanguageVersion languageVersion = language.getVersion(targetjdk);
         if (languageVersion == null) {
-        	languageVersion = language.getDefaultVersion();
+            languageVersion = language.getDefaultVersion();
         }
 
         String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
@@ -93,17 +104,17 @@ public class Benchmarker {
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");
 
         if (debug) {
-            System.out.println("Using " +language.getName() + " " + languageVersion.getVersion());
+            System.out.println("Using " + language.getName() + " " + languageVersion.getVersion());
         }
         if (parseOnly) {
-        	Parser parser = PMD.parserFor(languageVersion, null);
+            Parser parser = PMD.parserFor(languageVersion, null);
             parseStress(parser, dataSources, debug);
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) {
-        		System.out.println("Checking directory " + srcDir);
+                System.out.println("Checking directory " + srcDir);
             }
-            Set<RuleDuration> results = new TreeSet<RuleDuration>();
+            Set<RuleDuration> results = new TreeSet<>();
             RuleSetFactory factory = new RuleSetFactory();
             if (StringUtil.isNotEmpty(ruleset)) {
                 stress(languageVersion, factory.createRuleSet(ruleset), dataSources, results, debug);
@@ -115,21 +126,24 @@ public class Benchmarker {
             }
 
             TextReport report = new TextReport();
-			report.generate(results, System.err);
+            report.generate(results, System.err);
         }
     }
 
     /**
-     * @param parser Parser
-     * @param dataSources List<DataSource>
-     * @param debug boolean
+     * @param parser
+     *            Parser
+     * @param dataSources
+     *            List<DataSource>
+     * @param debug
+     *            boolean
      * @throws IOException
      */
     private static void parseStress(Parser parser, List<DataSource> dataSources, boolean debug) throws IOException {
 
         long start = System.currentTimeMillis();
 
-        for (DataSource dataSource: dataSources) {
+        for (DataSource dataSource : dataSources) {
             InputStreamReader reader = new InputStreamReader(dataSource.getInputStream());
             try {
                 parser.parse(dataSource.getNiceFileName(false, null), reader);
@@ -139,30 +153,36 @@ public class Benchmarker {
         }
 
         if (debug) {
-        	long end = System.currentTimeMillis();
-        	long elapsed = end - start;
-        	System.out.println("That took " + elapsed + " ms");
+            long end = System.currentTimeMillis();
+            long elapsed = end - start;
+            System.out.println("That took " + elapsed + " ms");
         }
     }
 
     /**
-     * @param languageVersion LanguageVersion
-     * @param ruleSet RuleSet
-     * @param dataSources List<DataSource>
-     * @param results Set<RuleDuration>
-     * @param debug boolean
+     * @param languageVersion
+     *            LanguageVersion
+     * @param ruleSet
+     *            RuleSet
+     * @param dataSources
+     *            List<DataSource>
+     * @param results
+     *            Set<RuleDuration>
+     * @param debug
+     *            boolean
      * @throws PMDException
      * @throws IOException
      */
-    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources, Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
+    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<DataSource> dataSources,
+            Set<RuleDuration> results, boolean debug) throws PMDException, IOException {
 
+        final RuleSetFactory factory = new RuleSetFactory();
         for (Rule rule: ruleSet.getRules()) {
             if (debug) {
-            	System.out.println("Starting " + rule.getName());
+                System.out.println("Starting " + rule.getName());
             }
 
-            RuleSet working = new RuleSet();
-            working.addRule(rule);
+            final RuleSet working = factory.createSingleRuleRuleSet(rule);
             RuleSets ruleSets = new RuleSets(working);
 
             PMDConfiguration config = new PMDConfiguration();
@@ -170,7 +190,7 @@ public class Benchmarker {
 
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            for (DataSource dataSource: dataSources) {
+            for (DataSource dataSource : dataSources) {
                 Reader reader = new InputStreamReader(dataSource.getInputStream());
                 try {
                     ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
@@ -183,17 +203,18 @@ public class Benchmarker {
             long elapsed = end - start;
             results.add(new RuleDuration(elapsed, rule));
             if (debug) {
-            	System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
+                System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
             }
         }
     }
 
-    private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<String, BenchmarkResult>();
-
     /**
-     * @param type Benchmark
-     * @param time long
-     * @param count long
+     * @param type
+     *            Benchmark
+     * @param time
+     *            long
+     * @param count
+     *            long
      */
     public static void mark(Benchmark type, long time, long count) {
         mark(type, null, time, count);
@@ -201,12 +222,16 @@ public class Benchmarker {
 
     /**
      *
-     * @param type Benchmark
-     * @param name String
-     * @param time long
-     * @param count long
+     * @param type
+     *            Benchmark
+     * @param name
+     *            String
+     * @param time
+     *            long
+     * @param count
+     *            long
      */
-    public synchronized static void mark(Benchmark type, String name, long time, long count) {
+    public static synchronized void mark(Benchmark type, String name, long time, long count) {
         String typeName = type.name;
         if (typeName != null && name != null) {
             throw new IllegalArgumentException("Name cannot be given for type: " + type);
@@ -227,11 +252,7 @@ public class Benchmarker {
         BENCHMARKS_BY_NAME.clear();
     }
 
-    /**
-     *
-     * @return Map<String,BenchmarkResult>
-     */
     public static Map<String, BenchmarkResult> values() {
-    	return BENCHMARKS_BY_NAME;
+        return BENCHMARKS_BY_NAME;
     }
 }

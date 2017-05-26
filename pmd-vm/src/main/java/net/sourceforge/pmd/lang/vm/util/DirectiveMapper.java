@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.vm.util;
 
 import java.util.HashMap;
@@ -20,33 +21,34 @@ import net.sourceforge.pmd.lang.vm.directive.Parse;
 import net.sourceforge.pmd.lang.vm.directive.Stop;
 
 public class DirectiveMapper {
+    private DirectiveMapper() { }
 
-	private static final Map<String, Directive> DIRECTIVE_MAP = new HashMap<String, Directive>();
-	
-	private static final Set<String> DIRECTIVE_NAMES = new HashSet<String>();
-	
-	static {
-		DIRECTIVE_MAP.put("foreach", new Foreach());
-		DIRECTIVE_MAP.put("include", new Include());
-		DIRECTIVE_MAP.put("parse", new Parse());
-		DIRECTIVE_MAP.put("macro", new Macro());
-		DIRECTIVE_MAP.put("literal", new Literal());
-		DIRECTIVE_MAP.put("evaluate", new Evaluate());
-		DIRECTIVE_MAP.put("break", new Break());
-		DIRECTIVE_MAP.put("define", new Define());
-		DIRECTIVE_MAP.put("stop", new Stop());
-		
-		for (Directive d : DIRECTIVE_MAP.values()) {
-			DIRECTIVE_NAMES.add(d.getName());
-		}
-	}
-	
-	public static Directive getDirective(String directiveName) {
-		return DIRECTIVE_MAP.get(directiveName);
-	}
-	
-	public static boolean isDirective(String name) {
-		return DIRECTIVE_NAMES.contains(name);
-	}
-	
+    private static final Map<String, Directive> DIRECTIVE_MAP = new HashMap<>();
+
+    private static final Set<String> DIRECTIVE_NAMES = new HashSet<>();
+
+    static {
+        DIRECTIVE_MAP.put("foreach", new Foreach());
+        DIRECTIVE_MAP.put("include", new Include());
+        DIRECTIVE_MAP.put("parse", new Parse());
+        DIRECTIVE_MAP.put("macro", new Macro());
+        DIRECTIVE_MAP.put("literal", new Literal());
+        DIRECTIVE_MAP.put("evaluate", new Evaluate());
+        DIRECTIVE_MAP.put("break", new Break());
+        DIRECTIVE_MAP.put("define", new Define());
+        DIRECTIVE_MAP.put("stop", new Stop());
+
+        for (Directive d : DIRECTIVE_MAP.values()) {
+            DIRECTIVE_NAMES.add(d.getName());
+        }
+    }
+
+    public static Directive getDirective(String directiveName) {
+        return DIRECTIVE_MAP.get(directiveName);
+    }
+
+    public static boolean isDirective(String name) {
+        return DIRECTIVE_NAMES.contains(name);
+    }
+
 }

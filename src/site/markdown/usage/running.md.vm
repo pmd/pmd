@@ -107,6 +107,12 @@ The tool comes with a rather extensive help text, simply running with `-help`!
         <td>plsql</td>
     </tr>
     <tr>
+        <td>-filelist</td>
+        <td>Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `-dir`.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
         <td>-debug / -verbose / -D / -V</td>
         <td>Debug mode. Prints more log output.</td>
         <td>no</td>
@@ -190,6 +196,21 @@ The tool comes with a rather extensive help text, simply running with `-help`!
         <td>no</td>
         <td></td>
     </tr>
+    <tr>
+        <td>-failOnViolation {true|false}</td>
+        <td>By default PMD exits with status 4 if violations are found.
+            Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.
+        </td>
+        <td>no</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>-cache</td>
+        <td>Specify a location for the analysis cache file to use.
+            This can greatly improve analysis performance and is <b>highly recommended</b>.</td>
+        <td>no</td>
+        <td></td>
+    </tr>
 </table>
 
 
@@ -198,6 +219,12 @@ Exit Status
 
 Please note that if PMD detects any violations, it will exit with status 4 (since 5.3).
 This behavior has been introduced to ease PMD integration into scripts or hooks, such as SVN hooks.
+
+<table>
+<tr><td>0</td><td>Everything is fine, now violations found</td></tr>
+<tr><td>1</td><td>Couldn't understand command line parameters or PMD exited with an exception</td></tr>
+<tr><td>4</td><td>At least one violation has been detected unless '-failOnViolation false' is set.</td></tr>
+</table>
 
 
 Supported Languages

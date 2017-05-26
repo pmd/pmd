@@ -420,7 +420,7 @@ void JspComment() :
 
 /**
  * This production groups all characters between two tags, where
- * tag is an xml-tag "<...>" or a jsp-page-tag "<%...%>" or CDATA "<![CDATA[...]]>".
+ * tag is an xml-tag "&lt;...&gt;" or a jsp-page-tag "&lt;%...%&gt;" or CDATA "&lt;![CDATA[...]]&gt;".
  * Text consists of unparsed text and/or Expression Language expressions.
  */
 void Text() :

@@ -464,6 +464,80 @@ public class UnusedPrivateFieldClass
     </test-code>
 
     <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@lombok.Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.*;
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 4</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+@Getter
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+public class Foo {
+    @Getter private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 6</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+public class Foo {
+    @Getter(lazy=true) private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1420 UnusedPrivateField: Ignore fields if using lombok - 7</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#1428 False positive in UnusedPrivateField when local variable hides member variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

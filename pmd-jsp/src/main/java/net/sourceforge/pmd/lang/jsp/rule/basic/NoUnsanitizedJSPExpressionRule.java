@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp.rule.basic;
 
 import net.sourceforge.pmd.lang.jsp.ast.ASTElExpression;
@@ -8,7 +9,8 @@ import net.sourceforge.pmd.lang.jsp.ast.ASTElement;
 import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
 
 /**
- * This rule detects unsanitized JSP Expressions (can lead to Cross Site Scripting (XSS) attacks)
+ * This rule detects unsanitized JSP Expressions (can lead to Cross Site
+ * Scripting (XSS) attacks)
  *
  * @author maxime_robert
  */
@@ -23,7 +25,7 @@ public class NoUnsanitizedJSPExpressionRule extends AbstractJspRule {
     }
 
     private boolean elOutsideTaglib(ASTElExpression node) {
-        ASTElement parentASTElement = (ASTElement) node.getFirstParentOfType(ASTElement.class);
+        ASTElement parentASTElement = node.getFirstParentOfType(ASTElement.class);
 
         boolean elInTaglib = parentASTElement != null && parentASTElement.getName() != null
                 && parentASTElement.getName().contains(":");

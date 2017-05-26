@@ -3,44 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>5.3.9-SNAPSHOT</version>
+    <version>5.8.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-        <relativePath />
-    </parent>
-
     <description>
-    <![CDATA[
-<p>PMD scans Java source code and looks for potential problems like:</p>
-<ul>
-  <li>Possible bugs - empty try/catch/finally/switch statements</li>
-  <li>Dead code - unused local variables, parameters and private methods</li>
-  <li>Suboptimal code - wasteful String/StringBuffer usage</li>
-  <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
-  <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
-</ul>
-<p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
-<p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
-    ]]>
-  </description>
+PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex, PLSQL, Salesforce.com Visualforce, Apache Velocity, XML, XSL.
 
-    <url>http://pmd.sourceforge.net/</url>
-    <issueManagement>
-        <url>http://sourceforge.net/p/pmd/bugs/</url>
-    </issueManagement>
+Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in Java, C, C++, C#, Groovy, PHP, Ruby, Fortran, JavaScript, PLSQL, Apache Velocity, Scala, Objective C, Matlab, Python, Go, Swift and Salesforce.com Apex.
+    </description>
+
+    <url>https://pmd.github.io/</url>
     <ciManagement>
-        <notifiers>
-            <notifier>
-                <configuration>
-                    <address>tom@infoether.com</address>
-                </configuration>
-            </notifier>
-        </notifiers>
+        <url>https://travis-ci.org/pmd/pmd</url>
     </ciManagement>
     <inceptionYear>2002</inceptionYear>
     <licenses>
@@ -53,9 +28,15 @@
     <mailingLists>
         <mailingList>
             <name>PMD development</name>
-            <subscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
-            <unsubscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
-            <archive>http://sourceforge.net/mailarchive/forum.php?forum=pmd-devel</archive>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
+            <archive>https://sourceforge.net/p/pmd/mailman/pmd-devel</archive>
+        </mailingList>
+        <mailingList>
+            <name>PMD commits</name>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/pmd-commits</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/pmd-commits</unsubscribe>
+            <archive>https://sourceforge.net/p/pmd/mailman/pmd-commits</archive>
         </mailingList>
     </mailingLists>
     <developers>
@@ -239,42 +220,64 @@
                 <role>Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>jsotuyod</id>
+            <name>Juan Martín Sotuyo Dodero</name>
+            <email>juansotuyo@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>-3</timezone>
+        </developer>
     </developers>
     <scm>
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
         <url>https://github.com/pmd/pmd</url>
-        <tag>pmd/5.3.x</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
         <site>
             <id>local</id>
             <url>file:///tmp/pmd-site</url>
         </site>
     </distributionManagement>
     <organization>
-        <name>InfoEther</name>
-        <url>http://pmd.sourceforge.net/</url>
+        <name>PMD</name>
+        <url>https://pmd.github.io/</url>
     </organization>
+    <issueManagement>
+        <url>https://github.com/pmd/pmd/issues</url>
+    </issueManagement>
 
     <properties>
         <javacc.version>5.0</javacc.version>
-        <surefire.version>2.17</surefire.version>
-        <checkstyle.version>2.13</checkstyle.version>
-        <clover.version>2.5.1</clover.version>
-        <pmd.plugin.version>3.5</pmd.plugin.version>
-        <java.version>1.6</java.version>
-        <ant.version>1.9.4</ant.version>
-        <javadoc.plugin.version>2.10.1</javadoc.plugin.version>
+        <surefire.version>2.18.1</surefire.version>
+        <checkstyle.version>2.17</checkstyle.version>
+        <pmd.plugin.version>3.8</pmd.plugin.version>
+        <java.version>1.7</java.version>
+        <jacoco.version>0.7.5.201505241946</jacoco.version>
+        <ant.version>1.9.6</ant.version>
+        <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
         <antlr.version>4.5.2-1</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot/${project.artifactId}</pmd.website.baseurl>
+
+        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
         <config.basedir>${basedir}/pmd-core</config.basedir>
         <pmd.dogfood.ruleset>${config.basedir}/src/main/resources/rulesets/internal/dogfood.xml</pmd.dogfood.ruleset>
-        <checkstyle.configLocation>${config.basedir}/etc/checkstyle-config.xml</checkstyle.configLocation>
-        <checkstyle.suppressionsFile>${config.basedir}/etc/checkstyle-suppressions.xml</checkstyle.suppressionsFile>
+        <pmd.build-tools.version>1.0.1</pmd.build-tools.version>
     </properties>
 
     <build>
@@ -282,7 +285,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
-                <version>2.7</version>
+                <version>2.10</version>
             </extension>
         </extensions>
         <pluginManagement>
@@ -306,25 +309,34 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.7</version>
+                    <version>1.8</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.4.1</version>
+                    <version>2.6</version>
+                    <dependencies>
+                        <!-- Remove this once m-a-p 3.0.0 is available -->
+                        <!-- Needed to fix java9 issue -> https://github.com/codehaus-plexus/plexus-archiver/commit/c0357c5234fedb958bc2dd93a8397424bdcea7cf -->
+                        <dependency>
+                            <groupId>org.codehaus.plexus</groupId>
+                            <artifactId>plexus-archiver</artifactId>
+                            <version>3.0.3</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.9</version>
+                    <version>2.10</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.1</version>
+                    <version>2.5.2</version>
                     <configuration>
                         <releaseProfiles>pmd-release</releaseProfiles>
-                        <pushChanges>false</pushChanges>
+                        <pushChanges>true</pushChanges>
                         <localCheckout>true</localCheckout>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>pmd_releases/@{project.version}</tagNameFormat>
@@ -334,12 +346,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>2.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.2</version>
+                    <version>3.3</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
@@ -358,12 +370,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>2.7</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.4.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -383,7 +400,6 @@
                     <version>${surefire.version}</version>
                     <configuration>
                         <forkMode>once</forkMode>
-                        <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
                         <runOrder>alphabetical</runOrder>
                     </configuration>
                 </plugin>
@@ -411,31 +427,10 @@
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>1.9.1</version>
                 </plugin>
-                <!-- As Clover can be quite an hassle, know that you can skip 
-                    it by using the following option when running mvn: $ mvn clean -Dmaven.clover.skip=true 
-                    site -->
-                <plugin>
-                    <groupId>com.atlassian.maven.plugins</groupId>
-                    <artifactId>maven-clover2-plugin</artifactId>
-                    <version>${clover.version}</version>
-                    <inherited>true</inherited>
-                    <configuration>
-                        <jdk>${java.version}</jdk>
-                        <licenseLocation>${config.basedir}/licences/clover2.license</licenseLocation>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>pre-site</phase>
-                            <goals>
-                                <goal>instrument</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
                 <plugin>
                     <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-build</artifactId>
-                    <version>0.9</version>
+                    <artifactId>pmd-build-tools-plugin</artifactId>
+                    <version>${pmd.build-tools.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -447,12 +442,15 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>3.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${javadoc.plugin.version}</version>
+                    <configuration>
+                        <quiet>true</quiet>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -462,12 +460,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.3.1</version>
+                    <version>1.4.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${pmd.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.8</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse 
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -538,6 +541,19 @@
                 </executions>
             </plugin>
             <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>${jacoco.version}</version>
+              <executions>
+                  <execution>
+                      <id>default-prepare-agent</id>
+                      <goals>
+                          <goal>prepare-agent</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <executions>
@@ -558,6 +574,7 @@
                     <excludeRoots>
                         <excludeRoot>target/generated-sources/javacc</excludeRoot>
                     </excludeRoots>
+                    <skipPmdError>false</skipPmdError>
                 </configuration>
             </plugin>
             <plugin>
@@ -565,20 +582,73 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>checkstyle-check</id>
                         <phase>verify</phase>
                         <goals>
-                            <goal>checkstyle</goal>
+                          <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>7.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-build-tools-config</artifactId>
+                        <version>${pmd.build-tools.version}</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
-                    <configLocation>${checkstyle.configLocation}</configLocation>
-                    <suppressionsFile>${checkstyle.suppressionsFile}</suppressionsFile>
+                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
+                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                    </sourceDirectories>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-toolchains-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!-- if autoReleaseAfterClose is true, then the artifacts will be
+                         automatically promoted to maven central -->
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -588,16 +658,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${javadoc.plugin.version}</version>
-                <configuration>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -627,20 +694,17 @@
                 </configuration>
             </plugin>
 
-            <!-- Emma is a test coverage tools to be used instead of clover. 
-                As the mvn2 plugin is not released yet, the plugin is commented out, so you 
-                build won't fail: You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762 
-                Download the tarball, extract, cd into dir, run $ mvn install. -->
-            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId> 
-                </plugin> -->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${checkstyle.version}</version>
                 <configuration>
-                    <configLocation>${checkstyle.configLocation}</configLocation>
-                    <suppressionsFile>${checkstyle.suppressionsFile}</suppressionsFile>
+                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
+                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                    </sourceDirectories>
                 </configuration>
                 <reportSets>
                     <reportSet>
@@ -654,7 +718,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.8</version>
+                <version>2.8.1</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -682,20 +746,17 @@
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>${surefire.version}</version>
             </plugin>
+
             <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-clover2-plugin</artifactId>
-                <version>${clover.version}</version>
-                <configuration>
-                    <licenseLocation>${config.basedir}/licences/clover2.license</licenseLocation>
-                    <reportDescriptor>${config.basedir}/etc/default-clover-report.xml</reportDescriptor>
-                </configuration>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
             </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.2</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -729,7 +790,7 @@
             <dependency>
                 <groupId>jaxen</groupId>
                 <artifactId>jaxen</artifactId>
-                <version>1.1.4</version>
+                <version>1.1.6</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>xercesImpl</artifactId>
@@ -748,12 +809,12 @@
             <dependency>
               <groupId>com.beust</groupId>
               <artifactId>jcommander</artifactId>
-              <version>1.35</version>
+              <version>1.48</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.4</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -779,12 +840,12 @@
             <dependency>
                 <groupId>org.mozilla</groupId>
                 <artifactId>rhino</artifactId>
-                <version>1.7R4</version>
+                <version>1.7.7</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
             </dependency>
             <dependency>
                 <groupId>net.java.dev.javacc</groupId>
@@ -799,25 +860,81 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
-                <version>1.10.8</version>
+                <version>1.10.19</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.3.2</version>
+                <version>3.4</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.7</version>
+                <version>1.7.12</version>
             </dependency>
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
                 <artifactId>wiremock</artifactId>
-                <version>1.52</version>
+                <version>1.57</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>2.4.7</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.stefanbirkner</groupId>
+                <artifactId>system-rules</artifactId>
+                <version>1.8.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>sonatype-nexus-plugin-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
     <profiles>
         <profile>
@@ -825,88 +942,35 @@
             <properties>
                 <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
             </properties>
-        </profile>
-        <profile>
-            <id>sf-release</id>
-            <distributionManagement>
-                <repository>
-                    <id>pmd-repo</id>
-                    <name>Default Repository</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/maven2</url>
-                </repository>
-                <site>
-                    <id>pmd-site</id>
-                    <name>Default Site</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/pmd-${project.version}</url>
-                </site>
-            </distributionManagement>
-            <properties>
-                <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <inherited>true</inherited>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
                         <executions>
                             <execution>
-                                <id>attach-sources</id>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
                                 <goals>
-                                    <goal>jar</goal>
+                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <inherited>true</inherited>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <inherited>true</inherited>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <updateReleaseInfo>true</updateReleaseInfo>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
 
         <profile>
-            <id>sf-snapshot</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>pmd-snapshot-repo</id>
-                    <name>Snapshot Repository</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/snapshot/maven2</url>
-                    <uniqueVersion>true</uniqueVersion>
-                </snapshotRepository>
-                <site>
-                    <id>pmd-snapshot-site</id>
-                    <name>Default Site</name>
-                    <url>scp://shell.sourceforge.net/home/project-web/pmd/htdocs/snapshot</url>
-                </site>
-            </distributionManagement>
-        </profile>
-
-        <profile>
-            <id>jdk8-integration</id>
+            <id>jdk8-modules</id>
             <activation>
                 <jdk>1.8</jdk>
             </activation>
             <modules>
+                <module>pmd-apex</module>
                 <module>pmd-java8</module>
+                <module>pmd-ui</module>
             </modules>
         </profile>
 
@@ -925,31 +989,6 @@
         </profile>
 
         <profile>
-          <id>travis</id>
-          <activation>
-            <!-- https://github.com/travis-ci/travis-ci/issues/2727 -->
-            <!-- http://docs.travis-ci.com/user/ci-environment/#Environment-variables -->
-            <!-- from: https://github.com/marschall/jdeps-maven-plugin/blob/master/pom.xml -->
-            <property>
-              <name>env.TRAVIS</name>
-              <value>true</value>
-            </property>
-          </activation>
-          <build>
-            <plugins>
-              <plugin>
-                <artifactId>maven-toolchains-plugin</artifactId>
-                <executions>
-                  <execution>
-                    <phase>none</phase>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-          </build>
-        </profile>
-
-        <profile>
             <id>site</id>
             <!--
                 In order to build the site and build the aggregate javadoc report
@@ -958,6 +997,26 @@
             <properties>
                 <java.version>1.8</java.version>
             </properties>
+        </profile>
+
+        <profile>
+            <id>doclint</id>
+            <properties>
+                <java.version>1.8</java.version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <configuration>
+                                <additionalparam>-Xdoclint:all</additionalparam>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
         </profile>
     </profiles>
 
@@ -968,17 +1027,20 @@
         <module>pmd-dist</module>
         <module>pmd-fortran</module>
         <module>pmd-go</module>
+        <module>pmd-groovy</module>
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
         <module>pmd-matlab</module>
         <module>pmd-objectivec</module>
+        <module>pmd-perl</module>
         <module>pmd-php</module>
         <module>pmd-plsql</module>
         <module>pmd-python</module>
         <module>pmd-ruby</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
+        <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
     </modules>

@@ -271,7 +271,7 @@ rule that checks stuff across the all source code? Let's take a dummy example. L
 rule that count how many Expression Node you have in your source code (told you, it was a dummy example :) ).
 
 You realize quite simply. You just have to add static field to the RulesContext, as an attribute, and uses
-Rule.start() and Rule.end() hook to initialized and finalize your rule's implementation:
+`Rule.start()` and `Rule.end()` hooks to initialize and finalize your rule's implementation:
 
     package net.sourceforge.pmd.rules;
     
@@ -309,9 +309,9 @@ Rule.start() and Rule.end() hook to initialized and finalize your rule's impleme
            }
     }
 
-As you can see in this example, the method start will be call the first time the rule is going to be used,
-so you can initialize properly your rule here. Once the rule will have finished to parses the source code,
-the method end() will be invoke you can assert there if, or not, your rule has been violated.
+As you can see in this example, the method `start()` will be called once per file, right before it's analysis starts,
+so you can initialize properly your rule here. Once the rule have finished analyzing the file's source code,
+the method `end()` will be invoked you can assert there if your rule has been violated or not.
 
 <em>
 Note that the example logs a violation **without** a proper classname. This is not really a good idea.
@@ -325,6 +325,12 @@ classname to the violation report.
 
 
 ## I need some kind of Type Resolution for my rule!
+
+PMD supports determining the type of nodes on the AST. For this to work you need:
+
+1. Include the attribute `typeResolution="true"` when defining the `rule` node on the ruleset XML.
+2. The auxiliary classpath for PMD is setup correctly, so that PMD can actually find the (compiled)
+classes.
 
 ### Inside an XPath query
 
@@ -360,12 +366,8 @@ Below an other sample of use of type resolution inside a java code:
         return super.visit(type, ruleCtx);
     }
 
-Note, that this will only work, if the auxiliary classpath for PMD is setup
-correctly, so that PMD can actually find the (compiled) class "com.forbidden.class" and
-you get the actual Class instance by calling getType().
-
-Otherwise, you'll have to string-compare the image, e.g.
-`"com.forbidden.class".equals(node.getImage())`
+Notice `getType()` will return a `Class` object of the proper type, therefore
+the need to have access to compiled classes in the auxiliar classpath.
 
 ## Thread safety, concurrency issues and reuse of rule instances
 

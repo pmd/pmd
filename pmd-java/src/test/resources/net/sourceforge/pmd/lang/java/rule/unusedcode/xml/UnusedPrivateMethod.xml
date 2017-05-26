@@ -481,7 +481,7 @@ public class Foo {
 
         //call private method.  Flagged method
         setInnateFilterFields(filter, request);
-        //perfrom logic
+        //perform logic
 
         //return
         return filter;
@@ -562,7 +562,7 @@ public class Foo extends MultiActionController {
 
     private static final Logger logger = Logger.getLogger(Foo.class);
 
-    public DashboardGraphInnateFilter_o getGraphInnateFilter(HttpServletRequest request) {
+    public DashboardGraphInnateFilter getGraphInnateFilter(HttpServletRequest request) {
         setInnateFilterFields();
         return null;
     }
@@ -582,13 +582,13 @@ import net.sourceforge.pmd.lang.java.rule.unusedcode.unusedprivatemethod.*;
 public class Foo extends MultiActionController {
     private static final Logger logger = Logger.getLogger(Foo.class);
 
-    public DashboardGraphInnateFilter_o getGraphInnateFilter(HttpServletRequest request) {
-        DashboardGraphInnateFilter_o filter = new DashboardGraphInnateFilter_o();
+    public DashboardGraphInnateFilter getGraphInnateFilter(HttpServletRequest request) {
+        DashboardGraphInnateFilter filter = new DashboardGraphInnateFilter();
         setInnateFilterFields(filter, request);
         return filter;
     }
 
-    private void setInnateFilterFields(DashboardInnateFilter_o filter, HttpServletRequest request) { //incorrectly flagged
+    private void setInnateFilterFields(DashboardInnateFilter filter, HttpServletRequest request) { //incorrectly flagged
         logger.info("here");
     }
 }
@@ -1503,5 +1503,32 @@ public class blabla implements blabla2 {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1412 UnusedPrivateMethod false positive: Issue #1403 not completely solved</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Something {
+    private Purse annPurse5;
+    private Purse bobPurse7;
+    @Before public void setUp() {
+        modifiableEmptyMap = new HashMap<>();
+        annPurse5 = new Purse(ANN, 5);
+        bobPurse7 = new Purse(BOB, 7);
+    }
+    @Test public void mapMergeShouldReturnTheUnionWhenGivenDifferentSetsWithSomeCommonValues() {
+        final Map<String, Purse> actual
+            = Combiners.mapMerge(mapOf(annPurse5, bobPurse7), mapOf(bobPurse9, calPurse10), ADDITION);
+        assertEquals(mapOf(annPurse5, bobPurse16, calPurse10), actual);
+    }
+    private static Map<String, Purse> mapOf(final Purse... values) {
+        return mapOf(Purse::getOwner, values);
+    }
+    private static <K, V> Map<K, V> mapOf(final Function<V, K> keyMapper, final V... values) {
+        return Stream.of(values).collect(Collectors.toMap(keyMapper, Function.identity()));
+    }
+}
+]]></code>
     </test-code>
 </test-data>

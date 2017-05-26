@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
+
+    private boolean isInterface;
+
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
     }
@@ -13,24 +16,24 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
     public ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
         super(p, id);
     }
-    
+
     @Override
     public boolean isFindBoundary() {
-	return isNested();
+        return isNested();
     }
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     public boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration;
+        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
+                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
-
-    private boolean isInterface;
 
     public boolean isInterface() {
         return this.isInterface;
