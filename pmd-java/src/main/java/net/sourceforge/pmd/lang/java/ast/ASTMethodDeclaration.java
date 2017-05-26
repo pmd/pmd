@@ -125,8 +125,9 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         String[] types = new String[numParams];
 
         for (int i = 0; i < numParams; i++) {
-            types[i] = params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getCanonicalTypeName();
+            types[i] = params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage();
         }
+
 
         qualifiedName = QualifiedName.makeOperationOf(parent, getMethodName(), types);
         return qualifiedName;
