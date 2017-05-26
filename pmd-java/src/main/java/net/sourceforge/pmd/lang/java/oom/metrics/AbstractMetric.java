@@ -36,15 +36,16 @@ public abstract class AbstractMetric {
      * @param node The node to check for
      * @return True if the metric can be computed, false otherwise.
      */
+    // TODO better wrap that around the metrics implementation
     protected boolean isSupported(ASTMethodOrConstructorDeclaration node) {
         if (isAbstractHandler) {
             return true;
         }
 
         if (node instanceof ASTMethodDeclaration) {
-            return ((ASTMethodDeclaration) node).isAbstract();
+            return !((ASTMethodDeclaration) node).isAbstract();
         } else {
-            return ((ASTConstructorDeclaration) node).isAbstract();
+            return !((ASTConstructorDeclaration) node).isAbstract();
         }
     }
 }
