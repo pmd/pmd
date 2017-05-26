@@ -133,15 +133,15 @@ public class QualifiedNameTest extends ParserTst {
     public void testConstructorWithParams() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(int j, String k){}}";
 
-
         Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
                 TEST);
 
         for (ASTConstructorDeclaration declaration : nodes) {
             QualifiableNode.QualifiedName qname = declaration.getQualifiedName();
-            assertEquals("bar.Bzaz#Bzaz(int,String)", qname.toString());
+            // TODO fails due to typeres
+            assertEquals("bar.Bzaz#Bzaz(int,java.lang.String)", qname.toString());
             assertNotNull(qname.getOperation());
-            assertEquals("Bzaz(int,String)", qname.getOperation());
+            assertEquals("Bzaz(int,java.lang.String)", qname.getOperation());
 
         }
     }
@@ -160,7 +160,7 @@ public class QualifiedNameTest extends ParserTst {
     }
 
     @Test
-    public void testConstructorOverload() {
+    public void testConstructorOverload() { // TODO fails due to typeres
         final String TEST = "package bar; class Bzaz{ public Bzaz(int j) {} public Bzaz(int j, String k){}}";
 
         Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
@@ -171,7 +171,7 @@ public class QualifiedNameTest extends ParserTst {
     }
 
     @Test
-    public void testMethodOverload() {
+    public void testMethodOverload() { // TODO fails due to typeres
         final String TEST = "package bar; class Bzaz{ public void foo(String j) {} " +
                 "public void foo(int j){} public void foo(double k){}}";
 

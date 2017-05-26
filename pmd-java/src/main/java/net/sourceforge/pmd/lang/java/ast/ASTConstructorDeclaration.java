@@ -55,7 +55,8 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
         String[] types = new String[numParams];
 
         for (int i = 0; i < numParams; i++) {
-            types[i] = params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage();
+            // Needs typeres ! TODO
+            types[i] = params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getCanonicalTypeName();
         }
 
 

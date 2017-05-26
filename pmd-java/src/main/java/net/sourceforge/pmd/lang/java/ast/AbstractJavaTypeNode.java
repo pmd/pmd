@@ -31,4 +31,9 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
     public void setType(Class<?> type) {
         this.type = type;
     }
+
+    public String getCanonicalTypeName() {
+        return type.getCanonicalName();
+    }
+
 }
