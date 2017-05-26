@@ -164,8 +164,9 @@ public interface QualifiableNode {
                     hash += p.hashCode();
                 }
             }
-            if (operation != null)
+            if (operation != null) {
                 hash += operation.hashCode();
+            }
             return hash;
         }
     }

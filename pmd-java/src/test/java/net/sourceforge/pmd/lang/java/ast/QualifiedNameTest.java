@@ -14,6 +14,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.java.ParserTst;
 import org.junit.Test;
 
+
 /**
  * @author Clément Fournier
  */
@@ -60,13 +61,13 @@ public class QualifiedNameTest extends ParserTst {
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             QualifiableNode.QualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
-                case "Foo":
-                    assertEquals("foo.bar.Bzaz$Bor$Foo",
-                            qname.toString());
-                    assertEquals(3, qname.getClasses().length);
-                    break;
-                default:
-                    break;
+            case "Foo":
+                assertEquals("foo.bar.Bzaz$Bor$Foo",
+                        qname.toString());
+                assertEquals(3, qname.getClasses().length);
+                break;
+            default:
+                break;
             }
         }
     }
@@ -82,14 +83,14 @@ public class QualifiedNameTest extends ParserTst {
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             QualifiableNode.QualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
-                case "Foo":
-                    assertEquals(".Bzaz$Bor$Foo",
-                            qname.toString());
-                    assertNull(qname.getPackages());
-                    assertEquals(3, qname.getClasses().length);
-                    break;
-                default:
-                    break;
+            case "Foo":
+                assertEquals(".Bzaz$Bor$Foo",
+                        qname.toString());
+                assertNull(qname.getPackages());
+                assertEquals(3, qname.getClasses().length);
+                break;
+            default:
+                break;
             }
         }
     }
@@ -172,8 +173,8 @@ public class QualifiedNameTest extends ParserTst {
 
     @Test
     public void testMethodOverload() {
-        final String TEST = "package bar; class Bzaz{ public void foo(String j) {} " +
-                "public void foo(int j){} public void foo(double k){}}";
+        final String TEST = "package bar; class Bzaz{ public void foo(String j) {} "
+                + "public void foo(int j){} public void foo(double k){}}";
 
         Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 

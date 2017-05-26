@@ -35,8 +35,8 @@ public class OperationSignature extends Signature {
         // TODO better getter or setter detection
         boolean isGetterOrSetter = node.getName().startsWith("get")
                 || node.getName().startsWith("set");
-        Role role = isGetterOrSetter ? Role.GETTER_OR_SETTER :
-                node.isStatic() ? Role.STATIC : Role.METHOD;
+        Role role = isGetterOrSetter ? Role.GETTER_OR_SETTER
+                : node.isStatic() ? Role.STATIC : Role.METHOD;
 
         return new OperationSignature(Visibility.get(node), role, node.isAbstract());
     }

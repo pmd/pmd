@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.oom;
 
-import static net.sourceforge.pmd.lang.java.oom.visitor.MetricsVisitorFacade.topLevelPackage;
+import static net.sourceforge.pmd.lang.java.oom.visitor.MetricsVisitorFacade.TOP_LEVEL_PACKAGE;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -31,9 +31,9 @@ public class Metrics {
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
         QualifiedName qname = node.getQualifiedName();
-        double memoized = topLevelPackage.getMemo(key, qname); // TODO
+        double memoized = TOP_LEVEL_PACKAGE.getMemo(key, qname); // TODO
 
-        return memoized == Double.NaN ? key.getCalculator().computeFor(node, topLevelPackage) : memoized;
+        return memoized == Double.NaN ? key.getCalculator().computeFor(node, TOP_LEVEL_PACKAGE) : memoized;
     }
 
     /**
@@ -42,9 +42,9 @@ public class Metrics {
      */
     public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
         QualifiedName qname = node.getQualifiedName();
-        double memoized = topLevelPackage.getMemo(key, qname); // TODO
+        double memoized = TOP_LEVEL_PACKAGE.getMemo(key, qname); // TODO
 
-        return memoized == Double.NaN ? key.getCalculator().computeFor(node, topLevelPackage) : memoized;
+        return memoized == Double.NaN ? key.getCalculator().computeFor(node, TOP_LEVEL_PACKAGE) : memoized;
     }
 
     /**

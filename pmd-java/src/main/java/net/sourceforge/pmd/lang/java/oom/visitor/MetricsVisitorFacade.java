@@ -14,10 +14,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  */
 public class MetricsVisitorFacade extends JavaParserVisitorAdapter {
 
-    public static final PackageStats topLevelPackage = new PackageStats();
+    public static final PackageStats TOP_LEVEL_PACKAGE = new PackageStats();
 
     public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
         MetricsVisitor visitor = new MetricsVisitor();
-        rootNode.jjtAccept(visitor, topLevelPackage);
+        rootNode.jjtAccept(visitor, TOP_LEVEL_PACKAGE);
     }
 }
