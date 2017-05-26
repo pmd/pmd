@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/DECORATION/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
+  name="PMD">
+
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.3.0</version>
+  </skin>
+
+  <custom>
+    <fluidoSkin>
+      <topBarEnabled>true</topBarEnabled>
+      <sideBarEnabled>true</sideBarEnabled>
+    </fluidoSkin>
+  </custom>
+
+  <bannerLeft>
+    <name>pmd-logo</name>
+    <src>../images/pmd_logo_small.png</src>
+    <href>http://pmd.sourceforge.net/</href>
+  </bannerLeft>
+  <bannerRight>
+    <name>SourceForge</name>
+    <src>../images/sflogo.png</src>
+    <href>http://sourceforge.net/</href>
+  </bannerRight>
+  
+  <poweredBy>
+      <logo name="Maven"
+            alt="Built by Maven"
+            href="http://maven.apache.org/"
+            img="http://maven.apache.org/images/logos/maven-feather.png"/>
+      <logo name="SourceForge.net"
+            alt="SourceForge.net. Fast, secure and Free Open Source software downloads"
+            href="http://sourceforge.net/"
+            img="http://sflogo.sourceforge.net/sflogo.php?group_id=56262&amp;type=10"
+            width="80" height="15"/>
+  </poweredBy>
+  
+  <body>
+    <links>
+      <item href="http://sourceforge.net/projects/pmd" name="SourceForge.net Project Page"/>
+      <item href="http://sourceforge.net" name="Hosted by SourceForge"/>
+    </links>
+
+    <breadcrumbs>
+      <item href="http://www.sourceforge.net/" name="SourceForge"/>
+      <item href="http://pmd.sourceforge.net/" name="PMD"/>
+    </breadcrumbs>
+
+    <menu ref="parent"/>
+
+    <menu ref="reports"/>
+
+  </body>
+</project>
