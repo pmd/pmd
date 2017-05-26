@@ -17,7 +17,7 @@ public enum Benchmark {
     SymbolTable(5, "Symbol table"),
     DFA(6, "DFA"),
     TypeResolution(7, "Type resolution"),
-    Metrics(8, "Metrics visitor"),
+    MetricsVisitor(8, "Metrics visitor"),
     RuleChainVisit(9, "RuleChain visit"),
     Reporting(10, "Reporting"),
     RuleTotal(11, "Rule total"),
