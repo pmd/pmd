@@ -98,14 +98,14 @@ public class PackageStats {
     }
 
 
-    public double getMemo(Metrics.ClassMetricKey key, String qname) {
+    public double getMemo(Metrics.ClassMetricKey key, QualifiedName qname) {
         // TODO
         // Looks for a memoized result
 
         return Double.NaN;
     }
 
-    public double getMemo(Metrics.OperationMetricKey key, String qname) {
+    public double getMemo(Metrics.OperationMetricKey key, QualifiedName qname) {
         // TODO
         // Looks for a memoized result
 

@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.java.oom.visitor.MetricsVisitorFacade.top
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.QualifiableNode.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
 
@@ -29,8 +30,8 @@ public class Metrics {
      * passed.
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
-        String qname = ""; // node.getQualifiedName(); //TODO
-        double memoized = topLevelPackage.getMemo(key, qname);
+        QualifiedName qname = node.getQualifiedName();
+        double memoized = topLevelPackage.getMemo(key, qname); // TODO
 
         return memoized == Double.NaN ? key.getCalculator().computeFor(node, topLevelPackage) : memoized;
     }
@@ -40,8 +41,8 @@ public class Metrics {
      * passed.
      */
     public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
-        String qname = ""; // node.getQualifiedName(); //TODO
-        double memoized = topLevelPackage.getMemo(key, qname);
+        QualifiedName qname = node.getQualifiedName();
+        double memoized = topLevelPackage.getMemo(key, qname); // TODO
 
         return memoized == Double.NaN ? key.getCalculator().computeFor(node, topLevelPackage) : memoized;
     }
