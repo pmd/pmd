@@ -1,4 +1,0 @@
-#!/bin/bash
-
-mv pmd-javascript/src/test/resources/net/sourceforge/pmd/lang/ecmascript/rule/basic/xml/AvoidTrailingComma.xml.bak \
-    pmd-javascript/src/test/resources/net/sourceforge/pmd/lang/ecmascript/rule/basic/xml/AvoidTrailingComma.xml
