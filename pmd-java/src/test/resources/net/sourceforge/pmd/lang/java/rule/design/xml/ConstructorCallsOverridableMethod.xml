@@ -114,6 +114,7 @@ public class Foo {
   addActionListener(() -> bar());
   addActionListener(() -> { bar(); });
   addActionListener((a) -> { bar(); });
+  addActionListener(this::bar);
  }
  public void bar() {}
 }
