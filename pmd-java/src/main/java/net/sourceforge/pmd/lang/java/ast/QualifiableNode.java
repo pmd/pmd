@@ -13,14 +13,6 @@ import java.util.Arrays;
  */
 public interface QualifiableNode {
 
-    char LEFT_CLASS_SEP = '$';
-    char METHOD_SEP = '#';
-    char NESTED_CLASS_SEP = ':';
-    char LEFT_PARAM_SEP = '(';
-    char RIGHT_PARAM_SEP = ')';
-    char PARAMLIST_SEP = ',';
-    char PACKAGE_SEP = '.';
-
     /**
      * Returns a qualified name for this node.
      *
@@ -70,21 +62,21 @@ public interface QualifiableNode {
         }
 
         /** Returns a normalized method name (not Java-canonical!) */
-        public static String getOperationName(String methodName, String[] paramTypes) {
+        private static String getOperationName(String methodName, String[] paramTypes) {
             StringBuilder sb = new StringBuilder();
             sb.append(methodName);
-            sb.append(LEFT_PARAM_SEP);
+            sb.append('(');
             int last = paramTypes.length - 1;
             for (int i = 0; i < last; i++) {
                 sb.append(paramTypes[i]);
-                sb.append(PARAMLIST_SEP);
+                sb.append(',');
             }
 
             if (last > -1) {
                 sb.append(paramTypes[last]);
             }
 
-            sb.append(RIGHT_PARAM_SEP);
+            sb.append(')');
 
             return sb.toString();
         }
@@ -125,23 +117,23 @@ public interface QualifiableNode {
                 int last = packages.length - 1;
                 for (int i = 0; i < last; i++) {
                     sb.append(packages[i]);
-                    sb.append(PACKAGE_SEP);
+                    sb.append('.');
                 }
 
                 sb.append(packages[last]);
             }
-            sb.append(LEFT_CLASS_SEP); // class delimiter is there even if package null
+            sb.append('.'); // this dot is there even if package is null
 
             int last = classes.length - 1;
             for (int i = 0; i < last; i++) {
                 sb.append(classes[i]);
-                sb.append(NESTED_CLASS_SEP);
+                sb.append('$');
             }
 
             sb.append(classes[last]);
 
             if (operation != null) {
-                sb.append(METHOD_SEP);
+                sb.append('#');
                 sb.append(operation);
             }
 

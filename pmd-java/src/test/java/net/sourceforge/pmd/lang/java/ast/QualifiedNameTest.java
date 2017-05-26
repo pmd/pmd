@@ -4,22 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Set;
-
-import net.sourceforge.pmd.lang.java.ParserTst;
-import org.junit.Test;
-
-import static net.sourceforge.pmd.lang.java.ast.QualifiableNode.LEFT_CLASS_SEP;
-import static net.sourceforge.pmd.lang.java.ast.QualifiableNode.LEFT_PARAM_SEP;
-import static net.sourceforge.pmd.lang.java.ast.QualifiableNode.METHOD_SEP;
-import static net.sourceforge.pmd.lang.java.ast.QualifiableNode.NESTED_CLASS_SEP;
-import static net.sourceforge.pmd.lang.java.ast.QualifiableNode.PACKAGE_SEP;
-import static net.sourceforge.pmd.lang.java.ast.QualifiableNode.PARAMLIST_SEP;
-import static net.sourceforge.pmd.lang.java.ast.QualifiableNode.RIGHT_PARAM_SEP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import java.util.Set;
+
+import net.sourceforge.pmd.lang.java.ParserTst;
+import org.junit.Test;
 
 /**
  * @author Clément Fournier
@@ -34,7 +27,7 @@ public class QualifiedNameTest extends ParserTst {
                 TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             QualifiableNode.QualifiedName qname = coid.getQualifiedName();
-            assertEquals(LEFT_CLASS_SEP + "Foo", qname.toString());
+            assertEquals(".Foo", qname.toString());
             assertNull(qname.getPackages());
             assertEquals(1, qname.getClasses().length);
             assertNull(qname.getOperation());
@@ -49,7 +42,7 @@ public class QualifiedNameTest extends ParserTst {
                 TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             QualifiableNode.QualifiedName qname = coid.getQualifiedName();
-            assertEquals("foo" + PACKAGE_SEP + "bar" + LEFT_CLASS_SEP + "Bzaz", qname.toString());
+            assertEquals("foo.bar.Bzaz", qname.toString());
             assertEquals(2, qname.getPackages().length);
             assertEquals(1, qname.getClasses().length);
             assertNull(qname.getOperation());
@@ -68,8 +61,7 @@ public class QualifiedNameTest extends ParserTst {
             QualifiableNode.QualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
                 case "Foo":
-                    assertEquals("foo" + PACKAGE_SEP + "bar" + LEFT_CLASS_SEP
-                                    + "Bzaz" + NESTED_CLASS_SEP + "Bor" + NESTED_CLASS_SEP + "Foo",
+                    assertEquals("foo.bar.Bzaz$Bor$Foo",
                             qname.toString());
                     assertEquals(3, qname.getClasses().length);
                     break;
@@ -91,8 +83,7 @@ public class QualifiedNameTest extends ParserTst {
             QualifiableNode.QualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
                 case "Foo":
-                    assertEquals(LEFT_CLASS_SEP
-                                    + "Bzaz" + NESTED_CLASS_SEP + "Bor" + NESTED_CLASS_SEP + "Foo",
+                    assertEquals(".Bzaz$Bor$Foo",
                             qname.toString());
                     assertNull(qname.getPackages());
                     assertEquals(3, qname.getClasses().length);
@@ -113,11 +104,9 @@ public class QualifiedNameTest extends ParserTst {
 
         for (ASTMethodDeclaration declaration : nodes) {
             QualifiableNode.QualifiedName qname = declaration.getQualifiedName();
-            assertEquals("bar" + LEFT_CLASS_SEP
-                            + "Bzaz" + METHOD_SEP + "foo" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP,
-                    qname.toString());
+            assertEquals("bar.Bzaz#foo()", qname.toString());
             assertNotNull(qname.getOperation());
-            assertEquals("foo" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP, qname.getOperation());
+            assertEquals("foo()", qname.getOperation());
 
         }
     }
@@ -132,11 +121,10 @@ public class QualifiedNameTest extends ParserTst {
 
         for (ASTConstructorDeclaration declaration : nodes) {
             QualifiableNode.QualifiedName qname = declaration.getQualifiedName();
-            assertEquals("bar" + LEFT_CLASS_SEP
-                            + "Bzaz" + METHOD_SEP + "Bzaz" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP,
+            assertEquals("bar.Bzaz#Bzaz()",
                     qname.toString());
             assertNotNull(qname.getOperation());
-            assertEquals("Bzaz" + LEFT_PARAM_SEP + RIGHT_PARAM_SEP, qname.getOperation());
+            assertEquals("Bzaz()", qname.getOperation());
 
         }
     }
@@ -151,11 +139,9 @@ public class QualifiedNameTest extends ParserTst {
 
         for (ASTConstructorDeclaration declaration : nodes) {
             QualifiableNode.QualifiedName qname = declaration.getQualifiedName();
-            assertEquals("bar" + LEFT_CLASS_SEP
-                            + "Bzaz" + METHOD_SEP + "Bzaz" + LEFT_PARAM_SEP + "int" + PARAMLIST_SEP + "String" + RIGHT_PARAM_SEP,
-                    qname.toString());
+            assertEquals("bar.Bzaz#Bzaz(int,String)", qname.toString());
             assertNotNull(qname.getOperation());
-            assertEquals("Bzaz" + LEFT_PARAM_SEP + "int" + PARAMLIST_SEP + "String" + RIGHT_PARAM_SEP, qname.getOperation());
+            assertEquals("Bzaz(int,String)", qname.getOperation());
 
         }
     }
@@ -189,8 +175,7 @@ public class QualifiedNameTest extends ParserTst {
         final String TEST = "package bar; class Bzaz{ public void foo(String j) {} " +
                 "public void foo(int j){} public void foo(double k){}}";
 
-        Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class,
-                TEST);
+        Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 
         ASTMethodDeclaration[] arr = nodes.toArray(new ASTMethodDeclaration[3]);
         assertNotEquals(arr[0].getQualifiedName(), arr[1].getQualifiedName());
