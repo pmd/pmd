@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Make sure, everything is English...
+export LANG=C.UTF8
+
 # verify the current directory
 if [ ! -f pom.xml -o ! -d ../pmd.github.io ]; then
     echo "You seem to be in the wrong working directory or you don't have pmd.github.io checked out..."
