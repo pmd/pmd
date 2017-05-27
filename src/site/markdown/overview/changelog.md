@@ -17,6 +17,8 @@ This is a minor release.
 
 ### Fixed Issues
 
+*   General
+    *   [#407](https://github.com/pmd/pmd/issues/407): \[web] Release date is not properly formatted
 *   java-design
     *   [#397](https://github.com/pmd/pmd/issues/397): \[java] ConstructorCallsOverridableMethodRule: false positive for method called from lambda expression
 
