@@ -1593,9 +1593,7 @@ void TypeArguments():
 void TypeArgument():
 {}
 {
-   (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
- |
-   "?" [ WildcardBounds() ]
+   (Annotation() {checkForBadTypeAnnotations();})* (ReferenceType() | "?" [ WildcardBounds() ])
 }
 
 void WildcardBounds():

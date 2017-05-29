@@ -67,17 +67,17 @@ public class ParserCornerCases18 {
     }
 
     Runnable r1 = () -> { System.out.println(this); };
-    
+
     public Runnable toDoLater() {
         return () -> {
           System.out.println("later");
         };
     }
-    
+
     private String doPrivileged(PrivilegedAction<String> action) {
         return action.run();
     }
-    
+
     private void filterFiles(FileFilter[] filters) {
     }
 
@@ -163,6 +163,10 @@ public class ParserCornerCases18 {
 //                request.setId(42);
             };
         }
+    }
+
+    public List<@AnnotatedUsage ?> testWildCardWithAnnotation() {
+    	return null;
     }
 
     /**
