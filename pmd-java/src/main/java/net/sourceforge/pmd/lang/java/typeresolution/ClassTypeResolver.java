@@ -456,7 +456,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
         super.visit(node, data);
-        if (node.getImage() == null) {
+
+        if(node.jjtGetFirstToken().toString().equals("this")) {
+            ASTClassOrInterfaceDeclaration typeDeclaration
+                    = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+            if(typeDeclaration != null)
+                node.setType(typeDeclaration.getType());
+        } else if (node.getImage() == null) {
             rollupTypeUnary(node);
         } else {
             // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
