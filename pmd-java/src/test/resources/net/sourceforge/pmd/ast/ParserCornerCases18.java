@@ -180,6 +180,10 @@ public class ParserCornerCases18 {
 	public static <T extends @NonNull Enum<T>> getEnum() {
 		return null;
 	}
+	
+	public void createNonNullArray() {
+		return new MetaColumn @NonNull [value];
+	}
 
 
     /**
