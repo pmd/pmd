@@ -15,21 +15,56 @@ public class QualifiedName {
     private String[] classes = new String[1];
     private String operation = null;
 
-    public QualifiedName() {
+    private QualifiedName() {
     }
 
-    /** Builds a QName for an operation using the QName of the enclosing class */
-    public static QualifiedName makeOperationOf(QualifiedName parentClass, String operationName, String[] paramTypes) {
+    /**
+     * Builds the qualified name of a method declaration
+     *
+     * @param node The method declaration node
+     *
+     * @return The qualified name of the node
+     */
+    public static QualifiedName makeOperationOf(ASTMethodDeclaration node) {
+        QualifiedName parentQname = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getQualifiedName();
         QualifiedName qname = new QualifiedName();
-        qname.packages = parentClass.packages;
-        qname.classes = parentClass.classes;
 
-        qname.operation = getOperationName(operationName, paramTypes);
+        qname.packages = parentQname.packages;
+        qname.classes = parentQname.classes;
+        qname.operation = getOperationName(node.getMethodName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
+
         return qname;
     }
 
-    /** Builds a nested class QName using the QName of its immediate parent */
-    public static QualifiedName makeClassOf(QualifiedName parent, String className) {
+    /**
+     * Builds the qualified name of a constructor declaration
+     *
+     * @param node The constructor declaration node
+     *
+     * @return The qualified name of the node
+     */
+    public static QualifiedName makeOperationOf(ASTConstructorDeclaration node) {
+        ASTClassOrInterfaceDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        QualifiedName qname = new QualifiedName();
+        QualifiedName parentQName = parent.getQualifiedName();
+
+        qname.packages = parentQName.packages;
+        qname.classes = parentQName.classes;
+        qname.operation = getOperationName(parent.getImage(), node.getFirstDescendantOfType(ASTFormalParameters.class));
+
+        return qname;
+    }
+
+
+    /**
+     * Builds a nested class QName using the QName of its immediate parent
+     *
+     * @param parent    The qname of the immediate parent
+     * @param className The name of the class
+     *
+     * @return The qualified name of the nested class
+     */
+    public static QualifiedName makeNestedClassOf(QualifiedName parent, String className) {
         QualifiedName qname = new QualifiedName();
         qname.packages = parent.packages;
         if (parent.classes[0] != null) {
@@ -42,24 +77,46 @@ public class QualifiedName {
         return qname;
     }
 
+    /**
+     * Builds the QName of an outer (not nested) class.
+     *
+     * @param node The class node
+     *
+     * @return The qualified name of the node
+     */
+    public static QualifiedName makeOuterClassOf(ASTClassOrInterfaceDeclaration node) {
+        ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
+            .getFirstChildOfType(ASTPackageDeclaration.class);
+
+        QualifiedName qname = new QualifiedName();
+        qname.packages = pkg == null ? null : pkg.getPackageNameImage().split("\\.");
+        qname.classes[0] = node.getImage();
+
+        return qname;
+    }
+
+
     // Might be useful with type resolution
     public static QualifiedName parseCanonicalName(String canon) {
         throw new UnsupportedOperationException();
     }
 
     /** Returns a normalized method name (not Java-canonical!) */
-    private static String getOperationName(String methodName, String[] paramTypes) {
+    private static String getOperationName(String methodName, ASTFormalParameters params) {
+
         StringBuilder sb = new StringBuilder();
         sb.append(methodName);
         sb.append('(');
-        int last = paramTypes.length - 1;
+
+        int last = params.getParameterCount() - 1;
         for (int i = 0; i < last; i++) {
-            sb.append(paramTypes[i]);
+            // append type image of param
+            sb.append(params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage());
             sb.append(',');
         }
 
         if (last > -1) {
-            sb.append(paramTypes[last]);
+            sb.append(params.jjtGetChild(last).getFirstDescendantOfType(ASTType.class).getTypeImage());
         }
 
         sb.append(')');
@@ -67,29 +124,14 @@ public class QualifiedName {
         return sb.toString();
     }
 
-    /** Sets the class to the specified name, truncates the array to length of one */
-    public void setClass(String className) {
-        if (classes.length == 1) {
-            classes[0] = className;
-            return;
-        }
-
-        classes = new String[]{className};
-
-    }
 
     public String[] getPackages() {
         return packages;
     }
 
-    public void setPackages(String[] packs) {
-        packages = packs;
-    }
-
     public String[] getClasses() {
         return classes;
     }
-
 
     public String getOperation() {
         return operation;

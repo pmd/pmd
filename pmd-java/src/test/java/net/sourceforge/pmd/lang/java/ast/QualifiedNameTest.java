@@ -25,7 +25,7 @@ public class QualifiedNameTest extends ParserTst {
     public void testEmptyPackage() {
         final String TEST = "class Foo {}";
         Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
-                TEST);
+            TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             QualifiedName qname = coid.getQualifiedName();
             assertEquals(".Foo", qname.toString());
@@ -40,7 +40,7 @@ public class QualifiedNameTest extends ParserTst {
         final String TEST = "package foo.bar; class Bzaz{}";
 
         Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
-                TEST);
+            TEST);
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             QualifiedName qname = coid.getQualifiedName();
             assertEquals("foo.bar.Bzaz", qname.toString());
@@ -56,14 +56,14 @@ public class QualifiedNameTest extends ParserTst {
 
 
         Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
-                TEST);
+            TEST);
 
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             QualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
             case "Foo":
                 assertEquals("foo.bar.Bzaz$Bor$Foo",
-                        qname.toString());
+                    qname.toString());
                 assertEquals(3, qname.getClasses().length);
                 break;
             default:
@@ -78,14 +78,14 @@ public class QualifiedNameTest extends ParserTst {
 
 
         Set<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class,
-                TEST);
+            TEST);
 
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
             QualifiedName qname = coid.getQualifiedName();
             switch (coid.getImage()) {
             case "Foo":
                 assertEquals(".Bzaz$Bor$Foo",
-                        qname.toString());
+                    qname.toString());
                 assertNull(qname.getPackages());
                 assertEquals(3, qname.getClasses().length);
                 break;
@@ -101,7 +101,7 @@ public class QualifiedNameTest extends ParserTst {
 
 
         Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class,
-                TEST);
+            TEST);
 
         for (ASTMethodDeclaration declaration : nodes) {
             QualifiedName qname = declaration.getQualifiedName();
@@ -118,12 +118,12 @@ public class QualifiedNameTest extends ParserTst {
 
 
         Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
-                TEST);
+            TEST);
 
         for (ASTConstructorDeclaration declaration : nodes) {
             QualifiedName qname = declaration.getQualifiedName();
             assertEquals("bar.Bzaz#Bzaz()",
-                    qname.toString());
+                qname.toString());
             assertNotNull(qname.getOperation());
             assertEquals("Bzaz()", qname.getOperation());
 
@@ -136,7 +136,7 @@ public class QualifiedNameTest extends ParserTst {
 
 
         Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
-                TEST);
+            TEST);
 
         for (ASTConstructorDeclaration declaration : nodes) {
             QualifiedName qname = declaration.getQualifiedName();
@@ -148,24 +148,11 @@ public class QualifiedNameTest extends ParserTst {
     }
 
     @Test
-    public void testEquals() {
-        final String TEST = "package bar; class Bzaz{ public foo() {} public Bzaz(int j, String k){}}";
-
-        Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
-                TEST);
-
-        for (ASTConstructorDeclaration declaration : nodes) {
-            QualifiedName qname = declaration.getQualifiedName();
-            assertEquals(qname, qname.toString());
-        }
-    }
-
-    @Test
     public void testConstructorOverload() {
         final String TEST = "package bar; class Bzaz{ public Bzaz(int j) {} public Bzaz(int j, String k){}}";
 
         Set<ASTConstructorDeclaration> nodes = getNodes(ASTConstructorDeclaration.class,
-                TEST);
+            TEST);
 
         ASTConstructorDeclaration[] arr = nodes.toArray(new ASTConstructorDeclaration[2]);
         assertNotEquals(arr[0].getQualifiedName(), arr[1].getQualifiedName());
@@ -174,7 +161,7 @@ public class QualifiedNameTest extends ParserTst {
     @Test
     public void testMethodOverload() {
         final String TEST = "package bar; class Bzaz{ public void foo(String j) {} "
-                + "public void foo(int j){} public void foo(double k){}}";
+            + "public void foo(int j){} public void foo(double k){}}";
 
         Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
 

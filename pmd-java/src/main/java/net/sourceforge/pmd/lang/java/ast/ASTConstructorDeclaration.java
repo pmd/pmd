@@ -44,22 +44,9 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
 
     @Override
     public QualifiedName getQualifiedName() {
-        if (qualifiedName != null) {
-            return qualifiedName;
+        if (qualifiedName == null) {
+            qualifiedName = QualifiedName.makeOperationOf(this);
         }
-
-        ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-
-        ASTFormalParameters params = this.getFirstDescendantOfType(ASTFormalParameters.class);
-        int numParams = params.jjtGetNumChildren();
-        String[] types = new String[numParams];
-
-        for (int i = 0; i < numParams; i++) {
-            types[i] = params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage();
-        }
-
-
-        qualifiedName = QualifiedName.makeOperationOf(parent.getQualifiedName(), parent.getImage(), types);
         return qualifiedName;
     }
 }

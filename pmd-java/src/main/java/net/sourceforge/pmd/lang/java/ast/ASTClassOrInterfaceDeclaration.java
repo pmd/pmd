@@ -33,7 +33,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
 
     public boolean isNested() {
         return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+            || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
 
     public boolean isInterface() {
@@ -46,27 +46,17 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
 
     @Override
     public QualifiedName getQualifiedName() {
-        if (qualifiedName != null) {
-            return qualifiedName;
+        if (qualifiedName == null) {
+            if (isNested()) {
+                ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                QualifiedName parentQN = parent.getQualifiedName();
+                qualifiedName = QualifiedName.makeNestedClassOf(parentQN, this.getImage());
+                return qualifiedName;
+            }
+
+            qualifiedName = QualifiedName.makeOuterClassOf(this);
         }
 
-        if (isNested()) {
-            ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            QualifiedName parentQN = parent.getQualifiedName();
-            return QualifiedName.makeClassOf(parentQN, this.getImage());
-        }
-
-        QualifiedName qname = new QualifiedName();
-        ASTPackageDeclaration pkg = this.getFirstParentOfType(ASTCompilationUnit.class)
-                .getFirstChildOfType(ASTPackageDeclaration.class);
-
-        if (pkg != null) {
-            qname.setPackages(pkg.getPackageNameImage().split("\\."));
-        }
-
-        qname.setClass(this.getImage());
-
-        qualifiedName = qname;
         return qualifiedName;
     }
 }
