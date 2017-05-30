@@ -1921,7 +1921,7 @@ void AllocationExpression():
   (LOOKAHEAD(2)
     PrimitiveType() ArrayDimsAndInits()
   |
-    ClassOrInterfaceType() ((Annotation() {checkForBadTypeAnnotations();})*) [ TypeArguments() ]
+    ClassOrInterfaceType() [ TypeArguments() ]
      (
       ArrayDimsAndInits()
      |
@@ -1937,8 +1937,9 @@ void AllocationExpression():
 void ArrayDimsAndInits() :
 {}
 {
+
   LOOKAHEAD(2)
-  ( LOOKAHEAD(2) "[" Expression() "]" )+ ( LOOKAHEAD(2) "[" "]" )*
+  ( LOOKAHEAD(2) ((Annotation() {checkForBadTypeAnnotations();})*) "[" Expression() "]" )+ ( LOOKAHEAD(2) "[" "]" )*
 |
   ( "[" "]" )+ ArrayInitializer()
 }

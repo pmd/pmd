@@ -184,6 +184,11 @@ public class ParserCornerCases18 {
 	public Object createNonNullArray() {
 		return new Object @NonNull[0];
 	}
+	
+	private static void testMultiDimArrayWithAnnotations() {
+		// ever used a 2D-Array in java??
+		Object x = new Object @NonNull[2] @Nullable[1] @NonNull[3];
+	}
 
 
     /**
