@@ -124,6 +124,23 @@ public class QualifiedName {
         return sb.toString();
     }
 
+    /**
+     * Returns true if the resource addressed by this qualified name is a class.
+     *
+     * @return true if the resource addressed by this qualified name is a class.
+     */
+    public boolean isClass() {
+        return classes[0] != null && operation == null;
+    }
+
+    /**
+     * Returns true if the resource addressed by this qualified name is an operation.
+     *
+     * @return true if the resource addressed by this qualified name is an operation.
+     */
+    public boolean isOperation() {
+        return operation != null;
+    }
 
     public String[] getPackages() {
         return packages;
