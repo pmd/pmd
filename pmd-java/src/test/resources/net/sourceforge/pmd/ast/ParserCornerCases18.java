@@ -181,8 +181,8 @@ public class ParserCornerCases18 {
 		return null;
 	}
 	
-	public void createNonNullArray() {
-		return new MetaColumn @NonNull [value];
+	public Object createNonNullArray() {
+		return new Object @NonNull[0];
 	}
 
 
