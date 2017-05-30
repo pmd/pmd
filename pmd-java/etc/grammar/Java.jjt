@@ -1435,8 +1435,8 @@ void ClassOrInterfaceBodyDeclaration():
     | LOOKAHEAD(3) EnumDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
     | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
-    | MethodDeclaration(modifiers)
-    | AnnotationTypeDeclaration(modifiers)
+    | LOOKAHEAD(2) MethodDeclaration(modifiers)
+    | LOOKAHEAD(2) AnnotationTypeDeclaration(modifiers)
   )
 |
   ";"
@@ -1488,7 +1488,7 @@ void MethodDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);}
 {
   [ TypeParameters() ]
-  ResultType() MethodDeclarator() [ "throws" NameList() ]
+  [(Annotation() {checkForBadTypeAnnotations();})+] ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }
 
@@ -1564,9 +1564,9 @@ void Type():
 void ReferenceType():
 {}
 {
-   PrimitiveType() ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
+   PrimitiveType() ((Annotation() {checkForBadTypeAnnotations();})*) ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
-   ( ClassOrInterfaceType() (Annotation() {checkForBadTypeAnnotations();})*) ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+   ( ClassOrInterfaceType()) ((Annotation() {checkForBadTypeAnnotations();})*) ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
 }
 
 void ClassOrInterfaceType():

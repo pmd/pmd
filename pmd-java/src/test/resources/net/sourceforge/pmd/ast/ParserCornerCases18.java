@@ -172,6 +172,10 @@ public class ParserCornerCases18 {
 	public Object @Nullable [] testAnnotationsToArrayElements() {
 		return null;
 	}
+	
+	private byte @Nullable [] getBytes(){
+		return null;
+	}
 
 
     /**
