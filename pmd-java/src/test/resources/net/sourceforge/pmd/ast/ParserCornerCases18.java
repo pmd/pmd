@@ -177,7 +177,7 @@ public class ParserCornerCases18 {
 		return null;
 	}
 	
-	public static <T extends @NonNull Enum<T>> getEnum() {
+	public static <T extends @NonNull Enum<T>> T getEnum() {
 		return null;
 	}
 	
