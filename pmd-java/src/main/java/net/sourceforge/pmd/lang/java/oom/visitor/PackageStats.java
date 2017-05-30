@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.oom.visitor;
 
-import static net.sourceforge.pmd.lang.java.ast.QualifiableNode.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.QualifiableNode.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 
 
 /**

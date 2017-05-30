@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.ast.QualifiableNode.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 
 /**
  * @author Clément Fournier

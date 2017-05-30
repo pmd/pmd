@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.QualifiableNode.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 
 /**
  * Statistics about a class. Gathers information about the contained members and their signatures,
