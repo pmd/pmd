@@ -168,6 +168,11 @@ public class ParserCornerCases18 {
     public List<@AnnotatedUsage ?> testWildCardWithAnnotation() {
     	return null;
     }
+    
+	public Object @Nullable [] testAnnotationsToArrayElements() {
+		return null;
+	}
+
 
     /**
      * Explicit receiver Parameters

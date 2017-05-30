@@ -1566,7 +1566,7 @@ void ReferenceType():
 {
    PrimitiveType() ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
-   ( ClassOrInterfaceType() ) ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+   ( ClassOrInterfaceType() (Annotation() {checkForBadTypeAnnotations();})*) ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
 }
 
 void ClassOrInterfaceType():
