@@ -181,7 +181,7 @@ public class ParserCornerCases18 {
 		return null;
 	}
 	
-	public Object createNonNullArray() {
+	public Object[] createNonNullArray() {
 		return new Object @NonNull[0];
 	}
 	
