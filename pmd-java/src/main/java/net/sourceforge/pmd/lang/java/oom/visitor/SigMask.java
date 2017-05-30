@@ -33,7 +33,7 @@ public abstract class SigMask<T extends Signature> {
      * Sets the mask to cover all visibilities.
      */
     public void setAllVisibility() {
-        visMask.addAll(Arrays.asList(Signature.Visibility.ALL));
+        visMask.addAll(Arrays.asList(Signature.Visibility.values()));
     }
 
     /**

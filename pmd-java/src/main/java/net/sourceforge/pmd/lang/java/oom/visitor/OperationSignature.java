@@ -34,9 +34,9 @@ public class OperationSignature extends Signature {
     public static OperationSignature buildFor(ASTMethodDeclaration node) {
         // TODO better getter or setter detection
         boolean isGetterOrSetter = node.getName().startsWith("get")
-                || node.getName().startsWith("set");
+            || node.getName().startsWith("set");
         Role role = isGetterOrSetter ? Role.GETTER_OR_SETTER
-                : node.isStatic() ? Role.STATIC : Role.METHOD;
+            : node.isStatic() ? Role.STATIC : Role.METHOD;
 
         return new OperationSignature(Visibility.get(node), role, node.isAbstract());
     }
@@ -56,7 +56,7 @@ public class OperationSignature extends Signature {
     public boolean equals(Object o) {
         if (o instanceof OperationSignature) {
             return super.equals(o) && role == ((OperationSignature) o).role
-                    && isAbstract == ((OperationSignature) o).isAbstract;
+                && isAbstract == ((OperationSignature) o).isAbstract;
         }
         return false;
     }
@@ -70,9 +70,6 @@ public class OperationSignature extends Signature {
      * Role of an operation.
      */
     public enum Role {
-        GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC;
-
-        public static final Role[] ALL = {GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC};
+        GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC
     }
-
 }

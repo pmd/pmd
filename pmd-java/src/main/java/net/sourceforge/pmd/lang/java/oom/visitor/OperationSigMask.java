@@ -28,7 +28,7 @@ public class OperationSigMask extends SigMask<OperationSignature> {
     }
 
     public void setAllRoles() {
-        roleMask.addAll(Arrays.asList(OperationSignature.Role.ALL));
+        roleMask.addAll(Arrays.asList(OperationSignature.Role.values()));
     }
 
     public void remove(OperationSignature.Role... roles) {

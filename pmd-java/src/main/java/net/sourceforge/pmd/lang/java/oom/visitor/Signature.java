@@ -38,7 +38,6 @@ public abstract class Signature {
     public enum Visibility {
         PUBLIC, PACKAGE, PROTECTED, PRIVATE, UNDEF;
 
-        public static final Visibility[] ALL = {PUBLIC, PACKAGE, PROTECTED, PRIVATE};
 
         /**
          * Returns the Visibility enum key for a node
@@ -49,11 +48,9 @@ public abstract class Signature {
          */
         public static Visibility get(AbstractJavaAccessNode node) {
             return node.isPublic() ? PUBLIC
-                    : node.isPackagePrivate() ? PACKAGE
-                    : node.isProtected() ? PROTECTED
-                    : node.isPrivate() ? PRIVATE : UNDEF;
+                : node.isPackagePrivate() ? PACKAGE
+                : node.isProtected() ? PROTECTED
+                : node.isPrivate() ? PRIVATE : UNDEF;
         }
     }
-
-
 }
