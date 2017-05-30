@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.oom.visitor;
 
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 
 
