@@ -14,55 +14,8 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
-import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSingleMemberAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 //
 // Helpful reading:
@@ -442,40 +395,52 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTPrimaryExpression node, Object data) {
-        super.visit(node, data);
-        if (node.jjtGetNumChildren() == 1) {
-            rollupTypeUnary(node);
-        } else {
-            // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
-            // and PrimarySuffix are all related.
+    public Object visit(ASTPrimaryExpression primaryNode, Object data) {
+        super.visit(primaryNode, data);
+
+        Class<?> primaryNodeType = null;
+        AbstractJavaTypeNode previousChild = null;
+
+        for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
+            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
+
+            // skip children which already have their type assigned
+            if(currentChild.getType() == null) {
+                // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
+                if (currentChild.jjtGetLastToken().toString().equals("this")) {
+                    if (previousChild != null) { // Qualified 'this' expression
+                        currentChild.setType(previousChild.getType());
+                    } else { // simple 'this' expression
+                        ASTClassOrInterfaceDeclaration typeDeclaration
+                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                        if (typeDeclaration != null)
+                            currentChild.setType(typeDeclaration.getType());
+                    }
+                }
+            }
+
+            if(currentChild.getType() != null)
+                primaryNodeType = currentChild.getType();
+
+            previousChild = currentChild;
         }
+
+        primaryNode.setType(primaryNodeType);
+
         return data;
     }
 
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
         super.visit(node, data);
+        rollupTypeUnary(node);
 
-        if(node.jjtGetFirstToken().toString().equals("this")) {
-            ASTClassOrInterfaceDeclaration typeDeclaration
-                    = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if(typeDeclaration != null)
-                node.setType(typeDeclaration.getType());
-        } else if (node.getImage() == null) {
-            rollupTypeUnary(node);
-        } else {
-            // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
-            // and PrimarySuffix are all related.
-        }
         return data;
     }
 
     @Override
     public Object visit(ASTPrimarySuffix node, Object data) {
         super.visit(node, data);
-        // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix and
-        // PrimarySuffix are all related.
         return data;
     }
 

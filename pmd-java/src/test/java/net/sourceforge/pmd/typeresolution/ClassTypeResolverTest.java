@@ -585,6 +585,11 @@ public class ClassTypeResolverTest {
 
         assertEquals(ThisExprNested.class, expressions.get(index).getType());
         assertEquals(ThisExprNested.class, prefixes.get(index++).getType());
+
+        // Qualified this
+        assertEquals(ThisExpression.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
+
         assertEquals(ThisExprStaticNested.class, expressions.get(index).getType());
         assertEquals(ThisExprStaticNested.class, prefixes.get(index++).getType());
 

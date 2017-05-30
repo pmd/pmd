@@ -13,6 +13,7 @@ public class ThisExpression {
 
     public class ThisExprNested {
         ThisExprNested a = this;
+        ThisExpression b = ThisExpression.this;
     }
 
     public static class ThisExprStaticNested {
