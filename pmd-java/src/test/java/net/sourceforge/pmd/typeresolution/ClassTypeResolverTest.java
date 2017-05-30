@@ -14,20 +14,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.lang.java.ast.*;
-import net.sourceforge.pmd.typeresolution.testdata.*;
-import net.sourceforge.pmd.typeresolution.testdata.ThisExpression.*;
+
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
 import org.junit.Test;
 
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
+
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
+import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
+import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
+import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
+import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
+import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
+import net.sourceforge.pmd.typeresolution.testdata.Literals;
+import net.sourceforge.pmd.typeresolution.testdata.Operators;
+import net.sourceforge.pmd.typeresolution.testdata.Promotion;
+import net.sourceforge.pmd.typeresolution.testdata.SuperClass;
+import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
+import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+
 
 public class ClassTypeResolverTest {
 
@@ -583,15 +618,15 @@ public class ClassTypeResolverTest {
         assertEquals(ThisExpression.class, expressions.get(index).getType());
         assertEquals(ThisExpression.class, prefixes.get(index++).getType());
 
-        assertEquals(ThisExprNested.class, expressions.get(index).getType());
-        assertEquals(ThisExprNested.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.ThisExprNested.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.ThisExprNested.class, prefixes.get(index++).getType());
 
         // Qualified this
         assertEquals(ThisExpression.class, expressions.get(index).getType());
         assertEquals(ThisExpression.class, prefixes.get(index++).getType());
 
-        assertEquals(ThisExprStaticNested.class, expressions.get(index).getType());
-        assertEquals(ThisExprStaticNested.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.ThisExprStaticNested.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.ThisExprStaticNested.class, prefixes.get(index++).getType());
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
@@ -612,7 +647,7 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClass.class, expressions.get(index++).getType());
         assertEquals(SuperClass.class, expressions.get(index++).getType());
         assertEquals(SuperClass.class, expressions.get(index++).getType());
-        assertEquals(SuperClass.class, ((TypeNode)expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
+        assertEquals(SuperClass.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
 
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
         assertEquals(SuperExpression.class, expressions.get(index++).getType());

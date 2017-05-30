@@ -1,7 +1,14 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
 public class SuperExpression extends SuperClass {
-    public SuperExpression() { SuperClass a = super.s; }
+    public SuperExpression() {
+        SuperClass a = super.s;
+    }
 
     protected SuperExpression b;
 

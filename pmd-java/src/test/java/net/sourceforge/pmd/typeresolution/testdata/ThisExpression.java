@@ -1,9 +1,18 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
 public class ThisExpression {
-    public ThisExpression() { ThisExpression a = this; }
+    public ThisExpression() {
+        ThisExpression a = this;
+    }
 
-    { ThisExpression a = this; }
+    {
+        ThisExpression a = this;
+    }
 
     public void foo() {
         ThisExpression a = this;
