@@ -1599,9 +1599,7 @@ void TypeArgument():
 void WildcardBounds():
 {}
 {
-   "extends" (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
- |
-   "super" (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
+   ("extends" | "super") (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
 }
 
 void PrimitiveType() :
