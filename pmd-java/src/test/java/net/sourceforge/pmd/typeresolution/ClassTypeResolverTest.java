@@ -598,6 +598,31 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, prefixes.size());
     }
 
+    @Test
+    public void testSuperExpression() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(SuperExpression.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClass.class, ((TypeNode)expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
+
+        assertEquals(SuperExpression.class, expressions.get(index++).getType());
+        assertEquals(SuperExpression.class, expressions.get(index++).getType());
+        
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+
 
     private ASTCompilationUnit parseAndTypeResolveForClass15(Class<?> clazz) {
         return parseAndTypeResolveForClass(clazz, "1.5");

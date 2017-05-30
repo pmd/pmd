@@ -10,18 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.typeresolution.testdata.*;
 import org.jaxen.JaxenException;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.typeresolution.testdata.UsesJavaStreams;
-import net.sourceforge.pmd.typeresolution.testdata.UsesRepeatableAnnotations;
 
 import static org.junit.Assert.assertEquals;
 
@@ -58,6 +54,22 @@ public class ClassTypeResolverJava8Test {
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
         assertEquals("All expressions not tested", index, prefixes.size());
+    }
+
+    @Test
+    public void testSuperExpression() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass18(SuperExpression.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
     }
 
     private static <T> List<T> convertList(List<Node> nodes, Class<T> target) {

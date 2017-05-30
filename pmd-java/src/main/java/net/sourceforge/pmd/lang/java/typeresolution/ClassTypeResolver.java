@@ -405,7 +405,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
 
             // skip children which already have their type assigned
-            if(currentChild.getType() == null) {
+            if (currentChild.getType() == null) {
                 // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
                 if (currentChild.jjtGetLastToken().toString().equals("this")) {
                     if (previousChild != null) { // Qualified 'this' expression
@@ -416,11 +416,22 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         if (typeDeclaration != null)
                             currentChild.setType(typeDeclaration.getType());
                     }
+
+                    // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
+                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
+                    if (previousChild != null) { // Qualified 'super' expression
+                        currentChild.setType(previousChild.getType().getSuperclass());
+                    } else { // simple 'super' expression
+                        ASTClassOrInterfaceDeclaration typeDeclaration
+                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                        if (typeDeclaration != null && typeDeclaration.getType() != null)
+                            currentChild.setType(typeDeclaration.getType().getSuperclass());
+                    }
                 }
             }
 
-            if(currentChild.getType() != null)
-                primaryNodeType = currentChild.getType();
+            //if (currentChild.getType() != null)
+            primaryNodeType = currentChild.getType();
 
             previousChild = currentChild;
         }
