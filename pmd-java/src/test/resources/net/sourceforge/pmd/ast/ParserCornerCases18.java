@@ -176,6 +176,10 @@ public class ParserCornerCases18 {
 	private byte @Nullable [] getBytes(){
 		return null;
 	}
+	
+	public static <T extends @NonNull Enum<T>> getEnum() {
+		return null;
+	}
 
 
     /**

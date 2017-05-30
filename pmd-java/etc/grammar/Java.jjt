@@ -1416,7 +1416,7 @@ void TypeParameter():
 void TypeBound():
 {}
 {
-   "extends" ClassOrInterfaceType() ( "&" ClassOrInterfaceType() )*
+   "extends" ((Annotation() {checkForBadTypeAnnotations();})*) ClassOrInterfaceType() ( "&" ((Annotation() {checkForBadTypeAnnotations();})*) ClassOrInterfaceType() )*
 }
 
 void ClassOrInterfaceBody():
