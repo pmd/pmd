@@ -101,6 +101,7 @@ public class SequenceChecker {
     private List<StackObject> bracesList;
     private int firstIndex = -1;
     private int lastIndex = -1;
+
     /*
      * Defines the logical structure.
      */
@@ -130,7 +131,8 @@ public class SequenceChecker {
          */
         int maximumIterations = this.bracesList.size() * this.bracesList.size();
         int l = -1;
-        for (int i = 0; i < this.bracesList.size(); i++) {
+        int i = 0;
+        while (i < this.bracesList.size()) {
             l++;
             StackObject so = bracesList.get(i);
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -153,6 +155,7 @@ public class SequenceChecker {
                     this.lastIndex = i - 1;
                     LOGGER.finer("aktStatus is NULL (lookAhead): Invalid transition");
                     LOGGER.exiting(this.getClass().getCanonicalName(), "run", false);
+
                     return false;
                 } else if (l > maximumIterations) {
                     // Cope with incorrect bracesList contents
@@ -160,6 +163,7 @@ public class SequenceChecker {
                         LOGGER.severe("aktStatus is NULL: maximum Iterations exceeded, abort " + i);
                     }
                     LOGGER.exiting(this.getClass().getCanonicalName(), "run", false);
+
                     return false;
                 } else {
                     this.aktStatus = root;
@@ -169,7 +173,8 @@ public class SequenceChecker {
                         LOGGER.finest("aktStatus is NULL: Restarting search continue i==" + i + ", firstIndex="
                             + this.firstIndex);
                     }
-                    continue;
+
+
                 }
             } else {
                 // This NodeType _is_ a valid transition from the previous State
@@ -181,18 +186,21 @@ public class SequenceChecker {
                             + firstIndex + ", lastIndex=" + lastIndex);
                     }
                     LOGGER.exiting(this.getClass().getCanonicalName(), "run", false);
+
                     return false;
                 } else if (aktStatus.isLastStep() && aktStatus.hasMoreSteps()) {
                     lookAhead = true;
                     this.lastIndex = i;
-                    LOGGER.finest("aktStatus is NOT NULL: set lookAhead on");
+                    //       LOGGER.finest("aktStatus is NOT NULL: set lookAhead on");
                 }
             }
+            i++;
         }
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finer("Completed search: firstIndex=" + firstIndex + ", lastIndex=" + lastIndex);
         }
         LOGGER.exiting(this.getClass().getCanonicalName(), "run", this.firstIndex == this.lastIndex);
+
         return this.firstIndex == this.lastIndex;
     }
 
@@ -209,7 +217,7 @@ public class SequenceChecker {
      */
     private static class Status {
 
-      //  public static final int ROOT = -1;
+        //  public static final int ROOT = -1;
 
         private List<Status> nextSteps = new ArrayList<>();
         // NodeType
