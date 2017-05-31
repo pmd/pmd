@@ -14,6 +14,11 @@ public class ASTLambdaExpression extends AbstractJavaAccessNode {
     public ASTLambdaExpression(JavaParser p, int id) {
         super(p, id);
     }
+  
+    @Override
+    public boolean isFindBoundary() {
+        return true;
+    }
 
     /** Accept the visitor. **/
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
