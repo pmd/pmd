@@ -88,10 +88,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
         Map<String, Usage> usagesByVarName = new HashMap<>();
 
-        Iterator<DataFlowNode> pathIterator = path.iterator();
-        while (pathIterator.hasNext()) {
-            // iterate all nodes in this path
-            DataFlowNode inode = pathIterator.next();
+        for (DataFlowNode inode : path) {
             if (inode.getVariableAccess() != null) {
                 // iterate all variables of this node
                 for (VariableAccess va : inode.getVariableAccess()) {
