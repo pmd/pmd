@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.dfa.LinkerException;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.dfa.SequenceException;
 import net.sourceforge.pmd.lang.dfa.Structure;
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
@@ -126,27 +127,33 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         String loggerTag = "parent";
 
+        Node parent = node.jjtGetParent();
+
         // TODO what about throw stmts?
-        if (node.jjtGetParent() instanceof ASTIfStatement) {
+        if (parent instanceof ASTIfStatement) {
             dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
             tryToLog(loggerTag, NodeType.IF_EXPR, node);
-        } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
+        } else if (parent instanceof ASTWhileStatement) {
             dataFlow.createNewNode(node); // START WHILE
             dataFlow.pushOnStack(NodeType.WHILE_EXPR, dataFlow.getLast());
             tryToLog(loggerTag, NodeType.WHILE_EXPR, node);
-        } else if (node.jjtGetParent() instanceof ASTSwitchStatement) {
+        } else if (parent instanceof ASTSwitchStatement) {
             dataFlow.createNewNode(node); // START SWITCH
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
             tryToLog(loggerTag, NodeType.SWITCH_START, node);
-        } else if (node.jjtGetParent() instanceof ASTForStatement) {
+        } else if (parent instanceof ASTForStatement) {
             dataFlow.createNewNode(node); // FOR EXPR
             dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
             tryToLog(loggerTag, NodeType.FOR_EXPR, node);
-        } else if (node.jjtGetParent() instanceof ASTDoStatement) {
+        } else if (parent instanceof ASTDoStatement) {
             dataFlow.createNewNode(node); // DO EXPR
             dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());
             tryToLog(loggerTag, NodeType.DO_EXPR, node);
+        } else if (parent instanceof ASTAssertStatement) {
+            dataFlow.createNewNode(node);
+            dataFlow.pushOnStack(NodeType.ASSERT_STATEMENT, dataFlow.getLast());
+            tryToLog(loggerTag, NodeType.ASSERT_STATEMENT, node);
         }
 
         return super.visit(node, data);
