@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -477,11 +478,22 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                             currentChild.setType(typeDeclaration.getType().getSuperclass());
                         }
                     }
+                } else if (previousChild != null && previousChild.getType() != null
+                        && currentChild.getImage() != null) {
+
+                    Class clazz = previousChild.getType();
+                    String image = currentChild.getImage();
+                    try {
+                        Field field = clazz.getDeclaredField(image);
+                        currentChild.setType(field.getType());
+                    } catch (NoSuchFieldException e) {
+                        // swallow it for now
+                    }
                 }
             }
 
-            //if (currentChild.getType() != null)
-            primaryNodeType = currentChild.getType();
+            if (currentChild.getType() != null)
+                primaryNodeType = currentChild.getType();
 
             previousChild = currentChild;
         }
