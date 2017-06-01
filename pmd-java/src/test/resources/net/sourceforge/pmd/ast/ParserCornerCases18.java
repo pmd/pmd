@@ -180,6 +180,10 @@ public class ParserCornerCases18 {
 	public static <T extends @NonNull Enum<T>> T getEnum() {
 		return null;
 	}
+
+	public static <T> @Nullable T getNullableEnum() {
+		return null;
+	}
 	
 	public Object[] createNonNullArray() {
 		return new Object @NonNull[0];
