@@ -702,7 +702,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                             String matchName = h.getASTMethodDeclarator().getImage();
                             int matchParamCount = h.getASTMethodDeclarator().getParameterCount();
                             List<String> parameterTypes = getMethodDeclaratorParameterTypes(h.getASTMethodDeclarator());
-                            if (methName.equals(matchName) && methArgCount == matchParamCount
+                            if (methName != null && methName.equals(matchName) && methArgCount == matchParamCount
                                     && parameterTypes.equals(meth.getArgumentTypes())) {
                                 ch.setDangerous(true);
                                 //System.out.println("evaluateDangerOfConstructors1 setting dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
