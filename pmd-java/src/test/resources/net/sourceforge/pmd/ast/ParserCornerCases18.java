@@ -166,33 +166,33 @@ public class ParserCornerCases18 {
     }
 
     public List<@AnnotatedUsage ?> testWildCardWithAnnotation() {
-    	return null;
+        return null;
     }
     
-	public Object @Nullable [] testAnnotationsToArrayElements() {
-		return null;
-	}
-	
-	private byte @Nullable [] getBytes(){
-		return null;
-	}
-	
-	public static <T extends @NonNull Enum<T>> T getEnum() {
-		return null;
-	}
+    public Object @Nullable [] testAnnotationsToArrayElements() {
+        return null;
+    }
+    
+    private byte @Nullable [] getBytes(){
+        return null;
+    }
+    
+    public static <T extends @NonNull Enum<?>> T getEnum() {
+        return null;
+    }
 
-	public static <T> @Nullable T getNullableEnum() {
-		return null;
-	}
-	
-	public Object[] createNonNullArray() {
-		return new Object @NonNull[0];
-	}
-	
-	private static void testMultiDimArrayWithAnnotations() {
-		// ever used a 2D-Array in java??
-		Object x = new Object @NonNull[2] @Nullable[1] @NonNull[3];
-	}
+    public static <T> @Nullable T getNullableEnum() {
+        return null;
+    }
+    
+    public Object[] createNonNullArray() {
+        return new Object @NonNull[0];
+    }
+    
+    private static void testMultiDimArrayWithAnnotations() {
+        // ever used a 3D-Array in java??
+        Object x = new Object @NonNull[2] @Nullable[1] @NonNull[3];
+    }
 
 
     /**

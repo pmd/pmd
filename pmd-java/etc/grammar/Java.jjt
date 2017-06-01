@@ -1,4 +1,8 @@
 /**
+ * Add support for new Java 8 annotation locations.
+ * Bugs #414, #415, #417
+ * @Snap252 06/2017
+ *====================================================================
  * Allow empty statements (";") between package, import
  * and type declarations.
  * Bug #378
@@ -1416,7 +1420,7 @@ void TypeParameter():
 void TypeBound():
 {}
 {
-   "extends" ((Annotation() {checkForBadTypeAnnotations();})*) ClassOrInterfaceType() ( "&" ((Annotation() {checkForBadTypeAnnotations();})*) ClassOrInterfaceType() )*
+   "extends" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() ( "&" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() )*
 }
 
 void ClassOrInterfaceBody():
@@ -1488,7 +1492,7 @@ void MethodDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);}
 {
   [ TypeParameters() ]
-  [(Annotation() {checkForBadTypeAnnotations();})+] ResultType() MethodDeclarator() [ "throws" NameList() ]
+  (Annotation() {checkForBadTypeAnnotations();})* ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }
 
@@ -1564,9 +1568,9 @@ void Type():
 void ReferenceType():
 {}
 {
-   PrimitiveType() ((Annotation() {checkForBadTypeAnnotations();})*) ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
+   PrimitiveType() (Annotation() {checkForBadTypeAnnotations();})* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
-   ( ClassOrInterfaceType()) ((Annotation() {checkForBadTypeAnnotations();})*) ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+   ( ClassOrInterfaceType()) (Annotation() {checkForBadTypeAnnotations();})* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
 }
 
 void ClassOrInterfaceType():
@@ -1939,7 +1943,7 @@ void ArrayDimsAndInits() :
 {
 
   LOOKAHEAD(2)
-  ( LOOKAHEAD(2) ((Annotation() {checkForBadTypeAnnotations();})*) "[" Expression() "]" )+ ( LOOKAHEAD(2) "[" "]" )*
+  ( LOOKAHEAD(2) (Annotation() {checkForBadTypeAnnotations();})* "[" Expression() "]" )+ ( LOOKAHEAD(2) "[" "]" )*
 |
   ( "[" "]" )+ ArrayInitializer()
 }
