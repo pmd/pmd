@@ -1488,7 +1488,7 @@ void MethodDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);}
 {
   [ TypeParameters() ]
-  [(Annotation() {checkForBadTypeAnnotations();})+] ResultType() MethodDeclarator() [ "throws" NameList() ]
+  ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }
 
