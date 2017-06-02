@@ -383,22 +383,6 @@ public class RuleSet implements ChecksumAware {
         return rules;
     }
 
-    /**
-     * Does any Rule for the given Language use the DFA layer?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses the DFA layer,
-     *         <code>false</code> otherwise.
-     */
-    public boolean usesDFA(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.usesDFA()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Returns the first Rule found with the given name (case-sensitive).
@@ -563,6 +547,23 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
+     * Does any Rule for the given Language use the DFA layer?
+     *
+     * @param language
+     *            The Language.
+     * @return <code>true</code> if a Rule for the Language uses the DFA layer,
+     *         <code>false</code> otherwise.
+     */
+    public boolean usesDFA(Language language) {
+        for (Rule r : rules) {
+            if (r.getLanguage().equals(language) && r.usesDFA()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Does any Rule for the given Language use Type Resolution?
      *
      * @param language
@@ -573,6 +574,22 @@ public class RuleSet implements ChecksumAware {
     public boolean usesTypeResolution(Language language) {
         for (Rule r : rules) {
             if (r.getLanguage().equals(language) && r.usesTypeResolution()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Does any Rule for the given Language use the Metrics Framework?
+     *
+     * @param language The Language.
+     * @return <code>true</code> if a Rule for the Language uses the Metrics
+     * Framework, <code>false</code> otherwise.
+     */
+    public boolean usesMetrics(Language language) {
+        for (Rule r : rules) {
+            if (r.getLanguage().equals(language) && r.usesMetrics()) {
                 return true;
             }
         }
