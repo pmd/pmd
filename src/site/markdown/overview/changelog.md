@@ -33,4 +33,5 @@ This is a minor release.
 *   [#406](https://github.com/pmd/pmd/pull/406): \[java] False positive with lambda in java-design/ConstructorCallsOverridableMethod
 *   [#409](https://github.com/pmd/pmd/pull/409): \[java] Groundwork for the upcoming metrics framework
 *   [#416](https://github.com/pmd/pmd/pull/416): \[java] FIXED: Java 8 parsing problem with annotations for wildcards
+*   [#418](https://github.com/pmd/pmd/pull/418): \[java] Type resolution: super and this keywords
 

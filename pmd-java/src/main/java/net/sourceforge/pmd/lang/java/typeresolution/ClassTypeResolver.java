@@ -61,6 +61,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 
@@ -442,34 +443,65 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTPrimaryExpression node, Object data) {
-        super.visit(node, data);
-        if (node.jjtGetNumChildren() == 1) {
-            rollupTypeUnary(node);
-        } else {
-            // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
-            // and PrimarySuffix are all related.
+    public Object visit(ASTPrimaryExpression primaryNode, Object data) {
+        super.visit(primaryNode, data);
+
+        Class<?> primaryNodeType = null;
+        AbstractJavaTypeNode previousChild = null;
+
+        for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
+            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
+
+            // skip children which already have their type assigned
+            if (currentChild.getType() == null) {
+                // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
+                if (currentChild.jjtGetLastToken().toString().equals("this")) {
+                    if (previousChild != null) { // Qualified 'this' expression
+                        currentChild.setType(previousChild.getType());
+                    } else { // simple 'this' expression
+                        ASTClassOrInterfaceDeclaration typeDeclaration
+                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                        if (typeDeclaration != null) {
+                            currentChild.setType(typeDeclaration.getType());
+                        }
+                    }
+
+                    // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
+                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
+                    if (previousChild != null) { // Qualified 'super' expression
+                        currentChild.setType(previousChild.getType().getSuperclass());
+                    } else { // simple 'super' expression
+                        ASTClassOrInterfaceDeclaration typeDeclaration
+                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                        if (typeDeclaration != null && typeDeclaration.getType() != null) {
+                            currentChild.setType(typeDeclaration.getType().getSuperclass());
+                        }
+                    }
+                }
+            }
+
+            //if (currentChild.getType() != null)
+            primaryNodeType = currentChild.getType();
+
+            previousChild = currentChild;
         }
+
+        primaryNode.setType(primaryNodeType);
+
         return data;
     }
 
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
         super.visit(node, data);
-        if (node.getImage() == null) {
-            rollupTypeUnary(node);
-        } else {
-            // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
-            // and PrimarySuffix are all related.
-        }
+        rollupTypeUnary(node);
+
         return data;
     }
 
     @Override
     public Object visit(ASTPrimarySuffix node, Object data) {
         super.visit(node, data);
-        // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix and
-        // PrimarySuffix are all related.
         return data;
     }
 

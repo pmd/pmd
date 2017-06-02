@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
 import org.junit.Test;
+
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -35,13 +37,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
@@ -53,6 +59,10 @@ import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
+import net.sourceforge.pmd.typeresolution.testdata.SuperClass;
+import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
+import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+
 
 public class ClassTypeResolverTest {
 
@@ -134,7 +144,7 @@ public class ClassTypeResolverTest {
     /**
      * If we don't have the auxclasspath, we might not find the inner class. In
      * that case, we'll need to search by name for a match.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -583,6 +593,73 @@ public class ClassTypeResolverTest {
         Assert.assertNotNull(id.getType());
         Assert.assertSame(StringTokenizer.class, id.getType());
     }
+
+
+    @Test
+    public void testThisExpression() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(ThisExpression.class);
+
+        List<ASTPrimaryExpression> expressions = convertList(
+                acu.findChildNodesWithXPath("//PrimaryExpression"),
+                ASTPrimaryExpression.class);
+        List<ASTPrimaryPrefix> prefixes = convertList(
+                acu.findChildNodesWithXPath("//PrimaryPrefix"),
+                ASTPrimaryPrefix.class);
+
+        int index = 0;
+
+
+        assertEquals(ThisExpression.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
+
+        assertEquals(ThisExpression.ThisExprNested.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.ThisExprNested.class, prefixes.get(index++).getType());
+
+        // Qualified this
+        assertEquals(ThisExpression.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.class, prefixes.get(index).getType());
+        assertEquals(ThisExpression.class, ((TypeNode) expressions.get(index++).jjtGetChild(1)).getType());
+
+        assertEquals(ThisExpression.ThisExprStaticNested.class, expressions.get(index).getType());
+        assertEquals(ThisExpression.ThisExprStaticNested.class, prefixes.get(index++).getType());
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+        assertEquals("All expressions not tested", index, prefixes.size());
+    }
+
+    @Test
+    public void testSuperExpression() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(SuperExpression.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0)).getType());
+        assertEquals(SuperClass.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
+
+        assertEquals(SuperExpression.class, expressions.get(index++).getType());
+        assertEquals(SuperExpression.class, expressions.get(index++).getType());
+        
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+
 
     private ASTCompilationUnit parseAndTypeResolveForClass15(Class<?> clazz) {
         return parseAndTypeResolveForClass(clazz, "1.5");
