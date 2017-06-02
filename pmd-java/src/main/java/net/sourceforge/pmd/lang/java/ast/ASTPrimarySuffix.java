@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTPrimarySuffix extends AbstractJavaNode {
+public class ASTPrimarySuffix extends AbstractJavaTypeNode {
 
     private boolean isArguments;
     private boolean isArrayDereference;
