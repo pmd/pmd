@@ -623,7 +623,8 @@ public class ClassTypeResolverTest {
 
         // Qualified this
         assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.class, prefixes.get(index).getType());
+        assertEquals(ThisExpression.class, ((TypeNode) expressions.get(index++).jjtGetChild(1)).getType());
 
         assertEquals(ThisExpression.ThisExprStaticNested.class, expressions.get(index).getType());
         assertEquals(ThisExpression.ThisExprStaticNested.class, prefixes.get(index++).getType());
@@ -647,6 +648,7 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClass.class, expressions.get(index++).getType());
         assertEquals(SuperClass.class, expressions.get(index++).getType());
         assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0)).getType());
         assertEquals(SuperClass.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
 
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
