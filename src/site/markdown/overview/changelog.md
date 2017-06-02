@@ -27,4 +27,5 @@ This is a minor release.
 ### External Contributions
 
 *   [#406](https://github.com/pmd/pmd/pull/406): \[java] False positive with lambda in java-design/ConstructorCallsOverridableMethod
+*   [#418](https://github.com/pmd/pmd/pull/418): \[java] Type resolution: super and this keywords
 
