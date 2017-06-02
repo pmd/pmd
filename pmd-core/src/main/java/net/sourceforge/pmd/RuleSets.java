@@ -192,6 +192,14 @@ public class RuleSets {
         return count;
     }
 
+    /**
+     * Does any Rule for the given Language use Type Resolution?
+     *
+     * @param language
+     *            The Language.
+     * @return <code>true</code> if a Rule for the Language uses Type
+     *         Resolution, <code>false</code> otherwise.
+     */
     public boolean usesTypeResolution(Language language) {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.usesTypeResolution(language)) {
@@ -200,6 +208,23 @@ public class RuleSets {
         }
         return false;
     }
+
+    /**
+     * Does any Rule for the given Language use the Metrics Framework?
+     *
+     * @param language The Language.
+     * @return <code>true</code> if a Rule for the Language uses the Metrics
+     * Framework, <code>false</code> otherwise.
+     */
+    public boolean usesMetrics(Language language) {
+        for (RuleSet ruleSet : ruleSets) {
+            if (ruleSet.usesMetrics(language)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Remove and collect any rules that report problems.

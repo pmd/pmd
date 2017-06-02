@@ -8,7 +8,10 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
-public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod {
+public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod, ASTMethodOrConstructorDeclaration {
+
+    private QualifiedName qualifiedName;
+
     public ASTMethodDeclaration(int id) {
         super(id);
     }
@@ -107,5 +110,13 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
             }
         }
         return null;
+    }
+
+    @Override
+    public QualifiedName getQualifiedName() {
+        if (qualifiedName == null) {
+            qualifiedName = QualifiedName.makeOperationOf(this);
+        }
+        return qualifiedName;
     }
 }
