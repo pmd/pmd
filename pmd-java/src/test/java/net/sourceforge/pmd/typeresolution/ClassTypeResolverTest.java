@@ -14,15 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccess;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
 import org.junit.Test;
-
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -58,13 +53,17 @@ import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
 import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccess;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
+
 
 
 public class ClassTypeResolverTest {
@@ -596,7 +595,6 @@ public class ClassTypeResolverTest {
         Assert.assertNotNull(id.getType());
         Assert.assertSame(StringTokenizer.class, id.getType());
     }
-
 
     @Test
     public void testThisExpression() throws JaxenException {

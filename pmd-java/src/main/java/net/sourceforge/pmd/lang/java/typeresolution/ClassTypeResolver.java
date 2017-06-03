@@ -10,11 +10,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.saxon.expr.VariableDeclaration;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
@@ -65,14 +63,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
-import net.sourceforge.pmd.lang.java.symboltable.Search;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -258,14 +252,18 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
                 String[] dotSplitImage = node.getImage().split("\\.");
 
-                if(dotSplitImage.length == 1) {
+                if (dotSplitImage.length == 1) {
                     populateType(node, dotSplitImage[0]);
                 }
 
-                if(node.getType() == null) {
+                if (node.getType() == null) {
                     Class previousNameType = getVariableNameType(node.getScope(), dotSplitImage[0]);
 
                     for (int i = 1; i < dotSplitImage.length; ++i) {
+                        if (previousNameType == null) {
+                            break;
+                        }
+
                         previousNameType = getFieldFromClass(previousNameType, dotSplitImage[i]).getType();
                     }
 
@@ -283,8 +281,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private Class getVariableNameType(Scope scope, String image) {
         for (/* empty */; scope != null; scope = scope.getParent()) {
-            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry :
-                    scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
+            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
+                    : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
                 if (entry.getKey().getImage().equals(image)) {
                     return entry.getKey().getType();
                 }
@@ -292,9 +290,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
             // Nested class' inherited fields shadow enclosing variables
             if (scope instanceof ClassScope) {
-                Field inheritedField = getFieldFromClass(((ClassScope) scope).getClassDeclaration().getType(), image);
-                if (inheritedField != null) {
-                    return inheritedField.getType();
+                try {
+                    Field inheritedField = getFieldFromClass(((ClassScope) scope).getClassDeclaration().getType(),
+                                                             image);
+
+                    if (inheritedField != null) {
+                        return inheritedField.getType();
+                    }
+                } catch (ClassCastException e) {
+                    // if there is an anonymous class, getClassDeclaration().getType() will throw
+                    // TODO: maybe there is a better way to handle this, maybe this hides bugs
                 }
             }
         }
@@ -523,12 +528,15 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 } else if (previousChild != null && previousChild.getType() != null
                         && currentChild.getImage() != null) {
                     Field field = getFieldFromClass(previousChild.getType(), currentChild.getImage());
-                    currentChild.setType(field.getType());
+                    if (field != null) {
+                        currentChild.setType(field.getType());
+                    }
                 }
             }
 
-            if (currentChild.getType() != null)
+            if (currentChild.getType() != null) {
                 primaryNodeType = currentChild.getType();
+            }
 
             previousChild = currentChild;
         }
@@ -539,10 +547,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private Field getFieldFromClass(Class clazz, String fieldName) {
-        for (; clazz != null; clazz = clazz.getSuperclass()) {
+        for ( /* empty */; clazz != null; clazz = clazz.getSuperclass()) {
             try {
                 return clazz.getDeclaredField(fieldName);
-            } catch (NoSuchFieldException e) { /* swallow */}
+            } catch (NoSuchFieldException e) { /* swallow */ }
         }
 
         return null;
