@@ -102,6 +102,10 @@ public class ClassScope extends AbstractJavaScope {
         classDeclaration = classNameDeclaration;
     }
 
+    public ClassNameDeclaration getClassDeclaration() {
+        return classDeclaration;
+    }
+
     public void setIsEnum(boolean isEnum) {
         this.isEnum = isEnum;
     }

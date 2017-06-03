@@ -1,12 +1,33 @@
 package net.sourceforge.pmd.typeresolution.testdata;
 
 
-public class FieldAccess extends SuperClass {
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
+
+
+/*
+ * Note: inherited fields of a nested class shadow outer scope variables
+ *      Note: only if they are accessible!
+ */
+public class FieldAccess extends SuperClassA {
     public int field;
     public FieldAccess f;
 
     public void foo(FieldAccess param) {
         FieldAccess local = null;
+
+        // simple super field access
+        // Primary[Prefix[Name[s]]]
+        s = new SuperClassA();
+
+        // access inherited field through primary
+        // Primary[ Prefix[Primary[(this)]], Suffix[s], Suffix[s2] ]
+        (this).s.s2 = new SuperClassA2();
+
+        // access inherited field
+        // Primary[Prefix[Name[s.s.s2]]]
+        s.s.s2 = new SuperClassA2();
 
         // access through method parameter
         // Primary[Prefix[Name[param.field]]]
@@ -26,7 +47,7 @@ public class FieldAccess extends SuperClass {
 
         // field access through super
         // Primary[Prefix["super"], Suffix["field"]]
-        super.s = new SuperClass();
+        super.s = new SuperClassA();
 
         // simple field access
         // Primary[Prefix["field"]]
@@ -36,7 +57,7 @@ public class FieldAccess extends SuperClass {
 
         // example of simple field access with shadowed scope
         // Primary[Prefix["field"]]
-        field = "";
+        field = "shadow";
 
         // field access through this
         // Primary[Prefix["this"], Suffix["field"]]
@@ -47,13 +68,32 @@ public class FieldAccess extends SuperClass {
         (this).field = 10;
     }
 
+    Number privateShadow;
+
+    public class NestedShadow extends SuperClassB {
+        public void foo() {
+            // SuperClassB's "s" field shadows enclosing scope's inherited field
+            // Primary[Prefix[Name[s]]]
+            s = new SuperClassB();
+
+            // SuperClassB has an inaccessible field "privateShadow", it should not
+            // shadow enclosing scope's privateShadow member field
+            // Primary[Prefix[Name[privateShadow]]]
+            privateShadow = 10;
+        }
+    }
+
     public class Nested {
-        SuperClass a;
+        SuperClassA a;
 
         public void foo() {
+            // access enclosing super field
+            // Primary[Prefix[Name[s]]]
+            s = new SuperClassA();
+
             // refers to the enclosing class's immediate super class's field
             // Primary[Prefix["FieldAccess"], Suffix["super"], Suffix["field"]]
-            FieldAccess.super.s = new SuperClass();
+            FieldAccess.super.s = new SuperClassA();
 
             // access enclosing scope field
             // Primary[Prefix[field]]
@@ -61,7 +101,7 @@ public class FieldAccess extends SuperClass {
 
             // access field in nested
             // Primary[Prefix[a]]
-            a = new SuperClass();
+            a = new SuperClassA();
         }
     }
 }

@@ -16,6 +16,8 @@ import java.util.StringTokenizer;
 
 
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccess;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -60,7 +62,7 @@ import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
-import net.sourceforge.pmd.typeresolution.testdata.SuperClass;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
 
@@ -645,12 +647,12 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
-        assertEquals(SuperClass.class, expressions.get(index++).getType());
-        assertEquals(SuperClass.class, expressions.get(index++).getType());
-        assertEquals(SuperClass.class, expressions.get(index++).getType());
-        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClassA.class, expressions.get(index++).getType());
+        assertEquals(SuperClassA.class, expressions.get(index++).getType());
+        assertEquals(SuperClassA.class, expressions.get(index++).getType());
+        assertEquals(SuperClassA.class, expressions.get(index++).getType());
         assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0)).getType());
-        assertEquals(SuperClass.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
+        assertEquals(SuperClassA.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
 
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
@@ -670,55 +672,80 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
-        // param.field
+        // s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
+
+        //  (this).s.s2 = new SuperClassA2();
+        assertEquals(SuperClassA2.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 1));
+        assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 2));
+
+        //  (this).s.s2 = new SuperClassA2();
+        assertEquals(SuperClassA2.class, expressions.get(index).getType());
+        assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 0));
+
+        // param.field = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // local.field
+        // local.field = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // f.f.f.field
+        // f.f.f.field = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // (this).f.f.f.field
+        // (this).f.f.f.field = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(FieldAccess.class, getChildType(expressions.get(index), 1));
         assertEquals(FieldAccess.class, getChildType(expressions.get(index), 2));
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 3));
 
-        // super.s
-        assertEquals(SuperClass.class, expressions.get(index).getType());
-        assertEquals(SuperClass.class, getChildType(expressions.get(index++), 1));
+        // super.s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 1));
 
-        // field
+        // field = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // field
+        // field = "shadow";
         assertEquals(String.class, expressions.get(index).getType());
         assertEquals(String.class, getChildType(expressions.get(index++), 0));
 
-        // this.field
+        // this.field = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 1));
 
-        // (this).field
+        // (this).field = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 1));
 
-        // FieldAccess.super.s
-        assertEquals(SuperClass.class, expressions.get(index).getType());
-        assertEquals(SuperClass.class, getChildType(expressions.get(index++), 2));
+        // s = new SuperClassB();
+        assertEquals(SuperClassB.class, expressions.get(index).getType());
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index++), 0));
 
-        // field
+        // privateShadow = 10;
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index++), 0));
+
+        // s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
+
+        // FieldAccess.super.s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 2));
+
+        // field = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // a
-        assertEquals(SuperClass.class, expressions.get(index).getType());
-        assertEquals(SuperClass.class, getChildType(expressions.get(index++), 0));
+        // a = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
