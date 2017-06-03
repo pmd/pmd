@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccess;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
@@ -669,11 +668,15 @@ public class ClassTypeResolverTest {
                 acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
                 AbstractJavaTypeNode.class);
 
-        expressions.add((AbstractJavaTypeNode) acu.findChildNodesWithXPath(
-                "//VariableInitializer/Expression/PrimaryExpression")
-                .get(0));
-
         int index = 0;
+
+        // param.field
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
+
+        // local.field
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
         // f.f.f.field
         assertEquals(Integer.TYPE, expressions.get(index).getType());
@@ -685,37 +688,41 @@ public class ClassTypeResolverTest {
         assertEquals(FieldAccess.class, getChildType(expressions.get(index), 2));
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 3));
 
-        //int (1)
-        assertEquals(Integer.TYPE, expressions.get(index).getType());
-        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 1));
-        //SuperClass (1)
+        // super.s
         assertEquals(SuperClass.class, expressions.get(index).getType());
         assertEquals(SuperClass.class, getChildType(expressions.get(index++), 1));
-        //int (0)
+
+        // field
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
-        //String (0)
+
+        // field
         assertEquals(String.class, expressions.get(index).getType());
         assertEquals(String.class, getChildType(expressions.get(index++), 0));
-        //int (1)
+
+        // this.field
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 1));
 
-        //int (0)
+        // (this).field
         assertEquals(Integer.TYPE, expressions.get(index).getType());
-        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
-        //SuperClass (0)
-        assertEquals(SuperClass.class, expressions.get(index).getType());
-        assertEquals(SuperClass.class, getChildType(expressions.get(index++), 0));
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 1));
 
-        //SuperClass (2), "FieldAcces.super.s"
+        // FieldAccess.super.s
         assertEquals(SuperClass.class, expressions.get(index).getType());
         assertEquals(SuperClass.class, getChildType(expressions.get(index++), 2));
+
+        // field
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
+
+        // a
+        assertEquals(SuperClass.class, expressions.get(index).getType());
+        assertEquals(SuperClass.class, getChildType(expressions.get(index++), 0));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }
-
 
     private Class getSiblingType(Node node, int siblingIndex) {
         Node parent = node.jjtGetParent();
