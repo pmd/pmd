@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+	<test-code>
+		<description><![CDATA[
+Unescaped html container with merge field
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+<aura:unescapedHtml value="{!v.element}"/>	
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+	
+		<test-code>
+		<description><![CDATA[
+Unescaped html container with literal
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+<aura:unescapedHtml value="<b>hello</b>"/>	
+]]></code>
+		<source-type>vf</source-type>
+	</test-code>
+	
+</test-data>

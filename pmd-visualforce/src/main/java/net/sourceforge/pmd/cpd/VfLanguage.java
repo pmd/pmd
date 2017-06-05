@@ -10,6 +10,6 @@ package net.sourceforge.pmd.cpd;
  */
 public class VfLanguage extends AbstractLanguage {
     public VfLanguage() {
-        super("VisualForce", "vf", new VfTokenizer(), ".page", ".component");
+        super("VisualForce", "vf", new VfTokenizer(), ".page", ".component", ".cmp");
     }
 }

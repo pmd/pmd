@@ -32,5 +32,19 @@
 		 ]]>
 		</example>
 	</rule>
+	
+	
+	<rule name="LightningUnescapedHtml" since="5.6.0" message="Avoid rendering data in unsafe containers"
+		class="net.sourceforge.pmd.lang.vf.rule.security.LightningUnescapedHtmlRule"
+		externalInfoUrl="${pmd.website.baseurl}/rules/vf/security.html#LightningUnescapedHtmlRule">
+		<description><![CDATA[Avoid rendering data in unsafe containers, which may result in XSS . ]]>
+		</description>
+		<priority>3</priority>
+		<example>
+			<![CDATA[ 
+<aura:unescapedHtml value="{!v.element}"/>	
+		 ]]>
+		</example>
+	</rule>
 
 </ruleset>
