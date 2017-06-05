@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.oom.visitor;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,8 +28,9 @@ public class ClassStats {
 
     // References to the hierarchy
     // We store strings so that classes not analysed are ignored
-    private String superclass;
-    private List<String> subclasses;
+    // TODO useful?
+    // private String superclass;
+    // private List<String> subclasses;
 
 
     /**
@@ -43,7 +43,7 @@ public class ClassStats {
      * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is
      * unset.
      */
-    public ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
+    ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
         if (createIfNotFound && !nestedClasses.containsKey(className)) {
             nestedClasses.put(className, new ClassStats());
         }
@@ -52,12 +52,12 @@ public class ClassStats {
 
 
     /**
-     * Adds an operation to these stats
+     * Adds an operation to the class.
      *
      * @param qname The qualified name of the operation
      * @param sig   The signature of the operation
      */
-    public void addOperation(QualifiedName qname, OperationSignature sig) {
+    void addOperation(QualifiedName qname, OperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashSet<String>());
         }
@@ -65,16 +65,61 @@ public class ClassStats {
     }
 
     /**
-     * Adds an operation to these stats (not the nested stats!)
+     * Adds a field to the class.
      *
-     * @param name The qualified name of the operation
-     * @param sig  The signature of the operation
+     * @param name The qualified name of the field
+     * @param sig  The signature of the field
      */
-    public void addField(String name, FieldSignature sig) {
+    void addField(String name, FieldSignature sig) {
         if (!fields.containsKey(sig)) {
             fields.put(sig, new HashSet<String>());
         }
         fields.get(sig).add(name);
+    }
+
+    /**
+     * Checks whether the class declares an operation by the name given which is covered by the
+     * signature mask.
+     *
+     * @param name The name of the operation to look for
+     * @param mask The mask covering accepted signatures
+     *
+     * @return True if the class declares an operation by the name given which is covered by the
+     * signature mask, false otherwise.
+     */
+    public boolean hasMatchingSig(String name, OperationSigMask mask) {
+        // TODO perhaps indexing on the names would be better
+        for (OperationSignature sig : operations.keySet()) {
+            if (mask.covers(sig)) {
+                if (operations.get(sig).contains(name)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether the class declares a field by the name given which is covered by the
+     * signature mask.
+     *
+     * @param name The name of the operation to look for
+     * @param mask The mask covering accepted signatures
+     *
+     * @return True if the class declares a field by the name given which is covered by the
+     * signature mask, false otherwise.
+     */
+    public boolean hasMatchingSig(String name, FieldSigMask mask) {
+        for (FieldSignature sig : fields.keySet()) {
+            if (mask.covers(sig)) {
+                if (fields.get(sig).contains(name)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     //TODO

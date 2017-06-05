@@ -23,6 +23,9 @@ public class PackageStats {
     private Map<String, PackageStats> subPackages = new HashMap<>();
     private Map<String, ClassStats> classes = new HashMap<>();
 
+    /**
+     * Default constructor.
+     */
     public PackageStats() {
 
     }
@@ -38,7 +41,7 @@ public class PackageStats {
      * @return The new ClassStats, or the one that was found. Can return null only if
      * createIfNotFound is unset.
      */
-    public ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
+    ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
         PackageStats container = getSubPackage(qname, createIfNotFound);
 
         if (container == null) {
@@ -56,11 +59,11 @@ public class PackageStats {
             return null;
         }
 
-        String[] classes = qname.getClasses();
+        String[] nameClasses = qname.getClasses();
 
-        for (int i = 1; i < classes.length && next != null; i++) {
+        for (int i = 1; i < nameClasses.length && next != null; i++) {
             // Delegate search for nested classes to ClassStats
-            next = next.getNestedClassStats(classes[i], createIfNotFound);
+            next = next.getNestedClassStats(nameClasses[i], createIfNotFound);
         }
 
         return next;
@@ -77,7 +80,7 @@ public class PackageStats {
      * @return The deepest package that contains this resource. Can only return null if
      * createIfNotFound is unset.
      */
-    public PackageStats getSubPackage(QualifiedName qname, boolean createIfNotFound) {
+    private PackageStats getSubPackage(QualifiedName qname, boolean createIfNotFound) {
         if (qname.getPackages() == null) {
             return this; // the toplevel
         }
@@ -96,6 +99,22 @@ public class PackageStats {
         return next;
     }
 
+    /**
+     * Returns true if the signature of the operation designated by the qualified name is covered by
+     * the mask.
+     *
+     * @param qname   The operation to test
+     * @param sigMask The signature mask to use
+     *
+     * @return True if the signature of the operation designated by the qualified name is covered by
+     * the mask.
+     */
+    public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
+        ClassStats clazz = getClassStats(qname, false);
+
+        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
+    }
+
 
     public double getMemo(Metrics.ClassMetricKey key, QualifiedName qname) {
         // TODO
@@ -109,13 +128,5 @@ public class PackageStats {
         // Looks for a memoized result
 
         return Double.NaN;
-    }
-
-    public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
-        // TODO
-        // navigate to the class in the tree
-        // return true if the signature of the qualified name is covered by the
-        // mask.
-        return true;
     }
 }
