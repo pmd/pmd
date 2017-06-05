@@ -280,6 +280,7 @@ TOKEN :
         <UNICODE_LETTER>
     |
         [
+          "@",
           "$",
           "_"
         ]
