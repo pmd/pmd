@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
- * Wraps the visitor
+ * Wraps the visitor.
  *
  * @author Clément Fournier
  */

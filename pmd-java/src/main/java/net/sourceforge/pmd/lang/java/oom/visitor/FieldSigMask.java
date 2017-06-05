@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.oom.visitor;
 
 /**
- * Signature mask for a field
+ * Signature mask for a field.
  *
  * @author Clément Fournier
  */

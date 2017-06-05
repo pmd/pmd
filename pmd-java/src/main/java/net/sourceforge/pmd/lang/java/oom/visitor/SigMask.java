@@ -9,14 +9,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Generic signature mask.
+ * Generic signature mask. Masks are initially created empty and cover nothing.
+ *
+ * @param <T> The type of Signature to handle.
  *
  * @author Clément Fournier
  */
 public abstract class SigMask<T extends Signature> {
-    /**
-     * Visibility mask
-     */
+
+    /** Visibility mask. */
     protected Set<Signature.Visibility> visMask = new HashSet<>();
 
     /**
@@ -32,7 +33,7 @@ public abstract class SigMask<T extends Signature> {
     /**
      * Sets the mask to cover all visibilities.
      */
-    public void setAllVisibility() {
+    public void setAllVisibilities() {
         visMask.addAll(Arrays.asList(Signature.Visibility.values()));
     }
 
@@ -49,6 +50,7 @@ public abstract class SigMask<T extends Signature> {
      * Returns true if the parameter is covered by this mask.
      *
      * @param sig The signature to test
+     *
      * @return True if the parameter is covered by this mask
      */
     public boolean covers(T sig) {

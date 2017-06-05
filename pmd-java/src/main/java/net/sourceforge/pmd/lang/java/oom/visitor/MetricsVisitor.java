@@ -9,9 +9,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 
 /**
+ * Visitor for the metrics framework, that fills a {@link PackageStats} object with the
+ * signatures of operations and fields it encounters.
+ *
  * @author Clément Fournier
  */
 public class MetricsVisitor extends JavaParserVisitorAdapter {
@@ -20,40 +22,30 @@ public class MetricsVisitor extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        PackageStats stats = (PackageStats) data;
 
-        classContext = stats.getClassStats(node.getQualifiedName(), true);
+        classContext = ((PackageStats) data).getClassStats(node.getQualifiedName(), true);
 
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        PackageStats stats = (PackageStats) data;
 
-        QualifiedName qname = node.getQualifiedName();
-
-        stats.getClassStats(qname, true).addOperation(qname,
-                OperationSignature.buildFor(node));
+        classContext.addOperation(node.getQualifiedName(), OperationSignature.buildFor(node));
 
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        PackageStats stats = (PackageStats) data;
 
-        QualifiedName qname = node.getQualifiedName();
-
-        stats.getClassStats(qname, true).addOperation(qname,
-                OperationSignature.buildFor(node));
+        classContext.addOperation(node.getQualifiedName(), OperationSignature.buildFor(node));
 
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        PackageStats stats = (PackageStats) data;
 
         classContext.addField(node.getVariableName(), FieldSignature.buildFor(node));
 

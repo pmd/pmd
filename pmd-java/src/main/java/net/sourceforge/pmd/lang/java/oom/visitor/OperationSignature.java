@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.visitor;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 
 /**
  * Signature for an operation.
@@ -36,7 +37,7 @@ public class OperationSignature extends Signature {
         boolean isGetterOrSetter = node.getName().startsWith("get")
             || node.getName().startsWith("set");
         Role role = isGetterOrSetter ? Role.GETTER_OR_SETTER
-            : node.isStatic() ? Role.STATIC : Role.METHOD;
+                                     : node.isStatic() ? Role.STATIC : Role.METHOD;
 
         return new OperationSignature(Visibility.get(node), role, node.isAbstract());
     }
@@ -52,13 +53,23 @@ public class OperationSignature extends Signature {
         return new OperationSignature(Visibility.get(node), Role.CONSTRUCTOR, node.isAbstract());
     }
 
+    /**
+     * Builds an operation signature from a method or constructor declaration.
+     *
+     * @param node The node
+     *
+     * @return The signature of the parameter
+     */
+    public static OperationSignature buildFor(ASTMethodOrConstructorDeclaration node) {
+        return node instanceof ASTMethodDeclaration ? buildFor((ASTMethodDeclaration) node)
+                                                    : buildFor((ASTConstructorDeclaration) node);
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (o instanceof OperationSignature) {
-            return super.equals(o) && role == ((OperationSignature) o).role
-                && isAbstract == ((OperationSignature) o).isAbstract;
-        }
-        return false;
+        return o instanceof OperationSignature && super.equals(o) && role == (
+            (OperationSignature) o).role
+            && isAbstract == ((OperationSignature) o).isAbstract;
     }
 
     @Override

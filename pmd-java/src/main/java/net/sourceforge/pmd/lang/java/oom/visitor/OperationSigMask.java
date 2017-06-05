@@ -37,7 +37,8 @@ public class OperationSigMask extends SigMask<OperationSignature> {
 
     @Override
     public boolean covers(OperationSignature sig) {
-        return super.covers(sig) && roleMask.contains(sig.role) && (isAbstractIncluded || !sig.isAbstract);
+        return super.covers(sig) && roleMask.contains(sig.role) && (isAbstractIncluded
+            || !sig.isAbstract);
     }
 
 }
