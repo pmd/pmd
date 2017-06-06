@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +39,8 @@ public class RuleSet implements ChecksumAware {
 
     private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
     private static final String MISSING_RULE = "Missing rule";
+    private static final String MISSING_RULESET_DESCRIPTION = "RuleSet description must not be null";
+    private static final String MISSING_RULESET_NAME = "RuleSet name must not be null";
 
     private final long checksum;
 
@@ -347,12 +350,12 @@ public class RuleSet implements ChecksumAware {
         }
 
         public RuleSetBuilder withName(final String name) {
-            this.name = name;
+            this.name = Objects.requireNonNull(name, MISSING_RULESET_NAME);
             return this;
         }
 
         public RuleSetBuilder withDescription(final String description) {
-            this.description = description;
+            this.description = Objects.requireNonNull(description, MISSING_RULESET_DESCRIPTION);
             return this;
         }
 

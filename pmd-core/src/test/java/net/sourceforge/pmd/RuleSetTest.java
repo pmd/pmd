@@ -32,6 +32,19 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 
 public class RuleSetTest {
 
+    @Test(expected = NullPointerException.class)
+    public void testRuleSetRequiresName() {
+        new RuleSetBuilder(new Random().nextLong())
+            .withName(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRuleSetRequiresDescription() {
+        new RuleSetBuilder(new Random().nextLong())
+            .withName("some name")
+            .withDescription(null);
+    }
+
     @Test
     public void testNoDFA() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
