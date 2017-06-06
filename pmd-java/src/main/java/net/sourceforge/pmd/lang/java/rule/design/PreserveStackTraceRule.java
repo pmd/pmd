@@ -58,7 +58,8 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
                     // maybe it is used inside a anonymous class
                     ck(data, target, throwStatement, parent);
                 } else {
-                    ck(data, target, throwStatement, args);
+                    // Check all arguments used in the throw statement 
+                    ck(data, target, throwStatement, throwStatement);
                 }
             } else {
                 Node child = throwStatement.jjtGetChild(0);
