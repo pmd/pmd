@@ -88,6 +88,9 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         if (node.isSyntacticallyPublic() || node.isSyntacticallyAbstract()) {
             check(node, data);
         }
+        if (node.isPrivate() && node.isFinal()) {
+        	addViolation(data, node);
+        }
         return super.visit(node, data);
     }
 
