@@ -89,7 +89,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
             check(node, data);
         }
         if (node.isPrivate() && node.isFinal()) {
-        	addViolation(data, node);
+            addViolation(data, node);
         }
         return super.visit(node, data);
     }
