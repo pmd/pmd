@@ -278,7 +278,9 @@ public class RuleSetFactory {
             checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
         }
 
-        final RuleSetBuilder builder = new RuleSetBuilder(checksum);
+        final RuleSetBuilder builder = new RuleSetBuilder(checksum)
+                .withName(rule.getName())
+                .withDescription("RuleSet for " + rule.getName());
         builder.addRule(rule);
         return builder.build();
     }
@@ -339,8 +341,11 @@ public class RuleSetFactory {
             Element ruleSetElement = document.getDocumentElement();
 
             RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue())
-                    .withFileName(ruleSetReferenceId.getRuleSetFileName())
-                    .withName(ruleSetElement.getAttribute("name"));
+                    .withFileName(ruleSetReferenceId.getRuleSetFileName());
+
+            if (ruleSetElement.hasAttribute("name")) {
+                ruleSetBuilder.withName(ruleSetElement.getAttribute("name"));
+            }
 
             NodeList nodeList = ruleSetElement.getChildNodes();
             for (int i = 0; i < nodeList.getLength(); i++) {

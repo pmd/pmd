@@ -67,8 +67,8 @@ public class RuleSet implements ChecksumAware {
     private RuleSet(final RuleSetBuilder builder) {
         checksum = builder.checksum;
         fileName = builder.fileName;
-        name = builder.name;
-        description = builder.description;
+        name = Objects.requireNonNull(builder.name, MISSING_RULESET_NAME);
+        description = Objects.requireNonNull(builder.description, MISSING_RULESET_DESCRIPTION);
         // TODO: ideally, the rules would be unmodifiable, too. But removeDysfunctionalRules might change the rules.
         rules = builder.rules;
         excludePatterns = Collections.unmodifiableList(builder.excludePatterns);
@@ -79,8 +79,8 @@ public class RuleSet implements ChecksumAware {
     }
 
     /* package */ static class RuleSetBuilder {
-        public String description = "";
-        public String name = "";
+        public String description;
+        public String name;
         public String fileName;
         private final List<Rule> rules = new ArrayList<>();
         private final List<String> excludePatterns = new ArrayList<>(0);
