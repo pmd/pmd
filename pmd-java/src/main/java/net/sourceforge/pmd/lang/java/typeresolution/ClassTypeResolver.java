@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
@@ -39,6 +43,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
@@ -57,7 +62,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSingleMemberAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBound;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -203,7 +213,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
+        super.visit(node, data);
+
         String typeName = node.getImage();
+        // branch deals with anonymous classes
         if (node.jjtGetParent().hasDescendantOfType(ASTClassOrInterfaceBody.class)) {
             anonymousClassCounter++;
             AbstractNode parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
@@ -236,50 +249,147 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTName node, Object data) {
-        /*
+
+        if (node.getNameDeclaration() != null
+                && node.getNameDeclaration().getNode() instanceof TypeNode) {
+            // Carry over the type from the declaration
+            Class nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
+            if (!isGeneric(nodeType)) {
+                node.setType(nodeType);
+            }
+        }
+
+       /*
          * Only doing this for nodes where getNameDeclaration is null this means
          * it's not a named node, i.e. Static reference or Annotation Doing this
          * for memory - TODO: Investigate if there is a valid memory concern or
          * not
          */
-        if (node.getNameDeclaration() == null) {
-            // Skip these scenarios as there is no type to populate in these
-            // cases:
-            // 1) Parent is a PackageDeclaration, which is not a type
-            // 2) Parent is a ImportDeclaration, this is handled elsewhere.
-            if (!(node.jjtGetParent() instanceof ASTPackageDeclaration
-                    || node.jjtGetParent() instanceof ASTImportDeclaration)) {
 
-                String[] dotSplitImage = node.getImage().split("\\.");
+        // Skip these scenarios as there is no type to populate in these
+        // cases:
+        // 1) Parent is a PackageDeclaration, which is not a type
+        // 2) Parent is a ImportDeclaration, this is handled elsewhere.
+        if (node.getType() == null
+                && !(node.jjtGetParent() instanceof ASTPackageDeclaration
+                || node.jjtGetParent() instanceof ASTImportDeclaration)) {
 
-                if (dotSplitImage.length == 1) {
-                    populateType(node, dotSplitImage[0]);
-                }
+            String[] dotSplitImage = node.getImage().split("\\.");
 
-                if (node.getType() == null) {
-                    Class previousNameType = getVariableNameType(node.getScope(), dotSplitImage[0]);
+            if (dotSplitImage.length == 1) {
+                populateType(node, dotSplitImage[0]);
+            }
 
-                    for (int i = 1; i < dotSplitImage.length; ++i) {
-                        if (previousNameType == null) {
-                            break;
-                        }
+            if (node.getType() == null) {
+                Class previousNameType = searchScopeForVariableType(node.getScope(), dotSplitImage[0]);
 
-                        previousNameType = getFieldFromClass(previousNameType, dotSplitImage[i]).getType();
+                List<Class> genericList = getTypeArgumentsFromASTType(searchScopeForVariableDeclaration(node.getScope(), dotSplitImage[0])
+                                                                  .getDeclaratorId().getTypeNode());
+
+                for (int i = 1; i < dotSplitImage.length; ++i) {
+                    if (previousNameType == null) {
+                        break;
                     }
 
-                    node.setType(previousNameType);
+                    // TODO: raw types not covered
+                    Field field = getFieldFromClass(previousNameType, dotSplitImage[i]);
+                    previousNameType = getGenericFieldType(genericList, field);
+                    genericList = getGenericFieldTypeArguments(genericList, field);
                 }
-            }
-        } else {
-            // Carry over the type from the declaration
-            if (node.getNameDeclaration().getNode() instanceof TypeNode) {
-                node.setType(((TypeNode) node.getNameDeclaration().getNode()).getType());
+
+                node.setType(previousNameType);
             }
         }
+
         return super.visit(node, data);
     }
 
-    private Class getVariableNameType(Scope scope, String image) {
+    private List<Class> getGenericFieldTypeArguments(List<Class> previousTypeArguments, Field field) {
+        List<Class> newTypeArguments = new ArrayList<>();
+
+        if(field.getGenericType() instanceof ParameterizedType) {
+            Type[] typeArgs = ((ParameterizedType)field.getGenericType()).getActualTypeArguments();
+            for(Type type : typeArgs) {
+                if(type instanceof TypeVariable) {
+                    int ordinal = getTypeParameterOrdinal(field.getDeclaringClass(), ((TypeVariable) type).getName());
+                    if(ordinal != -1) {
+                        newTypeArguments.add(previousTypeArguments.get(ordinal));
+                    }
+                } else {
+                    newTypeArguments.add((Class)type);
+                }
+            }
+        }
+
+        return newTypeArguments;
+    }
+
+    private Class getGenericFieldType(List<Class> typeArguments, Field field) {
+        Type fieldType = field.getGenericType();
+
+        if(fieldType instanceof Class) {
+            return (Class)fieldType;
+        } else if (fieldType instanceof ParameterizedType) {
+            return (Class)((ParameterizedType) fieldType).getRawType();
+        } else if (fieldType instanceof TypeVariable) {
+            int ordinal = getTypeParameterOrdinal(field.getDeclaringClass(), ((TypeVariable) fieldType).getName());
+            if(ordinal != -1) {
+                return typeArguments.get(ordinal);
+            }
+        }
+
+        return null;
+    }
+
+    private List<Class> getTypeArgumentsFromASTType(ASTType node) {
+        List<Class> typeList = new ArrayList<>();
+
+        if (node.jjtGetChild(0) instanceof ASTReferenceType) {
+
+            ASTTypeArguments typeArgs = ((ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0))
+                    .getFirstChildOfType(ASTTypeArguments.class);
+
+            if (typeArgs != null) {
+                // TODO: does not cover type arguments which are generic class
+                for (int index = 0; index < typeArgs.jjtGetNumChildren(); ++index) {
+                    typeList.add(((TypeNode) typeArgs.jjtGetChild(index)).getType());
+                }
+            }
+        }
+
+        return typeList;
+    }
+
+    private int getTypeParameterOrdinal(Class clazz, String parameterName) {
+        TypeVariable[] classTypeParameters = clazz.getTypeParameters();
+
+        for (int index = 0; index < classTypeParameters.length; ++index) {
+            if (classTypeParameters[index].getName().equals(parameterName)) {
+                return index;
+            }
+        }
+
+        return -1;
+    }
+
+    private boolean isGeneric(Class clazz) {
+        return clazz.getTypeParameters().length != 0;
+    }
+
+    private VariableNameDeclaration searchScopeForVariableDeclaration(Scope scope, String image) {
+        for (/* empty */; scope != null; scope = scope.getParent()) {
+            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
+                    : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
+                if (entry.getKey().getImage().equals(image)) {
+                    return entry.getKey();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private Class searchScopeForVariableType(Scope scope, String image) {
         for (/* empty */; scope != null; scope = scope.getParent()) {
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
                     : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
@@ -571,6 +681,44 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
+    public Object visit(ASTTypeArguments node, Object data) {
+        super.visit(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTypeArgument node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTypeParameters node, Object data) {
+        super.visit(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTypeParameter node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+
+        if (node.getType() == null) {
+            node.setType(Object.class);
+        }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTypeBound node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+        return data;
+    }
+
+    @Override
     public Object visit(ASTNullLiteral node, Object data) {
         // No explicit type
         return super.visit(node, data);
@@ -793,9 +941,45 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 // ignored
             }
         }
+
+        // try generics
+        // TODO: generic declarations can shadow type declarations ... :(
+        // TODO: ? and ? super is not covered
+        if (myType == null) {
+            ASTTypeParameter parameter = getTypeParameterDeclaration(node, className);
+            if (parameter != null) {
+                myType = parameter.getType();
+            }
+        }
+
         if (myType != null) {
             node.setType(myType);
         }
+    }
+
+    private ASTTypeParameter getTypeParameterDeclaration(Node startNode, String image) {
+        for (Node parent = startNode.jjtGetParent(); parent != null; parent = parent.jjtGetParent()) {
+            ASTTypeParameters typeParameters = null;
+
+            if (parent instanceof ASTTypeParameters) { // if type parameter defined in the same < >
+                typeParameters = (ASTTypeParameters) parent;
+            } else if (parent instanceof ASTConstructorDeclaration
+                    || parent instanceof ASTMethodDeclaration
+                    || parent instanceof ASTClassOrInterfaceDeclaration) {
+                typeParameters = parent.getFirstChildOfType(ASTTypeParameters.class);
+            }
+
+            if (typeParameters != null) {
+                for (int index = 0; index < typeParameters.jjtGetNumChildren(); ++index) {
+                    String imageToCompareTo = typeParameters.jjtGetChild(index).getImage();
+                    if (imageToCompareTo != null && imageToCompareTo.equals(image)) {
+                        return (ASTTypeParameter) typeParameters.jjtGetChild(index);
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

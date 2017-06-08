@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.typeresolution.testdata.GenericFieldAccess;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -65,7 +66,6 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 
 
-
 public class ClassTypeResolverTest {
 
     @Test
@@ -81,7 +81,7 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(ArrayListFound.class);
         assertEquals(ArrayListFound.class, acu.getFirstDescendantOfType(ASTTypeDeclaration.class).getType());
         assertEquals(ArrayListFound.class,
-                acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
+                     acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         ASTImportDeclaration id = acu.getFirstDescendantOfType(ASTImportDeclaration.class);
         assertEquals("java.util", id.getPackage().getName());
         assertEquals(ArrayList.class, id.getType());
@@ -117,12 +117,12 @@ public class ClassTypeResolverTest {
         ASTTypeDeclaration typeDeclaration = (ASTTypeDeclaration) acu.jjtGetChild(1);
         assertEquals(ExtraTopLevelClass.class, typeDeclaration.getType());
         assertEquals(ExtraTopLevelClass.class,
-                typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
+                     typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         // Second class
         typeDeclaration = (ASTTypeDeclaration) acu.jjtGetChild(2);
         assertEquals(theExtraTopLevelClass, typeDeclaration.getType());
         assertEquals(theExtraTopLevelClass,
-                typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
+                     typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
     }
 
     @Test
@@ -137,7 +137,7 @@ public class ClassTypeResolverTest {
         assertEquals(InnerClass.class, outerClassDeclaration.getType());
         // Inner class
         assertEquals(theInnerClass,
-                outerClassDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
+                     outerClassDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
         // Method parameter as inner class
         ASTFormalParameter formalParameter = typeDeclaration.getFirstDescendantOfType(ASTFormalParameter.class);
         assertEquals(theInnerClass, formalParameter.getTypeNode().getType());
@@ -152,8 +152,9 @@ public class ClassTypeResolverTest {
     @Test
     public void testInnerClassNotCompiled() throws Exception {
         Node acu = parseAndTypeResolveForString("public class TestInnerClass {\n" + "    public void foo() {\n"
-                + "        Statement statement = new Statement();\n" + "    }\n" + "    static class Statement {\n"
-                + "    }\n" + "}", "1.8");
+                                                        + "        Statement statement = new Statement();\n" + "    " +
+                                                        "}\n" + "    static class Statement {\n"
+                                                        + "    }\n" + "}", "1.8");
         ASTClassOrInterfaceType statement = acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         Assert.assertTrue(statement.isReferenceToClassSameCompilationUnit());
     }
@@ -171,7 +172,7 @@ public class ClassTypeResolverTest {
         assertEquals(AnonymousInnerClass.class, outerClassDeclaration.getType());
         // Anonymous Inner class
         assertEquals(theAnonymousInnerClass,
-                outerClassDeclaration.getFirstDescendantOfType(ASTAllocationExpression.class).getType());
+                     outerClassDeclaration.getFirstDescendantOfType(ASTAllocationExpression.class).getType());
     }
 
     @Test
@@ -329,7 +330,8 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericPromotion']]//Expression[UnaryExpression]"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
+                                "'unaryNumericPromotion']]//Expression[UnaryExpression]"),
                 ASTExpression.class);
         int index = 0;
 
@@ -350,7 +352,8 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryNumericPromotion']]//Expression[AdditiveExpression]"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
+                                "'binaryNumericPromotion']]//Expression[AdditiveExpression]"),
                 ASTExpression.class);
         int index = 0;
 
@@ -487,15 +490,18 @@ public class ClassTypeResolverTest {
                 TypeNode.class));
         expressions.addAll(convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]//PostfixExpression"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
+                                "'unaryNumericOperators']]//PostfixExpression"),
                 TypeNode.class));
         expressions.addAll(convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]//PreIncrementExpression"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
+                                "'unaryNumericOperators']]//PreIncrementExpression"),
                 TypeNode.class));
         expressions.addAll(convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]//PreDecrementExpression"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
+                                "'unaryNumericOperators']]//PreDecrementExpression"),
                 TypeNode.class));
 
         int index = 0;
@@ -545,7 +551,8 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(Operators.class);
         List<ASTStatementExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = 'assignmentOperators']]//StatementExpression"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
+                                "'assignmentOperators']]//StatementExpression"),
                 ASTStatementExpression.class);
         int index = 0;
 
@@ -649,12 +656,13 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
-        assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0)).getType());
+        assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0)).getType
+                ());
         assertEquals(SuperClassA.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
 
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
-        
+
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
@@ -744,6 +752,61 @@ public class ClassTypeResolverTest {
         // a = new SuperClassA();
         assertEquals(SuperClassA.class, expressions.get(index).getType());
         assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testGenericFieldAccess() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericFieldAccess.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+
+        int index = 0;
+
+        // generic.first = "";
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+
+        // generic.second = new Double(0);
+        assertEquals(Double.class, expressions.get(index).getType());
+        assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+
+        // param.generic.first = new Character('c');
+        assertEquals(Character.class, expressions.get(index).getType());
+        assertEquals(Character.class, getChildType(expressions.get(index++), 0));
+
+        // local.generic.second = new Float(0);
+        assertEquals(Float.class, expressions.get(index).getType());
+        assertEquals(Float.class, getChildType(expressions.get(index++), 0));
+
+        // generic.generic.generic.generic.first = new Double(0);
+        assertEquals(Double.class, expressions.get(index).getType());
+        assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+
+        // param.first = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+
+        // local.second = new Long(0);
+        assertEquals(Long.class, expressions.get(index).getType());
+        assertEquals(Long.class, getChildType(expressions.get(index++), 0));
+
+        // classGeneric = null; // Double
+        assertEquals(Double.class, expressions.get(index).getType());
+        assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+
+        // localGeneric = null; // Character
+        assertEquals(Character.class, expressions.get(index).getType());
+        assertEquals(Character.class, getChildType(expressions.get(index++), 0));
+
+        // localGeneric = null; // Number
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index++), 0));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
