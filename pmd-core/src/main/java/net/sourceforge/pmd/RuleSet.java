@@ -359,6 +359,10 @@ public class RuleSet implements ChecksumAware {
             return this;
         }
 
+        public boolean hasDescription() {
+            return this.description != null;
+        }
+
         public String getName() {
             return name;
         }

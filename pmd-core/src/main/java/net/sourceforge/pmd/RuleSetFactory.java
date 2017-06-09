@@ -345,6 +345,9 @@ public class RuleSetFactory {
 
             if (ruleSetElement.hasAttribute("name")) {
                 ruleSetBuilder.withName(ruleSetElement.getAttribute("name"));
+            } else {
+                LOG.warning("RuleSet name is missing. Future versions of PMD will require it.");
+                ruleSetBuilder.withName("Missing RuleSet Name");
             }
 
             NodeList nodeList = ruleSetElement.getChildNodes();
@@ -365,6 +368,11 @@ public class RuleSetFactory {
                                 + "> encountered as child of <ruleset> element.");
                     }
                 }
+            }
+
+            if (!ruleSetBuilder.hasDescription()) {
+                LOG.warning("RuleSet description is missing. Future versions of PMD will require it.");
+                ruleSetBuilder.withDescription("Missing description");
             }
 
             return ruleSetBuilder.build();
