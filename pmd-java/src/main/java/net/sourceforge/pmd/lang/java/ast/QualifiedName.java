@@ -5,17 +5,24 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents Qualified Names for use within PackageStats
  * TODO make unit tests once the visitor is working to ensure new implementations won't break it
  */
 public class QualifiedName {
+
+    /** {@link QualifiedName#parseName(String)} */
+    public static final Pattern FORMAT = Pattern.compile("((\\w+\\.)+|\\.)((\\w+)(\\$\\w+)*)(#(\\w+)\\(((\\w+)(, \\w+)*)?\\))?");
+
     private String[] packages = null; // unnamed package
     private String[] classes = new String[1];
     private String operation = null;
 
     private QualifiedName() {
+
     }
 
     /**
@@ -86,7 +93,7 @@ public class QualifiedName {
      */
     public static QualifiedName makeOuterClassOf(ASTClassOrInterfaceDeclaration node) {
         ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
-            .getFirstChildOfType(ASTPackageDeclaration.class);
+                                        .getFirstChildOfType(ASTPackageDeclaration.class);
 
         QualifiedName qname = new QualifiedName();
         qname.packages = pkg == null ? null : pkg.getPackageNameImage().split("\\.");
@@ -97,8 +104,54 @@ public class QualifiedName {
 
 
     // Might be useful with type resolution
-    public static QualifiedName parseCanonicalName(String canon) {
+    public static QualifiedName parseJavaCanonicalName(String canon) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Parses a qualified name given in the format defined for this implementation.
+     * The pattern is available as a static class member.The format
+     * is described as the following regex pattern :
+     * <p>
+     * {@code ((\w+\.)+|\.)(\w+)(\$\w+)*(#(\w+)\(((\w+)(,\w+)*)?\))?}
+     * <p>
+     * Notes:
+     * <ul>
+     * <li> Group 1 : dot separated packages, or just dot if unnamed package;
+     * <li> Group 5 : nested classes are separated by a dollar symbol;
+     * <li> Group 6 : the optional method suffix is separated from the class with a hashtag;
+     * <li> Group 8 : method arguments. Note the absence of whitespace after commas.
+     * </ul>
+     * <p>
+     *
+     * @param name
+     *
+     * @return
+     */
+    public static QualifiedName parseName(String name) {
+        QualifiedName qname = new QualifiedName();
+
+        Matcher matcher = FORMAT.matcher(name);
+
+        if (!matcher.matches()) {
+            return null;
+        }
+
+        if (".".equals(matcher.group(1))) {
+            qname.packages = null;
+        } else {
+            qname.packages = matcher.group(1).split("\\.");
+        }
+
+        qname.classes = matcher.group(3).split("\\$");
+
+        String op = matcher.group(6);
+
+        if (op != null) {
+            qname.operation = op.substring(1);
+        }
+
+        return qname;
     }
 
     /** Returns a normalized method name (not Java-canonical!) */
@@ -112,7 +165,7 @@ public class QualifiedName {
         for (int i = 0; i < last; i++) {
             // append type image of param
             sb.append(params.jjtGetChild(i).getFirstDescendantOfType(ASTType.class).getTypeImage());
-            sb.append(',');
+            sb.append(", ");
         }
 
         if (last > -1) {
@@ -142,6 +195,7 @@ public class QualifiedName {
         return operation != null;
     }
 
+    /** Returns the packages. @return The packages. */
     public String[] getPackages() {
         return packages;
     }
