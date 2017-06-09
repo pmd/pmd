@@ -428,15 +428,4 @@ public abstract @interface TestAnnotation {
 }
         ]]></code>
     </test-code>
-    <test-code>
-    <description>Unnecessary final of private method</description>
-    <expected-problems>1</expected-problems>
-    <code><![CDATA[
-public class TestClass {
-	private final int getValue() {
-		return 0;
-	}
-}
-    ]]></code>
-</test-code>
 </test-data>

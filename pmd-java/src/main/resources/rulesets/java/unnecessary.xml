@@ -73,6 +73,7 @@ tagged as such.
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [count(./Annotation/MarkerAnnotation/Name[@Image='SafeVarargs' or @Image='java.lang.SafeVarargs']) = 0]
     /MethodDeclaration[@Final='true']
+    | //MethodDeclaration[@Final='true' and @Private='true']
     ]]>
               </value>
           </property>
