@@ -81,8 +81,7 @@ public class SignatureTest extends ParserTst {
             " public void doSomething(){}}";
 
 
-        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration
-            .class, TEST);
+        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
         List<OperationSignature> sigs = new ArrayList<>();
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
@@ -106,8 +105,7 @@ public class SignatureTest extends ParserTst {
             "public void doSomething(){}}";
 
 
-        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration
-            .class, TEST);
+        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
         List<OperationSignature> sigs = new ArrayList<>();
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
@@ -120,5 +118,70 @@ public class SignatureTest extends ParserTst {
         assertFalse(sigs.get(2).isAbstract);
         assertFalse(sigs.get(3).isAbstract);
         assertFalse(sigs.get(4).isAbstract);
+    }
+
+
+    @Test
+    public void operationPoolTest() {
+        final String TEST = "class Bzaz{ " +
+            "public static void foo(){} " +
+            "public static void az(){} " +
+            "public static int getX(){return x;}}";
+
+        final String TEST2 = "class Bzaz{ " +
+            "void foo(){} " +
+            "void az(){} " +
+            "int rand(){return x;}}";
+
+
+        List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
+        List<ASTMethodOrConstructorDeclaration> nodes2 = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST2);
+
+        List<OperationSignature> sigs = new ArrayList<>();
+        List<OperationSignature> sigs2 = new ArrayList<>();
+
+        for (int i = 0; i < sigs.size(); i++) {
+            sigs.add(OperationSignature.buildFor(nodes.get(i)));
+            sigs2.add(OperationSignature.buildFor(nodes2.get(i)));
+
+        }
+
+        for (int i = 0; i < sigs.size() - 1; i++) {
+            assertTrue(sigs.get(i) == sigs.get(i + 1));
+            assertTrue(sigs2.get(i) == sigs2.get(i + 1));
+        }
+    }
+
+    @Test
+    public void fieldPoolTest() {
+        final String TEST = "class Bzaz {" +
+            "public int bar;" +
+            "public String k;" +
+            "public double d;" +
+            "}";
+
+        final String TEST2 = "class Foo {" +
+            "private final int i;" +
+            "private final int x;" +
+            "private final String k;" +
+            "}";
+
+
+        List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST);
+        List<ASTFieldDeclaration> nodes2 = getOrderedNodes(ASTFieldDeclaration.class, TEST2);
+
+        List<FieldSignature> sigs = new ArrayList<>();
+        List<FieldSignature> sigs2 = new ArrayList<>();
+
+        for (int i = 0; i < sigs.size(); i++) {
+            sigs.add(FieldSignature.buildFor(nodes.get(i)));
+            sigs2.add(FieldSignature.buildFor(nodes2.get(i)));
+
+        }
+
+        for (int i = 0; i < sigs.size() - 1; i++) {
+            assertTrue(sigs.get(i) == sigs.get(i + 1));
+            assertTrue(sigs2.get(i) == sigs2.get(i + 1));
+        }
     }
 }

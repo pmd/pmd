@@ -104,7 +104,7 @@ public class QualifiedName {
 
 
     // Might be useful with type resolution
-    public static QualifiedName parseJavaCanonicalName(String canon) {
+    public static QualifiedName makeClassOf(Class<?> clazz) {
         throw new UnsupportedOperationException();
     }
 

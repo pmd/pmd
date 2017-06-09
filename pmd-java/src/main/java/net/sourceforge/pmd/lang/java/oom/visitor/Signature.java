@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.oom.visitor;
 
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 
 /**
  * Generic signature. This class is extended by classes specific to operations and fields.
@@ -35,7 +35,6 @@ public abstract class Signature {
     public enum Visibility {
         PUBLIC, PACKAGE, PROTECTED, PRIVATE, UNDEF;
 
-
         /**
          * Returns the Visibility enum key for a node.
          *
@@ -43,13 +42,12 @@ public abstract class Signature {
          *
          * @return The visibility enum key for a node.
          */
-        public static Visibility get(AbstractJavaAccessNode node) {
+        public static Visibility get(AccessNode node) {
             return node.isPublic() ? PUBLIC
-                                   : node.isPackagePrivate() ? PACKAGE
-                                                             : node.isProtected() ? PROTECTED
-                                                                                  : node.isPrivate()
-                                                                                    ? PRIVATE
-                                                                                    : UNDEF;
+                : node.isPackagePrivate() ? PACKAGE
+                    : node.isProtected() ? PROTECTED
+                        : node.isPrivate() ? PRIVATE
+                            : UNDEF;
         }
     }
 }

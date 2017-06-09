@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.oom.visitor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -15,42 +18,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
  */
 public class OperationSignature extends Signature {
 
-    public final Role role;
+    private static final Map<Integer, OperationSignature> POOL = new HashMap<>();
 
+    public final Role role;
     public final boolean isAbstract;
 
-    public OperationSignature(Visibility visibility, Role role, boolean isAbstract) {
+
+    private OperationSignature(Visibility visibility, Role role, boolean isAbstract) {
         super(visibility);
         this.role = role;
         this.isAbstract = isAbstract;
-    }
-
-    /**
-     * Builds an operation signature from a method declaration.
-     *
-     * @param node The method declaration
-     *
-     * @return The signature of the parameter
-     */
-    public static OperationSignature buildFor(ASTMethodDeclaration node) {
-        // TODO better getter or setter detection
-        boolean isGetterOrSetter = node.getName().startsWith("get")
-            || node.getName().startsWith("set");
-        Role role = isGetterOrSetter ? Role.GETTER_OR_SETTER
-                                     : node.isStatic() ? Role.STATIC : Role.METHOD;
-
-        return new OperationSignature(Visibility.get(node), role, node.isAbstract());
-    }
-
-    /**
-     * Builds an operation signature from a constructor declaration.
-     *
-     * @param node The constructor declaration
-     *
-     * @return The signature of the parameter
-     */
-    public static OperationSignature buildFor(ASTConstructorDeclaration node) {
-        return new OperationSignature(Visibility.get(node), Role.CONSTRUCTOR, node.isAbstract());
     }
 
     /**
@@ -61,14 +38,21 @@ public class OperationSignature extends Signature {
      * @return The signature of the parameter
      */
     public static OperationSignature buildFor(ASTMethodOrConstructorDeclaration node) {
-        return node instanceof ASTMethodDeclaration ? buildFor((ASTMethodDeclaration) node)
-                                                    : buildFor((ASTConstructorDeclaration) node);
+        int code = code(Visibility.get(node), Role.get(node), node.isAbstract());
+        if (!POOL.containsKey(code)) {
+            POOL.put(code, new OperationSignature(Visibility.get(node), Role.get(node), node.isAbstract()));
+        }
+        return POOL.get(code);
+    }
+
+    /** Used internally by the pooler. */
+    private static int code(Visibility visibility, Role role, boolean isAbstract) {
+        return visibility.hashCode() * 31 + role.hashCode() * 2 + (isAbstract ? 1 : 0);
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof OperationSignature && super.equals(o) && role == (
-            (OperationSignature) o).role
+        return o instanceof OperationSignature && super.equals(o) && role == ((OperationSignature) o).role
             && isAbstract == ((OperationSignature) o).isAbstract;
     }
 
@@ -81,6 +65,18 @@ public class OperationSignature extends Signature {
      * Role of an operation.
      */
     public enum Role {
-        GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC
+        GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC;
+
+        public static Role get(ASTMethodOrConstructorDeclaration node) {
+            return node instanceof ASTConstructorDeclaration ? CONSTRUCTOR : get((ASTMethodDeclaration) node);
+        }
+
+        private static Role get(ASTMethodDeclaration node) {
+            // TODO better getter or setter detection
+            boolean isGetterOrSetter = node.getName().startsWith("get")
+                || node.getName().startsWith("set");
+
+            return node.isStatic() ? Role.STATIC : isGetterOrSetter ? Role.GETTER_OR_SETTER : Role.METHOD;
+        }
     }
 }
