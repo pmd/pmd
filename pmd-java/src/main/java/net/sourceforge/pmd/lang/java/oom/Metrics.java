@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.oom;
 
-import static net.sourceforge.pmd.lang.java.oom.visitor.MetricsVisitorFacade.TOP_LEVEL_PACKAGE;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
+import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
 
 
 /**
@@ -23,8 +23,19 @@ import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
  */
 public class Metrics {
 
+    private static final PackageStats TOP_LEVEL_PACKAGE = new PackageStats();
+
     private Metrics() { // Cannot be instantiated
 
+    }
+
+    /**
+     * Returns the top level package stats.
+     *
+     * @return The top level package stats.
+     */
+    public static PackageStats getTopLevelPackageStats() {
+        return TOP_LEVEL_PACKAGE;
     }
 
     /**

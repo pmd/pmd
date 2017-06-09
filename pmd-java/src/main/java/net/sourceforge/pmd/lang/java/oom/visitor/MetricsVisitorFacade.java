@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.visitor;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.oom.Metrics;
 
 /**
  * Wraps the visitor.
@@ -14,10 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  */
 public class MetricsVisitorFacade extends JavaParserVisitorAdapter {
 
-    public static final PackageStats TOP_LEVEL_PACKAGE = new PackageStats();
-
     public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
         MetricsVisitor visitor = new MetricsVisitor();
-        rootNode.jjtAccept(visitor, TOP_LEVEL_PACKAGE);
+        rootNode.jjtAccept(visitor, Metrics.getTopLevelPackageStats());
     }
 }
