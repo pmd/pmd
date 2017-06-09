@@ -59,7 +59,7 @@ java_heapsize_settings() {
 
 set_lib_dir() {
   if [ -z ${LIB_DIR} ]; then
-    local script_dir=$(dirname ${0})
+    local script_dir=$(dirname "${0}")
     local cwd="${PWD}"
 
     cd "${script_dir}/../lib"
@@ -113,7 +113,7 @@ classpath=$CLASSPATH
 
 cd "${CWD}"
 
-for jarfile in ${LIB_DIR}/*.jar; do
+for jarfile in "${LIB_DIR}"/*.jar; do
     if [ -n "$classpath" ]; then
         classpath=$classpath:$jarfile
     else
