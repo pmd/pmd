@@ -30,8 +30,8 @@ public class AtfdMetric extends AbstractMetric implements ClassMetric, Operation
         }
 
         OperationSigMask targetOps = new OperationSigMask();
-        targetOps.setVisibilityMask(Visibility.PUBLIC);
-        targetOps.setRoleMask(Role.GETTER_OR_SETTER);
+        targetOps.restrictVisibilitiesTo(Visibility.PUBLIC);
+        targetOps.restrictRolesTo(Role.GETTER_OR_SETTER);
 
         List<QualifiedName> callQNames = findAllCalls(node);
         int foreignCalls = 0;

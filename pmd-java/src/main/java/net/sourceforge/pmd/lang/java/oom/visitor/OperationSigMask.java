@@ -16,29 +16,51 @@ import java.util.Set;
 public class OperationSigMask extends SigMask<OperationSignature> {
 
     private Set<OperationSignature.Role> roleMask = new HashSet<>();
-    private boolean isAbstractIncluded = false;
+    private boolean coverAbstract = false;
 
-    public void setRoleMask(OperationSignature.Role... roles) {
+    public OperationSigMask() {
+        super();
+        coverAllRoles();
+    }
+
+    /**
+     * Restricts the roles covered by the mask to the parameters.
+     *
+     * @param roles The roles to cover.
+     */
+    public void restrictRolesTo(OperationSignature.Role... roles) {
         roleMask.clear();
         roleMask.addAll(Arrays.asList(roles));
     }
 
-    public void setAbstractIncluded(boolean isAbstractIncluded) {
-        this.isAbstractIncluded = isAbstractIncluded;
-    }
-
-    public void setAllRoles() {
+    /**
+     * Sets the mask to cover all roles.
+     */
+    public void coverAllRoles() {
         roleMask.addAll(Arrays.asList(OperationSignature.Role.values()));
     }
 
-    public void remove(OperationSignature.Role... roles) {
+    /**
+     * Forbid all mentioned roles.
+     *
+     * @param roles The roles to forbid.
+     */
+    public void forbid(OperationSignature.Role... roles) {
         roleMask.removeAll(Arrays.asList(roles));
+    }
+
+    /**
+     * Forbid all mentioned visibilities.
+     *
+     * @param coverAbstract The visibilities to forbid.
+     */
+    public void coverAbstract(boolean coverAbstract) {
+        this.coverAbstract = coverAbstract;
     }
 
     @Override
     public boolean covers(OperationSignature sig) {
-        return super.covers(sig) && roleMask.contains(sig.role) && (isAbstractIncluded
+        return super.covers(sig) && roleMask.contains(sig.role) && (coverAbstract
             || !sig.isAbstract);
     }
-
 }

@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.oom;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -15,7 +13,6 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.visitor.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.visitor.FieldSignature;
 import net.sourceforge.pmd.lang.java.oom.visitor.OperationSigMask;
@@ -28,7 +25,7 @@ import net.sourceforge.pmd.lang.java.oom.visitor.SigMask;
 public class SigMaskTest extends ParserTst {
 
     /**
-     * Ensure nothing is covered by an empty mask
+     * Ensure any method is covered by an empty mask.
      */
     @Test
     public void testEmptyOperationMask() {
@@ -38,17 +35,16 @@ public class SigMaskTest extends ParserTst {
             + "protected void foo(int x){} "
             + "private void rand(){}}";
 
-
         List<ASTMethodDeclaration> nodes = getOrderedNodes(ASTMethodDeclaration.class, TEST);
         SigMask<OperationSignature> mask = new OperationSigMask();
 
         for (ASTMethodDeclaration node : nodes) {
-            assertFalse(mask.covers(OperationSignature.buildFor(node)));
+            assertTrue(mask.covers(OperationSignature.buildFor(node)));
         }
     }
 
     /**
-     * Ensure nothing is covered by an empty mask
+     * Ensure any field is covered by an empty mask.
      */
     @Test
     public void testEmptyFieldMask() {
@@ -68,10 +64,9 @@ public class SigMaskTest extends ParserTst {
         SigMask<FieldSignature> mask = new FieldSigMask();
 
         for (ASTFieldDeclaration node : nodes) {
-            assertFalse(mask.covers(FieldSignature.buildFor(node)));
+            assertTrue(mask.covers(FieldSignature.buildFor(node)));
         }
     }
-
 
 
 }

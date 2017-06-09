@@ -9,12 +9,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Represents Qualified Names for use within PackageStats
+ * Represents Qualified Names for use within PackageStats.
  * TODO make unit tests once the visitor is working to ensure new implementations won't break it
  */
 public class QualifiedName {
 
-    /** {@link QualifiedName#parseName(String)} */
+    /** See {@link QualifiedName#parseName(String)}. */
     public static final Pattern FORMAT = Pattern.compile("((\\w+\\.)+|\\.)((\\w+)(\\$\\w+)*)(#(\\w+)\\(((\\w+)(, \\w+)*)?\\))?");
 
     private String[] packages = null; // unnamed package
@@ -26,7 +26,7 @@ public class QualifiedName {
     }
 
     /**
-     * Builds the qualified name of a method declaration
+     * Builds the qualified name of a method declaration.
      *
      * @param node The method declaration node
      *
@@ -44,7 +44,7 @@ public class QualifiedName {
     }
 
     /**
-     * Builds the qualified name of a constructor declaration
+     * Builds the qualified name of a constructor declaration.
      *
      * @param node The constructor declaration node
      *
@@ -64,7 +64,7 @@ public class QualifiedName {
 
 
     /**
-     * Builds a nested class QName using the QName of its immediate parent
+     * Builds the qualified name of a nested class using the qualified name of its immediate parent.
      *
      * @param parent    The qname of the immediate parent
      * @param className The name of the class
@@ -85,7 +85,7 @@ public class QualifiedName {
     }
 
     /**
-     * Builds the QName of an outer (not nested) class.
+     * Builds the qualified name of an outer (not nested) class.
      *
      * @param node The class node
      *
@@ -109,24 +109,24 @@ public class QualifiedName {
     }
 
     /**
-     * Parses a qualified name given in the format defined for this implementation.
-     * The pattern is available as a static class member.The format
+     * Parses a qualified name given in the format defined for this implementation. The format
      * is described as the following regex pattern :
-     * <p>
-     * {@code ((\w+\.)+|\.)(\w+)(\$\w+)*(#(\w+)\(((\w+)(,\w+)*)?\))?}
-     * <p>
-     * Notes:
+     *
+     * <p>{@code ((\w+\.)+|\.)((\w+)(\$\w+)*)(#(\w+)\(((\w+)(, \w+)*)?\))?}
+     *
+     * <p>Notes:
      * <ul>
      * <li> Group 1 : dot separated packages, or just dot if unnamed package;
      * <li> Group 5 : nested classes are separated by a dollar symbol;
      * <li> Group 6 : the optional method suffix is separated from the class with a hashtag;
-     * <li> Group 8 : method arguments. Note the absence of whitespace after commas.
+     * <li> Group 8 : method arguments. Note the presence of a single space after commas.
      * </ul>
-     * <p>
      *
-     * @param name
+     * <p>The pattern is available as a static class member.
      *
-     * @return
+     * @param name The name to parse.
+     *
+     * @return A qualified name instance corresponding to the parsed string.
      */
     public static QualifiedName parseName(String name) {
         QualifiedName qname = new QualifiedName();
@@ -137,24 +137,14 @@ public class QualifiedName {
             return null;
         }
 
-        if (".".equals(matcher.group(1))) {
-            qname.packages = null;
-        } else {
-            qname.packages = matcher.group(1).split("\\.");
-        }
-
+        qname.packages = ".".equals(matcher.group(1)) ? null : matcher.group(1).split("\\.");
         qname.classes = matcher.group(3).split("\\$");
-
-        String op = matcher.group(6);
-
-        if (op != null) {
-            qname.operation = op.substring(1);
-        }
+        qname.operation = matcher.group(6) == null ? null : matcher.group(6).substring(1);
 
         return qname;
     }
 
-    /** Returns a normalized method name (not Java-canonical!) */
+    /** Returns a normalized method name (not Java-canonical!). */
     private static String getOperationName(String methodName, ASTFormalParameters params) {
 
         StringBuilder sb = new StringBuilder();
@@ -200,10 +190,12 @@ public class QualifiedName {
         return packages;
     }
 
+    /** Returns the classes. @return The classes. */
     public String[] getClasses() {
         return classes;
     }
 
+    /** Returns the operation string. @return The operation string. */
     public String getOperation() {
         return operation;
     }
@@ -268,6 +260,4 @@ public class QualifiedName {
 
         return sb.toString();
     }
-
-
 }

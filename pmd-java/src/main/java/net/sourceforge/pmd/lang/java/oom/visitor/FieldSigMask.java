@@ -10,5 +10,21 @@ package net.sourceforge.pmd.lang.java.oom.visitor;
  * @author Clément Fournier
  */
 public class FieldSigMask extends SigMask<FieldSignature> {
-    //TODO
+
+    private boolean coverFinal = true;
+    private boolean coverStatic = true;
+
+    public FieldSigMask() {
+        super();
+    }
+
+    /** Include final fields? */
+    public void coverFinal(boolean coverFinal) {
+        this.coverFinal = coverFinal;
+    }
+
+    /** Include static fields? */
+    public void coverStatic(boolean coverStatic) {
+        this.coverStatic = coverStatic;
+    }
 }
