@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.oom.Metrics;
  */
 public class MetricsVisitorFacade extends JavaParserVisitorAdapter {
 
-    public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
+    public void initializeWith(ASTCompilationUnit rootNode) {
         MetricsVisitor visitor = new MetricsVisitor();
         rootNode.jjtAccept(visitor, Metrics.getTopLevelPackageStats());
     }

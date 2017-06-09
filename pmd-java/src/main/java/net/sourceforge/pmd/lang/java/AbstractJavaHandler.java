@@ -98,11 +98,11 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     }
 
     @Override
-    public VisitorStarter getMetricsVisitorFacade(final ClassLoader classLoader) {
+    public VisitorStarter getMetricsVisitorFacade() {
         return new VisitorStarter() {
             @Override
             public void start(Node rootNode) {
-                new MetricsVisitorFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
+                new MetricsVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
             }
         };
     }
