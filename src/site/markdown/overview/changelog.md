@@ -18,6 +18,7 @@ This is a minor release.
 ### Fixed Issues
 
 *   General
+    *   [#380](https://github.com/pmd/pmd/issues/380): \[core] NPE in RuleSet.hashCode
     *   [#407](https://github.com/pmd/pmd/issues/407): \[web] Release date is not properly formatted
 *   java
     *   [#414](https://github.com/pmd/pmd/issues/414): \[java] Java 8 parsing problem with annotations for wildcards
