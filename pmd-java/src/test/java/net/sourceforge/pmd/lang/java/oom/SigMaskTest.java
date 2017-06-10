@@ -13,11 +13,11 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.oom.visitor.FieldSigMask;
-import net.sourceforge.pmd.lang.java.oom.visitor.FieldSignature;
-import net.sourceforge.pmd.lang.java.oom.visitor.OperationSigMask;
-import net.sourceforge.pmd.lang.java.oom.visitor.OperationSignature;
-import net.sourceforge.pmd.lang.java.oom.visitor.SigMask;
+import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
+import net.sourceforge.pmd.lang.java.oom.signature.SigMask;
 
 /**
  * @author Clément Fournier

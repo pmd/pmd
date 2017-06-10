@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.visitor;
+package net.sourceforge.pmd.lang.java.oom.signature;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,11 +72,13 @@ public class OperationSignature extends Signature {
         }
 
         private static Role get(ASTMethodDeclaration node) {
-            // TODO better getter or setter detection
-            boolean isGetterOrSetter = node.getName().startsWith("get")
-                || node.getName().startsWith("set");
-
-            return node.isStatic() ? Role.STATIC : isGetterOrSetter ? Role.GETTER_OR_SETTER : Role.METHOD;
+            if (node.isStatic()) {
+                return STATIC;
+            } else if (node.getName().startsWith("get") || node.getName().startsWith("set")) {
+                return GETTER_OR_SETTER; // TODO:cf better getter or setter detection
+            } else {
+                return METHOD;
+            }
         }
     }
 }

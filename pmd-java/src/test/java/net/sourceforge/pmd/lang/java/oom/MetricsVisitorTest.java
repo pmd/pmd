@@ -22,10 +22,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.testdata.MetricsVisitorTestClass;
-import net.sourceforge.pmd.lang.java.oom.visitor.OperationSigMask;
-import net.sourceforge.pmd.lang.java.oom.visitor.OperationSignature.Role;
-import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolverTest;
 
 /**

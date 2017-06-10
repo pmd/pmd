@@ -2,11 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.visitor;
+package net.sourceforge.pmd.lang.java.oom;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.oom.Metrics;
 
 /**
  * Wraps the visitor.

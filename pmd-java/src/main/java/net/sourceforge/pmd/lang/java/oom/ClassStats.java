@@ -2,16 +2,22 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.visitor;
+package net.sourceforge.pmd.lang.java.oom;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.Metrics;
+import net.sourceforge.pmd.lang.java.oom.Metrics.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 /**
  * Statistics about a class. Gathers information about the contained members and their signatures,
@@ -20,21 +26,22 @@ import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
  * with {@link PackageStats#getClassStats(QualifiedName, boolean)} then use the methods of
  * ClassStats.
  *
- * <p>Note that at this level, entities of the DS do not manipulate QualifiedNames anymore, only Strings.
+ * <p>Note that at this level, entities of the DS do not manipulate QualifiedNames anymore, only
+ * Strings.
  *
  * @author Clément Fournier
  */
-public class ClassStats {
+class ClassStats {
 
     private Map<OperationSignature, Set<OperationStats>> operations = new HashMap<>();
     private Map<FieldSignature, Set<String>> fields = new HashMap<>();
     private Map<String, ClassStats> nestedClasses = new HashMap<>();
 
-    private Map<OperationMetricKey, Double> memo = new HashMap<>();
+    private Map<ClassMetricKey, Double> memo = new HashMap<>();
 
     // References to the hierarchy
     // We store strings so that classes not analysed are ignored
-    // TODO useful?
+    // TODO:cf useful?
     // private String superclass;
     // private List<String> subclasses;
 
@@ -91,11 +98,11 @@ public class ClassStats {
      * @return True if the class declares an operation by the name given which is covered by the signature mask, false
      * otherwise.
      */
-    public boolean hasMatchingSig(String name, OperationSigMask mask) {
+    boolean hasMatchingSig(String name, OperationSigMask mask) {
         // Indexing on signatures optimises this type of request
         for (OperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
-                if (operations.get(sig).contains(new OperationStats(name))) { // TODO eliminate "new" here
+                if (operations.get(sig).contains(new OperationStats(name))) { // TODO:cf eliminate "new" here
                     return true;
                 }
             }
@@ -113,7 +120,7 @@ public class ClassStats {
      * @return True if the class declares a field by the name given which is covered by the signature mask, false
      * otherwise.
      */
-    public boolean hasMatchingSig(String name, FieldSigMask mask) {
+    boolean hasMatchingSig(String name, FieldSigMask mask) {
         for (FieldSignature sig : fields.keySet()) {
             if (mask.covers(sig)) {
                 if (fields.get(sig).contains(name)) {
@@ -126,19 +133,21 @@ public class ClassStats {
     }
 
     /**
-     * Finds a memoized result for a specific metric and operation.
+     * Computes the value of a metric for an operation.
      *
-     * @param key  The operation metric for which to find a memoized result.
-     * @param name The name of the operation;
+     * @param key   The operation metric for which to find a memoized result.
+     * @param node  The AST node of the operation.
+     * @param name  The name of the operation.
+     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
      *
-     * @return The memoized result if it was found, or {@code Double.NaN}.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double getMemo(OperationMetricKey key, String name) {
-        // TODO maybe optimise this
+    double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name, boolean force) {
+        // TODO:cf maybe find a way to optimise this
         for (OperationSignature sig : operations.keySet()) {
             for (OperationStats stats : operations.get(sig)) {
                 if (stats.equals(name)) {
-                    return stats.getMemo(key);
+                    return stats.compute(key, node, force);
                 }
             }
         }
@@ -146,13 +155,24 @@ public class ClassStats {
     }
 
     /**
-     * Finds a memoized result for this class.
+     * Computes the value of a metric for an operation.
      *
-     * @param key  The class metric for which to find a memoized result.
+     * @param key   The operation metric for which to find a memoized result.
+     * @param node  The AST node of the operation.
+     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
      *
-     * @return The memoized result if it was found, or {@code Double.NaN}.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    public double getMemo(Metrics.ClassMetricKey key) {
-        return memo.get(key) == null ? Double.NaN : memo.get(key);
+    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force) {
+        // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
+        Double prev = memo.get(key);
+        if (!force && prev != null) {
+            return prev;
+        }
+
+        ClassMetric metric = key.getCalculator();
+        double val = metric.computeFor(node, Metrics.getTopLevelPackageStats());
+        memo.put(key, val);
+        return val;
     }
 }

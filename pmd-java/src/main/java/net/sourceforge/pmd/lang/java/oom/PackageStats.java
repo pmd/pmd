@@ -2,13 +2,15 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.visitor;
+package net.sourceforge.pmd.lang.java.oom;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.Metrics;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 
 
 /**
@@ -18,7 +20,7 @@ import net.sourceforge.pmd.lang.java.oom.Metrics;
  * @author Clément Fournier
  * @see ClassStats
  */
-public class PackageStats {
+public final class PackageStats {
 
     private Map<String, PackageStats> subPackages = new HashMap<>();
     private Map<String, ClassStats> classes = new HashMap<>();
@@ -112,34 +114,40 @@ public class PackageStats {
         return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
     }
 
-    // TODO make memo routines use a computeIfNotFound parameter
+    // TODO:cf make memo routines use a computeIfNotFound parameter
     // TODO that would save the overhead of going down, returning NaN, computing, going down again and setting it
 
     /**
-     * Finds a memoized result for this class.
+     * Computes the value of a metric on a class.
      *
-     * @param key  The class metric for which to find a memoized result.
+     * @param key   The class metric to compute.
+     * @param node  The AST node of the class.
+     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
      *
-     * @return The memoized result if it was found, or {@code Double.NaN}.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    public double getMemo(Metrics.ClassMetricKey key, QualifiedName qname) {
-        ClassStats container = getClassStats(qname, false);
+    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force) {
+        ClassStats container = getClassStats(node.getQualifiedName(), false);
 
-        return container == null ? Double.NaN : container.getMemo(key);
+        return container == null ? Double.NaN
+                                 : container.compute(key, node, force);
     }
 
 
     /**
-     * Finds a memoized result for a specific metric and operation.
+     * Computes the value of a metric for an operation.
      *
-     * @param key  The operation metric for which to find a memoized result.
-     * @param qname The qualified name of the operation;
+     * @param key   The operation metric for which to find a memoized result.
+     * @param node  The AST node of the operation.
+     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
      *
-     * @return The memoized result if it was found, or {@code Double.NaN}.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    public double getMemo(Metrics.OperationMetricKey key, QualifiedName qname) {
+    double compute(Metrics.OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force) {
+        QualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
 
-        return container == null ? Double.NaN : container.getMemo(key, qname.getOperation());
+        return container == null ? Double.NaN
+                                 : container.compute(key, node, qname.getOperation(), force);
     }
 }

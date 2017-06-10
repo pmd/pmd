@@ -16,14 +16,14 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.visitor.FieldSignature;
-import net.sourceforge.pmd.lang.java.oom.visitor.OperationSignature;
-import net.sourceforge.pmd.lang.java.oom.visitor.OperationSignature.Role;
-import net.sourceforge.pmd.lang.java.oom.visitor.Signature;
-import net.sourceforge.pmd.lang.java.oom.visitor.Signature.Visibility;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
+import net.sourceforge.pmd.lang.java.oom.signature.Signature;
+import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
+import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 
 /**
- * Test class for {@link net.sourceforge.pmd.lang.java.oom.visitor.Signature} and its subclasses.
+ * Test class for {@link Signature} and its subclasses.
  *
  * @author Clément Fournier
  */

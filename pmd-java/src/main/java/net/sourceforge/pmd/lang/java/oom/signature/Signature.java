@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.visitor;
+package net.sourceforge.pmd.lang.java.oom.signature;
 
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 
@@ -15,7 +15,7 @@ public abstract class Signature {
 
     public final Visibility visibility;
 
-    Signature(Visibility visibility) {
+    public Signature(Visibility visibility) {
         this.visibility = visibility;
     }
 
