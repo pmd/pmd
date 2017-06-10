@@ -31,7 +31,7 @@ public class MetricsVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
 
-        classContext.addOperation(node.getQualifiedName(), OperationSignature.buildFor(node));
+        classContext.addOperation(node.getQualifiedName().getOperation(), OperationSignature.buildFor(node));
 
         return super.visit(node, data);
     }
@@ -39,7 +39,7 @@ public class MetricsVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
-        classContext.addOperation(node.getQualifiedName(), OperationSignature.buildFor(node));
+        classContext.addOperation(node.getQualifiedName().getOperation(), OperationSignature.buildFor(node));
 
         return super.visit(node, data);
     }
