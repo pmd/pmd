@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.metrics;
 
+import net.sourceforge.pmd.annotations.UsesMetrics;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.Metrics.ClassMetricKey;
@@ -13,6 +14,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * @author Clément Fournier (clement.fournier@insa-rennes.fr)
  *
  */
+@UsesMetrics
 public class AtfdRule extends AbstractJavaRule {
 
     @Override
@@ -23,5 +25,4 @@ public class AtfdRule extends AbstractJavaRule {
         }
         return data;
     }
-    
 }

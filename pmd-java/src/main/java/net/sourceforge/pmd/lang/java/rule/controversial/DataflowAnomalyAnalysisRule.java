@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.annotations.UsesDfa;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
@@ -29,6 +30,7 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  * @author raik
  * @author Sven Jacob
  */
+@UsesDfa
 public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Executable {
     private RuleContext rc;
     private List<DaaRuleViolation> daaRuleViolations;
