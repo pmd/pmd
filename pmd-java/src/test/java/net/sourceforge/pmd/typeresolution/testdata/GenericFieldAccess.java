@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.typeresolution.testdata;
 
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass2;
 
 
 /*
@@ -16,9 +17,18 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
  *
  */
 
-public class GenericFieldAccess<T, S extends Double> {
-    public GenericClass<String, Double> generic;
+class GenericSuperClassB<T, S> {
+    public S fieldB;
+}
+
+class GenericSuperClassA<T> extends GenericSuperClassB<T, GenericClass<String, T>> {
+    public T fieldA;
+}
+
+public class GenericFieldAccess<T, S extends Double> extends GenericSuperClassA<Long> {
+    public GenericClass<String, Double> genericField;
     public GenericClass<String, GenericClass<Number, Double>> genericTypeArg;
+    public GenericClass2 rawGeneric;
     public GenericFieldAccess field;
     public S classGeneric;
 
@@ -26,20 +36,34 @@ public class GenericFieldAccess<T, S extends Double> {
         GenericClass<Float, Long> local = null;
         M localGeneric = null;
 
+
+        // test inherited generic
+        // Primary[Prefix[Name[generic.first]]]
+        fieldA = new Long(0);
+        fieldB.generic.second = "";
+
+
+        // test raw types
+        // Primary[Prefix[Name[rawGeneric.first]]]
+        //rawGeneric.first = new Integer(0);
+        //rawGeneric.second = "";
+        //rawGeneric.rawGeneric.first = new Integer(0);
+
+
         // access a generic field whose type depends on a generic type argument
         // Primary[Prefix[Name[genericTypeArg.second.second]]]
         genericTypeArg.second.second = new Double(0);
 
         // access a generic field through member field
-        // Primary[Prefix[Name[generic.first]]]
-        generic.first = "";
-        generic.second = new Double(0);
+        // Primary[Prefix[Name[genericField.first]]]
+        genericField.first = "";
+        genericField.second = new Double(0);
 
         // access a generic field whose type depends on indirect type arguments
         // Primary[Prefix[Name[generic.generic.first]]]
         param.generic.first = new Character('c');
         local.generic.second = new Float(0);
-        generic.generic.generic.generic.first = new Double(0);
+        genericField.generic.generic.generic.first = new Double(0);
 
 
         // access a generic field through a local or a parameter

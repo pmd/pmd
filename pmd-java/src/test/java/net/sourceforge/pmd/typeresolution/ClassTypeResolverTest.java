@@ -768,15 +768,37 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
+        // fieldA = new Long(0);
+        assertEquals(Long.class, expressions.get(index).getType());
+        assertEquals(Long.class, getChildType(expressions.get(index++), 0));
+
+        // fieldB.generic.second = "";
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+
+        /*// rawGeneric.first = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+
+        // rawGeneric.second = "";
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+
+        // rawGeneric.rawGeneric.first = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+        */
+
+
         //genericTypeArg.second.second = new Double(0);
         assertEquals(Double.class, expressions.get(index).getType());
         assertEquals(Double.class, getChildType(expressions.get(index++), 0));
 
-        // generic.first = "";
+        // genericField.first = "";
         assertEquals(String.class, expressions.get(index).getType());
         assertEquals(String.class, getChildType(expressions.get(index++), 0));
 
-        // generic.second = new Double(0);
+        // genericField.second = new Double(0);
         assertEquals(Double.class, expressions.get(index).getType());
         assertEquals(Double.class, getChildType(expressions.get(index++), 0));
 
@@ -788,7 +810,7 @@ public class ClassTypeResolverTest {
         assertEquals(Float.class, expressions.get(index).getType());
         assertEquals(Float.class, getChildType(expressions.get(index++), 0));
 
-        // generic.generic.generic.generic.first = new Double(0);
+        // genericField.generic.generic.generic.first = new Double(0);
         assertEquals(Double.class, expressions.get(index).getType());
         assertEquals(Double.class, getChildType(expressions.get(index++), 0));
 

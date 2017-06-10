@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
@@ -291,10 +292,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
 
             if (node.getType() == null) {
-                ClassWrapper previousNameType = getClassWrapperFromTypeNode(
-                        searchScopeForVariableType(node.getScope(), dotSplitImage[0]), // get first name's class
-                        searchScopeForVariableDeclaration(node.getScope(), dotSplitImage[0])  // get TypeNode
-                                .getDeclaratorId().getTypeNode());
+                ClassWrapper previousNameType =
+                        getClassWrapperOfVariableFromScope(node.getScope(), dotSplitImage[0]);
 
                 for (int i = 1; i < dotSplitImage.length; ++i) {
                     if (previousNameType == null) {
@@ -303,9 +302,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
                     // TODO: raw types not covered
                     Field field = searchClassForField(previousNameType.clazz, dotSplitImage[i]);
-                    previousNameType = getNextClassWrapper(previousNameType,
-                                                           field.getGenericType(),
-                                                           field.getDeclaringClass());
+                    previousNameType = getNextClassWrapper(previousNameType, field.getGenericType());
                 }
 
                 node.setType(previousNameType.clazz);
@@ -315,7 +312,65 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    private ClassWrapper getNextClassWrapper(ClassWrapper previousWrapper, Type genericType, Class declaringClass) {
+    private ClassWrapper getClassWrapperOfVariableFromScope(Scope scope, String image) {
+        for (/* empty */; scope != null; scope = scope.getParent()) {
+            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
+                    : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
+                if (entry.getKey().getImage().equals(image)) {
+                    ASTType typeNode = entry.getKey().getDeclaratorId().getTypeNode();
+
+                    if(typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
+                        return getClassWrapperOfASTNode((ASTClassOrInterfaceType)typeNode.jjtGetChild(0).jjtGetChild(0));
+                    } else { // primitive type
+                        return new ClassWrapper(typeNode.getType());
+                    }
+                }
+            }
+
+            // Nested class' inherited fields shadow enclosing variables
+            if (scope instanceof ClassScope) {
+                try {
+                    ClassScope classScope = (ClassScope) scope;
+
+                    Field inheritedField = searchClassForField(classScope.getClassDeclaration().getType(),
+                                                               image);
+
+                    if (inheritedField != null) {
+                        ClassWrapper superClass = getClassWrapperOfASTNode(
+                                (ASTClassOrInterfaceType) classScope.getClassDeclaration().getNode()
+                                        .getFirstChildOfType(ASTExtendsList.class).jjtGetChild(0)
+                        );
+
+                        return getClassOfInheritedField(superClass, image);
+                    }
+                } catch (ClassCastException e) {
+                    // if there is an anonymous class, getClassDeclaration().getType() will throw
+                    // TODO: maybe there is a better way to handle this, maybe this hides bugs
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private ClassWrapper getClassOfInheritedField(ClassWrapper inheritedClass, String fieldImage) {
+        while(true) {
+            try {
+                Field field = inheritedClass.clazz.getDeclaredField(fieldImage);
+                return getNextClassWrapper(inheritedClass, field.getGenericType());
+            } catch (NoSuchFieldException e) { /* swallow */ }
+
+            Type genericSuperClass = inheritedClass.clazz.getGenericSuperclass();
+
+            if(genericSuperClass == null) {
+                return null;
+            }
+
+            inheritedClass = getNextClassWrapper(inheritedClass, inheritedClass.clazz.getGenericSuperclass());
+        }
+    }
+
+    private ClassWrapper getNextClassWrapper(ClassWrapper previousWrapper, Type genericType) {
         if (genericType instanceof Class) {
             return new ClassWrapper((Class) genericType);
         } else if (genericType instanceof ParameterizedType) {
@@ -325,12 +380,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             wrapper.genericArgs = new ArrayList<>();
 
             for (Type type : parameterizedType.getActualTypeArguments()) {
-                wrapper.genericArgs.add(getNextClassWrapper(previousWrapper, type, declaringClass));
+                wrapper.genericArgs.add(getNextClassWrapper(previousWrapper, type));
             }
 
             return wrapper;
         } else if (genericType instanceof TypeVariable) {
-            int ordinal = getTypeParameterOrdinal(declaringClass, ((TypeVariable) genericType).getName());
+            int ordinal = getTypeParameterOrdinal(previousWrapper.clazz, ((TypeVariable) genericType).getName());
             if (ordinal != -1) {
                 return previousWrapper.genericArgs.get(ordinal);
             }
@@ -339,37 +394,29 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
-    private ClassWrapper getClassWrapperFromTypeNode(Class variableType, TypeNode node) {
-        ClassWrapper classWrapper = new ClassWrapper(variableType);
+    private ClassWrapper getClassWrapperOfASTNode(ASTClassOrInterfaceType node) {
+        ClassWrapper classWrapper = new ClassWrapper(node.getType());
 
-        // this is really just a hack, so that down in the loop we can conveniently do some recursion
-        // this method should only have ASTType passed to it
-        if (node instanceof ASTType) {
-            node = (TypeNode) node.jjtGetChild(0);
-        }
+        ASTTypeArguments typeArgs = node.getFirstChildOfType(ASTTypeArguments.class);
 
-        if (node instanceof ASTReferenceType) {
+        if (typeArgs != null) {
+            classWrapper.genericArgs = new ArrayList<>();
 
-            ASTTypeArguments typeArgs = node.jjtGetChild(0).getFirstChildOfType(ASTTypeArguments.class);
+            for (int index = 0; index < typeArgs.jjtGetNumChildren(); ++index) {
+                ASTTypeArgument typeArgumentNode = (ASTTypeArgument) typeArgs.jjtGetChild(index);
+                Class typeArgumentClass = typeArgumentNode.getType();
 
-            if (typeArgs != null) {
-                classWrapper.genericArgs = new ArrayList<>();
-
-                // TODO: raw types not supported
-                // TODO: does not cover type arguments which are generic class
-                for (int index = 0; index < typeArgs.jjtGetNumChildren(); ++index) {
-                    ASTTypeArgument typeArgumentNode = (ASTTypeArgument) typeArgs.jjtGetChild(index);
-                    Class typeArgumentClass = typeArgumentNode.getType();
-
-                    if (isGeneric(typeArgumentClass)) {
-                        classWrapper.genericArgs.add(
-                                getClassWrapperFromTypeNode(typeArgumentClass,
-                                                            (TypeNode) typeArgumentNode.jjtGetChild(0)));
-                    } else {
-                        classWrapper.genericArgs.add(new ClassWrapper(typeArgumentClass));
-                    }
+                if (isGeneric(typeArgumentClass)) {
+                    classWrapper.genericArgs.add(
+                            getClassWrapperOfASTNode((ASTClassOrInterfaceType)
+                                                          typeArgumentNode.jjtGetChild(0).jjtGetChild(0)));
+                } else {
+                    classWrapper.genericArgs.add(new ClassWrapper(typeArgumentClass));
                 }
             }
+
+        } else if (isGeneric(node.getType())) { // raw declaration of a generic class
+            //TODO: raw types
         }
 
         return classWrapper;
@@ -391,46 +438,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return clazz.getTypeParameters().length != 0;
     }
 
-    private VariableNameDeclaration searchScopeForVariableDeclaration(Scope scope, String image) {
-        for (/* empty */; scope != null; scope = scope.getParent()) {
-            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
-                    : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
-                if (entry.getKey().getImage().equals(image)) {
-                    return entry.getKey();
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private Class searchScopeForVariableType(Scope scope, String image) {
-        for (/* empty */; scope != null; scope = scope.getParent()) {
-            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
-                    : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
-                if (entry.getKey().getImage().equals(image)) {
-                    return entry.getKey().getType();
-                }
-            }
-
-            // Nested class' inherited fields shadow enclosing variables
-            if (scope instanceof ClassScope) {
-                try {
-                    Field inheritedField = searchClassForField(((ClassScope) scope).getClassDeclaration().getType(),
-                                                               image);
-
-                    if (inheritedField != null) {
-                        return inheritedField.getType();
-                    }
-                } catch (ClassCastException e) {
-                    // if there is an anonymous class, getClassDeclaration().getType() will throw
-                    // TODO: maybe there is a better way to handle this, maybe this hides bugs
-                }
-            }
-        }
-
-        return null;
-    }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
