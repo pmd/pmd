@@ -768,6 +768,10 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
+        //genericTypeArg.second.second = new Double(0);
+        assertEquals(Double.class, expressions.get(index).getType());
+        assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+
         // generic.first = "";
         assertEquals(String.class, expressions.get(index).getType());
         assertEquals(String.class, getChildType(expressions.get(index++), 0));

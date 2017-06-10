@@ -18,12 +18,17 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 
 public class GenericFieldAccess<T, S extends Double> {
     public GenericClass<String, Double> generic;
+    public GenericClass<String, GenericClass<Number, Double>> genericTypeArg;
     public GenericFieldAccess field;
     public S classGeneric;
 
     public <M extends Character> void foo(GenericClass<Integer, Character> param) {
         GenericClass<Float, Long> local = null;
         M localGeneric = null;
+
+        // access a generic field whose type depends on a generic type argument
+        // Primary[Prefix[Name[genericTypeArg.second.second]]]
+        genericTypeArg.second.second = new Double(0);
 
         // access a generic field through member field
         // Primary[Prefix[Name[generic.first]]]

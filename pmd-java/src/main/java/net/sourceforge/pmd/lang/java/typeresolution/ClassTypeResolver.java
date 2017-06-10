@@ -247,6 +247,15 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    private static class ClassWrapper {
+        public final Class clazz;
+        public List<ClassWrapper> genericArgs = null;
+
+        public ClassWrapper(Class clazz) {
+            this.clazz = clazz;
+        }
+    }
+
     @Override
     public Object visit(ASTName node, Object data) {
 
@@ -276,15 +285,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
             String[] dotSplitImage = node.getImage().split("\\.");
 
+            // cases like EnclosingScope.something ...
             if (dotSplitImage.length == 1) {
                 populateType(node, dotSplitImage[0]);
             }
 
             if (node.getType() == null) {
-                Class previousNameType = searchScopeForVariableType(node.getScope(), dotSplitImage[0]);
-
-                List<Class> genericList = getTypeArgumentsFromASTType(searchScopeForVariableDeclaration(node.getScope(), dotSplitImage[0])
-                                                                  .getDeclaratorId().getTypeNode());
+                ClassWrapper previousNameType = getClassWrapperFromTypeNode(
+                        searchScopeForVariableType(node.getScope(), dotSplitImage[0]), // get first name's class
+                        searchScopeForVariableDeclaration(node.getScope(), dotSplitImage[0])  // get TypeNode
+                                .getDeclaratorId().getTypeNode());
 
                 for (int i = 1; i < dotSplitImage.length; ++i) {
                     if (previousNameType == null) {
@@ -292,72 +302,77 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     }
 
                     // TODO: raw types not covered
-                    Field field = getFieldFromClass(previousNameType, dotSplitImage[i]);
-                    previousNameType = getGenericFieldType(genericList, field);
-                    genericList = getGenericFieldTypeArguments(genericList, field);
+                    Field field = searchClassForField(previousNameType.clazz, dotSplitImage[i]);
+                    previousNameType = getNextClassWrapper(previousNameType,
+                                                           field.getGenericType(),
+                                                           field.getDeclaringClass());
                 }
 
-                node.setType(previousNameType);
+                node.setType(previousNameType.clazz);
             }
         }
 
         return super.visit(node, data);
     }
 
-    private List<Class> getGenericFieldTypeArguments(List<Class> previousTypeArguments, Field field) {
-        List<Class> newTypeArguments = new ArrayList<>();
+    private ClassWrapper getNextClassWrapper(ClassWrapper previousWrapper, Type genericType, Class declaringClass) {
+        if (genericType instanceof Class) {
+            return new ClassWrapper((Class) genericType);
+        } else if (genericType instanceof ParameterizedType) {
 
-        if(field.getGenericType() instanceof ParameterizedType) {
-            Type[] typeArgs = ((ParameterizedType)field.getGenericType()).getActualTypeArguments();
-            for(Type type : typeArgs) {
-                if(type instanceof TypeVariable) {
-                    int ordinal = getTypeParameterOrdinal(field.getDeclaringClass(), ((TypeVariable) type).getName());
-                    if(ordinal != -1) {
-                        newTypeArguments.add(previousTypeArguments.get(ordinal));
-                    }
-                } else {
-                    newTypeArguments.add((Class)type);
-                }
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            ClassWrapper wrapper = new ClassWrapper((Class) parameterizedType.getRawType());
+            wrapper.genericArgs = new ArrayList<>();
+
+            for (Type type : parameterizedType.getActualTypeArguments()) {
+                wrapper.genericArgs.add(getNextClassWrapper(previousWrapper, type, declaringClass));
             }
-        }
 
-        return newTypeArguments;
-    }
-
-    private Class getGenericFieldType(List<Class> typeArguments, Field field) {
-        Type fieldType = field.getGenericType();
-
-        if(fieldType instanceof Class) {
-            return (Class)fieldType;
-        } else if (fieldType instanceof ParameterizedType) {
-            return (Class)((ParameterizedType) fieldType).getRawType();
-        } else if (fieldType instanceof TypeVariable) {
-            int ordinal = getTypeParameterOrdinal(field.getDeclaringClass(), ((TypeVariable) fieldType).getName());
-            if(ordinal != -1) {
-                return typeArguments.get(ordinal);
+            return wrapper;
+        } else if (genericType instanceof TypeVariable) {
+            int ordinal = getTypeParameterOrdinal(declaringClass, ((TypeVariable) genericType).getName());
+            if (ordinal != -1) {
+                return previousWrapper.genericArgs.get(ordinal);
             }
         }
 
         return null;
     }
 
-    private List<Class> getTypeArgumentsFromASTType(ASTType node) {
-        List<Class> typeList = new ArrayList<>();
+    private ClassWrapper getClassWrapperFromTypeNode(Class variableType, TypeNode node) {
+        ClassWrapper classWrapper = new ClassWrapper(variableType);
 
-        if (node.jjtGetChild(0) instanceof ASTReferenceType) {
+        // this is really just a hack, so that down in the loop we can conveniently do some recursion
+        // this method should only have ASTType passed to it
+        if (node instanceof ASTType) {
+            node = (TypeNode) node.jjtGetChild(0);
+        }
 
-            ASTTypeArguments typeArgs = ((ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0))
-                    .getFirstChildOfType(ASTTypeArguments.class);
+        if (node instanceof ASTReferenceType) {
+
+            ASTTypeArguments typeArgs = node.jjtGetChild(0).getFirstChildOfType(ASTTypeArguments.class);
 
             if (typeArgs != null) {
+                classWrapper.genericArgs = new ArrayList<>();
+
+                // TODO: raw types not supported
                 // TODO: does not cover type arguments which are generic class
                 for (int index = 0; index < typeArgs.jjtGetNumChildren(); ++index) {
-                    typeList.add(((TypeNode) typeArgs.jjtGetChild(index)).getType());
+                    ASTTypeArgument typeArgumentNode = (ASTTypeArgument) typeArgs.jjtGetChild(index);
+                    Class typeArgumentClass = typeArgumentNode.getType();
+
+                    if (isGeneric(typeArgumentClass)) {
+                        classWrapper.genericArgs.add(
+                                getClassWrapperFromTypeNode(typeArgumentClass,
+                                                            (TypeNode) typeArgumentNode.jjtGetChild(0)));
+                    } else {
+                        classWrapper.genericArgs.add(new ClassWrapper(typeArgumentClass));
+                    }
                 }
             }
         }
 
-        return typeList;
+        return classWrapper;
     }
 
     private int getTypeParameterOrdinal(Class clazz, String parameterName) {
@@ -401,8 +416,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             // Nested class' inherited fields shadow enclosing variables
             if (scope instanceof ClassScope) {
                 try {
-                    Field inheritedField = getFieldFromClass(((ClassScope) scope).getClassDeclaration().getType(),
-                                                             image);
+                    Field inheritedField = searchClassForField(((ClassScope) scope).getClassDeclaration().getType(),
+                                                               image);
 
                     if (inheritedField != null) {
                         return inheritedField.getType();
@@ -637,7 +652,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     }
                 } else if (previousChild != null && previousChild.getType() != null
                         && currentChild.getImage() != null) {
-                    Field field = getFieldFromClass(previousChild.getType(), currentChild.getImage());
+                    Field field = searchClassForField(previousChild.getType(), currentChild.getImage());
                     if (field != null) {
                         currentChild.setType(field.getType());
                     }
@@ -656,7 +671,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
-    private Field getFieldFromClass(Class clazz, String fieldName) {
+    private Field searchClassForField(Class clazz, String fieldName) {
         for ( /* empty */; clazz != null; clazz = clazz.getSuperclass()) {
             try {
                 return clazz.getDeclaredField(fieldName);
