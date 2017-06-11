@@ -26,6 +26,8 @@ This is a minor release.
     *   [#417](https://github.com/pmd/pmd/issues/417): \[java] Parsing Problem with Annotation for Array Member Types
 *   java-design
     *   [#397](https://github.com/pmd/pmd/issues/397): \[java] ConstructorCallsOverridableMethodRule: false positive for method called from lambda expression
+*   java-junit
+    *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
 
 ### API Changes
 

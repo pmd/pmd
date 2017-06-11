@@ -7,6 +7,7 @@ JUnit 4 - Contains assert
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
+import org.junit.Test;
 public class Foo {
     @Test
     public void foo() throws Throwable {
