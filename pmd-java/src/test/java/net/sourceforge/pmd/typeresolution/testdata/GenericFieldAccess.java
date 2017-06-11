@@ -2,11 +2,12 @@ package net.sourceforge.pmd.typeresolution.testdata;
 
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass2;
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.instanceFields;
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.staticGeneric;
 
 
 /*
- * TODO: test [generic static field, nested classes, shadowing, inherited raw types]
- * TODO: add super, wild card and what not cases
+ * TODO: test [nested classes, shadowing]
  * TODO: add not Name[...] cases
  * TODO: add primitives, parameterized arrays
  * TODO: diamond, type parmeter declarations can shadow Class declarations
@@ -22,18 +23,43 @@ class GenericSuperClassB<T, S> {
 
 class GenericSuperClassA<T> extends GenericSuperClassB<T, GenericClass<String, T>> {
     public T fieldA;
+    public GenericClass<? super String, ?> inheritedSuperGeneric;
+    public GenericClass<? extends String, Object> inheritedUpperBound;
 }
 
-public class GenericFieldAccess<T, S extends Double> extends GenericSuperClassA<Long> {
+public class GenericFieldAccess<T extends GenericClass<String, Integer>, S extends Double> extends GenericSuperClassA<Long> {
     public GenericClass<String, Double> genericField;
     public GenericClass<String, GenericClass<Number, Double>> genericTypeArg;
     public GenericClass2 rawGeneric;
     public GenericFieldAccess field;
     public S classGeneric;
+    public T parameterGeneric;
+    public GenericClass<? super String, ?> superGeneric;
+    public GenericClass<? extends Number, Object> upperBound;
 
-    public <M extends Character> void foo(GenericClass<Integer, Character> param) {
+    public <M extends Character> void astNameCases(GenericClass<Integer, Character> param) {
         GenericClass<Float, Long> local = null;
         M localGeneric = null;
+
+
+        // test ?, ? super Something, ? extends Something
+        // Primary[Prefix[Name[superGeneric.first]]]
+        superGeneric.first = ""; // Object
+        superGeneric.second = null; // Object
+        inheritedSuperGeneric.first = ""; // Object
+        inheritedSuperGeneric.second = null; // Object
+
+        upperBound.first = null; // Number
+        inheritedUpperBound.first = null; // String
+
+        // test type parameters extending generic types
+        // parameterGeneric.first = "";
+
+        // test static imports
+        // Primary[Prefix[Name[instanceFields.generic.first]]]
+        //instanceFields.generic.first = "";
+        //staticGeneric.first = new Long(0);
+
 
         // test inherited generic
         // Primary[Prefix[Name[generic.first]]]

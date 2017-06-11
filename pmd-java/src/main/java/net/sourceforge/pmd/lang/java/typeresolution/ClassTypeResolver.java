@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -75,6 +77,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.Token;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -304,7 +307,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     previousNameType = getNextClassWrapper(previousNameType, field.getGenericType());
                 }
 
-                node.setType(previousNameType.clazz);
+                if(previousNameType != null) {
+                    node.setType(previousNameType.clazz);
+                }
             }
         }
 
@@ -350,6 +355,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         }
 
+
         return null;
     }
 
@@ -388,6 +394,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             int ordinal = getTypeParameterOrdinal(previousWrapper.clazz, ((TypeVariable) genericType).getName());
             if (ordinal != -1) {
                 return previousWrapper.genericArgs.get(ordinal);
+            }
+        } else if (genericType instanceof WildcardType) {
+            Type[] wildcardUpperBounds = ((WildcardType)genericType).getUpperBounds();
+            if(wildcardUpperBounds.length != 0) { // upper bound wildcard
+                return getNextClassWrapper(previousWrapper, wildcardUpperBounds[0]);
+            } else { // lower bound wildcard
+                return new ClassWrapper(Object.class);
             }
         }
 
@@ -433,20 +446,22 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         ClassWrapper wrapper = new ClassWrapper(clazzToFill);
 
-        if(original == null) {
-            original = wrapper;
-        }
-
-        wrapper.genericArgs = new ArrayList<>();
-
         defaultUpperBounds.put(clazzToFill, wrapper);
 
-        for (TypeVariable parameter : clazzToFill.getTypeParameters()) {
-            Type upperBound = parameter.getBounds()[0];
+        if(isGeneric(clazzToFill)) {
+            if(original == null) {
+                original = wrapper;
+            }
 
-            // TODO: fix self reference "< ... E extends Something<E> ... >"
+            wrapper.genericArgs = new ArrayList<>();
 
-            wrapper.genericArgs.add(getNextClassWrapper(original, upperBound));
+            for (TypeVariable parameter : clazzToFill.getTypeParameters()) {
+                Type upperBound = parameter.getBounds()[0];
+
+                // TODO: fix self reference "< ... E extends Something<E> ... >"
+
+                wrapper.genericArgs.add(getNextClassWrapper(original, upperBound));
+            }
         }
 
         return wrapper;
@@ -742,6 +757,19 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTTypeArgument node, Object data) {
         super.visit(node, data);
         rollupTypeUnary(node);
+
+        if(node.getType() == null) {
+            // ? extends Something
+            if(node.jjtGetFirstToken() instanceof Token
+                    && ((Token) node.jjtGetFirstToken()).next.image.equals("extends")) {
+
+                populateType(node, node.jjtGetLastToken().toString());
+                
+            } else {  // ? or ? super Something
+                node.setType(Object.class);
+            }
+        }
+
         return data;
     }
 
@@ -996,6 +1024,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         // try generics
         // TODO: generic declarations can shadow type declarations ... :(
+        // TODO: incorrect if type parameter upper bound is generic
         // TODO: ? and ? super is not covered
         if (myType == null) {
             ASTTypeParameter parameter = getTypeParameterDeclaration(node, className);

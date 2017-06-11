@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.typeresolution.testdata.GenericFieldAccess;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -767,6 +768,46 @@ public class ClassTypeResolverTest {
 
 
         int index = 0;
+
+        // superGeneric.first = ""; // Object
+        assertEquals(Object.class, expressions.get(index).getType());
+        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+
+        // superGeneric.second = null; // Object
+        assertEquals(Object.class, expressions.get(index).getType());
+        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+
+        // inheritedSuperGeneric.first = ""; // Object
+        assertEquals(Object.class, expressions.get(index).getType());
+        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+
+        // inheritedSuperGeneric.second = null; // Object
+        assertEquals(Object.class, expressions.get(index).getType());
+        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+
+        // upperBound.first = null; // Number
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index++), 0));
+
+        // inheritedUpperBound.first = null; // String
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+
+
+
+        // parameterGeneric.first = "";
+        //assertEquals(String.class, expressions.get(index).getType());
+        //assertEquals(String.class, getChildType(expressions.get(index++), 0));
+
+
+        // instanceFields.generic.first = "";
+        //assertEquals(String.class, expressions.get(index).getType());
+        //assertEquals(String.class, getChildType(expressions.get(index++), 0));
+
+        // staticGeneric.first = new Long(0);
+        //assertEquals(Long.class, expressions.get(index).getType());
+        //assertEquals(Long.class, getChildType(expressions.get(index++), 0));
+
 
         // fieldA = new Long(0);
         assertEquals(Long.class, expressions.get(index).getType());
