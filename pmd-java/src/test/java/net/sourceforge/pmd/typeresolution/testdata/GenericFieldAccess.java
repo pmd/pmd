@@ -5,15 +5,14 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass2;
 
 
 /*
- * TODO: static field access not tested
- * TODO: upper bounds: add extends, super, wild card and what not cases
- * TODO: sources: nested
- * TODO: diamond
+ * TODO: test [generic static field, nested classes, shadowing, inherited raw types]
+ * TODO: add super, wild card and what not cases
+ * TODO: add not Name[...] cases
+ * TODO: add primitives, parameterized arrays
+ * TODO: diamond, type parmeter declarations can shadow Class declarations
+ *
  *
  * Add fields dependent on type arguments from class, method, have super, extends, wild card and what not
- *
- * TODO: cover (first) one being local or param or field
- * TODO: generic from class, method, consturctor, type argument
  *
  */
 
@@ -36,18 +35,18 @@ public class GenericFieldAccess<T, S extends Double> extends GenericSuperClassA<
         GenericClass<Float, Long> local = null;
         M localGeneric = null;
 
-
         // test inherited generic
         // Primary[Prefix[Name[generic.first]]]
         fieldA = new Long(0);
         fieldB.generic.second = "";
 
-
         // test raw types
         // Primary[Prefix[Name[rawGeneric.first]]]
-        //rawGeneric.first = new Integer(0);
-        //rawGeneric.second = "";
-        //rawGeneric.rawGeneric.first = new Integer(0);
+        rawGeneric.first = new Integer(0);
+        rawGeneric.second = new Integer(0);
+        rawGeneric.third = new Object();
+        rawGeneric.fourth.second = "";
+        rawGeneric.rawGeneric.second = new Integer(0);
 
 
         // access a generic field whose type depends on a generic type argument
@@ -75,7 +74,6 @@ public class GenericFieldAccess<T, S extends Double> extends GenericSuperClassA<
         // Primary[Prefix[Name[classGeneric]]]
         classGeneric = null; // Double
         localGeneric = null; // Character
-
     }
 
     public <C extends Number> GenericFieldAccess() {

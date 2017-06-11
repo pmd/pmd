@@ -300,7 +300,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         break;
                     }
 
-                    // TODO: raw types not covered
                     Field field = searchClassForField(previousNameType.clazz, dotSplitImage[i]);
                     previousNameType = getNextClassWrapper(previousNameType, field.getGenericType());
                 }
@@ -319,8 +318,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 if (entry.getKey().getImage().equals(image)) {
                     ASTType typeNode = entry.getKey().getDeclaratorId().getTypeNode();
 
-                    if(typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
-                        return getClassWrapperOfASTNode((ASTClassOrInterfaceType)typeNode.jjtGetChild(0).jjtGetChild(0));
+                    if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
+                        return getClassWrapperOfASTNode((ASTClassOrInterfaceType) typeNode.jjtGetChild(0).jjtGetChild
+                                (0));
                     } else { // primitive type
                         return new ClassWrapper(typeNode.getType());
                     }
@@ -354,7 +354,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private ClassWrapper getClassOfInheritedField(ClassWrapper inheritedClass, String fieldImage) {
-        while(true) {
+        while (true) {
             try {
                 Field field = inheritedClass.clazz.getDeclaredField(fieldImage);
                 return getNextClassWrapper(inheritedClass, field.getGenericType());
@@ -362,7 +362,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
             Type genericSuperClass = inheritedClass.clazz.getGenericSuperclass();
 
-            if(genericSuperClass == null) {
+            if (genericSuperClass == null) {
                 return null;
             }
 
@@ -372,7 +372,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private ClassWrapper getNextClassWrapper(ClassWrapper previousWrapper, Type genericType) {
         if (genericType instanceof Class) {
-            return new ClassWrapper((Class) genericType);
+            return getDefaultUpperBounds(previousWrapper, (Class)genericType);
         } else if (genericType instanceof ParameterizedType) {
 
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
@@ -395,11 +395,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private ClassWrapper getClassWrapperOfASTNode(ASTClassOrInterfaceType node) {
-        ClassWrapper classWrapper = new ClassWrapper(node.getType());
 
         ASTTypeArguments typeArgs = node.getFirstChildOfType(ASTTypeArguments.class);
 
         if (typeArgs != null) {
+            ClassWrapper classWrapper = new ClassWrapper(node.getType());
             classWrapper.genericArgs = new ArrayList<>();
 
             for (int index = 0; index < typeArgs.jjtGetNumChildren(); ++index) {
@@ -409,17 +409,47 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 if (isGeneric(typeArgumentClass)) {
                     classWrapper.genericArgs.add(
                             getClassWrapperOfASTNode((ASTClassOrInterfaceType)
-                                                          typeArgumentNode.jjtGetChild(0).jjtGetChild(0)));
+                                                             typeArgumentNode.jjtGetChild(0).jjtGetChild(0)));
                 } else {
                     classWrapper.genericArgs.add(new ClassWrapper(typeArgumentClass));
                 }
             }
 
+            return classWrapper;
         } else if (isGeneric(node.getType())) { // raw declaration of a generic class
-            //TODO: raw types
+            return getDefaultUpperBounds(null, node.getType());
         }
 
-        return classWrapper;
+        return new ClassWrapper(node.getType());
+    }
+
+    // this exists to avoid infinite recursion in some cases
+    private Map<Class, ClassWrapper> defaultUpperBounds = new HashMap<>();
+
+    private ClassWrapper getDefaultUpperBounds(ClassWrapper original, Class clazzToFill) {
+        if(defaultUpperBounds.containsKey(clazzToFill)) {
+            return defaultUpperBounds.get(clazzToFill);
+        }
+
+        ClassWrapper wrapper = new ClassWrapper(clazzToFill);
+
+        if(original == null) {
+            original = wrapper;
+        }
+
+        wrapper.genericArgs = new ArrayList<>();
+
+        defaultUpperBounds.put(clazzToFill, wrapper);
+
+        for (TypeVariable parameter : clazzToFill.getTypeParameters()) {
+            Type upperBound = parameter.getBounds()[0];
+
+            // TODO: fix self reference "< ... E extends Something<E> ... >"
+
+            wrapper.genericArgs.add(getNextClassWrapper(original, upperBound));
+        }
+
+        return wrapper;
     }
 
     private int getTypeParameterOrdinal(Class clazz, String parameterName) {
@@ -626,8 +656,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTPrimaryExpression primaryNode, Object data) {
         super.visit(primaryNode, data);
 
-        Class<?> primaryNodeType = null;
+        Class primaryNodeType = null;
         AbstractJavaTypeNode previousChild = null;
+        ClassWrapper previousClassWraper = null;
 
         for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
             AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
@@ -645,7 +676,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                             currentChild.setType(typeDeclaration.getType());
                         }
                     }
-
                     // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
                 } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
                     if (previousChild != null) { // Qualified 'super' expression

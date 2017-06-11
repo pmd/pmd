@@ -776,18 +776,27 @@ public class ClassTypeResolverTest {
         assertEquals(String.class, expressions.get(index).getType());
         assertEquals(String.class, getChildType(expressions.get(index++), 0));
 
-        /*// rawGeneric.first = new Integer(0);
+
+        // rawGeneric.first = new Integer(0);
         assertEquals(Integer.class, expressions.get(index).getType());
         assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
 
-        // rawGeneric.second = "";
+        // rawGeneric.second = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+
+        // rawGeneric.third = new Object();
+        assertEquals(Object.class, expressions.get(index).getType());
+        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+
+        // rawGeneric.fourth.second = "";
         assertEquals(String.class, expressions.get(index).getType());
         assertEquals(String.class, getChildType(expressions.get(index++), 0));
 
-        // rawGeneric.rawGeneric.first = new Integer(0);
+        // rawGeneric.rawGeneric.second = new Integer(0);
         assertEquals(Integer.class, expressions.get(index).getType());
         assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
-        */
+
 
 
         //genericTypeArg.second.second = new Double(0);

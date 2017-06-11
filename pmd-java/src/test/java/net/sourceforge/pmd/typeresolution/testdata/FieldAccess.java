@@ -14,6 +14,8 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 /*
  * Note: inherited fields of a nested class shadow outer scope variables
  *      Note: only if they are accessible!
+ *
+ * TODO: test static field access, array types
  */
 public class FieldAccess extends SuperClassA {
     public int field;
