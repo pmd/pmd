@@ -74,7 +74,8 @@ public class OperationSignature extends Signature {
         private static Role get(ASTMethodDeclaration node) {
             if (node.isStatic()) {
                 return STATIC;
-            } else if (node.getName().startsWith("get") || node.getName().startsWith("set")) {
+            } else if (node.getName() != null && (node.getName().startsWith("get")
+                || node.getName().startsWith("set"))) {
                 return GETTER_OR_SETTER; // TODO:cf better getter or setter detection
             } else {
                 return METHOD;

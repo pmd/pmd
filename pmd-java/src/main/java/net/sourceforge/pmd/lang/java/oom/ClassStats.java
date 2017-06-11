@@ -40,7 +40,6 @@ class ClassStats {
     private Map<ClassMetricKey, Double> memo = new HashMap<>();
 
     // References to the hierarchy
-    // We store strings so that classes not analysed are ignored
     // TODO:cf useful?
     // private String superclass;
     // private List<String> subclasses;
@@ -102,7 +101,7 @@ class ClassStats {
         // Indexing on signatures optimises this type of request
         for (OperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
-                if (operations.get(sig).contains(new OperationStats(name))) { // TODO:cf eliminate "new" here
+                if (operations.get(sig).contains(new OperationStats(name))) {
                     return true;
                 }
             }

@@ -35,16 +35,16 @@ public class FieldSignature extends Signature {
      * @return The signature of the field.
      */
     public static FieldSignature buildFor(ASTFieldDeclaration node) {
-        int code = code(Visibility.get(node), node.isStatic(), node.isAbstract());
+        int code = code(Visibility.get(node), node.isStatic(), node.isFinal());
         if (!POOL.containsKey(code)) {
-            POOL.put(code, new FieldSignature(Visibility.get(node), node.isStatic(), node.isAbstract()));
+            POOL.put(code, new FieldSignature(Visibility.get(node), node.isStatic(), node.isFinal()));
         }
         return POOL.get(code);
     }
 
     /** Used internally by the pooler. */
-    private static int code(Visibility visibility, boolean isStatic, boolean isAbstract) {
-        return visibility.hashCode() * 31 + (isStatic ? 1 : 0) * 2 + (isAbstract ? 1 : 0);
+    private static int code(Visibility visibility, boolean isStatic, boolean isFinal) {
+        return visibility.hashCode() * 31 + (isStatic ? 1 : 0) * 2 + (isFinal ? 1 : 0);
     }
 
     @Override

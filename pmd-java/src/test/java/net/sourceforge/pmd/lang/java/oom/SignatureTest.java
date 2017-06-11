@@ -16,11 +16,11 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.oom.signature.Signature;
 import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
-import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 
 /**
  * Test class for {@link Signature} and its subclasses.
@@ -72,7 +72,7 @@ public class SignatureTest extends ParserTst {
     }
 
     @Test
-    public void roleTest() {
+    public void operationRoleTest() {
         final String TEST = "class Bzaz{ int x; " +
             "public static void foo(){} " +
             "Bzaz(){} " +
@@ -96,7 +96,7 @@ public class SignatureTest extends ParserTst {
     }
 
     @Test
-    public void isAbstractTest() {
+    public void isAbstractOperationTest() {
         final String TEST = "abstract class Bzaz{ int x; " +
             "public static abstract void foo();" +
             "protected abstract int bar(int x);" +
@@ -120,7 +120,55 @@ public class SignatureTest extends ParserTst {
         assertFalse(sigs.get(4).isAbstract);
     }
 
+    @Test
+    public void isFinalFieldTest() {
+        final String TEST =  "class Bzaz{"
+            + "public String x;"
+            + "private int y;"
+            + "private final int a;"
+            + "protected final double u;"
+            + "final long v;"
+            + "}";
 
+        List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST);
+        List<FieldSignature> sigs = new ArrayList<>();
+
+        for (ASTFieldDeclaration node : nodes) {
+            sigs.add(FieldSignature.buildFor(node));
+        }
+
+        assertFalse(sigs.get(0).isFinal);
+        assertFalse(sigs.get(1).isFinal);
+        assertTrue(sigs.get(2).isFinal);
+        assertTrue(sigs.get(3).isFinal);
+        assertTrue(sigs.get(4).isFinal);
+    }
+
+    @Test
+    public void isStaticFieldTest() {
+        final String TEST =  "class Bzaz{"
+            + "public final String x;"
+            + "private int y;"
+            + "private static int a;"
+            + "protected static final double u;"
+            + "static long v;"
+            + "}";
+
+        List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST);
+        List<FieldSignature> sigs = new ArrayList<>();
+
+        for (ASTFieldDeclaration node : nodes) {
+            sigs.add(FieldSignature.buildFor(node));
+        }
+
+        assertFalse(sigs.get(0).isStatic);
+        assertFalse(sigs.get(1).isStatic);
+        assertTrue(sigs.get(2).isStatic);
+        assertTrue(sigs.get(3).isStatic);
+        assertTrue(sigs.get(4).isStatic);
+    }
+
+    // Ensure only one instance of a signature is created.
     @Test
     public void operationPoolTest() {
         final String TEST = "class Bzaz{ " +
@@ -152,6 +200,7 @@ public class SignatureTest extends ParserTst {
         }
     }
 
+    // Ensure only one instance of a signature is created.
     @Test
     public void fieldPoolTest() {
         final String TEST = "class Bzaz {" +

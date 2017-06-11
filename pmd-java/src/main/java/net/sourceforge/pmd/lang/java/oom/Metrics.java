@@ -12,11 +12,9 @@ import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
 
 
 /**
- * User bound façade of the Metrics Framework. Provides a uniform interface for the calculation of
- * metrics.
+ * User bound façade of the Metrics Framework. Provides a uniform interface for the calculation of metrics.
  *
- * TODO:cf split up get(ASTMethodOrConstructorDeclaration) and use default methods in
- * OperationMetric
+ *
  *
  * @author Clément Fournier
  */

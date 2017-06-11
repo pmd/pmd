@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Generic signature mask. Newly created masks cover everything.
+ * Generic signature mask.
  *
  * @param <T> The type of Signature to handle.
  *

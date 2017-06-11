@@ -9,18 +9,18 @@ package net.sourceforge.pmd.lang.java.oom.testdata;
  *
  * @author Clément Fournier
  */
-public class MetricsVisitorTestClass {
+public class MetricsVisitorTestData {
 
     public String x;
     private String y;
     protected String z;
     String t;
 
-    public MetricsVisitorTestClass() {
+    public MetricsVisitorTestData() {
 
     }
 
-    private MetricsVisitorTestClass(String x) {
+    private MetricsVisitorTestData(String x) {
 
     }
 

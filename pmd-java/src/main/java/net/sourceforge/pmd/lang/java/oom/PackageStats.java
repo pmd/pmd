@@ -10,6 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 
 
@@ -28,7 +29,7 @@ public final class PackageStats {
     /**
      * Default constructor.
      */
-    public PackageStats() {
+    PackageStats() {
 
     }
 
@@ -99,6 +100,7 @@ public final class PackageStats {
         return next;
     }
 
+
     /**
      * Returns true if the signature of the operation designated by the qualified name is covered by
      * the mask.
@@ -114,8 +116,21 @@ public final class PackageStats {
         return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
     }
 
-    // TODO:cf make memo routines use a computeIfNotFound parameter
-    // TODO that would save the overhead of going down, returning NaN, computing, going down again and setting it
+    /**
+     * Returns true if the signature of the field designated by its name and the qualified name of its class is
+     * covered by the mask.
+     *
+     * @param qname     The class of the field
+     * @param fieldName The name of the field
+     * @param sigMask   The signature mask to use
+     *
+     * @return True if the signature of the field is covered by the mask.
+     */
+    public boolean hasMatchingSig(QualifiedName qname, String fieldName, FieldSigMask sigMask) {
+        ClassStats clazz = getClassStats(qname, false);
+
+        return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
+    }
 
     /**
      * Computes the value of a metric on a class.

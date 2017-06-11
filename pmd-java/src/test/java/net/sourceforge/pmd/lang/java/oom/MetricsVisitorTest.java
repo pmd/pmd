@@ -22,9 +22,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.oom.testdata.MetricsVisitorTestClass;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
+import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
+import net.sourceforge.pmd.lang.java.oom.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolverTest;
 
 /**
@@ -38,9 +40,10 @@ public class MetricsVisitorTest {
         assertNotNull(Metrics.getTopLevelPackageStats());
     }
 
+
     @Test
-    public void testAllOperations() {
-        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestClass.class);
+    public void testOperationsAreThere() {
+        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
 
         final PackageStats toplevel = Metrics.getTopLevelPackageStats();
 
@@ -54,29 +57,52 @@ public class MetricsVisitorTest {
                 return data;
             }
         }, null);
-
-
     }
 
+
     @Test
-    public void testStaticOperationsSig() {
-        parseAndVisitForClass15(MetricsVisitorTestClass.class);
+    public void testFieldsAreThere() {
+        parseAndVisitForClass15(MetricsVisitorTestData.class);
+
 
         final PackageStats toplevel = Metrics.getTopLevelPackageStats();
 
-        final OperationSigMask opMask = new OperationSigMask();
-        opMask.restrictRolesTo(Role.STATIC);
+        final FieldSigMask fieldSigMask = new FieldSigMask();
+
+        QualifiedName clazz = QualifiedName.parseName("net.sourceforge.pmd.lang.java"
+                                                          + ".oom.testdata"
+                                                          + ".MetricsVisitorTestData");
+        String[] fieldNames = {"x", "y", "z", "t"};
+        Visibility[] visibilities = {Visibility.PUBLIC, Visibility.PRIVATE, Visibility.PROTECTED, Visibility.PACKAGE};
+
+        for (int i = 0; i < fieldNames.length; i++) {
+            fieldSigMask.restrictVisibilitiesTo(visibilities[i]);
+            assertTrue(toplevel.hasMatchingSig(clazz, fieldNames[i], fieldSigMask));
+        }
+    }
+
+
+    // this test is probably useless, SignatureTest and SigMaskTest already ensure signatures and sigmask have no
+    // problem
+    @Test
+    public void testStaticOperationsSig() {
+        parseAndVisitForClass15(MetricsVisitorTestData.class);
+
+        final PackageStats toplevel = Metrics.getTopLevelPackageStats();
+
+        final OperationSigMask operationSigMask = new OperationSigMask();
+        operationSigMask.restrictRolesTo(Role.STATIC);
 
         QualifiedName q1 = QualifiedName.parseName("net.sourceforge.pmd.lang.java"
-                                    + ".oom.testdata"
-                                    + ".MetricsVisitorTestClass#mystatic1()");
+                                                       + ".oom.testdata"
+                                                       + ".MetricsVisitorTestData#mystatic1()");
 
-        assertTrue(toplevel.hasMatchingSig(q1, opMask));
+        assertTrue(toplevel.hasMatchingSig(q1, operationSigMask));
 
-        opMask.coverAllRoles();
-        opMask.forbid(Role.STATIC);
+        operationSigMask.coverAllRoles();
+        operationSigMask.forbid(Role.STATIC);
 
-        assertFalse(toplevel.hasMatchingSig(q1, opMask));
+        assertFalse(toplevel.hasMatchingSig(q1, operationSigMask));
     }
 
 

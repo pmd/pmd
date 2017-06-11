@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Signature mask for an operation.
+ * Signature mask for an operation. Newly created masks cover any operation that is not abstract.
  *
  * @author Clément Fournier
  */

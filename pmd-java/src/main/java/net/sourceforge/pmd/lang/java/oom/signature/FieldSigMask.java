@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.oom.signature;
 
 /**
- * Signature mask for a field.
+ * Signature mask for a field. Newly created masks cover any field.
  *
  * @author Clément Fournier
  */
@@ -26,5 +26,10 @@ public class FieldSigMask extends SigMask<FieldSignature> {
     /** Include static fields? */
     public void coverStatic(boolean coverStatic) {
         this.coverStatic = coverStatic;
+    }
+
+    @Override
+    public boolean covers(FieldSignature sig) {
+        return super.covers(sig) && (coverFinal || !sig.isFinal) && (coverStatic || !sig.isStatic);
     }
 }
