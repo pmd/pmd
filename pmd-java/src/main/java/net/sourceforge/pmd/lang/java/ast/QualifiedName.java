@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * Represents Qualified Names for use within PackageStats.
- * TODO make unit tests once the visitor is working to ensure new implementations won't break it
+ * TODO:cf make unit tests once the visitor is working to ensure new implementations won't break it
  */
 public class QualifiedName {
 
@@ -34,14 +34,12 @@ public class QualifiedName {
      */
     public static QualifiedName makeOperationOf(ASTMethodDeclaration node) {
         QualifiedName parentQname = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getQualifiedName();
-        QualifiedName qname = new QualifiedName();
 
-        qname.packages = parentQname.packages;
-        qname.classes = parentQname.classes;
-        qname.operation = getOperationName(node.getMethodName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
-
-        return qname;
+        return makeOperationOf(parentQname,
+                               node.getMethodName(),
+                               node.getFirstDescendantOfType(ASTFormalParameters.class));
     }
+
 
     /**
      * Builds the qualified name of a constructor declaration.
@@ -52,12 +50,20 @@ public class QualifiedName {
      */
     public static QualifiedName makeOperationOf(ASTConstructorDeclaration node) {
         ASTClassOrInterfaceDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        QualifiedName qname = new QualifiedName();
-        QualifiedName parentQName = parent.getQualifiedName();
 
-        qname.packages = parentQName.packages;
-        qname.classes = parentQName.classes;
-        qname.operation = getOperationName(parent.getImage(), node.getFirstDescendantOfType(ASTFormalParameters.class));
+        return makeOperationOf(parent.getQualifiedName(),
+                               parent.getImage(),
+                               node.getFirstDescendantOfType(ASTFormalParameters.class));
+    }
+
+
+    /** Factorises the functionality of makeOperationof() */
+    private static QualifiedName makeOperationOf(QualifiedName parent, String opName, ASTFormalParameters params) {
+        QualifiedName qname = new QualifiedName();
+
+        qname.packages = parent.packages;
+        qname.classes = parent.classes;
+        qname.operation = getOperationName(opName, params);
 
         return qname;
     }

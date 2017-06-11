@@ -11,9 +11,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.PackageStats;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
-import net.sourceforge.pmd.lang.java.oom.PackageStats;
 import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
 
 /**

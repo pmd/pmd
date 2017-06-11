@@ -71,14 +71,15 @@ public final class Metrics {
         /** Weighed Method Count. */
         WMC(new WmcMetric());
 
-        /** The object used to calculate the metric */
+
         private final ClassMetric calculator;
 
         ClassMetricKey(ClassMetric m) {
             calculator = m;
         }
 
-        public ClassMetric getCalculator() {
+        /** Returns the object used to calculate the metric. @return The calculator. */
+        ClassMetric getCalculator() {
             return calculator;
         }
     }
@@ -91,14 +92,14 @@ public final class Metrics {
         /** Access to Foreign Data. */ // TODO:cf add short description here for javadoc hints
         ATFD(new AtfdMetric());
 
-        /** The object used to calculate the metric */
         private final OperationMetric calculator;
 
         OperationMetricKey(OperationMetric m) {
             calculator = m;
         }
 
-        public OperationMetric getCalculator() {
+        /** Returns the object used to calculate the metric. @return The calculator. */
+        OperationMetric getCalculator() {
             return calculator;
         }
     }

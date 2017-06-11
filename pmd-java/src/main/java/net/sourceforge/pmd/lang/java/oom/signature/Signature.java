@@ -33,7 +33,7 @@ public abstract class Signature {
      * The visibility of a node.
      */
     public enum Visibility {
-        PUBLIC, PACKAGE, PROTECTED, PRIVATE, UNDEF;
+        PUBLIC, PACKAGE, PROTECTED, PRIVATE;
 
         /**
          * Returns the Visibility enum key for a node.
@@ -43,11 +43,15 @@ public abstract class Signature {
          * @return The visibility enum key for a node.
          */
         public static Visibility get(AccessNode node) {
-            return node.isPublic() ? PUBLIC
-                : node.isPackagePrivate() ? PACKAGE
-                    : node.isProtected() ? PROTECTED
-                        : node.isPrivate() ? PRIVATE
-                            : UNDEF;
+            if (node.isPublic()) {
+                return PUBLIC;
+            } else if (node.isPackagePrivate()) {
+                return PACKAGE;
+            } else if (node.isProtected()) {
+                return PROTECTED;
+            } else {
+                return PRIVATE;
+            }
         }
     }
 }

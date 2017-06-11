@@ -32,17 +32,17 @@ public class SignatureTest extends ParserTst {
     // common to operation and field signatures
     @Test
     public void visibilityTest() {
-        final String TEST = "class Bzaz{ " +
-            "public int bar;" +
-            "String k;" +
-            "protected double d;" +
-            "private int i;" +
-            "protected int x;" +
-            "public Bzaz(){} " +
-            "void bar(){} " +
-            "protected void foo(int x){}" +
-            "private Bzaz(int y){}" +
-            "}";
+        final String TEST = "class Bzaz{ "
+            + "public int bar;"
+            + "String k;"
+            + "protected double d;"
+            + "private int i;"
+            + "protected int x;"
+            + "public Bzaz(){} "
+            + "void bar(){} "
+            + "protected void foo(int x){}"
+            + "private Bzaz(int y){}"
+            + "}";
 
 
         List<ASTMethodOrConstructorDeclaration> operationDeclarations = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
@@ -73,12 +73,12 @@ public class SignatureTest extends ParserTst {
 
     @Test
     public void operationRoleTest() {
-        final String TEST = "class Bzaz{ int x; " +
-            "public static void foo(){} " +
-            "Bzaz(){} " +
-            "int getX(){return x;}" +
-            " void setX(int a){x=a;}" +
-            " public void doSomething(){}}";
+        final String TEST = "class Bzaz{ int x; "
+            + "public static void foo(){} "
+            + "Bzaz(){} "
+            + "int getX(){return x;}"
+            + " void setX(int a){x=a;}"
+            + " public void doSomething(){}}";
 
 
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
@@ -97,12 +97,12 @@ public class SignatureTest extends ParserTst {
 
     @Test
     public void isAbstractOperationTest() {
-        final String TEST = "abstract class Bzaz{ int x; " +
-            "public static abstract void foo();" +
-            "protected abstract int bar(int x);" +
-            "int getX(){return x;}" +
-            "void setX(int a){x=a;}" +
-            "public void doSomething(){}}";
+        final String TEST = "abstract class Bzaz{ int x; "
+            + "public static abstract void foo();"
+            + "protected abstract int bar(int x);"
+            + "int getX(){return x;}"
+            + "void setX(int a){x=a;}"
+            + "public void doSomething(){}}";
 
 
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
@@ -122,7 +122,7 @@ public class SignatureTest extends ParserTst {
 
     @Test
     public void isFinalFieldTest() {
-        final String TEST =  "class Bzaz{"
+        final String TEST = "class Bzaz{"
             + "public String x;"
             + "private int y;"
             + "private final int a;"
@@ -146,7 +146,7 @@ public class SignatureTest extends ParserTst {
 
     @Test
     public void isStaticFieldTest() {
-        final String TEST =  "class Bzaz{"
+        final String TEST = "class Bzaz{"
             + "public final String x;"
             + "private int y;"
             + "private static int a;"
@@ -171,15 +171,15 @@ public class SignatureTest extends ParserTst {
     // Ensure only one instance of a signature is created.
     @Test
     public void operationPoolTest() {
-        final String TEST = "class Bzaz{ " +
-            "public static void foo(){} " +
-            "public static void az(){} " +
-            "public static int getX(){return x;}}";
+        final String TEST = "class Bzaz{ "
+            + "public static void foo(){} "
+            + "public static void az(){} "
+            + "public static int getX(){return x;}}";
 
-        final String TEST2 = "class Bzaz{ " +
-            "void foo(){} " +
-            "void az(){} " +
-            "int rand(){return x;}}";
+        final String TEST2 = "class Bzaz{ "
+            + "void foo(){} "
+            + "void az(){} "
+            + "int rand(){return x;}}";
 
 
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
@@ -203,17 +203,17 @@ public class SignatureTest extends ParserTst {
     // Ensure only one instance of a signature is created.
     @Test
     public void fieldPoolTest() {
-        final String TEST = "class Bzaz {" +
-            "public int bar;" +
-            "public String k;" +
-            "public double d;" +
-            "}";
+        final String TEST = "class Bzaz {"
+            + "public int bar;"
+            + "public String k;"
+            + "public double d;"
+            + "}";
 
-        final String TEST2 = "class Foo {" +
-            "private final int i;" +
-            "private final int x;" +
-            "private final String k;" +
-            "}";
+        final String TEST2 = "class Foo {"
+            + "private final int i;"
+            + "private final int x;"
+            + "private final String k;"
+            + "}";
 
 
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST);
