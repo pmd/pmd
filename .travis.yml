@@ -27,11 +27,11 @@ env:
   - BUILD=sonar
 
 before_install:
-  - bash .travis/setup-secrets.sh
-  - bash .travis/configure-maven.sh
+  - bash -l .travis/setup-secrets.sh
+  - bash -l .travis/configure-maven.sh
 install: true
 before_script: true
-script: bash .travis/build-$BUILD.sh
+script: bash -l .travis/build-$BUILD.sh
 after_success: true
 
 
@@ -48,7 +48,7 @@ deploy:
     tags: true
     repo: pmd/pmd
     condition: "${TRAVIS_SECURE_ENV_VARS} = true && ${BUILD} != sonar"
-after_deploy: bash .travis/release.sh
+after_deploy: bash -l .travis/release.sh
 
 notifications:
   email:
