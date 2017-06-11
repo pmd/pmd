@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotations.UsesTypeResolution;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  *
  * @author acaplan
  */
+@UsesTypeResolution
 public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
 
     @Override

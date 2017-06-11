@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
+import net.sourceforge.pmd.annotations.UsesTypeResolution;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
@@ -19,6 +20,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * This is a separate rule, uses the type resolution facade
  */
+@UsesTypeResolution
 public class LooseCoupling extends AbstractJavaRule {
 
     @Override

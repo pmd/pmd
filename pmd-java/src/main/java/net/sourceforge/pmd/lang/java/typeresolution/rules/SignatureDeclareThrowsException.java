@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotations.UsesTypeResolution;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  * @author acaplan
  * @author Wouter Zelle
  */
+@UsesTypeResolution
 public class SignatureDeclareThrowsException extends AbstractJavaRule {
 
     private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty(
