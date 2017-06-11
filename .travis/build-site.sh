@@ -42,22 +42,10 @@ if [[ "$TRAVIS_TAG" != "" || "$VERSION" == *-SNAPSHOT ]]; then
     rsync -avh target/pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
 fi
 
-(
-    if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
-        # this can take very long and no output is generated. therefore use the background job again
-        export PING_SLEEP=30s
-        export BUILD_OUTPUT=/tmp/build-site-upload.out
-        export PING_PID_FILE=/tmp/build-site-upload-ping.pid
+if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
+    # this can take very long and no output is generated. therefore travis_wait is used.
+    # See https://docs.travis-ci.com/user/common-build-problems/#Build-times-out-because-no-output-was-received
 
-        source .travis/background-job-funcs.sh
-
-        # Uploading snapshot site...
-        rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
-
-        # The build finished without returning an error so dump a tail of the output
-        dump_output
-
-        # nicely terminate the ping output loop
-        kill_ping
-    fi
-)
+    # Uploading snapshot site...
+    travis_wait 30 rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
+fi
