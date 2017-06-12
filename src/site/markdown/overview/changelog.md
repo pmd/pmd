@@ -9,11 +9,17 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
+    *   [Modified Rules](#Modified_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
+
+#### Modified Rules
+
+*   The ruleset java-junit now properly detects JUnit5, and rules are being adapted to the changes on it's API.
+    This support is, however, still incomplete. Let us know of any uses we are still missing on the [issue tracker](https://github.com/pmd/pmd/issues)
 
 ### Fixed Issues
 
