@@ -39,27 +39,21 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
         try {
             c = Class.forName(JUNIT3_CLASS_NAME);
-        } catch (ClassNotFoundException t) {
-            c = null;
-        } catch (NoClassDefFoundError t) {
+        } catch (ClassNotFoundException | NoClassDefFoundError t) {
             c = null;
         }
         JUNIT3_CLASS = c;
 
         try {
             c = Class.forName(JUNIT4_CLASS_NAME);
-        } catch (ClassNotFoundException t) {
-            c = null;
-        } catch (NoClassDefFoundError t) {
+        } catch (ClassNotFoundException | NoClassDefFoundError t) {
             c = null;
         }
         JUNIT4_CLASS = c;
 
         try {
             c = Class.forName(JUNIT5_CLASS_NAME);
-        } catch (ClassNotFoundException t) {
-            c = null;
-        } catch (NoClassDefFoundError t) {
+        } catch (ClassNotFoundException | NoClassDefFoundError t) {
             c = null;
         }
         JUNIT5_CLASS = c;
