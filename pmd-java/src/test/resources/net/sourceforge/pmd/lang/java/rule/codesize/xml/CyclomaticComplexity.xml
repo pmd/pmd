@@ -64,7 +64,7 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>The class 'Foo' has a Cyclomatic Complexity of 2 (Highest = 1).</message>
-            <message>The method 'foo' has a Cyclomatic Complexity of 1.</message>
+            <message>The method 'foo()' has a Cyclomatic Complexity of 1.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -88,7 +88,7 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>The class 'Foo' has a Cyclomatic Complexity of 12 (Highest = 11).</message>
-            <message>The method 'example' has a Cyclomatic Complexity of 11.</message>
+            <message>The method 'example()' has a Cyclomatic Complexity of 11.</message>
         </expected-messages>
         <code-ref id="basic-violation"/>
     </test-code>
@@ -98,7 +98,7 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>The class 'Foo' has a Cyclomatic Complexity of 2 (Highest = 1).</message>
-            <message>The constructor 'Foo' has a Cyclomatic Complexity of 1.</message>
+            <message>The constructor 'Foo()' has a Cyclomatic Complexity of 1.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {

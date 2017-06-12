@@ -4,77 +4,39 @@
 
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.oom.Metrics;
+import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
 
 /**
  * @author Donald A. Leckie,
- *
- * @version $Revision: 5956 $, $Date: 2008-04-04 04:59:25 -0500 (Fri, 04 Apr
- *          2008) $
+ * @version $Revision: 5956 $, $Date: 2008-04-04 04:59:25 -0500 (Fri, 04 Apr 2008) $
  * @since January 14, 2003
  */
 public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
 
     @Override
-    public Object visit(ASTIfStatement node, Object data) {
-        super.visit(node, data);
+    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+        if (!isSuppressed(node)) {
+            ClassEntry classEntry = entryStack.peek();
 
-        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        entryStack.peek().bumpDecisionPoints(boolCompIf);
-        return data;
-    }
+            int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node);
+            classEntry.numMethods++;
+            classEntry.totalCyclo += cyclo;
+            if (cyclo > classEntry.maxCyclo) {
+                classEntry.maxCyclo = cyclo;
+            }
 
-    @Override
-    public Object visit(ASTForStatement node, Object data) {
-        super.visit(node, data);
-
-        int boolCompFor = NPathComplexityRule
-                .sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
-        entryStack.peek().bumpDecisionPoints(boolCompFor);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTDoStatement node, Object data) {
-        super.visit(node, data);
-
-        int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        entryStack.peek().bumpDecisionPoints(boolCompDo);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTSwitchStatement node, Object data) {
-        super.visit(node, data);
-
-        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        entryStack.peek().bumpDecisionPoints(boolCompSwitch);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTWhileStatement node, Object data) {
-        super.visit(node, data);
-
-        int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        entryStack.peek().bumpDecisionPoints(boolCompWhile);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTConditionalExpression node, Object data) {
-        super.visit(node, data);
-
-        if (node.isTernary()) {
-            int boolCompTern = NPathComplexityRule
-                    .sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-            entryStack.peek().bumpDecisionPoints(boolCompTern);
+            if (showMethodsComplexity && cyclo >= reportLevel) {
+                addViolation(data, node, new String[]
+                    {node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                     node.getQualifiedName().getOperation(),
+                     String.valueOf(cyclo),});
+                System.err.println(new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                                                 node.getQualifiedName().getOperation(),
+                                                 String.valueOf(cyclo),});
+            }
         }
         return data;
     }

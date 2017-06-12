@@ -8,13 +8,14 @@ package net.sourceforge.pmd.lang.java.oom;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.ModifiedCycloMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.StdCycloMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
 
 
 /**
  * User bound façade of the Metrics Framework. Provides a uniform interface for the calculation of metrics.
- *
- *
  *
  * @author Clément Fournier
  */
@@ -69,7 +70,10 @@ public final class Metrics {
         ATFD(new AtfdMetric()),
         // ...
         /** Weighed Method Count. */
-        WMC(new WmcMetric());
+        WMC(new WmcMetric()),
+        StdCYCLO(new StdCycloMetric()),
+        CYCLO(new CycloMetric()),
+        ModifiedCYCLO(new ModifiedCycloMetric());
 
 
         private final ClassMetric calculator;
@@ -90,7 +94,10 @@ public final class Metrics {
     public enum OperationMetricKey {
 
         /** Access to Foreign Data. */ // TODO:cf add short description here for javadoc hints
-        ATFD(new AtfdMetric());
+        ATFD(new AtfdMetric()),
+        StdCYCLO(new StdCycloMetric()),
+        CYCLO(new CycloMetric()),
+        ModifiedCYCLO(new ModifiedCycloMetric());
 
         private final OperationMetric calculator;
 

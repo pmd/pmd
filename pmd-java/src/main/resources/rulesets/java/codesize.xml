@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 
 <ruleset name="Code Size"
-    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
-  <description>
-The Code Size ruleset contains rules that find problems related to code size or complexity.
-  </description>
+    <description>
+        The Code Size ruleset contains rules that find problems related to code size or complexity.
+    </description>
 
-<rule name="NPathComplexity"
-      since="3.9"
-      message="The method {0}() has an NPath complexity of {1}"
-      class="net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NPathComplexity">
-   <description>
-The NPath complexity of a method is the number of acyclic execution paths through that method.
-A threshold of 200 is generally considered the point where measures should be taken to reduce 
-complexity and increase readability.
-   </description>
-     <priority>3</priority>
-    <example>
- <![CDATA[
+    <rule name="NPathComplexity"
+          since="3.9"
+          message="The method {0}() has an NPath complexity of {1}"
+          class="net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NPathComplexity">
+        <description>
+            The NPath complexity of a method is the number of acyclic execution paths through that method.
+            A threshold of 200 is generally considered the point where measures should be taken to reduce
+            complexity and increase readability.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 void bar() {	// this is something more complex than it needs to be,
 	if (y) {	// it should be broken down into smaller methods or functions
 		for (j = 0; j < m; j++) {
@@ -52,23 +52,23 @@ void bar() {	// this is something more complex than it needs to be,
 }
 
  ]]>
-    </example>
-</rule>
+        </example>
+    </rule>
 
- <rule name="ExcessiveMethodLength"
- 		 since="0.6"
-       message="Avoid really long methods."
-       class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveMethodLengthRule"
-       externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessiveMethodLength">
-   <description>
-When methods are excessively long this usually indicates that the method is doing more than its
-name/signature might suggest. They also become challenging for others to digest since excessive 
-scrolling causes readers to lose focus.
-Try to reduce the method length by creating helper methods and removing any copy/pasted code.
-   </description>
-     <priority>3</priority>
-   <example>
-<![CDATA[
+    <rule name="ExcessiveMethodLength"
+          since="0.6"
+          message="Avoid really long methods."
+          class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveMethodLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessiveMethodLength">
+        <description>
+            When methods are excessively long this usually indicates that the method is doing more than its
+            name/signature might suggest. They also become challenging for others to digest since excessive
+            scrolling causes readers to lose focus.
+            Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public void doSomething() {
 	System.out.println("Hello world!");
 	System.out.println("Hello world!");
@@ -76,53 +76,53 @@ public void doSomething() {
 }
 
 ]]>
-   </example>
+        </example>
 
- </rule>
+    </rule>
 
 
- <rule name="ExcessiveParameterList"
- 		 since="0.9"
-       message="Avoid long parameter lists."
-       class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveParameterListRule"
+    <rule name="ExcessiveParameterList"
+          since="0.9"
+          message="Avoid long parameter lists."
+          class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveParameterListRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessiveParameterList">
-   <description>
-Methods with numerous parameters are a challenge to maintain, especially if most of them share the
-same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
-   </description>
-     <priority>3</priority>
-   <example>
-<![CDATA[
+        <description>
+            Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+            same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public void addPerson(		// too many arguments liable to be mixed up
 	int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
 
 	. . . .
 }
- 
+
 public void addPerson(		// preferred approach
 	Date birthdate, BodyMeasurements measurements, int ssn) {
 
 	. . . .
 }
 ]]>
-   </example>
+        </example>
 
- </rule>
+    </rule>
 
 
- <rule name="ExcessiveClassLength"
- 		 since="0.6"
-       message="Avoid really long classes."
-       class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule"
+    <rule name="ExcessiveClassLength"
+          since="0.6"
+          message="Avoid really long classes."
+          class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessiveClassLength">
-   <description>
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
-responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
-   </description>
-     <priority>3</priority>
-   <example>
-<![CDATA[
+        <description>
+            Excessive class file lengths are usually indications that the class may be burdened with excessive
+            responsibilities that could be provided by external classes or functions. In breaking these methods
+            apart the code becomes more managable and ripe for reuse.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public class Foo {
 	public void bar1() {
     // 1000 lines of code
@@ -133,33 +133,34 @@ public class Foo {
     public void bar3() {
     // 1000 lines of code
 	}
-	
-	
+
+
     public void barN() {
     // 1000 lines of code
 	}
 }
 ]]>
-   </example>
- </rule>
+        </example>
+    </rule>
 
 
     <rule 	name="CyclomaticComplexity"
-    			since="1.03"
-      		message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
-	      	class="net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule"
-	      	externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity">
-   <description>
-   		<![CDATA[
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+             since="1.03"
+             message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
+             metrics="true"
+             class="net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule"
+             externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity">
+        <description>
+            <![CDATA[
+Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
 		]]>
-   </description>
-   <priority>3</priority>
-   <example>
-<![CDATA[
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public class Foo {		// This has a Cyclomatic Complexity = 12
 1   public void example()  {
 2       if (a == b)  {
@@ -197,25 +198,26 @@ public class Foo {		// This has a Cyclomatic Complexity = 12
     }
 }
 ]]>
-   </example>
-</rule>
+        </example>
+    </rule>
 
-    <rule   name="StdCyclomaticComplexity"
+    <rule name="StdCyclomaticComplexity"
           since="5.1.2"
           message = "The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
+          metrics="true"
           class="net.sourceforge.pmd.lang.java.rule.codesize.StdCyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#StdCyclomaticComplexity">
-   <description>
-      <![CDATA[
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+        <description>
+            <![CDATA[
+Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
     ]]>
-   </description>
-   <priority>3</priority>
-   <example>
-<![CDATA[
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public class Foo {    // This has a Cyclomatic Complexity = 12
 1   public void example()  {
 2       if (a == b || (c == d && e == f))  { // Only one
@@ -253,26 +255,27 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
     }
 }
 ]]>
-   </example>
-</rule>
+        </example>
+    </rule>
 
-    <rule   name="ModifiedCyclomaticComplexity"
+    <rule name="ModifiedCyclomaticComplexity"
           since="5.1.2"
           message = "The {0} ''{1}'' has a Modified Cyclomatic Complexity of {2}."
+          metrics="true"
           class="net.sourceforge.pmd.lang.java.rule.codesize.ModifiedCyclomaticComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ModifiedCyclomaticComplexity">
-   <description>
-      <![CDATA[
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
+        <description>
+            <![CDATA[
+Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
 decision point.
     ]]>
-   </description>
-   <priority>3</priority>
-   <example>
-<![CDATA[
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public class Foo {    // This has a Cyclomatic Complexity = 9
 1   public void example()  {
 2       if (a == b)  {
@@ -310,51 +313,51 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
     }
 }
 ]]>
-   </example>
-</rule>
+        </example>
+    </rule>
 
     <rule name="ExcessivePublicCount"
-    since="1.04"
-    message="This class has a bunch of public methods and attributes"
-    class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessivePublicCountRule"
+          since="1.04"
+          message="This class has a bunch of public methods and attributes"
+          class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessivePublicCountRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ExcessivePublicCount">
-    <description>
-Classes with large numbers of public methods and attributes require disproportionate testing efforts
-since combinational side effects grow rapidly and increase risk. Refactoring these classes into
-smaller ones not only increases testability and reliability but also allows new variations to be
-developed easily.
-    </description>
-    <priority>3</priority>
-    <example>
-    <![CDATA[
+        <description>
+            Classes with large numbers of public methods and attributes require disproportionate testing efforts
+            since combinational side effects grow rapidly and increase risk. Refactoring these classes into
+            smaller ones not only increases testability and reliability but also allows new variations to be
+            developed easily.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public class Foo {
 	public String value;
 	public Bar something;
 	public Variable var;
  // [... more more public attributes ...]
- 
+
 	public void doWork() {}
 	public void doMoreWork() {}
 	public void doWorkAgain() {}
  // [... more more public methods ...]
 }
     ]]>
-    </example>
+        </example>
     </rule>
 
     <rule name="TooManyFields"
-    		 since="3.0"
+          since="3.0"
           message="Too many fields"
           class="net.sourceforge.pmd.lang.java.rule.codesize.TooManyFieldsRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#TooManyFields">
-      <description>
-Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
-possibly through grouping related fields in new objects.  For example, a class with individual 
-city/state/zip fields could park them within a single Address field.
-      </description>
+        <description>
+            Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
+            possibly through grouping related fields in new objects.  For example, a class with individual
+            city/state/zip fields could park them within a single Address field.
+        </description>
         <priority>3</priority>
-      <example>
-   <![CDATA[
+        <example>
+            <![CDATA[
 public class Person {	// too many separate fields
    int birthYear;
    int birthMonth;
@@ -368,21 +371,22 @@ public class Person {	// this is more manageable
    BodyMeasurements measurements;
 }
    ]]>
-      </example>
+        </example>
     </rule>
 
-<rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
-   since="3.9"
-   class="net.sourceforge.pmd.lang.java.rule.codesize.NcssMethodCountRule"
-   externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssMethodCount">
-    <description>
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-    </description>
-    <priority>3</priority>
-   <example>
-<![CDATA[
+    <rule name="NcssMethodCount"
+          message="The method {0}() has an NCSS line count of {1}"
+          since="3.9"
+          class="net.sourceforge.pmd.lang.java.rule.codesize.NcssMethodCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssMethodCount">
+        <description>
+            This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+            of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
+            lines of code that are split are counted as one.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public class Foo extends Bar {
  public int methd() {
      super.methd();
@@ -396,21 +400,22 @@ public class Foo extends Bar {
  }
 }
 ]]>
-   </example>
-   </rule>
+        </example>
+    </rule>
 
-<rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
-   since="3.9"
-   class="net.sourceforge.pmd.lang.java.rule.codesize.NcssTypeCountRule"
-   externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssTypeCount">
-    <description>
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-    </description>
-    <priority>3</priority>
-   <example>
-<![CDATA[
+    <rule name="NcssTypeCount"
+          message="The type has an NCSS line count of {0}"
+          since="3.9"
+          class="net.sourceforge.pmd.lang.java.rule.codesize.NcssTypeCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssTypeCount">
+        <description>
+            This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+            of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
+            lines of code that are split are counted as one.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public class Foo extends Bar {
  public Foo() {
  //this class only has 6 NCSS lines
@@ -424,20 +429,21 @@ public class Foo extends Bar {
  }
 }
 ]]>
-   </example></rule>
+        </example></rule>
 
-<rule name="NcssConstructorCount" message="The constructor with {0} parameters has an NCSS line count of {1}"
-   since="3.9"
-   class="net.sourceforge.pmd.lang.java.rule.codesize.NcssConstructorCountRule"
-   externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssConstructorCount">
-    <description>
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-    </description>
-    <priority>3</priority>
-   <example>
-<![CDATA[
+    <rule name="NcssConstructorCount"
+          message="The constructor with {0} parameters has an NCSS line count of {1}"
+          since="3.9"
+          class="net.sourceforge.pmd.lang.java.rule.codesize.NcssConstructorCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssConstructorCount">
+        <description>
+            This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+            of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
+            lines of code that are split are counted as one.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
 public class Foo extends Bar {
  public Foo() {
      super();
@@ -451,16 +457,15 @@ public class Foo extends Bar {
  }
 }
 ]]>
-   </example>
-</rule>
+        </example>
+    </rule>
 
-    <rule
-        name="TooManyMethods"
-   		language="java"
-        since="4.2"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-        message="This class has too many methods, consider refactoring it."
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#TooManyMethods">
+    <rule name="TooManyMethods"
+          language="java"
+          since="4.2"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          message="This class has too many methods, consider refactoring it."
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#TooManyMethods">
         <description>
             <![CDATA[
 A class with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
@@ -469,8 +474,8 @@ have more fine grained objects.
         </description>
         <priority>3</priority>
         <properties>
-                <property name="maxmethods" type="Integer" description="The method count reporting threshold" min="1" max="1000" value="10"/>
-                <property name="xpath">
+            <property name="maxmethods" type="Integer" description="The method count reporting threshold" min="1" max="1000" value="10"/>
+            <property name="xpath">
                 <value>
                     <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
                                 something like this:
@@ -510,5 +515,4 @@ have more fine grained objects.
             </property>
         </properties>
     </rule>
-
 </ruleset>

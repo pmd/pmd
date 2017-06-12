@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.PackageStats;
