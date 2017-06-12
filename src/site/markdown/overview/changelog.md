@@ -9,11 +9,17 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
+    *   [Modified Rules](#Modified_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
+
+#### Modified Rules
+
+*   The Java rule `UnnecessaryFinalModifier` (ruleset java-unnecessary) now also reports on private methods marked as `final`.
+    Being private, such methods can't be overriden, and therefore, the final keyword is redundant.
 
 ### Fixed Issues
 
@@ -27,6 +33,8 @@ This is a minor release.
 *   java-design
     *   [#397](https://github.com/pmd/pmd/issues/397): \[java] ConstructorCallsOverridableMethodRule: false positive for method called from lambda expression
     *   [#410](https://github.com/pmd/pmd/issues/410): \[java] ImmutableField: False positive with lombok
+*   java-unnecessary
+    *   [#421](https://github.com/pmd/pmd/issues/421): \[java] UnnecessaryFinalModifier final in private method
 
 ### API Changes
 
@@ -36,4 +44,5 @@ This is a minor release.
 *   [#409](https://github.com/pmd/pmd/pull/409): \[java] Groundwork for the upcoming metrics framework
 *   [#416](https://github.com/pmd/pmd/pull/416): \[java] FIXED: Java 8 parsing problem with annotations for wildcards
 *   [#418](https://github.com/pmd/pmd/pull/418): \[java] Type resolution: super and this keywords
+*   [#426](https://github.com/pmd/pmd/pull/426): \[java] UnnecessaryFinalModifier final in private method
 
