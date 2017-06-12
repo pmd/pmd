@@ -21,6 +21,10 @@ This is a minor release.
 *   The Java rule `UnnecessaryFinalModifier` (ruleset java-unnecessary) now also reports on private methods marked as `final`.
     Being private, such methods can't be overriden, and therefore, the final keyword is redundant.
 
+*   The Java rule `PreserveStackTrace` (ruleset java-design) has been relaxed to support the builder pattern on thrown exception.
+    This change may introduce some false positives if using the exception in non-orthodox ways for things other than setting the
+    root cause of the exception. Contact us if you find any such scenarios.
+
 ### Fixed Issues
 
 *   General
@@ -33,6 +37,7 @@ This is a minor release.
 *   java-design
     *   [#397](https://github.com/pmd/pmd/issues/397): \[java] ConstructorCallsOverridableMethodRule: false positive for method called from lambda expression
     *   [#410](https://github.com/pmd/pmd/issues/410): \[java] ImmutableField: False positive with lombok
+    *   [#422](https://github.com/pmd/pmd/issues/422): \[java] PreserveStackTraceRule: false positive when using builder pattern
 *   java-unnecessary
     *   [#421](https://github.com/pmd/pmd/issues/421): \[java] UnnecessaryFinalModifier final in private method
 
@@ -44,5 +49,6 @@ This is a minor release.
 *   [#409](https://github.com/pmd/pmd/pull/409): \[java] Groundwork for the upcoming metrics framework
 *   [#416](https://github.com/pmd/pmd/pull/416): \[java] FIXED: Java 8 parsing problem with annotations for wildcards
 *   [#418](https://github.com/pmd/pmd/pull/418): \[java] Type resolution: super and this keywords
+*   [#425](https://github.com/pmd/pmd/pull/425): \[java] False positive with builder pattern in java-design/PreserveStackTrace
 *   [#426](https://github.com/pmd/pmd/pull/426): \[java] UnnecessaryFinalModifier final in private method
 
