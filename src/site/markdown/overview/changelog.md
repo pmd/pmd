@@ -25,6 +25,9 @@ This is a minor release.
     This change may introduce some false positives if using the exception in non-orthodox ways for things other than setting the
     root cause of the exception. Contact us if you find any such scenarios.
 
+*   The ruleset java-junit now properly detects JUnit5, and rules are being adapted to the changes on it's API.
+    This support is, however, still incomplete. Let us know of any uses we are still missing on the [issue tracker](https://github.com/pmd/pmd/issues)
+
 ### Fixed Issues
 
 *   General
@@ -38,6 +41,8 @@ This is a minor release.
     *   [#397](https://github.com/pmd/pmd/issues/397): \[java] ConstructorCallsOverridableMethodRule: false positive for method called from lambda expression
     *   [#410](https://github.com/pmd/pmd/issues/410): \[java] ImmutableField: False positive with lombok
     *   [#422](https://github.com/pmd/pmd/issues/422): \[java] PreserveStackTraceRule: false positive when using builder pattern
+*   java-junit
+    *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
 *   java-unnecessary
     *   [#421](https://github.com/pmd/pmd/issues/421): \[java] UnnecessaryFinalModifier final in private method
 
