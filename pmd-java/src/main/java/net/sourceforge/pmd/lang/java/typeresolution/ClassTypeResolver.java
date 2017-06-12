@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -251,15 +250,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    private static class ClassWrapper {
-        public final Class clazz;
-        public List<ClassWrapper> genericArgs = null;
-
-        public ClassWrapper(Class clazz) {
-            this.clazz = clazz;
-        }
-    }
-
     @Override
     public Object visit(ASTName node, Object data) {
 
@@ -295,7 +285,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
 
             if (node.getType() == null) {
-                ClassWrapper previousNameType =
+                TypeWrapper previousNameType =
                         getClassWrapperOfVariableFromScope(node.getScope(), dotSplitImage[0]);
 
                 for (int i = 1; i < dotSplitImage.length; ++i) {
@@ -303,12 +293,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         break;
                     }
 
-                    Field field = searchClassForField(previousNameType.clazz, dotSplitImage[i]);
+                    Field field = searchClassForField(previousNameType.getClazz(), dotSplitImage[i]);
                     previousNameType = getNextClassWrapper(previousNameType, field.getGenericType());
                 }
 
                 if(previousNameType != null) {
-                    node.setType(previousNameType.clazz);
+                    node.setType(previousNameType.getClazz());
                 }
             }
         }
@@ -316,7 +306,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    private ClassWrapper getClassWrapperOfVariableFromScope(Scope scope, String image) {
+    private TypeWrapper getClassWrapperOfVariableFromScope(Scope scope, String image) {
         for (/* empty */; scope != null; scope = scope.getParent()) {
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
                     : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
@@ -327,7 +317,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         return getClassWrapperOfASTNode((ASTClassOrInterfaceType) typeNode.jjtGetChild(0).jjtGetChild
                                 (0));
                     } else { // primitive type
-                        return new ClassWrapper(typeNode.getType());
+                        return new TypeWrapper(typeNode.getType());
                     }
                 }
             }
@@ -341,7 +331,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                                image);
 
                     if (inheritedField != null) {
-                        ClassWrapper superClass = getClassWrapperOfASTNode(
+                        TypeWrapper superClass = getClassWrapperOfASTNode(
                                 (ASTClassOrInterfaceType) classScope.getClassDeclaration().getNode()
                                         .getFirstChildOfType(ASTExtendsList.class).jjtGetChild(0)
                         );
@@ -359,92 +349,92 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
-    private ClassWrapper getClassOfInheritedField(ClassWrapper inheritedClass, String fieldImage) {
+    private TypeWrapper getClassOfInheritedField(TypeWrapper inheritedClass, String fieldImage) {
         while (true) {
             try {
-                Field field = inheritedClass.clazz.getDeclaredField(fieldImage);
+                Field field = inheritedClass.getClazz().getDeclaredField(fieldImage);
                 return getNextClassWrapper(inheritedClass, field.getGenericType());
             } catch (NoSuchFieldException e) { /* swallow */ }
 
-            Type genericSuperClass = inheritedClass.clazz.getGenericSuperclass();
+            Type genericSuperClass = inheritedClass.getClazz().getGenericSuperclass();
 
             if (genericSuperClass == null) {
                 return null;
             }
 
-            inheritedClass = getNextClassWrapper(inheritedClass, inheritedClass.clazz.getGenericSuperclass());
+            inheritedClass = getNextClassWrapper(inheritedClass, inheritedClass.getClazz().getGenericSuperclass());
         }
     }
 
-    private ClassWrapper getNextClassWrapper(ClassWrapper previousWrapper, Type genericType) {
+    private TypeWrapper getNextClassWrapper(TypeWrapper previousWrapper, Type genericType) {
         if (genericType instanceof Class) {
             return getDefaultUpperBounds(previousWrapper, (Class)genericType);
         } else if (genericType instanceof ParameterizedType) {
 
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
-            ClassWrapper wrapper = new ClassWrapper((Class) parameterizedType.getRawType());
-            wrapper.genericArgs = new ArrayList<>();
+            TypeWrapper wrapper = new TypeWrapper((Class) parameterizedType.getRawType());
+            wrapper.setGenericArgs(new ArrayList<TypeWrapper>());
 
             for (Type type : parameterizedType.getActualTypeArguments()) {
-                wrapper.genericArgs.add(getNextClassWrapper(previousWrapper, type));
+                wrapper.getGenericArgs().add(getNextClassWrapper(previousWrapper, type));
             }
 
             return wrapper;
         } else if (genericType instanceof TypeVariable) {
-            int ordinal = getTypeParameterOrdinal(previousWrapper.clazz, ((TypeVariable) genericType).getName());
+            int ordinal = getTypeParameterOrdinal(previousWrapper.getClazz(), ((TypeVariable) genericType).getName());
             if (ordinal != -1) {
-                return previousWrapper.genericArgs.get(ordinal);
+                return previousWrapper.getGenericArgs().get(ordinal);
             }
         } else if (genericType instanceof WildcardType) {
             Type[] wildcardUpperBounds = ((WildcardType)genericType).getUpperBounds();
             if(wildcardUpperBounds.length != 0) { // upper bound wildcard
                 return getNextClassWrapper(previousWrapper, wildcardUpperBounds[0]);
             } else { // lower bound wildcard
-                return new ClassWrapper(Object.class);
+                return new TypeWrapper(Object.class);
             }
         }
 
         return null;
     }
 
-    private ClassWrapper getClassWrapperOfASTNode(ASTClassOrInterfaceType node) {
+    private TypeWrapper getClassWrapperOfASTNode(ASTClassOrInterfaceType node) {
 
         ASTTypeArguments typeArgs = node.getFirstChildOfType(ASTTypeArguments.class);
 
         if (typeArgs != null) {
-            ClassWrapper classWrapper = new ClassWrapper(node.getType());
-            classWrapper.genericArgs = new ArrayList<>();
+            TypeWrapper typeWrapper = new TypeWrapper(node.getType());
+            typeWrapper.setGenericArgs(new ArrayList<TypeWrapper>());
 
             for (int index = 0; index < typeArgs.jjtGetNumChildren(); ++index) {
                 ASTTypeArgument typeArgumentNode = (ASTTypeArgument) typeArgs.jjtGetChild(index);
                 Class typeArgumentClass = typeArgumentNode.getType();
 
                 if (isGeneric(typeArgumentClass)) {
-                    classWrapper.genericArgs.add(
+                    typeWrapper.getGenericArgs().add(
                             getClassWrapperOfASTNode((ASTClassOrInterfaceType)
                                                              typeArgumentNode.jjtGetChild(0).jjtGetChild(0)));
                 } else {
-                    classWrapper.genericArgs.add(new ClassWrapper(typeArgumentClass));
+                    typeWrapper.getGenericArgs().add(new TypeWrapper(typeArgumentClass));
                 }
             }
 
-            return classWrapper;
+            return typeWrapper;
         } else if (isGeneric(node.getType())) { // raw declaration of a generic class
             return getDefaultUpperBounds(null, node.getType());
         }
 
-        return new ClassWrapper(node.getType());
+        return new TypeWrapper(node.getType());
     }
 
     // this exists to avoid infinite recursion in some cases
-    private Map<Class, ClassWrapper> defaultUpperBounds = new HashMap<>();
+    private Map<Class, TypeWrapper> defaultUpperBounds = new HashMap<>();
 
-    private ClassWrapper getDefaultUpperBounds(ClassWrapper original, Class clazzToFill) {
+    private TypeWrapper getDefaultUpperBounds(TypeWrapper original, Class clazzToFill) {
         if(defaultUpperBounds.containsKey(clazzToFill)) {
             return defaultUpperBounds.get(clazzToFill);
         }
 
-        ClassWrapper wrapper = new ClassWrapper(clazzToFill);
+        TypeWrapper wrapper = new TypeWrapper(clazzToFill);
 
         defaultUpperBounds.put(clazzToFill, wrapper);
 
@@ -453,14 +443,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 original = wrapper;
             }
 
-            wrapper.genericArgs = new ArrayList<>();
+            wrapper.setGenericArgs(new ArrayList<TypeWrapper>());
 
             for (TypeVariable parameter : clazzToFill.getTypeParameters()) {
                 Type upperBound = parameter.getBounds()[0];
 
                 // TODO: fix self reference "< ... E extends Something<E> ... >"
 
-                wrapper.genericArgs.add(getNextClassWrapper(original, upperBound));
+                wrapper.getGenericArgs().add(getNextClassWrapper(original, upperBound));
             }
         }
 
@@ -673,7 +663,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         Class primaryNodeType = null;
         AbstractJavaTypeNode previousChild = null;
-        ClassWrapper previousClassWraper = null;
+        TypeWrapper previousClassWraper = null;
 
         for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
             AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
