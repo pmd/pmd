@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.oom;
 
+import java.util.Stack;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -20,37 +22,32 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
  */
 public class MetricsVisitor extends JavaParserVisitorAdapter {
 
-    private ClassStats classContext = null;
+    private Stack<ClassStats> stack = new Stack<>();
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        stack.push(((PackageStats) data).getClassStats(node.getQualifiedName(), true));
+        super.visit(node, data);
+        stack.pop();
 
-        classContext = ((PackageStats) data).getClassStats(node.getQualifiedName(), true);
-
-        return super.visit(node, data);
+        return data;
     }
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-
-        classContext.addOperation(node.getQualifiedName().getOperation(), OperationSignature.buildFor(node));
-
+        stack.peek().addOperation(node.getQualifiedName().getOperation(), OperationSignature.buildFor(node));
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-
-        classContext.addOperation(node.getQualifiedName().getOperation(), OperationSignature.buildFor(node));
-
+        stack.peek().addOperation(node.getQualifiedName().getOperation(), OperationSignature.buildFor(node));
         return super.visit(node, data);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-
-        classContext.addField(node.getVariableName(), FieldSignature.buildFor(node));
-
+        stack.peek().addField(node.getVariableName(), FieldSignature.buildFor(node));
         return data; // end recursion
     }
 
