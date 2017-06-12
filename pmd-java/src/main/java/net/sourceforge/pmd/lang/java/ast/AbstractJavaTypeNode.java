@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.typeresolution.TypeWrapper;
+import net.sourceforge.pmd.lang.java.typeresolution.JavaTypeDefinition;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeWrapper;
  * @see TypeNode
  */
 public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
-    private TypeWrapper typeWrapper;
+    private JavaTypeDefinition typeDefinition;
 
     public AbstractJavaTypeNode(int i) {
         super(i);
@@ -25,8 +25,8 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
 
     @Override
     public Class<?> getType() {
-        if (typeWrapper != null) {
-            return typeWrapper.getType();
+        if (typeDefinition != null) {
+            return typeDefinition.getType();
         }
 
         return null;
@@ -34,20 +34,20 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
 
     @Override
     public void setType(Class<?> type) {
-        if (typeWrapper == null) {
-            typeWrapper = new TypeWrapper(type);
+        if (typeDefinition == null) {
+            typeDefinition = new JavaTypeDefinition(type);
         } else {
-            typeWrapper.setClazz(type);
+            typeDefinition.setClazz(type);
         }
     }
 
     @Override
-    public TypeWrapper getTypeWrapper() {
-        return typeWrapper;
+    public JavaTypeDefinition getTypeDefinition() {
+        return typeDefinition;
     }
 
     @Override
-    public void setTypeWrapper(TypeWrapper typeWrapper) {
-        this.typeWrapper = typeWrapper;
+    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
+        this.typeDefinition = typeDefinition;
     }
 }

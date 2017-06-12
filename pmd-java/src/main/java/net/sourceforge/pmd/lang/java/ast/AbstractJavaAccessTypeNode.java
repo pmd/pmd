@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.typeresolution.TypeWrapper;
+import net.sourceforge.pmd.lang.java.typeresolution.JavaTypeDefinition;
 
 public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode implements TypeNode {
-    private TypeWrapper typeWrapper;
+    private JavaTypeDefinition typeDefinition;
 
     public AbstractJavaAccessTypeNode(int i) {
         super(i);
@@ -19,8 +19,8 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
 
     @Override
     public Class<?> getType() {
-        if (typeWrapper != null) {
-            return typeWrapper.getType();
+        if (typeDefinition != null) {
+            return typeDefinition.getType();
         }
 
         return null;
@@ -28,20 +28,20 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
 
     @Override
     public void setType(Class<?> type) {
-        if (typeWrapper == null) {
-            typeWrapper = new TypeWrapper(type);
+        if (typeDefinition == null) {
+            typeDefinition = new JavaTypeDefinition(type);
         } else {
-            typeWrapper.setClazz(type);
+            typeDefinition.setClazz(type);
         }
     }
 
     @Override
-    public TypeWrapper getTypeWrapper() {
-        return typeWrapper;
+    public JavaTypeDefinition getTypeDefinition() {
+        return typeDefinition;
     }
 
     @Override
-    public void setTypeWrapper(TypeWrapper typeWrapper) {
-        this.typeWrapper = typeWrapper;
+    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
+        this.typeDefinition = typeDefinition;
     }
 }

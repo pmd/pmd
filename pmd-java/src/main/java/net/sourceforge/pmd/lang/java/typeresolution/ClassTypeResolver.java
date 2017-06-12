@@ -234,12 +234,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         if (typeArguments != null) {
             for (int index = 0; index < typeArguments.jjtGetNumChildren(); ++index) {
-                node.getTypeWrapper().getGenericArgs().add(
-                        ((TypeNode) typeArguments.jjtGetChild(index)).getTypeWrapper()
+                node.getTypeDefinition().getGenericArgs().add(
+                        ((TypeNode) typeArguments.jjtGetChild(index)).getTypeDefinition()
                 );
             }
-        } else if(isGeneric(node.getType()) && node.getTypeWrapper().getGenericArgs().size() == 0) {
-            node.setTypeWrapper(getDefaultUpperBounds(null, node.getType()));
+        } else if(isGeneric(node.getType()) && node.getTypeDefinition().getGenericArgs().size() == 0) {
+            node.setTypeDefinition(getDefaultUpperBounds(null, node.getType()));
         }
 
         return data;
@@ -298,7 +298,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
 
             if (node.getType() == null) {
-                TypeWrapper previousNameType =
+                JavaTypeDefinition previousNameType =
                         getClassWrapperOfVariableFromScope(node.getScope(), dotSplitImage[0]);
 
                 for (int i = 1; i < dotSplitImage.length; ++i) {
@@ -311,7 +311,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 }
 
                 if (previousNameType != null) {
-                    node.setTypeWrapper(previousNameType);
+                    node.setTypeDefinition(previousNameType);
                 }
             }
         }
@@ -319,7 +319,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    private TypeWrapper getClassWrapperOfVariableFromScope(Scope scope, String image) {
+    private JavaTypeDefinition getClassWrapperOfVariableFromScope(Scope scope, String image) {
         for (/* empty */; scope != null; scope = scope.getParent()) {
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
                     : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
@@ -328,9 +328,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
                     if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
                         return ((ASTClassOrInterfaceType) typeNode.jjtGetChild(0).jjtGetChild(0))
-                                .getTypeWrapper();
+                                .getTypeDefinition();
                     } else { // primitive type
-                        return new TypeWrapper(typeNode.getType());
+                        return new JavaTypeDefinition(typeNode.getType());
                     }
                 }
             }
@@ -344,9 +344,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                                image);
 
                     if (inheritedField != null) {
-                        TypeWrapper superClass =
+                        JavaTypeDefinition superClass =
                                 ((ASTClassOrInterfaceType) classScope.getClassDeclaration().getNode()
-                                        .getFirstChildOfType(ASTExtendsList.class).jjtGetChild(0)).getTypeWrapper();
+                                        .getFirstChildOfType(ASTExtendsList.class).jjtGetChild(0)).getTypeDefinition();
 
                         return getClassOfInheritedField(superClass, image);
                     }
@@ -361,7 +361,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
-    private TypeWrapper getClassOfInheritedField(TypeWrapper inheritedClass, String fieldImage) {
+    private JavaTypeDefinition getClassOfInheritedField(JavaTypeDefinition inheritedClass, String fieldImage) {
         while (true) {
             try {
                 Field field = inheritedClass.getType().getDeclaredField(fieldImage);
@@ -378,14 +378,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
     }
 
-    private TypeWrapper getNextClassWrapper(TypeWrapper previousWrapper, Type genericType) {
+    private JavaTypeDefinition getNextClassWrapper(JavaTypeDefinition previousWrapper, Type genericType) {
         if (genericType instanceof Class) {
             return getDefaultUpperBounds(previousWrapper, (Class) genericType);
         } else if (genericType instanceof ParameterizedType) {
 
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
-            TypeWrapper wrapper = new TypeWrapper((Class) parameterizedType.getRawType());
-            wrapper.setGenericArgs(new ArrayList<TypeWrapper>());
+            JavaTypeDefinition wrapper = new JavaTypeDefinition((Class) parameterizedType.getRawType());
+            wrapper.setGenericArgs(new ArrayList<JavaTypeDefinition>());
 
             for (Type type : parameterizedType.getActualTypeArguments()) {
                 wrapper.getGenericArgs().add(getNextClassWrapper(previousWrapper, type));
@@ -402,7 +402,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             if (wildcardUpperBounds.length != 0) { // upper bound wildcard
                 return getNextClassWrapper(previousWrapper, wildcardUpperBounds[0]);
             } else { // lower bound wildcard
-                return new TypeWrapper(Object.class);
+                return new JavaTypeDefinition(Object.class);
             }
         }
 
@@ -410,14 +410,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     // this exists to avoid infinite recursion in some cases
-    private Map<Class, TypeWrapper> defaultUpperBounds = new HashMap<>();
+    private Map<Class, JavaTypeDefinition> defaultUpperBounds = new HashMap<>();
 
-    private TypeWrapper getDefaultUpperBounds(TypeWrapper original, Class clazzToFill) {
+    private JavaTypeDefinition getDefaultUpperBounds(JavaTypeDefinition original, Class clazzToFill) {
         if (defaultUpperBounds.containsKey(clazzToFill)) {
             return defaultUpperBounds.get(clazzToFill);
         }
 
-        TypeWrapper wrapper = new TypeWrapper(clazzToFill);
+        JavaTypeDefinition wrapper = new JavaTypeDefinition(clazzToFill);
 
         defaultUpperBounds.put(clazzToFill, wrapper);
 
@@ -426,7 +426,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 original = wrapper;
             }
 
-            wrapper.setGenericArgs(new ArrayList<TypeWrapper>());
+            wrapper.setGenericArgs(new ArrayList<JavaTypeDefinition>());
 
             for (TypeVariable parameter : clazzToFill.getTypeParameters()) {
                 Type upperBound = parameter.getBounds()[0];
@@ -650,7 +650,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         Class primaryNodeType = null;
         AbstractJavaTypeNode previousChild = null;
-        TypeWrapper previousClassWraper = null;
+        JavaTypeDefinition previousClassWraper = null;
 
         for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
             AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
@@ -888,7 +888,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.jjtGetNumChildren() >= 1) {
             Node child = node.jjtGetChild(0);
             if (child instanceof TypeNode) {
-                typeNode.setTypeWrapper(((TypeNode) child).getTypeWrapper());
+                typeNode.setTypeDefinition(((TypeNode) child).getTypeDefinition());
             }
         }
     }
@@ -1006,7 +1006,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (myType == null) {
             ASTTypeParameter parameter = getTypeParameterDeclaration(node, className);
             if (parameter != null) {
-                node.setTypeWrapper(parameter.getTypeWrapper());
+                node.setTypeDefinition(parameter.getTypeDefinition());
             }
         } else {
             node.setType(myType);

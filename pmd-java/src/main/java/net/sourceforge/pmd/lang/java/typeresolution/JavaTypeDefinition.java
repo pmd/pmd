@@ -3,11 +3,13 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeWrapper {
-    private Class clazz;
-    private List<TypeWrapper> genericArgs = null;
 
-    public TypeWrapper(Class clazz) {
+
+public class JavaTypeDefinition {
+    private Class clazz;
+    private List<JavaTypeDefinition> genericArgs = null;
+
+    public JavaTypeDefinition(Class clazz) {
         this.clazz = clazz;
     }
 
@@ -19,7 +21,7 @@ public class TypeWrapper {
         this.clazz = clazz;
     }
 
-    public List<TypeWrapper> getGenericArgs() {
+    public List<JavaTypeDefinition> getGenericArgs() {
         if(genericArgs == null) {
             genericArgs = new ArrayList<>();
         }
@@ -27,7 +29,7 @@ public class TypeWrapper {
         return genericArgs;
     }
 
-    public void setGenericArgs(List<TypeWrapper> genericArgs) {
+    public void setGenericArgs(List<JavaTypeDefinition> genericArgs) {
         this.genericArgs = genericArgs;
     }
 }
