@@ -1,11 +1,12 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
 
-public class JavaTypeDefinition {
+public class JavaTypeDefinition implements TypeDefinition {
     private Class clazz;
     private List<JavaTypeDefinition> genericArgs = null;
 
