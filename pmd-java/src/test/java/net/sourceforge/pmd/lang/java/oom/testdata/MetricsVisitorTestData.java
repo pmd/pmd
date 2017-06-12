@@ -40,6 +40,18 @@ public class MetricsVisitorTestData {
         y = n;
     }
 
+
+    public static class NestedClass {
+
+        public NestedClass() {
+
+        }
+
+        public void nestedMethod1() {
+
+        }
+    }
+
     public void mymethod1() {
 
     }
