@@ -17,23 +17,13 @@ import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticField
  *
  */
 
-class GenericSuperClassB<T, S> {
-    public S fieldB;
-}
-
-class GenericSuperClassA<T> extends GenericSuperClassB<T, GenericClass<String, T>> {
-    public T fieldA;
-    public GenericClass<? super String, ?> inheritedSuperGeneric;
-    public GenericClass<? extends String, Object> inheritedUpperBound;
-}
-
-public class GenericFieldAccess<T extends GenericClass<String, Integer>, S extends Double> extends GenericSuperClassA<Long> {
+public class GenericFieldAccess<T extends GenericClass<String, GenericClass<String, Integer>>, S extends Double> extends GenericSuperClassA<Long> {
+    public T parameterGeneric;
     public GenericClass<String, Double> genericField;
     public GenericClass<String, GenericClass<Number, Double>> genericTypeArg;
     public GenericClass2 rawGeneric;
     public GenericFieldAccess field;
     public S classGeneric;
-    public T parameterGeneric;
     public GenericClass<? super String, ?> superGeneric;
     public GenericClass<? extends Number, Object> upperBound;
 
@@ -53,7 +43,8 @@ public class GenericFieldAccess<T extends GenericClass<String, Integer>, S exten
         inheritedUpperBound.first = null; // String
 
         // test type parameters extending generic types
-        // parameterGeneric.first = "";
+        // Primary[Prefix[Name[parameterGeneric.first]]]
+        parameterGeneric.second.second = new Integer(0);
 
         // test static imports
         // Primary[Prefix[Name[instanceFields.generic.first]]]
@@ -109,4 +100,14 @@ public class GenericFieldAccess<T extends GenericClass<String, Integer>, S exten
         // Primary[Prefix[Name[localGeneric]]]
         localGeneric = null; // Number
     }
+}
+
+class GenericSuperClassB<T, S> {
+    public S fieldB;
+}
+
+class GenericSuperClassA<T> extends GenericSuperClassB<T, GenericClass<String, T>> {
+    public T fieldA;
+    public GenericClass<? super String, ?> inheritedSuperGeneric;
+    public GenericClass<? extends String, Object> inheritedUpperBound;
 }

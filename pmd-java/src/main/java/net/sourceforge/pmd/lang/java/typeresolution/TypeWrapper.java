@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TypeWrapper {
@@ -10,7 +11,7 @@ public class TypeWrapper {
         this.clazz = clazz;
     }
 
-    public Class getClazz() {
+    public Class getType() {
         return clazz;
     }
 
@@ -19,6 +20,10 @@ public class TypeWrapper {
     }
 
     public List<TypeWrapper> getGenericArgs() {
+        if(genericArgs == null) {
+            genericArgs = new ArrayList<>();
+        }
+
         return genericArgs;
     }
 

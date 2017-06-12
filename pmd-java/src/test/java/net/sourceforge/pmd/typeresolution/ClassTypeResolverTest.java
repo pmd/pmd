@@ -795,9 +795,9 @@ public class ClassTypeResolverTest {
 
 
 
-        // parameterGeneric.first = "";
-        //assertEquals(String.class, expressions.get(index).getType());
-        //assertEquals(String.class, getChildType(expressions.get(index++), 0));
+        // parameterGeneric.second.second = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
 
 
         // instanceFields.generic.first = "";

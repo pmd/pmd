@@ -20,7 +20,7 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
     @Override
     public Class<?> getType() {
         if (typeWrapper != null) {
-            return typeWrapper.getClazz();
+            return typeWrapper.getType();
         }
 
         return null;

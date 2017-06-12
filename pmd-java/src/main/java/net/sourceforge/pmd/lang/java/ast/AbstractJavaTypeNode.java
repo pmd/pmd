@@ -26,7 +26,7 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
     @Override
     public Class<?> getType() {
         if (typeWrapper != null) {
-            return typeWrapper.getClazz();
+            return typeWrapper.getType();
         }
 
         return null;
