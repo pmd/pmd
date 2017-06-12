@@ -40,7 +40,6 @@ public class StdCycloMetric extends AbstractMetric implements OperationMetric, C
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder) {
-        System.err.println("STD CYCLO!");
         Accumulator cyclo = (Accumulator) node.jjtAccept(new OperationVisitor(), new Accumulator());
         return cyclo.val;
     }

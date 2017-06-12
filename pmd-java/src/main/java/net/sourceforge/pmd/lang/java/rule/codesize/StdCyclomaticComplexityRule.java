@@ -25,6 +25,8 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  * including boolean operators unlike CyclomaticComplexityRule.
  *
  * @author Alan Hohn, based on work by Donald A. Leckie
+ * @version Revised June 12th, 2017 (Clément Fournier)
+ * @see net.sourceforge.pmd.lang.java.oom.metrics.StdCycloMetric
  * @since June 18, 2014
  */
 public class StdCyclomaticComplexityRule extends AbstractJavaRule {
@@ -49,6 +51,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     protected boolean showMethodsComplexity = true;
     Stack<ClassEntry> entryStack = new Stack<>();
 
+    protected OperationMetricKey metricKey = OperationMetricKey.StdCYCLO;
 
     public StdCyclomaticComplexityRule() {
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
@@ -80,7 +83,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
                 addViolation(data, node, new String[]
                     {"class",
                      node.getImage(),
-                     classEntry.getCycloAverage() + " (Highest = " + classEntry.maxCyclo + ')',});
+                     classEntry.getCycloAverage() + " (Highest = " + classEntry.maxCyclo + ')', });
             }
         }
         return data;
@@ -97,12 +100,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
                 addViolation(data, node, new String[]
                     {"class",
                      node.getImage(),
-                     classEntry.getCycloAverage() + " (Highest = " + classEntry.maxCyclo + ')',});
-
-                System.err.println(new String[]
-                                       {"class",
-                                        node.getImage(),
-                                        classEntry.getCycloAverage() + " (Highest = " + classEntry.maxCyclo + ')',});
+                     classEntry.getCycloAverage() + " (Highest = " + classEntry.maxCyclo + ')', });
             }
         }
         return data;
@@ -123,7 +121,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
         if (!isSuppressed(node)) {
             ClassEntry classEntry = entryStack.peek();
 
-            int cyclo = (int) Metrics.get(OperationMetricKey.StdCYCLO, node);
+            int cyclo = (int) Metrics.get(metricKey, node);
             classEntry.numMethods++;
             classEntry.totalCyclo += cyclo;
             if (cyclo > classEntry.maxCyclo) {
@@ -134,10 +132,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
                 addViolation(data, node, new String[]
                     {node instanceof ASTMethodDeclaration ? "method" : "constructor",
                      node.getQualifiedName().getOperation(),
-                     String.valueOf(cyclo),});
-                System.err.println(new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                 node.getQualifiedName().getOperation(),
-                                                 String.valueOf(cyclo), });
+                     String.valueOf(cyclo), });
             }
         }
         return data;
