@@ -82,7 +82,6 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinitionBuilder;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -244,9 +243,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
 
             node.setTypeDefinition(builder.build());
-        } else if(isGeneric(node.getType()) && node.getTypeDefinition().getGenericArgs().size() == 0) {
+        } else if (isGeneric(node.getType()) && node.getTypeDefinition().getGenericArgs().size() == 0) {
             node.setTypeDefinition(getDefaultUpperBounds(null, node.getType()));
         }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTExtendsList node, Object data) {
+        super.visit(node, data);
+
 
         return data;
     }
@@ -276,7 +283,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 && node.getNameDeclaration().getNode() instanceof TypeNode) {
             // Carry over the type from the declaration
             Class nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
-            if (!isGeneric(nodeType)) {
+            if (!isGeneric(nodeType) && !isGeneric(nodeType.getSuperclass())) {
                 node.setType(nodeType);
             }
         }
@@ -312,8 +319,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         break;
                     }
 
-                    Field field = searchClassForField(previousNameType.getType(), dotSplitImage[i]);
-                    previousNameType = getNextClassWrapper(previousNameType, field.getGenericType());
+
+                    if (isFieldInherited(previousNameType.getType(), dotSplitImage[i])) {
+                        previousNameType = getInheritedFieldTypeDefinition(getNextSuperClassTypeDefinition(previousNameType),
+                                                                           dotSplitImage[i]);
+                    } else {
+                        Field field = searchClassForField(previousNameType.getType(), dotSplitImage[i]);
+                        if(field != null) {
+                            previousNameType = getNextTypeDefinition(previousNameType, field.getGenericType());
+                        }
+                    }
                 }
 
                 if (previousNameType != null) {
@@ -323,6 +338,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
         return super.visit(node, data);
+    }
+
+    private boolean isFieldInherited(Class classToSearch, String fieldImage) {
+        try {
+            return classToSearch.getDeclaredField(fieldImage).getDeclaringClass() != classToSearch;
+        } catch (NoSuchFieldException e) {
+            return true;
+        }
     }
 
     private JavaTypeDefinition getClassWrapperOfVariableFromScope(Scope scope, String image) {
@@ -354,7 +377,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                 ((ASTClassOrInterfaceType) classScope.getClassDeclaration().getNode()
                                         .getFirstChildOfType(ASTExtendsList.class).jjtGetChild(0)).getTypeDefinition();
 
-                        return getClassOfInheritedField(superClass, image);
+                        return getInheritedFieldTypeDefinition(superClass, image);
                     }
                 } catch (ClassCastException e) {
                     // if there is an anonymous class, getClassDeclaration().getType() will throw
@@ -367,24 +390,30 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
-    private JavaTypeDefinition getClassOfInheritedField(JavaTypeDefinition inheritedClass, String fieldImage) {
-        while (true) {
+    private JavaTypeDefinition getInheritedFieldTypeDefinition(JavaTypeDefinition inheritedClass, String fieldImage) {
+        while (inheritedClass != null) {
             try {
                 Field field = inheritedClass.getType().getDeclaredField(fieldImage);
-                return getNextClassWrapper(inheritedClass, field.getGenericType());
+                return getNextTypeDefinition(inheritedClass, field.getGenericType());
             } catch (NoSuchFieldException e) { /* swallow */ }
 
-            Type genericSuperClass = inheritedClass.getType().getGenericSuperclass();
-
-            if (genericSuperClass == null) {
-                return null;
-            }
-
-            inheritedClass = getNextClassWrapper(inheritedClass, inheritedClass.getType().getGenericSuperclass());
+            inheritedClass = getNextSuperClassTypeDefinition(inheritedClass);
         }
+
+        return null;
     }
 
-    private JavaTypeDefinition getNextClassWrapper(JavaTypeDefinition context, Type genericType) {
+    private JavaTypeDefinition getNextSuperClassTypeDefinition(JavaTypeDefinition classWrapper) {
+        Type genericSuperClass = classWrapper.getType().getGenericSuperclass();
+
+        if (genericSuperClass == null) {
+            return null;
+        }
+
+        return getNextTypeDefinition(classWrapper, genericSuperClass);
+    }
+
+    private JavaTypeDefinition getNextTypeDefinition(JavaTypeDefinition context, Type genericType) {
         if (genericType instanceof Class) {
             return getDefaultUpperBounds(context, (Class) genericType);
         } else if (genericType instanceof ParameterizedType) {
@@ -393,7 +422,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             JavaTypeDefinitionBuilder typeDef = JavaTypeDefinition.builder((Class) parameterizedType.getRawType());
 
             for (Type type : parameterizedType.getActualTypeArguments()) {
-                typeDef.addTypeArg(getNextClassWrapper(context, type));
+                typeDef.addTypeArg(getNextTypeDefinition(context, type));
             }
 
             return typeDef.build();
@@ -405,7 +434,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         } else if (genericType instanceof WildcardType) {
             Type[] wildcardUpperBounds = ((WildcardType) genericType).getUpperBounds();
             if (wildcardUpperBounds.length != 0) { // upper bound wildcard
-                return getNextClassWrapper(context, wildcardUpperBounds[0]);
+                return getNextTypeDefinition(context, wildcardUpperBounds[0]);
             } else { // lower bound wildcard
                 return JavaTypeDefinition.build(Object.class);
             }
@@ -420,14 +449,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private JavaTypeDefinition getDefaultUpperBounds(JavaTypeDefinition context, Class clazzWithDefBounds) {
         JavaTypeDefinitionBuilder typeDef = JavaTypeDefinition.builder(clazzWithDefBounds);
 
-        if(classToDefaultUpperBounds.containsKey(clazzWithDefBounds)) {
+        if (classToDefaultUpperBounds.containsKey(clazzWithDefBounds)) {
             return classToDefaultUpperBounds.get(clazzWithDefBounds);
         } else {
             classToDefaultUpperBounds.put(clazzWithDefBounds, typeDef.build());
         }
 
         if (isGeneric(clazzWithDefBounds)) {
-            if(context == null) {
+            if (context == null) {
                 context = typeDef.build();
             }
 
@@ -436,7 +465,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
                 // TODO: fix self reference "< ... E extends Something<E> ... >"
 
-                typeDef.addTypeArg(getNextClassWrapper(context, upperBound));
+                typeDef.addTypeArg(getNextTypeDefinition(context, upperBound));
             }
         }
 
@@ -456,7 +485,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private boolean isGeneric(Class clazz) {
-        if(clazz != null) {
+        if (clazz != null) {
             return clazz.getTypeParameters().length != 0;
         }
 
@@ -647,14 +676,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+
+
     @Override
     public Object visit(ASTPrimaryExpression primaryNode, Object data) {
         super.visit(primaryNode, data);
 
-        Class primaryNodeType = null;
+        JavaTypeDefinition primaryNodeType = null;
         AbstractJavaTypeNode previousChild = null;
-        JavaTypeDefinition previousClassWraper = null;
-
         for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
             AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
 
@@ -668,37 +697,45 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         ASTClassOrInterfaceDeclaration typeDeclaration
                                 = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
                         if (typeDeclaration != null) {
-                            currentChild.setType(typeDeclaration.getType());
+                            currentChild.setTypeDefinition(typeDeclaration.getTypeDefinition());
                         }
                     }
+
                     // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
                 } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
-                    if (previousChild != null) { // Qualified 'super' expression
-                        currentChild.setType(previousChild.getType().getSuperclass());
-                    } else { // simple 'super' expression
-                        ASTClassOrInterfaceDeclaration typeDeclaration
-                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-                        if (typeDeclaration != null && typeDeclaration.getType() != null) {
-                            currentChild.setType(typeDeclaration.getType().getSuperclass());
-                        }
+                    if (previousChild != null) { // Qualified 'this' expression
+                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, previousChild
+                                .getType()));
+                    } else { // simple 'this' expression
+                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
                     }
                 } else if (previousChild != null && previousChild.getType() != null
                         && currentChild.getImage() != null) {
-                    Field field = searchClassForField(previousChild.getType(), currentChild.getImage());
-                    if (field != null) {
-                        currentChild.setType(field.getType());
+
+                    if (isFieldInherited(previousChild.getType(), currentChild.getImage())) {
+                        currentChild.setTypeDefinition(
+                                getInheritedFieldTypeDefinition(getNextSuperClassTypeDefinition(previousChild.getTypeDefinition()),
+                                                                currentChild.getImage())
+                        );
+                    } else {
+                        Field field = searchClassForField(previousChild.getType(), currentChild.getImage());
+
+                        if (field != null) {
+                            currentChild.setTypeDefinition(getNextTypeDefinition(previousChild.getTypeDefinition(),
+                                                                                 field.getGenericType()));
+                        }
                     }
                 }
             }
 
-            if (currentChild.getType() != null) {
-                primaryNodeType = currentChild.getType();
+            if (currentChild.getTypeDefinition() != null) {
+                primaryNodeType = currentChild.getTypeDefinition();
             }
 
             previousChild = currentChild;
         }
 
-        primaryNode.setType(primaryNodeType);
+        primaryNode.setTypeDefinition(primaryNodeType);
 
         return data;
     }
@@ -708,6 +745,23 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             try {
                 return clazz.getDeclaredField(fieldName);
             } catch (NoSuchFieldException e) { /* swallow */ }
+        }
+
+        return null;
+    }
+
+    private JavaTypeDefinition getSuperClassTypeDefinition(Node node, Class clazz) {
+        for (; node != null; node = node.jjtGetParent()) {
+            if (node instanceof ASTClassOrInterfaceDeclaration
+                    && (((ASTClassOrInterfaceDeclaration) node).getType() == clazz || clazz == null)) {
+                ASTExtendsList extendsList = node.getFirstChildOfType(ASTExtendsList.class);
+
+                if (extendsList != null) {
+                    return ((TypeNode) extendsList.jjtGetChild(0)).getTypeDefinition();
+                } else {
+                    return JavaTypeDefinition.build(Object.class);
+                }
+            }
         }
 
         return null;
@@ -756,6 +810,19 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTTypeParameters node, Object data) {
         super.visit(node, data);
+
+        if (node.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
+            TypeNode parent = (TypeNode) node.jjtGetParent();
+
+            JavaTypeDefinitionBuilder builder = JavaTypeDefinition.builder(parent.getType());
+
+            for (int childIndex = 0; childIndex < node.jjtGetNumChildren(); ++childIndex) {
+                builder.addTypeArg(((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition());
+            }
+
+            parent.setTypeDefinition(builder.build());
+        }
+
         return data;
     }
 
@@ -1004,8 +1071,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         // try generics
         // TODO: generic declarations can shadow type declarations ... :(
-        // TODO: incorrect if type parameter upper bound is generic
-        // TODO: ? and ? super is not covered
         if (myType == null) {
             ASTTypeParameter parameter = getTypeParameterDeclaration(node, className);
             if (parameter != null) {

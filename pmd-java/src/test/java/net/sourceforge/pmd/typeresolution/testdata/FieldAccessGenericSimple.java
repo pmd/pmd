@@ -5,10 +5,7 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericSuperClassA
 
 
 /*
- * TODO: test [nested classes, shadowing]
- * TODO: add not name cases
  * TODO: add anonymous class this (Allocation expression)
- *
  * TODO: add primitives, parameterized arrays
  * TODO: diamond, type parmeter declarations can shadow Class declarations
  */
@@ -16,6 +13,7 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericSuperClassA
 public class FieldAccessGenericSimple extends GenericSuperClassA<Long> {
     GenericClass<String, Double> genericField;
     GenericClass<String, GenericClass<Number, Double>> genericTypeArg;
+    FieldAccessGenericSimple fieldAcc;
 
     void foo(GenericClass<Integer, Character> param) {
         GenericClass<Float, Long> local = null;
@@ -44,5 +42,15 @@ public class FieldAccessGenericSimple extends GenericSuperClassA<Long> {
         // Primary[Prefix[Name[generic.first]]]
         fieldA = new Long(0);
         fieldB.generic.second = "";
+
+        // test inherited generic
+        // Primary[Prefix[Name[fieldAcc.fieldA]]]
+        fieldAcc.fieldA = new Long(0);
+    }
+
+    public class Nested extends GenericSuperClassA<Long> {
+        void foo() {
+            fieldA = new Long(0);
+        }
     }
 }
