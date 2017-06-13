@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.typeresolution.testdata.GenericFieldAccess;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericBounds;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericParameter;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericRaw;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericSimple;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -759,8 +761,8 @@ public class ClassTypeResolverTest {
     }
 
     @Test
-    public void testGenericFieldAccess() throws JaxenException {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericFieldAccess.class);
+    public void testBoundsGenericFieldAccess() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericBounds.class);
 
         List<AbstractJavaTypeNode> expressions = convertList(
                 acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
@@ -794,55 +796,51 @@ public class ClassTypeResolverTest {
         assertEquals(String.class, getChildType(expressions.get(index++), 0));
 
 
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testParameterGenericFieldAccess() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericParameter.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+
+        int index = 0;
+
+        // classGeneric = null; // Double
+        assertEquals(Double.class, expressions.get(index).getType());
+        assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+
+        // localGeneric = null; // Character
+        assertEquals(Character.class, expressions.get(index).getType());
+        assertEquals(Character.class, getChildType(expressions.get(index++), 0));
 
         // parameterGeneric.second.second = new Integer(0);
         assertEquals(Integer.class, expressions.get(index).getType());
         assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
 
+        // localGeneric = null; // Number
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index++), 0));
 
-        // instanceFields.generic.first = "";
-        //assertEquals(String.class, expressions.get(index).getType());
-        //assertEquals(String.class, getChildType(expressions.get(index++), 0));
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
 
-        // staticGeneric.first = new Long(0);
-        //assertEquals(Long.class, expressions.get(index).getType());
-        //assertEquals(Long.class, getChildType(expressions.get(index++), 0));
+    @Test
+    public void testSimpleGenericFieldAccess() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericSimple.class);
 
-
-        // fieldA = new Long(0);
-        assertEquals(Long.class, expressions.get(index).getType());
-        assertEquals(Long.class, getChildType(expressions.get(index++), 0));
-
-        // fieldB.generic.second = "";
-        assertEquals(String.class, expressions.get(index).getType());
-        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
 
 
-        // rawGeneric.first = new Integer(0);
-        assertEquals(Integer.class, expressions.get(index).getType());
-        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
-
-        // rawGeneric.second = new Integer(0);
-        assertEquals(Integer.class, expressions.get(index).getType());
-        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
-
-        // rawGeneric.third = new Object();
-        assertEquals(Object.class, expressions.get(index).getType());
-        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
-
-        // rawGeneric.fourth.second = "";
-        assertEquals(String.class, expressions.get(index).getType());
-        assertEquals(String.class, getChildType(expressions.get(index++), 0));
-
-        // rawGeneric.rawGeneric.second = new Integer(0);
-        assertEquals(Integer.class, expressions.get(index).getType());
-        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
-
-
-
-        //genericTypeArg.second.second = new Double(0);
-        assertEquals(Double.class, expressions.get(index).getType());
-        assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+        int index = 0;
 
         // genericField.first = "";
         assertEquals(String.class, expressions.get(index).getType());
@@ -851,6 +849,19 @@ public class ClassTypeResolverTest {
         // genericField.second = new Double(0);
         assertEquals(Double.class, expressions.get(index).getType());
         assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+
+        //genericTypeArg.second.second = new Double(0);
+        assertEquals(Double.class, expressions.get(index).getType());
+        assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+
+        // param.first = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+
+        // local.second = new Long(0);
+        assertEquals(Long.class, expressions.get(index).getType());
+        assertEquals(Long.class, getChildType(expressions.get(index++), 0));
+
 
         // param.generic.first = new Character('c');
         assertEquals(Character.class, expressions.get(index).getType());
@@ -864,25 +875,77 @@ public class ClassTypeResolverTest {
         assertEquals(Double.class, expressions.get(index).getType());
         assertEquals(Double.class, getChildType(expressions.get(index++), 0));
 
-        // param.first = new Integer(0);
-        assertEquals(Integer.class, expressions.get(index).getType());
-        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
-
-        // local.second = new Long(0);
+        // fieldA = new Long(0);
         assertEquals(Long.class, expressions.get(index).getType());
         assertEquals(Long.class, getChildType(expressions.get(index++), 0));
 
-        // classGeneric = null; // Double
-        assertEquals(Double.class, expressions.get(index).getType());
-        assertEquals(Double.class, getChildType(expressions.get(index++), 0));
+        // fieldB.generic.second = "";
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
 
-        // localGeneric = null; // Character
-        assertEquals(Character.class, expressions.get(index).getType());
-        assertEquals(Character.class, getChildType(expressions.get(index++), 0));
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
 
-        // localGeneric = null; // Number
-        assertEquals(Number.class, expressions.get(index).getType());
-        assertEquals(Number.class, getChildType(expressions.get(index++), 0));
+    @Test
+    public void testRawGenericFieldAccess() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericRaw.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+
+        int index = 0;
+
+        // rawGeneric.first = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+
+        // rawGeneric.second = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+
+        // rawGeneric.third = new Object();
+        assertEquals(Object.class, expressions.get(index).getType());
+        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+        // rawGeneric.fourth.second = "";
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+        // rawGeneric.rawGeneric.second = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+        // inheritedRawGeneric.first = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+        // inheritedRawGeneric.second = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+        // inheritedRawGeneric.third = new Object();
+        assertEquals(Object.class, expressions.get(index).getType());
+        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+        // inheritedRawGeneric.fourth.second = "";
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+        // inheritedRawGeneric.rawGeneric.second = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+        // parameterRawGeneric.first = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+        // parameterRawGeneric.second = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+        // parameterRawGeneric.third = new Object();
+        assertEquals(Object.class, expressions.get(index).getType());
+        assertEquals(Object.class, getChildType(expressions.get(index++), 0));
+        // parameterRawGeneric.fourth.second = "";
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+        // parameterRawGeneric.rawGeneric.second = new Integer(0);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
+
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
