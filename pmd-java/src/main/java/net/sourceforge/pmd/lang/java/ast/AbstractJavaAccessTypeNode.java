@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.typeresolution.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode implements TypeNode {
     private JavaTypeDefinition typeDefinition;
@@ -28,11 +28,7 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
 
     @Override
     public void setType(Class<?> type) {
-        if (typeDefinition == null) {
-            typeDefinition = new JavaTypeDefinition(type);
-        } else {
-            typeDefinition.setClazz(type);
-        }
+        typeDefinition = JavaTypeDefinition.build(type);
     }
 
     @Override

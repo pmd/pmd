@@ -1,6 +1,5 @@
-package net.sourceforge.pmd.lang.java.typeresolution;
+package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TypeDefinition {

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.typeresolution.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
@@ -34,11 +34,7 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
 
     @Override
     public void setType(Class<?> type) {
-        if (typeDefinition == null) {
-            typeDefinition = new JavaTypeDefinition(type);
-        } else {
-            typeDefinition.setClazz(type);
-        }
+        typeDefinition = JavaTypeDefinition.build(type);
     }
 
     @Override

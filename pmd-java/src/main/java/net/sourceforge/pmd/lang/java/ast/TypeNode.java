@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.typeresolution.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * This interface allows a Java Class to be associated with a node.
