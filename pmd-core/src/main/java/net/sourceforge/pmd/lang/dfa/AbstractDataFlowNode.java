@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +22,7 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
 
     protected List<DataFlowNode> parents = new ArrayList<>();
     protected List<DataFlowNode> children = new ArrayList<>();
-    protected Set<NodeType> type = new HashSet<>();
+    protected Set<NodeType> type = EnumSet.noneOf(NodeType.class);
     protected List<VariableAccess> variableAccess = new ArrayList<>();
     protected List<DataFlowNode> dataFlow;
     protected int line;
