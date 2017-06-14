@@ -6,6 +6,6 @@
 package net.sourceforge.pmd.typeresolution.testdata.dummytypes;
 
 public class SuperClassB extends SuperClassB2 {
-    protected SuperClassB s;
+    protected SuperClassB Bs;
     private String privateShadow;
 }
