@@ -7,10 +7,9 @@ package net.sourceforge.pmd.lang.java.oom;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.oom.Metric.Option;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.ModifiedCycloMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.StdCycloMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
 
 
@@ -46,7 +45,7 @@ public final class Metrics {
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
         // TODO:cf think about caching
-        return TOP_LEVEL_PACKAGE.compute(key, node, false);
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, Option.STANDARD);
     }
 
     /**
@@ -59,21 +58,31 @@ public final class Metrics {
      */
     public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
         // TODO:cf think about caching
-        return TOP_LEVEL_PACKAGE.compute(key, node, false);
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, Option.STANDARD);
+    }
+
+    public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, MetricOption option) {
+        MetricOption safeOption = (option == null) ? Option.STANDARD : option;
+
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption);
+    }
+
+    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricOption option) {
+        MetricOption safeOption = (option == null) ? Option.STANDARD : option;
+
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption);
     }
 
     /**
      * Keys identifying class metrics.
      */
-    public enum ClassMetricKey {
+    public enum ClassMetricKey implements MetricKey {
         /** Access to Foreign Data. */
         ATFD(new AtfdMetric()),
-        // ...
         /** Weighed Method Count. */
         WMC(new WmcMetric()),
-        StdCYCLO(new StdCycloMetric()),
-        CYCLO(new CycloMetric()),
-        ModifiedCYCLO(new ModifiedCycloMetric());
+        /** Cyclometric complexity. */
+        CYCLO(new CycloMetric());
 
 
         private final ClassMetric calculator;
@@ -91,13 +100,12 @@ public final class Metrics {
     /**
      * Keys identifying operation metrics.
      */
-    public enum OperationMetricKey {
+    public enum OperationMetricKey implements MetricKey {
 
         /** Access to Foreign Data. */ // TODO:cf add short description here for javadoc hints
         ATFD(new AtfdMetric()),
-        StdCYCLO(new StdCycloMetric()),
-        CYCLO(new CycloMetric()),
-        ModifiedCYCLO(new ModifiedCycloMetric());
+        /** Cyclometric complexity. */
+        CYCLO(new CycloMetric());
 
         private final OperationMetric calculator;
 
@@ -109,5 +117,19 @@ public final class Metrics {
         OperationMetric getCalculator() {
             return calculator;
         }
+    }
+
+    /**
+     * Key identifying a metric.
+     */
+    public interface MetricKey {
+
+        /**
+         * Returns the name of the metric.
+         *
+         * @return The name of the metric.
+         */
+        String name();
+
     }
 }

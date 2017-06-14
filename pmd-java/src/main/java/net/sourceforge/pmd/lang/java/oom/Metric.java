@@ -11,4 +11,10 @@ package net.sourceforge.pmd.lang.java.oom;
  */
 public interface Metric {
 
+    /** Default metric option. */
+    enum Option implements MetricOption {
+        /** Standard option, used as a default. */
+        STANDARD
+    }
+
 }

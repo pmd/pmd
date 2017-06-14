@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.PackageStats;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
@@ -25,7 +26,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
 public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption options) {
         if (!isSupported(node)) {
             return Double.NaN;
         }
@@ -46,7 +47,7 @@ public class AtfdMetric extends AbstractMetric implements ClassMetric, Operation
     }
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
         // TODO
         return 0;
     }

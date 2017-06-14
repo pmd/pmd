@@ -141,11 +141,12 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force) {
+    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                   MetricOption options) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, force);
+                                 : container.compute(key, node, force, options);
     }
 
 
@@ -158,11 +159,12 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force) {
+    double compute(Metrics.OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
+                   MetricOption options) {
         QualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, qname.getOperation(), force);
+                                 : container.compute(key, node, qname.getOperation(), force, options);
     }
 }

@@ -13,6 +13,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
  */
 public interface OperationMetric extends Metric {
 
-    double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder);
+    /**
+     * Actually computes the value of a metric for an AST node.
+     *
+     * @param node    The node.
+     * @param holder  The toplevel package stats (used to help the calculation).
+     * @param options A possibly empty list of options.
+     *
+     * @return The value of the metric.
+     */
+    double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption options);
+
 
 }

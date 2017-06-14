@@ -12,7 +12,6 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.Metrics.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
@@ -37,7 +36,7 @@ class ClassStats {
     private Map<FieldSignature, Set<String>> fields = new HashMap<>();
     private Map<String, ClassStats> nestedClasses = new HashMap<>();
 
-    private Map<ClassMetricKey, Double> memo = new HashMap<>();
+    private Map<ParameterizedMetricKey, Double> memo = new HashMap<>();
 
     // References to the hierarchy
     // TODO:cf useful?
@@ -141,12 +140,13 @@ class ClassStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name, boolean force) {
+    double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name, boolean force,
+                   MetricOption options) {
         // TODO:cf maybe find a way to optimise this
         for (OperationSignature sig : operations.keySet()) {
             for (OperationStats stats : operations.get(sig)) {
                 if (stats.equals(name)) {
-                    return stats.compute(key, node, force);
+                    return stats.compute(key, node, force, options);
                 }
             }
         }
@@ -162,16 +162,18 @@ class ClassStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force) {
+    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                   MetricOption options) {
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, new MetricOption[] {options});
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
-        Double prev = memo.get(key);
+        Double prev = memo.get(paramKey);
         if (!force && prev != null) {
             return prev;
         }
 
         ClassMetric metric = key.getCalculator();
-        double val = metric.computeFor(node, Metrics.getTopLevelPackageStats());
-        memo.put(key, val);
+        double val = metric.computeFor(node, Metrics.getTopLevelPackageStats(), options);
+        memo.put(paramKey, val);
         return val;
     }
 }

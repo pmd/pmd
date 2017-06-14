@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
-import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.Option;
 
 /**
  * Implements the modified cyclomatic complexity rule.
@@ -14,14 +14,14 @@ import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
  *
  * @author Alan Hohn, based on work by Donald A. Leckie
  * @version Revised June 12th, 2017 (Clément Fournier)
- * @see net.sourceforge.pmd.lang.java.oom.metrics.ModifiedCycloMetric
+ * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
  * @since June 18, 2014
  */
 public class ModifiedCyclomaticComplexityRule extends StdCyclomaticComplexityRule {
 
     public ModifiedCyclomaticComplexityRule() {
         super();
-        metricKey = OperationMetricKey.ModifiedCYCLO;
+        metricOption = Option.DO_NOT_COUNT_SWITCH_CASES;
     }
 
 

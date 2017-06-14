@@ -12,6 +12,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.oom.Metric.Option;
+import net.sourceforge.pmd.lang.java.oom.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -26,7 +28,7 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  *
  * @author Alan Hohn, based on work by Donald A. Leckie
  * @version Revised June 12th, 2017 (Clément Fournier)
- * @see net.sourceforge.pmd.lang.java.oom.metrics.StdCycloMetric
+ * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
  * @since June 18, 2014
  */
 public class StdCyclomaticComplexityRule extends AbstractJavaRule {
@@ -49,9 +51,8 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     protected int reportLevel;
     protected boolean showClassesComplexity = true;
     protected boolean showMethodsComplexity = true;
+    protected MetricOption metricOption = Option.STANDARD;
     Stack<ClassEntry> entryStack = new Stack<>();
-
-    protected OperationMetricKey metricKey = OperationMetricKey.StdCYCLO;
 
     public StdCyclomaticComplexityRule() {
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
@@ -121,7 +122,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
         if (!isSuppressed(node)) {
             ClassEntry classEntry = entryStack.peek();
 
-            int cyclo = (int) Metrics.get(metricKey, node);
+            int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, metricOption);
             classEntry.numMethods++;
             classEntry.totalCyclo += cyclo;
             if (cyclo > classEntry.maxCyclo) {

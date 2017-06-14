@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.Metric.Option;
 import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
 
 
 /**
- * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a PackageStats.
+ * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a
+ * PackageStats and node.
  *
  * @author Clément Fournier
  */
@@ -36,19 +36,12 @@ public abstract class AbstractMetric {
      * Checks if the metric can be computed on that node.
      *
      * @param node The node to check for
+     *
      * @return True if the metric can be computed, false otherwise.
      */
     // TODO better wrap that around the metrics implementation
     protected boolean isSupported(ASTMethodOrConstructorDeclaration node) {
-        if (isAbstractHandler) {
-            return true;
-        }
-
-        if (node instanceof ASTMethodDeclaration) {
-            return !((ASTMethodDeclaration) node).isAbstract();
-        } else {
-            return !((ASTConstructorDeclaration) node).isAbstract();
-        }
+        return isAbstractHandler || !node.isAbstract();
     }
 
 
@@ -69,7 +62,7 @@ public abstract class AbstractMetric {
 
         double sum = 0;
         for (ASTMethodOrConstructorDeclaration op : ops) {
-            double val = toplevel.compute(key, op, false);
+            double val = toplevel.compute(key, op, false, Option.STANDARD);
             if (val != Double.NaN) {
                 sum += val;
             }
@@ -77,4 +70,5 @@ public abstract class AbstractMetric {
 
         return sum;
     }
+
 }

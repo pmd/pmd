@@ -7,18 +7,18 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.PackageStats;
 
 /**
  * @author Clément Fournier
- *
  */
 public class WmcMetric extends AbstractMetric implements ClassMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
         // TODO
         return 0;
     }
-    
+
 }
