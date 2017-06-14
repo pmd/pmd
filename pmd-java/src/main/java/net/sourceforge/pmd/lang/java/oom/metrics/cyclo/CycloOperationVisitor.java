@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics.cyclo;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -34,7 +36,7 @@ public class CycloOperationVisitor extends JavaParserVisitorAdapter {
                 if (!sl.isDefault()) {
                     childNode = node.jjtGetChild(n + 1);
                     if (childNode instanceof ASTBlockStatement) {
-                        ((Accumulator) data).addDecisionPoint();
+                        ((MutableInt) data).increment();
                     }
                 }
             }
@@ -46,7 +48,7 @@ public class CycloOperationVisitor extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         if (node.isTernary()) {
-            ((Accumulator) data).addDecisionPoint();
+            ((MutableInt) data).increment();
             super.visit(node, data);
         }
         return data;
@@ -54,35 +56,35 @@ public class CycloOperationVisitor extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
-        ((Accumulator) data).addDecisionPoint();
+        ((MutableInt) data).increment();
         super.visit(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        ((Accumulator) data).addDecisionPoint();
+        ((MutableInt) data).increment();
         super.visit(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTCatchStatement node, Object data) {
-        ((Accumulator) data).addDecisionPoint();
+        ((MutableInt) data).increment();
         super.visit(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
-        ((Accumulator) data).addDecisionPoint();
+        ((MutableInt) data).increment();
         super.visit(node, data);
         return data;
     }
 
     @Override
     public Object visit(ASTDoStatement node, Object data) {
-        ((Accumulator) data).addDecisionPoint();
+        ((MutableInt) data).increment();
         super.visit(node, data);
         return data;
     }

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.oom;
 
 /**
- * Options that can be passed to a metric. Options should be defined in a class or enum nested inside the implementation
+ * Option that can be passed to a metric. Options should be defined in a class or enum nested inside the implementation
  * class of the metric. Bonus point for using an enum, as the name() method is already defined.
  *
  * @author Clément Fournier

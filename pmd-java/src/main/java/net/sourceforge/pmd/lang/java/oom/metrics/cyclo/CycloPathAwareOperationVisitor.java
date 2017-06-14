@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics.cyclo;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -22,7 +24,7 @@ public class CycloPathAwareOperationVisitor extends CycloOperationVisitor {
         super.visit(node, data);
 
         int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        ((Accumulator) data).addDecisionPoints(boolCompIf);
+        ((MutableInt) data).add(boolCompIf);
         return data;
     }
 
@@ -32,7 +34,7 @@ public class CycloPathAwareOperationVisitor extends CycloOperationVisitor {
 
         int boolCompFor = NPathComplexityRule
             .sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
-        ((Accumulator) data).addDecisionPoints(boolCompFor);
+        ((MutableInt) data).add(boolCompFor);
         return data;
     }
 
@@ -41,7 +43,7 @@ public class CycloPathAwareOperationVisitor extends CycloOperationVisitor {
         super.visit(node, data);
 
         int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        ((Accumulator) data).addDecisionPoints(boolCompDo);
+        ((MutableInt) data).add(boolCompDo);
         return data;
     }
 
@@ -50,7 +52,7 @@ public class CycloPathAwareOperationVisitor extends CycloOperationVisitor {
         super.visit(node, data);
 
         int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        ((Accumulator) data).addDecisionPoints(boolCompSwitch);
+        ((MutableInt) data).add(boolCompSwitch);
         return data;
     }
 
@@ -59,7 +61,7 @@ public class CycloPathAwareOperationVisitor extends CycloOperationVisitor {
         super.visit(node, data);
 
         int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-        ((Accumulator) data).addDecisionPoints(boolCompWhile);
+        ((MutableInt) data).add(boolCompWhile);
         return data;
     }
 
@@ -70,7 +72,7 @@ public class CycloPathAwareOperationVisitor extends CycloOperationVisitor {
         if (node.isTernary()) {
             int boolCompTern = NPathComplexityRule
                 .sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-            ((Accumulator) data).addDecisionPoints(boolCompTern);
+            ((MutableInt) data).add(boolCompTern);
         }
         return data;
     }

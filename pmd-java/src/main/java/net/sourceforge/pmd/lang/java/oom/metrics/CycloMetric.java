@@ -4,52 +4,55 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
+import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.PackageStats;
-import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.Accumulator;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloOperationVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathAwareOperationVisitor;
 
 /**
- * Cyclomatic Complexity, a measure of the number of independent paths in a block of code. It is calculated by
- * counting decision points (control flow statements) in the block.
+ * McCabe's Cyclomatic Complexity. Number of independent paths in a block of code. It is calculated by counting decision
+ * points (control flow statements) in the block. [1]
  *
- * <p>Standard rules to calculate CYCLO: +1 for every decision point, including case statements inside switches but not
- * including boolean operators.
+ * <p>Standard rules to calculate CYCLO: +1 for every control flow statement. The independent paths of boolean
+ * expressions are not counted. Switch cases count as one, but not the switch itself ---the point is that switch should
+ * have the same complexity value as the equivalent series of {@code if} statements.
  *
- * <p>{@code DO_NOT_COUNT_SWITCH_CASES} option: Switch labels do not count as decision points ---yet their blocks are
- * still analysed.
+ * <p>{@code COUNT_SWITCH_STATEMENTS} option: Switch statements count as 1 too.
  *
  * <p>{@code COUNT_EXPRESSION_PATHS} option: Boolean expressions in control flow statements are broken down following
  * the number of boolean operators they use. Each different path counts as a decision point.
  *
+ * <p>[1] Lanza. Object-Oriented Metrics in Practice.
+ *
  * @author Clément Fournier
  * @since June 2017
  */
-public class CycloMetric extends AbstractMetric implements OperationMetric, ClassMetric {
+public class CycloMetric extends AbstractClassMetric implements OperationMetric, ClassMetric {
 
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
-        return sumMetricOnOperations(OperationMetricKey.CYCLO, node);
+        return sumMetricOverOperations(node, holder, OperationMetricKey.CYCLO, false);
     }
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption options) {
 
         CycloOperationVisitor visitor;
-        if (options.equals(Option.DO_NOT_COUNT_SWITCH_CASES)) {
+        if (options.equals(Option.COUNT_SWITCH_STATEMENTS)) {
             visitor = new CycloOperationVisitor() {
                 @Override
                 public Object visit(ASTSwitchStatement node, Object data) {
-                    ((Accumulator) data).addDecisionPoint();
+                    ((MutableInt) data).increment();
                     visit((JavaNode) node, data);
                     return data;
                 }
@@ -60,14 +63,14 @@ public class CycloMetric extends AbstractMetric implements OperationMetric, Clas
             visitor = new CycloOperationVisitor();
         }
 
-        Accumulator cyclo = (Accumulator) node.jjtAccept(visitor, new Accumulator());
-        return cyclo.val;
+        MutableInt cyclo = (MutableInt) node.jjtAccept(visitor, new MutableInt(1));
+        return (double) cyclo.getValue();
     }
 
     /** Options for CYCLO. */
     public enum Option implements MetricOption {
-        /** Count a switch as a single decision point (blocks are still explored). */
-        DO_NOT_COUNT_SWITCH_CASES,
+        /** Switch statements are counted as 1. */
+        COUNT_SWITCH_STATEMENTS,
         /** Count the paths in boolean expressions as decision points. */
         COUNT_EXPRESSION_PATHS
     }

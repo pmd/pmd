@@ -21,7 +21,7 @@ public class ModifiedCyclomaticComplexityRule extends StdCyclomaticComplexityRul
 
     public ModifiedCyclomaticComplexityRule() {
         super();
-        metricOption = Option.DO_NOT_COUNT_SWITCH_CASES;
+        metricOption = Option.COUNT_SWITCH_STATEMENTS;
     }
 
 
