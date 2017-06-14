@@ -30,6 +30,8 @@ import net.sourceforge.pmd.lang.java.oom.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolverTest;
 
 /**
+ * Tests of the metrics visitor.
+ *
  * @author Clément Fournier
  */
 public class MetricsVisitorTest {
