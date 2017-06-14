@@ -181,8 +181,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
+    public Object visit(ASTPackageDeclaration node, Object data) {
+        return data;
+    }
+
+    @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         ASTName importedType = (ASTName) node.jjtGetChild(0);
+
         if (importedType.getType() != null) {
             node.setType(importedType.getType());
         } else {
@@ -192,6 +198,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.getType() != null) {
             node.setPackage(node.getType().getPackage());
         }
+
         return data;
     }
 
@@ -244,7 +251,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
          * not
          */
 
-
         Class accessingClass = getEnclosingTypeDeclaration(node);
 
         String[] dotSplitImage = node.getImage().split("\\.");
@@ -258,12 +264,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
 
-        // Skip these scenarios as there is no type to populate in these
-        // cases:
-        // 1) Parent is a PackageDeclaration, which is not a type
-        // 2) Parent is a ImportDeclaration, this is handled elsewhere.
-        if (node.getType() == null && !(node.jjtGetParent() instanceof ASTPackageDeclaration
-                || node.jjtGetParent() instanceof ASTImportDeclaration)) {
+        if (node.getType() == null) {
 
             populateType(node, node.getImage());
 
