@@ -14,13 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessNested;
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
 import org.junit.Test;
+
+
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -57,6 +56,9 @@ import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
 import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccess;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessNested;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
@@ -66,6 +68,8 @@ import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
+
 
 
 
@@ -754,9 +758,9 @@ public class ClassTypeResolverTest {
         assertEquals(FieldAccessShadow.class, getChildType(expressions.get(index), 0));
         assertEquals(Integer.class, getChildType(expressions.get(index++), 1));
 
-        // s2 = new SuperClassB();
-        assertEquals(SuperClassB.class, expressions.get(index).getType());
-        assertEquals(SuperClassB.class, getChildType(expressions.get(index++), 0));
+        // s2 = new SuperClassB2();
+        assertEquals(SuperClassB2.class, expressions.get(index).getType());
+        assertEquals(SuperClassB2.class, getChildType(expressions.get(index++), 0));
 
         // privateShadow = 10;
         assertEquals(Number.class, expressions.get(index).getType());
@@ -782,15 +786,13 @@ public class ClassTypeResolverTest {
 
         // (this).s.s2 = new SuperClassA2();
         assertEquals(SuperClassA2.class, expressions.get(index).getType());
-        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 0));
-        assertEquals(SuperClassA2.class, getChildType(expressions.get(index), 1));
+        assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 1));
         assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 2));
 
         // s.s.s2 = new SuperClassA2();
         assertEquals(SuperClassA2.class, expressions.get(index).getType());
-        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 0));
-        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 1));
-        assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 2));
+        assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 0));
 
         // super.s = new SuperClassA();
         assertEquals(SuperClassA.class, expressions.get(index).getType());
@@ -798,7 +800,7 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 1));
 
         // net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper.this.s = new SuperClassA();
-        assertEquals(FieldAccessSuper.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
         assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 0));
         assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 1));
         assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 2));
@@ -807,11 +809,11 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClassA.class, expressions.get(index).getType());
         assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
 
-        // Bs = new SuperClassB();
+        // bs = new SuperClassB();
         assertEquals(SuperClassB.class, expressions.get(index).getType());
         assertEquals(SuperClassB.class, getChildType(expressions.get(index++), 0));
 
-        // FieldAccessSuper.Nested.super.Bs = new SuperClassB();
+        // FieldAccessSuper.Nested.super.bs = new SuperClassB();
         assertEquals(SuperClassB.class, expressions.get(index).getType());
         assertEquals(FieldAccessSuper.Nested.class, getChildType(expressions.get(index), 0));
         assertEquals(SuperClassB.class, getChildType(expressions.get(index), 1));
@@ -820,7 +822,7 @@ public class ClassTypeResolverTest {
         // FieldAccessSuper.super.s = new SuperClassA();
         assertEquals(SuperClassA.class, expressions.get(index).getType());
         assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 0));
-        assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 1));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 1));
         assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 2));
 
         // Make sure we got them all

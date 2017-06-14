@@ -7,8 +7,6 @@ package net.sourceforge.pmd.typeresolution.testdata;
 
 
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 
 
 /*

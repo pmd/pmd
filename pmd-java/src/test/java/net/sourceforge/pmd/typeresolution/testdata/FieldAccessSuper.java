@@ -25,7 +25,7 @@ public class FieldAccessSuper extends SuperClassA {
         // Primary[ Prefix[Primary[(this)]], Suffix[s], Suffix[s2] ]
         (this).s.s2 = new SuperClassA2();
 
-        // access inherited field, second 's' has inherited 's2'
+        // access inherited field, second 's' has inherited field 's2'
         // Primary[Prefix[Name[s.s.s2]]]
         s.s.s2 = new SuperClassA2();
 
@@ -48,13 +48,13 @@ public class FieldAccessSuper extends SuperClassA {
             s = new SuperClassA();
 
             // access Nested inherited field
-            // Primary[Prefix[Name[Bs]]]
-            Bs = new SuperClassB();
+            // Primary[Prefix[Name[bs]]]
+            bs = new SuperClassB();
 
             // access super field with fully qualified stuff
             // Primary[Prefix["FieldAccessSuper"], Suffix[Nested],
-            //                  Suffix["super"], Suffix["Bs"]]
-            FieldAccessSuper.Nested.super.Bs = new SuperClassB();
+            //                  Suffix["super"], Suffix["bs"]]
+            FieldAccessSuper.Nested.super.bs = new SuperClassB();
 
             // refers to the enclosing class's immediate super class's field
             // Primary[Prefix["FieldAccessSuper"], Suffix["super"], Suffix["s"]]
