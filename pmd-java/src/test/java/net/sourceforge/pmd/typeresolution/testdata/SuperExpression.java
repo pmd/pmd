@@ -5,23 +5,25 @@
 
 package net.sourceforge.pmd.typeresolution.testdata;
 
-public class SuperExpression extends SuperClass {
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
+
+public class SuperExpression extends SuperClassA {
     public SuperExpression() {
-        SuperClass a = super.s;
+        SuperClassA a = super.s;
     }
 
     protected SuperExpression b;
 
-    { SuperClass s = super.s; }
+    { SuperClassA s = super.s; }
 
     public void foo() {
-        SuperClass a = super.s;
+        SuperClassA a = super.s;
     }
 
-    SuperClass a = super.s;
+    SuperClassA a = super.s;
 
     public class SuperExprNested extends SuperExpression {
-        SuperClass a = SuperExpression.super.s;
+        SuperClassA a = SuperExpression.super.s;
         SuperExpression b = super.b;
     }
 
