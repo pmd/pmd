@@ -9,11 +9,22 @@ This is a minor release.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
+    *   [Java Type Resolution](#Java_Type_Resolution)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
+
+### Java Type Resolution
+
+As part of Google Summer of Code 2017, [Bendeguz Nagy](https://github.com/WinterGrascph) has been working on completing type resolution for Java.
+His progress so far has allowed to properly resolve, in addition to previously supported statements:
+
+ - References to `this` and `super`, even when qualified
+ - References to fields, even when chained (ie: `this.myObject.aField`), and properly handling inheritance / shadowing
+
+Fields using generics are still Work in Progress, but we expect to fully support it soon enough.
 
 ### Fixed Issues
 
@@ -34,4 +45,5 @@ This is a minor release.
 *   [#409](https://github.com/pmd/pmd/pull/409): \[java] Groundwork for the upcoming metrics framework
 *   [#416](https://github.com/pmd/pmd/pull/416): \[java] FIXED: Java 8 parsing problem with annotations for wildcards
 *   [#418](https://github.com/pmd/pmd/pull/418): \[java] Type resolution: super and this keywords
+*   [#423](https://github.com/pmd/pmd/pull/423): \[java] Add field access type resolution in non-generic cases
 
