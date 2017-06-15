@@ -68,4 +68,5 @@ Fields using generics are still Work in Progress, but we expect to fully support
 *   [#423](https://github.com/pmd/pmd/pull/423): \[java] Add field access type resolution in non-generic cases
 *   [#425](https://github.com/pmd/pmd/pull/425): \[java] False positive with builder pattern in java-design/PreserveStackTrace
 *   [#426](https://github.com/pmd/pmd/pull/426): \[java] UnnecessaryFinalModifier final in private method
+*   [#443](https://github.com/pmd/pmd/pull/443): \[java] Optimize typeresolution, by skipping package and import declarations in visit(ASTName)
 
