@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -264,7 +265,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTExtendsList node, Object data) {
         super.visit(node, data);
 
-
         return data;
     }
 
@@ -332,6 +332,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    /**
+     * Searches a JavaTypeDefinition and it's superclasses until a field with name {@code fieldImage} that
+     * is visible from the {@code accessingClass} class. Once it's found, it's possibly generic type is
+     * resolved with the help of {@code typeToSearch} TypeDefinition.
+     *
+     * @param typeToSearch   The type def. to search the field in.
+     * @param fieldImage     The simple name of the field.
+     * @param accessingClass The class that is trying to access the field, some Class declared in the current ACU.
+     * @return JavaTypeDefinition of the resolved field or null if it could not be found.
+     */
     private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class accessingClass) {
         while (typeToSearch != null) {
             try {
@@ -341,18 +351,29 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 }
             } catch (NoSuchFieldException e) { /* swallow */ }
 
+            // transform the type into it's supertype
             typeToSearch = getNextTypeDefinition(typeToSearch, typeToSearch.getType().getGenericSuperclass());
         }
 
         return null;
     }
 
+    /**
+     * Search for a field by it's image stating from a scope and taking into account if it's visible from the
+     * accessingClass Class. The method takes into account that Nested inherited fields shadow outer scope fields.
+     *
+     * @param scope          The scope to start the search from.
+     * @param image          The name of the field, local variable or method parameter.
+     * @param accessingClass The Class (which is defined in the current ACU) that is trying to access the field.
+     * @return Type def. of the field, or null if it could not be resolved.
+     */
     private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class accessingClass) {
         if (accessingClass == null) {
             return null;
         }
 
         for (/* empty */; scope != null; scope = scope.getParent()) {
+            // search each enclosing scope one by one
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
                     : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
                 if (entry.getKey().getImage().equals(image)) {
@@ -369,13 +390,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             // Nested class' inherited fields shadow enclosing variables
             if (scope instanceof ClassScope) {
                 try {
+                    // get the superclass type def. ot the Class the ClassScope belongs to
                     JavaTypeDefinition superClass
                             = getSuperClassTypeDefinition(((ClassScope) scope).getClassDeclaration().getNode(),
                                                           null);
+                    // TODO: check if anonymous classes are class scope
 
+                    // try searching this type def.
                     JavaTypeDefinition foundTypeDef = getFieldType(superClass, image, accessingClass);
 
-                    if (foundTypeDef != null) {
+                    if (foundTypeDef != null) { // if null, then it's not an inherited field
                         return foundTypeDef;
                     }
                 } catch (ClassCastException e) {
@@ -388,18 +412,28 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
+    /**
+     * Given a type def. and a Type, resolves the type into a JavaTypeDefinition. Takes into account
+     * simple Classes, TypeVariables, ParameterizedTypes and WildCards types. Can resolve nested Generic
+     * type arguments.
+     *
+     * @param context     The JavaTypeDefinition in which the {@code genericType} was declared.
+     * @param genericType The Type to resolve.
+     * @return JavaTypeDefinition of the {@code genericType}.
+     */
     private JavaTypeDefinition getNextTypeDefinition(JavaTypeDefinition context, Type genericType) {
         if (genericType == null) {
             return null;
         }
 
-        if (genericType instanceof Class) {
+        if (genericType instanceof Class) { // Raw types take this branch as well
             return getDefaultUpperBounds(context, (Class) genericType);
         } else if (genericType instanceof ParameterizedType) {
 
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
             JavaTypeDefinitionBuilder typeDef = JavaTypeDefinition.builder((Class) parameterizedType.getRawType());
 
+            // recursively determine each type argument's type def.
             for (Type type : parameterizedType.getActualTypeArguments()) {
                 typeDef.addTypeArg(getNextTypeDefinition(context, type));
             }
@@ -422,6 +456,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
+    /**
+     * Returns the ordinal of the type parameter with the name {@code parameterName} in {@code clazz}.
+     *
+     * @param clazz         The Class with the type parameters.
+     * @param parameterName The name of the type parameter.
+     * @return The ordinal of the type parameter.
+     */
     private int getTypeParameterOrdinal(Class clazz, String parameterName) {
         TypeVariable[] classTypeParameters = clazz.getTypeParameters();
 
@@ -434,6 +475,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return -1;
     }
 
+    /**
+     * Returns true if the class is generic.
+     *
+     * @param clazz The Class to examine.
+     * @return True if the Class is generic.
+     */
     private boolean isGeneric(Class clazz) {
         if (clazz != null) {
             return clazz.getTypeParameters().length != 0;
@@ -442,11 +489,23 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return false;
     }
 
+    /**
+     * Contains Class -> JavaTypeDefinitions map for raw Class types. Also helps to avoid infinite recursion.
+     */
     private Map<Class, JavaTypeDefinition> classToDefaultUpperBounds = new HashMap<>();
 
+    /**
+     * Given a Class, returns the type def. for when the Class stands without type arguments, meaning it
+     * is a raw type. Determines the generic types by looking at the upper bounds of it's generic parameters.
+     *
+     * @param context            Synthetic parameter for recursion, pass {@code null}.
+     * @param clazzWithDefBounds The raw Class type.
+     * @return The type def. of the raw Class.
+     */
     private JavaTypeDefinition getDefaultUpperBounds(JavaTypeDefinition context, Class clazzWithDefBounds) {
         JavaTypeDefinitionBuilder typeDef = JavaTypeDefinition.builder(clazzWithDefBounds);
 
+        // helps avoid infinite recursion with Something<.... E extends Something (<- same raw type)... >
         if (classToDefaultUpperBounds.containsKey(clazzWithDefBounds)) {
             return classToDefaultUpperBounds.get(clazzWithDefBounds);
         } else {
@@ -454,22 +513,31 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
         if (isGeneric(clazzWithDefBounds)) {
+            // Recursion, outer call should pass in null.
+            // Recursive calls will get the first JavaTypeDefinition to be able to resolve cases like
+            // ... < T extends Something ... E extends Other<T> ... >
             if (context == null) {
                 context = typeDef.build();
             }
 
             for (TypeVariable parameter : clazzWithDefBounds.getTypeParameters()) {
-                Type upperBound = parameter.getBounds()[0];
-
                 // TODO: fix self reference "< ... E extends Something<E> ... >"
-
-                typeDef.addTypeArg(getNextTypeDefinition(context, upperBound));
+                typeDef.addTypeArg(getNextTypeDefinition(context, parameter.getBounds()[0]));
             }
         }
 
         return typeDef.build();
     }
 
+    /**
+     * Given a class, the modifiers of on of it's member and the class that is trying to access that member,
+     * returns true is the member is accessible from the accessingClass Class.
+     *
+     * @param classWithMember The Class with the member.
+     * @param modifiers       The modifiers of that member.
+     * @param accessingClass  The Class trying to access the member.
+     * @return True if the member is visible from the accessingClass Class.
+     */
     private boolean isMemberVisibleFromClass(Class<?> classWithMember, int modifiers, Class<?> accessingClass) {
         if (accessingClass == null) {
             return false;
@@ -480,29 +548,26 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             return true;
         }
 
-        Package accessingPackage = accessingClass.getPackage();
         boolean areInTheSamePackage;
-        if (accessingPackage != null) {
-            areInTheSamePackage = accessingPackage.getName().startsWith(
+        if (accessingClass.getPackage() != null) {
+            areInTheSamePackage = accessingClass.getPackage().getName().startsWith(
                     classWithMember.getPackage().getName());
         } else {
-            return false;
+            return false; // if the package information is null, we can't do nothin'
         }
 
         // protected members
-        if (Modifier.isProtected(modifiers)
-                && (areInTheSamePackage || classWithMember.isAssignableFrom(accessingClass))) {
-            return true;
-        }
-
-        // package private
-        if (!(Modifier.isPrivate(modifiers) || Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers))
-                && areInTheSamePackage) {
-            return true;
-        }
-
-        // private members
-        if (Modifier.isPrivate(modifiers) && classWithMember.equals(accessingClass)) {
+        if (Modifier.isProtected(modifiers)) {
+            if (areInTheSamePackage || classWithMember.isAssignableFrom(accessingClass)) {
+                return true;
+            }
+            // private members
+        } else if (Modifier.isPrivate(modifiers)) {
+            if (classWithMember.equals(accessingClass)) {
+                return true;
+            }
+            // package private members
+        } else if (areInTheSamePackage) {
             return true;
         }
 
@@ -724,10 +789,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
                 } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
 
-                    if (previousChild != null) { // Qualified 'this' expression
+                    if (previousChild != null) { // Qualified 'super' expression
+                        // anonymous classes can't have qualified super expression, thus
+                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
+                        // looking for enclosing super types
                         currentChild.setTypeDefinition(
                                 getSuperClassTypeDefinition(currentChild, previousChild.getType()));
-                    } else { // simple 'this' expression
+                    } else { // simple 'super' expression
                         currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
                     }
 
@@ -757,28 +825,50 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+    /**
+     * Returns the type def. of the first Class declaration around the node. Looks for Class declarations
+     * and if the second argument is null, then for anonymous classes as well.
+     *
+     * @param node The node with the enclosing Class declaration.
+     * @return The JavaTypeDefinition of the enclosing Class declaration.
+     */
     private Class getEnclosingTypeDeclaration(Node node) {
+        Node previousNode = null;
         while (node != null) {
             if (node instanceof ASTClassOrInterfaceDeclaration) {
                 return ((TypeNode) node).getType();
                 // anonymous class declaration
-            } else if (node instanceof ASTAllocationExpression) {
+            } else if (node instanceof ASTAllocationExpression // is anonymous class declaration
+                    && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // array cant anonymous
+                    && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
                 ASTClassOrInterfaceType typeDecl = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
                 if (typeDecl != null) {
                     return typeDecl.getType();
                 }
             }
 
+            previousNode = node;
             node = node.jjtGetParent();
         }
 
         return null;
     }
 
+    /**
+     * Get the type def. of the super class of the enclosing type declaration which has the same class
+     * as the second argument, or if the second argument is null, then anonymous classes are considered
+     * as well and the first enclosing scope's super class is returned.
+     *
+     * @param node The node from which to start searching.
+     * @param clazz The type of the enclosing class.
+     * @return The TypeDefinition of the superclass.
+     */
     private JavaTypeDefinition getSuperClassTypeDefinition(Node node, Class clazz) {
-        for (; node != null; node = node.jjtGetParent()) {
-            if (node instanceof ASTClassOrInterfaceDeclaration
-                    && (((ASTClassOrInterfaceDeclaration) node).getType() == clazz || clazz == null)) {
+        Node previousNode = null;
+        for (; node != null; previousNode = node, node = node.jjtGetParent()) {
+            if (node instanceof ASTClassOrInterfaceDeclaration // class declaration
+                    // is the class we are looking for or caller requested first class
+                    && (((TypeNode) node).getType() == clazz || clazz == null)) {
 
                 ASTExtendsList extendsList = node.getFirstChildOfType(ASTExtendsList.class);
 
@@ -788,7 +878,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     return JavaTypeDefinition.build(Object.class);
                 }
                 // anonymous class declaration
-            } else if (node instanceof ASTAllocationExpression) {
+
+            } else if (clazz == null // callers requested any class scope
+                    && node instanceof ASTAllocationExpression // is anonymous class decl
+                    && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // arrays can't be anonymous
+                    && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
                 return node.getFirstChildOfType(ASTClassOrInterfaceType.class).getTypeDefinition();
             }
         }
