@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
@@ -36,6 +40,7 @@ public class FieldAccessPrimaryGenericSimple extends GenericSuperClassA<Long> {
 
     class Nested<T extends GenericClass<String, Number>> {
         T field;
+        
         void foo() {
             // Primary[Prefix[this], Suffix[field], Suffix[first]]
             this.field.first = "";

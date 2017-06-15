@@ -15,18 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericBounds;
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericParameter;
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericRaw;
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericSimple;
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessPrimaryGenericSimple;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
 import org.junit.Test;
-
-
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -57,13 +49,19 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
 import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccess;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericBounds;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericParameter;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericRaw;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericSimple;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessNested;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessPrimaryGenericSimple;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
@@ -76,7 +74,6 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
-
 
 
 public class ClassTypeResolverTest {
@@ -165,9 +162,10 @@ public class ClassTypeResolverTest {
     @Test
     public void testInnerClassNotCompiled() throws Exception {
         Node acu = parseAndTypeResolveForString("public class TestInnerClass {\n" + "    public void foo() {\n"
-                                                        + "        Statement statement = new Statement();\n" + "    " +
-                                                        "}\n" + "    static class Statement {\n"
-                                                        + "    }\n" + "}", "1.8");
+                                                        + "        Statement statement = new Statement();\n" + "    "
+                                                        + "}\n" + "    static class Statement {\n"
+                                                        + "    }\n"
+                                                        + "}", "1.8");
         ASTClassOrInterfaceType statement = acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         Assert.assertTrue(statement.isReferenceToClassSameCompilationUnit());
     }
@@ -343,8 +341,8 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
-                                "'unaryNumericPromotion']]//Expression[UnaryExpression]"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'unaryNumericPromotion']]//Expression[UnaryExpression]"),
                 ASTExpression.class);
         int index = 0;
 
@@ -365,8 +363,8 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(Promotion.class);
         List<ASTExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
-                                "'binaryNumericPromotion']]//Expression[AdditiveExpression]"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'binaryNumericPromotion']]//Expression[AdditiveExpression]"),
                 ASTExpression.class);
         int index = 0;
 
@@ -503,18 +501,18 @@ public class ClassTypeResolverTest {
                 TypeNode.class));
         expressions.addAll(convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
-                                "'unaryNumericOperators']]//PostfixExpression"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'unaryNumericOperators']]//PostfixExpression"),
                 TypeNode.class));
         expressions.addAll(convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
-                                "'unaryNumericOperators']]//PreIncrementExpression"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'unaryNumericOperators']]//PreIncrementExpression"),
                 TypeNode.class));
         expressions.addAll(convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
-                                "'unaryNumericOperators']]//PreDecrementExpression"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'unaryNumericOperators']]//PreDecrementExpression"),
                 TypeNode.class));
 
         int index = 0;
@@ -564,8 +562,8 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(Operators.class);
         List<ASTStatementExpression> expressions = convertList(
                 acu.findChildNodesWithXPath(
-                        "//Block[preceding-sibling::MethodDeclarator[@Image = " +
-                                "'assignmentOperators']]//StatementExpression"),
+                        "//Block[preceding-sibling::MethodDeclarator[@Image = "
+                                + "'assignmentOperators']]//StatementExpression"),
                 ASTStatementExpression.class);
         int index = 0;
 
@@ -669,8 +667,8 @@ public class ClassTypeResolverTest {
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
         assertEquals(SuperClassA.class, expressions.get(index++).getType());
-        assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0)).getType
-                ());
+        assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0))
+                .getType());
         assertEquals(SuperClassA.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
 
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
@@ -680,7 +678,6 @@ public class ClassTypeResolverTest {
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }
-
 
 
     @Test

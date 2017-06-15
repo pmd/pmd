@@ -301,7 +301,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             // Carry over the type from the declaration
             Class nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
             // generic classes and class with generic super types could have the wrong type assigned here
-            if (!isGeneric(nodeType) && !isGeneric(nodeType.getSuperclass())) {
+            if (nodeType != null && !isGeneric(nodeType) && !isGeneric(nodeType.getSuperclass())) {
                 node.setType(nodeType);
             }
         }
@@ -359,8 +359,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     ASTType typeNode = entry.getKey().getDeclaratorId().getTypeNode();
 
                     if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
-                        return ((ASTClassOrInterfaceType) typeNode.jjtGetChild(0).jjtGetChild(0))
-                                .getTypeDefinition();
+                        return ((TypeNode) typeNode.jjtGetChild(0)).getTypeDefinition();
                     } else { // primitive type
                         return JavaTypeDefinition.build(typeNode.getType());
                     }
