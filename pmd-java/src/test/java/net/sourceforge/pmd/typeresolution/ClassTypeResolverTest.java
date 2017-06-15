@@ -744,6 +744,12 @@ public class ClassTypeResolverTest {
         assertEquals(FieldAccessNested.Nested.class, getChildType(expressions.get(index), 1));
         assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 2));
 
+        // FieldAccessNested.Nested.this.a = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(FieldAccessNested.Nested.class, getChildType(expressions.get(index), 0));
+        assertEquals(FieldAccessNested.Nested.class, getChildType(expressions.get(index), 1));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 2));
+
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }

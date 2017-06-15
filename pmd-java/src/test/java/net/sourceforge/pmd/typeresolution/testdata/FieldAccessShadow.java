@@ -16,12 +16,7 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
  */
 public class FieldAccessShadow {
     Integer field;
-
     String s2;
-
-
-
-
 
     public void foo() {
         String field;
