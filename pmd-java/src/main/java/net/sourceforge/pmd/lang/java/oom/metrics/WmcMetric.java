@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
-import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.PackageStats;
 
 /**
  * @author Clément Fournier
