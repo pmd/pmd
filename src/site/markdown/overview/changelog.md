@@ -69,5 +69,6 @@ Fields using generics are still Work in Progress, but we expect to fully support
 *   [#425](https://github.com/pmd/pmd/pull/425): \[java] False positive with builder pattern in java-design/PreserveStackTrace
 *   [#426](https://github.com/pmd/pmd/pull/426): \[java] UnnecessaryFinalModifier final in private method
 *   [#436](https://github.com/pmd/pmd/pull/436): \[java] Metrics framework tests and various improvements
+*   [#440](https://github.com/pmd/pmd/pull/440): \[core] Created ruleset schema 3.0.0 (to use metrics)
 *   [#443](https://github.com/pmd/pmd/pull/443): \[java] Optimize typeresolution, by skipping package and import declarations in visit(ASTName)
 
