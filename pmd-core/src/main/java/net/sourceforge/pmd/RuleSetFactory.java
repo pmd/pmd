@@ -278,7 +278,9 @@ public class RuleSetFactory {
             checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
         }
 
-        final RuleSetBuilder builder = new RuleSetBuilder(checksum);
+        final RuleSetBuilder builder = new RuleSetBuilder(checksum)
+                .withName(rule.getName())
+                .withDescription("RuleSet for " + rule.getName());
         builder.addRule(rule);
         return builder.build();
     }
@@ -339,8 +341,14 @@ public class RuleSetFactory {
             Element ruleSetElement = document.getDocumentElement();
 
             RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue())
-                    .withFileName(ruleSetReferenceId.getRuleSetFileName())
-                    .withName(ruleSetElement.getAttribute("name"));
+                    .withFileName(ruleSetReferenceId.getRuleSetFileName());
+
+            if (ruleSetElement.hasAttribute("name")) {
+                ruleSetBuilder.withName(ruleSetElement.getAttribute("name"));
+            } else {
+                LOG.warning("RuleSet name is missing. Future versions of PMD will require it.");
+                ruleSetBuilder.withName("Missing RuleSet Name");
+            }
 
             NodeList nodeList = ruleSetElement.getChildNodes();
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -360,6 +368,11 @@ public class RuleSetFactory {
                                 + "> encountered as child of <ruleset> element.");
                     }
                 }
+            }
+
+            if (!ruleSetBuilder.hasDescription()) {
+                LOG.warning("RuleSet description is missing. Future versions of PMD will require it.");
+                ruleSetBuilder.withDescription("Missing description");
             }
 
             return ruleSetBuilder.build();

@@ -42,6 +42,7 @@ Fields using generics are still Work in Progress, but we expect to fully support
 ### Fixed Issues
 
 *   General
+    *   [#380](https://github.com/pmd/pmd/issues/380): \[core] NPE in RuleSet.hashCode
     *   [#407](https://github.com/pmd/pmd/issues/407): \[web] Release date is not properly formatted
     *   [#429](https://github.com/pmd/pmd/issues/429): \[core] Error when running PMD from folder with space
 *   java

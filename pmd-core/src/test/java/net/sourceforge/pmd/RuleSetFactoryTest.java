@@ -20,6 +20,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
@@ -167,7 +168,8 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testStringMultiPropertyDefaultDelimiter() throws Exception {
-        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"the ruleset\">\n"
+                + "  <description>Desc</description>\n"
                 + "     <rule name=\"myRule\" message=\"Do not place to this package. Move to \n"
                 + "{0} package/s instead.\" \n" + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" "
                 + "language=\"dummy\">\n" + "         <description>Please move your class to the right folder(rest \n"
@@ -182,7 +184,8 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testStringMultiPropertyDelimiter() throws Exception {
-        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
                 + "     <rule name=\"myRule\" message=\"Do not place to this package. Move to \n"
                 + "{0} package/s instead.\" \n" + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" "
                 + "language=\"dummy\">\n" + "         <description>Please move your class to the right folder(rest \n"
@@ -197,7 +200,8 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testRuleSetWithDeprecatedRule() throws Exception {
-        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"ruleset\">\n"
+                + "  <description>ruleset desc</description>\n"
                 + "     <rule deprecated=\"true\" ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\"/>"
                 + "</ruleset>");
         Assert.assertEquals(1, rs.getRules().size());
@@ -207,7 +211,8 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testRuleSetWithDeprecatedButRenamedRule() throws Exception {
-        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
                 + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
                 + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
                 + "         <description>d</description>\n" + "         <priority>2</priority>\n" + "     </rule>"
@@ -220,7 +225,8 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testRuleSetReferencesADeprecatedRenamedRule() throws Exception {
-        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
                 + "     <rule ref=\"rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule\"/>" + "</ruleset>");
         Assert.assertEquals(1, rs.getRules().size());
         Rule rule = rs.getRuleByName("OldNameOfDummyBasicMockRule");
@@ -628,6 +634,39 @@ public class RuleSetFactoryTest {
         RuleSetFactory ruleSetFactory3 = new RuleSetFactory();
         RuleSet ruleset3 = ruleSetFactory3.createRuleSet(ref3);
         Assert.assertNotNull(ruleset3.getRuleByName("DummyBasicMockRule"));
+    }
+
+    @org.junit.Rule
+    public JavaUtilLoggingRule logging = new JavaUtilLoggingRule(RuleSetFactory.class.getName());
+
+    @Test
+    public void testMissingRuleSetNameIsWarning() throws Exception {
+        RuleSetReferenceId ref = createRuleSetReferenceId(
+                "<?xml version=\"1.0\"?>\n" + "<ruleset \n"
+                        + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                        + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                        + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n"
+                        + "  <description>Custom ruleset for tests</description>\n"
+                        + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
+                        + "  </ruleset>\n");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.createRuleSet(ref);
+
+        assertTrue(logging.getLog().contains("RuleSet name is missing."));
+    }
+
+    @Test
+    public void testMissingRuleSetDescriptionIsWarning() throws Exception {
+        RuleSetReferenceId ref = createRuleSetReferenceId(
+                "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
+                        + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                        + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                        + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n"
+                        + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
+                        + "  </ruleset>\n");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.createRuleSet(ref);
+        assertTrue(logging.getLog().contains("RuleSet description is missing."));
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>" + PMD.EOL
