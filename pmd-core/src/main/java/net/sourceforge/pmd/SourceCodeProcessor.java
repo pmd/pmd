@@ -160,7 +160,7 @@ public class SourceCodeProcessor {
 
         if (ruleSets.usesMetrics(language)) {
             long start = System.nanoTime();
-            languageVersion.getLanguageVersionHandler().getMetricsVisitorFacade(configuration.getClassLoader())
+            languageVersion.getLanguageVersionHandler().getMetricsVisitorFacade()
                     .start(rootNode);
             long end = System.nanoTime();
             Benchmarker.mark(Benchmark.MetricsVisitor, end - start, 0);

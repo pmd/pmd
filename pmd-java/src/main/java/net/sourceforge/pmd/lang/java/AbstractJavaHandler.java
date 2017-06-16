@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
-import net.sourceforge.pmd.lang.java.oom.visitor.MetricsVisitorFacade;
+import net.sourceforge.pmd.lang.java.oom.MetricsVisitorFacade;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
@@ -98,11 +98,11 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     }
 
     @Override
-    public VisitorStarter getMetricsVisitorFacade(final ClassLoader classLoader) {
+    public VisitorStarter getMetricsVisitorFacade() {
         return new VisitorStarter() {
             @Override
             public void start(Node rootNode) {
-                new MetricsVisitorFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
+                new MetricsVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
             }
         };
     }

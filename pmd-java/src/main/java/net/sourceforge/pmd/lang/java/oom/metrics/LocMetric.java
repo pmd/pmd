@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.PackageStats;
 
 /**
  * Lines Of Code metric. Simply equates the length in lines of code of the measured entity.

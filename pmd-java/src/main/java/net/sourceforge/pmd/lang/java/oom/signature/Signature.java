@@ -2,9 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.visitor;
+package net.sourceforge.pmd.lang.java.oom.signature;
 
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 
 /**
  * Generic signature. This class is extended by classes specific to operations and fields.
@@ -21,10 +21,7 @@ public abstract class Signature {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Signature) {
-            return visibility == ((Signature) o).visibility;
-        }
-        return false;
+        return o instanceof Signature && visibility == ((Signature) o).visibility;
     }
 
     @Override
@@ -36,21 +33,25 @@ public abstract class Signature {
      * The visibility of a node.
      */
     public enum Visibility {
-        PUBLIC, PACKAGE, PROTECTED, PRIVATE, UNDEF;
-
+        PUBLIC, PACKAGE, PROTECTED, PRIVATE;
 
         /**
-         * Returns the Visibility enum key for a node
+         * Returns the Visibility enum key for a node.
          *
          * @param node A node
          *
-         * @return The visibility enum key for a node
+         * @return The visibility enum key for a node.
          */
-        public static Visibility get(AbstractJavaAccessNode node) {
-            return node.isPublic() ? PUBLIC
-                : node.isPackagePrivate() ? PACKAGE
-                : node.isProtected() ? PROTECTED
-                : node.isPrivate() ? PRIVATE : UNDEF;
+        public static Visibility get(AccessNode node) {
+            if (node.isPublic()) {
+                return PUBLIC;
+            } else if (node.isPackagePrivate()) {
+                return PACKAGE;
+            } else if (node.isProtected()) {
+                return PROTECTED;
+            } else {
+                return PRIVATE;
+            }
         }
     }
 }

@@ -11,10 +11,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.visitor.OperationSigMask;
-import net.sourceforge.pmd.lang.java.oom.visitor.OperationSignature.Role;
-import net.sourceforge.pmd.lang.java.oom.visitor.PackageStats;
-import net.sourceforge.pmd.lang.java.oom.visitor.Signature.Visibility;
+import net.sourceforge.pmd.lang.java.oom.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
+import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
+import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
 
 /**
  * Access to Foreign Data. Quantifies the number of foreign fields accessed directly or via accessors.
@@ -30,8 +30,8 @@ public class AtfdMetric extends AbstractMetric implements ClassMetric, Operation
         }
 
         OperationSigMask targetOps = new OperationSigMask();
-        targetOps.setVisibilityMask(Visibility.PUBLIC);
-        targetOps.setRoleMask(Role.GETTER_OR_SETTER);
+        targetOps.restrictVisibilitiesTo(Visibility.PUBLIC);
+        targetOps.restrictRolesTo(Role.GETTER_OR_SETTER);
 
         List<QualifiedName> callQNames = findAllCalls(node);
         int foreignCalls = 0;
