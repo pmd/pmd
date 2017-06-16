@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
  */
 class ClassStats {
 
-    private Map<OperationSignature, Set<OperationStats>> operations = new HashMap<>();
+    private Map<OperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
     private Map<FieldSignature, Set<String>> fields = new HashMap<>();
     private Map<String, ClassStats> nestedClasses = new HashMap<>();
 
@@ -46,11 +46,21 @@ class ClassStats {
 
 
     /**
-     * Finds a ClassStats in the direct children of this class. This cannot be a nested class, for
-     * that see {@link PackageStats#getClassStats(QualifiedName, boolean)}.
+     * Finds a ClassStats in the direct children of this class. This can only be a directly nested class, for example
+     * in the following snippet, A can get B and B can get C but A cannot get C without asking B.
+     * <pre>
+     * <code>
+     * class MyClass { // ClassStats A
+     *   class MyNested { // ClassStats B
+     *     class MyDeeplyNested { // ClassStats C
+     *     }
+     *   }
+     * }
+     * </code>
+     * </pre>
      *
      * @param className        Name of the nested class.
-     * @param createIfNotFound Create ClassStats if missing.
+     * @param createIfNotFound Create the requested ClassStats if missing.
      *
      * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is unset.
      */
@@ -69,9 +79,9 @@ class ClassStats {
      */
     void addOperation(String name, OperationSignature sig) {
         if (!operations.containsKey(sig)) {
-            operations.put(sig, new HashSet<OperationStats>());
+            operations.put(sig, new HashMap<String, OperationStats>());
         }
-        operations.get(sig).add(new OperationStats(name));
+        operations.get(sig).put(name, new OperationStats(name));
     }
 
     /**
@@ -101,7 +111,7 @@ class ClassStats {
         // Indexing on signatures optimises this type of request
         for (OperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
-                if (operations.get(sig).contains(new OperationStats(name))) {
+                if (operations.get(sig).containsKey(name)) {
                     return true;
                 }
             }
@@ -142,15 +152,15 @@ class ClassStats {
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
     double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name, boolean force) {
-        // TODO:cf maybe find a way to optimise this
-        for (OperationSignature sig : operations.keySet()) {
-            for (OperationStats stats : operations.get(sig)) {
-                if (stats.equals(name)) {
-                    return stats.compute(key, node, force);
-                }
-            }
+        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
+        // TODO:cf the operation signature will be built many times, we might as well store it in the node
+
+        if (sigMap == null) {
+            return Double.NaN;
         }
-        return Double.NaN;
+
+        OperationStats stats = sigMap.get(name);
+        return stats == null ? Double.NaN : stats.compute(key, node, force);
     }
 
     /**
