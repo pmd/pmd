@@ -57,12 +57,12 @@ public class Foo {
     <rule name="UnnecessaryFinalModifier"
     	  language="java"
     	  since="3.0"
-          message="Unnecessary final modifier in final class"
+	  message="Unnecessary final modifier in final class / private methods"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryFinalModifier">
       <description>
 When a class has the final modifier, all the methods are automatically final and do not need to be
-tagged as such.
+tagged as such. Similarly, private methods can't be overriden, and therefore do not need to be tagged either.
       </description>
       <priority>3</priority>
       <properties>
@@ -73,6 +73,7 @@ tagged as such.
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [count(./Annotation/MarkerAnnotation/Name[@Image='SafeVarargs' or @Image='java.lang.SafeVarargs']) = 0]
     /MethodDeclaration[@Final='true']
+    | //MethodDeclaration[@Final='true' and @Private='true']
     ]]>
               </value>
           </property>

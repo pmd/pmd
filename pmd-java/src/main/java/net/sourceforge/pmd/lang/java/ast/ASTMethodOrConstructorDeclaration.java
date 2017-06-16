@@ -9,6 +9,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 /**
  * @author Clément Fournier
  */
-public interface ASTMethodOrConstructorDeclaration extends QualifiableNode, Node {
+public interface ASTMethodOrConstructorDeclaration extends QualifiableNode, Node, AccessNode {
 
 }
