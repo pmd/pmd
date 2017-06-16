@@ -12,9 +12,13 @@ import java.util.regex.Pattern;
  * Represents Qualified Names for use within PackageStats.
  * TODO:cf make unit tests once the visitor is working to ensure new implementations won't break it
  */
-public class QualifiedName {
+public final class QualifiedName {
 
-    /** See {@link QualifiedName#parseName(String)}. */
+    /**
+     * Pattern specifying the format.
+     *
+     * <p>{@code ((\w+\.)+|\.)((\w+)(\$\w+)*)(#(\w+)\(((\w+)(, \w+)*)?\))?}
+     */
     public static final Pattern FORMAT = Pattern.compile("((\\w+\\.)+|\\.)((\\w+)(\\$\\w+)*)(#(\\w+)\\(((\\w+)(, \\w+)*)?\\))?");
 
     private String[] packages = null; // unnamed package
@@ -116,19 +120,20 @@ public class QualifiedName {
 
     /**
      * Parses a qualified name given in the format defined for this implementation. The format
-     * is described as the following regex pattern :
+     * is specified by a regex pattern (see {@link QualifiedName#FORMAT}). Examples:
      *
-     * <p>{@code ((\w+\.)+|\.)((\w+)(\$\w+)*)(#(\w+)\(((\w+)(, \w+)*)?\))?}
-     *
-     * <p>Notes:
+     * <p>{@code com.company.MyClass$Nested#myMethod(String, int)}
      * <ul>
-     * <li> Group 1 : dot separated packages, or just dot if unnamed package;
-     * <li> Group 5 : nested classes are separated by a dollar symbol;
-     * <li> Group 6 : the optional method suffix is separated from the class with a hashtag;
-     * <li> Group 8 : method arguments. Note the presence of a single space after commas.
+     * <li> Packages are separated by full stops;
+     * <li> Nested classes are separated by a dollar symbol;
+     * <li> The optional method suffix is separated from the class with a hashtag;
+     * <li> Method arguments are separated by a comma and a single space.
      * </ul>
      *
-     * <p>The pattern is available as a static class member.
+     * <p>{@code .MyClass$Nested}
+     * <ul>
+     * <li> A class in the unnamed package is preceded by a single full stop.
+     * </ul>
      *
      * @param name The name to parse.
      *

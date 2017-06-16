@@ -47,12 +47,12 @@ public class NcssMetric extends AbstractClassMetric implements OperationMetric {
 
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option) {
         return ((MutableInt) node.jjtAccept(new NcssCounter(), new MutableInt(1))).getValue();
     }
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption option) {
         return ((MutableInt) node.jjtAccept(new NcssCounter(), new MutableInt(1))).getValue();
     }
 

@@ -55,14 +55,14 @@ class OperationStats {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof String) {
-            return o != null && o.equals(name);
-        } else if (o instanceof OperationStats) {
-            OperationStats that = (OperationStats) o;
-            return name != null ? name.equals(that.name) : that.name == null;
-        } else {
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
+        OperationStats stats = (OperationStats) o;
+
+        return name != null ? name.equals(stats.name) : stats.name == null;
     }
 
     @Override

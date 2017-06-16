@@ -40,15 +40,15 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathAwareOperationVi
 public class CycloMetric extends AbstractClassMetric implements OperationMetric, ClassMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option) {
         return sumMetricOverOperations(node, holder, OperationMetricKey.CYCLO, false);
     }
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption option) {
 
         CycloOperationVisitor visitor;
-        if (options.equals(Option.COUNT_SWITCH_STATEMENTS)) {
+        if (option.equals(Option.COUNT_SWITCH_STATEMENTS)) {
             visitor = new CycloOperationVisitor() {
                 @Override
                 public Object visit(ASTSwitchStatement node, Object data) {
@@ -57,7 +57,7 @@ public class CycloMetric extends AbstractClassMetric implements OperationMetric,
                     return data;
                 }
             };
-        } else if (options.equals(Option.COUNT_EXPRESSION_PATHS)) {
+        } else if (option.equals(Option.COUNT_EXPRESSION_PATHS)) {
             visitor = new CycloPathAwareOperationVisitor();
         } else {
             visitor = new CycloOperationVisitor();

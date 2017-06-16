@@ -23,12 +23,12 @@ import net.sourceforge.pmd.lang.java.oom.PackageStats;
 public class LocMetric extends AbstractClassMetric implements OperationMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option) {
         return node.getEndLine() - node.getBeginLine();
     }
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption option) {
         if (node.isAbstract()) {
             return 1;
         }

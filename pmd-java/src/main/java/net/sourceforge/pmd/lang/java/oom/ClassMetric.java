@@ -18,10 +18,10 @@ public interface ClassMetric extends Metric {
      *
      * @param node    The node.
      * @param holder  The toplevel package stats (used to help the calculation).
-     * @param options A possibly empty list of options.
+     * @param option A possibly empty list of options.
      *
      * @return The value of the metric.
      */
-    double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options);
+    double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option);
 
 }

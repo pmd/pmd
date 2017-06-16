@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.oom.PackageStats;
 public class WmcMetric extends AbstractClassMetric implements ClassMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option) {
         return sumMetricOverOperations(node, holder, OperationMetricKey.CYCLO, false);
     }
 }
