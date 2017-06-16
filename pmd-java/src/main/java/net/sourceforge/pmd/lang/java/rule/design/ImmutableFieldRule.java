@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 /**
  * @author Olander
  */
-public class ImmutableFieldRule extends AbstractJavaRule {
+public class ImmutableFieldRule extends AbstractLombokAwareRule {
 
     private enum FieldImmutabilityType {
         /** Variable is changed in methods and/or in lambdas */
@@ -45,6 +45,8 @@ public class ImmutableFieldRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        Object result = super.visit(node, data);
+
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
         List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
@@ -52,19 +54,20 @@ public class ImmutableFieldRule extends AbstractJavaRule {
             VariableNameDeclaration field = entry.getKey();
             AccessNode accessNodeParent = field.getAccessNodeParent();
             if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal()
-                    || accessNodeParent.isVolatile()) {
+                    || accessNodeParent.isVolatile()
+                    || hasClassLombokAnnotation()) {
                 continue;
             }
 
-            FieldImmutabilityType result = initializedInConstructor(entry.getValue(), new HashSet<>(constructors));
-            if (result == FieldImmutabilityType.MUTABLE) {
+            FieldImmutabilityType type = initializedInConstructor(entry.getValue(), new HashSet<>(constructors));
+            if (type == FieldImmutabilityType.MUTABLE) {
                 continue;
             }
-            if (result == FieldImmutabilityType.IMMUTABLE || result == FieldImmutabilityType.CHECKDECL && initializedWhenDeclared(field)) {
+            if (type == FieldImmutabilityType.IMMUTABLE || type == FieldImmutabilityType.CHECKDECL && initializedWhenDeclared(field)) {
                 addViolation(data, field.getNode(), field.getImage());
             }
         }
-        return super.visit(node, data);
+        return result;
     }
 
     private boolean initializedWhenDeclared(VariableNameDeclaration field) {

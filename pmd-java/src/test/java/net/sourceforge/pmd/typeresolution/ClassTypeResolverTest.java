@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
 import org.junit.Test;
+
 
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -55,13 +55,22 @@ import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
 import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccess;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessNested;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
-import net.sourceforge.pmd.typeresolution.testdata.SuperClass;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
+
+
 
 
 public class ClassTypeResolverTest {
@@ -594,7 +603,6 @@ public class ClassTypeResolverTest {
         Assert.assertSame(StringTokenizer.class, id.getType());
     }
 
-
     @Test
     public void testThisExpression() throws JaxenException {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(ThisExpression.class);
@@ -644,12 +652,12 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
-        assertEquals(SuperClass.class, expressions.get(index++).getType());
-        assertEquals(SuperClass.class, expressions.get(index++).getType());
-        assertEquals(SuperClass.class, expressions.get(index++).getType());
-        assertEquals(SuperClass.class, expressions.get(index++).getType());
+        assertEquals(SuperClassA.class, expressions.get(index++).getType());
+        assertEquals(SuperClassA.class, expressions.get(index++).getType());
+        assertEquals(SuperClassA.class, expressions.get(index++).getType());
+        assertEquals(SuperClassA.class, expressions.get(index++).getType());
         assertEquals(SuperExpression.class, ((TypeNode) expressions.get(index).jjtGetParent().jjtGetChild(0)).getType());
-        assertEquals(SuperClass.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
+        assertEquals(SuperClassA.class, ((TypeNode) expressions.get(index++).jjtGetParent().jjtGetChild(1)).getType());
 
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
         assertEquals(SuperExpression.class, expressions.get(index++).getType());
@@ -660,6 +668,177 @@ public class ClassTypeResolverTest {
     }
 
 
+
+    @Test
+    public void testFieldAccess() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccess.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // param.field = 10;
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
+
+        // local.field = 10;
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
+
+        // f.f.f.field = 10;
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
+
+        // (this).f.f.field = 10;
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(FieldAccess.class, getChildType(expressions.get(index), 0));
+        assertEquals(FieldAccess.class, getChildType(expressions.get(index), 1));
+        assertEquals(FieldAccess.class, getChildType(expressions.get(index), 2));
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 3));
+
+        // field = 10;
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testFieldAccessNested() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessNested.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // field = 10;
+        assertEquals(Integer.TYPE, expressions.get(index).getType());
+        assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
+
+        // a = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
+
+        // net.sourceforge.pmd.typeresolution.testdata.FieldAccessNested.Nested.this.a = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(FieldAccessNested.Nested.class, getChildType(expressions.get(index), 0));
+        assertEquals(FieldAccessNested.Nested.class, getChildType(expressions.get(index), 1));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 2));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testFieldAccessShadow() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessShadow.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // field = "shadow";
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+
+        // this.field = new Integer(10);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(FieldAccessShadow.class, getChildType(expressions.get(index), 0));
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 1));
+
+        // (this).field = new Integer(10);
+        assertEquals(Integer.class, expressions.get(index).getType());
+        assertEquals(FieldAccessShadow.class, getChildType(expressions.get(index), 0));
+        assertEquals(Integer.class, getChildType(expressions.get(index++), 1));
+
+        // s2 = new SuperClassB2();
+        assertEquals(SuperClassB2.class, expressions.get(index).getType());
+        assertEquals(SuperClassB2.class, getChildType(expressions.get(index++), 0));
+
+        // privateShadow = 10;
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index++), 0));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testFieldAccessSuper() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessSuper.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
+
+        // (this).s.s2 = new SuperClassA2();
+        assertEquals(SuperClassA2.class, expressions.get(index).getType());
+        assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 1));
+        assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 2));
+
+        // s.s.s2 = new SuperClassA2();
+        assertEquals(SuperClassA2.class, expressions.get(index).getType());
+        assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 0));
+
+        // super.s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 1));
+
+        // net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper.this.s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 0));
+        assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 1));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 2));
+
+        // s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 0));
+
+        // bs = new SuperClassB();
+        assertEquals(SuperClassB.class, expressions.get(index).getType());
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index++), 0));
+
+        // FieldAccessSuper.Nested.super.bs = new SuperClassB();
+        assertEquals(SuperClassB.class, expressions.get(index).getType());
+        assertEquals(FieldAccessSuper.Nested.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index), 1));
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index++), 2));
+
+        // FieldAccessSuper.super.s = new SuperClassA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(FieldAccessSuper.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 1));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 2));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    private Class getChildType(Node node, int childIndex) {
+        if (node.jjtGetNumChildren() > childIndex) {
+            Node child = node.jjtGetChild(childIndex);
+            if (child instanceof TypeNode) {
+                return ((TypeNode) child).getType();
+            }
+        }
+
+        return null;
+    }
 
     private ASTCompilationUnit parseAndTypeResolveForClass15(Class<?> clazz) {
         return parseAndTypeResolveForClass(clazz, "1.5");

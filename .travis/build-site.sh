@@ -12,23 +12,23 @@ if ! travis_isPush; then
 fi
 
 
+(
+    export PING_SLEEP=30s
+    export BUILD_OUTPUT=/tmp/build-site.out
+    export PING_PID_FILE=/tmp/build-site-ping.pid
 
-export PING_SLEEP=30s
-export BUILD_OUTPUT=/tmp/build-site.out
-export PING_PID_FILE=/tmp/build-site-ping.pid
+    source .travis/background-job-funcs.sh
 
-source .travis/background-job-funcs.sh
+    # Run the build, redirect output into the file
+    ./mvnw install -DskipTests=true -B -V >> $BUILD_OUTPUT 2>&1
+    ./mvnw site site:stage -Psite -B -V >> $BUILD_OUTPUT 2>&1
 
-# Run the build, redirect output into the file
-./mvnw install -DskipTests=true -B -V >> $BUILD_OUTPUT 2>&1
-./mvnw site site:stage -Psite -B -V >> $BUILD_OUTPUT 2>&1
+    # The build finished without returning an error so dump a tail of the output
+    dump_output
 
-# The build finished without returning an error so dump a tail of the output
-dump_output
-
-# nicely terminate the ping output loop
-kill_ping
-
+    # nicely terminate the ping output loop
+    kill_ping
+)
 
 # create pmd-doc archive
 (
@@ -42,8 +42,22 @@ if [[ "$TRAVIS_TAG" != "" || "$VERSION" == *-SNAPSHOT ]]; then
     rsync -avh target/pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
 fi
 
-if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
-    # Uploading snapshot site...
-    rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
-fi
+(
+    if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
+        # this can take very long and no output is generated. therefore use the background job again
+        export PING_SLEEP=30s
+        export BUILD_OUTPUT=/tmp/build-site-upload.out
+        export PING_PID_FILE=/tmp/build-site-upload-ping.pid
 
+        source .travis/background-job-funcs.sh
+
+        # Uploading snapshot site...
+        rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
+
+        # The build finished without returning an error so dump a tail of the output
+        dump_output
+
+        # nicely terminate the ping output loop
+        kill_ping
+    fi
+)

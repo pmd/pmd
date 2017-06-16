@@ -18,7 +18,7 @@ public class VfLanguageModule extends BaseLanguageModule {
     public static final String TERSE_NAME = "vf";
 
     public VfLanguageModule() {
-        super(NAME, "vf", TERSE_NAME, VfRuleChainVisitor.class, "page", "component");
+        super(NAME, "VisualForce", TERSE_NAME, VfRuleChainVisitor.class, "page", "component");
         addVersion("", new VfHandler(), true);
     }
 }
