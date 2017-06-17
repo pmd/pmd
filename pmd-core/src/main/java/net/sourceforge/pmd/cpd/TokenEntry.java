@@ -38,6 +38,12 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.tokenSrcID = "EOFMarker";
     }
 
+    /**
+     * Creates a new token entry with the given informations.
+     * @param image
+     * @param tokenSrcID
+     * @param beginLine the linenumber, 1-based.
+     */
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
         setImage(image);
         this.tokenSrcID = tokenSrcID;

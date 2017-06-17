@@ -42,8 +42,13 @@ Fields using generics are still Work in Progress, but we expect to fully support
 ### Fixed Issues
 
 *   General
+    *   [#380](https://github.com/pmd/pmd/issues/380): \[core] NPE in RuleSet.hashCode
     *   [#407](https://github.com/pmd/pmd/issues/407): \[web] Release date is not properly formatted
     *   [#429](https://github.com/pmd/pmd/issues/429): \[core] Error when running PMD from folder with space
+*   apex
+    *   [#427](https://github.com/pmd/pmd/issues/427): \[apex] CPD error when parsing apex code from release 5.5.3
+*   cpp
+    *   [#431](https://github.com/pmd/pmd/issues/431): \[cpp] CPD gives wrong duplication blocks for CPP code
 *   java
     *   [#414](https://github.com/pmd/pmd/issues/414): \[java] Java 8 parsing problem with annotations for wildcards
     *   [#415](https://github.com/pmd/pmd/issues/415): \[java] Parsing Error when having an Annotated Inner class

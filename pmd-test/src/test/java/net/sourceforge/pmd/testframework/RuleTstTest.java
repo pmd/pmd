@@ -44,7 +44,7 @@ public class RuleTstTest {
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
         verify(rule).apply(anyList(), any(RuleContext.class));
-        verify(rule, times(2)).getName();
+        verify(rule, times(4)).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
         verifyNoMoreInteractions(rule);
     }
