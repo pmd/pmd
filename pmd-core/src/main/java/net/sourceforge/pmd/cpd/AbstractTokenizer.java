@@ -57,7 +57,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
                     // if ( CPD.debugEnable ) {
                     // System.out.println("Token added:" + token.toString());
                     // }
-                    tokenEntries.add(new TokenEntry(token.toString(), tokens.getFileName(), lineNumber));
+                    tokenEntries.add(new TokenEntry(token.toString(), tokens.getFileName(), lineNumber + 1));
 
                 }
             }
