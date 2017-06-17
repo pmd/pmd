@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.oom.signature;
  *
  * @author Clément Fournier
  */
-public class FieldSigMask extends SigMask<FieldSignature> {
+public final class FieldSigMask extends SigMask<FieldSignature> {
 
     private boolean coverFinal = true;
     private boolean coverStatic = true;

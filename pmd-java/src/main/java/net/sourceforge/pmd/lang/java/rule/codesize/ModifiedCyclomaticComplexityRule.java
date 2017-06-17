@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
-import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.Option;
+import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.Version;
 
 /**
  * Implements the modified cyclomatic complexity rule.
@@ -21,7 +21,7 @@ public class ModifiedCyclomaticComplexityRule extends StdCyclomaticComplexityRul
 
     public ModifiedCyclomaticComplexityRule() {
         super();
-        metricOption = Option.COUNT_SWITCH_STATEMENTS;
+        metricOption = Version.COUNT_SWITCH_STATEMENTS;
     }
 
 

@@ -8,8 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
-import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
+
 
 /**
  * Statistics for an operation. Keeps a map of all memoized metrics results.
@@ -39,16 +40,16 @@ class OperationStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
-                   MetricOption options) {
-        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, new MetricOption[] {options});
+    double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force, MetricVersion version) {
+
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         Double prev = memo.get(paramKey);
         if (!force && prev != null) {
             return prev;
         }
 
         OperationMetric metric = key.getCalculator();
-        double val = metric.computeFor(node, Metrics.getTopLevelPackageStats(), options);
+        double val = metric.computeFor(node, version);
         memo.put(paramKey, val);
         return val;
     }

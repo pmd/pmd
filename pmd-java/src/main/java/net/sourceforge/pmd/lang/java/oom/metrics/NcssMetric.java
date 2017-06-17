@@ -33,12 +33,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.PackageStats;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
-import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
 
 /**
- * Non Commenting Source Statements. 
+ * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent
+ * to counting the number of semicolons and opening braces in the program. The precise rules for counting
+ * statements comply with <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
  *
  * @author Clément Fournier
  * @see LocMetric
@@ -47,12 +48,12 @@ import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
 public class NcssMetric extends AbstractClassMetric implements OperationMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
         return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(1))).getValue();
     }
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption options) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
         return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(1))).getValue();
     }
 

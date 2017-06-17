@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
  *
  * @author Clément Fournier
  */
-public class OperationSignature extends Signature {
+public final class OperationSignature extends Signature {
 
     private static final Map<Integer, OperationSignature> POOL = new HashMap<>();
 
@@ -71,11 +71,15 @@ public class OperationSignature extends Signature {
             return node instanceof ASTConstructorDeclaration ? CONSTRUCTOR : get((ASTMethodDeclaration) node);
         }
 
+        private static boolean isGetterOrSetter(ASTMethodDeclaration node) {
+            return node.getName() != null && (node.getName().startsWith("get")
+                || node.getName().startsWith("set"));
+        }
+
         private static Role get(ASTMethodDeclaration node) {
             if (node.isStatic()) {
                 return STATIC;
-            } else if (node.getName() != null && (node.getName().startsWith("get")
-                || node.getName().startsWith("set"))) {
+            } else if (isGetterOrSetter(node)) {
                 return GETTER_OR_SETTER; // TODO:cf better getter or setter detection
             } else {
                 return METHOD;

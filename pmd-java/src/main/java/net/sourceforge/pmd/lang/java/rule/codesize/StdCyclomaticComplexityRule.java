@@ -12,10 +12,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.keys.Metric.Option;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
+import net.sourceforge.pmd.lang.java.oom.interfaces.Metric.Version;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
-import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -51,7 +51,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     protected int reportLevel;
     protected boolean showClassesComplexity = true;
     protected boolean showMethodsComplexity = true;
-    protected MetricOption metricOption = Option.STANDARD;
+    protected MetricVersion metricOption = Version.STANDARD;
     Stack<ClassEntry> entryStack = new Stack<>();
 
     public StdCyclomaticComplexityRule() {

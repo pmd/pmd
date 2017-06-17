@@ -7,9 +7,8 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
-import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
 
 /**
  * Lines of Code. Equates the length in lines of code of the measured entity, counting everything including blank lines
@@ -23,12 +22,12 @@ import net.sourceforge.pmd.lang.java.oom.PackageStats;
 public class LocMetric extends AbstractClassMetric implements OperationMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
         return node.getEndLine() - node.getBeginLine();
     }
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption option) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
         if (node.isAbstract()) {
             return 1;
         }

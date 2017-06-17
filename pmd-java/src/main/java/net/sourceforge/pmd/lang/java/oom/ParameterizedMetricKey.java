@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.oom;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.oom.keys.MetricKey;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricKey;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
 
 /**
  * Represents a key parameterized with its options. Used to index memoization maps.
@@ -20,30 +19,41 @@ public class ParameterizedMetricKey {
 
     private static final Map<Integer, ParameterizedMetricKey> POOL = new HashMap<>();
 
+    /** The metric key. */
     public final MetricKey key;
-    public final MetricOption[] options;
+    /** The version of the metric. */
+    public final MetricVersion version;
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey key, MetricOption[] options) {
+    private ParameterizedMetricKey(MetricKey key, MetricVersion version) {
         this.key = key;
-        this.options = options;
+        this.version = version;
     }
 
     /** Builds a parameterized metric key. */
-    public static ParameterizedMetricKey build(MetricKey key, MetricOption[] options) {
-        int code = code(key, options);
+    public static ParameterizedMetricKey build(MetricKey key, MetricVersion version) {
+        int code = code(key, version);
         ParameterizedMetricKey paramKey = POOL.get(code);
         if (paramKey == null) {
-            POOL.put(code, new ParameterizedMetricKey(key, options));
+            POOL.put(code, new ParameterizedMetricKey(key, version));
         }
         return POOL.get(code);
     }
 
     /** Used by the pooler. */
-    private static int code(MetricKey key, MetricOption[] options) {
+    private static int code(MetricKey key, MetricVersion version) {
         int result = key.hashCode();
-        result = 31 * result + Arrays.hashCode(options);
+        result = 31 * result + version.hashCode();
         return result;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ParameterizedMetricKey{" +
+            "key=" + key +
+            ", options=" + version +
+            '}';
     }
 
     @Override
@@ -60,22 +70,13 @@ public class ParameterizedMetricKey {
         if (!key.equals(that.key)) {
             return false;
         }
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(options, that.options);
+        return version.equals(that.version);
     }
 
     @Override
     public int hashCode() {
         int result = key.hashCode();
-        result = 31 * result + Arrays.hashCode(options);
+        result = 31 * result + version.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ParameterizedMetricKey{"
-            + "key=" + key
-            + ", options=" + Arrays.toString(options)
-            + '}';
     }
 }

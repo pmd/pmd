@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
-import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.Option;
+import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.Version;
 
 /**
  * This version calculates the cyclomatic complexity of operations by taking into account the number of paths of the
@@ -19,6 +19,6 @@ public class CyclomaticComplexityRule extends StdCyclomaticComplexityRule {
 
     public CyclomaticComplexityRule() {
         super();
-        metricOption = Option.COUNT_EXPRESSION_PATHS;
+        metricOption = Version.COUNT_EXPRESSION_PATHS;
     }
 }

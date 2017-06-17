@@ -7,15 +7,8 @@ package net.sourceforge.pmd.lang.java.oom;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.keys.ClassMetric;
-import net.sourceforge.pmd.lang.java.oom.keys.Metric.Option;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricKey;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
-import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
+import net.sourceforge.pmd.lang.java.oom.interfaces.Metric.Version;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
 
 
 /**
@@ -36,7 +29,7 @@ public final class Metrics {
      *
      * @return The top level package stats.
      */
-    static PackageStats getTopLevelPackageStats() {
+    /* default */ static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 
@@ -50,7 +43,7 @@ public final class Metrics {
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
         // TODO:cf think about caching
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, Option.STANDARD);
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, Version.STANDARD);
     }
 
     /**
@@ -63,66 +56,18 @@ public final class Metrics {
      */
     public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
         // TODO:cf think about caching
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, Option.STANDARD);
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, Version.STANDARD);
     }
 
-    public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, MetricOption option) {
-        MetricOption safeOption = (option == null) ? Option.STANDARD : option;
+    public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, MetricVersion option) {
+        MetricVersion safeOption = (option == null) ? Version.STANDARD : option;
 
         return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption);
     }
 
-    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricOption option) {
-        MetricOption safeOption = (option == null) ? Option.STANDARD : option;
+    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion option) {
+        MetricVersion safeOption = (option == null) ? Version.STANDARD : option;
 
         return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption);
     }
-
-    /**
-     * Keys identifying class metrics.
-     */
-    public enum ClassMetricKey implements MetricKey {
-        /** Access to Foreign Data. */
-        ATFD(new AtfdMetric()),
-        /** Weighed Method Count. */
-        WMC(new WmcMetric()),
-        /** Cyclometric complexity. */
-        CYCLO(new CycloMetric());
-
-
-        private final ClassMetric calculator;
-
-        ClassMetricKey(ClassMetric m) {
-            calculator = m;
-        }
-
-        /** Returns the object used to calculate the metric. @return The calculator. */
-        ClassMetric getCalculator() {
-            return calculator;
-        }
-    }
-
-    /**
-     * Keys identifying operation metrics.
-     */
-    public enum OperationMetricKey implements MetricKey {
-
-        /** Access to Foreign Data. */ // TODO:cf add short description here for javadoc hints
-        ATFD(new AtfdMetric()),
-        /** Cyclometric complexity. */
-        CYCLO(new CycloMetric()),
-        NCSS(new NcssMetric());
-
-        private final OperationMetric calculator;
-
-        OperationMetricKey(OperationMetric m) {
-            calculator = m;
-        }
-
-        /** Returns the object used to calculate the metric. @return The calculator. */
-        OperationMetric getCalculator() {
-            return calculator;
-        }
-    }
-
 }

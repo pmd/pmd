@@ -10,10 +10,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
-import net.sourceforge.pmd.lang.java.oom.keys.ClassMetric;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
-import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.interfaces.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
@@ -26,7 +25,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
 public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption option) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
         if (!isSupported(node)) {
             return Double.NaN;
         }
@@ -38,7 +37,7 @@ public class AtfdMetric extends AbstractMetric implements ClassMetric, Operation
         List<QualifiedName> callQNames = findAllCalls(node);
         int foreignCalls = 0;
         for (QualifiedName name : callQNames) {
-            if (holder.hasMatchingSig(name, targetOps)) {
+            if (getTopLevelPackageStats().hasMatchingSig(name, targetOps)) {
                 foreignCalls++;
             }
         }
@@ -47,7 +46,7 @@ public class AtfdMetric extends AbstractMetric implements ClassMetric, Operation
     }
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
         // TODO
         return 0;
     }

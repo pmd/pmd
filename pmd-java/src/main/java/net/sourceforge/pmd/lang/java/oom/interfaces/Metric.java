@@ -2,17 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.keys;
+package net.sourceforge.pmd.lang.java.oom.interfaces;
 
 /**
- * Umbrella marker interface.
+ * Umbrella marker interface for metrics.
  *
  * @author Clément Fournier
  */
 public interface Metric {
 
-    /** Default metric option. */
-    enum Option implements MetricOption {
+    /** Default metric version. */
+    enum Version implements MetricVersion {
         /** Standard option, used as a default. */
         STANDARD
     }

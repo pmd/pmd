@@ -11,17 +11,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.keys.ClassMetric;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
-import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
-import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.interfaces.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloOperationVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathAwareOperationVisitor;
 
 /**
  * McCabe's Cyclomatic Complexity. Number of independent paths in a block of code. It is calculated by counting decision
- * points (control flow statements) in the block. [1]
+ * points (control flow statements) in the block. [1] Doesn't support abstract methods.
  *
  * <p>Standard rules to calculate CYCLO: +1 for every control flow statement. The independent paths of boolean
  * expressions are not counted. Switch cases count as one, but not the switch itself ---the point is that a switch
@@ -40,15 +39,15 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathAwareOperationVi
 public class CycloMetric extends AbstractClassMetric implements OperationMetric, ClassMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option) {
-        return sumMetricOverOperations(node, holder, OperationMetricKey.CYCLO, false);
+    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+        return sumMetricOverOperations(node, getTopLevelPackageStats(), OperationMetricKey.CYCLO, false);
     }
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption option) {
+    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
         CycloOperationVisitor visitor;
-        if (option.equals(Option.COUNT_SWITCH_STATEMENTS)) {
+        if (version.equals(Version.COUNT_SWITCH_STATEMENTS)) {
             visitor = new CycloOperationVisitor() {
                 @Override
                 public Object visit(ASTSwitchStatement node, Object data) {
@@ -57,7 +56,7 @@ public class CycloMetric extends AbstractClassMetric implements OperationMetric,
                     return data;
                 }
             };
-        } else if (option.equals(Option.COUNT_EXPRESSION_PATHS)) {
+        } else if (version.equals(Version.COUNT_EXPRESSION_PATHS)) {
             visitor = new CycloPathAwareOperationVisitor();
         } else {
             visitor = new CycloOperationVisitor();
@@ -67,8 +66,8 @@ public class CycloMetric extends AbstractClassMetric implements OperationMetric,
         return (double) cyclo.getValue();
     }
 
-    /** Options for CYCLO. */
-    public enum Option implements MetricOption {
+    /** Variants of CYCLO. */
+    public enum Version implements MetricVersion {
         /** Switch statements are counted as 1. */
         COUNT_SWITCH_STATEMENTS,
         /** Count the paths in boolean expressions as decision points. */

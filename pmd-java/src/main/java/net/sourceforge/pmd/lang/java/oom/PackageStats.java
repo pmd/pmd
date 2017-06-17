@@ -10,7 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
+import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 
@@ -142,8 +142,8 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                   MetricOption options) {
+    double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                   MetricVersion options) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
@@ -160,8 +160,8 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
-                   MetricOption options) {
+    double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
+                   MetricVersion options) {
         QualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
 
