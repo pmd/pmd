@@ -55,18 +55,6 @@ public class CPPTokenizerTest {
     }
 
     @Test
-    public void testContinuationIntraToken() {
-        Tokens tokens = parse(TEST5);
-        assertEquals(7, tokens.size());
-    }
-
-    @Test
-    public void testContinuationInterToken() {
-        Tokens tokens = parse(TEST6);
-        assertEquals(17, tokens.size());
-    }
-
-    @Test
     public void testTokenizerWithSkipBlocks() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"));
         Tokens tokens = parse(test, true);
@@ -161,14 +149,6 @@ public class CPPTokenizerTest {
     private static final String TEST3 = " void main() { int $x = 42; }";
 
     private static final String TEST4 = " void main() { char x = L'a'; }";
-
-    private static final String TEST5 = "v\\" + PMD.EOL + "o\\" + PMD.EOL + "i\\" + PMD.EOL + "d\\" + PMD.EOL + " \\"
-            + PMD.EOL + "m\\" + PMD.EOL + "a\\" + PMD.EOL + "i\\" + PMD.EOL + "n\\" + PMD.EOL + "(\\" + PMD.EOL + ")\\"
-            + PMD.EOL + " \\" + PMD.EOL + "{\\" + PMD.EOL + " \\" + PMD.EOL + "}\\" + PMD.EOL;
-
-    private static final String TEST6 = "#include <iostream>" + PMD.EOL + PMD.EOL + "int main()" + PMD.EOL + "{"
-            + PMD.EOL + "   std::cout << \"Hello, \" \\" + PMD.EOL + "                \"world!\\n\";" + PMD.EOL
-            + "   return 0;" + PMD.EOL + "}";
 
     private static final String TEST7 = "asm void eSPI_boot()" + PMD.EOL + "{" + PMD.EOL + "  // setup stack pointer"
             + PMD.EOL + "  lis r1, _stack_addr@h" + PMD.EOL + "  ori r1, r1, _stack_addr@l" + PMD.EOL + "}";

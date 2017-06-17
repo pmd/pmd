@@ -23,7 +23,7 @@ public class CppTokenManager implements TokenManager {
      *            the source code
      */
     public CppTokenManager(Reader source) {
-        tokenManager = new CppParserTokenManager(new SimpleCharStream(new ContinuationReader(source)));
+        tokenManager = new CppParserTokenManager(new SimpleCharStream(source));
     }
 
     public Object getNextToken() {
