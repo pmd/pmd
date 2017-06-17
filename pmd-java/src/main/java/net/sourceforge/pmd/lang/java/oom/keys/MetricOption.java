@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom;
+package net.sourceforge.pmd.lang.java.oom.keys;
 
 /**
  * Option that can be passed to a metric. Options should be defined in a class or enum nested inside the implementation

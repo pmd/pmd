@@ -2,9 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom;
+package net.sourceforge.pmd.lang.java.oom.keys;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.oom.PackageStats;
+import net.sourceforge.pmd.lang.java.oom.keys.Metric;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
 
 /**
  * Metric that can be computed on a class node.

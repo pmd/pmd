@@ -7,7 +7,11 @@ package net.sourceforge.pmd.lang.java.oom;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.Metric.Option;
+import net.sourceforge.pmd.lang.java.oom.keys.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.keys.Metric.Option;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricKey;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
+import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
@@ -119,17 +123,4 @@ public final class Metrics {
         }
     }
 
-    /**
-     * Key identifying a metric.
-     */
-    public interface MetricKey {
-
-        /**
-         * Returns the name of the metric.
-         *
-         * @return The name of the metric.
-         */
-        String name();
-
-    }
 }

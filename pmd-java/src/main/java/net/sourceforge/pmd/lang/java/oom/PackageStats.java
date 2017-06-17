@@ -10,6 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 

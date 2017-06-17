@@ -13,6 +13,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.keys.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
@@ -63,7 +65,7 @@ class ClassStats {
      *
      * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is unset.
      */
-    ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
+     /* default */ ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
         if (createIfNotFound && !nestedClasses.containsKey(className)) {
             nestedClasses.put(className, new ClassStats());
         }
@@ -76,7 +78,7 @@ class ClassStats {
      * @param name The name of the operation
      * @param sig  The signature of the operation
      */
-    void addOperation(String name, OperationSignature sig) {
+     /* default */ void addOperation(String name, OperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashMap<String, OperationStats>());
         }
@@ -86,10 +88,10 @@ class ClassStats {
     /**
      * Adds a field to the class.
      *
-     * @param name The qualified name of the field
+     * @param name The name of the field
      * @param sig  The signature of the field
      */
-    void addField(String name, FieldSignature sig) {
+     /* default */ void addField(String name, FieldSignature sig) {
         if (!fields.containsKey(sig)) {
             fields.put(sig, new HashSet<String>());
         }
@@ -106,7 +108,7 @@ class ClassStats {
      * @return True if the class declares an operation by the name given which is covered by the signature mask, false
      * otherwise.
      */
-    boolean hasMatchingSig(String name, OperationSigMask mask) {
+     /* default */ boolean hasMatchingSig(String name, OperationSigMask mask) {
         // Indexing on signatures optimises this type of request
         for (OperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
@@ -122,13 +124,13 @@ class ClassStats {
      * Checks whether the class declares a field by the name given which is covered by the
      * signature mask.
      *
-     * @param name The name of the operation to look for
+     * @param name The name of the field to look for
      * @param mask The mask covering accepted signatures
      *
      * @return True if the class declares a field by the name given which is covered by the signature mask, false
      * otherwise.
      */
-    boolean hasMatchingSig(String name, FieldSigMask mask) {
+     /* default */ boolean hasMatchingSig(String name, FieldSigMask mask) {
         for (FieldSignature sig : fields.keySet()) {
             if (mask.covers(sig)) {
                 if (fields.get(sig).contains(name)) {
@@ -150,9 +152,8 @@ class ClassStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-
-    double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name, boolean force,
-                   MetricOption option) {
+     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
+                                  boolean force, MetricOption option) {
         Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
         // TODO:cf the operation signature will be built many times, we might as well store it in the node
 
@@ -165,16 +166,16 @@ class ClassStats {
     }
 
     /**
-     * Computes the value of a metric for an operation.
+     * Computes the value of a metric for a class.
      *
-     * @param key   The operation metric for which to find a memoized result.
-     * @param node  The AST node of the operation.
+     * @param key   The class metric for which to find a memoized result.
+     * @param node  The AST node of the class.
      * @param force Force the recomputation. If unset, we'll first check for a memoized result.
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                   MetricOption options) {
+     /* default */ double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                                  MetricOption options) {
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, new MetricOption[] {options});
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
         Double prev = memo.get(paramKey);

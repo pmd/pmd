@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.ClassMetric;
-import net.sourceforge.pmd.lang.java.oom.MetricOption;
+import net.sourceforge.pmd.lang.java.oom.keys.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.PackageStats;
 

@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.oom.Metrics.MetricKey;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricKey;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
 
 /**
  * Represents a key parameterized with its options. Used to index memoization maps.

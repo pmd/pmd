@@ -7,11 +7,9 @@ package net.sourceforge.pmd.lang.java.oom;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.Metric.Option;
-import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.keys.Metric;
 
 
 /**

@@ -32,8 +32,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.MetricOption;
-import net.sourceforge.pmd.lang.java.oom.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
+import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.PackageStats;
 
 /**

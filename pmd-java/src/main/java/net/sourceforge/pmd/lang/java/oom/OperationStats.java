@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
+import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
 
 /**
  * Statistics for an operation. Keeps a map of all memoized metrics results.

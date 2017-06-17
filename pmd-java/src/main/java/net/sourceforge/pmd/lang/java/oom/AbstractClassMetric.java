@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.keys.ClassMetric;
 
 /**
  * @author Clément Fournier
