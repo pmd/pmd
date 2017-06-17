@@ -67,7 +67,7 @@ public class Foo {
         <description><![CDATA[
 long method
      ]]></description>
-        <rule-property name="minimum">13</rule-property>
+        <rule-property name="minimum">11</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="long method"/>
     </test-code>

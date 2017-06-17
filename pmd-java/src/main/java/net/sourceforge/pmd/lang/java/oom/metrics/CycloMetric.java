@@ -24,8 +24,8 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathAwareOperationVi
  * points (control flow statements) in the block. [1]
  *
  * <p>Standard rules to calculate CYCLO: +1 for every control flow statement. The independent paths of boolean
- * expressions are not counted. Switch cases count as one, but not the switch itself ---the point is that switch should
- * have the same complexity value as the equivalent series of {@code if} statements.
+ * expressions are not counted. Switch cases count as one, but not the switch itself ---the point is that a switch
+ * should have the same complexity value as the equivalent series of {@code if} statements.
  *
  * <p>{@code COUNT_SWITCH_STATEMENTS} option: Switch statements count as 1 too.
  *

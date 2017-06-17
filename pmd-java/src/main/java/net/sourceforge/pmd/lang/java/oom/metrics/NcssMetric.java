@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -32,12 +33,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
+import net.sourceforge.pmd.lang.java.oom.PackageStats;
 import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.PackageStats;
 
 /**
- * Non Commenting Source Statements.
+ * Non Commenting Source Statements. 
  *
  * @author Clément Fournier
  * @see LocMetric
@@ -45,15 +46,14 @@ import net.sourceforge.pmd.lang.java.oom.PackageStats;
  */
 public class NcssMetric extends AbstractClassMetric implements OperationMetric {
 
-
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption option) {
-        return ((MutableInt) node.jjtAccept(new NcssCounter(), new MutableInt(1))).getValue();
+    public double computeFor(ASTClassOrInterfaceDeclaration node, PackageStats holder, MetricOption options) {
+        return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(1))).getValue();
     }
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption option) {
-        return ((MutableInt) node.jjtAccept(new NcssCounter(), new MutableInt(1))).getValue();
+    public double computeFor(ASTMethodOrConstructorDeclaration node, PackageStats holder, MetricOption options) {
+        return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(1))).getValue();
     }
 
     /**
@@ -61,7 +61,7 @@ public class NcssMetric extends AbstractClassMetric implements OperationMetric {
      *
      * @author Clément Fournier
      */
-    static class NcssCounter extends JavaParserVisitorAdapter {
+    static class NcssVisitor extends JavaParserVisitorAdapter {
 
         @Override
         public Object visit(ASTImportDeclaration node, Object data) {
@@ -95,7 +95,11 @@ public class NcssMetric extends AbstractClassMetric implements OperationMetric {
 
         @Override
         public Object visit(ASTLocalVariableDeclaration node, Object data) {
-            ((MutableInt) data).increment();
+
+            // doesn't count variable declared inside a for initializer
+            if (!(node.jjtGetParent() instanceof ASTForInit)) {
+                ((MutableInt) data).increment();
+            }
             return data;
         }
 
@@ -204,7 +208,5 @@ public class NcssMetric extends AbstractClassMetric implements OperationMetric {
             ((MutableInt) data).increment();
             return super.visit(node, data);
         }
-
-
     }
 }

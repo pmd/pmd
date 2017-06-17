@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.oom.keys.MetricOption;
 import net.sourceforge.pmd.lang.java.oom.keys.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
 
 
@@ -109,7 +110,8 @@ public final class Metrics {
         /** Access to Foreign Data. */ // TODO:cf add short description here for javadoc hints
         ATFD(new AtfdMetric()),
         /** Cyclometric complexity. */
-        CYCLO(new CycloMetric());
+        CYCLO(new CycloMetric()),
+        NCSS(new NcssMetric());
 
         private final OperationMetric calculator;
 
