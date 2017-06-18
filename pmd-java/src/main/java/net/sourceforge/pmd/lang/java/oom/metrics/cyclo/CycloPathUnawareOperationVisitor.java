@@ -19,9 +19,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
- * Visitor helping to calculate CYCLO. It visits decision points in the AST and increments a counter in its data Object.
+ * Visitor calculating cyclo without counting boolean operators.
+ *
+ * @author Clément Fournier
+ * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
  */
-public class CycloOperationVisitor extends JavaParserVisitorAdapter {
+public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter implements CycloVisitor {
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
@@ -31,10 +34,10 @@ public class CycloOperationVisitor extends JavaParserVisitorAdapter {
         for (int n = 0; n < lastIndex; n++) {
             Node childNode = node.jjtGetChild(n);
             if (childNode instanceof ASTSwitchLabel) {
-                // default is generally not considered a decision (same as "else")
+                // default is not considered a decision (same as "else")
                 ASTSwitchLabel sl = (ASTSwitchLabel) childNode;
                 if (!sl.isDefault()) {
-                    childNode = node.jjtGetChild(n + 1);
+                    childNode = node.jjtGetChild(n + 1);    // check the label is not empty
                     if (childNode instanceof ASTBlockStatement) {
                         ((MutableInt) data).increment();
                     }

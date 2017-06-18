@@ -30,7 +30,7 @@ public final class PackageStats {
     /**
      * Default constructor.
      */
-    PackageStats() {
+    /* default */ PackageStats() {
 
     }
 
@@ -44,7 +44,7 @@ public final class PackageStats {
      *
      * @return The new ClassStats, or the one that was found. Can return null only if createIfNotFound is unset.
      */
-    ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
+    /* default */ ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
         PackageStats container = getSubPackage(qname, createIfNotFound);
 
         if (container == null) {
@@ -142,12 +142,12 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                   MetricVersion options) {
+    /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                                 MetricVersion version) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, force, options);
+                                 : container.compute(key, node, force, version);
     }
 
 
@@ -160,12 +160,12 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
-                   MetricVersion options) {
+    /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
+                                 MetricVersion version) {
         QualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, qname.getOperation(), force, options);
+                                 : container.compute(key, node, qname.getOperation(), force, version);
     }
 }

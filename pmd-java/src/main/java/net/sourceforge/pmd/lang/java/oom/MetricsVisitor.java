@@ -50,5 +50,4 @@ public class MetricsVisitor extends JavaParserVisitorAdapter {
         stack.peek().addField(node.getVariableName(), FieldSignature.buildFor(node));
         return data; // end recursion
     }
-
 }

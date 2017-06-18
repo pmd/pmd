@@ -52,13 +52,18 @@ public class StatisticalRuleHelper {
         double deviation;
         double minimum = 0.0;
 
-        if (rule.getProperty(SIGMA_DESCRIPTOR) != null) { // TODO - need to come up with a good default value
+        if (rule.getProperty(SIGMA_DESCRIPTOR) != null) { // TODO - need to come
+            // up with a good
+            // default value
             deviation = getStdDev();
             double sigma = rule.getProperty(SIGMA_DESCRIPTOR);
             minimum = getMean() + (sigma * deviation);
         }
 
-        if (rule.getProperty(MINIMUM_DESCRIPTOR) != null) { // TODO - need to come up with a good default value
+        if (rule.getProperty(MINIMUM_DESCRIPTOR) != null) { // TODO - need to
+            // come up with a
+            // good default
+            // value
             double mMin = rule.getProperty(MINIMUM_DESCRIPTOR);
             if (mMin > minimum) {
                 minimum = mMin;
@@ -67,7 +72,10 @@ public class StatisticalRuleHelper {
 
         SortedSet<DataPoint> newPoints = applyMinimumValue(dataPoints, minimum);
 
-        if (rule.getProperty(TOP_SCORE_DESCRIPTOR) != null) { // TODO - need to come up with a good default value
+        if (rule.getProperty(TOP_SCORE_DESCRIPTOR) != null) { // TODO - need to
+            // come up with a
+            // good default
+            // value
             int topScore = rule.getProperty(TOP_SCORE_DESCRIPTOR);
             if (newPoints.size() >= topScore) {
                 newPoints = applyTopScore(newPoints, topScore);

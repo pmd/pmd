@@ -17,17 +17,17 @@ import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
  *
  * @author Clément Fournier
  */
-class OperationStats {
+/* default */ class OperationStats {
 
     private final String name;
     private final Map<ParameterizedMetricKey, Double> memo = new HashMap<>();
 
 
-    OperationStats(String name) {
+    /* default */ OperationStats(String name) {
         this.name = name;
     }
 
-    String getName() {
+    /* default */ String getName() {
         return name;
     }
 
@@ -40,7 +40,8 @@ class OperationStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force, MetricVersion version) {
+    /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
+                                 MetricVersion version) {
 
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         Double prev = memo.get(paramKey);

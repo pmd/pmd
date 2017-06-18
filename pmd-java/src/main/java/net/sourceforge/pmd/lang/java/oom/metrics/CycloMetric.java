@@ -8,28 +8,35 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
 import net.sourceforge.pmd.lang.java.oom.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.interfaces.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloOperationVisitor;
-import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathAwareOperationVisitor;
+import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathUnawareOperationVisitor;
+import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloVisitor;
+import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
 
 /**
- * McCabe's Cyclomatic Complexity. Number of independent paths in a block of code. It is calculated by counting decision
- * points (control flow statements) in the block. [1] Doesn't support abstract methods.
+ * McCabe's Cyclomatic Complexity. Number of independent paths through a block of code. Formally, given that the control
+ * flow graph of a method has n edges, m nodes and p connected components, the Cyclomatic complexity of the method is
+ * given by CYCLO = n - m + 2p. In practice it can be calculated by counting control flow statements following the
+ * standard rules given below.
  *
- * <p>Standard rules to calculate CYCLO: +1 for every control flow statement. The independent paths of boolean
- * expressions are not counted. Switch cases count as one, but not the switch itself ---the point is that a switch
- * should have the same complexity value as the equivalent series of {@code if} statements.
+ * <p>The standard version of the metric complies with McCabe's original definition:
  *
- * <p>{@code COUNT_SWITCH_STATEMENTS} option: Switch statements count as 1 too.
+ * <ul>
+ * <li>+1 for every control flow statement ({@code if, case, catch, finally, do, while, for, break, continue}) and
+ * conditional expression ({@code ? : }). Notice switch cases count as one, but not the switch itself: the point is
+ * that a switch should have the same complexity value as the equivalent series of {@code if} statements.
+ * <li>{@code else} and {@code default} don't count;
+ * <li>+1 for every boolean operator in the guard condition of a control flow statement. That's because Java has
+ * short-circuit evaluation semantics for boolean operators, which makes every boolean operator kind of a control flow
+ * statement in itself.
+ * </ul>
  *
- * <p>{@code COUNT_EXPRESSION_PATHS} option: Boolean expressions in control flow statements are broken down following
- * the number of boolean operators they use. Each different path counts as a decision point.
+ * <p> Version {@link Version#DO_NOT_COUNT_EXPRESSION_PATHS}: Boolean operators are not counted, which means that empty
+ * fall-through cases in {@code switch} statements are not counted as well.
  *
  * <p>[1] Lanza. Object-Oriented Metrics in Practice.
  *
@@ -46,21 +53,9 @@ public class CycloMetric extends AbstractClassMetric implements OperationMetric,
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
-        CycloOperationVisitor visitor;
-        if (version.equals(Version.COUNT_SWITCH_STATEMENTS)) {
-            visitor = new CycloOperationVisitor() {
-                @Override
-                public Object visit(ASTSwitchStatement node, Object data) {
-                    ((MutableInt) data).increment();
-                    visit((JavaNode) node, data);
-                    return data;
-                }
-            };
-        } else if (version.equals(Version.COUNT_EXPRESSION_PATHS)) {
-            visitor = new CycloPathAwareOperationVisitor();
-        } else {
-            visitor = new CycloOperationVisitor();
-        }
+        CycloVisitor visitor = (Version.DO_NOT_COUNT_EXPRESSION_PATHS.equals(version))
+                               ? new CycloPathUnawareOperationVisitor()
+                               : new StandardCycloVisitor();
 
         MutableInt cyclo = (MutableInt) node.jjtAccept(visitor, new MutableInt(1));
         return (double) cyclo.getValue();
@@ -68,9 +63,8 @@ public class CycloMetric extends AbstractClassMetric implements OperationMetric,
 
     /** Variants of CYCLO. */
     public enum Version implements MetricVersion {
-        /** Switch statements are counted as 1. */
-        COUNT_SWITCH_STATEMENTS,
-        /** Count the paths in boolean expressions as decision points. */
-        COUNT_EXPRESSION_PATHS
+        /** Do not count the paths in boolean expressions as decision points. */
+        DO_NOT_COUNT_EXPRESSION_PATHS
     }
+
 }

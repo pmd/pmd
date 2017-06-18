@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
  *
  * @author Clément Fournier
  */
-class ClassStats {
+/* default */ class ClassStats {
 
     private Map<OperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
     private Map<FieldSignature, Set<String>> fields = new HashMap<>();
@@ -64,7 +64,7 @@ class ClassStats {
      *
      * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is unset.
      */
-     /* default */ ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
+    /* default */ ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
         if (createIfNotFound && !nestedClasses.containsKey(className)) {
             nestedClasses.put(className, new ClassStats());
         }
@@ -77,7 +77,7 @@ class ClassStats {
      * @param name The name of the operation
      * @param sig  The signature of the operation
      */
-     /* default */ void addOperation(String name, OperationSignature sig) {
+    /* default */ void addOperation(String name, OperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashMap<String, OperationStats>());
         }
@@ -90,7 +90,7 @@ class ClassStats {
      * @param name The name of the field
      * @param sig  The signature of the field
      */
-     /* default */ void addField(String name, FieldSignature sig) {
+    /* default */ void addField(String name, FieldSignature sig) {
         if (!fields.containsKey(sig)) {
             fields.put(sig, new HashSet<String>());
         }
@@ -107,7 +107,7 @@ class ClassStats {
      * @return True if the class declares an operation by the name given which is covered by the signature mask, false
      * otherwise.
      */
-     /* default */ boolean hasMatchingSig(String name, OperationSigMask mask) {
+    /* default */ boolean hasMatchingSig(String name, OperationSigMask mask) {
         // Indexing on signatures optimises this type of request
         for (OperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
@@ -129,7 +129,7 @@ class ClassStats {
      * @return True if the class declares a field by the name given which is covered by the signature mask, false
      * otherwise.
      */
-     /* default */ boolean hasMatchingSig(String name, FieldSigMask mask) {
+    /* default */ boolean hasMatchingSig(String name, FieldSigMask mask) {
         for (FieldSignature sig : fields.keySet()) {
             if (mask.covers(sig)) {
                 if (fields.get(sig).contains(name)) {
@@ -151,7 +151,7 @@ class ClassStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
+    /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
                                   boolean force, MetricVersion version) {
         Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
         // TODO:cf the operation signature will be built many times, we might as well store it in the node
@@ -173,7 +173,7 @@ class ClassStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-     /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+    /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
                                   MetricVersion version) {
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.

@@ -52,5 +52,4 @@ public abstract class AbstractMetric implements Metric {
     protected boolean isSupported(ASTMethodOrConstructorDeclaration node) {
         return isAbstractHandler || !node.isAbstract();
     }
-
 }

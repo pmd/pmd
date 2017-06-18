@@ -4,55 +4,78 @@
 
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.interfaces.Metric.Version;
-import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.Metrics;
-import net.sourceforge.pmd.lang.java.oom.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
- * Implements the standard cyclomatic complexity rule.
- *
- * <p>Standard rules: +1 for each decision point, including case statements but not
+ * Implements the standard cyclomatic complexity rule
+ * <p>
+ * Standard rules: +1 for each decision point, including case statements but not
  * including boolean operators unlike CyclomaticComplexityRule.
- *
+ * 
  * @author Alan Hohn, based on work by Donald A. Leckie
- * @version Revised June 12th, 2017 (Clément Fournier)
- * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
+ * 
  * @since June 18, 2014
  */
 public class StdCyclomaticComplexityRule extends AbstractJavaRule {
 
-    public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR
-        = new IntegerProperty("reportLevel",
-                              "Cyclomatic Complexity reporting threshold",
-                              1, 30, 10, 1.0f);
+    public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty("reportLevel",
+            "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
 
-    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR
-        = new BooleanProperty("showClassesComplexity",
-                              "Add class average violations to the report",
-                              true, 2.0f);
+    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
+            "showClassesComplexity", "Add class average violations to the report", true, 2.0f);
 
-    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR
-        = new BooleanProperty("showMethodsComplexity",
-                              "Add method average violations to the report",
-                              true, 3.0f);
+    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
+            "showMethodsComplexity", "Add method average violations to the report", true, 3.0f);
 
-    protected int reportLevel;
-    protected boolean showClassesComplexity = true;
-    protected boolean showMethodsComplexity = true;
-    protected MetricVersion metricOption = Version.STANDARD;
-    Stack<ClassEntry> entryStack = new Stack<>();
+    private int reportLevel;
+    private boolean showClassesComplexity = true;
+    private boolean showMethodsComplexity = true;
+
+    protected static class Entry {
+        private Node node;
+        private int decisionPoints = 1;
+        public int highestDecisionPoints;
+        public int methodCount;
+
+        private Entry(Node node) {
+            this.node = node;
+        }
+
+        public void bumpDecisionPoints() {
+            decisionPoints++;
+        }
+
+        public void bumpDecisionPoints(int size) {
+            decisionPoints += size;
+        }
+
+        public int getComplexityAverage() {
+            return (double) methodCount == 0 ? 1 : (int) Math.rint((double) decisionPoints / (double) methodCount);
+        }
+    }
+
+    protected Deque<Entry> entryStack = new ArrayDeque<>();
 
     public StdCyclomaticComplexityRule() {
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
@@ -70,38 +93,86 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-
-        entryStack.push(new ClassEntry());
+    public Object visit(ASTIfStatement node, Object data) {
+        entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
-        ClassEntry classEntry = entryStack.pop();
+        return data;
+    }
 
-        if (showClassesComplexity) {
-            if (classEntry.getCycloAverage() >= reportLevel || classEntry.maxCyclo >= reportLevel) {
-                addViolation(data, node, new String[]
-                    {"class",
-                     node.getImage(),
-                     classEntry.getCycloAverage() + " (Highest = " + classEntry.maxCyclo + ')', });
+    @Override
+    public Object visit(ASTCatchStatement node, Object data) {
+        entryStack.peek().bumpDecisionPoints();
+        super.visit(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTForStatement node, Object data) {
+        entryStack.peek().bumpDecisionPoints();
+        super.visit(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTDoStatement node, Object data) {
+        entryStack.peek().bumpDecisionPoints();
+        super.visit(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTSwitchStatement node, Object data) {
+        Entry entry = entryStack.peek();
+
+        int childCount = node.jjtGetNumChildren();
+        int lastIndex = childCount - 1;
+        for (int n = 0; n < lastIndex; n++) {
+            Node childNode = node.jjtGetChild(n);
+            if (childNode instanceof ASTSwitchLabel) {
+                // default is generally not considered a decision (same as
+                // "else")
+                ASTSwitchLabel sl = (ASTSwitchLabel) childNode;
+                if (!sl.isDefault()) {
+                    childNode = node.jjtGetChild(n + 1);
+                    if (childNode instanceof ASTBlockStatement) {
+                        entry.bumpDecisionPoints();
+                    }
+                }
             }
+        }
+        super.visit(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTWhileStatement node, Object data) {
+        entryStack.peek().bumpDecisionPoints();
+        super.visit(node, data);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTConditionalExpression node, Object data) {
+        if (node.isTernary()) {
+            entryStack.peek().bumpDecisionPoints();
+            super.visit(node, data);
         }
         return data;
     }
 
     @Override
-    public Object visit(ASTEnumDeclaration node, Object data) {
-        entryStack.push(new ClassEntry());
-        super.visit(node, data);
-        ClassEntry classEntry = entryStack.pop();
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
 
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry classEntry = entryStack.pop();
         if (showClassesComplexity) {
-            if (classEntry.getCycloAverage() >= reportLevel || classEntry.maxCyclo >= reportLevel) {
-                addViolation(data, node, new String[]
-                    {"class",
-                     node.getImage(),
-                     classEntry.getCycloAverage() + " (Highest = " + classEntry.maxCyclo + ')', });
+            if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
+                addViolation(data, node, new String[] { "class", node.getImage(),
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
             }
         }
         return data;
@@ -109,43 +180,67 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        return visit((ASTMethodOrConstructorDeclaration) node, data);
-    }
-
-    @Override
-    public Object visit(ASTConstructorDeclaration node, Object data) {
-        return visit((ASTMethodOrConstructorDeclaration) node, data);
-    }
-
-
-    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry methodEntry = entryStack.pop();
         if (!isSuppressed(node)) {
-            ClassEntry classEntry = entryStack.peek();
+            int methodDecisionPoints = methodEntry.decisionPoints;
+            Entry classEntry = entryStack.peek();
+            classEntry.methodCount++;
+            classEntry.bumpDecisionPoints(methodDecisionPoints);
 
-            int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, metricOption);
-            classEntry.numMethods++;
-            classEntry.totalCyclo += cyclo;
-            if (cyclo > classEntry.maxCyclo) {
-                classEntry.maxCyclo = cyclo;
+            if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+                classEntry.highestDecisionPoints = methodDecisionPoints;
             }
 
-            if (showMethodsComplexity && cyclo >= reportLevel) {
-                addViolation(data, node, new String[]
-                    {node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                     node.getQualifiedName().getOperation(),
-                     String.valueOf(cyclo), });
+            ASTMethodDeclarator methodDeclarator = null;
+            for (int n = 0; n < node.jjtGetNumChildren(); n++) {
+                Node childNode = node.jjtGetChild(n);
+                if (childNode instanceof ASTMethodDeclarator) {
+                    methodDeclarator = (ASTMethodDeclarator) childNode;
+                    break;
+                }
+            }
+
+            if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
+                addViolation(data, node,
+                        new String[] { "method", methodDeclarator == null ? "" : methodDeclarator.getImage(),
+                            String.valueOf(methodEntry.decisionPoints), });
             }
         }
         return data;
     }
 
-    protected static class ClassEntry {
-        int numMethods = 0;
-        int totalCyclo = 1;
-        int maxCyclo = 0;
-
-        int getCycloAverage() {
-            return (double) numMethods == 0 ? 1 : (int) Math.rint((double) totalCyclo / (double) numMethods);
+    @Override
+    public Object visit(ASTEnumDeclaration node, Object data) {
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry classEntry = entryStack.pop();
+        if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
+            addViolation(data, node, new String[] { "class", node.getImage(),
+                classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')', });
         }
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        entryStack.push(new Entry(node));
+        super.visit(node, data);
+        Entry constructorEntry = entryStack.pop();
+        if (!isSuppressed(node)) {
+            int constructorDecisionPointCount = constructorEntry.decisionPoints;
+            Entry classEntry = entryStack.peek();
+            classEntry.methodCount++;
+            classEntry.decisionPoints += constructorDecisionPointCount;
+            if (constructorDecisionPointCount > classEntry.highestDecisionPoints) {
+                classEntry.highestDecisionPoints = constructorDecisionPointCount;
+            }
+            if (showMethodsComplexity && constructorEntry.decisionPoints >= reportLevel) {
+                addViolation(data, node, new String[] { "constructor", classEntry.node.getImage(),
+                    String.valueOf(constructorDecisionPointCount), });
+            }
+        }
+        return data;
     }
 }

@@ -11,14 +11,19 @@ import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
 
 /**
+ * Calculates CYCLO following the standard definition.
+ *
  * @author Clément Fournier
+ * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
  */
-public class CycloPathAwareOperationVisitor extends CycloOperationVisitor {
+public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         super.visit(node, data);
@@ -49,10 +54,19 @@ public class CycloPathAwareOperationVisitor extends CycloOperationVisitor {
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
-        super.visit(node, data);
+        super.visit((JavaNode) node, data); // skip the superclass' treatment
 
         int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         ((MutableInt) data).add(boolCompSwitch);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabel node, Object data) {
+        if (!node.isDefault()) {
+            ((MutableInt) data).increment();
+        }
+        super.visit(node, data);
         return data;
     }
 

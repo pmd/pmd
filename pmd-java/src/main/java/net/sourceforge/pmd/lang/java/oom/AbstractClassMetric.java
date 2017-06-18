@@ -76,6 +76,4 @@ public abstract class AbstractClassMetric extends AbstractMetric implements Clas
         }
         return operations;
     }
-
-
 }

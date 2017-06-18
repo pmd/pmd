@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
  *
  * @author Clément Fournier
  */
-public class ParameterizedMetricKey {
+public final class ParameterizedMetricKey {
 
     private static final Map<Integer, ParameterizedMetricKey> POOL = new HashMap<>();
 
@@ -50,10 +50,10 @@ public class ParameterizedMetricKey {
 
     @Override
     public String toString() {
-        return "ParameterizedMetricKey{" +
-            "key=" + key +
-            ", options=" + version +
-            '}';
+        return "ParameterizedMetricKey{"
+            + "key=" + key
+            + ", options=" + version
+            + '}';
     }
 
     @Override
