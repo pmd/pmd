@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.interfaces.ClassMetric;
-import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 
 /**
  * Shares common logic across class metrics. Many class metrics actually sum the metric over the operations of

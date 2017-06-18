@@ -5,11 +5,27 @@
 package net.sourceforge.pmd.lang.java.oom.signature;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
  * Signature for an operation.
@@ -67,23 +83,110 @@ public final class OperationSignature extends Signature {
     public enum Role {
         GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC;
 
+        private static final Pattern NAME_PATTERN = Pattern.compile("(?:get|set|is|increment|decrement)\\w*");
+
+
         public static Role get(ASTMethodOrConstructorDeclaration node) {
             return node instanceof ASTConstructorDeclaration ? CONSTRUCTOR : get((ASTMethodDeclaration) node);
         }
 
-        private static boolean isGetterOrSetter(ASTMethodDeclaration node) {
-            return node.getName() != null && (node.getName().startsWith("get")
-                || node.getName().startsWith("set"));
-        }
 
         private static Role get(ASTMethodDeclaration node) {
             if (node.isStatic()) {
                 return STATIC;
             } else if (isGetterOrSetter(node)) {
-                return GETTER_OR_SETTER; // TODO:cf better getter or setter detection
+                return GETTER_OR_SETTER;
             } else {
                 return METHOD;
             }
+        }
+
+        private static boolean isGetterOrSetter(ASTMethodDeclaration node) {
+            String name = node.getName();
+            if (NAME_PATTERN.matcher(name).matches()) {
+                return true;
+            }
+
+            int length = node.getEndLine() - node.getBeginLine();
+
+            if (length > 6) {
+                return false;
+            } else if (length > 4 && node.getFirstDescendantOfType(ASTIfStatement.class) == null) {
+                return false;
+            }
+
+            ClassScope scope = node.getScope().getEnclosingScope(ClassScope.class);
+
+            // fields names mapped to their types
+            Map<String, String> fieldNames = new HashMap<>();
+
+            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> decl
+                : scope.getVariableDeclarations().entrySet()) {
+
+                ASTFieldDeclaration field = decl.getKey().getNode()
+                                                .getFirstParentOfType(ASTFieldDeclaration.class);
+
+                fieldNames.put(field.getVariableName(), field.getFirstChildOfType(ASTType.class).getTypeImage());
+            }
+
+            return isGetter(node, fieldNames) || isSetter(node, fieldNames);
+        }
+
+        /** Attempts to determine if the method is a getter. */
+        private static boolean isGetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
+            List<ASTReturnStatement> returnStatements
+                = node.getBlock().findDescendantsOfType(ASTReturnStatement.class);
+
+            for (ASTReturnStatement st : returnStatements) {
+                ASTName name = st.getFirstDescendantOfType(ASTName.class);
+                if (name == null) {
+                    continue;
+                }
+
+                if (fieldNames.containsKey(name.getImage().split("\\.")[0])) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /** Attempts to determine if the method is a setter. */
+        private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
+            Map<String, String> parameters = node.getParameterMap();
+
+            if (parameters.isEmpty()) {
+                return false;
+            }
+
+            List<ASTStatementExpression> statementExpressions
+                = node.getBlock().findDescendantsOfType(ASTStatementExpression.class);
+            Set<String> namesToCheck = new HashSet<>();
+
+            for (ASTStatementExpression st : statementExpressions) {
+                ASTName name = st.getFirstDescendantOfType(ASTName.class);
+                if (name == null) {
+                    // not an assignment, check for method
+                    ASTPrimaryExpression prim = st.getFirstChildOfType(ASTPrimaryExpression.class);
+                    ASTPrimaryPrefix prefix = prim.getFirstChildOfType(ASTPrimaryPrefix.class);
+
+                    if (prefix.usesThisModifier() || prefix.usesSuperModifier()) {
+                        namesToCheck.add(prim.getFirstChildOfType(ASTPrimarySuffix.class).getImage());
+                    } else {
+                        namesToCheck.add(prefix.getImage().split("\\.")[0]);
+                    }
+                } else {
+                    // this is a direct assignment
+                    namesToCheck.add(name.getImage().split("\\.")[0]);
+                }
+            }
+
+            for (String name : namesToCheck) {
+                if (fieldNames.containsKey(name)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

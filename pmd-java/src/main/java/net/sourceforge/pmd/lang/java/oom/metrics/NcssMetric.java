@@ -33,8 +33,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 
 /**
  * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent

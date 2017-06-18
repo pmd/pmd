@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.interfaces;
+package net.sourceforge.pmd.lang.java.oom.api;
 
 /**
  * Version of a metric. Only one version can be active on a metric. Versions should typically be defined in an enum

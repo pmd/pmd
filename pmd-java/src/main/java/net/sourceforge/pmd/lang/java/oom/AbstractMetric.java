@@ -9,7 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.interfaces.Metric;
+import net.sourceforge.pmd.lang.java.oom.api.Metric;
 
 
 /**

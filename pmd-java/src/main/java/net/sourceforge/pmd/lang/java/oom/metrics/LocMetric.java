@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 
 /**
  * Lines of Code. Equates the length in lines of code of the measured entity, counting everything including blank lines

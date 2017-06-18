@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.oom;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.oom.interfaces.Metric;
-import net.sourceforge.pmd.lang.java.oom.interfaces.MetricKey;
-import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.Metric;
+import net.sourceforge.pmd.lang.java.oom.api.MetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 
 /**
  * Represents a key parameterized with its version. Used to index memoization maps.

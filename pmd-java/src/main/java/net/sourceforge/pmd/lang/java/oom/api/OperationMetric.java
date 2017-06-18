@@ -2,16 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.interfaces;
+package net.sourceforge.pmd.lang.java.oom.api;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 
 /**
- * Metric that can be computed on a class node.
+ * Metric that can be computed on an operation.
  *
  * @author Clément Fournier
  */
-public interface ClassMetric extends Metric {
+public interface OperationMetric extends Metric {
 
     /**
      * Actually computes the value of a metric for an AST node.
@@ -21,6 +21,7 @@ public interface ClassMetric extends Metric {
      *
      * @return The value of the metric.
      */
-    double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version);
+    double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version);
+
 
 }

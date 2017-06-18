@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.interfaces;
+package net.sourceforge.pmd.lang.java.oom.api;
 
 /**
  * Umbrella marker interface for metrics.
