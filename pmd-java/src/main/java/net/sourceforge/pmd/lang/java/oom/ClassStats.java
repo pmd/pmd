@@ -13,7 +13,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.interfaces.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.interfaces.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
@@ -152,7 +154,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
-                                  boolean force, MetricVersion version) {
+                                 boolean force, MetricVersion version) {
         Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
         // TODO:cf the operation signature will be built many times, we might as well store it in the node
 
@@ -174,7 +176,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
     /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                                  MetricVersion version) {
+                                 MetricVersion version) {
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
         Double prev = memo.get(paramKey);

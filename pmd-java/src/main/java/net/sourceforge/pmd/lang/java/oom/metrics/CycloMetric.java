@@ -9,19 +9,18 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.OperationMetricKey;
-import net.sourceforge.pmd.lang.java.oom.interfaces.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathUnawareOperationVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
 
 /**
- * McCabe's Cyclomatic Complexity. Number of independent paths through a block of code. Formally, given that the control
- * flow graph of a method has n edges, m nodes and p connected components, the Cyclomatic complexity of the method is
- * given by CYCLO = n - m + 2p. In practice it can be calculated by counting control flow statements following the
- * standard rules given below.
+ * McCabe's Cyclomatic Complexity. Number of independent paths through a block of code [1, 2]. Formally, given that the
+ * control flow graph of the block has n vertices, e edges and p connected components, the Cyclomatic complexity of the
+ * block is given by {@code CYCLO = e - n + 2p} [2]. In practice it can be calculated by counting control flow
+ * statements following the standard rules given below.
  *
  * <p>The standard version of the metric complies with McCabe's original definition:
  *
@@ -35,15 +34,19 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
  * statement in itself.
  * </ul>
  *
- * <p> Version {@link Version#DO_NOT_COUNT_EXPRESSION_PATHS}: Boolean operators are not counted, which means that empty
+ * <p>Version {@link Version#DO_NOT_COUNT_EXPRESSION_PATHS}: Boolean operators are not counted, which means that empty
  * fall-through cases in {@code switch} statements are not counted as well.
  *
- * <p>[1] Lanza. Object-Oriented Metrics in Practice.
+ * <p>References:
+ * <ul>
+ * <li> [1] Lanza, Object-Oriented Metrics in Practice, 2005.
+ * <li> [2] McCabe, A Complexity Measure, in Proceedings of the 2nd ICSE (1976).
+ * </ul>
  *
  * @author Clément Fournier
  * @since June 2017
  */
-public class CycloMetric extends AbstractClassMetric implements OperationMetric, ClassMetric {
+public class CycloMetric extends AbstractClassMetric implements OperationMetric {
 
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {

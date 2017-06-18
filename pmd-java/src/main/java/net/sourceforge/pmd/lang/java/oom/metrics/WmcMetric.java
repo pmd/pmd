@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.interfaces.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetricKey;
 
 /**
  * Weighed Method Count. It is the sum of the statical complexity of all operations of a class. We use

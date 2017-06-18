@@ -2,10 +2,8 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom;
+package net.sourceforge.pmd.lang.java.oom.interfaces;
 
-import net.sourceforge.pmd.lang.java.oom.interfaces.MetricKey;
-import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
@@ -19,6 +17,7 @@ public enum OperationMetricKey implements MetricKey<OperationMetric> {
     ATFD(new AtfdMetric()),
     /** Cyclometric complexity. */
     CYCLO(new CycloMetric()),
+    /** Non Commenting Source Statements. */
     NCSS(new NcssMetric());
 
     private final OperationMetric calculator;

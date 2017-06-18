@@ -7,11 +7,12 @@ package net.sourceforge.pmd.lang.java.oom;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.java.oom.interfaces.Metric;
 import net.sourceforge.pmd.lang.java.oom.interfaces.MetricKey;
 import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
 
 /**
- * Represents a key parameterized with its options. Used to index memoization maps.
+ * Represents a key parameterized with its version. Used to index memoization maps.
  *
  * @author Clément Fournier
  */
@@ -20,18 +21,18 @@ public final class ParameterizedMetricKey {
     private static final Map<Integer, ParameterizedMetricKey> POOL = new HashMap<>();
 
     /** The metric key. */
-    public final MetricKey key;
+    public final MetricKey<? extends Metric> key;
     /** The version of the metric. */
     public final MetricVersion version;
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey key, MetricVersion version) {
+    private ParameterizedMetricKey(MetricKey<? extends Metric> key, MetricVersion version) {
         this.key = key;
         this.version = version;
     }
 
     /** Builds a parameterized metric key. */
-    public static ParameterizedMetricKey build(MetricKey key, MetricVersion version) {
+    public static ParameterizedMetricKey build(MetricKey<? extends Metric> key, MetricVersion version) {
         int code = code(key, version);
         ParameterizedMetricKey paramKey = POOL.get(code);
         if (paramKey == null) {

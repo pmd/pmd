@@ -10,6 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.interfaces.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.interfaces.OperationMetricKey;
 
 
 /**
