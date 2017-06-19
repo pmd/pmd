@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
@@ -31,7 +32,7 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
  * statement in itself.
  * </ul>
  *
- * <p>Version {@link Version#DO_NOT_COUNT_EXPRESSION_PATHS}: Boolean operators are not counted, which means that empty
+ * <p>Version {@link Version#IGNORE_BOOLEAN_PATHS}: Boolean operators are not counted, which means that empty
  * fall-through cases in {@code switch} statements are not counted as well.
  *
  * <p>References:
@@ -46,9 +47,15 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
 public class CycloMetric extends AbstractClassAndOperationMetric {
 
     @Override
+    protected double computeDefaultResultOption(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+        return 1 + averageMetricOverOperations(node, getOperationMetricKey(), version, false);
+    }
+
+
+    @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
-        CycloVisitor visitor = (Version.DO_NOT_COUNT_EXPRESSION_PATHS.equals(version))
+        CycloVisitor visitor = (Version.IGNORE_BOOLEAN_PATHS.equals(version))
                                ? new CycloPathUnawareOperationVisitor()
                                : new StandardCycloVisitor();
 
@@ -56,14 +63,14 @@ public class CycloMetric extends AbstractClassAndOperationMetric {
         return (double) cyclo.getValue();
     }
 
-    /** Variants of CYCLO. */
-    public enum Version implements MetricVersion {
-        /** Do not count the paths in boolean expressions as decision points. */
-        DO_NOT_COUNT_EXPRESSION_PATHS
-    }
-
     @Override
     public OperationMetricKey getOperationMetricKey() {
         return OperationMetricKey.CYCLO;
+    }
+
+    /** Variants of CYCLO. */
+    public enum Version implements MetricVersion {
+        /** Do not count the paths in boolean expressions as decision points. */
+        IGNORE_BOOLEAN_PATHS
     }
 }

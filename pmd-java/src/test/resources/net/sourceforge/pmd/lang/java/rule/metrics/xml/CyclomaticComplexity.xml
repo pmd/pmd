@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+
+    <code-fragment id="basic-violation">
+      <![CDATA[
+        public class Complicated {
+          public void example() {
+            int x = 0, y = 1, z = 2, t = 2;
+            boolean a = false, b = true, c = false, d = true;
+
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = 2;
+              } else {
+                x = 2;
+              }
+            } else if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            } else if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            } else {
+              switch (x) {
+              case 1:
+                x = 2;
+                break;
+
+              case 2:
+              case 3:
+                x = 2;
+                break;
+
+              default:
+                x = 2;
+                break;
+              }
+            }
+          }
+        }
+      ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Simple method</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Cyclomatic Complexity of 2 (Highest = 1).</message>
+            <message>The method 'foo()' has a Cyclomatic Complexity of 1.</message>
+        </expected-messages>
+        <code>
+          <![CDATA[
+            public class Foo {
+              public void foo() {}
+            }
+          ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>testLessComplicatedThanReportLevel</description>
+        <rule-property name="reportLevel">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code>
+          <![CDATA[
+            public class Foo {
+              public void foo() {}
+            }
+          ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Complicated method</description>
+        <rule-property name="reportLevel">10</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Complicated' has a Cyclomatic Complexity of 18 (Highest = 17).</message>
+            <message>The method 'example()' has a Cyclomatic Complexity of 17.</message>
+        </expected-messages>
+        <code-ref id="basic-violation"/>
+    </test-code>
+
+    <test-code>
+        <description>Complicated method (ignoreBooleanPath)</description>
+        <rule-property name="reportLevel">10</rule-property>
+        <rule-property name="cycloVersion">ignoreBooleanPaths</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Complicated' has a Cyclomatic Complexity of 11 (Highest = 10).</message>
+            <message>The method 'example()' has a Cyclomatic Complexity of 10.</message>
+        </expected-messages>
+        <code-ref id="basic-violation"/>
+    </test-code>
+
+    <test-code>
+        <description>Constructor</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a Cyclomatic Complexity of 2 (Highest = 1).</message>
+            <message>The constructor 'Foo()' has a Cyclomatic Complexity of 1.</message>
+        </expected-messages>
+        <code>
+          <![CDATA[
+            public class Foo {
+              public Foo() {}
+            }
+          ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Testing new parameter showClassMethods</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="basic-violation"/>
+    </test-code>
+
+    <test-code>
+        <description>Testing new parameter showMethodsMethods</description>
+        <rule-property name="showMethodsComplexity">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="basic-violation"/>
+    </test-code>
+
+    <test-code>
+        <description>Testing default value of showClassMethods and showClassesComplexity</description>
+        <expected-problems>2</expected-problems>
+        <code-ref id="basic-violation"/>
+    </test-code>
+
+    <code-fragment id="constructor-violation">
+      <![CDATA[
+        public class Test {
+          public Test() {
+            if (a == 1) {
+              if (b == 2) {
+                System.out.println("b");
+              } else if (b == 1) {
+              }
+            } else {
+            }
+          }
+        }
+      ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 1 - showMethodsComplexity=true
+        </description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="showMethodsComplexity">true</rule-property>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 2 -
+            showMethodsComplexity=false
+        </description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="showMethodsComplexity">false</rule-property>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+
+    <test-code reinitializeRule="true">
+        <description>#985 Suppressed methods shouldn't affect avg CyclomaticComplexity</description>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code>
+          <![CDATA[
+            public class Test {
+              @SuppressWarnings("PMD.CyclomaticComplexity")
+              public Test() {
+                if (a == 1) {
+                  if (b == 2) {
+                    System.out.println("b");
+                  } else if (b == 1) {}
+                } else {}
+              }
+            }
+          ]]>
+        </code>
+    </test-code>
+
+    <!-- TESTS FOR THE NEW IMPLEMENTATION -->
+
+    <code-fragment id="fallthroughSwitch">
+      <![CDATA[
+        class Foo {
+          void foo(){}
+          void bar(){}
+          void switchCase() {
+            int x=0;
+            switch (x) {
+            case 1:
+            case 2: foo(); break;
+            default: bar(); break;
+            }
+          }
+        }
+      ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count empty switch labels too</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="showMethodsComplexity">true</rule-property>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'switchCase()' has a Cyclomatic Complexity of 3.</message>
+        </expected-messages>
+        <code-ref id="fallthroughSwitch"/>
+    </test-code>
+
+    <test-code>
+        <description>IgnoreBooleanPaths Cyclo should not count empty switch labels</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="showMethodsComplexity">true</rule-property>
+        <rule-property name="cycloVersion">ignoreBooleanPaths</rule-property>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'switchCase()' has a Cyclomatic Complexity of 2.</message>
+        </expected-messages>
+        <code-ref id="fallthroughSwitch"/>
+    </test-code>
+
+    <code-fragment id="manyBooleanOps">
+      <![CDATA[
+        class Foo {
+          void foo(){
+            int x=0, y=1;
+            boolean a, b;
+
+            if (x > 2 || y < 4) {
+              while (x++ < 10 && !(y-- < 0));
+            } else if (a && b || x < 4) {
+              return;
+            }
+          }
+        }
+      ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count boolean paths</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'foo()' has a Cyclomatic Complexity of 8.</message>
+        </expected-messages>
+        <code-ref id="manyBooleanOps"/>
+    </test-code>
+
+    <test-code>
+        <description>IgnoreBooleanPaths Cyclo should not count boolean paths</description>
+        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="cycloVersion">ignoreBooleanPaths</rule-property>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'foo()' has a Cyclomatic Complexity of 4.</message>
+        </expected-messages>
+        <code-ref id="manyBooleanOps"/>
+    </test-code>
+
+</test-data>

@@ -181,7 +181,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
         Double prev = memo.get(paramKey);
-        if (!force && prev != null) {
+        if (!force && prev != null && option.equals(ResultOption.DEFAULT)) {
             return prev;
         }
 

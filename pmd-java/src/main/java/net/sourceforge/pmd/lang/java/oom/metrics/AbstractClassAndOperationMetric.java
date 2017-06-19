@@ -19,16 +19,16 @@ import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 public abstract class AbstractClassAndOperationMetric extends AbstractClassMetric implements OperationMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option) {
+    public final double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option) {
         switch (option) {
         case SUM:
             return sumMetricOverOperations(node, getOperationMetricKey(), version, false);
         case AVERAGE:
             return averageMetricOverOperations(node, getOperationMetricKey(), version, false);
         case HIGHEST:
-            return averageMetricOverOperations(node, getOperationMetricKey(), version, false);
+            return highestMetricOverOperations(node, getOperationMetricKey(), version, false);
         default:
-            return sumMetricOverOperations(node, getOperationMetricKey(), version, false);
+            return computeDefaultResultOption(node, version);
         }
     }
 
@@ -38,4 +38,15 @@ public abstract class AbstractClassAndOperationMetric extends AbstractClassMetri
      * @return The key of the metric.
      */
     protected abstract OperationMetricKey getOperationMetricKey();
+
+
+    /**
+     * Computes the metric on a class for the default ResultOption.
+     *
+     * @param node    The class AST node.
+     * @param version The version of the metric.
+     *
+     * @return The metric computed on the class with a default result option.
+     */
+    protected abstract double computeDefaultResultOption(ASTClassOrInterfaceDeclaration node, MetricVersion version);
 }

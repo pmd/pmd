@@ -107,6 +107,10 @@ public final class OperationSignature extends Signature {
                 return true;
             }
 
+            if (node.isAbstract()) {
+                return false;
+            }
+
             int length = node.getEndLine() - node.getBeginLine();
 
             if (length > 6) {
@@ -134,6 +138,8 @@ public final class OperationSignature extends Signature {
 
         /** Attempts to determine if the method is a getter. */
         private static boolean isGetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
+
+
             List<ASTReturnStatement> returnStatements
                 = node.getBlock().findDescendantsOfType(ASTReturnStatement.class);
 
