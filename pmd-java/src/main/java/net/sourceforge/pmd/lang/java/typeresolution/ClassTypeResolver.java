@@ -28,7 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -58,7 +57,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
@@ -158,6 +156,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private List<String> importedOnDemand;
     private int anonymousClassCounter = 0;
 
+    /**
+     * Contains Class -> JavaTypeDefinitions map for raw Class types. Also helps to avoid infinite recursion
+     * when determining default upper bounds.
+     */
+    private Map<Class<?>, JavaTypeDefinition> classToDefaultUpperBounds = new HashMap<>();
+
     public ClassTypeResolver() {
         this(ClassTypeResolver.class.getClassLoader());
     }
@@ -232,8 +236,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
 
         String typeName = node.getImage();
-        // branch deals with anonymous classes
-        if (node.jjtGetParent().hasDescendantOfType(ASTClassOrInterfaceBody.class)) {
+
+        if (node.isAnonymousClass()) {
             anonymousClassCounter++;
             AbstractNode parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (parent == null) {
@@ -262,13 +266,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTExtendsList node, Object data) {
-        super.visit(node, data);
-
-        return data;
-    }
-
-    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         populateType(node, node.getImage());
         return super.visit(node, data);
@@ -288,18 +285,18 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTName node, Object data) {
-        Class accessingClass = getEnclosingTypeDeclaration(node);
+        Class<?> accessingClass = getEnclosingTypeDeclaration(node);
 
         String[] dotSplitImage = node.getImage().split("\\.");
         JavaTypeDefinition previousType
                 = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0], accessingClass);
 
 
-        if (node.getNameDeclaration() != null //
+        if (node.getNameDeclaration() != null
                 && previousType == null // if it's not null, then let other code handle things
                 && node.getNameDeclaration().getNode() instanceof TypeNode) {
             // Carry over the type from the declaration
-            Class nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
+            Class<?> nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
             // generic classes and class with generic super types could have the wrong type assigned here
             if (nodeType != null && !isGeneric(nodeType) && !isGeneric(nodeType.getSuperclass())) {
                 node.setType(nodeType);
@@ -342,7 +339,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param accessingClass The class that is trying to access the field, some Class declared in the current ACU.
      * @return JavaTypeDefinition of the resolved field or null if it could not be found.
      */
-    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class accessingClass) {
+    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?> accessingClass) {
         while (typeToSearch != null) {
             try {
                 Field field = typeToSearch.getType().getDeclaredField(fieldImage);
@@ -367,7 +364,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param accessingClass The Class (which is defined in the current ACU) that is trying to access the field.
      * @return Type def. of the field, or null if it could not be resolved.
      */
-    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class accessingClass) {
+    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?> accessingClass) {
         if (accessingClass == null) {
             return null;
         }
@@ -463,7 +460,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param parameterName The name of the type parameter.
      * @return The ordinal of the type parameter.
      */
-    private int getTypeParameterOrdinal(Class clazz, String parameterName) {
+    private int getTypeParameterOrdinal(Class<?> clazz, String parameterName) {
         TypeVariable[] classTypeParameters = clazz.getTypeParameters();
 
         for (int index = 0; index < classTypeParameters.length; ++index) {
@@ -481,18 +478,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param clazz The Class to examine.
      * @return True if the Class is generic.
      */
-    private boolean isGeneric(Class clazz) {
+    private boolean isGeneric(Class<?> clazz) {
         if (clazz != null) {
             return clazz.getTypeParameters().length != 0;
         }
 
         return false;
     }
-
-    /**
-     * Contains Class -> JavaTypeDefinitions map for raw Class types. Also helps to avoid infinite recursion.
-     */
-    private Map<Class, JavaTypeDefinition> classToDefaultUpperBounds = new HashMap<>();
 
     /**
      * Given a Class, returns the type def. for when the Class stands without type arguments, meaning it
@@ -502,7 +494,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param clazzWithDefBounds The raw Class type.
      * @return The type def. of the raw Class.
      */
-    private JavaTypeDefinition getDefaultUpperBounds(JavaTypeDefinition context, Class clazzWithDefBounds) {
+    private JavaTypeDefinition getDefaultUpperBounds(JavaTypeDefinition context, Class<?> clazzWithDefBounds) {
         JavaTypeDefinitionBuilder typeDef = JavaTypeDefinition.builder(clazzWithDefBounds);
 
         // helps avoid infinite recursion with Something<.... E extends Something (<- same raw type)... >
@@ -765,7 +757,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         JavaTypeDefinition primaryNodeType = null;
         AbstractJavaTypeNode previousChild = null;
-        Class accessingClass = getEnclosingTypeDeclaration(primaryNode);
+        Class<?> accessingClass = getEnclosingTypeDeclaration(primaryNode);
 
         for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
             AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
@@ -832,7 +824,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param node The node with the enclosing Class declaration.
      * @return The JavaTypeDefinition of the enclosing Class declaration.
      */
-    private Class getEnclosingTypeDeclaration(Node node) {
+    private Class<?> getEnclosingTypeDeclaration(Node node) {
         Node previousNode = null;
         while (node != null) {
             if (node instanceof ASTClassOrInterfaceDeclaration) {
@@ -863,7 +855,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param clazz The type of the enclosing class.
      * @return The TypeDefinition of the superclass.
      */
-    private JavaTypeDefinition getSuperClassTypeDefinition(Node node, Class clazz) {
+    private JavaTypeDefinition getSuperClassTypeDefinition(Node node, Class<?> clazz) {
         Node previousNode = null;
         for (; node != null; previousNode = node, node = node.jjtGetParent()) {
             if (node instanceof ASTClassOrInterfaceDeclaration // class declaration
@@ -895,18 +887,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
         rollupTypeUnary(node);
 
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTPrimarySuffix node, Object data) {
-        super.visit(node, data);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTTypeArguments node, Object data) {
-        super.visit(node, data);
         return data;
     }
 

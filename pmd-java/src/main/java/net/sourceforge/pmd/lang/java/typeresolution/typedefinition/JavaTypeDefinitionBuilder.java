@@ -9,10 +9,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class JavaTypeDefinitionBuilder {
-    private Class clazz = null;
+    private Class<?> clazz = null;
     private List<JavaTypeDefinition> genericArgs = new ArrayList<>();
 
-    JavaTypeDefinitionBuilder() {}
+    /* default */ JavaTypeDefinitionBuilder() {}
 
     public JavaTypeDefinitionBuilder addTypeArg(JavaTypeDefinition arg) {
         genericArgs.add(arg);
@@ -28,12 +28,12 @@ public class JavaTypeDefinitionBuilder {
         return this;
     }
 
-    public JavaTypeDefinitionBuilder setType(Class clazz) {
+    public JavaTypeDefinitionBuilder setType(Class<?> clazz) {
         this.clazz = clazz;
         return this;
     }
 
     public JavaTypeDefinition build() {
-        return new JavaTypeDefinition(clazz, genericArgs);
+        return JavaTypeDefinition.build(clazz, genericArgs);
     }
 }

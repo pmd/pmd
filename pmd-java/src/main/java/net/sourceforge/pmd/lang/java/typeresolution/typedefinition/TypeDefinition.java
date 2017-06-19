@@ -12,7 +12,7 @@ public interface TypeDefinition {
      *
      * @return Raw Class type.
      */
-    Class getType();
+    Class<?> getType();
 
     /**
      * Get the list of type arguments for this TypeDefinition.
