@@ -264,4 +264,19 @@ public interface Interface {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#348 False Positive UnusedImports with javadoc for public static inner classes of imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.swing.GroupLayout;
+
+public class Foo {
+
+	/**
+	 * {@link Bar#doSomething(GroupLayout.Group)}
+	*/
+	void doSomething();
+}
+        ]]></code>
+    </test-code>
 </test-data>
