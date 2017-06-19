@@ -6,9 +6,8 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
 
   <description>
-These are rules which resolve java Class files for comparison, as opposed to a String
+These are rules which use the Metrics Framework to calculate metrics.
   </description>
-
 
     <rule name="CyclomaticComplexity"
    	  since="1.03"
