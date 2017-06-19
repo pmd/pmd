@@ -5,10 +5,9 @@
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 
 /**
  * Weighed Method Count. It is the sum of the statical complexity of all operations of a class. We use
@@ -19,10 +18,10 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  * @author Clément Fournier
  * @since June 2017
  */
-public class WmcMetric extends AbstractClassMetric implements ClassMetric {
+public class WmcMetric extends AbstractClassMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
-        return sumMetricOverOperations(node, getTopLevelPackageStats(), OperationMetricKey.CYCLO, false);
+    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option) {
+        return sumMetricOverOperations(node, OperationMetricKey.CYCLO, version, false);
     }
 }

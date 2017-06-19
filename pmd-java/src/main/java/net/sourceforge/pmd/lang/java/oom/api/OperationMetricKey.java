@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.api;
 
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.LocMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
 
 /**
@@ -18,7 +19,9 @@ public enum OperationMetricKey implements MetricKey<OperationMetric> {
     /** Cyclometric complexity. */
     CYCLO(new CycloMetric()),
     /** Non Commenting Source Statements. */
-    NCSS(new NcssMetric());
+    NCSS(new NcssMetric()),
+    /** Lines of Code. */
+    LOC(new LocMetric());
 
     private final OperationMetric calculator;
 

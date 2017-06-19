@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 
 
 /**
@@ -31,7 +32,8 @@ public final class Metrics {
      *
      * @return The top level package stats.
      */
-    /* default */ static PackageStats getTopLevelPackageStats() {
+    /* default */
+    static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 
@@ -45,22 +47,7 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
-        // TODO:cf think about caching
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, Version.STANDARD);
-    }
-
-
-    /**
-     * Computes a metric identified by its code on a operation AST node.
-     *
-     * @param key  The key identifying the metric to be computed
-     * @param node The node on which to compute the metric
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
-     */
-    public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
-        // TODO:cf think about caching
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, Version.STANDARD);
+        return get(key, node, Version.STANDARD, ResultOption.DEFAULT);
     }
 
 
@@ -74,11 +61,51 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version) {
-        MetricVersion safeOption = (version == null) ? Version.STANDARD : version;
-
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption);
+        return get(key, node, version, ResultOption.DEFAULT);
     }
 
+    /**
+     * Computes a metric identified by its code on a class AST node.
+     *
+     * @param key    The key identifying the metric to be computed
+     * @param node   The node on which to compute the metric
+     * @param option The result option.
+     *
+     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
+     */
+    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, ResultOption option) {
+        return get(key, node, Version.STANDARD, option);
+    }
+
+    /**
+     * Computes a metric identified by its code on a class AST node.
+     *
+     * @param key     The key identifying the metric to be computed
+     * @param node    The node on which to compute the metric
+     * @param version The version of the metric.
+     * @param option  The result option.
+     *
+     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
+     */
+    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version,
+                             ResultOption option) {
+        MetricVersion safeOption = (version == null) ? Version.STANDARD : version;
+
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption, option);
+    }
+
+
+    /**
+     * Computes a metric identified by its code on a operation AST node.
+     *
+     * @param key  The key identifying the metric to be computed
+     * @param node The node on which to compute the metric
+     *
+     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
+     */
+    public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
+        return get(key, node, Version.STANDARD);
+    }
 
     /**
      * Computes a metric identified by its code on a operation AST node.

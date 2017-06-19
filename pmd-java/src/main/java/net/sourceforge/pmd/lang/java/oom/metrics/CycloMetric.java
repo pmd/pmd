@@ -6,11 +6,8 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.AbstractClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathUnawareOperationVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloVisitor;
@@ -46,12 +43,7 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
  * @author Clément Fournier
  * @since June 2017
  */
-public class CycloMetric extends AbstractClassMetric implements OperationMetric {
-
-    @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
-        return sumMetricOverOperations(node, getTopLevelPackageStats(), OperationMetricKey.CYCLO, false);
-    }
+public class CycloMetric extends AbstractClassAndOperationMetric {
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
@@ -70,4 +62,8 @@ public class CycloMetric extends AbstractClassMetric implements OperationMetric 
         DO_NOT_COUNT_EXPRESSION_PATHS
     }
 
+    @Override
+    public OperationMetricKey getOperationMetricKey() {
+        return OperationMetricKey.CYCLO;
+    }
 }

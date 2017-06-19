@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.oom.api;
  *
  * @author Clément Fournier
  */
-public interface MetricVersion {
+public interface MetricVersion extends MetricOption {
 
     /**
      * Returns the name of the version.

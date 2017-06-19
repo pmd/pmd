@@ -13,6 +13,8 @@ import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
@@ -46,8 +48,9 @@ public class AtfdMetric extends AbstractMetric implements ClassMetric, Operation
     }
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option) {
         // TODO:cf
         return 0;
     }
+
 }

@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
  *
  * @author Clément Fournier
  */
-public class MetricsVisitor extends JavaParserVisitorAdapter {
+class MetricsVisitor extends JavaParserVisitorAdapter {
 
     private Stack<ClassStats> stack = new Stack<>();
 

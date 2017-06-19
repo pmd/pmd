@@ -21,6 +21,6 @@ public interface ClassMetric extends Metric {
      *
      * @return The value of the metric.
      */
-    double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version);
+    double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option);
 
 }

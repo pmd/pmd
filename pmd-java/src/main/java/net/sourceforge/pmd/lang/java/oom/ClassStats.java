@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
@@ -176,7 +177,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
     /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                                 MetricVersion version) {
+                                 MetricVersion version, ResultOption option) {
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
         Double prev = memo.get(paramKey);
@@ -184,9 +185,14 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
             return prev;
         }
 
+
         ClassMetric metric = key.getCalculator();
-        double val = metric.computeFor(node, version);
-        memo.put(paramKey, val);
+
+        double val = metric.computeFor(node, version, option);
+
+        if (option.equals(ResultOption.DEFAULT)) { // only default result options are cached.
+            memo.put(paramKey, val);
+        }
         return val;
     }
 }

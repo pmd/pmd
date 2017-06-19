@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 
@@ -145,11 +146,11 @@ public final class PackageStats {
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
     /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                                 MetricVersion version) {
+                                 MetricVersion version, ResultOption option) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, force, version);
+                                 : container.compute(key, node, force, version, option);
     }
 
 
