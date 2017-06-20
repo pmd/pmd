@@ -16,7 +16,7 @@ public enum OperationMetricKey implements MetricKey<OperationMetric> {
 
     /** Access to Foreign Data. */ // TODO:cf add short description here for javadoc hints
     ATFD(new AtfdMetric()),
-    /** Cyclometric complexity. */
+    /** Cyclomatic complexity. */
     CYCLO(new CycloMetric()),
     /** Non Commenting Source Statements. */
     NCSS(new NcssMetric()),
