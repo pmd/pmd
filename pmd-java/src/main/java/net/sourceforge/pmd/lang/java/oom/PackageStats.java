@@ -139,27 +139,29 @@ public final class PackageStats {
     /**
      * Computes the value of a metric on a class.
      *
-     * @param key   The class metric to compute.
-     * @param node  The AST node of the class.
-     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param key     The class metric to compute.
+     * @param node    The AST node of the class.
+     * @param force   Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param version The version of the metric.
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
     /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                                 MetricVersion version, ResultOption option) {
+                                 MetricVersion version) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, force, version, option);
+                                 : container.compute(key, node, force, version);
     }
 
 
     /**
      * Computes the value of a metric for an operation.
      *
-     * @param key   The operation metric for which to find a memoized result.
-     * @param node  The AST node of the operation.
-     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param key     The operation metric for which to find a memoized result.
+     * @param node    The AST node of the operation.
+     * @param force   Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param version The version of the metric.
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
@@ -170,5 +172,25 @@ public final class PackageStats {
 
         return container == null ? Double.NaN
                                  : container.compute(key, node, qname.getOperation(), force, version);
+    }
+
+
+    /**
+     * Computes an aggregate result using a ResultOption.
+     *
+     * @param key     The class metric to compute.
+     * @param node    The AST node of the class.
+     * @param force   Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param version The version of the metric.
+     * @param option  The type of result to compute
+     *
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
+     */
+    double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                                   MetricVersion version, ResultOption option) {
+        ClassStats container = getClassStats(node.getQualifiedName(), false);
+
+        return container == null ? Double.NaN
+                                 : container.computeWithResultOption(key, node, force, version, option);
     }
 }

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
@@ -156,8 +157,9 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      */
     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
                                  boolean force, MetricVersion version) {
-        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
+
         // TODO:cf the operation signature will be built many times, we might as well store it in the node
+        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
 
         if (sigMap == null) {
             return Double.NaN;
@@ -165,6 +167,16 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
         OperationStats stats = sigMap.get(name);
         return stats == null ? Double.NaN : stats.compute(key, node, force, version);
+    }
+
+    double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                                   MetricVersion version, ResultOption option) {
+
+        // TODO:cf compute the result here directly using the cache?
+        OperationMetric metric = key.getCalculator();
+        double val = metric.computeFor(node, version, option);
+
+        return val;
     }
 
     /**
@@ -176,23 +188,19 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                                 MetricVersion version, ResultOption option) {
+    /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force, MetricVersion version) {
+
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
         Double prev = memo.get(paramKey);
-        if (!force && prev != null && option.equals(ResultOption.DEFAULT)) {
+        if (!force && prev != null) {
             return prev;
         }
 
-
         ClassMetric metric = key.getCalculator();
+        double val = metric.computeFor(node, version);
+        memo.put(paramKey, val);
 
-        double val = metric.computeFor(node, version, option);
-
-        if (option.equals(ResultOption.DEFAULT)) { // only default result options are cached.
-            memo.put(paramKey, val);
-        }
         return val;
     }
 }

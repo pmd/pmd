@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
@@ -16,16 +17,14 @@ import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractClassAndOperationMetric extends AbstractClassMetric implements OperationMetric {
+public abstract class AbstractOperationMetric extends AbstractMetric implements OperationMetric {
 
     /**
      * Actually computes the value of a metric for an AST node.
      *
      * <p>This implementation makes the behaviour of ResultOptions consistent for all metrics that are both class and
      * operation metrics. It makes use of {@link #getOperationMetricKey()} to compute the value of the operation metric
-     * on the operations of the class, so it's necessary to implement that. It also uses {@link
-     * #computeDefaultResultOption(ASTClassOrInterfaceDeclaration, MetricVersion)}, which specifies the default
-     * computation of the metric on an AST node.
+     * on the operations of the class, so it's necessary to implement that.
      *
      * @param node    The node.
      * @param version A possibly empty list of options.
@@ -43,10 +42,11 @@ public abstract class AbstractClassAndOperationMetric extends AbstractClassMetri
         case HIGHEST:
             return highestMetricOverOperations(node, getOperationMetricKey(), version, false);
         default:
-            return computeDefaultResultOption(node, version);
+            throw new RuntimeException("The result option was null inside the metric class!"); // impossible
         }
     }
 
+    // TODO:cf remove the need for that method, that's useless boilerplate
     /**
      * Return the operation metric key of the metric.
      *
@@ -54,14 +54,4 @@ public abstract class AbstractClassAndOperationMetric extends AbstractClassMetri
      */
     protected abstract OperationMetricKey getOperationMetricKey();
 
-
-    /**
-     * Computes the metric on a class for the default ResultOption.
-     *
-     * @param node    The class AST node.
-     * @param version The version of the metric.
-     *
-     * @return The metric computed on the class with a default result option.
-     */
-    protected abstract double computeDefaultResultOption(ASTClassOrInterfaceDeclaration node, MetricVersion version);
 }

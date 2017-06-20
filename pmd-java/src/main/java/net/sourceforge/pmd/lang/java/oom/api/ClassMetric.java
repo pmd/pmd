@@ -18,10 +18,9 @@ public interface ClassMetric extends Metric {
      *
      * @param node    The node.
      * @param version The version of the metric.
-     * @param option  The result option to use.
      *
      * @return The value of the metric.
      */
-    double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option);
+    double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version);
 
 }

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathUnawareOperationVisitor;
@@ -44,10 +45,10 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
  * @author Clément Fournier
  * @since June 2017
  */
-public class CycloMetric extends AbstractClassAndOperationMetric {
+public class CycloMetric extends AbstractOperationMetric implements ClassMetric {
 
     @Override
-    protected double computeDefaultResultOption(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
         return 1 + averageMetricOverOperations(node, getOperationMetricKey(), version, false);
     }
 

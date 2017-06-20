@@ -32,13 +32,14 @@ public final class Metrics {
      *
      * @return The top level package stats.
      */
-    /* default */ static PackageStats getTopLevelPackageStats() {
+    /* default */
+    static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 
 
     /**
-     * Computes a metric identified by its code on a class AST node.
+     * Computes the standard value of the metric identified by its code on a class AST node.
      *
      * @param key  The key identifying the metric to be computed
      * @param node The node on which to compute the metric
@@ -46,12 +47,13 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
-        return get(key, node, Version.STANDARD, ResultOption.DEFAULT);
+        return get(key, node, Version.STANDARD);
     }
 
 
     /**
-     * Computes a metric identified by its code on a class AST node.
+     * Computes a metric identified by its code on a class AST node, possibly selecting a variant with the {@code
+     * MetricVersion} parameter.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
@@ -60,46 +62,17 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version) {
-        return get(key, node, version, ResultOption.DEFAULT);
-    }
-
-    /**
-     * Computes a metric identified by its code on a class AST node.
-     *
-     * @param key    The key identifying the metric to be computed
-     * @param node   The node on which to compute the metric
-     * @param option The result option.
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
-     */
-    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, ResultOption option) {
-        return get(key, node, Version.STANDARD, option);
-    }
-
-    /**
-     * Computes a metric identified by its code on a class AST node.
-     *
-     * @param key     The key identifying the metric to be computed
-     * @param node    The node on which to compute the metric
-     * @param version The version of the metric.
-     * @param option  The result option.
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
-     */
-    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version,
-                             ResultOption option) {
         if (!key.getCalculator().supports(node)) {
             return Double.NaN;
         }
 
-        MetricVersion safeOption = (version == null) ? Version.STANDARD : version;
+        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
 
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption, option);
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeVersion);
     }
 
-
     /**
-     * Computes a metric identified by its code on a operation AST node.
+     * Computes the standard version of the metric identified by the key on a operation AST node.
      *
      * @param key  The key identifying the metric to be computed
      * @param node The node on which to compute the metric
@@ -111,7 +84,7 @@ public final class Metrics {
     }
 
     /**
-     * Computes a metric identified by its code on a operation AST node.
+     * Computes a metric identified by its key on a operation AST node.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
@@ -124,8 +97,27 @@ public final class Metrics {
             return Double.NaN;
         }
 
-        MetricVersion safeOption = (version == null) ? Version.STANDARD : version;
+        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
 
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption);
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeVersion);
+    }
+
+    /**
+     * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The
+     * result to aggregate is specified by the {@link ResultOption} parameter.
+     *
+     * @param key     The key identifying the metric to be computed
+     * @param node    The node on which to compute the metric
+     * @param version The version of the metric.
+     * @param option  The result option to use.
+     *
+     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
+     * {@literal null}.
+     */
+    public static double get(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option) {
+
+        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
+        return option == null ? Double.NaN
+                              : TOP_LEVEL_PACKAGE.computeWithResultOption(key, node, false, safeVersion, option);
     }
 }

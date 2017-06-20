@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 
@@ -45,7 +46,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  * @see LocMetric
  * @since June 2017
  */
-public class NcssMetric extends AbstractClassAndOperationMetric {
+public class NcssMetric extends AbstractOperationMetric implements ClassMetric {
 
     @Override
     public boolean supports(AccessNode node) {
@@ -53,7 +54,7 @@ public class NcssMetric extends AbstractClassAndOperationMetric {
     }
 
     @Override
-    protected double computeDefaultResultOption(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
         return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(1))).getValue();
     }
 

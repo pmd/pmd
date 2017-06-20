@@ -81,7 +81,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
         super.visit(node, data);
         if (showClassesComplexity) {
             int classCyclo = (int) Metrics.get(ClassMetricKey.CYCLO, node, cycloVersion);
-            int classHighest = (int) Metrics.get(ClassMetricKey.CYCLO, node, cycloVersion, ResultOption.HIGHEST);
+            int classHighest = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion, ResultOption.HIGHEST);
 
             if (classCyclo >= reportLevel || classHighest >= reportLevel) {
                 addViolation(data, node,
