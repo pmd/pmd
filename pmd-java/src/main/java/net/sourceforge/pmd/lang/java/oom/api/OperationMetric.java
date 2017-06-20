@@ -17,7 +17,7 @@ public interface OperationMetric extends Metric {
      * Actually computes the value of a metric for an AST node.
      *
      * @param node    The node.
-     * @param version A possibly empty list of options.
+     * @param version The version of the metric.
      *
      * @return The value of the metric.
      */

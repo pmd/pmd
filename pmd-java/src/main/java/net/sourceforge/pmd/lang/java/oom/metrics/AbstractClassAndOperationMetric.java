@@ -18,6 +18,21 @@ import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
  */
 public abstract class AbstractClassAndOperationMetric extends AbstractClassMetric implements OperationMetric {
 
+    /**
+     * Actually computes the value of a metric for an AST node.
+     *
+     * <p>This implementation makes the behaviour of ResultOptions consistent for all metrics that are both class and
+     * operation metrics. It makes use of {@link #getOperationMetricKey()} to compute the value of the operation metric
+     * on the operations of the class, so it's necessary to implement that. It also uses {@link
+     * #computeDefaultResultOption(ASTClassOrInterfaceDeclaration, MetricVersion)}, which specifies the default
+     * computation of the metric on an AST node.
+     *
+     * @param node    The node.
+     * @param version A possibly empty list of options.
+     * @param option  The result option to use.
+     *
+     * @return The value of the metric depending on the ResultOption.
+     */
     @Override
     public final double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option) {
         switch (option) {
@@ -33,7 +48,7 @@ public abstract class AbstractClassAndOperationMetric extends AbstractClassMetri
     }
 
     /**
-     * Return the key of the metric.
+     * Return the operation metric key of the metric.
      *
      * @return The key of the metric.
      */
