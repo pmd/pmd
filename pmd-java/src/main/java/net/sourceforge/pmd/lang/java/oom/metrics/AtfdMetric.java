@@ -10,10 +10,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
  *
  * @author Clément Fournier
  */
-public class AtfdMetric extends AbstractOperationMetric implements ClassMetric, OperationMetric {
+public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
     public boolean supports(AccessNode node) {
@@ -55,8 +55,4 @@ public class AtfdMetric extends AbstractOperationMetric implements ClassMetric, 
         return 0;
     }
 
-    @Override
-    protected OperationMetricKey getOperationMetricKey() {
-        return OperationMetricKey.ATFD;
-    }
 }

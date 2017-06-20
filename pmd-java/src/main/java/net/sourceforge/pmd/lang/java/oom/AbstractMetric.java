@@ -93,7 +93,7 @@ public abstract class AbstractMetric implements Metric {
      * @return Returns the average of a metric over all operations of a class.
      */
     protected static double averageMetricOverOperations(ASTClassOrInterfaceDeclaration node, OperationMetricKey key,
-                                                 MetricVersion version, boolean includeNested) {
+                                                        MetricVersion version, boolean includeNested) {
 
         List<ASTMethodOrConstructorDeclaration> operations = findOperations(node, includeNested);
 
@@ -118,7 +118,7 @@ public abstract class AbstractMetric implements Metric {
      * @return Returns the highest value of a metric over all operations of a class.
      */
     protected static double highestMetricOverOperations(ASTClassOrInterfaceDeclaration node, OperationMetricKey key,
-                                                 MetricVersion version, boolean includeNested) {
+                                                        MetricVersion version, boolean includeNested) {
 
         List<ASTMethodOrConstructorDeclaration> operations = findOperations(node, includeNested);
 
@@ -135,6 +135,7 @@ public abstract class AbstractMetric implements Metric {
 
 
     // TODO:cf this one is computed every time
+    // TODO:cf it might not be at the best place too (used by ClassStats)
 
     /**
      * Finds the declaration nodes of all methods or constructors that are declared inside a class.
@@ -144,8 +145,8 @@ public abstract class AbstractMetric implements Metric {
      *
      * @return The list of all operations declared inside the specified class.
      */
-    protected static List<ASTMethodOrConstructorDeclaration> findOperations(ASTClassOrInterfaceDeclaration node,
-                                                                     boolean includeNested) {
+    public static List<ASTMethodOrConstructorDeclaration> findOperations(ASTClassOrInterfaceDeclaration node,
+                                                                         boolean includeNested) {
 
         if (includeNested) {
             return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
@@ -165,4 +166,5 @@ public abstract class AbstractMetric implements Metric {
         }
         return operations;
     }
+
 }

@@ -32,8 +32,7 @@ public final class Metrics {
      *
      * @return The top level package stats.
      */
-    /* default */
-    static PackageStats getTopLevelPackageStats() {
+    /* default */ static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 
@@ -104,7 +103,7 @@ public final class Metrics {
 
     /**
      * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The
-     * result to aggregate is specified by the {@link ResultOption} parameter.
+     * type of operation is specified by the {@link ResultOption} parameter.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
@@ -120,4 +119,5 @@ public final class Metrics {
         return option == null ? Double.NaN
                               : TOP_LEVEL_PACKAGE.computeWithResultOption(key, node, false, safeVersion, option);
     }
+
 }

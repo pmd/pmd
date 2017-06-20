@@ -33,9 +33,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 
 /**
  * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent
@@ -46,7 +47,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  * @see LocMetric
  * @since June 2017
  */
-public class NcssMetric extends AbstractOperationMetric implements ClassMetric {
+public class NcssMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
     public boolean supports(AccessNode node) {
@@ -61,11 +62,6 @@ public class NcssMetric extends AbstractOperationMetric implements ClassMetric {
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
         return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(1))).getValue();
-    }
-
-    @Override
-    protected OperationMetricKey getOperationMetricKey() {
-        return OperationMetricKey.NCSS;
     }
 
 

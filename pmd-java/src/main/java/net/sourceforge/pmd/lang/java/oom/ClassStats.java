@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.oom;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
@@ -48,6 +49,27 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
     // private String superclass;
     // private List<String> subclasses;
 
+    private static double highest(List<Double> values) {
+        double highest = Double.NEGATIVE_INFINITY;
+        for (double val : values) {
+            if (val > highest) {
+                highest = val;
+            }
+        }
+        return highest;
+    }
+
+    private static double average(List<Double> values) {
+        return sum(values) / values.size();
+    }
+
+    private static double sum(List<Double> values) {
+        double sum = 0;
+        for (double val : values) {
+            sum += val;
+        }
+        return sum;
+    }
 
     /**
      * Finds a ClassStats in the direct children of this class. This can only be a directly nested class, for example
@@ -169,14 +191,43 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         return stats == null ? Double.NaN : stats.compute(key, node, force, version);
     }
 
-    double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                                   MetricVersion version, ResultOption option) {
+    /**
+     * Computes an aggregate result using a ResultOption.
+     *
+     * @param key     The class metric to compute.
+     * @param node    The AST node of the class.
+     * @param force   Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param version The version of the metric.
+     * @param option  The type of result to compute
+     *
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
+     */
+    /* default */ double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node,
+                                                 boolean force, MetricVersion version, ResultOption option) {
 
-        // TODO:cf compute the result here directly using the cache?
-        OperationMetric metric = key.getCalculator();
-        double val = metric.computeFor(node, version, option);
+        List<ASTMethodOrConstructorDeclaration> ops = AbstractMetric.findOperations(node, false);
 
-        return val;
+        List<Double> values = new ArrayList<>();
+        for (ASTMethodOrConstructorDeclaration op : ops) {
+            if (key.getCalculator().supports(op)) {
+                double val = this.compute(key, op, op.getQualifiedName().getOperation(), force, version);
+                if (val != Double.NaN) {
+                    values.add(val);
+                }
+            }
+        }
+
+        // FUTURE use streams to do that when we upgrade the compiler to 1.8
+        switch (option) {
+        case SUM:
+            return sum(values);
+        case HIGHEST:
+            return highest(values);
+        case AVERAGE:
+            return average(values);
+        default:
+            return Double.NaN;
+        }
     }
 
     /**
@@ -203,4 +254,5 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
         return val;
     }
+
 }

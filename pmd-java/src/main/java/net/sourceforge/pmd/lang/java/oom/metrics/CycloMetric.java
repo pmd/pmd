@@ -8,8 +8,10 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathUnawareOperationVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloVisitor;
@@ -45,11 +47,11 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
  * @author Clément Fournier
  * @since June 2017
  */
-public class CycloMetric extends AbstractOperationMetric implements ClassMetric {
+public class CycloMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
-        return 1 + averageMetricOverOperations(node, getOperationMetricKey(), version, false);
+        return 1 + averageMetricOverOperations(node, OperationMetricKey.CYCLO, version, false);
     }
 
 
@@ -65,15 +67,10 @@ public class CycloMetric extends AbstractOperationMetric implements ClassMetric 
     }
 
 
-    @Override
-    public OperationMetricKey getOperationMetricKey() {
-        return OperationMetricKey.CYCLO;
-    }
-
-
     /** Variants of CYCLO. */
     public enum Version implements MetricVersion {
         /** Do not count the paths in boolean expressions as decision points. */
         IGNORE_BOOLEAN_PATHS
     }
+
 }

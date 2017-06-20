@@ -7,9 +7,10 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 
 /**
  * Lines of Code. Equates the length in lines of code of the measured entity, counting everything including blank lines
@@ -20,7 +21,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  * @see NcssMetric
  * @since June 2017
  */
-public class LocMetric extends AbstractOperationMetric implements ClassMetric {
+public class LocMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
 
     @Override
@@ -41,8 +42,4 @@ public class LocMetric extends AbstractOperationMetric implements ClassMetric {
         return node.getEndLine() - node.getBeginLine();
     }
 
-    @Override
-    public OperationMetricKey getOperationMetricKey() {
-        return OperationMetricKey.LOC;
-    }
 }
