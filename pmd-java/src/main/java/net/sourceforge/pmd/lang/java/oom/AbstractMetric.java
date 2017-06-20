@@ -8,20 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.api.Metric;
 
 
 /**
  * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a
- * PackageStats and node.
+ * PackageStats and node. They're stateless.
  *
  * @author Clément Fournier
  */
 public abstract class AbstractMetric implements Metric {
-
-    // TODO:cf useful?
-    protected boolean isAbstractHandler = false;
 
     /**
      * Gives access to the toplevel package stats to metrics without having to pass them as a parameter to metrics.
@@ -42,14 +40,15 @@ public abstract class AbstractMetric implements Metric {
     }
 
     /**
-     * Checks if the metric can be computed on that node.
+     * Default implementation of the supports method, which filters out abstract nodes. Metrics that support abstract
+     * nodes should override this method.
      *
-     * @param node The node to check for
+     * @param node The node to check.
      *
-     * @return True if the metric can be computed, false otherwise.
+     * @return True if the metric can be computed on this node.
      */
-    // TODO:cf better wrap that around the metrics implementation
-    protected boolean isSupported(ASTMethodOrConstructorDeclaration node) {
-        return isAbstractHandler || !node.isAbstract();
+    @Override
+    public boolean supports(AccessNode node) {
+        return !node.isAbstract();
     }
 }

@@ -23,5 +23,4 @@ public interface OperationMetric extends Metric {
      */
     double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version);
 
-
 }

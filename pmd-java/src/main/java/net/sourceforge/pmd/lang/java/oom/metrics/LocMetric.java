@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 
@@ -19,6 +20,12 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  * @since June 2017
  */
 public class LocMetric extends AbstractClassAndOperationMetric {
+
+
+    @Override
+    public boolean supports(AccessNode node) {
+        return true;
+    }
 
     @Override
     protected double computeDefaultResultOption(ASTClassOrInterfaceDeclaration node, MetricVersion version) {

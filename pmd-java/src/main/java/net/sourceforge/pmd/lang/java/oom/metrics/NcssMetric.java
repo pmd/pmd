@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
@@ -46,6 +47,10 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  */
 public class NcssMetric extends AbstractClassAndOperationMetric {
 
+    @Override
+    public boolean supports(AccessNode node) {
+        return true;
+    }
 
     @Override
     protected double computeDefaultResultOption(ASTClassOrInterfaceDeclaration node, MetricVersion version) {

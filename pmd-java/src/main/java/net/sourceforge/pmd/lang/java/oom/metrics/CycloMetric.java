@@ -63,10 +63,12 @@ public class CycloMetric extends AbstractClassAndOperationMetric {
         return (double) cyclo.getValue();
     }
 
+
     @Override
     public OperationMetricKey getOperationMetricKey() {
         return OperationMetricKey.CYCLO;
     }
+
 
     /** Variants of CYCLO. */
     public enum Version implements MetricVersion {

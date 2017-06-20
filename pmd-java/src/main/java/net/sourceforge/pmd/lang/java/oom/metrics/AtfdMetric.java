@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
@@ -25,11 +26,14 @@ import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
  */
 public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
+    @Override
+    public boolean supports(AccessNode node) {
+        return node instanceof ASTClassOrInterfaceDeclaration
+            || node instanceof ASTMethodOrConstructorDeclaration && !node.isAbstract();
+    }
+
     @Override // TODO:cf
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-        if (!isSupported(node)) {
-            return Double.NaN;
-        }
 
         OperationSigMask targetOps = new OperationSigMask();
         targetOps.restrictVisibilitiesTo(Visibility.PUBLIC);

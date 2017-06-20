@@ -32,8 +32,7 @@ public final class Metrics {
      *
      * @return The top level package stats.
      */
-    /* default */
-    static PackageStats getTopLevelPackageStats() {
+    /* default */ static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 
@@ -89,6 +88,10 @@ public final class Metrics {
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version,
                              ResultOption option) {
+        if (!key.getCalculator().supports(node)) {
+            return Double.NaN;
+        }
+
         MetricVersion safeOption = (version == null) ? Version.STANDARD : version;
 
         return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption, option);
@@ -117,6 +120,10 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
     public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+        if (!key.getCalculator().supports(node)) {
+            return Double.NaN;
+        }
+
         MetricVersion safeOption = (version == null) ? Version.STANDARD : version;
 
         return TOP_LEVEL_PACKAGE.compute(key, node, false, safeOption);
