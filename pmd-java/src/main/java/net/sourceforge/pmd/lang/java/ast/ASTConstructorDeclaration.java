@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements ASTMethodOrConstructorDeclaration {
 
     private boolean containsComment;
@@ -51,19 +48,5 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
             qualifiedName = QualifiedName.makeOperationOf(this);
         }
         return qualifiedName;
-    }
-
-    @Override
-    public Map<String, String> getParameterMap() {
-        Map<String, String> result = new LinkedHashMap<>();
-        ASTFormalParameters params = getFirstDescendantOfType(ASTFormalParameters.class);
-
-        for (int i = 0; i < params.getParameterCount(); i++) {
-            // append type image of param
-            String typeImage = params.jjtGetChild(i).getFirstChildOfType(ASTType.class).getTypeImage();
-            String paramName = params.jjtGetChild(i).jjtGetChild(1).getImage();
-            result.put(paramName, typeImage);
-        }
-        return result;
     }
 }

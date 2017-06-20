@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -159,9 +160,8 @@ public final class OperationSignature extends Signature {
 
         /** Attempts to determine if the method is a setter. */
         private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
-            Map<String, String> parameters = node.getParameterMap();
 
-            if (parameters.isEmpty()) {
+            if (node.getFirstDescendantOfType(ASTFormalParameters.class).jjtGetNumChildren() == 0) {
                 return false;
             }
 

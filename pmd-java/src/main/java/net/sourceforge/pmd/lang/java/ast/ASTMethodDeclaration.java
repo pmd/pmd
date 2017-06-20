@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
@@ -42,20 +39,6 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
             return md.getImage();
         }
         return null;
-    }
-
-    @Override
-    public Map<String, String> getParameterMap() {
-        Map<String, String> result = new LinkedHashMap<>();
-        ASTFormalParameters params = getFirstDescendantOfType(ASTFormalParameters.class);
-
-        for (int i = 0; i < params.getParameterCount(); i++) {
-            // append type image of param
-            String typeImage = params.jjtGetChild(i).getFirstChildOfType(ASTType.class).getTypeImage();
-            String paramName = params.jjtGetChild(i).jjtGetChild(1).getImage();
-            result.put(paramName, typeImage);
-        }
-        return result;
     }
 
     public String getName() {
