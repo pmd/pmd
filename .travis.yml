@@ -26,6 +26,9 @@ env:
   - BUILD=site
   - BUILD=sonar
 
+matrix:
+  fast_finish: true
+
 before_install:
   - bash .travis/setup-secrets.sh
   - bash .travis/configure-maven.sh
