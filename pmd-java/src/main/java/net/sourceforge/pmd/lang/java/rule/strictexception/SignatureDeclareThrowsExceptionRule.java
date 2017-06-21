@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -50,6 +51,15 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
         if (methodDeclaration.getMethodName().startsWith("test")) {
             return super.visit(methodDeclaration, o);
+        }
+        
+        // Ignore overridden methods, the issue should be marked on the method definition
+        final List<ASTAnnotation> methodAnnotations = methodDeclaration.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
+        for (final ASTAnnotation annotation : methodAnnotations) {
+            final ASTName annotationName = annotation.getFirstDescendantOfType(ASTName.class);
+            if (annotationName.hasImageEqualTo("Override") || annotationName.hasImageEqualTo("java.lang.Override")) {
+                return super.visit(methodDeclaration, o);
+            }
         }
 
         List<ASTName> exceptionList = Collections.emptyList();
