@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
  *
  * @author Clément Fournier
  */
-public class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
+public final class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
     public boolean supports(AccessNode node) {

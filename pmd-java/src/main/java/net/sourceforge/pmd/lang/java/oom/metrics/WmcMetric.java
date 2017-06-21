@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  * @author Clément Fournier
  * @since June 2017
  */
-public class WmcMetric extends AbstractMetric implements ClassMetric {
+public final class WmcMetric extends AbstractMetric implements ClassMetric {
 
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {

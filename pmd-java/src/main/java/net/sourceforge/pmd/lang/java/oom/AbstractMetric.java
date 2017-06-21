@@ -57,6 +57,8 @@ public abstract class AbstractMetric implements Metric {
         return !node.isAbstract();
     }
 
+
+    // TODO:cf all these methods mimic the behaviour of resultoptions, perhaps not great.
     /**
      * Gets the sum of the value of an operation metric over all operations in this class (excluding nested classes).
      * The computation is not forced (memoized results are used if they can be found).

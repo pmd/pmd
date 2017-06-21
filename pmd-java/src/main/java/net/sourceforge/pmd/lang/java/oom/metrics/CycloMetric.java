@@ -47,7 +47,7 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
  * @author Clément Fournier
  * @since June 2017
  */
-public class CycloMetric extends AbstractMetric implements ClassMetric, OperationMetric {
+public final class CycloMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {

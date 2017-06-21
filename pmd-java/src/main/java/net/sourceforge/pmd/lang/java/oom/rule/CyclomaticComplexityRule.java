@@ -72,6 +72,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
         return data;
     }
 
+    // TODO:cf consider enum classes too (eg create some ASTAnyTypeDeclaration umbrella interface)
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
@@ -91,7 +92,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
         return data;
     }
 
-
+    // TODO:cf consider merging these two methods (changes to JavaParserVisitor)
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion);
@@ -113,4 +114,5 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
 
         return data;
     }
+
 }

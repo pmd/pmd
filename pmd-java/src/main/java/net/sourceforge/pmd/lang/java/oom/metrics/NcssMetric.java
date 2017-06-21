@@ -47,7 +47,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
  * @see LocMetric
  * @since June 2017
  */
-public class NcssMetric extends AbstractMetric implements ClassMetric, OperationMetric {
+public final class NcssMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
     public boolean supports(AccessNode node) {
