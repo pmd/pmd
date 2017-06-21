@@ -61,6 +61,8 @@ Fields using generics are still Work in Progress, but we expect to fully support
     *   [#348]((https://github.com/pmd/pmd/issues/348): \[java] imports/UnusedImport rule not considering static inner classes of imports
 *   java-junit
     *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
+*   java-logging:
+    *   [#365](https://github.com/pmd/pmd/issues/365): \[java] InvalidSlf4jMessageFormat does not handle inline incrementation of arguments
 *   java-unnecessary
     *   [#421](https://github.com/pmd/pmd/issues/421): \[java] UnnecessaryFinalModifier final in private method
 
