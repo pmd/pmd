@@ -61,6 +61,10 @@ Fields using generics are still Work in Progress, but we expect to fully support
     *   [#348]((https://github.com/pmd/pmd/issues/348): \[java] imports/UnusedImport rule not considering static inner classes of imports
 *   java-junit
     *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
+*   java-strictexceptions
+    *   [#350](https://github.com/pmd/pmd/issues/350): \[java] Throwing Exception in method signature is fine if the method is overriding or implementing something
+*   java-typeresolution
+    *   [#350](https://github.com/pmd/pmd/issues/350): \[java] Throwing Exception in method signature is fine if the method is overriding or implementing something
 *   java-unnecessary
     *   [#421](https://github.com/pmd/pmd/issues/421): \[java] UnnecessaryFinalModifier final in private method
 
