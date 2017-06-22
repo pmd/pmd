@@ -10,6 +10,7 @@ import java.util.Set;
 /**
  * This class represents a reference to RuleSet.
  */
+// TODO : Make this class immutable
 public class RuleSetReference {
     private String ruleSetFileName;
     private boolean allRules;

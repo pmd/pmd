@@ -35,7 +35,6 @@ import net.sourceforge.pmd.util.filter.Filters;
  *
  * @see Rule
  */
-// FUTURE Implement Cloneable and clone()
 public class RuleSet implements ChecksumAware {
 
     private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
@@ -77,6 +76,22 @@ public class RuleSet implements ChecksumAware {
 
         final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
         filter = Filters.toNormalizedFileFilter(regexFilter);
+    }
+    
+    public RuleSet(final RuleSet rs) {
+        checksum = rs.checksum;
+        fileName = rs.fileName;
+        name = rs.name;
+        description = rs.description;
+        
+        rules = new ArrayList<>(rs.rules.size());
+        for (final Rule rule : rs.rules) {
+            rules.add(rule.deepCopy());
+        }
+        
+        excludePatterns = rs.excludePatterns; // we can share immutable lists of immutable elements
+        includePatterns = rs.includePatterns;
+        filter = rs.filter; // filters are immutable, can be shared
     }
 
     /* package */ static class RuleSetBuilder {

@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -453,6 +454,24 @@ public class RuleSetTest {
         ctx.setReport(r);
         ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         assertEquals("Violations", 1, r.size());
+    }
+    
+    @Test
+    public void copyConstructorDeepCopies() {
+        Rule rule = new FooRule();
+        rule.setName("FooRule1");
+        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        rule.addRuleChainVisit("dummyNode");
+        RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
+                .addRule(rule)
+                .build();
+        RuleSet ruleSet2 = new RuleSet(ruleSet1);
+        
+        assertEquals(ruleSet1, ruleSet2);
+        assertNotSame(ruleSet1, ruleSet2);
+        
+        assertEquals(rule, ruleSet2.getRuleByName("FooRule1"));
+        assertNotSame(rule, ruleSet2.getRuleByName("FooRule1"));
     }
 
     private void verifyRuleSet(RuleSet ruleset, int size, Set<RuleViolation> values) {
