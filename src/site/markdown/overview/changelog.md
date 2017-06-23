@@ -41,6 +41,11 @@ Fields using generics are still Work in Progress, but we expect to fully support
 
 *   The Java rule `EmptyTryBlock` (ruleset java-empty) now allows empty blocks when using try-with-resources.
 
+*   The Java rule `EmptyCatchBlock` (ruleset java-empty) now exposes a new property called `allowExceptionNameRegex`.
+    This allow to setup a regular expression for names of exceptions you wish to ignore for this rule. For instance,
+    setting it to `^(ignored|expected)$` would ignore all empty catch blocks where the catched exception is named
+    either `ignored` or `expected`. The default ignores no exceptions, being backwards compatible.
+
 ### Fixed Issues
 
 *   General
@@ -60,6 +65,7 @@ Fields using generics are still Work in Progress, but we expect to fully support
     *   [#410](https://github.com/pmd/pmd/issues/410): \[java] ImmutableField: False positive with lombok
     *   [#422](https://github.com/pmd/pmd/issues/422): \[java] PreserveStackTraceRule: false positive when using builder pattern
 *   java-empty
+    *   [#413](https://github.com/pmd/pmd/issues/413): \[java] EmptyCatchBlock don't fail when exception is named ignore / expected
     *   [#432](https://github.com/pmd/pmd/issues/432): \[java] EmptyTryBlock: false positive for empty try-with-resource
 *   java-imports:
     *   [#348](https://github.com/pmd/pmd/issues/348): \[java] imports/UnusedImport rule not considering static inner classes of imports

@@ -167,4 +167,21 @@ Javadoc comment is not OK
     </test-code>
  
     <!-- END Commented blocks -->
+    <test-code>
+        <description><![CDATA[
+Allow to ignore exceptions by name
+     ]]></description>
+        <rule-property name="allowExceptionNameRegex">^(ignored|expected)$</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  try {
+  } catch (NullPointerException expected) {
+  } catch (IllegalArgumentException ignored) {
+  }
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

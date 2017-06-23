@@ -30,10 +30,12 @@ or reported.
  [FormalParameter/Type/ReferenceType
    /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
  ]
+ [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
  ]]>
              </value>
           </property>
           <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
+          <property name="allowExceptionNameRegex" type="String" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^$"/>
       </properties>
       <example>
   <![CDATA[
