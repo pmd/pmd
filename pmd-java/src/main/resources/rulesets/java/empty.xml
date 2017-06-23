@@ -129,7 +129,7 @@ Avoid empty try blocks - what's the point?
           <property name="xpath">
               <value>
 <![CDATA[
-//TryStatement/Block[1][count(*) = 0]
+//TryStatement[not(ResourceSpecification)]/Block[1][count(*) = 0]
 ]]>
               </value>
           </property>

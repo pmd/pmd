@@ -39,6 +39,8 @@ Fields using generics are still Work in Progress, but we expect to fully support
 *   The ruleset java-junit now properly detects JUnit5, and rules are being adapted to the changes on it's API.
     This support is, however, still incomplete. Let us know of any uses we are still missing on the [issue tracker](https://github.com/pmd/pmd/issues)
 
+*   The Java rule `EmptyTryBlock` (ruleset java-empty) now allows empty blocks when usin try-with-resources.
+
 ### Fixed Issues
 
 *   General
@@ -57,8 +59,10 @@ Fields using generics are still Work in Progress, but we expect to fully support
     *   [#397](https://github.com/pmd/pmd/issues/397): \[java] ConstructorCallsOverridableMethodRule: false positive for method called from lambda expression
     *   [#410](https://github.com/pmd/pmd/issues/410): \[java] ImmutableField: False positive with lombok
     *   [#422](https://github.com/pmd/pmd/issues/422): \[java] PreserveStackTraceRule: false positive when using builder pattern
+*   java-empty
+    *   [#432](https://github.com/pmd/pmd/issues/432): \[java] EmptyTryBlock: false positive for empty try-with-resource
 *   java-imports:
-    *   [#348]((https://github.com/pmd/pmd/issues/348): \[java] imports/UnusedImport rule not considering static inner classes of imports
+    *   [#348](https://github.com/pmd/pmd/issues/348): \[java] imports/UnusedImport rule not considering static inner classes of imports
 *   java-junit
     *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
 *   java-logging:
