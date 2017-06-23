@@ -63,6 +63,8 @@ Fields using generics are still Work in Progress, but we expect to fully support
     *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
 *   java-unnecessary
     *   [#421](https://github.com/pmd/pmd/issues/421): \[java] UnnecessaryFinalModifier final in private method
+*   jsp
+    *   [#311](https://github.com/pmd/pmd/issues/311): \[jsp] Parse error on HTML boolean attribute
 
 ### API Changes
 
