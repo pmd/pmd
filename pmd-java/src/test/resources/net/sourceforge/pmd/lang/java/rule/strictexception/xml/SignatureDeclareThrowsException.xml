@@ -103,4 +103,16 @@ public class BugSignature {
 public class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#350 allow throws exception when overriding a method defined elsewhere</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class BugSignature implements LousyInterface {
+  @Override
+  public void record() throws Exception {
+  }
+}
+]]></code>
+    </test-code>
 </test-data>

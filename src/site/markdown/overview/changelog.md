@@ -39,7 +39,7 @@ Fields using generics are still Work in Progress, but we expect to fully support
 *   The ruleset java-junit now properly detects JUnit5, and rules are being adapted to the changes on it's API.
     This support is, however, still incomplete. Let us know of any uses we are still missing on the [issue tracker](https://github.com/pmd/pmd/issues)
 
-*   The Java rule `EmptyTryBlock` (ruleset java-empty) now allows empty blocks when usin try-with-resources.
+*   The Java rule `EmptyTryBlock` (ruleset java-empty) now allows empty blocks when using try-with-resources.
 
 ### Fixed Issues
 
@@ -67,6 +67,10 @@ Fields using generics are still Work in Progress, but we expect to fully support
     *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
 *   java-logging:
     *   [#365](https://github.com/pmd/pmd/issues/365): \[java] InvalidSlf4jMessageFormat does not handle inline incrementation of arguments
+*   java-strictexceptions
+    *   [#350](https://github.com/pmd/pmd/issues/350): \[java] Throwing Exception in method signature is fine if the method is overriding or implementing something
+*   java-typeresolution
+    *   [#350](https://github.com/pmd/pmd/issues/350): \[java] Throwing Exception in method signature is fine if the method is overriding or implementing something
 *   java-unnecessary
     *   [#421](https://github.com/pmd/pmd/issues/421): \[java] UnnecessaryFinalModifier final in private method
 *   jsp

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.typeresolution.rules;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -112,6 +113,15 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
         if (junitImported && isAllowedMethod(methodDeclaration)) {
             return super.visit(methodDeclaration, o);
+        }
+        
+        // Ignore overridden methods, the issue should be marked on the method definition
+        final List<ASTAnnotation> methodAnnotations = methodDeclaration.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
+        for (final ASTAnnotation annotation : methodAnnotations) {
+            final ASTName annotationName = annotation.getFirstDescendantOfType(ASTName.class);
+            if (annotationName.hasImageEqualTo("Override") || annotationName.hasImageEqualTo("java.lang.Override")) {
+                return super.visit(methodDeclaration, o);
+            }
         }
 
         checkExceptions(methodDeclaration, o);
