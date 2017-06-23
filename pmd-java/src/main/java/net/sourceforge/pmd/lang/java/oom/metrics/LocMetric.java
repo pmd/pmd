@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
@@ -31,7 +31,7 @@ public final class LocMetric extends AbstractMetric implements ClassMetric, Oper
 
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
         return node.getEndLine() - node.getBeginLine();
     }
 

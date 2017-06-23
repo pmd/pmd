@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.oom;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
@@ -146,7 +147,7 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+    /* default */ double compute(ClassMetricKey key, ASTAnyTypeDeclaration node, boolean force,
                                  MetricVersion version) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
@@ -186,7 +187,7 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    /* default */ double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node,
+    /* default */ double computeWithResultOption(OperationMetricKey key, ASTAnyTypeDeclaration node,
                                                  boolean force, MetricVersion version, ResultOption option) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 

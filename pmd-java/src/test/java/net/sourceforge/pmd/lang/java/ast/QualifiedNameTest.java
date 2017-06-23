@@ -73,6 +73,51 @@ public class QualifiedNameTest extends ParserTst {
     }
 
     @Test
+    public void testNestedEnum() {
+        final String TEST = "package foo.bar; class Foo { enum Bzaz{HOO;}}";
+
+        Set<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
+
+        for (ASTEnumDeclaration coid : nodes) {
+            QualifiedName qname = coid.getQualifiedName();
+            assertEquals("foo.bar.Foo$Bzaz", qname.toString());
+            assertEquals(2, qname.getPackages().length);
+            assertEquals(2, qname.getClasses().length);
+            assertNull(qname.getOperation());
+        }
+    }
+
+    @Test
+    public void testEnum() {
+        final String TEST = "package foo.bar; enum Bzaz{HOO;}";
+
+        Set<ASTEnumDeclaration> nodes = getNodes(ASTEnumDeclaration.class, TEST);
+
+        for (ASTEnumDeclaration coid : nodes) {
+            QualifiedName qname = coid.getQualifiedName();
+            assertEquals("foo.bar.Bzaz", qname.toString());
+            assertEquals(2, qname.getPackages().length);
+            assertEquals(1, qname.getClasses().length);
+            assertNull(qname.getOperation());
+        }
+    }
+
+    @Test
+    public void testEnumMethodMember() {
+        final String TEST = "package foo.bar; enum Bzaz{HOO; void foo(){}}";
+
+        Set<ASTMethodDeclaration> nodes = getNodes(ASTMethodDeclaration.class, TEST);
+
+        for (ASTMethodDeclaration coid : nodes) {
+            QualifiedName qname = coid.getQualifiedName();
+            assertEquals("foo.bar.Bzaz#foo()", qname.toString());
+            assertEquals(2, qname.getPackages().length);
+            assertEquals(1, qname.getClasses().length);
+            assertEquals("foo()", qname.getOperation());
+        }
+    }
+
+    @Test
     public void testNestedEmptyPackage() {
         final String TEST = "class Bzaz{ class Bor{ class Foo{}}}";
 

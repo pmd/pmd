@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.oom;
 
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
@@ -45,7 +46,7 @@ public final class Metrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
-    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
+    public static double get(ClassMetricKey key, ASTAnyTypeDeclaration node) {
         return get(key, node, Version.STANDARD);
     }
 
@@ -60,7 +61,7 @@ public final class Metrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
-    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public static double get(ClassMetricKey key, ASTAnyTypeDeclaration node, MetricVersion version) {
         if (!key.getCalculator().supports(node)) {
             return Double.NaN;
         }
@@ -112,7 +113,7 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
      * {@literal null}.
      */
-    public static double get(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, ResultOption option) {
+    public static double get(OperationMetricKey key, ASTAnyTypeDeclaration node, ResultOption option) {
         return get(key, node, Version.STANDARD, option);
     }
 
@@ -128,7 +129,7 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
      * {@literal null}.
      */
-    public static double get(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option) {
+    public static double get(OperationMetricKey key, ASTAnyTypeDeclaration node, MetricVersion version, ResultOption option) {
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
         return option == null ? Double.NaN

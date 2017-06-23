@@ -8,6 +8,7 @@ import java.util.Stack;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
@@ -26,6 +27,15 @@ class MetricsVisitor extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        stack.push(((PackageStats) data).getClassStats(node.getQualifiedName(), true));
+        super.visit(node, data);
+        stack.pop();
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTEnumDeclaration node, Object data) {
         stack.push(((PackageStats) data).getClassStats(node.getQualifiedName(), true));
         super.visit(node, data);
         stack.pop();

@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.oom;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
@@ -46,7 +46,7 @@ public abstract class AbstractMetric implements Metric {
      *
      * @return Returns the sum of a metric over all operations of a class.
      */
-    protected static double sumMetricOverOperations(ASTClassOrInterfaceDeclaration node, OperationMetricKey key,
+    protected static double sumMetricOverOperations(ASTAnyTypeDeclaration node, OperationMetricKey key,
                                                     MetricVersion version, boolean includeNested) {
 
         List<ASTMethodOrConstructorDeclaration> operations = findOperations(node, includeNested);
@@ -70,7 +70,7 @@ public abstract class AbstractMetric implements Metric {
      *
      * @return Returns the average of a metric over all operations of a class.
      */
-    protected static double averageMetricOverOperations(ASTClassOrInterfaceDeclaration node, OperationMetricKey key,
+    protected static double averageMetricOverOperations(ASTAnyTypeDeclaration node, OperationMetricKey key,
                                                         MetricVersion version, boolean includeNested) {
 
         List<ASTMethodOrConstructorDeclaration> operations = findOperations(node, includeNested);
@@ -97,7 +97,7 @@ public abstract class AbstractMetric implements Metric {
      *
      * @return Returns the highest value of a metric over all operations of a class.
      */
-    protected static double highestMetricOverOperations(ASTClassOrInterfaceDeclaration node, OperationMetricKey key,
+    protected static double highestMetricOverOperations(ASTAnyTypeDeclaration node, OperationMetricKey key,
                                                         MetricVersion version, boolean includeNested) {
 
         List<ASTMethodOrConstructorDeclaration> operations = findOperations(node, includeNested);
@@ -121,7 +121,7 @@ public abstract class AbstractMetric implements Metric {
      *
      * @return The list of all operations declared inside the specified class.
      */
-    public static List<ASTMethodOrConstructorDeclaration> findOperations(ASTClassOrInterfaceDeclaration node,
+    public static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
                                                                          boolean includeNested) {
 
         if (includeNested) {

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.oom.api;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 
 /**
  * Metric that can be computed on a class node.
@@ -21,6 +21,6 @@ public interface ClassMetric extends Metric {
      *
      * @return The value of the metric.
      */
-    double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version);
+    double computeFor(ASTAnyTypeDeclaration node, MetricVersion version);
 
 }

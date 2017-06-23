@@ -37,7 +37,8 @@ public final class QualifiedName {
      * @return The qualified name of the node
      */
     public static QualifiedName makeOperationOf(ASTMethodDeclaration node) {
-        QualifiedName parentQname = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).getQualifiedName();
+        QualifiedName parentQname = node.getFirstParentOfType(ASTAnyTypeDeclaration.class)
+                                        .getQualifiedName();
 
         return makeOperationOf(parentQname,
                                node.getMethodName(),
@@ -101,7 +102,7 @@ public final class QualifiedName {
      *
      * @return The qualified name of the node
      */
-    public static QualifiedName makeOuterClassOf(ASTClassOrInterfaceDeclaration node) {
+    public static QualifiedName makeOuterClassOf(ASTAnyTypeDeclaration node) {
         ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
                                         .getFirstChildOfType(ASTPackageDeclaration.class);
 

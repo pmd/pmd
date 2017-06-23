@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
@@ -50,7 +50,7 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
 public final class CycloMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
         return 1 + averageMetricOverOperations(node, OperationMetricKey.CYCLO, version, false);
     }
 

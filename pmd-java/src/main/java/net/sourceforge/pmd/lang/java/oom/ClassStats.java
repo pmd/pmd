@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
@@ -202,7 +203,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    /* default */ double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node,
+    /* default */ double computeWithResultOption(OperationMetricKey key, ASTAnyTypeDeclaration node,
                                                  boolean force, MetricVersion version, ResultOption option) {
 
         List<ASTMethodOrConstructorDeclaration> ops = AbstractMetric.findOperations(node, false);
@@ -239,7 +240,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force, MetricVersion version) {
+    /* default */ double compute(ClassMetricKey key, ASTAnyTypeDeclaration node, boolean force, MetricVersion version) {
 
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.

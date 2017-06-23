@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 public final class WmcMetric extends AbstractMetric implements ClassMetric {
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
         return sumMetricOverOperations(node, OperationMetricKey.CYCLO, version, false);
     }
 }

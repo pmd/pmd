@@ -6,17 +6,20 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
@@ -55,13 +58,13 @@ public final class NcssMetric extends AbstractMetric implements ClassMetric, Ope
     }
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
-        return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(1))).getValue();
+    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+        return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(0))).getValue();
     }
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-        return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(1))).getValue();
+        return ((MutableInt) node.jjtAccept(new NcssVisitor(), new MutableInt(0))).getValue();
     }
 
 
@@ -83,6 +86,13 @@ public final class NcssMetric extends AbstractMetric implements ClassMetric, Ope
             ((MutableInt) data).increment();
             return super.visit(node, data);
         }
+
+        @Override
+        public Object visit(ASTEnumDeclaration node, Object data) {
+            ((MutableInt) data).increment();
+            return super.visit(node, data);
+        }
+
 
         @Override
         public Object visit(ASTFieldDeclaration node, Object data) {
@@ -136,7 +146,9 @@ public final class NcssMetric extends AbstractMetric implements ClassMetric, Ope
 
         @Override
         public Object visit(ASTStatementExpression node, Object data) {
-            ((MutableInt) data).increment();
+            if (!(node.jjtGetParent().jjtGetParent() instanceof ASTForUpdate)) {
+                ((MutableInt) data).increment();
+            }
             return data;
         }
 

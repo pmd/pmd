@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -52,7 +53,7 @@ public final class AtfdMetric extends AbstractMetric implements ClassMetric, Ope
 
 
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
         // TODO:cf
         return 0;
     }
