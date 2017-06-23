@@ -26,7 +26,7 @@ public abstract class Signature {
 
     @Override
     public int hashCode() {
-        return visibility.hashCode() * 2;
+        return visibility.hashCode();
     }
 
     /**

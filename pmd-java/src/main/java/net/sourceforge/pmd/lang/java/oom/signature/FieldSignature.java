@@ -49,15 +49,11 @@ public final class FieldSignature extends Signature {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof FieldSignature) {
-            FieldSignature f = (FieldSignature) o;
-            return super.equals(o) && f.isFinal == isFinal && f.isStatic == isStatic;
-        }
-        return false;
+        return this == o;
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode() * 16 + (isStatic ? 1 : 0) * 32 + (isFinal ? 1 : 0);
+        return (isFinal ? 1 : 0) + super.hashCode() << 3 + (isStatic ? 1 : 0) << 1;
     }
 }

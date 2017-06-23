@@ -69,13 +69,12 @@ public final class OperationSignature extends Signature {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof OperationSignature && super.equals(o) && role == ((OperationSignature) o).role
-            && isAbstract == ((OperationSignature) o).isAbstract;
+        return this == o;
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode() * 2 + role.hashCode() * 4 + (isAbstract ? 1 : 0);
+        return (isAbstract ? 1 : 0) + super.hashCode() << 1 + role.hashCode() << 2;
     }
 
     /**
@@ -102,6 +101,7 @@ public final class OperationSignature extends Signature {
             }
         }
 
+        // TODO:cf clean that up
         private static boolean isGetterOrSetter(ASTMethodDeclaration node) {
             String name = node.getName();
             if (NAME_PATTERN.matcher(name).matches()) {
