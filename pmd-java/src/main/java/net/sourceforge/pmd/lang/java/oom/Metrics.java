@@ -105,6 +105,21 @@ public final class Metrics {
      * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The
      * type of operation is specified by the {@link ResultOption} parameter.
      *
+     * @param key    The key identifying the metric to be computed
+     * @param node   The node on which to compute the metric
+     * @param option The result option to use.
+     *
+     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
+     * {@literal null}.
+     */
+    public static double get(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, ResultOption option) {
+        return get(key, node, Version.STANDARD, option);
+    }
+
+    /**
+     * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The
+     * type of operation is specified by the {@link ResultOption} parameter.
+     *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
      * @param version The version of the metric.

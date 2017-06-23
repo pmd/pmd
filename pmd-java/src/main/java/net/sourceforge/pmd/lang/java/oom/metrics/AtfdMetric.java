@@ -31,6 +31,7 @@ public final class AtfdMetric extends AbstractMetric implements ClassMetric, Ope
             || node instanceof ASTMethodOrConstructorDeclaration && !node.isAbstract();
     }
 
+
     @Override // TODO:cf
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
@@ -48,6 +49,7 @@ public final class AtfdMetric extends AbstractMetric implements ClassMetric, Ope
 
         return foreignCalls / callQNames.size();
     }
+
 
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {

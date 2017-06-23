@@ -186,8 +186,8 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
-                                   MetricVersion version, ResultOption option) {
+    /* default */ double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node,
+                                                 boolean force, MetricVersion version, ResultOption option) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN

@@ -56,7 +56,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
                 highest = val;
             }
         }
-        return highest;
+        return highest == Double.NEGATIVE_INFINITY ? 0 : highest;
     }
 
     private static double average(List<Double> values) {

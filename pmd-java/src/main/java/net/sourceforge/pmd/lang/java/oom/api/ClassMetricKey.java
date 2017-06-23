@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.oom.api;
 
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.LocMetric;
@@ -35,4 +36,9 @@ public enum ClassMetricKey implements MetricKey<ClassMetric> {
     public ClassMetric getCalculator() {
         return calculator;
     }
+
+    public boolean supports(ASTClassOrInterfaceDeclaration node) {
+        return calculator.supports(node);
+    }
+
 }

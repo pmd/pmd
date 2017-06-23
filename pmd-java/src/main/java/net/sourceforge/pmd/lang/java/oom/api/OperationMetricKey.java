@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.oom.api;
 
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.LocMetric;
@@ -33,4 +34,9 @@ public enum OperationMetricKey implements MetricKey<OperationMetric> {
     public OperationMetric getCalculator() {
         return calculator;
     }
+
+    public boolean supports(ASTMethodOrConstructorDeclaration node) {
+        return calculator.supports(node);
+    }
+
 }

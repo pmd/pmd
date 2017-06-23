@@ -29,10 +29,12 @@ public final class LocMetric extends AbstractMetric implements ClassMetric, Oper
         return true;
     }
 
+
     @Override
     public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
         return node.getEndLine() - node.getBeginLine();
     }
+
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {

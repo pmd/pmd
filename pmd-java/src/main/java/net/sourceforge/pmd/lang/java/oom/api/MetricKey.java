@@ -25,5 +25,4 @@ public interface MetricKey<T extends Metric> {
      */
     T getCalculator();
 
-
 }
