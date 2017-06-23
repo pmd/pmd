@@ -9,9 +9,16 @@
         Metrics testing ruleset.
     </description>
 
-    <rule name="CyclomaticComplexity"
+    <rule name="CycloTest"
           message = "''{0}'' has value {1}."
           class="net.sourceforge.pmd.lang.java.oom.metrics.CycloTestRule"
           metrics="true">
     </rule>
+
+    <rule name="NcssTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.oom.metrics.NcssTestRule"
+          metrics="true">
+    </rule>
+
 </ruleset>

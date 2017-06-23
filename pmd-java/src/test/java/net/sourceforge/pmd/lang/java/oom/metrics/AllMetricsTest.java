@@ -15,9 +15,9 @@ public class AllMetricsTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-        addRule(RULESET, "CyclomaticComplexity");
+        addRule(RULESET, "CycloTest");
+        addRule(RULESET, "NcssTest");
     }
-
 
 
 }

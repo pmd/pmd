@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -128,9 +127,8 @@ public abstract class AbstractMetric implements Metric {
             return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
         }
 
-        ASTClassOrInterfaceBody body = (ASTClassOrInterfaceBody) node.jjtGetChild(0);
         List<ASTClassOrInterfaceBodyDeclaration> outerDecls
-            = body.findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
+            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
 
 
         List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
