@@ -35,30 +35,6 @@ public abstract class AbstractMetric implements Metric {
         return Metrics.getTopLevelPackageStats();
     }
 
-
-    protected List<QualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
-        List<QualifiedName> result = new ArrayList<>();
-        // TODO:cf
-        // Needs TypeRes
-        // Find the qualified names of all methods called in that method's block
-        return result;
-    }
-
-    /**
-     * Default implementation of the supports method, which filters out abstract nodes. Metrics that support abstract
-     * nodes should override this method.
-     *
-     * @param node The node to check.
-     *
-     * @return True if the metric can be computed on this node.
-     */
-    @Override
-    public boolean supports(AccessNode node) {
-        return !node.isAbstract();
-    }
-
-
-    // TODO:cf all these methods mimic the behaviour of resultoptions, perhaps not great.
     /**
      * Gets the sum of the value of an operation metric over all operations in this class (excluding nested classes).
      * The computation is not forced (memoized results are used if they can be found).
@@ -102,11 +78,13 @@ public abstract class AbstractMetric implements Metric {
         double total = 0;
         for (ASTMethodOrConstructorDeclaration op : operations) {
             double val = Metrics.get(key, op, version);
-            total += val == Double.NaN ? 1 : val;
+            total += val == Double.NaN ? 0 : val;
         }
         return total / operations.size();
     }
 
+
+    // TODO:cf all these methods mimic the behaviour of resultoptions, perhaps not great.
 
     /**
      * Gets the highest value of an operation metric over all operations in this class (excluding nested classes).
@@ -134,10 +112,6 @@ public abstract class AbstractMetric implements Metric {
         }
         return highest;
     }
-
-
-    // TODO:cf this one is computed every time
-    // TODO:cf it might not be at the best place too (used by ClassStats)
 
     /**
      * Finds the declaration nodes of all methods or constructors that are declared inside a class.
@@ -167,6 +141,31 @@ public abstract class AbstractMetric implements Metric {
             }
         }
         return operations;
+    }
+
+    protected List<QualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
+        List<QualifiedName> result = new ArrayList<>();
+        // TODO:cf
+        // Needs TypeRes
+        // Find the qualified names of all methods called in that method's block
+        return result;
+    }
+
+
+    // TODO:cf this one is computed every time
+    // TODO:cf it might not be at the best place too (used by ClassStats)
+
+    /**
+     * Default implementation of the supports method, which filters out abstract nodes. Metrics that support abstract
+     * nodes should override this method.
+     *
+     * @param node The node to check.
+     *
+     * @return True if the metric can be computed on this node.
+     */
+    @Override
+    public boolean supports(AccessNode node) {
+        return !node.isAbstract();
     }
 
 }

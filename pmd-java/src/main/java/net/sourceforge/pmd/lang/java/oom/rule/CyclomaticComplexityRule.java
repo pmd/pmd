@@ -106,7 +106,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node);
+        int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion);
 
         if (showMethodsComplexity && cyclo >= reportLevel) {
             addViolation(data, node, new String[] {"constructor", node.getQualifiedName().getOperation(), "" + cyclo});

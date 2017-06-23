@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-<!--
+
     <code-fragment id="basic-violation">
       <![CDATA[
         public class Complicated {
@@ -233,7 +233,7 @@
         </expected-messages>
         <code-ref id="fallthroughSwitch"/>
     </test-code>
--->
+
     <code-fragment id="manyBooleanOps">
       <![CDATA[
         class Foo {
@@ -250,7 +250,7 @@
         }
       ]]>
     </code-fragment>
-<!--
+
     <test-code>
         <description>Standard Cyclo should count boolean paths</description>
         <rule-property name="showClassesComplexity">false</rule-property>
@@ -273,7 +273,7 @@
         </expected-messages>
         <code-ref id="manyBooleanOps"/>
     </test-code>
--->
+
     <test-code>
         <description>Avoid division by 0 when averaging a metric over no operations</description>
         <rule-property name="reportLevel">-1</rule-property>

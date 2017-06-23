@@ -53,7 +53,7 @@ public final class ParameterizedMetricKey {
     public String toString() {
         return "ParameterizedMetricKey{"
             + "key=" + key
-            + ", options=" + version
+            + ", version=" + version
             + '}';
     }
 

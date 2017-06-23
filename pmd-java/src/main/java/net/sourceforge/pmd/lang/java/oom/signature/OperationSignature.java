@@ -161,7 +161,7 @@ public final class OperationSignature extends Signature {
         /** Attempts to determine if the method is a setter. */
         private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getFirstDescendantOfType(ASTFormalParameters.class).jjtGetNumChildren() == 0) {
+            if (node.getFirstDescendantOfType(ASTFormalParameters.class).jjtGetNumChildren() != 1) {
                 return false;
             }
 
