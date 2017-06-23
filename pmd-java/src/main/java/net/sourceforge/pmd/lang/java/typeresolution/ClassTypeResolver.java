@@ -339,7 +339,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param accessingClass The class that is trying to access the field, some Class declared in the current ACU.
      * @return JavaTypeDefinition of the resolved field or null if it could not be found.
      */
-    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?> accessingClass) {
+    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?>
+            accessingClass) {
         while (typeToSearch != null) {
             try {
                 Field field = typeToSearch.getType().getDeclaredField(fieldImage);
@@ -364,7 +365,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param accessingClass The Class (which is defined in the current ACU) that is trying to access the field.
      * @return Type def. of the field, or null if it could not be resolved.
      */
-    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?> accessingClass) {
+    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?>
+            accessingClass) {
         if (accessingClass == null) {
             return null;
         }
@@ -376,6 +378,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 if (entry.getKey().getImage().equals(image)) {
                     ASTType typeNode = entry.getKey().getDeclaratorId().getTypeNode();
 
+                    if (typeNode == null) {
+                        return null;
+                    }
+                    
                     if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
                         return ((TypeNode) typeNode.jjtGetChild(0)).getTypeDefinition();
                     } else { // primitive type
@@ -851,7 +857,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * as the second argument, or if the second argument is null, then anonymous classes are considered
      * as well and the first enclosing scope's super class is returned.
      *
-     * @param node The node from which to start searching.
+     * @param node  The node from which to start searching.
      * @param clazz The type of the enclosing class.
      * @return The TypeDefinition of the superclass.
      */
