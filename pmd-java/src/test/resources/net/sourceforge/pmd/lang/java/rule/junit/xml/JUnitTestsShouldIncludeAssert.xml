@@ -394,4 +394,24 @@ public class FooTest {
     }
 }]]></code>
     </test-code>
+    <test-code>
+        <description>#465 NullPointerException when dealing with @SuppressWarnings</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+public class FooTest {
+
+  @SuppressWarnings("deprecation")
+  private static Foo foo = new Foo();
+
+  @Test
+  public void testFoo() {
+    assertEquals("doesn't matter", "doesn't matter");
+  }
+
+}]]></code>
+    </test-code>
 </test-data>
