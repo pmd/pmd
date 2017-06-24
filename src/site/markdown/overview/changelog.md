@@ -25,7 +25,7 @@ His progress so far has allowed to properly resolve, in addition to previously s
  - References to `this` and `super`, even when qualified
  - References to fields, even when chained (ie: `this.myObject.aField`), and properly handling inheritance / shadowing
 
-Fields using generics are still Work in Progress, but we expect to fully support it soon enough.
+Lambda parameter types where these are infered rather than explicit are still not supported. Expect future releases to do so.
 
 #### Modified Rules
 
@@ -68,4 +68,5 @@ Fields using generics are still Work in Progress, but we expect to fully support
 *   [#423](https://github.com/pmd/pmd/pull/423): \[java] Add field access type resolution in non-generic cases
 *   [#425](https://github.com/pmd/pmd/pull/425): \[java] False positive with builder pattern in java-design/PreserveStackTrace
 *   [#426](https://github.com/pmd/pmd/pull/426): \[java] UnnecessaryFinalModifier final in private method
+*   [#444](https://github.com/pmd/pmd/pull/444): \[java] [typeresolution]: add support for generic fields
 
