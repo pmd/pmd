@@ -1,4 +1,8 @@
-/* 
+/*
+ * Allow boolean attributes
+ *
+ * Juan Martín Sotuyo Dodero 06/2017
+ *====================================================================
  * Added capability for Tracking Tokens.
  *
  * Amit Kumar Prasad 10/2015
@@ -580,7 +584,7 @@ void Attribute() :
   (
   	<ATTR_EQ> 
   	AttributeValue()
-  )
+  )?
 }
 
 /**

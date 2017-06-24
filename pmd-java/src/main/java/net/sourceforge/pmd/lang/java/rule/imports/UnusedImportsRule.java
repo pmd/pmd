@@ -86,7 +86,14 @@ public class UnusedImportsRule extends AbstractJavaRule {
                         if (s != null) {
                             String[] params = s.split("\\s*,\\s*");
                             for (String param : params) {
-                                imports.remove(new ImportWrapper(param, param, new DummyJavaNode(-1)));
+                                final int firstDot = param.indexOf('.');
+                                final String expectedImportName;
+                                if (firstDot == -1) {
+                                    expectedImportName = param;
+                                } else {
+                                    expectedImportName = param.substring(0, firstDot);
+                                }
+                                imports.remove(new ImportWrapper(param, expectedImportName, new DummyJavaNode(-1)));
                             }
                         }
                     }

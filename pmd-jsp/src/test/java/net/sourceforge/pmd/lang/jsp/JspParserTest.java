@@ -29,6 +29,16 @@ public class JspParserTest {
                 "<span class=\"CostUnit\">$</span><span class=\"CostMain\">129</span><span class=\"CostFrac\">.00</span>");
         Assert.assertNotNull(node);
     }
+    
+    /**
+     * Verifies bug #311 Jsp parser fails on boolean attribute
+     */
+    @Test
+    public void testParseBooleanAttribute() {
+        Node node = parse(
+                "<label><input type='checkbox' checked name=cheese disabled=''> Cheese</label>");
+        Assert.assertNotNull(node);
+    }
 
     private Node parse(String code) {
         LanguageVersionHandler jspLang = LanguageRegistry.getLanguage(JspLanguageModule.NAME).getDefaultVersion()

@@ -10,22 +10,40 @@ This is a minor release.
 
 * [New and noteworthy](#New_and_noteworthy)
     *   [Java Type Resolution](#Java_Type_Resolution)
+    *   [Metrics Framework](#Metrics_Framework)
     *   [Modified Rules](#Modified_Rules)
+    *   [Deprecated Rules](#Deprecated_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
 
-### Java Type Resolution
+#### Java Type Resolution
 
-As part of Google Summer of Code 2017, [Bendeguz Nagy](https://github.com/WinterGrascph) has been working on completing type resolution for Java.
+As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph) has been working on completing type resolution for Java.
 His progress so far has allowed to properly resolve, in addition to previously supported statements:
 
  - References to `this` and `super`, even when qualified
  - References to fields, even when chained (ie: `this.myObject.aField`), and properly handling inheritance / shadowing
 
-Fields using generics are still Work in Progress, but we expect to fully support it soon enough.
+Lambda parameter types where these are infered rather than explicit are still not supported. Expect future releases to do so.
+
+
+#### Metrics Framework
+
+As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) has been working on
+a new metrics framework for object-oriented metrics.
+
+The basic groundwork has been done already and with this release, including a first rule based on the
+metrics framework as a proof-of-concept: The rule *CyclomaticComplexity*, currently in the temporary
+ruleset *java-metrics*, uses the Cyclomatic Complexity metric to find overly complex code.
+This rule will eventually replace the existing three *CyclomaticComplexity* rules that are currently
+defined in the *java-codesize* ruleset (see also [issue #445](https://github.com/pmd/pmd/issues/445)).
+
+Since this work is still in progress, the metrics API (package `net.sourceforge.pmd.lang.java.oom`)
+is not finalized yet and is expected to change.
+
 
 #### Modified Rules
 
@@ -38,6 +56,18 @@ Fields using generics are still Work in Progress, but we expect to fully support
 
 *   The ruleset java-junit now properly detects JUnit5, and rules are being adapted to the changes on it's API.
     This support is, however, still incomplete. Let us know of any uses we are still missing on the [issue tracker](https://github.com/pmd/pmd/issues)
+
+*   The Java rule `EmptyTryBlock` (ruleset java-empty) now allows empty blocks when using try-with-resources.
+
+*   The Java rule `EmptyCatchBlock` (ruleset java-empty) now exposes a new property called `allowExceptionNameRegex`.
+    This allow to setup a regular expression for names of exceptions you wish to ignore for this rule. For instance,
+    setting it to `^(ignored|expected)$` would ignore all empty catch blocks where the catched exception is named
+    either `ignored` or `expected`. The default ignores no exceptions, being backwards compatible.
+
+#### Deprecated Rules
+
+*   The three complexity rules `CyclomaticComplexity`, `StdCyclomaticComplexity`, `ModifiedCyclomaticComplexity` (ruleset java-codesize) have been deprecated. They will be eventually replaced
+by a new CyclomaticComplexity rule based on the metrics framework. See also [issue #445](https://github.com/pmd/pmd/issues/445).
 
 ### Fixed Issues
 
@@ -57,10 +87,24 @@ Fields using generics are still Work in Progress, but we expect to fully support
     *   [#397](https://github.com/pmd/pmd/issues/397): \[java] ConstructorCallsOverridableMethodRule: false positive for method called from lambda expression
     *   [#410](https://github.com/pmd/pmd/issues/410): \[java] ImmutableField: False positive with lombok
     *   [#422](https://github.com/pmd/pmd/issues/422): \[java] PreserveStackTraceRule: false positive when using builder pattern
+*   java-empty
+    *   [#413](https://github.com/pmd/pmd/issues/413): \[java] EmptyCatchBlock don't fail when exception is named ignore / expected
+    *   [#432](https://github.com/pmd/pmd/issues/432): \[java] EmptyTryBlock: false positive for empty try-with-resource
+*   java-imports:
+    *   [#348](https://github.com/pmd/pmd/issues/348): \[java] imports/UnusedImport rule not considering static inner classes of imports
 *   java-junit
     *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
+    *   [#465](https://github.com/pmd/pmd/issues/465): \[java] NullPointerException in JUnitTestsShouldIncludeAssertRule
+*   java-logging:
+    *   [#365](https://github.com/pmd/pmd/issues/365): \[java] InvalidSlf4jMessageFormat does not handle inline incrementation of arguments
+*   java-strictexceptions
+    *   [#350](https://github.com/pmd/pmd/issues/350): \[java] Throwing Exception in method signature is fine if the method is overriding or implementing something
+*   java-typeresolution
+    *   [#350](https://github.com/pmd/pmd/issues/350): \[java] Throwing Exception in method signature is fine if the method is overriding or implementing something
 *   java-unnecessary
     *   [#421](https://github.com/pmd/pmd/issues/421): \[java] UnnecessaryFinalModifier final in private method
+*   jsp
+    *   [#311](https://github.com/pmd/pmd/issues/311): \[jsp] Parse error on HTML boolean attribute
 
 ### API Changes
 
@@ -76,4 +120,6 @@ Fields using generics are still Work in Progress, but we expect to fully support
 *   [#436](https://github.com/pmd/pmd/pull/436): \[java] Metrics framework tests and various improvements
 *   [#440](https://github.com/pmd/pmd/pull/440): \[core] Created ruleset schema 3.0.0 (to use metrics)
 *   [#443](https://github.com/pmd/pmd/pull/443): \[java] Optimize typeresolution, by skipping package and import declarations in visit(ASTName)
+*   [#444](https://github.com/pmd/pmd/pull/444): \[java] [typeresolution]: add support for generic fields
+*   [#451](https://github.com/pmd/pmd/pull/451): \[java] Metrics framework: first metrics + first rule
 
