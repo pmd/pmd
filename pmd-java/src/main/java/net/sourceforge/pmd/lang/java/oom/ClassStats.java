@@ -29,8 +29,8 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 /**
  * Statistics about a class, enum, interface, or annotation. Gathers information about the contained members and their
  * signatures. This class does not provide methods to operate directly on its nested classes, but only on itself. To
- * operate on a nested class, retrieve the correct ClassStats with {@link PackageStats#getClassStats(QualifiedName,
- * boolean)} then use the methods of ClassStats.
+ * operate on a nested class, retrieve the correct ClassStats with
+ * {@link PackageStats#getClassStats(QualifiedName, boolean)} then use the methods of ClassStats.
  *
  * <p>Note that at this level, entities of the DS do not manipulate QualifiedNames anymore, only Strings.
  *

@@ -15,4 +15,8 @@ public class MetricsForceHook {
         Metrics.setForce(b);
     }
 
+    private MetricsForceHook() {
+
+    }
+
 }

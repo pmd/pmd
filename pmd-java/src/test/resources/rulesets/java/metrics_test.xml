@@ -27,4 +27,10 @@
           metrics="true">
     </rule>
 
+    <rule name="LocTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.oom.metrics.LocTestRule"
+          metrics="true">
+    </rule>
+
 </ruleset>

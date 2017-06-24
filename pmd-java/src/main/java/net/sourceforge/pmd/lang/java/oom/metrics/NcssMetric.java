@@ -44,7 +44,8 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 /**
  * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent
  * to counting the number of semicolons and opening braces in the program. The precise rules for counting
- * statements comply with <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
+ * statements comply with <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>. The only
+ * difference is that import and package statements are not counted.
  *
  * @author Clément Fournier
  * @see LocMetric

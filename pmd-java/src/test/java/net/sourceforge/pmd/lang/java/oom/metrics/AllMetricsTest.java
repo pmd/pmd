@@ -18,6 +18,7 @@ public class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "CycloTest");
         addRule(RULESET, "NcssTest");
         addRule(RULESET, "WmcTest");
+        addRule(RULESET, "LocTest");
     }
 
 }
