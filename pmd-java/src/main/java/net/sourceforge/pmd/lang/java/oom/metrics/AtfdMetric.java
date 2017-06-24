@@ -26,13 +26,6 @@ import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
  */
 public final class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
-    @Override
-    public boolean supports(AccessNode node) {
-        return node instanceof ASTClassOrInterfaceDeclaration
-            || node instanceof ASTMethodOrConstructorDeclaration && !node.isAbstract();
-    }
-
-
     @Override // TODO:cf
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 

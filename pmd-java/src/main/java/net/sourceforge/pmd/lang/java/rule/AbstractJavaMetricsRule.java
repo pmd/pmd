@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -20,6 +21,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        return visit((ASTAnyTypeDeclaration) node, data);
+    }
+
+    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
 

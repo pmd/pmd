@@ -29,13 +29,13 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  */
 public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
-    public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
+    private static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
         "reportLevel", "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
 
-    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
+    private static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
         "showClassesComplexity", "Add class average violations to the report", true, 2.0f);
 
-    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
+    private static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
         "showMethodsComplexity", "Add method average violations to the report", true, 3.0f);
 
 
@@ -43,7 +43,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     private static final MetricVersion[] CYCLO_VERSIONS = {Metric.Version.STANDARD, CycloMetric.Version.IGNORE_BOOLEAN_PATHS};
 
-    public static final EnumeratedProperty<MetricVersion> CYCLO_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
+    private static final EnumeratedProperty<MetricVersion> CYCLO_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
         "cycloVersion", "Choose a variant of Cyclo or the standard",
         VERSION_LABELS, CYCLO_VERSIONS, 0, 3.0f);
 
@@ -77,7 +77,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         TypeKind kind = node.getTypeKind();
-        if (kind.equals(TypeKind.INTERFACE)) {
+        if (kind == TypeKind.INTERFACE) {
             return data;
         }
 
@@ -90,7 +90,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
             if (classCyclo >= reportLevel || classHighest >= reportLevel) {
                 String[] messageParams = {kind.name().toLowerCase(),
                                           node.getImage(),
-                                          classCyclo + " (Highest = " + classHighest + ')'};
+                                          classCyclo + " (Highest = " + classHighest + ')', };
 
                 addViolation(data, node, messageParams);
             }
@@ -105,7 +105,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
         if (showMethodsComplexity && cyclo >= reportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                   node.getQualifiedName().getOperation(), "" + cyclo});
+                                                   node.getQualifiedName().getOperation(), "" + cyclo, });
         }
         return data;
     }

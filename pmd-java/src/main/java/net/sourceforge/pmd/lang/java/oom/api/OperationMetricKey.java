@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
  */
 public enum OperationMetricKey implements MetricKey<OperationMetric> {
 
-    /** Access to Foreign Data. */ // TODO:cf add short description here for javadoc hints
+    /** Access to Foreign Data. */
     ATFD(new AtfdMetric()),
     /** Cyclomatic complexity. */
     CYCLO(new CycloMetric()),

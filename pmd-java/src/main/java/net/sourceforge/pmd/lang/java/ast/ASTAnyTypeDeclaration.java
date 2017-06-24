@@ -19,7 +19,7 @@ public interface ASTAnyTypeDeclaration extends QualifiableNode, AccessNode, Java
     TypeKind getTypeKind();
 
     enum TypeKind {
-        CLASS, INTERFACE, ENUM
+        CLASS, INTERFACE, ENUM, ANNOTATION
     }
 
 }

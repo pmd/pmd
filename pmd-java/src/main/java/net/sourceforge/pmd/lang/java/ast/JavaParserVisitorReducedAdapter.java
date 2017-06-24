@@ -13,6 +13,10 @@ public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
 
+    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+        return visit((ASTAnyTypeDeclaration) node, data);
+    }
+
     public Object visit(ASTEnumDeclaration node, Object data) {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
@@ -32,8 +36,6 @@ public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
-
-
 
 
 }

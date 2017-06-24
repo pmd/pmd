@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -34,7 +35,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
@@ -53,7 +53,12 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 public final class NcssMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
     @Override
-    public boolean supports(AccessNode node) {
+    public boolean supports(ASTAnyTypeDeclaration node) {
+        return true;
+    }
+
+    @Override
+    public boolean supports(ASTMethodOrConstructorDeclaration node) {
         return true;
     }
 
@@ -89,6 +94,12 @@ public final class NcssMetric extends AbstractMetric implements ClassMetric, Ope
 
         @Override
         public Object visit(ASTEnumDeclaration node, Object data) {
+            ((MutableInt) data).increment();
+            return super.visit(node, data);
+        }
+
+        @Override
+        public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
             ((MutableInt) data).increment();
             return super.visit(node, data);
         }

@@ -72,14 +72,14 @@
     </test-code>
 
     <test-code>
-        <description>Empty class should count 1</description>
+        <description>Empty class should count 0</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'.Foo' has value 0 highest 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
-                interface Foo {
+                class Foo {
                 }
             ]]>
         </code>
@@ -150,7 +150,7 @@
             boolean a, b;
 
             if (x > 2 || y < 4) {
-              while (x++ < 10 && !(y-- < 0));
+              while (x++ < 10 && !(y++ < 0));
             } else if (a && b || x < 4) {
               return;
             }
@@ -170,6 +170,18 @@
     </test-code>
 
     <test-code>
+        <description>Interfaces are not supported</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+              interface Koo {
+                void bar();
+              }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
         <description>Avoid division by 0 when averaging a metric over no operations</description>
         <rule-property name="reportLevel">-1</rule-property>
         <expected-problems>1</expected-problems>
@@ -179,7 +191,6 @@
             public class Foo { }
           ]]>
         </code>
-
     </test-code>
 
 </test-data>

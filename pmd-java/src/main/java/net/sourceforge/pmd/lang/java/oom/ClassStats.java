@@ -27,10 +27,10 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 /**
- * Statistics about a class, enum, or interface. Gathers information about the contained members and their signatures.
- * This class does not provide methods to operate directly on its nested classes, but only on itself. To operate on a
- * nested class, retrieve the correct ClassStats with {@link PackageStats#getClassStats(QualifiedName, boolean)} then
- * use the methods of ClassStats.
+ * Statistics about a class, enum, interface, or annotation. Gathers information about the contained members and their
+ * signatures. This class does not provide methods to operate directly on its nested classes, but only on itself. To
+ * operate on a nested class, retrieve the correct ClassStats with {@link PackageStats#getClassStats(QualifiedName,
+ * boolean)} then use the methods of ClassStats.
  *
  * <p>Note that at this level, entities of the DS do not manipulate QualifiedNames anymore, only Strings.
  *
@@ -174,32 +174,6 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 
     /**
-     * Computes the value of a metric for an operation.
-     *
-     * @param key     The operation metric for which to find a memoized result
-     * @param node    The AST node of the operation
-     * @param name    The name of the operation
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version Version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
-                                 boolean force, MetricVersion version) {
-
-        // TODO:cf the operation signature will be built many times, we might as well store it in the node
-        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
-
-        if (sigMap == null) {
-            return Double.NaN;
-        }
-
-        OperationStats stats = sigMap.get(name);
-        return stats == null ? Double.NaN : stats.compute(key, node, force, version);
-    }
-
-
-    /**
      * Computes an aggregate result using a ResultOption.
      *
      * @param key     The class metric to compute
@@ -236,6 +210,31 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         default:
             return Double.NaN;
         }
+    }
+
+    /**
+     * Computes the value of a metric for an operation.
+     *
+     * @param key     The operation metric for which to find a memoized result
+     * @param node    The AST node of the operation
+     * @param name    The name of the operation
+     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
+     * @param version Version of the metric
+     *
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
+     */
+    /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
+                                 boolean force, MetricVersion version) {
+
+        // TODO:cf the operation signature might be built many times, consider profiling
+        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
+
+        if (sigMap == null) {
+            return Double.NaN;
+        }
+
+        OperationStats stats = sigMap.get(name);
+        return stats == null ? Double.NaN : stats.compute(key, node, force, version);
     }
 
 
