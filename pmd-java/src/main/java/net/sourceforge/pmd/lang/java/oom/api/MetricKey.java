@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.oom.api;
  *
  * @param <T> Type of the metric to identify (ClassMetric or OperationMetric).
  */
-public interface MetricKey<T extends Metric> {
+public interface MetricKey<T extends Metric> extends MemoKey {
 
     /**
      * Returns the name of the metric.
