@@ -10,6 +10,7 @@ This is a minor release.
 
 * [New and noteworthy](#New_and_noteworthy)
     *   [Java Type Resolution](#Java_Type_Resolution)
+    *   [Metrics Framework](#Metrics_Framework)
     *   [Modified Rules](#Modified_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
@@ -17,15 +18,31 @@ This is a minor release.
 
 ### New and noteworthy
 
-### Java Type Resolution
+#### Java Type Resolution
 
-As part of Google Summer of Code 2017, [Bendeguz Nagy](https://github.com/WinterGrascph) has been working on completing type resolution for Java.
+As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph) has been working on completing type resolution for Java.
 His progress so far has allowed to properly resolve, in addition to previously supported statements:
 
  - References to `this` and `super`, even when qualified
  - References to fields, even when chained (ie: `this.myObject.aField`), and properly handling inheritance / shadowing
 
 Fields using generics are still Work in Progress, but we expect to fully support it soon enough.
+
+
+#### Metrics Framework
+
+As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) has been working on
+a new metrics framework for object-oriented metrics.
+
+The basic groundwork has been done already and with this release, including a first rule based on the
+metrics framework as a proof-of-concept: The rule *CyclomaticComplexity*, currently in the temporary
+ruleset *java-metrics*, uses the Cyclomatic Complexity metric to find overly complex code.
+This rule will eventually replace the existing three *CyclomaticComplexity* rules that are currently
+defined in the *java-codesize* ruleset (see also [issue #445](https://github.com/pmd/pmd/issues/445)).
+
+Since this work is still in progress, the metrics API (package `net.sourceforge.pmd.lang.java.oom`)
+is not finalized yet and is expected to change.
+
 
 #### Modified Rules
 
@@ -96,4 +113,5 @@ Fields using generics are still Work in Progress, but we expect to fully support
 *   [#436](https://github.com/pmd/pmd/pull/436): \[java] Metrics framework tests and various improvements
 *   [#440](https://github.com/pmd/pmd/pull/440): \[core] Created ruleset schema 3.0.0 (to use metrics)
 *   [#443](https://github.com/pmd/pmd/pull/443): \[java] Optimize typeresolution, by skipping package and import declarations in visit(ASTName)
+*   [#451](https://github.com/pmd/pmd/pull/451): \[java] Metrics framework: first metrics + first rule
 
