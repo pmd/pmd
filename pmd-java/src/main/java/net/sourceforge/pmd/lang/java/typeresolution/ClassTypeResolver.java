@@ -379,6 +379,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     ASTType typeNode = entry.getKey().getDeclaratorId().getTypeNode();
 
                     if (typeNode == null) {
+                        // TODO : Type is infered, ie, this is a lambda such as (var) -> var.equals(other)
                         return null;
                     }
                     
