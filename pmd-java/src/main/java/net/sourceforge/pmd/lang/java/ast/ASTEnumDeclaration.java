@@ -41,4 +41,9 @@ public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode implements AS
 
         return qualifiedName;
     }
+
+    @Override
+    public TypeKind getTypeKind(){
+        return TypeKind.ENUM;
+    }
 }

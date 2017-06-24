@@ -40,7 +40,7 @@ public abstract class Signature {
          *
          * @param node A node
          *
-         * @return The visibility enum key for a node.
+         * @return The visibility enum key for a node
          */
         public static Visibility get(AccessNode node) {
             if (node.isPublic()) {

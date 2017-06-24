@@ -59,4 +59,9 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
 
         return qualifiedName;
     }
+
+    @Override
+    public TypeKind getTypeKind(){
+        return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;
+    }
 }

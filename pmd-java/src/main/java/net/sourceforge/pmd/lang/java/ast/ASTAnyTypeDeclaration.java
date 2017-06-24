@@ -5,10 +5,21 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Tags enums, classes and interface declarations.
+ * Groups enums, classes and interface declarations.
  *
  * @author Clément Fournier
  */
 public interface ASTAnyTypeDeclaration extends QualifiableNode, AccessNode, JavaNode {
+
+    /**
+     * Finds the type kind of this declaration.
+     *
+     * @return The type kind of this declaration.
+     */
+    TypeKind getTypeKind();
+
+    enum TypeKind {
+        CLASS, INTERFACE, ENUM
+    }
 
 }

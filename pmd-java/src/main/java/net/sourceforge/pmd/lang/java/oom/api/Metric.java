@@ -17,13 +17,13 @@ public interface Metric {
     /**
      * Checks if the metric can be computed on the node.
      *
-     * @param node The node to check.
+     * @param node The node to check
      *
-     * @return True if the metric can be computed.
+     * @return True if the metric can be computed
      */
     boolean supports(AccessNode node);
 
-    /** Default metric version. */
+    /** Default metric versions. */
     enum Version implements MetricVersion {
         /** Standard option, used as a default. */
         STANDARD

@@ -21,6 +21,8 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a
  * PackageStats and node. They're stateless.
  *
+ * TODO:cf all these methods mimic the behaviour of resultoptions, perhaps not great.
+ *
  * @author Clément Fournier
  */
 public abstract class AbstractMetric implements Metric {
@@ -62,9 +64,9 @@ public abstract class AbstractMetric implements Metric {
      * Gets the average of the value of an operation metric over all operations in this class (excluding nested
      * classes). The computation is not forced (memoized results are used if they can be found).
      *
-     * @param node          The class node.
-     * @param key           The operation metric to use.
-     * @param version       Version of the metric.
+     * @param node          The class node
+     * @param key           The operation metric to use
+     * @param version       Version of the metric
      * @param includeNested Adds the operations of nested classes to the sum.
      *
      * @return Returns the average of a metric over all operations of a class.
@@ -82,8 +84,6 @@ public abstract class AbstractMetric implements Metric {
         return total / operations.size();
     }
 
-
-    // TODO:cf all these methods mimic the behaviour of resultoptions, perhaps not great.
 
     /**
      * Gets the highest value of an operation metric over all operations in this class (excluding nested classes).
@@ -119,6 +119,10 @@ public abstract class AbstractMetric implements Metric {
      * @param includeNested Include operations found in nested classes?
      *
      * @return The list of all operations declared inside the specified class.
+     *
+     * TODO:cf this one is computed every time
+     *
+     * TODO:cf it might not be at the best place too (used by ClassStats)
      */
     public static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
                                                                          boolean includeNested) {
@@ -149,9 +153,6 @@ public abstract class AbstractMetric implements Metric {
         return result;
     }
 
-
-    // TODO:cf this one is computed every time
-    // TODO:cf it might not be at the best place too (used by ClassStats)
 
     /**
      * Default implementation of the supports method, which filters out abstract nodes. Metrics that support abstract

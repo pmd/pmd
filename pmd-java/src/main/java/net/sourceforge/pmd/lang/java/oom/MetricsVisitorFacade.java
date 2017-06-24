@@ -18,4 +18,5 @@ public class MetricsVisitorFacade extends JavaParserVisitorAdapter {
         MetricsVisitor visitor = new MetricsVisitor();
         rootNode.jjtAccept(visitor, Metrics.getTopLevelPackageStats());
     }
+
 }

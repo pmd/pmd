@@ -16,10 +16,10 @@ public interface ClassMetric extends Metric {
     /**
      * Actually computes the value of a metric for an AST node.
      *
-     * @param node    The node.
-     * @param version The version of the metric.
+     * @param node    The node
+     * @param version The version of the metric
      *
-     * @return The value of the metric.
+     * @return The value of the metric
      */
     double computeFor(ASTAnyTypeDeclaration node, MetricVersion version);
 

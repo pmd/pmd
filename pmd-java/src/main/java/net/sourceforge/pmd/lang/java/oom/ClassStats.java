@@ -27,14 +27,12 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 /**
- * Statistics about a class. Gathers information about the contained members and their signatures,
- * subclasses and superclasses. This class does not provide methods to operate directly on its
- * nested classes, but only on itself. To operate on a nested class, retrieve the correct ClassStats
- * with {@link PackageStats#getClassStats(QualifiedName, boolean)} then use the methods of
- * ClassStats.
+ * Statistics about a class, enum, or interface. Gathers information about the contained members and their signatures.
+ * This class does not provide methods to operate directly on its nested classes, but only on itself. To operate on a
+ * nested class, retrieve the correct ClassStats with {@link PackageStats#getClassStats(QualifiedName, boolean)} then
+ * use the methods of ClassStats.
  *
- * <p>Note that at this level, entities of the DS do not manipulate QualifiedNames anymore, only
- * Strings.
+ * <p>Note that at this level, entities of the DS do not manipulate QualifiedNames anymore, only Strings.
  *
  * @author Clément Fournier
  */
@@ -73,24 +71,25 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         return sum;
     }
 
+
     /**
      * Finds a ClassStats in the direct children of this class. This can only be a directly nested class, for example
      * in the following snippet, A can get B and B can get C but A cannot get C without asking B.
      * <pre>
-     * <code>
+     * {@code
      * class MyClass { // ClassStats A
      *   class MyNested { // ClassStats B
      *     class MyDeeplyNested { // ClassStats C
      *     }
      *   }
      * }
-     * </code>
+     * }
      * </pre>
      *
-     * @param className        Name of the nested class.
-     * @param createIfNotFound Create the requested ClassStats if missing.
+     * @param className        Name of the nested class
+     * @param createIfNotFound Create the requested ClassStats if missing
      *
-     * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is unset.
+     * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is unset
      */
     /* default */ ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
         if (createIfNotFound && !nestedClasses.containsKey(className)) {
@@ -98,6 +97,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         }
         return nestedClasses.get(className);
     }
+
 
     /**
      * Adds an operation to the class.
@@ -112,6 +112,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         operations.get(sig).put(name, new OperationStats(name));
     }
 
+
     /**
      * Adds a field to the class.
      *
@@ -125,6 +126,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         fields.get(sig).add(name);
     }
 
+
     /**
      * Checks whether the class declares an operation by the name given which is covered by the
      * signature mask.
@@ -133,7 +135,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      * @param mask The mask covering accepted signatures
      *
      * @return True if the class declares an operation by the name given which is covered by the signature mask, false
-     * otherwise.
+     * otherwise
      */
     /* default */ boolean hasMatchingSig(String name, OperationSigMask mask) {
         // Indexing on signatures optimises this type of request
@@ -147,6 +149,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         return false;
     }
 
+
     /**
      * Checks whether the class declares a field by the name given which is covered by the
      * signature mask.
@@ -155,7 +158,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      * @param mask The mask covering accepted signatures
      *
      * @return True if the class declares a field by the name given which is covered by the signature mask, false
-     * otherwise.
+     * otherwise
      */
     /* default */ boolean hasMatchingSig(String name, FieldSigMask mask) {
         for (FieldSignature sig : fields.keySet()) {
@@ -169,15 +172,17 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         return false;
     }
 
+
     /**
      * Computes the value of a metric for an operation.
      *
-     * @param key   The operation metric for which to find a memoized result.
-     * @param node  The AST node of the operation.
-     * @param name  The name of the operation.
-     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param key     The operation metric for which to find a memoized result
+     * @param node    The AST node of the operation
+     * @param name    The name of the operation
+     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
+     * @param version Version of the metric
      *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
                                  boolean force, MetricVersion version) {
@@ -193,16 +198,17 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         return stats == null ? Double.NaN : stats.compute(key, node, force, version);
     }
 
+
     /**
      * Computes an aggregate result using a ResultOption.
      *
-     * @param key     The class metric to compute.
-     * @param node    The AST node of the class.
-     * @param force   Force the recomputation. If unset, we'll first check for a memoized result.
-     * @param version The version of the metric.
+     * @param key     The class metric to compute
+     * @param node    The AST node of the class
+     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
+     * @param version The version of the metric
      * @param option  The type of result to compute
      *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
     /* default */ double computeWithResultOption(OperationMetricKey key, ASTAnyTypeDeclaration node,
                                                  boolean force, MetricVersion version, ResultOption option) {
@@ -232,14 +238,16 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         }
     }
 
+
     /**
      * Computes the value of a metric for a class.
      *
-     * @param key   The class metric for which to find a memoized result.
-     * @param node  The AST node of the class.
-     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param key     The class metric for which to find a memoized result
+     * @param node    The AST node of the class
+     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
+     * @param version Version of the metric
      *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
     /* default */ double compute(ClassMetricKey key, ASTAnyTypeDeclaration node, boolean force, MetricVersion version) {
 

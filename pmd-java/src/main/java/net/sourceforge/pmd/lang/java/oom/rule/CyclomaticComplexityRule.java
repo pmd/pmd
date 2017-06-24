@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.oom.rule;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.Metric;
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  *
  * @author Clément Fournier
  */
-public class CyclomaticComplexityRule extends AbstractJavaRule {
+public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
         "reportLevel", "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
@@ -72,46 +73,40 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
         return data;
     }
 
-    // TODO:cf consider enum classes too (eg create some ASTAnyTypeDeclaration umbrella interface)
+
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
+    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+        TypeKind kind = node.getTypeKind();
+        if (kind.equals(TypeKind.INTERFACE)) {
             return data;
         }
 
         super.visit(node, data);
+
         if (showClassesComplexity) {
             int classCyclo = (int) Metrics.get(ClassMetricKey.CYCLO, node, cycloVersion);
             int classHighest = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion, ResultOption.HIGHEST);
 
             if (classCyclo >= reportLevel || classHighest >= reportLevel) {
-                addViolation(data, node,
-                             new String[] {"class", node.getImage(), classCyclo + " (Highest = " + classHighest + ')'});
+                String[] messageParams = {kind.name().toLowerCase(),
+                                          node.getImage(),
+                                          classCyclo + " (Highest = " + classHighest + ')'};
+
+                addViolation(data, node, messageParams);
             }
         }
         return data;
     }
 
-    // TODO:cf consider merging these two methods (changes to JavaParserVisitor)
+
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion);
 
         if (showMethodsComplexity && cyclo >= reportLevel) {
-            addViolation(data, node, new String[] {"method", node.getQualifiedName().getOperation(), "" + cyclo});
+            addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                                                   node.getQualifiedName().getOperation(), "" + cyclo});
         }
-        return data;
-    }
-
-
-    @Override
-    public Object visit(ASTConstructorDeclaration node, Object data) {
-        int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion);
-
-        if (showMethodsComplexity && cyclo >= reportLevel) {
-            addViolation(data, node, new String[] {"constructor", node.getQualifiedName().getOperation(), "" + cyclo});
-        }
-
         return data;
     }
 

@@ -27,7 +27,7 @@ public abstract class SigMask<T extends Signature> {
     /**
      * Restricts the visibilities covered by the mask to the parameters.
      *
-     * @param visibilities The visibilities to cover.
+     * @param visibilities The visibilities to cover
      */
     public void restrictVisibilitiesTo(Signature.Visibility... visibilities) {
         visMask.clear();
@@ -44,7 +44,7 @@ public abstract class SigMask<T extends Signature> {
     /**
      * Forbid all mentioned visibilities.
      *
-     * @param visibilities The visibilities to forbid.
+     * @param visibilities The visibilities to forbid
      */
     public void forbid(Signature.Visibility... visibilities) {
         visMask.removeAll(Arrays.asList(visibilities));

@@ -26,7 +26,7 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
     /**
      * Restricts the roles covered by the mask to the parameters.
      *
-     * @param roles The roles to cover.
+     * @param roles The roles to cover
      */
     public void restrictRolesTo(OperationSignature.Role... roles) {
         roleMask.clear();
@@ -43,7 +43,7 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
     /**
      * Forbid all mentioned roles.
      *
-     * @param roles The roles to forbid.
+     * @param roles The roles to forbid
      */
     public void forbid(OperationSignature.Role... roles) {
         roleMask.removeAll(Arrays.asList(roles));
@@ -52,7 +52,7 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
     /**
      * Forbid all mentioned visibilities.
      *
-     * @param coverAbstract The visibilities to forbid.
+     * @param coverAbstract The visibilities to forbid
      */
     public void coverAbstract(boolean coverAbstract) {
         this.coverAbstract = coverAbstract;

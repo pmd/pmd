@@ -38,11 +38,11 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
     /**
      * Computes the value of a metric for an operation.
      *
-     * @param key   The operation metric for which to find a memoized result.
-     * @param node  The AST node of the operation.
-     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param key   The operation metric for which to find a memoized result
+     * @param node  The AST node of the operation
+     * @param force Force the recomputation; if unset, we'll first check for a memoized result
      *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
                                  MetricVersion version) {

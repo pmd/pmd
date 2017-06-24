@@ -18,12 +18,12 @@ public final class FieldSigMask extends SigMask<FieldSignature> {
         super();
     }
 
-    /** Include final fields? */
+    /** Include final fields?. */
     public void coverFinal(boolean coverFinal) {
         this.coverFinal = coverFinal;
     }
 
-    /** Include static fields? */
+    /** Include static fields?. */
     public void coverStatic(boolean coverStatic) {
         this.coverStatic = coverStatic;
     }

@@ -30,9 +30,9 @@ public final class FieldSignature extends Signature {
     /**
      * Builds a field signature from its AST node.
      *
-     * @param node The AST node of the field.
+     * @param node The AST node of the field
      *
-     * @return The signature of the field.
+     * @return The signature of the field
      */
     public static FieldSignature buildFor(ASTFieldDeclaration node) {
         int code = code(Visibility.get(node), node.isStatic(), node.isFinal());
