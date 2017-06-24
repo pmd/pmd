@@ -13,9 +13,9 @@ fi
 
 
 (
-    # Run the build, redirect output into the file
-    travis_wait ./mvnw install -DskipTests=true -B -V
-    travis_wait ./mvnw site site:stage -Psite -B -V
+    # Run the build, truncate output due to Travis log limits
+    travis_wait ./mvnw install -DskipTests=true -B -V | tail -100
+    travis_wait ./mvnw site site:stage -Psite -B -V | tail -100
 )
 
 # create pmd-doc archive

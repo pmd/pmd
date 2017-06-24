@@ -12,6 +12,6 @@ if ! travis_isPush; then
 fi
 
 
-# Run the build, redirect output into the file
-travis_wait ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -B -V
+# Run the build, truncate output due to Travis log limits
+travis_wait ./mvnw clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -B -V | tail -100
 
