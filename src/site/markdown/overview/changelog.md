@@ -27,7 +27,7 @@ His progress so far has allowed to properly resolve, in addition to previously s
  - References to `this` and `super`, even when qualified
  - References to fields, even when chained (ie: `this.myObject.aField`), and properly handling inheritance / shadowing
 
-Fields using generics are still Work in Progress, but we expect to fully support it soon enough.
+Lambda parameter types where these are infered rather than explicit are still not supported. Expect future releases to do so.
 
 
 #### Metrics Framework
@@ -120,5 +120,6 @@ by a new CyclomaticComplexity rule based on the metrics framework. See also [iss
 *   [#436](https://github.com/pmd/pmd/pull/436): \[java] Metrics framework tests and various improvements
 *   [#440](https://github.com/pmd/pmd/pull/440): \[core] Created ruleset schema 3.0.0 (to use metrics)
 *   [#443](https://github.com/pmd/pmd/pull/443): \[java] Optimize typeresolution, by skipping package and import declarations in visit(ASTName)
+*   [#444](https://github.com/pmd/pmd/pull/444): \[java] [typeresolution]: add support for generic fields
 *   [#451](https://github.com/pmd/pmd/pull/451): \[java] Metrics framework: first metrics + first rule
 

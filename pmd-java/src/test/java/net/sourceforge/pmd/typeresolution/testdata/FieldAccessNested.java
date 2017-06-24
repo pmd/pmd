@@ -29,6 +29,7 @@ public class FieldAccessNested {
             a = new SuperClassA();
 
             net.sourceforge.pmd.typeresolution.testdata.FieldAccessNested.Nested.this.a = new SuperClassA();
+            FieldAccessNested.Nested.this.a = new SuperClassA();
         }
     }
 }
