@@ -94,6 +94,7 @@ by a new CyclomaticComplexity rule based on the metrics framework. See also [iss
     *   [#348](https://github.com/pmd/pmd/issues/348): \[java] imports/UnusedImport rule not considering static inner classes of imports
 *   java-junit
     *   [#428](https://github.com/pmd/pmd/issues/428): \[java] PMD requires public modifier on JUnit 5 test
+    *   [#465](https://github.com/pmd/pmd/issues/465): \[java] NullPointerException in JUnitTestsShouldIncludeAssertRule
 *   java-logging:
     *   [#365](https://github.com/pmd/pmd/issues/365): \[java] InvalidSlf4jMessageFormat does not handle inline incrementation of arguments
 *   java-strictexceptions
