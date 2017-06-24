@@ -1,6 +1,6 @@
 # PMD Release Notes
 
-## ????? - 5.8.0-SNAPSHOT
+## 24-June-2017 - 5.8.0
 
 The PMD team is pleased to announce PMD 5.8.0.
 
@@ -14,7 +14,6 @@ This is a minor release.
     *   [Modified Rules](#Modified_Rules)
     *   [Deprecated Rules](#Deprecated_Rules)
 * [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
@@ -106,7 +105,6 @@ by a new CyclomaticComplexity rule based on the metrics framework. See also [iss
 *   jsp
     *   [#311](https://github.com/pmd/pmd/issues/311): \[jsp] Parse error on HTML boolean attribute
 
-### API Changes
 
 ### External Contributions
 
