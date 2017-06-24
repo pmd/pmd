@@ -10,6 +10,10 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 
@@ -29,7 +33,7 @@ public final class PackageStats {
     /**
      * Default constructor.
      */
-    PackageStats() {
+    /* default */ PackageStats() {
 
     }
 
@@ -43,7 +47,7 @@ public final class PackageStats {
      *
      * @return The new ClassStats, or the one that was found. Can return null only if createIfNotFound is unset.
      */
-    ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
+    /* default */ ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
         PackageStats container = getSubPackage(qname, createIfNotFound);
 
         if (container == null) {
@@ -135,34 +139,58 @@ public final class PackageStats {
     /**
      * Computes the value of a metric on a class.
      *
-     * @param key   The class metric to compute.
-     * @param node  The AST node of the class.
-     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param key     The class metric to compute.
+     * @param node    The AST node of the class.
+     * @param force   Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param version The version of the metric.
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force) {
+    /* default */ double compute(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                                 MetricVersion version) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, force);
+                                 : container.compute(key, node, force, version);
     }
 
 
     /**
      * Computes the value of a metric for an operation.
      *
-     * @param key   The operation metric for which to find a memoized result.
-     * @param node  The AST node of the operation.
-     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param key     The operation metric for which to find a memoized result.
+     * @param node    The AST node of the operation.
+     * @param force   Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param version The version of the metric.
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force) {
+    /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
+                                 MetricVersion version) {
         QualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, qname.getOperation(), force);
+                                 : container.compute(key, node, qname.getOperation(), force, version);
+    }
+
+
+    /**
+     * Computes an aggregate result using a ResultOption.
+     *
+     * @param key     The class metric to compute.
+     * @param node    The AST node of the class.
+     * @param force   Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param version The version of the metric.
+     * @param option  The type of result to compute
+     *
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
+     */
+    double computeWithResultOption(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, boolean force,
+                                   MetricVersion version, ResultOption option) {
+        ClassStats container = getClassStats(node.getQualifiedName(), false);
+
+        return container == null ? Double.NaN
+                                 : container.computeWithResultOption(key, node, force, version, option);
     }
 }

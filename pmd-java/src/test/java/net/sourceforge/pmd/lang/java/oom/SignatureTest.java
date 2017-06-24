@@ -8,19 +8,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ParserTst;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.oom.signature.Signature;
 import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
+import net.sourceforge.pmd.lang.java.oom.testdata.GetterDetection;
+import net.sourceforge.pmd.lang.java.oom.testdata.SetterDetection;
+import net.sourceforge.pmd.typeresolution.ClassTypeResolverTest;
 
 /**
  * Test class for {@link Signature} and its subclasses.
@@ -94,6 +103,34 @@ public class SignatureTest extends ParserTst {
         assertEquals(Role.GETTER_OR_SETTER, sigs.get(3).role);
         assertEquals(Role.METHOD, sigs.get(4).role);
     }
+
+    @Test
+    public void testGetterDetection() {
+        ASTCompilationUnit compilationUnit = parseClass(GetterDetection.class);
+
+        compilationUnit.jjtAccept(new JavaParserVisitorAdapter() {
+            @Override
+            public Object visit(ASTMethodDeclaration node, Object data) {
+                assertEquals(Role.GETTER_OR_SETTER, Role.get(node));
+                return data;
+            }
+        }, null);
+    }
+
+    @Test
+    public void testSetterDetection() {
+        ASTCompilationUnit compilationUnit = parseClass(SetterDetection.class);
+
+        compilationUnit.jjtAccept(new JavaParserVisitorAdapter() {
+            @Override
+            public Object visit(ASTMethodDeclaration node, Object data) {
+                System.err.println(node.getMethodName());
+                assertEquals(Role.GETTER_OR_SETTER, Role.get(node));
+                return data;
+            }
+        }, null);
+    }
+
 
     @Test
     public void isAbstractOperationTest() {
@@ -233,4 +270,22 @@ public class SignatureTest extends ParserTst {
             assertTrue(sigs2.get(i) == sigs2.get(i + 1));
         }
     }
+
+    private ASTCompilationUnit parseClass(Class<?> clazz) {
+        String sourceFile = clazz.getName().replace('.', '/') + ".java";
+        InputStream is = ClassTypeResolverTest.class.getClassLoader().getResourceAsStream(sourceFile);
+        if (is == null) {
+            throw new IllegalArgumentException(
+                "Unable to find source file " + sourceFile + " for " + clazz);
+        }
+        String source;
+        try {
+            source = IOUtils.toString(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return parseJava17(source);
+    }
+
+
 }

@@ -8,24 +8,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.Metrics.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+
 
 /**
  * Statistics for an operation. Keeps a map of all memoized metrics results.
  *
  * @author Clément Fournier
  */
-class OperationStats {
+/* default */ class OperationStats {
 
     private final String name;
-    private final Map<OperationMetricKey, Double> memo = new HashMap<>();
+    private final Map<ParameterizedMetricKey, Double> memo = new HashMap<>();
 
 
-    OperationStats(String name) {
+    /* default */ OperationStats(String name) {
         this.name = name;
     }
 
-    String getName() {
+    /* default */ String getName() {
         return name;
     }
 
@@ -38,15 +41,18 @@ class OperationStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
      */
-    double compute(Metrics.OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force) {
-        Double prev = memo.get(key);
+    /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
+                                 MetricVersion version) {
+
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
+        Double prev = memo.get(paramKey);
         if (!force && prev != null) {
             return prev;
         }
 
         OperationMetric metric = key.getCalculator();
-        double val = metric.computeFor(node, Metrics.getTopLevelPackageStats());
-        memo.put(key, val);
+        double val = metric.computeFor(node, version);
+        memo.put(paramKey, val);
         return val;
     }
 
