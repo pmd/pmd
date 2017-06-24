@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
  *
  * @author Clément Fournier
  */
-public class FieldSignature extends Signature {
+public final class FieldSignature extends Signature {
 
     private static final Map<Integer, FieldSignature> POOL = new HashMap<>();
 

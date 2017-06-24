@@ -7,14 +7,15 @@ package net.sourceforge.pmd.lang.java.oom;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
+import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
+import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 
 
 /**
  * User bound façade of the Metrics Framework. Provides a uniform interface for the calculation of metrics.
- *
- *
  *
  * @author Clément Fournier
  */
@@ -31,12 +32,13 @@ public final class Metrics {
      *
      * @return The top level package stats.
      */
-    static PackageStats getTopLevelPackageStats() {
+    /* default */ static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 
+
     /**
-     * Computes a metric identified by its code on a class AST node.
+     * Computes the standard value of the metric identified by its code on a class AST node.
      *
      * @param key  The key identifying the metric to be computed
      * @param node The node on which to compute the metric
@@ -44,12 +46,32 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
     public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node) {
-        // TODO:cf think about caching
-        return TOP_LEVEL_PACKAGE.compute(key, node, false);
+        return get(key, node, Version.STANDARD);
+    }
+
+
+    /**
+     * Computes a metric identified by its code on a class AST node, possibly selecting a variant with the {@code
+     * MetricVersion} parameter.
+     *
+     * @param key     The key identifying the metric to be computed
+     * @param node    The node on which to compute the metric
+     * @param version The version of the metric.
+     *
+     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
+     */
+    public static double get(ClassMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+        if (!key.getCalculator().supports(node)) {
+            return Double.NaN;
+        }
+
+        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
+
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeVersion);
     }
 
     /**
-     * Computes a metric identified by its code on a operation AST node.
+     * Computes the standard version of the metric identified by the key on a operation AST node.
      *
      * @param key  The key identifying the metric to be computed
      * @param node The node on which to compute the metric
@@ -57,50 +79,45 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
     public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node) {
-        // TODO:cf think about caching
-        return TOP_LEVEL_PACKAGE.compute(key, node, false);
+        return get(key, node, Version.STANDARD);
     }
 
     /**
-     * Keys identifying class metrics.
+     * Computes a metric identified by its key on a operation AST node.
+     *
+     * @param key     The key identifying the metric to be computed
+     * @param node    The node on which to compute the metric
+     * @param version The version of the metric.
+     *
+     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed.
      */
-    public enum ClassMetricKey {
-        /** Access to Foreign Data. */
-        ATFD(new AtfdMetric()),
-        // ...
-        /** Weighed Method Count. */
-        WMC(new WmcMetric());
-
-
-        private final ClassMetric calculator;
-
-        ClassMetricKey(ClassMetric m) {
-            calculator = m;
+    public static double get(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+        if (!key.getCalculator().supports(node)) {
+            return Double.NaN;
         }
 
-        /** Returns the object used to calculate the metric. @return The calculator. */
-        ClassMetric getCalculator() {
-            return calculator;
-        }
+        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
+
+        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeVersion);
     }
 
     /**
-     * Keys identifying operation metrics.
+     * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The
+     * type of operation is specified by the {@link ResultOption} parameter.
+     *
+     * @param key     The key identifying the metric to be computed
+     * @param node    The node on which to compute the metric
+     * @param version The version of the metric.
+     * @param option  The result option to use.
+     *
+     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
+     * {@literal null}.
      */
-    public enum OperationMetricKey {
+    public static double get(OperationMetricKey key, ASTClassOrInterfaceDeclaration node, MetricVersion version, ResultOption option) {
 
-        /** Access to Foreign Data. */ // TODO:cf add short description here for javadoc hints
-        ATFD(new AtfdMetric());
-
-        private final OperationMetric calculator;
-
-        OperationMetricKey(OperationMetric m) {
-            calculator = m;
-        }
-
-        /** Returns the object used to calculate the metric. @return The calculator. */
-        OperationMetric getCalculator() {
-            return calculator;
-        }
+        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
+        return option == null ? Double.NaN
+                              : TOP_LEVEL_PACKAGE.computeWithResultOption(key, node, false, safeVersion, option);
     }
+
 }

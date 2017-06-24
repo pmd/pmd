@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author Clément Fournier
  */
-public class OperationSigMask extends SigMask<OperationSignature> {
+public final class OperationSigMask extends SigMask<OperationSignature> {
 
     private Set<OperationSignature.Role> roleMask = new HashSet<>();
     private boolean coverAbstract = false;
