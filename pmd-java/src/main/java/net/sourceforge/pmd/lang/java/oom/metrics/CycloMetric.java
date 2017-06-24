@@ -49,6 +49,8 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
  */
 public final class CycloMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
+    // TODO:cf Cyclo should develop factorized boolean operators to count them
+
     @Override
     public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
         return 1 + averageMetricOverOperations(node, OperationMetricKey.CYCLO, version, false);

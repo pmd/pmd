@@ -17,7 +17,7 @@ public class AllMetricsTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule(RULESET, "CycloTest");
         addRule(RULESET, "NcssTest");
+        addRule(RULESET, "WmcTest");
     }
-
 
 }

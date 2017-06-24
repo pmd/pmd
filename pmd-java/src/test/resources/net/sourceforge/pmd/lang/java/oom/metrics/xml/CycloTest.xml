@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
 
-    <code-fragment id="basic-violation">
-      <![CDATA[
+    <code-fragment id="full-example">
+        <![CDATA[
         public class Complicated {
           public void example() {
             int x = 0, y = 1, z = 2, t = 2;
@@ -42,7 +42,7 @@
             }
           }
         }
-      ]]>
+        ]]>
     </code-fragment>
 
     <test-code>
@@ -52,7 +52,7 @@
             <message>'.Complicated' has value 18 highest 17.</message>
             <message>'.Complicated#example()' has value 17.</message>
         </expected-messages>
-        <code-ref id="basic-violation"/>
+        <code-ref id="full-example"/>
     </test-code>
 
     <test-code>
@@ -64,9 +64,9 @@
         </expected-messages>
         <code>
             <![CDATA[
-                class Foo {
-                    void foo() {}
-                }
+            class Foo {
+              void foo() {}
+            }
             ]]>
         </code>
     </test-code>
@@ -79,15 +79,15 @@
         </expected-messages>
         <code>
             <![CDATA[
-                class Foo {
-                }
+            class Foo {
+            }
             ]]>
         </code>
     </test-code>
 
 
     <code-fragment id="constructor-violation">
-      <![CDATA[
+        <![CDATA[
         public class Test {
           public Test() {
             if (a == 1) {
@@ -99,7 +99,7 @@
             }
           }
         }
-      ]]>
+        ]]>
     </code-fragment>
 
     <test-code>
@@ -115,11 +115,10 @@
 
 
     <code-fragment id="fallthroughSwitch">
-      <![CDATA[
+        <![CDATA[
         class Foo {
-          void foo(){}
           void bar(){}
-          void switchCase() {
+          void foo() {
             int x=0;
             switch (x) {
             case 1:
@@ -128,7 +127,7 @@
             }
           }
         }
-      ]]>
+        ]]>
     </code-fragment>
 
     <test-code>
@@ -137,13 +136,13 @@
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#switchCase()' has value 3.</message>
+            <message>'.Foo#foo()' has value 3.</message>
         </expected-messages>
         <code-ref id="fallthroughSwitch"/>
     </test-code>
 
     <code-fragment id="manyBooleanOps">
-      <![CDATA[
+        <![CDATA[
         class Foo {
           void foo(){
             int x=0, y=1;
@@ -156,7 +155,7 @@
             }
           }
         }
-      ]]>
+        ]]>
     </code-fragment>
 
     <test-code>
@@ -174,9 +173,9 @@
         <expected-problems>0</expected-problems>
         <code>
             <![CDATA[
-              interface Koo {
-                void bar();
-              }
+            interface Koo {
+              void bar();
+            }
             ]]>
         </code>
     </test-code>
@@ -187,9 +186,9 @@
         <expected-problems>1</expected-problems>
         <expected-messages>'.Foo' has value NaN.</expected-messages>
         <code>
-          <![CDATA[
+            <![CDATA[
             public class Foo { }
-          ]]>
+            ]]>
         </code>
     </test-code>
 

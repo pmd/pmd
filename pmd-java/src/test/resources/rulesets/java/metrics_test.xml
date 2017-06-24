@@ -6,7 +6,7 @@
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
 
     <description>
-        Metrics testing ruleset.
+        Metrics testing ruleset. Each metric is tested through a dummy rule.
     </description>
 
     <rule name="CycloTest"
@@ -18,6 +18,12 @@
     <rule name="NcssTest"
           message = "''{0}'' has value {1}."
           class="net.sourceforge.pmd.lang.java.oom.metrics.NcssTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="WmcTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.oom.metrics.WmcTestRule"
           metrics="true">
     </rule>
 

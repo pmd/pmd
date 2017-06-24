@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
-    <!-- All these tests have been validated against JavaNCSS -->
+    <!-- All these tests have been validated against JavaNCSS. -->
+    <!-- The major difference between this version of NCSS and
+         that of JavaNCSS is that package statements and import
+         statements are not counted. -->
 
 
     <code-fragment id="full-example">
@@ -100,11 +103,11 @@
         <rule-property name="reportClasses">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Moo' has value 1 highest 0.</message>
+            <message>'.Foo' has value 1 highest 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
-              public class Moo {
+              public class Foo {
               }
             ]]>
         </code>
@@ -114,11 +117,11 @@
         <description>Switch</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Boo#foo()' has value 11.</message>
+            <message>'.Foo#foo()' has value 11.</message>
         </expected-messages>
         <code>
             <![CDATA[
-              public class Boo {
+              public class Foo {
                 void foo() {
                   int x;
                   switch (x) {
@@ -138,11 +141,11 @@
         <description>Multiple local variable declarations</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Boo#foo()' has value 2.</message>
+            <message>'.Foo#foo()' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[
-              public class Boo {
+              public class Foo {
                 void foo() {
                   int x, y = 2, z;
                 }
@@ -155,11 +158,11 @@
         <description>First catch is not counted</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Boo#foo()' has value 3.</message>
+            <message>'.Foo#foo()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[
-              public class Boo {
+              public class Foo {
                 void foo() {
                   try {
                   } catch (IOException e) {
@@ -322,6 +325,21 @@
         <code>
             <![CDATA[
               public @interface Moo {
+              }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Abstract methods are counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Koo#bar()' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+              public abstract class Koo {
+                abstract void bar();
               }
             ]]>
         </code>

@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 public final class Metrics {
 
     private static final PackageStats TOP_LEVEL_PACKAGE = new PackageStats();
+    private static boolean isForce;
 
     private Metrics() { // Cannot be instantiated
 
@@ -37,6 +38,10 @@ public final class Metrics {
         return TOP_LEVEL_PACKAGE;
     }
 
+    /** Sets whether computations are forced or not. Used for tests. */
+    static void setForce(boolean b) {
+        isForce = b;
+    }
 
     /**
      * Computes the standard value of the metric identified by its code on a class AST node.
@@ -68,7 +73,7 @@ public final class Metrics {
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
 
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeVersion);
+        return TOP_LEVEL_PACKAGE.compute(key, node, isForce, safeVersion);
     }
 
 
@@ -101,7 +106,7 @@ public final class Metrics {
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
 
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeVersion);
+        return TOP_LEVEL_PACKAGE.compute(key, node, isForce, safeVersion);
     }
 
 
@@ -137,7 +142,7 @@ public final class Metrics {
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
         return option == null ? Double.NaN
-                              : TOP_LEVEL_PACKAGE.computeWithResultOption(key, node, false, safeVersion, option);
+                              : TOP_LEVEL_PACKAGE.computeWithResultOption(key, node, isForce, safeVersion, option);
     }
 
 }
