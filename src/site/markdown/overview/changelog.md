@@ -12,6 +12,7 @@ This is a minor release.
     *   [Java Type Resolution](#Java_Type_Resolution)
     *   [Metrics Framework](#Metrics_Framework)
     *   [Modified Rules](#Modified_Rules)
+    *   [Deprecated Rules](#Deprecated_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
@@ -62,6 +63,11 @@ is not finalized yet and is expected to change.
     This allow to setup a regular expression for names of exceptions you wish to ignore for this rule. For instance,
     setting it to `^(ignored|expected)$` would ignore all empty catch blocks where the catched exception is named
     either `ignored` or `expected`. The default ignores no exceptions, being backwards compatible.
+
+#### Deprecated Rules
+
+*   The three complexity rules `CyclomaticComplexity`, `StdCyclomaticComplexity`, `ModifiedCyclomaticComplexity` (ruleset java-codesize) have been deprecated. They will be eventually replaced
+by a new CyclomaticComplexity rule based on the metrics framework. See also [issue #445](https://github.com/pmd/pmd/issues/445).
 
 ### Fixed Issues
 
