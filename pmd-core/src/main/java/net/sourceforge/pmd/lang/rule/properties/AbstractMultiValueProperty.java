@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
@@ -52,7 +53,7 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     public AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault,
-                                         float theUIOrder, char delimiter) {
+                                      float theUIOrder, char delimiter) {
 
         super(theName, theDescription, theUIOrder, delimiter);
         defaultValue = theDefault;
@@ -69,7 +70,7 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    protected AbstractMultiValueProperty(String theName, String theDescription, V[] theDefault, float theUIOrder) {
+    public AbstractMultiValueProperty(String theName, String theDescription, V[] theDefault, float theUIOrder) {
         this(theName, theDescription, theDefault, theUIOrder, DEFAULT_DELIMITER);
     }
 
@@ -84,8 +85,8 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    protected AbstractMultiValueProperty(String theName, String theDescription, V[] theDefault,
-                                         float theUIOrder, char delimiter) {
+    public AbstractMultiValueProperty(String theName, String theDescription, V[] theDefault,
+                                      float theUIOrder, char delimiter) {
 
         this(theName, theDescription, Arrays.asList(theDefault), theUIOrder, delimiter);
     }
@@ -110,6 +111,10 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
         return true;
     }
 
+    public String asString(V value) {
+        return value == null ? "" : value.toString();
+    }
+
     @Override
     public String asDelimitedString(List<V> values, char delimiter) {
         if (values == null) {
@@ -118,7 +123,7 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
 
         StringBuilder sb = new StringBuilder();
         for (V value : values) {
-            sb.append(value == null ? "" : value.toString()).append(delimiter);
+            sb.append(asString(value)).append(delimiter);
         }
         if (sb.length() > 0) {
             sb.deleteCharAt(sb.length() - 1);
@@ -154,7 +159,7 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
     }
 
     @Override
-    public Map<String, List<V>> choices() {
+    public Set<Entry<String, List<V>>> choices() {
         return null;
     }
 

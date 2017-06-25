@@ -5,6 +5,8 @@
 package net.sourceforge.pmd;
 
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Property value descriptor that defines the use &amp; requirements for setting
@@ -126,7 +128,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      *
      * @return Object[][]
      */
-    Map<String, T> choices();
+    Set<Entry<String, T>> choices();
 
     /**
      * A convenience method that returns an error string if the rule holds onto

@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 
@@ -56,6 +57,8 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
         return false;
     }
 
+
+
     @Override
     public String asDelimitedString(T values, char delimiter) {
         return values == null ? "" : values.toString();
@@ -92,13 +95,17 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
         return value != null || defaultHasNullValue() ? null : "missing value";
     }
 
-    @Override
-    protected final String defaultAsString() {
-        return defaultValue().toString();
+    protected String asString(T value) {
+        return value == null ? "" : value.toString();
     }
 
     @Override
-    public Map<String, T> choices() {
+    protected final String defaultAsString() {
+        return asString(defaultValue);
+    }
+
+    @Override
+    public Set<Entry<String, T>> choices() {
         return null;
     }
 

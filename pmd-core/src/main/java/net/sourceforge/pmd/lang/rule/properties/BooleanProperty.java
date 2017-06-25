@@ -14,77 +14,52 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  *
  * @author Brian Remedios
  */
-public class BooleanProperty extends AbstractScalarProperty<Boolean> {
+public class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<BooleanProperty>(
-            Boolean.class) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<Boolean>(
+        Boolean.class) {
 
         @Override
         public BooleanProperty createWith(Map<String, String> valuesById) {
             return new BooleanProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    Boolean.valueOf(defaultValueIn(valuesById)), 0f);
+                                       Boolean.valueOf(defaultValueIn(valuesById)), 0f);
         }
     };
 
     /**
      * Constructor for BooleanProperty limited to a single value.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultValue
-     *            boolean
-     * @param theUIOrder
-     *            float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValue   Default value
+     * @param theUIOrder     UI order
      */
-    public BooleanProperty(String theName, String theDescription, Boolean defaultValue, float theUIOrder) {
-        super(theName, theDescription, Boolean.valueOf(defaultValue), theUIOrder);
+    public BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder) {
+        super(theName, theDescription, defaultValue, theUIOrder);
     }
 
     /**
      * Constructor for BooleanProperty limited to a single value. Converts
      * default argument string into a boolean.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultBoolStr
-     *            String
-     * @param theUIOrder
-     *            float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultBoolStr String representing the default value.
+     * @param theUIOrder     UI order
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
         this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder);
     }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
+
     @Override
     public Class<Boolean> type() {
         return Boolean.class;
     }
 
-    /**
-     * @return String
-     */
     @Override
-    protected String defaultAsString() {
-        return Boolean.toString(defaultValue());
+    public Boolean createFrom(String propertyString) throws IllegalArgumentException {
+        return null;
     }
 
-    /**
-     * Creates and returns a Boolean instance from a raw string
-     *
-     * @param value
-     *            String
-     * @return Object
-     */
-    @Override
-    protected Object createFrom(String value) {
-        return Boolean.valueOf(value);
-    }
 }
