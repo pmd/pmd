@@ -13,359 +13,150 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFields;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * Abstract class for properties.
+ *
+ * @param <T> The type of the values.
  *
  * @author Brian Remedios
- * @param <T>
  */
 public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
-
-    private final String name;
-    private final String description;
-    private final T defaultValue;
-    private final boolean isRequired;
-    private final float uiOrder;
 
     /**
      * Default delimiter for multi properties. Note: Numeric properties usual
      * use the {@value #DEFAULT_NUMERIC_DELIMITER}.
      */
     public static final char DEFAULT_DELIMITER = '|';
+
     /**
      * Default delimiter for numeric properties.
      */
     public static final char DEFAULT_NUMERIC_DELIMITER = ',';
 
+    private final String name;
+    private final String description;
+    private final boolean isRequired;
+    private final float uiOrder;
     private char multiValueDelimiter = DEFAULT_DELIMITER;
 
-    protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
-        this(theName, theDescription, theDefault, theUIOrder, DEFAULT_DELIMITER);
+
+    /**
+     * Creates an AbstractProperty using the default delimiter {@link #DEFAULT_DELIMITER}.
+     *
+     * @param theName        Name of the property (must not be empty)
+     * @param theDescription Description (must not be empty)
+     * @param theUIOrder     UI order (must be positive or zero)
+     *
+     * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
+     */
+    protected AbstractProperty(String theName, String theDescription, float theUIOrder) {
+        this(theName, theDescription, theUIOrder, DEFAULT_DELIMITER);
     }
 
     /**
      * Constructor for AbstractPMDProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefault
-     *            Object
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
+     * @param theName        Name of the property (must not be empty)
+     * @param theDescription Description (must not be empty)
+     * @param theUIOrder     UI order (must be positive or zero)
+     * @param delimiter      The delimiter to separate multi values
+     *
+     * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder, char delimiter) {
+    protected AbstractProperty(String theName, String theDescription,
+                               float theUIOrder, char delimiter) {
+        if (theUIOrder < 0) {
+            throw new IllegalArgumentException("Property attribute 'UI order' cannot be null or blank");
+        }
+
         name = checkNotEmpty(theName, NAME);
         description = checkNotEmpty(theDescription, DESCRIPTION);
-        defaultValue = theDefault;
         isRequired = false; // TODO - do we need this?
-        uiOrder = checkPositive(theUIOrder, "UI order");
+        uiOrder = theUIOrder;
         multiValueDelimiter = delimiter;
     }
 
-    /**
-     * @param arg
-     *            String
-     * @param argId
-     *            String
-     * @return String
-     * @throws IllegalArgumentException
-     */
-    private static String checkNotEmpty(String arg, String argId) {
 
+    private static String checkNotEmpty(String arg, String argId) throws IllegalArgumentException {
         if (StringUtil.isEmpty(arg)) {
             throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");
         }
-
         return arg;
     }
 
     /**
-     * @param arg
-     *            float
-     * @param argId
-     *            String
-     * @return float
-     * @throws IllegalArgumentException
+     * Tests if two values are equal.
+     *
+     * @param value      First value
+     * @param otherValue Object
+     *
+     * @return True if the two values are equal.
+     *
+     * @deprecated Never used in pmd's codebase + is just an alias for Object#equals.
      */
-    private static float checkPositive(float arg, String argId) {
-        if (arg < 0) {
-            throw new IllegalArgumentException("Property attribute " + argId + "' must be zero or positive");
-        }
-        return arg;
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
+    public static boolean areEqual(Object value, Object otherValue) {
+        return value != null && value.equals(otherValue);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public char multiValueDelimiter() {
-        return multiValueDelimiter;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String name() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String description() {
         return description;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public T defaultValue() {
-        return defaultValue;
-    }
-
-    /**
-     * Method defaultHasNullValue.
-     *
-     * @return boolean
-     */
-    protected boolean defaultHasNullValue() {
-
-        if (defaultValue == null) {
-            return true;
-        }
-
-        if (isMultiValue() && isArray(defaultValue)) {
-            Object[] defaults = (Object[]) defaultValue;
-            for (Object default1 : defaults) {
-                if (default1 == null) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isMultiValue() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isRequired() {
         return isRequired;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public float uiOrder() {
         return uiOrder;
     }
 
-    /**
-     * Return the value as a string that can be easily recognized and parsed
-     * when we see it again.
-     *
-     * @param value
-     *            Object
-     * @return String
-     */
-    protected String asString(Object value) {
-        return value == null ? "" : value.toString();
+    @Override
+    public char multiValueDelimiter() {
+        return multiValueDelimiter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public String asDelimitedString(T values) {
+    public final String asDelimitedString(T values) {
         return asDelimitedString(values, multiValueDelimiter());
     }
 
     /**
      * Return the specified values as a single string using the delimiter.
      *
-     * @param values
-     *            Object
-     * @param delimiter
-     *            char
+     * @param values    Values to format
+     * @param delimiter char
+     *
      * @return String
-     * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)
+     *
+     * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(T)
      */
-    public String asDelimitedString(T values, char delimiter) {
-        if (values == null) {
-            return "";
-        }
+    public abstract String asDelimitedString(T values, char delimiter);
 
-        if (values instanceof Object[]) {
-            Object[] valueSet = (Object[]) values;
-            if (valueSet.length == 0) {
-                return "";
-            }
-            if (valueSet.length == 1) {
-                return asString(valueSet[0]);
-            }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(asString(valueSet[0]));
-            for (int i = 1; i < valueSet.length; i++) {
-                sb.append(delimiter);
-                sb.append(asString(valueSet[i]));
-            }
-            return sb.toString();
-        }
-
-        return asString(values);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public int compareTo(PropertyDescriptor<?> otherProperty) {
+    public final int compareTo(PropertyDescriptor<?> otherProperty) {
         float otherOrder = otherProperty.uiOrder();
         return (int) (otherOrder - uiOrder);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String errorFor(Object value) {
 
-        String typeError = typeErrorFor(value);
-        if (typeError != null) {
-            return typeError;
-        }
-        return isMultiValue() ? valuesErrorFor(value) : valueErrorFor(value);
-    }
-
-    /**
-     * @param value
-     *            Object
-     * @return String
-     */
-    protected String valueErrorFor(Object value) {
-
-        if (value == null) {
-            if (defaultHasNullValue()) {
-                return null;
-            }
-            return "missing value";
-        }
-        return null;
-    }
-
-    /**
-     * @param value
-     *            Object
-     * @return String
-     */
-    protected String valuesErrorFor(Object value) {
-
-        if (!isArray(value)) {
-            return "multiple values expected";
-        }
-
-        Object[] values = (Object[]) value;
-
-        String err = null;
-        for (Object value2 : values) {
-            err = valueErrorFor(value2);
-            if (err != null) {
-                return err;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param value
-     *            Object
-     * @return boolean
-     */
-    protected static boolean isArray(Object value) {
-        return value != null && value.getClass().getComponentType() != null;
-    }
-
-    /**
-     * @param value
-     *            Object
-     * @return String
-     */
-    protected String typeErrorFor(Object value) {
-
-        if (value == null && !isRequired) {
-            return null;
-        }
-
-        if (isMultiValue()) {
-            if (!isArray(value)) {
-                return "Value is not an array of type: " + type();
-            }
-
-            Class<?> arrayType = value.getClass().getComponentType();
-            if (arrayType == null || !arrayType.isAssignableFrom(type().getComponentType())) {
-                return "Value is not an array of type: " + type();
-            }
-            return null;
-        }
-
-        if (!type().isAssignableFrom(value.getClass())) {
-            return value + " is not an instance of " + type();
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String propertyErrorFor(Rule rule) {
-        Object realValue = rule.getProperty(this);
-        if (realValue == null && !isRequired()) {
-            return null;
-        }
-        return errorFor(realValue);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Object[][] choices() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int preferredRowCount() {
         return 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -380,58 +171,26 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return name.hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public String toString() {
         return "[PropertyDescriptor: name=" + name() + ", type=" + type() + ", value=" + defaultValue() + "]";
     }
 
     /**
-     * @return String
+     * Returns a string representation of the default value.
+     *
+     * @return A string representation of the default value.
      */
-    protected String defaultAsString() {
-        if (isMultiValue()) {
-            return asDelimitedString(defaultValue(), multiValueDelimiter());
-        } else {
-            return defaultValue().toString();
-        }
-    }
-
-    /**
-     * @param value
-     *            Object
-     * @param otherValue
-     *            Object
-     * @return boolean
-     */
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    public static final boolean areEqual(Object value, Object otherValue) {
-        if (value == otherValue) {
-            return true;
-        }
-        if (value == null) {
-            return false;
-        }
-        if (otherValue == null) {
-            return false;
-        }
-
-        return value.equals(otherValue);
-    }
+    protected abstract String defaultAsString();
 
     @Override
     public Map<String, String> attributeValuesById() {
-
         Map<String, String> values = new HashMap<>();
         addAttributesTo(values);
         return values;

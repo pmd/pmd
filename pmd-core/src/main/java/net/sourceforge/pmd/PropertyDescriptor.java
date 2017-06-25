@@ -12,10 +12,11 @@ import java.util.Map;
  * descriptor instances are static and immutable they provide validation,
  * serialization, and default values for any specific datatypes.
  *
- * @author Brian Remedios
  * @param <T> type of the property's value
+ *
+ * @author Brian Remedios
  */
-public interface PropertyDescriptor<T extends Object> extends Comparable<PropertyDescriptor<?>> {
+public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>> {
     /**
      * The name of the property without spaces as it serves as the key into the
      * property map.
@@ -33,11 +34,12 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
     String description();
 
     /**
-     * Denotes the value datatype.
+     * Denotes the value datatype. For multi value properties, this is not the
+     * List class but the list's component class.
      *
      * @return Class
      */
-    Class<T> type();
+    Class<?> type();
 
     /**
      * Returns whether the property is multi-valued, i.e. an array of strings,
@@ -71,18 +73,18 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * Validation function that returns a diagnostic error message for a sample
      * property value. Returns null if the value is acceptable.
      *
-     * @param value
-     *            Object
-     * @return String
+     * @param value The value to check.
+     *
+     * @return A diagnostic message.
      */
-    String errorFor(Object value);
+    String errorFor(T value);
 
     /**
      * Denotes the relative order the property field should occupy if we are
      * using an auto-generated UI to display and edit property values. If the
      * value returned has a non-zero fractional part then this is can be used to
      * place adjacent fields on the same row.
-     * 
+     *
      * <p>Example:<br>
      * name -&gt; 0.0 description 1.0 minValue -&gt; 2.0 maxValue -&gt; 2.1
      * </p>
@@ -98,12 +100,13 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * If the property is multi-valued then return the separate values after
      * parsing the propertyString provided. If it isn't a multi-valued property
      * then the value will be returned within an array of size[1].
+     * // TODO:cf API change. This will return a T if single valued, and a list if multi valued.
      *
-     * @param propertyString
-     *            String
+     * @param propertyString String
+     *
      * @return Object
-     * @throws IllegalArgumentException
-     *             if the given string cannot be parsed
+     *
+     * @throws IllegalArgumentException if the given string cannot be parsed
      */
     T valueFrom(String propertyString) throws IllegalArgumentException;
 
@@ -111,8 +114,8 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * Formats the object onto a string suitable for storage within the property
      * map.
      *
-     * @param value
-     *            Object
+     * @param value Object
+     *
      * @return String
      */
     String asDelimitedString(T value);
@@ -123,14 +126,14 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      *
      * @return Object[][]
      */
-    Object[][] choices();
+    Map<String, T> choices();
 
     /**
      * A convenience method that returns an error string if the rule holds onto
      * a property value that has a problem. Returns null otherwise.
      *
-     * @param rule
-     *            Rule
+     * @param rule Rule
+     *
      * @return String
      */
     String propertyErrorFor(Rule rule);
