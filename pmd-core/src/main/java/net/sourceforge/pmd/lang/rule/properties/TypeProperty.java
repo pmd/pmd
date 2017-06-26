@@ -21,114 +21,55 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class TypeProperty extends AbstractPackagedProperty<Class> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeProperty>(
-            Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory FACTORY
+        = new BasicPropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
         @Override
         public TypeProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new TypeProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
-                    legalPackageNamesIn(valuesById, delimiter), 0f);
+                                    legalPackageNamesIn(valuesById, delimiter), 0f);
         }
     };
 
     /**
      * Constructor for TypeProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefault
-     *            Class
-     * @param legalPackageNames
-     *            String[]
-     * @param theUIOrder
-     *            float
+     * @param theName           String
+     * @param theDescription    String
+     * @param theDefault        Class
+     * @param legalPackageNames String[]
+     * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException
      */
     public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
-            float theUIOrder) {
+                        float theUIOrder) {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
     }
 
     /**
+     * Constructor for TypeProperty using a string as default value.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultTypeStr
-     *            String
-     * @param legalPackageNames
-     *            String[]
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
+     * @param theName           String
+     * @param theDescription    String
+     * @param defaultTypeStr    String
+     * @param legalPackageNames String[]
+     * @param theUIOrder        float
+     *
+     * @throws IllegalArgumentException if the default string could not be parsed into a Class
      */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames,
-            float theUIOrder) {
+                        float theUIOrder) {
         this(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder);
     }
 
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<String, String> otherParams,
-            float theUIOrder) {
+                        float theUIOrder) {
         this(theName, theDescription, classFrom(defaultTypeStr), packageNamesIn(otherParams), theUIOrder);
     }
 
-    /**
-     * @return String
-     */
-    @Override
-    protected String defaultAsString() {
-        return asString(defaultValue());
-    }
 
-    /**
-     * Method packageNameOf.
-     *
-     * @param item
-     *            Object
-     * @return String
-     */
-    @Override
-    protected String packageNameOf(Object item) {
-        return ((Class<?>) item).getName();
-    }
-
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
-    @Override
-    public Class<Class> type() {
-        return Class.class;
-    }
-
-    /**
-     * @return String
-     */
-    @Override
-    protected String itemTypeName() {
-        return "type";
-    }
-
-    /**
-     * @param value
-     *            Object
-     * @return String
-     */
-    @Override
-    protected String asString(Object value) {
-        return value == null ? "" : ((Class<?>) value).getName();
-    }
-
-    /**
-     * @param className
-     *            String
-     * @return Class
-     * @throws IllegalArgumentException
-     */
     static Class<?> classFrom(String className) {
         if (StringUtil.isEmpty(className)) {
             return null;
@@ -146,14 +87,28 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
         }
     }
 
-    /**
-     * @param valueString
-     *            String
-     * @return Object
-     * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
-     */
     @Override
-    public Class<?> valueFrom(String valueString) {
+    protected String packageNameOf(Class item) {
+        return item.getName();
+    }
+
+    @Override
+    public Class<Class> type() {
+        return Class.class;
+    }
+
+    @Override
+    protected String itemTypeName() {
+        return "type";
+    }
+
+    @Override
+    protected String asString(Class value) {
+        return value == null ? "" : value.getName();
+    }
+
+    @Override
+    public Class<?> createFrom(String valueString) {
         return classFrom(valueString);
     }
 }

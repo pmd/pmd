@@ -16,30 +16,23 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * Maintains a pair of boundary limit values between which all values managed by
  * the subclasses must fit.
  *
+ * @param <T> The type of value.
+ *
  * @author Brian Remedios
- * @param <T>
  */
-public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T>
-        implements NumericPropertyDescriptor<T> {
+public abstract class AbstractNumericProperty<T extends Number> extends AbstractSingleValueProperty<T>
+    implements NumericPropertyDescriptor<T> {
+
+    public static final Map<String, Boolean> NUMBER_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
+        .expectedFieldTypesWith(new String[] {MIN, MAX}, new Boolean[] {Boolean.TRUE, Boolean.TRUE});
+
 
     private Number lowerLimit;
     private Number upperLimit;
 
-    public static final Map<String, Boolean> NUMBER_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
-            .expectedFieldTypesWith(new String[] { MIN, MAX }, new Boolean[] { Boolean.TRUE, Boolean.TRUE });
 
-    /**
-     *
-     * @param theName
-     * @param theDescription
-     * @param lower
-     * @param upper
-     * @param theDefault
-     * @param theUIOrder
-     * @throws IllegalArgumentException
-     */
     protected AbstractNumericProperty(String theName, String theDescription, Number lower, Number upper, T theDefault,
-            float theUIOrder) {
+                                      float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
 
         if (lower.doubleValue() > upper.doubleValue()) {
@@ -51,10 +44,18 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
     }
 
     /**
+     * Returns a string representing the range defined by the two bounds.
+     *
+     * @return String
+     */
+    public static String rangeString(Number low, Number up) {
+        return "(" + low + " -> " + up + ")";
+    }
+
+    /**
      * Returns the minimum value that instances of the property can have
      *
-     * @return The minimum value.
-     * @see net.sourceforge.pmd.NumericPropertyDescriptor#lowerLimit()
+     * @return The minimum value
      */
     @Override
     public Number lowerLimit() {
@@ -62,18 +63,9 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
     }
 
     /**
-     * @return String
-     */
-    @Override
-    protected String defaultAsString() {
-        return defaultValue().toString();
-    }
-
-    /**
      * Returns the maximum value that instances of the property can have
      *
      * @return The maximum value.
-     * @see net.sourceforge.pmd.NumericPropertyDescriptor#upperLimit()
      */
     @Override
     public Number upperLimit() {
@@ -81,29 +73,20 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
     }
 
     /**
-     * @return String
-     */
-    public String rangeString() {
-        StringBuilder sb = new StringBuilder().append('(').append(lowerLimit).append(" -> ").append(upperLimit)
-                .append(')');
-        return sb.toString();
-    }
-
-    /**
      * Returns a string describing any error the value may have when
      * characterized by the receiver.
      *
-     * @param value
-     *            Object
+     * @param value Object
+     *
      * @return String
      */
     @Override
-    protected String valueErrorFor(Object value) {
+    protected String valueErrorFor(T value) {
 
-        double number = ((Number) value).doubleValue();
+        double number = value.doubleValue();
 
         if (number > upperLimit.doubleValue() || number < lowerLimit.doubleValue()) {
-            return value + " is out of range " + rangeString();
+            return value + " is out of range " + rangeString(lowerLimit, upperLimit);
         }
 
         return null;
@@ -112,7 +95,6 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
     @Override
     protected void addAttributesTo(Map<String, String> attributes) {
         super.addAttributesTo(attributes);
-
         attributes.put(MIN, lowerLimit.toString());
         attributes.put(MAX, upperLimit.toString());
     }

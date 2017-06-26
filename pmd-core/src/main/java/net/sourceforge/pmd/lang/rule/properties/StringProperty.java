@@ -14,10 +14,12 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  *
  * @author Brian Remedios
  */
-public class StringProperty extends AbstractProperty<String> {
+public class StringProperty extends AbstractSingleValueProperty<String> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringProperty>(
-            String.class) {
+    /**
+     * Factory.
+     */
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<String>(String.class) {
 
         @Override
         public StringProperty createWith(Map<String, String> valuesById) {
@@ -28,46 +30,22 @@ public class StringProperty extends AbstractProperty<String> {
     /**
      * Constructor for StringProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefaultValue
-     *            String
-     * @param theUIOrder
-     *            float
+     * @param theName         String
+     * @param theDescription  String
+     * @param theDefaultValue String
+     * @param theUIOrder      float
      */
     public StringProperty(String theName, String theDescription, String theDefaultValue, float theUIOrder) {
         super(theName, theDescription, theDefaultValue, theUIOrder);
     }
 
-    /**
-     * @return String
-     */
-    @Override
-    protected String defaultAsString() {
-        return defaultValue();
-    }
-
-    /**
-     *
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
     @Override
     public Class<String> type() {
         return String.class;
     }
 
-    /**
-     *
-     * @param valueString
-     *            String
-     * @return Object
-     * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
-     */
     @Override
-    public String valueFrom(String valueString) {
+    public String createFrom(String valueString) {
         return valueString;
     }
 }

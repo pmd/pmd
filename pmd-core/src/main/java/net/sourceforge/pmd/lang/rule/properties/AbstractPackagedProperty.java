@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
@@ -18,29 +16,31 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * items by specifying portions of their package names in the constructor. If
  * the legalPackageNames value is set to null then no restrictions are made.
  *
- * @author Brian Remedios
  * @param <T>
+ *
+ * @author Brian Remedios
  */
-public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
-
-    private String[] legalPackageNames;
-
-    private static final char PACKAGE_NAME_DELIMITER = ' ';
+public abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T> {
 
     protected static final Map<String, Boolean> PACKAGED_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
-            .expectedFieldTypesWith(new String[] { LEGAL_PACKAGES }, new Boolean[] { Boolean.FALSE });
+        .expectedFieldTypesWith(new String[] {LEGAL_PACKAGES}, new Boolean[] {Boolean.FALSE});
+    private static final char PACKAGE_NAME_DELIMITER = ' ';
+    private String[] legalPackageNames;
+
 
     /**
+     * Create a packaged property.
      *
-     * @param theName
-     * @param theDescription
-     * @param theDefault
-     * @param theLegalPackageNames
-     * @param theUIOrder
+     * @param theName              Name
+     * @param theDescription       Description
+     * @param theDefault           Default value
+     * @param theLegalPackageNames Legal package names
+     * @param theUIOrder           UI order
+     *
      * @throws IllegalArgumentException
      */
     protected AbstractPackagedProperty(String theName, String theDescription, T theDefault,
-            String[] theLegalPackageNames, float theUIOrder) {
+                                       String[] theLegalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
 
         checkValidPackages(theDefault, theLegalPackageNames);
@@ -60,14 +60,13 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
         attributes.put(LEGAL_PACKAGES, delimitedPackageNames());
     }
 
-    /**
-     * @return String
-     */
+
     private String delimitedPackageNames() {
 
         if (legalPackageNames == null || legalPackageNames.length == 0) {
             return "";
         }
+
         if (legalPackageNames.length == 1) {
             return legalPackageNames[0];
         }
@@ -84,61 +83,33 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
      * Evaluates the names of the items against the allowable name prefixes. If
      * one or more do not have valid prefixes then an exception will be thrown.
      *
-     * @param item
-     * @param legalNamePrefixes
-     * @throws IllegalArgumentException
+     * @param item              The item to check
+     * @param legalNamePrefixes The legal name prefixes
+     *
+     * @throws IllegalArgumentException If the item's package is not whitelisted.
      */
-    private void checkValidPackages(Object item, String[] legalNamePrefixes) {
-        Object[] items = new Object[0];
+    private void checkValidPackages(T item, String[] legalNamePrefixes) {
+        String name = packageNameOf(item);
 
-        if (item != null) {
-            if (item.getClass().isArray()) {
-                items = (Object[]) item;
-            } else {
-                items = new Object[] { item };
+        for (String legalNamePrefixe : legalNamePrefixes) {
+            if (name.startsWith(legalNamePrefixe)) {
+                return;
             }
         }
 
-        String[] names = new String[items.length];
-        Set<String> nameSet = new HashSet<>(items.length);
-        String name = null;
-
-        for (int i = 0; i < items.length; i++) {
-            name = packageNameOf(items[i]);
-            names[i] = name;
-            nameSet.add(name);
-        }
-
-        for (int i = 0; i < names.length; i++) {
-            for (int l = 0; l < legalNamePrefixes.length; l++) {
-                if (names[i].startsWith(legalNamePrefixes[l])) {
-                    nameSet.remove(names[i]);
-                    break;
-                }
-            }
-        }
-        if (nameSet.isEmpty()) {
-            return;
-        }
-
-        throw new IllegalArgumentException("Invalid items: " + nameSet);
+        throw new IllegalArgumentException("Invalid item: " + item);
     }
 
     /**
-     * Method itemTypeName.
+     * Returns the name of the type of item.
      *
-     * @return String
+     * @return The name of the type of item
      */
     protected abstract String itemTypeName();
 
-    /**
-     *
-     * @param value
-     *            Object
-     * @return String
-     */
+
     @Override
-    protected String valueErrorFor(Object value) {
+    protected String valueErrorFor(T value) {
 
         if (value == null) {
             String err = super.valueErrorFor(null);
@@ -163,16 +134,18 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
     }
 
     /**
+     * Returns the package name of the item.
      *
-     * @param item
-     *            Object
-     * @return String
+     * @param item Item
+     *
+     * @return Package name of the item
      */
-    protected abstract String packageNameOf(Object item);
+    protected abstract String packageNameOf(T item);
 
     /**
+     * Returns the legal package names.
      *
-     * @return String[]
+     * @return The legal package names
      */
     public String[] legalPackageNames() {
         return legalPackageNames;

@@ -28,7 +28,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  * @author Brian Remedios
  */
-public abstract class AbstractPropertyDescriptorTester {
+public abstract class AbstractPropertyDescriptorTester<T> {
 
     public AbstractPropertyDescriptorTester(String typeName) {
         this.typeName = typeName;
@@ -52,7 +52,7 @@ public abstract class AbstractPropertyDescriptorTester {
      *            int
      * @return Object
      */
-    protected abstract Object createValue(int count);
+    protected abstract T createValue(int count);
 
     /**
      * Return a value(s) that is known to be faulty per the general scope of the
@@ -62,7 +62,7 @@ public abstract class AbstractPropertyDescriptorTester {
      *            int
      * @return Object
      */
-    protected abstract Object createBadValue(int count);
+    protected abstract T createBadValue(int count);
 
     /**
      * Creates and returns a properly configured property descriptor.
@@ -71,7 +71,7 @@ public abstract class AbstractPropertyDescriptorTester {
      *            boolean
      * @return PropertyDescriptor
      */
-    protected abstract PropertyDescriptor createProperty(boolean multiValue);
+    protected abstract PropertyDescriptor<T> createProperty(boolean multiValue);
 
     /**
      * Attempt to create a property with faulty configuration values. This
@@ -81,7 +81,7 @@ public abstract class AbstractPropertyDescriptorTester {
      *            boolean
      * @return PropertyDescriptor
      */
-    protected abstract PropertyDescriptor createBadProperty(boolean multiValue);
+    protected abstract PropertyDescriptor<T> createBadProperty(boolean multiValue);
 
     protected final PropertyDescriptorFactory getSingleFactory() {
         return PropertyDescriptorUtil.factoryFor(typeName);
@@ -181,8 +181,8 @@ public abstract class AbstractPropertyDescriptorTester {
     @Test
     public void testErrorFor() {
 
-        Object testValue = createValue(1);
-        PropertyDescriptor<?> pmdProp = createProperty(false); // plain vanilla
+        T testValue = createValue(1);
+        PropertyDescriptor<T> pmdProp = createProperty(false); // plain vanilla
         // property &
         // valid test
         // value
@@ -200,8 +200,8 @@ public abstract class AbstractPropertyDescriptorTester {
     @Test
     public void testErrorForBad() {
 
-        PropertyDescriptor<?> pmdProp = createProperty(false);
-        Object testValue = createBadValue(1);
+        PropertyDescriptor<T> pmdProp = createProperty(false);
+        T testValue = createBadValue(1);
         String errorMsg = pmdProp.errorFor(testValue); // bad value should
         // result in an error
         if (errorMsg == null) {
@@ -220,7 +220,7 @@ public abstract class AbstractPropertyDescriptorTester {
     @Test
     public void testType() {
 
-        PropertyDescriptor<?> pmdProp = createProperty(false);
+        PropertyDescriptor<T> pmdProp = createProperty(false);
 
         assertNotNull(pmdProp.type());
     }

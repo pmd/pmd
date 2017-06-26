@@ -12,16 +12,16 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * Renderer for Code Climate JSON format
@@ -30,18 +30,24 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "codeclimate";
     public static final String BODY_PLACEHOLDER = "REPLACE_THIS_WITH_MARKDOWN";
     public static final int REMEDIATION_POINTS_DEFAULT = 50000;
-    public static final String[] CODECLIMATE_DEFAULT_CATEGORIES = new String[] { "Style" };
+    public static final String[] CODECLIMATE_DEFAULT_CATEGORIES = new String[] {"Style"};
 
     // Note: required by https://github.com/codeclimate/spec/blob/master/SPEC.md
     protected static final String NULL_CHARACTER = "\u0000";
-
-    private Rule rule;
-
     private final String pmdDeveloperUrl;
+    private Rule rule;
 
     public CodeClimateRenderer() {
         super(NAME, "Code Climate integration.");
         pmdDeveloperUrl = getPmdDeveloperURL();
+    }
+
+    private static String getPmdDeveloperURL() {
+        String url = "http://pmd.github.io/pmd-" + PMD.VERSION + "/customizing/pmd-developer.html";
+        if (PMD.VERSION.contains("SNAPSHOT") || "unknown".equals(PMD.VERSION)) {
+            url = "http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html";
+        }
+        return url;
     }
 
     /**
@@ -65,8 +71,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
      * Generate a CodeClimateIssue suitable for processing into JSON from the
      * given RuleViolation.
      *
-     * @param rv
-     *            RuleViolation to convert.
+     * @param rv RuleViolation to convert.
+     *
      * @return The generated issue.
      */
     private CodeClimateIssue asIssue(RuleViolation rv) {
@@ -107,7 +113,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(rv.getFilename(), "/code/");
 
         if (rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)
-                && !rule.getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
+            && !rule.getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
             result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getBeginLine());
         } else {
             result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
@@ -130,11 +136,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         String[] result;
 
         if (rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
-            Object[] categories = rule.getProperty(CODECLIMATE_CATEGORIES);
-            result = new String[categories.length];
-            for (int i = 0; i < categories.length; i++) {
-                result[i] = String.valueOf(categories[i]);
-            }
+            List<String> categories = rule.getProperty(CODECLIMATE_CATEGORIES);
+            result = categories.toArray(new String[0]);
         } else {
             result = CODECLIMATE_DEFAULT_CATEGORIES;
         }
@@ -142,21 +145,13 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         return result;
     }
 
-    private static String getPmdDeveloperURL() {
-        String url = "http://pmd.github.io/pmd-" + PMD.VERSION + "/customizing/pmd-developer.html";
-        if (PMD.VERSION.contains("SNAPSHOT") || "unknown".equals(PMD.VERSION)) {
-            url = "http://pmd.sourceforge.net/snapshot/customizing/pmd-developer.html";
-        }
-        return url;
-    }
-
     private <T> String getBody() {
         String result = "## " + rule.getName() + "\\n\\n" + "Since: PMD " + rule.getSince() + "\\n\\n" + "Priority: "
-                + rule.getPriority() + "\\n\\n"
-                + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): "
-                + Arrays.toString(getCategories()).replaceAll("[\\[\\]]", "") + "\\n\\n"
-                + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): "
-                + getRemediationPoints() + "\\n\\n" + cleaned(rule.getDescription());
+            + rule.getPriority() + "\\n\\n"
+            + "[Categories](https://github.com/codeclimate/spec/blob/master/SPEC.md#categories): "
+            + Arrays.toString(getCategories()).replaceAll("[\\[\\]]", "") + "\\n\\n"
+            + "[Remediation Points](https://github.com/codeclimate/spec/blob/master/SPEC.md#remediation-points): "
+            + getRemediationPoints() + "\\n\\n" + cleaned(rule.getDescription());
 
         if (!rule.getExamples().isEmpty()) {
             result += "\\n\\n### Example:\\n\\n";

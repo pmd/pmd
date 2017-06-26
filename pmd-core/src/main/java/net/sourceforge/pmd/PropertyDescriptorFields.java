@@ -20,7 +20,7 @@ public class PropertyDescriptorFields {
      * @see PropertyDescriptorUtil
      */
     public static final String TYPE = "type";
-    /** The name of the property */
+    /** The name of the property. */
     public static final String NAME = "name";
     /** The description of the property. */
     public static final String DESCRIPTION = "description";

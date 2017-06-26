@@ -17,88 +17,69 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class DoubleProperty extends AbstractNumericProperty<Double> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<DoubleProperty>(
-            Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<Double>(
+        Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
         @Override
         public DoubleProperty createWith(Map<String, String> valuesById) {
             final String[] minMax = minMaxFrom(valuesById);
             return new DoubleProperty(nameIn(valuesById), descriptionIn(valuesById), Double.valueOf(minMax[0]),
-                    Double.valueOf(minMax[1]), Double.valueOf(numericDefaultValueIn(valuesById)), 0f);
+                                      Double.valueOf(minMax[1]), Double.valueOf(numericDefaultValueIn(valuesById)), 0f);
         }
     };
 
     /**
      * Constructor for DoubleProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param min
-     *            double
-     * @param max
-     *            double
-     * @param theDefault
-     *            double
-     * @param theUIOrder
-     *            float
+     * @param theName        String
+     * @param theDescription String
+     * @param min            double
+     * @param max            double
+     * @param theDefault     double
+     * @param theUIOrder     float
+     *
      * @throws IllegalArgumentException
      */
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
-            float theUIOrder) {
+                          float theUIOrder) {
         super(theName, theDescription, min, max, theDefault, theUIOrder);
     }
 
     /**
      * Constructor for DoubleProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param minStr
-     *            String
-     * @param maxStr
-     *            String
-     * @param defaultStr
-     *            String
-     * @param theUIOrder
-     *            float
+     * @param theName        String
+     * @param theDescription String
+     * @param minStr         String
+     * @param maxStr         String
+     * @param defaultStr     String
+     * @param theUIOrder     float
+     *
      * @throws IllegalArgumentException
      */
     public DoubleProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
-            float theUIOrder) {
+                          float theUIOrder) {
         this(theName, theDescription, doubleFrom(minStr), doubleFrom(maxStr), doubleFrom(defaultStr), theUIOrder);
     }
 
     /**
-     * @param numberString
-     *            String
-     * @return Double
+     * Parses a String into a Double.
+     *
+     * @param numberString String to parse
+     *
+     * @return Parsed Double
      */
     public static Double doubleFrom(String numberString) {
         return Double.valueOf(numberString);
     }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
     @Override
     public Class<Double> type() {
         return Double.class;
     }
 
-    /**
-     * Deserializes a string into its Double form.
-     *
-     * @param value
-     *            String
-     * @return Object
-     */
     @Override
-    protected Object createFrom(String value) {
+    protected Double createFrom(String value) {
         return doubleFrom(value);
     }
 }

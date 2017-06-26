@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
@@ -19,36 +20,32 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
+public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeMultiProperty>(
-            Class[].class, PACKAGED_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory FACTORY
+        = new BasicPropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
         @Override
         public TypeMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
             return new TypeMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
-                    legalPackageNamesIn(valuesById, delimiter), 0f);
+                                         legalPackageNamesIn(valuesById, delimiter), 0f);
         }
     };
 
     /**
      * Constructor for TypeProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefaults
-     *            Class[]
-     * @param legalPackageNames
-     *            String[]
-     * @param theUIOrder
-     *            float
+     * @param theName           String
+     * @param theDescription    String
+     * @param theDefaults       Class[]
+     * @param legalPackageNames String[]
+     * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
-            float theUIOrder) {
+    public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults, String[]
+        legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
 
     }
@@ -56,89 +53,69 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
     /**
      * Constructor for TypeProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theTypeDefaults
-     *            String
-     * @param legalPackageNames
-     *            String[]
-     * @param theUIOrder
-     *            float
+     * @param theName           String
+     * @param theDescription    String
+     * @param theTypeDefaults   String
+     * @param legalPackageNames String[]
+     * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, String[] legalPackageNames,
-            float theUIOrder) {
+                             float theUIOrder) {
         this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder);
 
     }
 
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
-            Map<String, String> otherParams, float theUIOrder) {
+                             Map<String, String> otherParams, float theUIOrder) {
         this(theName, theDescription, typesFrom(theTypeDefaults), packageNamesIn(otherParams), theUIOrder);
     }
 
     /**
-     * @param classesStr
-     *            String
-     * @return Class[]
+     * Returns a list of Class objects parsed from the input string.
+     *
+     * @param classesStr String to parse
+     *
+     * @return A list of class objects
      */
-    public static Class<?>[] typesFrom(String classesStr) {
+    public static List<Class> typesFrom(String classesStr) {
         String[] values = StringUtil.substringsOf(classesStr, DELIMITER);
 
-        Class<?>[] classes = new Class<?>[values.length];
+        List<Class> classes = new ArrayList<>(values.length);
         for (int i = 0; i < values.length; i++) {
-            classes[i] = TypeProperty.classFrom(values[i]);
+            classes.add(TypeProperty.classFrom(values[i]));
         }
         return classes;
     }
 
-    /**
-     * @param item
-     *            Object
-     * @return String
-     */
     @Override
-    protected String packageNameOf(Object item) {
+    protected String packageNameOf(Class item) {
         return ((Class<?>) item).getName();
     }
 
-    /**
-     * @return Class
-     * @see PropertyDescriptor#type()
-     */
     @Override
-    public Class<Class[]> type() {
-        return Class[].class;
+    public Class<Class> type() {
+        return Class.class;
     }
 
-    /**
-     * @return String
-     */
     @Override
     protected String itemTypeName() {
         return "type";
     }
 
-    /**
-     * @param value
-     *            Object
-     * @return String
-     */
     @Override
-    protected String asString(Object value) {
-        return value == null ? "" : ((Class<?>) value).getName();
+    public String asString(Class value) {
+        return value == null ? "" : value.getName();
     }
 
-    /**
-     * @param valueString
-     *            String
-     * @return Object
-     * @see PropertyDescriptor#valueFrom(String)
-     */
     @Override
-    public Class<?>[] valueFrom(String valueString) {
+    protected Class createFrom(String toParse) {
+        throw new UnsupportedOperationException(); // not used
+    }
+
+    @Override
+    public List<Class> valueFrom(String valueString) {
         return typesFrom(valueString);
     }
 }

@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
@@ -25,36 +26,25 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * @param <T>
  *
  * @author Brian Remedios
- *
- * @param <T>
  */
 public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory {
 
-    private final Class<?> valueType;
+    protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil.mapFrom(
+        new String[] {NAME, DESC, DEFAULT_VALUE, DELIMITER}, new Boolean[] {true, true, true, false});
+
+    private final Class<T> valueType;
+
     private final Map<String, Boolean> fieldTypesByKey;
 
-    protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil.mapFrom(
-            new String[] { NAME, DESC, DEFAULT_VALUE, DELIMITER },
-            new Boolean[] { Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE });
-
-    public BasicPropertyDescriptorFactory(Class<?> theValueType) {
+    public BasicPropertyDescriptorFactory(Class<T> theValueType) {
         valueType = theValueType;
         fieldTypesByKey = Collections.unmodifiableMap(CORE_FIELD_TYPES_BY_KEY);
     }
 
-    // public interface WrapperBuilder<T> {
-    // T[] newArray(int size);
-    // T itemFrom(String txt);
-    // }
-    //
-    // protected WrapperBuilder intBuilder = new WrapperBuilder<Integer>() {
-    // public Integer[] newArray(int size) { return new Integer[size]; }
-    // public Integer itemFrom(String txt) { return Integer.parseInt(txt); }
-    // };
-
-    public BasicPropertyDescriptorFactory(Class<?> theValueType, Map<String, Boolean> additionalFieldTypesByKey) {
+    public BasicPropertyDescriptorFactory(Class<T> theValueType, Map<String, Boolean> additionalFieldTypesByKey) {
 
         valueType = theValueType;
         Map<String, Boolean> temp = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size() + additionalFieldTypesByKey.size());
@@ -62,40 +52,6 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         temp.putAll(additionalFieldTypesByKey);
 
         fieldTypesByKey = Collections.unmodifiableMap(temp);
-    }
-
-    @Override
-    public Class<?> valueType() {
-        return valueType;
-    }
-
-    @Override
-    public PropertyDescriptor<?> createWith(Map<String, String> valuesById) {
-        throw new RuntimeException("Unimplemented createWith() method in subclass");
-    }
-
-    @Override
-    public Map<String, Boolean> expectedFields() {
-        return fieldTypesByKey;
-    }
-
-    protected String nameIn(Map<String, String> valuesById) {
-        return valuesById.get(NAME);
-    }
-
-    protected String descriptionIn(Map<String, String> valuesById) {
-        return valuesById.get(DESC);
-    }
-
-    protected String defaultValueIn(Map<String, String> valuesById) {
-        return valuesById.get(DEFAULT_VALUE);
-    }
-
-    protected String numericDefaultValueIn(Map<String, String> valuesById) {
-        String number = defaultValueIn(valuesById);
-        return StringUtil.isEmpty(number) ? "0" : number; // TODO is 0
-        // reasonable if
-        // undefined?
     }
 
     protected static String minValueIn(Map<String, String> valuesById) {
@@ -106,24 +62,9 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         return valuesById.get(MAX);
     }
 
-    // protected static T[] primitivesFrom(String text, WrapperBuilder<T>
-    // builder) {
-    //
-    // String[] values = text.split(","); // TODO
-    // List items = new ArrayList(values.length);
-    // for (String value : values) {
-    // try {
-    // Object newIten = builder.itemFrom(value);
-    // items.add(newIten);
-    // } catch (Exception ex) {
-    //
-    // }
-    // }
-    // return items.toArray(builder.newArray(items.size()));
-    // }
-
     protected static Boolean[] booleanValuesIn(String booleanString, char delimiter) {
-        String[] values = StringUtil.substringsOf(booleanString, delimiter);
+        String[] values = booleanString.split(Pattern.quote("" + delimiter));
+
         Boolean[] result = new Boolean[values.length];
         for (int i = 0; i < values.length; i++) {
             result[i] = Boolean.valueOf(values[i]);
@@ -131,31 +72,15 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         return result;
     }
 
-    protected static Character[] charsIn(String charString, char delimiter) {
-        String[] values = StringUtil.substringsOf(charString, delimiter);
-        Character[] chars = new Character[values.length];
-
-        for (int i = 0; i < values.length; i++) {
-            if (values.length != 1) {
-                throw new IllegalArgumentException("missing/ambiguous character value");
-            }
-            chars[i] = values[i].charAt(0);
+    // TODO change return type to List<U> someday
+    @SuppressWarnings("unckecked")
+    protected static <U> U[] parsePrimitives(String toParse, char delimiter, PrimitiveExtractor<U> extractor) {
+        String[] values = StringUtil.substringsOf(toParse, delimiter);
+        List<U> result = new ArrayList<>();
+        for (String s : values) {
+            result.add(extractor.valueOf(s));
         }
-        return chars;
-    }
-
-    protected static Integer[] integersIn(String numberString, char delimiter) {
-        String[] values = StringUtil.substringsOf(numberString, delimiter);
-        List<Integer> ints = new ArrayList<>(values.length);
-        for (String value : values) {
-            try {
-                Integer newInt = Integer.parseInt(value);
-                ints.add(newInt);
-            } catch (Exception ex) {
-
-            }
-        }
-        return ints.toArray(new Integer[ints.size()]);
+        return (U[]) result.toArray();
     }
 
     protected static Long[] longsIn(String numberString, char delimiter) {
@@ -212,7 +137,23 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         return 0; // TODO
     }
 
-    protected static int[] indiciesIn(Map<String, String> valuesById) {
+    // protected static T[] primitivesFrom(String text, WrapperBuilder<T>
+    // builder) {
+    //
+    // String[] values = text.split(","); // TODO
+    // List items = new ArrayList(values.length);
+    // for (String value : values) {
+    // try {
+    // Object newIten = builder.itemFrom(value);
+    // items.add(newIten);
+    // } catch (Exception ex) {
+    //
+    // }
+    // }
+    // return items.toArray(builder.newArray(items.size()));
+    // }
+
+    protected static int[] indicesIn(Map<String, String> valuesById) {
         return null; // TODO
     }
 
@@ -237,7 +178,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         if (StringUtil.isEmpty(min) || StringUtil.isEmpty(max)) {
             throw new RuntimeException("min and max values must be specified");
         }
-        return new String[] { min, max };
+        return new String[] {min, max};
     }
 
     protected static String[] legalPackageNamesIn(Map<String, String> valuesById, char delimiter) {
@@ -255,6 +196,95 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
             largerMap.put(otherKeys[i], otherValues[i]);
         }
         return largerMap;
+    }
+
+    @Override
+    public Class<?> valueType() {
+        return valueType;
+    }
+
+    @Override
+    public PropertyDescriptor<?> createWith(Map<String, String> valuesById) {
+        throw new RuntimeException("Unimplemented createWith() method in subclass");
+    }
+
+    @Override
+    public Map<String, Boolean> expectedFields() {
+        return fieldTypesByKey;
+    }
+
+    protected String nameIn(Map<String, String> valuesById) {
+        return valuesById.get(NAME);
+    }
+
+    protected String descriptionIn(Map<String, String> valuesById) {
+        return valuesById.get(DESC);
+    }
+
+    protected String defaultValueIn(Map<String, String> valuesById) {
+        return valuesById.get(DEFAULT_VALUE);
+    }
+
+    protected String numericDefaultValueIn(Map<String, String> valuesById) {
+        String number = defaultValueIn(valuesById);
+        return StringUtil.isEmpty(number) ? "0" : number; // TODO is 0
+        // reasonable if
+        // undefined?
+    }
+
+    /**
+     * Extracts a primitive from a string
+     *
+     * @param <U>
+     */
+    // FUTURE @FunctionalInterface
+    public interface PrimitiveExtractor<U> {
+        /** Extracts characters. */
+        PrimitiveExtractor<Character> CHARACTER_EXTRACTOR = new PrimitiveExtractor<Character>() {
+            @Override
+            public Character valueOf(String value) {
+                if (value.length() != 1) {
+                    throw new IllegalArgumentException("missing/ambiguous character value");
+                }
+                return value.charAt(0);
+            }
+        };
+
+        // FUTURE Integer::valueOf
+        /** Extracts integers. */
+        PrimitiveExtractor<Integer> INTEGER_EXTRACTOR = new PrimitiveExtractor<Integer>() {
+            @Override
+            public Integer valueOf(String value) {
+                return Integer.valueOf(value);
+            }
+        };
+
+        // FUTURE Boolean::valueOf
+        /** Extracts booleans. */
+        PrimitiveExtractor<Boolean> BOOLEAN_EXTRACTOR = new PrimitiveExtractor<Boolean>() {
+            @Override
+            public Boolean valueOf(String value) {
+                return Boolean.valueOf(value);
+            }
+        };
+
+        /** Extracts characters. */
+        PrimitiveExtractor<Float> FLOAT_EXTRACTOR = new PrimitiveExtractor<Float>() {
+            @Override
+            public Float valueOf(String value) {
+                return Float.valueOf(value);
+            }
+        };
+
+        /**
+         * Extracts a primitive from a string.
+         *
+         * @param value The string to parse
+         *
+         * @return The primitive found
+         */
+        U valueOf(String value);
+
     }
 
     // protected static Map<String, PropertyDescriptorFactory>

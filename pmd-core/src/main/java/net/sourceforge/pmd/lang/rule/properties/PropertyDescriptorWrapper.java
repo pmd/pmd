@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -16,8 +19,7 @@ import net.sourceforge.pmd.Rule;
  * in the encoding of a Rule to XML format to distinguish Rule defined
  * PropertyDescriptors and those which were originally defined in XML.
  *
- * @param <T>
- *            The type of the underlying PropertyDescriptor.
+ * @param <T> The type of the underlying PropertyDescriptor.
  */
 public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     private final PropertyDescriptor<T> propertyDescriptor;
@@ -39,7 +41,7 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     }
 
     @Override
-    public Object[][] choices() {
+    public Set<Entry<String, T>> choices() {
         return propertyDescriptor.choices();
     }
 
@@ -59,7 +61,7 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     }
 
     @Override
-    public String errorFor(Object value) {
+    public String errorFor(T value) {
         return propertyDescriptor.errorFor(value);
     }
 
@@ -93,9 +95,22 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
         return propertyDescriptor.propertyErrorFor(rule);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Class<T> type() {
-        return propertyDescriptor.type();
+        Class<?> clazz = propertyDescriptor.type();
+        Class<T> result = null;
+        try {
+            result = (Class<T>) clazz;
+        } catch (ClassCastException e1) {
+            try {
+                result = (Class<T>) List.class;
+            } catch (ClassCastException e2) {
+
+            }
+        }
+
+        return result;
     }
 
     @Override

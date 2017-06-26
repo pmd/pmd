@@ -12,19 +12,18 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- *
  * @author Brian Remedios
  */
-public class FileProperty extends AbstractProperty<File> {
+public class FileProperty extends AbstractSingleValueProperty<File> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FileProperty>(
-            File.class) {
-
+    /** Factory. */
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<File>(File.class) {
         @Override
         public FileProperty createWith(Map<String, String> valuesById) {
             return new FileProperty(nameIn(valuesById), descriptionIn(valuesById), null, 0f);
         }
     };
+
 
     public FileProperty(String theName, String theDescription, File theDefault, float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
@@ -36,15 +35,7 @@ public class FileProperty extends AbstractProperty<File> {
     }
 
     @Override
-    public File valueFrom(String propertyString) throws IllegalArgumentException {
-
+    public File createFrom(String propertyString) {
         return StringUtil.isEmpty(propertyString) ? null : new File(propertyString);
     }
-
-    @Override
-    protected String defaultAsString() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

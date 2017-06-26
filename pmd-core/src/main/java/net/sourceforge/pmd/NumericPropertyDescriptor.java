@@ -12,17 +12,17 @@ package net.sourceforge.pmd;
  *
  * @param <T> type of the property value
  */
-public interface NumericPropertyDescriptor<T extends Object> extends PropertyDescriptor<T> {
+public interface NumericPropertyDescriptor<T> extends PropertyDescriptor<T> {
 
     /**
-     * Returns the maximum value that instances of the property can have
+     * Returns the maximum value that instances of the property can have.
      *
      * @return Number
      */
     Number upperLimit();
 
     /**
-     * Returns the minimum value that instances of the property can have
+     * Returns the minimum value that instances of the property can have.
      *
      * @return Number
      */

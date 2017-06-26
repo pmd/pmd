@@ -14,30 +14,27 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  *
  * @author Brian Remedios
  */
-public class CharacterProperty extends AbstractProperty<Character> {
+public class CharacterProperty extends AbstractSingleValueProperty<Character> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterProperty>(
-            Character.class) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<Character>(Character.class) {
 
         @Override
         public CharacterProperty createWith(Map<String, String> valuesById) {
-            return new CharacterProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    defaultValueIn(valuesById) != null ? new Character(defaultValueIn(valuesById).charAt(0)) : null,
-                    0f);
+            return new CharacterProperty(nameIn(valuesById),
+                                         descriptionIn(valuesById),
+                                         defaultValueIn(valuesById) == null ? null
+                                                                            : defaultValueIn(valuesById).charAt(0),
+                                         0f);
         }
     };
 
     /**
      * Constructor for CharacterProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefault
-     *            Character
-     * @param theUIOrder
-     *            float
+     * @param theName        String
+     * @param theDescription String
+     * @param theDefault     Character
+     * @param theUIOrder     float
      */
     public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
@@ -46,61 +43,43 @@ public class CharacterProperty extends AbstractProperty<Character> {
     /**
      * Constructor for CharacterProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultStr
-     *            String
-     * @param theUIOrder
-     *            float
+     * @param theName        String
+     * @param theDescription String
+     * @param defaultStr     String
+     * @param theUIOrder     float
+     *
      * @throws IllegalArgumentException
      */
     public CharacterProperty(String theName, String theDescription, String defaultStr, float theUIOrder) {
         this(theName, theDescription, charFrom(defaultStr), theUIOrder);
     }
 
+
     /**
-     * @param charStr
-     *            String
-     * @return Character
+     * Parses a String into a Character.
+     *
+     * @param charStr String to parse
+     *
+     * @return Parsed Character
+     *
+     * @throws IllegalArgumentException if the String doesn't have length 1
      */
     public static Character charFrom(String charStr) {
-
         if (charStr == null || charStr.length() != 1) {
             throw new IllegalArgumentException("missing/invalid character value");
         }
         return charStr.charAt(0);
     }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
     @Override
     public Class<Character> type() {
         return Character.class;
     }
 
-    /**
-     * @param valueString
-     *            String
-     * @return Object
-     * @throws IllegalArgumentException
-     * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
-     */
+
     @Override
-    public Character valueFrom(String valueString) throws IllegalArgumentException {
+    public Character createFrom(String valueString) throws IllegalArgumentException {
         return charFrom(valueString);
     }
 
-    /**
-     * Method defaultAsString.
-     *
-     * @return String
-     */
-    @Override
-    protected String defaultAsString() {
-        return Character.toString(defaultValue());
-    }
 }

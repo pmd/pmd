@@ -182,6 +182,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         return "[PropertyDescriptor: name=" + name() + ", type=" + type() + ", value=" + defaultValue() + "]";
     }
 
+
     /**
      * Returns a string representation of the default value.
      *
