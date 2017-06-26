@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Brian Remedios
  */
-public interface PropertyDescriptorFactory {
+public interface PropertyDescriptorFactory<T> {
 
     /**
      * The type of the value of the {@link PropertyDescriptor} created by this
@@ -37,5 +37,5 @@ public interface PropertyDescriptorFactory {
      *            the map of values
      * @return a new and initialized {@link PropertyDescriptor}
      */
-    PropertyDescriptor<?> createWith(Map<String, String> valuesById);
+    PropertyDescriptor<T> createWith(Map<String, String> valuesById);
 }

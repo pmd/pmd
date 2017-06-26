@@ -30,21 +30,21 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory {
+public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory<T> {
 
     protected static final Map<String, Boolean> CORE_FIELD_TYPES_BY_KEY = CollectionUtil.mapFrom(
         new String[] {NAME, DESC, DEFAULT_VALUE, DELIMITER}, new Boolean[] {true, true, true, false});
 
-    private final Class<T> valueType;
+    private final Class<?> valueType;
 
     private final Map<String, Boolean> fieldTypesByKey;
 
-    public BasicPropertyDescriptorFactory(Class<T> theValueType) {
+    public BasicPropertyDescriptorFactory(Class<?> theValueType) {
         valueType = theValueType;
         fieldTypesByKey = Collections.unmodifiableMap(CORE_FIELD_TYPES_BY_KEY);
     }
 
-    public BasicPropertyDescriptorFactory(Class<T> theValueType, Map<String, Boolean> additionalFieldTypesByKey) {
+    public BasicPropertyDescriptorFactory(Class<?> theValueType, Map<String, Boolean> additionalFieldTypesByKey) {
 
         valueType = theValueType;
         Map<String, Boolean> temp = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size() + additionalFieldTypesByKey.size());
@@ -63,7 +63,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     }
 
     protected static Boolean[] booleanValuesIn(String booleanString, char delimiter) {
-        String[] values = booleanString.split(Pattern.quote("" + delimiter));
+        String[] values = StringUtil.substringsOf(booleanString, delimiter);
 
         Boolean[] result = new Boolean[values.length];
         for (int i = 0; i < values.length; i++) {
@@ -204,7 +204,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     }
 
     @Override
-    public PropertyDescriptor<?> createWith(Map<String, String> valuesById) {
+    public PropertyDescriptor<T> createWith(Map<String, String> valuesById) {
         throw new RuntimeException("Unimplemented createWith() method in subclass");
     }
 

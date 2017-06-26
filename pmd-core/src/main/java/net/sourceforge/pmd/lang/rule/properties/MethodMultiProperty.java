@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.util.StringUtil;
 public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
 
     public static final PropertyDescriptorFactory FACTORY
-        = new BasicPropertyDescriptorFactory<Method>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+        = new BasicPropertyDescriptorFactory<List<Method>>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
         @Override
         public MethodMultiProperty createWith(Map<String, String> valuesById) {
@@ -50,6 +51,11 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
     public MethodMultiProperty(String theName, String theDescription, List<Method> theDefaults,
                                String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
+    }
+
+    public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults,
+                               String[] legalPackageNames, float theUIOrder) {
+        this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
     }
 
     /**

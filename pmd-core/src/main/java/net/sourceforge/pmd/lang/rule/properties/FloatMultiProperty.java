@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 public class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
 
     public static final PropertyDescriptorFactory FACTORY
-        = new BasicPropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
+        = new BasicPropertyDescriptorFactory<List<Float>>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
         @Override
         public FloatMultiProperty createWith(Map<String, String> valuesById) {

@@ -20,7 +20,7 @@ public class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
     /**
      * Factory.
      */
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<Boolean>(
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<List<Boolean>>(
         Boolean.class) {
         @Override
         public BooleanMultiProperty createWith(Map<String, String> valuesById) {

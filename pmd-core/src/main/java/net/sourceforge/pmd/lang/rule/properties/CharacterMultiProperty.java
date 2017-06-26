@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<Character>(Character.class) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<List<Character>>(Character.class) {
 
         @Override
         public CharacterMultiProperty createWith(Map<String, String> valuesById) {

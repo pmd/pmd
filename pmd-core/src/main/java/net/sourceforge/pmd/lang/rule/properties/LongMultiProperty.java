@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 public class LongMultiProperty extends AbstractMultiNumericProperty<Long> {
 
     public static final PropertyDescriptorFactory FACTORY
-        = new BasicPropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
+        = new BasicPropertyDescriptorFactory<List<Long>>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
         @Override
         public LongMultiProperty createWith(Map<String, String> valuesById) {

@@ -52,29 +52,29 @@ public class PropertyDescriptorUtil {
         Map<String, PropertyDescriptorFactory> temp = new HashMap<>(18);
 
         temp.put("Boolean", BooleanProperty.FACTORY);
-        temp.put("Boolean[]", BooleanMultiProperty.FACTORY);
+        temp.put("List<Boolean>", BooleanMultiProperty.FACTORY);
 
         temp.put("String", StringProperty.FACTORY);
-        temp.put("String[]", StringMultiProperty.FACTORY);
+        temp.put("List<String>", StringMultiProperty.FACTORY);
         temp.put("Character", CharacterProperty.FACTORY);
-        temp.put("Character[]", CharacterMultiProperty.FACTORY);
+        temp.put("List<Character>", CharacterMultiProperty.FACTORY);
 
         temp.put("Integer", IntegerProperty.FACTORY);
-        temp.put("Integer[]", IntegerMultiProperty.FACTORY);
+        temp.put("List<Integer>", IntegerMultiProperty.FACTORY);
         temp.put("Long", LongProperty.FACTORY);
-        temp.put("Long[]", LongMultiProperty.FACTORY);
+        temp.put("List<Long>", LongMultiProperty.FACTORY);
         temp.put("Float", FloatProperty.FACTORY);
-        temp.put("Float[]", FloatMultiProperty.FACTORY);
+        temp.put("List<Float>", FloatMultiProperty.FACTORY);
         temp.put("Double", DoubleProperty.FACTORY);
-        temp.put("Double[]", DoubleMultiProperty.FACTORY);
+        temp.put("List<Double>", DoubleMultiProperty.FACTORY);
 
         temp.put("Enum", EnumeratedProperty.FACTORY);
-        temp.put("Enum[]", EnumeratedMultiProperty.FACTORY);
+        temp.put("List<Enum>", EnumeratedMultiProperty.FACTORY);
 
         temp.put("Class", TypeProperty.FACTORY);
-        temp.put("Class[]", TypeMultiProperty.FACTORY);
+        temp.put("List<Class>", TypeMultiProperty.FACTORY);
         temp.put("Method", MethodProperty.FACTORY);
-        temp.put("Method[]", MethodMultiProperty.FACTORY);
+        temp.put("List<Method>", MethodMultiProperty.FACTORY);
 
         temp.put("File", FileProperty.FACTORY);
 

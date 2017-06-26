@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,10 +45,26 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
      *
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults, String[]
-        legalPackageNames, float theUIOrder) {
+    public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults,
+                             String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
 
+    }
+
+    /**
+     * Constructor for TypeProperty.
+     *
+     * @param theName           String
+     * @param theDescription    String
+     * @param theDefaults       Class[]
+     * @param legalPackageNames String[]
+     * @param theUIOrder        float
+     *
+     * @throws IllegalArgumentException
+     */
+    public TypeMultiProperty(String theName, String theDescription, Class[] theDefaults,
+                             String[] legalPackageNames, float theUIOrder) {
+        this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
     }
 
     /**
@@ -61,8 +78,8 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
      *
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, String[] legalPackageNames,
-                             float theUIOrder) {
+    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
+                             String[] legalPackageNames, float theUIOrder) {
         this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder);
 
     }
