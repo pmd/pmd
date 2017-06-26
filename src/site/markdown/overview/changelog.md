@@ -22,6 +22,9 @@ This is a major release.
 
 ### API Changes
 
+*   The class `net.sourceforge.pmd.lang.dfa.NodeType` has been converted to an enum.
+    All node types are enum members now instead of int constants. The names for node types are retained.
+
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements
