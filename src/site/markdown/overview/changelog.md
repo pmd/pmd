@@ -19,6 +19,8 @@ This is a minor release.
 
 *   General
     *   [#407](https://github.com/pmd/pmd/issues/407): \[web] Release date is not properly formatted
+*   java-controversial
+    *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
 *   java-design
     *   [#397](https://github.com/pmd/pmd/issues/397): \[java] ConstructorCallsOverridableMethodRule: false positive for method called from lambda expression
 
@@ -27,4 +29,5 @@ This is a minor release.
 ### External Contributions
 
 *   [#406](https://github.com/pmd/pmd/pull/406): \[java] False positive with lambda in java-design/ConstructorCallsOverridableMethod
+*   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements
 
