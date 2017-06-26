@@ -59,7 +59,7 @@ public class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
 
     @Override
     public Boolean createFrom(String propertyString) throws IllegalArgumentException {
-        return null;
+        return Boolean.valueOf(propertyString);
     }
 
 }

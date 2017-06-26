@@ -28,7 +28,8 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer> 
         public IntegerMultiProperty createWith(Map<String, String> valuesById) {
             String[] minMax = minMaxFrom(valuesById);
             char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-            Integer[] defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, PrimitiveExtractor.INTEGER_EXTRACTOR);
+            List<Integer> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, PrimitiveExtractor
+                .INTEGER_EXTRACTOR);
             return new IntegerMultiProperty(nameIn(valuesById), descriptionIn(valuesById), Integer.parseInt(minMax[0]),
                                             Integer.parseInt(minMax[1]), defaultValues, 0f);
         }

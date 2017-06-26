@@ -41,33 +41,12 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     private static final String ARRAY_FLAG = "[]";
     private static final Map<Class<?>, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 
-    /**
-     * Constructor for MethodProperty.
-     *
-     * @param theName           String
-     * @param theDescription    String
-     * @param theDefault        Method
-     * @param legalPackageNames String[]
-     * @param theUIOrder        float
-     *
-     * @throws IllegalArgumentException
-     */
     public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
                           float theUIOrder) {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
     }
 
-    /**
-     * Constructor for MethodProperty.
-     *
-     * @param theName           String
-     * @param theDescription    String
-     * @param defaultMethodStr  String
-     * @param legalPackageNames String[]
-     * @param theUIOrder        float
-     *
-     * @throws IllegalArgumentException
-     */
+
     public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames,
                           float theUIOrder) {
         super(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder);
@@ -253,7 +232,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
 
     @Override
     protected String packageNameOf(Method method) {
-        return method.getDeclaringClass().getName() + '.' + method.getName();
+        return method == null ? null : method.getDeclaringClass().getName() + '.' + method.getName();
     }
 
     @Override

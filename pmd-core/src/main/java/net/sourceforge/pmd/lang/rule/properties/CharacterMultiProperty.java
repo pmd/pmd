@@ -27,7 +27,8 @@ public class CharacterMultiProperty extends AbstractMultiValueProperty<Character
             char delimiter = delimiterIn(valuesById);
             return new CharacterMultiProperty(nameIn(valuesById),
                                               descriptionIn(valuesById),
-                                              parsePrimitives(defaultValueIn(valuesById), delimiter, PrimitiveExtractor.CHARACTER_EXTRACTOR), 0.0f,
+                                              parsePrimitives(defaultValueIn(valuesById), delimiter, PrimitiveExtractor.CHARACTER_EXTRACTOR),
+                                              0.0f,
                                               delimiter);
         }
     };

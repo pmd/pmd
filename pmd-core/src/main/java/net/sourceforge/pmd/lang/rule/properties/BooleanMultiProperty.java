@@ -30,26 +30,12 @@ public class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
         }
     };
 
-    /**
-     * Constructor for BooleanMultiProperty that allows for multiple values.
-     *
-     * @param theName        String
-     * @param theDescription String
-     * @param defaultValues  Boolean[]
-     * @param theUIOrder     float
-     */
+
     public BooleanMultiProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder) {
         super(theName, theDescription, defaultValues, theUIOrder);
     }
 
-    /**
-     * Constructor for BooleanMultiProperty that allows for multiple values.
-     *
-     * @param theName        String
-     * @param theDescription String
-     * @param defaultValues  Boolean[]
-     * @param theUIOrder     float
-     */
+
     public BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues, float theUIOrder) {
         super(theName, theDescription, defaultValues, theUIOrder);
     }
@@ -65,9 +51,4 @@ public class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
         return Boolean.class;
     }
 
-
-    @Override
-    public List<Boolean> valueFrom(String propertyString) throws IllegalArgumentException {
-        return null;
-    }
 }

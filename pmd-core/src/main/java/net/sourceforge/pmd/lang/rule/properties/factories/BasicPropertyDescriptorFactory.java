@@ -74,13 +74,13 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 
     // TODO change return type to List<U> someday
     @SuppressWarnings("unckecked")
-    protected static <U> U[] parsePrimitives(String toParse, char delimiter, PrimitiveExtractor<U> extractor) {
+    protected static <U> List<U> parsePrimitives(String toParse, char delimiter, PrimitiveExtractor<U> extractor) {
         String[] values = StringUtil.substringsOf(toParse, delimiter);
         List<U> result = new ArrayList<>();
         for (String s : values) {
             result.add(extractor.valueOf(s));
         }
-        return (U[]) result.toArray();
+        return result;
     }
 
     protected static Long[] longsIn(String numberString, char delimiter) {

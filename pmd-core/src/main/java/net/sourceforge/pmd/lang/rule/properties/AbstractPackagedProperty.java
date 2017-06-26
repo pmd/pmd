@@ -89,6 +89,10 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
      * @throws IllegalArgumentException If the item's package is not whitelisted.
      */
     private void checkValidPackages(T item, String[] legalNamePrefixes) {
+        if (item == null) {
+            return;
+        }
+
         String name = packageNameOf(item);
 
         for (String legalNamePrefixe : legalNamePrefixes) {

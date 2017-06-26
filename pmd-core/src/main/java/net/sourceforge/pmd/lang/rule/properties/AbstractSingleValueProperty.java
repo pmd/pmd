@@ -60,8 +60,8 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
 
 
     @Override
-    public String asDelimitedString(T values, char delimiter) {
-        return values == null ? "" : values.toString();
+    public String asDelimitedString(T value, char delimiter) {
+        return value == null ? "" : asString(value);
     }
 
     @Override
