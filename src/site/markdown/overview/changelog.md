@@ -17,6 +17,12 @@ This is a major release.
 
 ### Fixed Issues
 
+*   java-controversial
+    *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
+
 ### API Changes
 
 ### External Contributions
+
+*   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements
+

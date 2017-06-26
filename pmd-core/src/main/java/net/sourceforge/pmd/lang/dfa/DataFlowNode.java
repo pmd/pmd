@@ -15,9 +15,9 @@ public interface DataFlowNode {
 
     int getIndex();
 
-    boolean isType(int type);
+    boolean isType(NodeType type);
 
-    void setType(int type);
+    void setType(NodeType type);
 
     List<DataFlowNode> getChildren();
 

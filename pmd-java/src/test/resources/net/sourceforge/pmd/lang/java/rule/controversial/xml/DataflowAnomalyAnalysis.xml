@@ -107,4 +107,29 @@ public class LoopTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#408 Assert statements causing </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AssertTest {
+    public void test() {
+        final String s = "";
+        assert(s != null);
+
+        System.out.println(s);
+
+        final Double d = 9;
+        assert(d != null);
+
+        System.out.println(d);
+
+        final String k = "k";
+        assert(k != null);
+
+        System.out.println(k);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
