@@ -9,11 +9,17 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
+    * [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
+
+#### Removed Rules
+
+*   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
+    long time ago to `UseUtilityClass`.
 
 ### Fixed Issues
 
