@@ -11,7 +11,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 
-public class CurrentPath {
+public class CurrentPath implements Iterable<DataFlowNode> {
 
     private final List<DataFlowNode> list;
 
@@ -23,6 +23,7 @@ public class CurrentPath {
         return list.size();
     }
 
+    @Override
     public Iterator<DataFlowNode> iterator() {
         return list.iterator();
     }

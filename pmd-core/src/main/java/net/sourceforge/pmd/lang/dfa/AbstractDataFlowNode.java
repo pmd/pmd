@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.dfa;
 
 import java.util.ArrayList;
-import java.util.BitSet;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -22,7 +22,7 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
 
     protected List<DataFlowNode> parents = new ArrayList<>();
     protected List<DataFlowNode> children = new ArrayList<>();
-    protected BitSet type = new BitSet();
+    protected Set<NodeType> type = EnumSet.noneOf(NodeType.class);
     protected List<VariableAccess> variableAccess = new ArrayList<>();
     protected List<DataFlowNode> dataFlow;
     protected int line;
@@ -76,18 +76,13 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
     }
 
     @Override
-    public void setType(int type) {
-        this.type.set(type);
+    public void setType(NodeType type) {
+        this.type.add(type);
     }
 
     @Override
-    public boolean isType(int intype) {
-        try {
-            return type.get(intype);
-        } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public boolean isType(NodeType type) {
+        return this.type.contains(type);
     }
 
     @Override
@@ -131,25 +126,21 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
 
     @Override
     public String toString() {
-        String res = "DataFlowNode: line " + this.getLine() + ", ";
-        String tmp = type.toString();
-        String newTmp = "";
-        for (char c : tmp.toCharArray()) {
-            if (c != '{' && c != '}' && c != ' ') {
-                newTmp += c;
-            }
-        }
-        for (StringTokenizer st = new StringTokenizer(newTmp, ","); st.hasMoreTokens();) {
-            int newTmpInt = Integer.parseInt(st.nextToken());
-            res += "(" + stringFromType(newTmpInt) + ")";
-        }
-        res += ", " + this.node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
-        res += node.getImage() == null ? "" : "(" + this.node.getImage() + ")";
-        return res;
-    }
+        StringBuilder sb = new StringBuilder();
+        sb.append("DataFlowNode: line ");
+        sb.append(this.getLine());
+        sb.append(", ");
 
-    private String stringFromType(int intype) {
-        return NodeType.stringFromType(intype);
+        for (NodeType t : type) {
+            sb.append("(");
+            sb.append(t.toString());
+            sb.append(")");
+        }
+
+        sb.append(", ");
+        sb.append(this.node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1));
+        sb.append(node.getImage() == null ? "" : "(" + this.node.getImage() + ")");
+        return sb.toString();
     }
 
 }
