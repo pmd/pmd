@@ -23,6 +23,8 @@ This is a major release.
 
 ### Fixed Issues
 
+*   java
+    *   [#1513](https://sourceforge.net/p/pmd/bugs/1513/): \[java] Remove deprecated rule UseSingleton
 *   java-controversial
     *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
 
