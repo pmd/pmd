@@ -34,7 +34,6 @@ import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 /**
- *
  * @author Brian Remedios
  */
 public class PropertyDescriptorUtil {
@@ -47,6 +46,7 @@ public class PropertyDescriptorUtil {
     };
 
     private static final Map<String, PropertyDescriptorFactory<?>> DESCRIPTOR_FACTORIES_BY_TYPE;
+
 
     static {
         Map<String, PropertyDescriptorFactory<?>> temp = new HashMap<>(18);
@@ -81,11 +81,14 @@ public class PropertyDescriptorUtil {
         DESCRIPTOR_FACTORIES_BY_TYPE = Collections.unmodifiableMap(temp);
     }
 
+
     private PropertyDescriptorUtil() { }
+
 
     public static PropertyDescriptorFactory<?> factoryFor(String typeId) {
         return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);
     }
+
 
     public static String typeIdFor(Class<?> valueType) {
 

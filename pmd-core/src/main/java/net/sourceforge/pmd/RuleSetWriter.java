@@ -385,8 +385,8 @@ public class RuleSetWriter {
 
         final Element propertyElement = createPropertyValueElement(propertyDescriptor,
                 propertyDescriptor.defaultValue());
-        propertyElement.setAttribute(PropertyDescriptorFields.TYPE,
-                PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type()));
+        propertyElement.setAttribute(PropertyDescriptorField.TYPE,
+                                     PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type()));
 
         Map<String, String> propertyValuesById = propertyDescriptor.attributeValuesById();
         for (Map.Entry<String, String> entry : propertyValuesById.entrySet()) {

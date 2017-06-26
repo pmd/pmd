@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -18,54 +18,60 @@ import net.sourceforge.pmd.util.StringUtil;
  * strings must be filtered by the delimiter character.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
 public class StringMultiProperty extends AbstractMultiValueProperty<String> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<List<String>>(String
-                                                                                                              .class) {
-
+    /** Factory. */
+    public static final PropertyDescriptorFactory FACTORY
+        = new BasicPropertyDescriptorFactory<List<String>>(String.class) {
         @Override
-        public StringMultiProperty createWith(Map<String, String> valuesById) {
+        public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
-            return new StringMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
-                                           StringUtil.substringsOf(defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
+            return new StringMultiProperty(nameIn(valuesById),
+                                           descriptionIn(valuesById),
+                                           StringUtil.substringsOf(defaultValueIn(valuesById), delimiter),
+                                           0.0f,
+                                           delimiter);
         }
     };
 
+
     /**
-     * Constructor for StringProperty.
+     * Constructor using an array of defaults.
      *
-     * @param theName        String
-     * @param theDescription String
-     * @param theDefaults    String[]
-     * @param theUIOrder     float
-     * @param delimiter      String
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  Array of defaults
+     * @param theUIOrder     UI order
+     * @param delimiter      The delimiter to use
      *
      * @throws IllegalArgumentException if a default value contains the delimiter
      * @throws NullPointerException     if the defaults array is null
      */
-    public StringMultiProperty(String theName, String theDescription, String[] theDefaults, float theUIOrder,
+    public StringMultiProperty(String theName, String theDescription, String[] defaultValues, float theUIOrder,
                                char delimiter) {
-        this(theName, theDescription, Arrays.asList(theDefaults), theUIOrder, delimiter);
+        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, delimiter);
     }
 
+
     /**
-     * Constructor for StringProperty.
+     * Constructor using a list of defaults.
      *
-     * @param theName        String
-     * @param theDescription String
-     * @param theDefaults    String[]
-     * @param theUIOrder     float
-     * @param delimiter      String
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
+     * @param delimiter      The delimiter to useg
      *
      * @throws IllegalArgumentException if a default value contains the delimiter
      * @throws NullPointerException     if the defaults array is null
      */
-    public StringMultiProperty(String theName, String theDescription, List<String> theDefaults, float theUIOrder,
+    public StringMultiProperty(String theName, String theDescription, List<String> defaultValues, float theUIOrder,
                                char delimiter) {
-        super(theName, theDescription, theDefaults, theUIOrder, delimiter);
+        super(theName, theDescription, defaultValues, theUIOrder, delimiter);
 
-        checkDefaults(theDefaults, delimiter);
+        checkDefaults(defaultValues, delimiter);
     }
 
 
@@ -90,10 +96,12 @@ public class StringMultiProperty extends AbstractMultiValueProperty<String> {
         }
     }
 
+
     @Override
     public Class<String> type() {
         return String.class;
     }
+
 
     @Override
     public List<String> valueFrom(String valueString) {
@@ -133,6 +141,7 @@ public class StringMultiProperty extends AbstractMultiValueProperty<String> {
 
         return null;
     }
+
 
     @Override
     protected String createFrom(String toParse) {

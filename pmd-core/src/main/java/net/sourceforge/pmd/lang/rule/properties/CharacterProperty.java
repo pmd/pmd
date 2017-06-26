@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.CHARACTER_PARSER;
+
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
@@ -19,14 +22,14 @@ public class CharacterProperty extends AbstractSingleValueProperty<Character> {
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<Character>(Character.class) {
 
         @Override
-        public CharacterProperty createWith(Map<String, String> valuesById) {
+        public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
             return new CharacterProperty(nameIn(valuesById),
                                          descriptionIn(valuesById),
-                                         defaultValueIn(valuesById) == null ? null
-                                                                            : defaultValueIn(valuesById).charAt(0),
+                                         CHARACTER_PARSER.valueOf(defaultValueIn(valuesById)),
                                          0f);
         }
     };
+
 
     /**
      * Constructor for CharacterProperty.
@@ -39,6 +42,7 @@ public class CharacterProperty extends AbstractSingleValueProperty<Character> {
     public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
     }
+
 
     /**
      * Constructor for CharacterProperty.
@@ -65,11 +69,9 @@ public class CharacterProperty extends AbstractSingleValueProperty<Character> {
      * @throws IllegalArgumentException if the String doesn't have length 1
      */
     public static Character charFrom(String charStr) {
-        if (charStr == null || charStr.length() != 1) {
-            throw new IllegalArgumentException("missing/invalid character value");
-        }
-        return charStr.charAt(0);
+        return CHARACTER_PARSER.valueOf(charStr);
     }
+
 
     @Override
     public Class<Character> type() {

@@ -126,7 +126,8 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * Returns a set of choice tuples if available, returns null if none are
      * defined.
      *
-     * @return Object[][]
+     * @return a set of choice tuples if available, returns null if none are
+     * defined.
      */
     Set<Entry<String, T>> choices();
 
@@ -164,5 +165,5 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      *
      * @return map
      */
-    Map<String, String> attributeValuesById();
+    Map<PropertyDescriptorField, String> attributeValuesById();
 }

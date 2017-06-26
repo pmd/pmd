@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -25,35 +27,36 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> {
 
-    public static final PropertyDescriptorFactory FACTORY
+    /** Factory. */
+    public static final PropertyDescriptorFactory<? extends Enumeration> FACTORY
         = new BasicPropertyDescriptorFactory<Enumeration>(Enumeration.class) {
 
         @Override
-        public EnumeratedProperty createWith(Map<String, String> valuesById) {
-            return new EnumeratedProperty<>(nameIn(valuesById), descriptionIn(valuesById), labelsIn(valuesById),
-                                            choicesIn(valuesById), indexIn(valuesById), 0f);
+        public EnumeratedProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            return new EnumeratedProperty<>(nameIn(valuesById),
+                                            descriptionIn(valuesById),
+                                            labelsIn(valuesById), // those are not implemented
+                                            choicesIn(valuesById), // ditto
+                                            indexIn(valuesById), // ditto
+                                            0f);
         }
     };
-    protected Map<String, E> choicesByLabel;
-    protected Map<E, String> labelsByChoice;
+    private Map<String, E> choicesByLabel;
+    private Map<E, String> labelsByChoice;
 
-    /**
-     * Constructor for EnumeratedProperty.
-     *
-     * @param theName        String
-     * @param theDescription String
-     * @param theLabels      String[]
-     * @param theChoices     E[]
-     * @param defaultIndex   int
-     * @param theUIOrder     float
-     *
-     * @throws IllegalArgumentException
-     */
+
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                               int defaultIndex, float theUIOrder) {
-        super(theName, theDescription, theChoices[defaultIndex], theUIOrder);
+        this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices), theChoices[defaultIndex],
+             theUIOrder);
+    }
 
-        choicesByLabel = CollectionUtil.mapFrom(theLabels, theChoices);
+
+    public EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
+                              E defaultValue, float theUIOrder) {
+        super(theName, theDescription, defaultValue, theUIOrder);
+
+        choicesByLabel = Collections.unmodifiableMap(labelsToChoices);
         labelsByChoice = CollectionUtil.invertedMapFrom(choicesByLabel);
     }
 
@@ -89,10 +92,12 @@ public class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> {
         return choiceFrom(value);
     }
 
+
     @Override
     public String asString(E value) {
         return labelsByChoice.get(value);
     }
+
 
     @Override
     public Set<Entry<String, E>> choices() {

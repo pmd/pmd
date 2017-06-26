@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -25,14 +26,17 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
     public static final PropertyDescriptorFactory FACTORY
         = new BasicPropertyDescriptorFactory<List<Class>>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
-
         @Override
-        public TypeMultiProperty createWith(Map<String, String> valuesById) {
+        public TypeMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
-            return new TypeMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
-                                         legalPackageNamesIn(valuesById, delimiter), 0f);
+            return new TypeMultiProperty(nameIn(valuesById),
+                                         descriptionIn(valuesById),
+                                         defaultValueIn(valuesById),
+                                         legalPackageNamesIn(valuesById, delimiter),
+                                         0f);
         }
     };
+
 
     /**
      * Constructor for TypeProperty.
@@ -51,6 +55,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
     }
 
+
     /**
      * Constructor for TypeProperty.
      *
@@ -66,6 +71,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
                              String[] legalPackageNames, float theUIOrder) {
         this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
     }
+
 
     /**
      * Constructor for TypeProperty.
@@ -84,10 +90,6 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
     }
 
-    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
-                             Map<String, String> otherParams, float theUIOrder) {
-        this(theName, theDescription, typesFrom(theTypeDefaults), packageNamesIn(otherParams), theUIOrder);
-    }
 
     /**
      * Returns a list of Class objects parsed from the input string.
@@ -96,7 +98,7 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
      *
      * @return A list of class objects
      */
-    public static List<Class> typesFrom(String classesStr) {
+    private static List<Class> typesFrom(String classesStr) {
         String[] values = StringUtil.substringsOf(classesStr, DELIMITER);
 
         List<Class> classes = new ArrayList<>(values.length);
@@ -106,30 +108,36 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
         return classes;
     }
 
+
     @Override
     protected String packageNameOf(Class item) {
         return ((Class<?>) item).getName();
     }
+
 
     @Override
     public Class<Class> type() {
         return Class.class;
     }
 
+
     @Override
     protected String itemTypeName() {
         return "type";
     }
+
 
     @Override
     public String asString(Class value) {
         return value == null ? "" : value.getName();
     }
 
+
     @Override
     protected Class createFrom(String toParse) {
         throw new UnsupportedOperationException(); // not used
     }
+
 
     @Override
     public List<Class> valueFrom(String valueString) {

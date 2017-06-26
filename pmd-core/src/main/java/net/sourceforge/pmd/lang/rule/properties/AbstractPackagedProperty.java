@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
+import static net.sourceforge.pmd.PropertyDescriptorField.LEGAL_PACKAGES;
 
 import java.util.Map;
 
@@ -48,10 +48,12 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
         legalPackageNames = theLegalPackageNames;
     }
 
+
     protected static String[] packageNamesIn(Map<String, String> params) {
         // TODO
         return null;
     }
+
 
     @Override
     protected void addAttributesTo(Map<String, String> attributes) {
@@ -79,6 +81,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
         return sb.toString();
     }
 
+
     /**
      * Evaluates the names of the items against the allowable name prefixes. If
      * one or more do not have valid prefixes then an exception will be thrown.
@@ -103,6 +106,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
 
         throw new IllegalArgumentException("Invalid item: " + item);
     }
+
 
     /**
      * Returns the name of the type of item.
@@ -137,6 +141,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
         return "Disallowed " + itemTypeName() + ": " + name;
     }
 
+
     /**
      * Returns the package name of the item.
      *
@@ -145,6 +150,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
      * @return Package name of the item
      */
     protected abstract String packageNameOf(T item);
+
 
     /**
      * Returns the legal package names.

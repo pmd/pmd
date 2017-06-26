@@ -848,15 +848,15 @@ public class RuleSetFactory {
     private static void parsePropertyNodeBR(Rule rule, Node propertyNode) {
 
         Element propertyElement = (Element) propertyNode;
-        String typeId = propertyElement.getAttribute(PropertyDescriptorFields.TYPE);
-        String strValue = propertyElement.getAttribute(PropertyDescriptorFields.VALUE);
+        String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE);
+        String strValue = propertyElement.getAttribute(PropertyDescriptorField.VALUE);
         if (StringUtil.isEmpty(strValue)) {
             strValue = valueFrom(propertyElement);
         }
 
         // Setting of existing property, or defining a new property?
         if (StringUtil.isEmpty(typeId)) {
-            String name = propertyElement.getAttribute(PropertyDescriptorFields.NAME);
+            String name = propertyElement.getAttribute(PropertyDescriptorField.NAME);
 
             PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
             if (propertyDescriptor == null) {

@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
+import static net.sourceforge.pmd.PropertyDescriptorField.MAX;
+import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
 
 import java.util.Map;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
@@ -23,9 +24,9 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 public abstract class AbstractNumericProperty<T extends Number> extends AbstractSingleValueProperty<T>
     implements NumericPropertyDescriptor<T> {
 
-    public static final Map<String, Boolean> NUMBER_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
-        .expectedFieldTypesWith(new String[] {MIN, MAX}, new Boolean[] {Boolean.TRUE, Boolean.TRUE});
-
+    public static final Map<PropertyDescriptorField, Boolean> NUMBER_FIELD_TYPES_BY_KEY
+        = BasicPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {MIN, MAX},
+                                                                new Boolean[] {true, true});
 
     private Number lowerLimit;
     private Number upperLimit;
@@ -43,14 +44,19 @@ public abstract class AbstractNumericProperty<T extends Number> extends Abstract
         upperLimit = upper;
     }
 
+
     /**
      * Returns a string representing the range defined by the two bounds.
      *
+     * @param low Lower bound
+     * @param up  Upper bound
+     *
      * @return String
      */
-    public static String rangeString(Number low, Number up) {
+    static String rangeString(Number low, Number up) {
         return "(" + low + " -> " + up + ")";
     }
+
 
     /**
      * Returns the minimum value that instances of the property can have
@@ -62,6 +68,7 @@ public abstract class AbstractNumericProperty<T extends Number> extends Abstract
         return lowerLimit;
     }
 
+
     /**
      * Returns the maximum value that instances of the property can have
      *
@@ -71,6 +78,7 @@ public abstract class AbstractNumericProperty<T extends Number> extends Abstract
     public Number upperLimit() {
         return upperLimit;
     }
+
 
     /**
      * Returns a string describing any error the value may have when
@@ -92,8 +100,9 @@ public abstract class AbstractNumericProperty<T extends Number> extends Abstract
         return null;
     }
 
+
     @Override
-    protected void addAttributesTo(Map<String, String> attributes) {
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
         super.addAttributesTo(attributes);
         attributes.put(MIN, lowerLimit.toString());
         attributes.put(MAX, upperLimit.toString());

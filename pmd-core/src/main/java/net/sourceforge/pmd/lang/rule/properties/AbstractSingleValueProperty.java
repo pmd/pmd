@@ -21,6 +21,7 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
     /** Default value. */
     protected T defaultValue;
 
+
     /**
      * Creates a single value property using the default delimiter {@link #DEFAULT_DELIMITER}.
      *
@@ -43,6 +44,7 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
         return defaultValue;
     }
 
+
     /**
      * Returns true if the default value is {@code null}.
      *
@@ -52,17 +54,18 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
         return defaultValue == null;
     }
 
+
     @Override
     public final boolean isMultiValue() {
         return false;
     }
 
 
-
     @Override
     public String asDelimitedString(T value, char delimiter) {
         return value == null ? "" : asString(value);
     }
+
 
     @Override
     public String propertyErrorFor(Rule rule) {
@@ -73,6 +76,7 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
         return errorFor(realValue);
     }
 
+
     @Override
     public String errorFor(T value) {
         String typeError = typeErrorFor(value);
@@ -81,6 +85,7 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
         }
         return valueErrorFor(value);
     }
+
 
     private String typeErrorFor(T value) { // TODO:cf consider subtypes!!
 
@@ -91,23 +96,28 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
         return null;
     }
 
+
     protected String valueErrorFor(T value) {
         return value != null || defaultHasNullValue() ? null : "missing value";
     }
 
+
     protected String asString(T value) {
         return value == null ? "" : value.toString();
     }
+
 
     @Override
     protected final String defaultAsString() {
         return asString(defaultValue);
     }
 
+
     @Override
     public Set<Entry<String, T>> choices() {
         return null;
     }
+
 
     /**
      * Parse a string and returns an instance of a value.
@@ -119,6 +129,7 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
     protected abstract T createFrom(String toParse);
 
     // this is there to be symmetrical.
+
 
     @Override
     public final T valueFrom(String valueString) throws IllegalArgumentException {

@@ -28,6 +28,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
         }
     };
 
+
     /**
      * Constructor for DoubleProperty.
      *
@@ -44,6 +45,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
                           float theUIOrder) {
         super(theName, theDescription, min, max, theDefault, theUIOrder);
     }
+
 
     /**
      * Constructor for DoubleProperty.
@@ -62,6 +64,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
         this(theName, theDescription, doubleFrom(minStr), doubleFrom(maxStr), doubleFrom(defaultStr), theUIOrder);
     }
 
+
     /**
      * Parses a String into a Double.
      *
@@ -73,10 +76,12 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
         return Double.valueOf(numberString);
     }
 
+
     @Override
     public Class<Double> type() {
         return Double.class;
     }
+
 
     @Override
     protected Double createFrom(String value) {

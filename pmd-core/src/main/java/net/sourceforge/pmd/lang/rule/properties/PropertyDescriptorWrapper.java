@@ -22,7 +22,9 @@ import net.sourceforge.pmd.Rule;
  * @param <T> The type of the underlying PropertyDescriptor.
  */
 public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
+
     private final PropertyDescriptor<T> propertyDescriptor;
+
 
     public PropertyDescriptorWrapper(PropertyDescriptor<T> propertyDescriptor) {
         if (propertyDescriptor == null) {
@@ -31,69 +33,83 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
         this.propertyDescriptor = propertyDescriptor;
     }
 
+
     public PropertyDescriptor<T> getPropertyDescriptor() {
         return propertyDescriptor;
     }
+
 
     @Override
     public String asDelimitedString(T value) {
         return propertyDescriptor.asDelimitedString(value);
     }
 
+
     @Override
     public Set<Entry<String, T>> choices() {
         return propertyDescriptor.choices();
     }
+
 
     @Override
     public int compareTo(PropertyDescriptor<?> o) {
         return propertyDescriptor.compareTo(o);
     }
 
+
     @Override
     public T defaultValue() {
         return propertyDescriptor.defaultValue();
     }
+
 
     @Override
     public String description() {
         return propertyDescriptor.description();
     }
 
+
     @Override
     public String errorFor(T value) {
         return propertyDescriptor.errorFor(value);
     }
+
 
     @Override
     public boolean isMultiValue() {
         return propertyDescriptor.isMultiValue();
     }
 
+
     @Override
     public boolean isRequired() {
         return propertyDescriptor.isRequired();
     }
+
 
     @Override
     public char multiValueDelimiter() {
         return propertyDescriptor.multiValueDelimiter();
     }
 
+
     @Override
     public String name() {
         return propertyDescriptor.name();
     }
+
 
     @Override
     public int preferredRowCount() {
         return propertyDescriptor.preferredRowCount();
     }
 
+
     @Override
     public String propertyErrorFor(Rule rule) {
         return propertyDescriptor.propertyErrorFor(rule);
     }
+
 
     @SuppressWarnings("unchecked")
     @Override
@@ -113,20 +129,24 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
         return result;
     }
 
+
     @Override
     public float uiOrder() {
         return propertyDescriptor.uiOrder();
     }
+
 
     @Override
     public T valueFrom(String propertyString) throws IllegalArgumentException {
         return propertyDescriptor.valueFrom(propertyString);
     }
 
+
     @Override
     public Map<String, String> attributeValuesById() {
         return propertyDescriptor.attributeValuesById();
     }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -136,10 +156,12 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
         return this.getPropertyDescriptor().equals(obj);
     }
 
+
     @Override
     public int hashCode() {
         return this.getPropertyDescriptor().hashCode();
     }
+
 
     @Override
     public String toString() {

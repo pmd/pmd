@@ -32,6 +32,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
         }
     };
 
+
     /**
      * Constructor for TypeProperty.
      *
@@ -48,6 +49,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
     }
 
+
     /**
      * Constructor for TypeProperty using a string as default value.
      *
@@ -63,6 +65,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
                         float theUIOrder) {
         this(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder);
     }
+
 
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<String, String> otherParams,
                         float theUIOrder) {
@@ -87,25 +90,30 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
         }
     }
 
+
     @Override
     protected String packageNameOf(Class item) {
         return item.getName();
     }
+
 
     @Override
     public Class<Class> type() {
         return Class.class;
     }
 
+
     @Override
     protected String itemTypeName() {
         return "type";
     }
 
+
     @Override
     protected String asString(Class value) {
         return value == null ? "" : value.getName();
     }
+
 
     @Override
     public Class<?> createFrom(String valueString) {

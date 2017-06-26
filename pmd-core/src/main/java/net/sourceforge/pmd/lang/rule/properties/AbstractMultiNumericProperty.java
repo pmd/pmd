@@ -4,47 +4,51 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
+import static net.sourceforge.pmd.PropertyDescriptorField.MAX;
+import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
 
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
- * @param <T>
+ * Base class for multi-valued numeric properties.
+ *
+ * @param <T> The type of number
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
 public abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
     implements NumericPropertyDescriptor<List<T>> {
 
-
-    private Number lowerLimit;
-    private Number upperLimit;
+    private T lowerLimit;
+    private T upperLimit;
 
 
     /**
-     * Constructor for AbstractMultiNumericProperty.Object
+     * Constructor for a multi-valued numeric property using a list of defaults.
      *
-     * @param theName        String
-     * @param theDescription String
-     * @param lower          Number
-     * @param upper          Number
-     * @param theDefault     T
-     * @param theUIOrder     float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param theDefault     List of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
-    public AbstractMultiNumericProperty(String theName, String theDescription, Number lower, Number upper,
-                                           List<T> theDefault, float theUIOrder) {
+    public AbstractMultiNumericProperty(String theName, String theDescription, T min, T max, List<T> theDefault, float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
 
-        if (lower.doubleValue() > upper.doubleValue()) {
+        if (min.doubleValue() > max.doubleValue()) {
             throw new IllegalArgumentException("Lower limit cannot be greater than the upper limit");
         }
 
-        lowerLimit = lower;
-        upperLimit = upper;
+        lowerLimit = min;
+        upperLimit = max;
     }
 
 
@@ -72,8 +76,9 @@ public abstract class AbstractMultiNumericProperty<T extends Number> extends Abs
         return null;
     }
 
+
     @Override
-    protected void addAttributesTo(Map<String, String> attributes) {
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
         super.addAttributesTo(attributes);
         attributes.put(MIN, lowerLimit.toString());
         attributes.put(MAX, upperLimit.toString());

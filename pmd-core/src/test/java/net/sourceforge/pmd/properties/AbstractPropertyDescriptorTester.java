@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorFields;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 
 /**
@@ -229,10 +229,10 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     private Map<String, String> getPropertyDescriptorValues() {
         Map<String, String> valuesById = new HashMap<>();
-        valuesById.put(PropertyDescriptorFields.NAME, "test");
-        valuesById.put(PropertyDescriptorFields.DESCRIPTION, "desc");
-        valuesById.put(PropertyDescriptorFields.MIN, "0");
-        valuesById.put(PropertyDescriptorFields.MAX, "10");
+        valuesById.put(PropertyDescriptorField.NAME, "test");
+        valuesById.put(PropertyDescriptorField.DESCRIPTION, "desc");
+        valuesById.put(PropertyDescriptorField.MIN, "0");
+        valuesById.put(PropertyDescriptorField.MAX, "10");
         return valuesById;
     }
 
@@ -263,7 +263,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
         Map<String, String> valuesById = getPropertyDescriptorValues();
         String customDelimiter = "ä";
         assertFalse(ALL_CHARS.contains(customDelimiter));
-        valuesById.put(PropertyDescriptorFields.DELIMITER, customDelimiter);
+        valuesById.put(PropertyDescriptorField.DELIMITER, customDelimiter);
         PropertyDescriptor<List<T>> prop = multiFactory.createWith(valuesById);
         List<T> originalValue = createMultipleValues(MULTI_VALUE_COUNT);
         String asDelimitedString = prop.asDelimitedString(originalValue);

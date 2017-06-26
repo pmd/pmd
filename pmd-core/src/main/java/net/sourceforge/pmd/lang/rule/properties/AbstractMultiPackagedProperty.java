@@ -4,25 +4,33 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.LEGAL_PACKAGES;
+import static net.sourceforge.pmd.PropertyDescriptorField.LEGAL_PACKAGES;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
- * @param <T>
+ * Multi-valued property restricting the type of its values to some packages.
+ *
+ * @param <T> The type of the values
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
 public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T> {
 
+    /** Delimiter between values. */
     protected static final char DELIMITER = '|';
-    protected static final Map<String, Boolean> PACKAGED_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
-        .expectedFieldTypesWith(new String[] {LEGAL_PACKAGES}, new Boolean[] {Boolean.FALSE});
+    /** Required keys in the map. */
+    protected static final Map<PropertyDescriptorField, Boolean> PACKAGED_FIELD_TYPES_BY_KEY
+        = BasicPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {LEGAL_PACKAGES},
+                                                                new Boolean[] {false});
     private static final char PACKAGE_NAME_DELIMITER = ' ';
     private String[] legalPackageNames;
 
@@ -47,13 +55,15 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
         legalPackageNames = theLegalPackageNames;
     }
 
+
     protected static String[] packageNamesIn(Map<String, String> params) {
         // TODO
         return null;
     }
 
+
     @Override
-    protected void addAttributesTo(Map<String, String> attributes) {
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
         super.addAttributesTo(attributes);
 
         attributes.put(LEGAL_PACKAGES, delimitedPackageNames());
@@ -76,6 +86,7 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
         }
         return sb.toString();
     }
+
 
     /**
      * Evaluates the names of the items against the allowable name prefixes. If
@@ -113,6 +124,7 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
         throw new IllegalArgumentException("Invalid items: " + notAllowed);
     }
 
+
     /**
      * Returns the name of the type of item.
      *
@@ -146,6 +158,7 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
         return "Disallowed " + itemTypeName() + ": " + name;
     }
 
+
     /**
      * Returns the package name of the item.
      *
@@ -155,12 +168,13 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
      */
     protected abstract String packageNameOf(T item);
 
+
     /**
      * Returns the legal package names.
      *
      * @return The legal package names
      */
     public String[] legalPackageNames() {
-        return legalPackageNames;
+        return Arrays.copyOf(legalPackageNames, legalPackageNames.length);
     }
 }

@@ -28,6 +28,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
         }
     };
 
+
     /**
      * Constructor for LongProperty.
      *
@@ -43,6 +44,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
     public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
         super(theName, theDescription, min, max, theDefault, theUIOrder);
     }
+
 
     /**
      * Constructor for LongProperty that limits itself to a single value within
@@ -62,6 +64,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
         this(theName, theDescription, longFrom(minStr), longFrom(maxStr), longFrom(defaultStr), theUIOrder);
     }
 
+
     /**
      * Parses a String into a Long.
      *
@@ -78,6 +81,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
     public Class<Long> type() {
         return Long.class;
     }
+
 
     @Override
     protected Long createFrom(String toParse) {

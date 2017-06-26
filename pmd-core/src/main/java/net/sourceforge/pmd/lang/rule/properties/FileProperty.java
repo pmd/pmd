@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -19,7 +20,7 @@ public class FileProperty extends AbstractSingleValueProperty<File> {
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<File>(File.class) {
         @Override
-        public FileProperty createWith(Map<String, String> valuesById) {
+        public FileProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
             return new FileProperty(nameIn(valuesById), descriptionIn(valuesById), null, 0f);
         }
     };
@@ -29,10 +30,12 @@ public class FileProperty extends AbstractSingleValueProperty<File> {
         super(theName, theDescription, theDefault, theUIOrder);
     }
 
+
     @Override
     public Class<File> type() {
         return File.class;
     }
+
 
     @Override
     public File createFrom(String propertyString) {

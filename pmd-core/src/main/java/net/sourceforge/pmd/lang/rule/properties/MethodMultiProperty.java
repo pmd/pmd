@@ -28,7 +28,6 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
 
     public static final PropertyDescriptorFactory FACTORY
         = new BasicPropertyDescriptorFactory<List<Method>>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
-
         @Override
         public MethodMultiProperty createWith(Map<String, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
@@ -36,6 +35,7 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
                                            legalPackageNamesIn(valuesById, delimiter), 0f);
         }
     };
+
 
     /**
      * Constructor for MethodProperty.
@@ -53,10 +53,12 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
     }
 
+
     public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults,
                                String[] legalPackageNames, float theUIOrder) {
         this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
     }
+
 
     /**
      * Constructor for MethodProperty.
@@ -73,6 +75,7 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
                                String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder);
     }
+
 
     public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
                                Map<String, String> otherParams, float theUIOrder) {
@@ -96,6 +99,7 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
     public String asString(Method value) {
         return value == null ? "" : MethodProperty.asStringFor(value);
     }
+
 
     @Override
     protected Method createFrom(String toParse) {

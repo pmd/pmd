@@ -28,6 +28,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
         }
     };
 
+
     /**
      * Constructor for FloatProperty that limits itself to a single value within
      * the specified limits.
@@ -45,6 +46,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
                          float theUIOrder) {
         super(theName, theDescription, Float.valueOf(min), Float.valueOf(max), Float.valueOf(theDefault), theUIOrder);
     }
+
 
     /**
      * Constructor for FloatProperty that limits itself to a single value within
@@ -64,6 +66,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
         this(theName, theDescription, floatFrom(minStr), floatFrom(maxStr), floatFrom(defaultStr), theUIOrder);
     }
 
+
     /**
      * Parses a String into a Float.
      *
@@ -75,10 +78,12 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
         return Float.valueOf(numberString);
     }
 
+
     @Override
     public Class<Float> type() {
         return Float.class;
     }
+
 
     @Override
     protected Float createFrom(String value) {

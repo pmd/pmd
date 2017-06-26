@@ -41,6 +41,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     private static final String ARRAY_FLAG = "[]";
     private static final Map<Class<?>, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 
+
     public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
                           float theUIOrder) {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
@@ -52,15 +53,18 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         super(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder);
     }
 
+
     public MethodProperty(String theName, String theDescription, String defaultMethodStr,
                           Map<String, String> otherParams, float theUIOrder) {
         this(theName, theDescription, methodFrom(defaultMethodStr), packageNamesIn(otherParams), theUIOrder);
     }
 
+
     private static String shortestNameFor(Class<?> cls) {
         String compactName = TYPE_SHORTCUTS.get(cls);
         return compactName == null ? cls.getName() : compactName;
     }
+
 
     /**
      * Return the value of `method' as a string that can be easily recognized
@@ -76,6 +80,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         return sb.toString();
     }
 
+
     private static void serializedTypeIdOn(Class<?> type, StringBuilder sb) {
 
         Class<?> arrayType = type.getComponentType();
@@ -85,6 +90,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         }
         sb.append(shortestNameFor(arrayType)).append(ARRAY_FLAG);
     }
+
 
     /**
      * Serializes the method signature onto the specified buffer.
@@ -116,6 +122,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         sb.append(METHOD_GROUP_DELIMITERS[1]);
     }
 
+
     private static Class<?> typeFor(String typeName) {
 
         Class<?> type;
@@ -139,6 +146,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
             return null;
         }
     }
+
 
     /**
      * Returns the method specified within the string argument after parsing out
@@ -214,6 +222,7 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         return ClassUtil.methodFor(type, methodName, argTypes);
     }
 
+
     /**
      * Parses a String into a Method.
      *
@@ -225,25 +234,30 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
         return methodFrom(methodStr, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
     }
 
+
     @Override
     protected String asString(Method value) {
         return value == null ? "" : asStringFor(value);
     }
+
 
     @Override
     protected String packageNameOf(Method method) {
         return method == null ? null : method.getDeclaringClass().getName() + '.' + method.getName();
     }
 
+
     @Override
     protected String itemTypeName() {
         return "method";
     }
 
+
     @Override
     public Class<Method> type() {
         return Method.class;
     }
+
 
     @Override
     public Method createFrom(String valueString) throws IllegalArgumentException {

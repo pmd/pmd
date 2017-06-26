@@ -4,15 +4,15 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.DEFAULT_VALUE;
-import static net.sourceforge.pmd.PropertyDescriptorFields.DESCRIPTION;
-import static net.sourceforge.pmd.PropertyDescriptorFields.NAME;
+import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorField.DESCRIPTION;
+import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.PropertyDescriptorFields;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -55,6 +55,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         this(theName, theDescription, theUIOrder, DEFAULT_DELIMITER);
     }
 
+
     /**
      * Constructor for AbstractPMDProperty.
      *
@@ -86,6 +87,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         return arg;
     }
 
+
     /**
      * Tests if two values are equal.
      *
@@ -107,42 +109,49 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         return name;
     }
 
+
     @Override
     public String description() {
         return description;
     }
+
 
     @Override
     public boolean isRequired() {
         return isRequired;
     }
 
+
     @Override
     public float uiOrder() {
         return uiOrder;
     }
+
 
     @Override
     public char multiValueDelimiter() {
         return multiValueDelimiter;
     }
 
+
     @Override
     public final String asDelimitedString(T values) {
         return asDelimitedString(values, multiValueDelimiter());
     }
 
+
     /**
-     * Return the specified values as a single string using the delimiter.
+     * Return the specified values as a single string using the specified delimiter.
      *
      * @param values    Values to format
-     * @param delimiter char
+     * @param delimiter Delimiter character
      *
-     * @return String
+     * @return Delimited string
      *
      * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(T)
      */
-    public abstract String asDelimitedString(T values, char delimiter);
+    protected abstract String asDelimitedString(T values, char delimiter);
+
 
     @Override
     public final int compareTo(PropertyDescriptor<?> otherProperty) {
@@ -171,6 +180,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         return false;
     }
 
+
     @Override
     public int hashCode() {
         return name.hashCode();
@@ -179,7 +189,9 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
     @Override
     public String toString() {
-        return "[PropertyDescriptor: name=" + name() + ", type=" + type() + ", value=" + defaultValue() + "]";
+        return "[PropertyDescriptor: name=" + name() + ","
+            + " type=" + (isMultiValue() ? "List<" + type() + ">" : type()) + ","
+            + " value=" + defaultValue() + "]";
     }
 
 
@@ -190,20 +202,26 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
      */
     protected abstract String defaultAsString();
 
+
     @Override
-    public Map<String, String> attributeValuesById() {
-        Map<String, String> values = new HashMap<>();
+    public final Map<PropertyDescriptorField, String> attributeValuesById() {
+        Map<PropertyDescriptorField, String> values = new HashMap<>();
         addAttributesTo(values);
         return values;
     }
 
-    protected void addAttributesTo(Map<String, String> attributes) {
+
+    /**
+     * Adds this property's attributes to the map. Subclasses can override this to add more Property fields.
+     *
+     * @param attributes The map to fill
+     */
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
         attributes.put(NAME, name);
         attributes.put(DESCRIPTION, description);
         attributes.put(DEFAULT_VALUE, defaultAsString());
         if (isMultiValue()) {
-            attributes.put(PropertyDescriptorFields.DELIMITER, Character.toString(multiValueDelimiter()));
+            attributes.put(PropertyDescriptorField.DELIMITER, Character.toString(multiValueDelimiter()));
         }
     }
-
 }

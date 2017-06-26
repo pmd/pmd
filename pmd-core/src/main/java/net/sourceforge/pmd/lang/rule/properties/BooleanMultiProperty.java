@@ -4,10 +4,14 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.BOOLEAN_PARSER;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
@@ -17,32 +21,49 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
 
-    /**
-     * Factory.
-     */
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<List<Boolean>>(
-        Boolean.class) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory FACTORY
+        = new BasicPropertyDescriptorFactory<List<Boolean>>(Boolean.class) {
         @Override
-        public BooleanMultiProperty createWith(Map<String, String> valuesById) {
+        public BooleanMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
             char delimiter = delimiterIn(valuesById);
-            return new BooleanMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
-                                            booleanValuesIn(defaultValueIn(valuesById), delimiter), 0f);
+            return new BooleanMultiProperty(nameIn(valuesById),
+                                            descriptionIn(valuesById),
+                                            parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
+                                            0f);
         }
     };
 
 
+    /**
+     * Constructor using an array of defaults.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
+     */
     public BooleanMultiProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder) {
-        super(theName, theDescription, defaultValues, theUIOrder);
+        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder);
     }
 
 
+    /**
+     * Constructor using a list of defaults.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
+     */
     public BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues, float theUIOrder) {
         super(theName, theDescription, defaultValues, theUIOrder);
     }
 
+
     @Override
     protected Boolean createFrom(String toParse) {
-        return Boolean.valueOf(toParse);
+        return BOOLEAN_PARSER.valueOf(toParse);
     }
 
 

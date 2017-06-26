@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
@@ -16,16 +17,15 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class StringProperty extends AbstractSingleValueProperty<String> {
 
-    /**
-     * Factory.
-     */
+    /** Factory. */
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<String>(String.class) {
 
         @Override
-        public StringProperty createWith(Map<String, String> valuesById) {
+        public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
             return new StringProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById), 0f);
         }
     };
+
 
     /**
      * Constructor for StringProperty.
@@ -39,10 +39,12 @@ public class StringProperty extends AbstractSingleValueProperty<String> {
         super(theName, theDescription, theDefaultValue, theUIOrder);
     }
 
+
     @Override
     public Class<String> type() {
         return String.class;
     }
+
 
     @Override
     public String createFrom(String valueString) {

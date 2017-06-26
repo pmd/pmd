@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.INTEGER_PARSER;
+
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -12,6 +14,7 @@ import net.sourceforge.pmd.util.StringUtil;
 public class PropertyDescriptorFactory {
 
     private PropertyDescriptorFactory() { }
+
 
     /**
      * Returns the String type of the PropertyDescriptor for use in XML
@@ -39,11 +42,14 @@ public class PropertyDescriptorFactory {
         return typeName;
     }
 
+
+    // TODO:cf  Deprecate? PropertyDescriptors can already be made from a map
     public static PropertyDescriptor<?> createPropertyDescriptor(String name, String description, String type,
                                                                  String delimiter, String min, String max, String value) {
         return new PropertyDescriptorWrapper<>(
             createRawPropertyDescriptor(name, description, type, delimiter, min, max, value));
     }
+
 
     private static PropertyDescriptor<?> createRawPropertyDescriptor(String name, String description, String type,
                                                                      String delimiter, String min, String max, String value) {
@@ -77,7 +83,8 @@ public class PropertyDescriptorFactory {
                                           property.valueFrom(value), 0.0f);
         } else if ("Integer".equals(type)) {
             checkMinMax(name, type, min, max);
-            return new IntegerProperty(name, description, min, max, value, 0.0f);
+            return new IntegerProperty(name, description, INTEGER_PARSER.valueOf(min), INTEGER_PARSER.valueOf(max),
+                                       INTEGER_PARSER.valueOf(value), 0.0f);
         } else if ("List<Integer>".equals(type)) {
             checkMinMax(name, type, min, max);
             IntegerMultiProperty property = new IntegerMultiProperty(name, description, 0, 0, (List<Integer>) null,
@@ -115,12 +122,14 @@ public class PropertyDescriptorFactory {
         }
     }
 
+
     private static void checkDelimiter(String name, String type, String delimiter) {
         if (delimiter == null || delimiter.length() == 0) {
             throw new IllegalArgumentException(
                 "Delimiter must be provided to create PropertyDescriptor for " + name + " of type " + type + ".");
         }
     }
+
 
     private static void checkMinMax(String name, String type, String min, String max) {
         if (StringUtil.isEmpty(min)) {

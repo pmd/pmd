@@ -27,7 +27,7 @@ public interface PropertyDescriptorFactory<T> {
      *
      * @return Map
      */
-    Map<String, Boolean> expectedFields();
+    Map<PropertyDescriptorField, Boolean> expectedFields();
 
     /**
      * Create a property descriptor of the appropriate type using the values
@@ -37,5 +37,5 @@ public interface PropertyDescriptorFactory<T> {
      *            the map of values
      * @return a new and initialized {@link PropertyDescriptor}
      */
-    PropertyDescriptor<T> createWith(Map<String, String> valuesById);
+    PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById);
 }
