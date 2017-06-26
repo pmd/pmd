@@ -4,22 +4,23 @@
 
 package net.sourceforge.pmd.properties;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorFields;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific
@@ -30,199 +31,17 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public abstract class AbstractPropertyDescriptorTester<T> {
 
-    public AbstractPropertyDescriptorTester(String typeName) {
-        this.typeName = typeName;
-    }
-
-    protected final String typeName;
-
-    private static final int MULTI_VALUE_COUNT = 10;
-
     public static final String PUNCTUATION_CHARS = "!@#$%^&*()_-+=[]{}\\|;:'\",.<>/?`~";
     public static final String WHITESPACE_CHARS = " \t\n";
     public static final String DIGIST_CHARS = "0123456789";
     public static final String ALPHA_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmniopqrstuvwxyz";
     public static final String ALPHA_NUMERIC_CHARS = DIGIST_CHARS + ALPHA_CHARS;
     public static final String ALL_CHARS = PUNCTUATION_CHARS + WHITESPACE_CHARS + ALPHA_NUMERIC_CHARS;
+    private static final int MULTI_VALUE_COUNT = 10;
+    protected final String typeName;
 
-    /**
-     * Return a legal value(s) per the general scope of the descriptor.
-     *
-     * @param count
-     *            int
-     * @return Object
-     */
-    protected abstract T createValue(int count);
-
-    /**
-     * Return a value(s) that is known to be faulty per the general scope of the
-     * descriptor.
-     *
-     * @param count
-     *            int
-     * @return Object
-     */
-    protected abstract T createBadValue(int count);
-
-    /**
-     * Creates and returns a properly configured property descriptor.
-     *
-     * @param multiValue
-     *            boolean
-     * @return PropertyDescriptor
-     */
-    protected abstract PropertyDescriptor<T> createProperty(boolean multiValue);
-
-    /**
-     * Attempt to create a property with faulty configuration values. This
-     * method should throw an IllegalArgumentException if done correctly.
-     *
-     * @param multiValue
-     *            boolean
-     * @return PropertyDescriptor
-     */
-    protected abstract PropertyDescriptor<T> createBadProperty(boolean multiValue);
-
-    protected final PropertyDescriptorFactory getSingleFactory() {
-        return PropertyDescriptorUtil.factoryFor(typeName);
-    }
-
-    protected final PropertyDescriptorFactory getMultiFactory() {
-        return PropertyDescriptorUtil.factoryFor(typeName + "[]");
-    }
-
-    private Map<String, String> getPropertyDescriptorValues() {
-        Map<String, String> valuesById = new HashMap<>();
-        valuesById.put(PropertyDescriptorFields.NAME, "test");
-        valuesById.put(PropertyDescriptorFields.DESCRIPTION, "desc");
-        valuesById.put(PropertyDescriptorFields.MIN, "0");
-        valuesById.put(PropertyDescriptorFields.MAX, "10");
-        return valuesById;
-    }
-
-    @Test
-    public void testFactorySingleValue() {
-        PropertyDescriptor prop = getSingleFactory().createWith(getPropertyDescriptorValues());
-        Object originalValue = createValue(1);
-        Object value = prop.valueFrom(
-                originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
-        String asDelimitedString = prop.asDelimitedString(value);
-        Object value2 = prop.valueFrom(asDelimitedString);
-        Assert.assertEquals(value, value2);
-    }
-
-    @Test
-    public void testFactoryMultiValueDefaultDelimiter() {
-        PropertyDescriptorFactory multiFactory = getMultiFactory();
-        PropertyDescriptor prop = multiFactory.createWith(getPropertyDescriptorValues());
-        Object originalValue = createValue(MULTI_VALUE_COUNT);
-        String asDelimitedString = prop.asDelimitedString(originalValue);
-        Object value2 = prop.valueFrom(asDelimitedString);
-        Assert.assertArrayEquals((Object[]) originalValue, (Object[]) value2);
-    }
-
-    @Test
-    public void testFactoryMultiValueCustomDelimiter() {
-        PropertyDescriptorFactory multiFactory = getMultiFactory();
-        Map<String, String> valuesById = getPropertyDescriptorValues();
-        String customDelimiter = "ä";
-        Assert.assertFalse(ALL_CHARS.contains(customDelimiter));
-        valuesById.put(PropertyDescriptorFields.DELIMITER, customDelimiter);
-        PropertyDescriptor prop = multiFactory.createWith(valuesById);
-        Object originalValue = createValue(MULTI_VALUE_COUNT);
-        String asDelimitedString = prop.asDelimitedString(originalValue);
-        Object value2 = prop.valueFrom(asDelimitedString);
-        Assert.assertEquals(Arrays.toString((Object[]) originalValue), Arrays.toString((Object[]) value2));
-        Assert.assertArrayEquals((Object[]) originalValue, (Object[]) value2);
-    }
-
-    @Test
-    public void testConstructors() {
-
-        PropertyDescriptor<?> desc = createProperty(false);
-        assertNotNull(desc);
-
-        try {
-            createBadProperty(false);
-
-        } catch (Exception ex) {
-            return; // caught ok
-        }
-
-        Assert.fail("uncaught constructor exception");
-    }
-
-    @Test
-    public void testAsDelimitedString() {
-
-        Object testValue = createValue(MULTI_VALUE_COUNT);
-        PropertyDescriptor pmdProp = createProperty(true);
-
-        String storeValue = pmdProp.asDelimitedString(testValue);
-
-        Object returnedValue = pmdProp.valueFrom(storeValue);
-
-        assertTrue(CollectionUtil.areEqual(returnedValue, testValue));
-    }
-
-    @Test
-    public void testValueFrom() {
-
-        Object testValue = createValue(1);
-        PropertyDescriptor pmdProp = createProperty(false);
-
-        String storeValue = pmdProp.asDelimitedString(testValue);
-
-        Object returnedValue = pmdProp.valueFrom(storeValue);
-
-        assertTrue(CollectionUtil.areEqual(returnedValue, testValue));
-    }
-
-    @Test
-    public void testErrorFor() {
-
-        T testValue = createValue(1);
-        PropertyDescriptor<T> pmdProp = createProperty(false); // plain vanilla
-        // property &
-        // valid test
-        // value
-        String errorMsg = pmdProp.errorFor(testValue);
-        assertNull(errorMsg, errorMsg);
-
-        testValue = createValue(MULTI_VALUE_COUNT); // multi-value property, all
-        // valid test values
-        pmdProp = createProperty(true);
-        errorMsg = pmdProp.errorFor(testValue);
-        assertNull(errorMsg, errorMsg);
-
-    }
-
-    @Test
-    public void testErrorForBad() {
-
-        PropertyDescriptor<T> pmdProp = createProperty(false);
-        T testValue = createBadValue(1);
-        String errorMsg = pmdProp.errorFor(testValue); // bad value should
-        // result in an error
-        if (errorMsg == null) {
-            Assert.fail("uncaught bad value: " + testValue);
-        }
-
-        testValue = createBadValue(MULTI_VALUE_COUNT); // multi-value prop,
-        // several bad values
-        pmdProp = createProperty(true);
-        errorMsg = pmdProp.errorFor(testValue);
-        if (errorMsg == null) {
-            Assert.fail("uncaught bad value in: " + testValue);
-        }
-    }
-
-    @Test
-    public void testType() {
-
-        PropertyDescriptor<T> pmdProp = createProperty(false);
-
-        assertNotNull(pmdProp.type());
+    public AbstractPropertyDescriptorTester(String typeName) {
+        this.typeName = typeName;
     }
 
     public static boolean randomBool() {
@@ -243,10 +62,9 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     /**
      * Method randomInt.
      *
-     * @param min
-     *            int
-     * @param max
-     *            int
+     * @param min int
+     * @param max int
+     *
      * @return int
      */
     public static int randomInt(int min, int max) {
@@ -272,10 +90,9 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     /**
      * Method randomFloat.
      *
-     * @param min
-     *            float
-     * @param max
-     *            float
+     * @param min float
+     * @param max float
+     *
      * @return float
      */
     public static float randomFloat(float min, float max) {
@@ -286,10 +103,9 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     /**
      * Method randomDouble.
      *
-     * @param min
-     *            double
-     * @param max
-     *            double
+     * @param min double
+     * @param max double
+     *
      * @return double
      */
     public static double randomDouble(double min, double max) {
@@ -304,8 +120,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     /**
      * Method randomChar.
      *
-     * @param characters
-     *            char[]
+     * @param characters char[]
+     *
      * @return char
      */
     public static char randomChar(char[] characters) {
@@ -315,21 +131,20 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     /**
      * Method randomChoice.
      *
-     * @param items
-     *            Object[]
+     * @param items Object[]
+     *
      * @return Object
      */
-    public static Object randomChoice(Object[] items) {
+    public static <T> T randomChoice(T[] items) {
         return items[randomInt(0, items.length - 1)];
     }
 
     /**
      * Method filter.
      *
-     * @param chars
-     *            char[]
-     * @param removeChar
-     *            char
+     * @param chars      char[]
+     * @param removeChar char
+     *
      * @return char[]
      */
     protected static final char[] filter(char[] chars, char removeChar) {
@@ -348,5 +163,195 @@ public abstract class AbstractPropertyDescriptorTester<T> {
             }
         }
         return results;
+    }
+
+    /**
+     * Return a legal value(s) per the general scope of the descriptor.
+     *
+     * @return Object
+     */
+    protected abstract T createValue();
+
+    private List<T> createMultipleValues(int count) {
+        List<T> res = new ArrayList<>();
+        while (count > 0) {
+            res.add(createValue());
+            count--;
+        }
+        return res;
+    }
+
+    /**
+     * Return a value(s) that is known to be faulty per the general scope of the
+     * descriptor.
+     *
+     * @return Object
+     */
+    protected abstract T createBadValue();
+
+    private List<T> createMultipleBadValues(int count) {
+        List<T> res = new ArrayList<>();
+        while (count > 0) {
+            res.add(createBadValue());
+            count--;
+        }
+        return res;
+    }
+
+    /**
+     * Creates and returns a properly configured property descriptor.
+     *
+     * @return PropertyDescriptor
+     */
+    protected abstract PropertyDescriptor<T> createProperty();
+
+    protected abstract PropertyDescriptor<List<T>> createMultiProperty();
+
+    /**
+     * Attempt to create a property with faulty configuration values. This
+     * method should throw an IllegalArgumentException if done correctly.
+     *
+     * @return PropertyDescriptor
+     */
+    protected abstract PropertyDescriptor<T> createBadProperty();
+
+    protected abstract PropertyDescriptor<List<T>> createBadMultiProperty();
+
+    @SuppressWarnings("unchecked")
+    protected final PropertyDescriptorFactory<T> getSingleFactory() {
+        return (PropertyDescriptorFactory<T>) PropertyDescriptorUtil.factoryFor(typeName);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected final PropertyDescriptorFactory<List<T>> getMultiFactory() {
+        return (PropertyDescriptorFactory<List<T>>) PropertyDescriptorUtil.factoryFor("List<" + typeName + ">");
+    }
+
+    private Map<String, String> getPropertyDescriptorValues() {
+        Map<String, String> valuesById = new HashMap<>();
+        valuesById.put(PropertyDescriptorFields.NAME, "test");
+        valuesById.put(PropertyDescriptorFields.DESCRIPTION, "desc");
+        valuesById.put(PropertyDescriptorFields.MIN, "0");
+        valuesById.put(PropertyDescriptorFields.MAX, "10");
+        return valuesById;
+    }
+
+    @Test
+    public void testFactorySingleValue() {
+        PropertyDescriptor<T> prop = getSingleFactory().createWith(getPropertyDescriptorValues());
+        T originalValue = createValue();
+        T value = prop.valueFrom(
+            originalValue instanceof Class ? ((Class) originalValue).getName() : String.valueOf(originalValue));
+        String asDelimitedString = prop.asDelimitedString(value);
+        Object value2 = prop.valueFrom(asDelimitedString);
+        assertEquals(value, value2);
+    }
+
+    @Test
+    public void testFactoryMultiValueDefaultDelimiter() {
+        PropertyDescriptorFactory<List<T>> multiFactory = getMultiFactory();
+        PropertyDescriptor<List<T>> prop = multiFactory.createWith(getPropertyDescriptorValues());
+        List<T> originalValue = createMultipleValues(MULTI_VALUE_COUNT);
+        String asDelimitedString = prop.asDelimitedString(originalValue);
+        List<T> value2 = prop.valueFrom(asDelimitedString);
+        assertEquals(originalValue, value2);
+    }
+
+    @Test
+    public void testFactoryMultiValueCustomDelimiter() {
+        PropertyDescriptorFactory<List<T>> multiFactory = getMultiFactory();
+        Map<String, String> valuesById = getPropertyDescriptorValues();
+        String customDelimiter = "ä";
+        assertFalse(ALL_CHARS.contains(customDelimiter));
+        valuesById.put(PropertyDescriptorFields.DELIMITER, customDelimiter);
+        PropertyDescriptor<List<T>> prop = multiFactory.createWith(valuesById);
+        List<T> originalValue = createMultipleValues(MULTI_VALUE_COUNT);
+        String asDelimitedString = prop.asDelimitedString(originalValue);
+        List<T> value2 = prop.valueFrom(asDelimitedString);
+        assertEquals(originalValue.toString(), value2.toString());
+        assertEquals(originalValue, value2);
+    }
+
+    @Test
+    public void testConstructors() {
+
+        PropertyDescriptor<T> desc = createProperty();
+        assertNotNull(desc);
+
+        try {
+            createBadProperty();
+        } catch (Exception ex) {
+            return; // caught ok
+        }
+
+        fail("uncaught constructor exception");
+    }
+
+    @Test
+    public void testAsDelimitedString() {
+
+        List<T> testValue = createMultipleValues(MULTI_VALUE_COUNT);
+        PropertyDescriptor<List<T>> pmdProp = createMultiProperty();
+
+        String storeValue = pmdProp.asDelimitedString(testValue);
+        List<T> returnedValue = pmdProp.valueFrom(storeValue);
+
+        assertEquals(returnedValue, testValue);
+    }
+
+    @Test
+    public void testValueFrom() {
+
+        T testValue = createValue();
+        PropertyDescriptor<T> pmdProp = createProperty();
+
+        String storeValue = pmdProp.asDelimitedString(testValue);
+
+        T returnedValue = pmdProp.valueFrom(storeValue);
+
+        assertEquals(returnedValue, testValue);
+    }
+
+    @Test
+    public void testErrorForCorrectSingle() {
+        T testValue = createValue();
+        PropertyDescriptor<T> pmdProp = createProperty(); // plain vanilla
+        // property & valid test value
+        String errorMsg = pmdProp.errorFor(testValue);
+        assertNull(errorMsg, errorMsg);
+    }
+
+    @Test
+    public void testErrorForCorrectMulti() {
+        List<T> testMultiValues = createMultipleValues(MULTI_VALUE_COUNT); // multi-value property, all
+        // valid test values
+        PropertyDescriptor<List<T>> multiProperty = createMultiProperty();
+        String errorMsg = multiProperty.errorFor(testMultiValues);
+        assertNull(errorMsg, errorMsg);
+
+    }
+
+    @Test
+    public void testErrorForBadSingle() {
+        T testValue = createBadValue();
+        PropertyDescriptor<T> pmdProp = createProperty(); // plain vanilla
+        // property & valid test value
+        String errorMsg = pmdProp.errorFor(testValue);
+        assertNotNull("uncaught bad value: " + testValue, errorMsg);
+    }
+
+    @Test
+    public void testErrorForBadMulti() {
+        List<T> testMultiValues = createMultipleBadValues(MULTI_VALUE_COUNT); // multi-value property, all
+        // valid test values
+        PropertyDescriptor<List<T>> multiProperty = createMultiProperty();
+        String errorMsg = multiProperty.errorFor(testMultiValues);
+        assertNotNull("uncaught bad value in: " + testMultiValues, errorMsg);
+    }
+
+    @Test
+    public void testType() {
+        PropertyDescriptor<T> pmdProp = createProperty();
+        assertNotNull(pmdProp.type());
     }
 }

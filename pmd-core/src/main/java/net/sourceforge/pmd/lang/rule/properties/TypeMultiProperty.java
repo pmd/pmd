@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.StringUtil;
 public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
     public static final PropertyDescriptorFactory FACTORY
-        = new BasicPropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+        = new BasicPropertyDescriptorFactory<List<Class>>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
 
         @Override
         public TypeMultiProperty createWith(Map<String, String> valuesById) {

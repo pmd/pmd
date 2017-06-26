@@ -21,7 +21,8 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class StringMultiProperty extends AbstractMultiValueProperty<String> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<String>(String.class) {
+    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<List<String>>(String
+                                                                                                              .class) {
 
         @Override
         public StringMultiProperty createWith(Map<String, String> valuesById) {

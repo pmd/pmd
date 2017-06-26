@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -18,7 +20,7 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  *
  * @author Brian Remedios
  */
-public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
+public class IntegerPropertyTest extends AbstractPropertyDescriptorTester<Integer> {
 
     private static final int MIN = 1;
     private static final int MAX = 12;
@@ -28,80 +30,47 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
         super("Integer");
     }
 
-    /**
-     * Method createValue.
-     *
-     * @param count
-     *            int
-     * @return Object
-     */
-    @Override
-    protected Object createValue(int count) {
 
-        if (count == 1) {
-            return Integer.valueOf(randomInt(MIN, MAX));
-        }
-
-        Integer[] values = new Integer[count];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = (Integer) createValue(1);
-        }
-        return values;
-    }
-
-    /**
-     * Creates and returns (count) number of out-of-range Integer values
-     *
-     * @param count
-     *            int
-     * @return Object
-     */
-    @Override
-    protected Object createBadValue(int count) {
-
-        if (count == 1) {
-            return Integer.valueOf(randomBool() ? randomInt(MIN - SHIFT, MIN) : randomInt(MAX, MAX + SHIFT));
-        }
-
-        Integer[] values = new Integer[count];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = (Integer) createBadValue(1);
-        }
-        return values;
-    }
+ /*   @Override
+    @Test
+    public void testErrorForBadSingle() {
+    } // not until int properties get ranges
 
     @Override
     @Test
-    public void testErrorForBad() {
+    public void testErrorForBadMulti() {
     } // not until int properties get ranges
 
-    /**
-     * Method createProperty.
-     *
-     * @param multiValue
-     *            boolean
-     * @return PropertyDescriptor
-     */
+*/
     @Override
-    protected PropertyDescriptor createProperty(boolean multiValue) {
-
-        return multiValue
-                ? new IntegerMultiProperty("testInteger", "Test integer property", MIN, MAX,
-                        new Integer[] { MIN, MIN + 1, MAX - 1, MAX }, 1.0f)
-                : new IntegerProperty("testInteger", "Test integer property", MIN, MAX, MAX - 1, 1.0f);
+    protected Integer createValue() {
+        return randomInt(MIN, MAX);
     }
 
-    /**
-     * Method createBadProperty.
-     *
-     * @param multiValue
-     *            boolean
-     * @return PropertyDescriptor
-     */
     @Override
-    protected PropertyDescriptor createBadProperty(boolean multiValue) {
+    protected Integer createBadValue() {
+        return randomBool() ? randomInt(MIN - SHIFT, MIN) : randomInt(MAX, MAX + SHIFT);
+    }
 
-        return multiValue ? new IntegerMultiProperty("testInteger", "", MIN, MAX, new Integer[] { MIN - 1, MAX }, 1.0f)
-                : new IntegerProperty("", "Test integer property", MIN, MAX, MAX + 1, 1.0f);
+    @Override
+    protected PropertyDescriptor<Integer> createProperty() {
+        return new IntegerProperty("testInteger", "Test integer property", MIN, MAX, MAX - 1, 1.0f);
+    }
+
+    @Override
+    protected PropertyDescriptor<List<Integer>> createMultiProperty() {
+        return new IntegerMultiProperty("testInteger", "Test integer property", MIN, MAX,
+                                        new Integer[] { MIN, MIN + 1, MAX - 1, MAX }, 1.0f);
+    }
+
+    @Override
+    protected PropertyDescriptor<Integer> createBadProperty() {
+        return new IntegerProperty("", "Test integer property", MIN, MAX, MAX + 1, 1.0f);
+
+    }
+
+    @Override
+    protected PropertyDescriptor<List<Integer>> createBadMultiProperty() {
+        return new IntegerMultiProperty("testInteger", "", MIN, MAX, new Integer[] { MIN - 1, MAX }, 1.0f) ;
     }
 }

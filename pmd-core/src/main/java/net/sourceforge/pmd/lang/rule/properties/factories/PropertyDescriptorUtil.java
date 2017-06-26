@@ -46,10 +46,10 @@ public class PropertyDescriptorUtil {
         }
     };
 
-    private static final Map<String, PropertyDescriptorFactory> DESCRIPTOR_FACTORIES_BY_TYPE;
+    private static final Map<String, PropertyDescriptorFactory<?>> DESCRIPTOR_FACTORIES_BY_TYPE;
 
     static {
-        Map<String, PropertyDescriptorFactory> temp = new HashMap<>(18);
+        Map<String, PropertyDescriptorFactory<?>> temp = new HashMap<>(18);
 
         temp.put("Boolean", BooleanProperty.FACTORY);
         temp.put("List<Boolean>", BooleanMultiProperty.FACTORY);
@@ -83,14 +83,14 @@ public class PropertyDescriptorUtil {
 
     private PropertyDescriptorUtil() { }
 
-    public static PropertyDescriptorFactory factoryFor(String typeId) {
+    public static PropertyDescriptorFactory<?> factoryFor(String typeId) {
         return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);
     }
 
     public static String typeIdFor(Class<?> valueType) {
 
         // a reverse lookup, not very efficient but fine for now
-        for (Map.Entry<String, PropertyDescriptorFactory> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
+        for (Map.Entry<String, PropertyDescriptorFactory<?>> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
             if (entry.getValue().valueType() == valueType) {
                 return entry.getKey();
             }

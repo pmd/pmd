@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -28,11 +29,13 @@ import net.sourceforge.pmd.util.ClassUtil;
  *
  * @author Brian Remedios
  */
-public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
+public class MethodPropertyTest extends AbstractPropertyDescriptorTester<Method> {
 
-    private static final String[] METHOD_SIGNATURES = new String[] { "String#indexOf(int)", "String#substring(int,int)",
-        "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
-        "HashMap#containsKey(Object)", };
+    private static final Method[] allMethods = String.class.getDeclaredMethods();
+
+    private static final String[] METHOD_SIGNATURES = {"String#indexOf(int)", "String#substring(int,int)",
+                                                       "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
+                                                       "HashMap#containsKey(Object)",};
 
     public MethodPropertyTest() {
         super("Method");
@@ -45,7 +48,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
         for (int i = 0; i < METHOD_SIGNATURES.length; i++) {
             method = MethodProperty.methodFrom(METHOD_SIGNATURES[i], MethodProperty.CLASS_METHOD_DELIMITER,
-                    MethodProperty.METHOD_ARG_DELIMITER);
+                                               MethodProperty.METHOD_ARG_DELIMITER);
             assertNotNull("Unable to identify method: " + METHOD_SIGNATURES[i], method);
         }
     }
@@ -57,7 +60,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
         for (int i = 0; i < METHOD_SIGNATURES.length; i++) {
             methods[i] = MethodProperty.methodFrom(METHOD_SIGNATURES[i], MethodProperty.CLASS_METHOD_DELIMITER,
-                    MethodProperty.METHOD_ARG_DELIMITER);
+                                                   MethodProperty.METHOD_ARG_DELIMITER);
             assertNotNull("Unable to identify method: " + METHOD_SIGNATURES[i], methods[i]);
         }
 
@@ -65,63 +68,40 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
         for (int i = 0; i < methods.length; i++) {
             translatedMethod = MethodProperty.asStringFor(methods[i]);
             assertTrue("Translated method does not match", ClassUtil.withoutPackageName(METHOD_SIGNATURES[i])
-                    .equals(ClassUtil.withoutPackageName(translatedMethod)));
+                                                                    .equals(ClassUtil.withoutPackageName(translatedMethod)));
         }
     }
 
     @Override
-    protected PropertyDescriptor createBadProperty(boolean multiValue) {
-
-        Method[] methods = String.class.getDeclaredMethods();
-
-        return multiValue
-                ? new MethodMultiProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] },
-                        new String[] { "java.util" }, 1.0f)
-                : new MethodProperty("methodProperty", "asdf", methods[1], new String[] { "java.util" }, 1.0f);
+    protected Method createValue() {
+        return randomChoice(allMethods);
     }
 
     @Override
-    protected Object createBadValue(int count) {
-
-        Method[] allMethods = HashMap.class.getDeclaredMethods();
-
-        if (count == 1) {
-            return randomChoice(allMethods);
-        }
-
-        Method[] methods = new Method[count];
-        for (int i = 0; i < count; i++) {
-            methods[i] = allMethods[i];
-        }
-
-        return methods;
+    protected Method createBadValue() {
+        return randomChoice(HashMap.class.getDeclaredMethods());
     }
 
     @Override
-    protected PropertyDescriptor createProperty(boolean multiValue) {
-
-        Method[] methods = String.class.getDeclaredMethods();
-
-        return multiValue
-                ? new MethodMultiProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] },
-                        new String[] { "java.lang" }, 1.0f)
-                : new MethodProperty("methodProperty", "asdf", methods[1], new String[] { "java.lang" }, 1.0f);
+    protected PropertyDescriptor<Method> createProperty() {
+        return new MethodProperty("methodProperty", "asdf", allMethods[1], new String[] {"java.lang"}, 1.0f);
     }
 
     @Override
-    protected Object createValue(int count) {
+    protected PropertyDescriptor<List<Method>> createMultiProperty() {
+        return new MethodMultiProperty("methodProperty", "asdf", new Method[] {allMethods[2], allMethods[3]},
+                                       new String[] {"java.lang"}, 1.0f);
+    }
 
-        Method[] allMethods = String.class.getDeclaredMethods();
+    @Override
+    protected PropertyDescriptor<Method> createBadProperty() {
+        return new MethodProperty("methodProperty", "asdf", allMethods[1], new String[] {"java.util"}, 1.0f);
 
-        if (count == 1) {
-            return randomChoice(allMethods);
-        }
+    }
 
-        Method[] methods = new Method[count];
-        for (int i = 0; i < count; i++) {
-            methods[i] = allMethods[i];
-        }
-
-        return methods;
+    @Override
+    protected PropertyDescriptor<List<Method>> createBadMultiProperty() {
+        return new MethodMultiProperty("methodProperty", "asdf", new Method[] {allMethods[2], allMethods[3]},
+                                       new String[] {"java.util"}, 1.0f);
     }
 }
