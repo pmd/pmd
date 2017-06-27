@@ -90,7 +90,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
             if (classCyclo >= reportLevel || classHighest >= reportLevel) {
                 String[] messageParams = {kind.name().toLowerCase(),
                                           node.getImage(),
-                                          classCyclo + " (Highest = " + classHighest + ')', };
+                                          classCyclo + " (Highest = " + classHighest + ')',};
 
                 addViolation(data, node, messageParams);
             }
@@ -105,7 +105,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
         if (showMethodsComplexity && cyclo >= reportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                   node.getQualifiedName().getOperation(), "" + cyclo, });
+                                                   node.getQualifiedName().getOperation(), "" + cyclo,});
         }
         return data;
     }

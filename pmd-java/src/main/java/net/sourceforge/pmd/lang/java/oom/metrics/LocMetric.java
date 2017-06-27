@@ -28,10 +28,12 @@ public final class LocMetric extends AbstractMetric implements ClassMetric, Oper
         return true;
     }
 
+
     @Override
     public boolean supports(ASTMethodOrConstructorDeclaration node) {
         return true;
     }
+
 
     @Override
     public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {

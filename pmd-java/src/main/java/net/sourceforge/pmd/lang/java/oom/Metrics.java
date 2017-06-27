@@ -24,23 +24,28 @@ public final class Metrics {
     private static final PackageStats TOP_LEVEL_PACKAGE = new PackageStats();
     private static boolean isForce;
 
+
     private Metrics() { // Cannot be instantiated
 
     }
+
 
     /**
      * Returns the top level package stats.
      *
      * @return The top level package stats
      */
-    /* default */ static PackageStats getTopLevelPackageStats() {
+    /* default */
+    static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
+
 
     /** Sets whether computations are forced or not. Used for tests. */
     static void setForce(boolean b) {
         isForce = b;
     }
+
 
     /**
      * Computes the standard value of the metric identified by its code on a class AST node.

@@ -18,6 +18,7 @@ public interface MetricKey<T extends Metric> extends MemoKey {
      */
     String name();
 
+
     /**
      * Returns the object used to calculate the metric.
      *

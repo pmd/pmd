@@ -30,9 +30,11 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
         this.name = name;
     }
 
+
     /* default */ String getName() {
         return name;
     }
+
 
     /**
      * Computes the value of a metric for an operation.
@@ -58,6 +60,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
         return val;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -71,6 +74,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 
         return name != null ? name.equals(stats.name) : stats.name == null;
     }
+
 
     @Override
     public int hashCode() {

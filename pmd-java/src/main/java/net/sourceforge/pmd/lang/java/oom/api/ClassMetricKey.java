@@ -28,14 +28,17 @@ public enum ClassMetricKey implements MetricKey<ClassMetric> {
 
     private final ClassMetric calculator;
 
+
     ClassMetricKey(ClassMetric m) {
         calculator = m;
     }
+
 
     @Override
     public ClassMetric getCalculator() {
         return calculator;
     }
+
 
     public boolean supports(ASTAnyTypeDeclaration node) {
         return calculator.supports(node);

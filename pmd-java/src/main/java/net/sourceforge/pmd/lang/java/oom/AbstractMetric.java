@@ -37,6 +37,7 @@ public abstract class AbstractMetric implements Metric {
         return Metrics.getTopLevelPackageStats();
     }
 
+
     /**
      * Gets the sum of the value of an operation metric over all operations in this class (excluding nested classes).
      * The computation is not forced (memoized results are used if they can be found).
@@ -60,6 +61,7 @@ public abstract class AbstractMetric implements Metric {
         }
         return sum;
     }
+
 
     /**
      * Gets the average of the value of an operation metric over all operations in this class (excluding nested
@@ -113,6 +115,7 @@ public abstract class AbstractMetric implements Metric {
         return highest;
     }
 
+
     /**
      * Finds the declaration nodes of all methods or constructors that are declared inside a class.
      *
@@ -146,6 +149,7 @@ public abstract class AbstractMetric implements Metric {
         return operations;
     }
 
+
     protected List<QualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
         List<QualifiedName> result = new ArrayList<>();
         // TODO:cf findAllCalls
@@ -168,6 +172,7 @@ public abstract class AbstractMetric implements Metric {
             || node instanceof ASTMethodOrConstructorDeclaration && supports((ASTMethodOrConstructorDeclaration) node);
     }
 
+
     /**
      * Returns true if the metric can be computed on this type declaration. By default, annotation and interface
      * declarations are filtered out.
@@ -179,6 +184,7 @@ public abstract class AbstractMetric implements Metric {
     protected boolean supports(ASTAnyTypeDeclaration node) {
         return node.getTypeKind() != TypeKind.ANNOTATION && node.getTypeKind() != TypeKind.INTERFACE;
     }
+
 
     /**
      * Returns true if the metric can be computed on this operation. By default, abstract operations are filtered out.

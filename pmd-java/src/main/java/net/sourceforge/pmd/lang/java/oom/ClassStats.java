@@ -49,28 +49,6 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
     // private String superclass;
     // private List<String> subclasses;
 
-    private static double highest(List<Double> values) {
-        double highest = Double.NEGATIVE_INFINITY;
-        for (double val : values) {
-            if (val > highest) {
-                highest = val;
-            }
-        }
-        return highest == Double.NEGATIVE_INFINITY ? 0 : highest;
-    }
-
-    private static double average(List<Double> values) {
-        return sum(values) / values.size();
-    }
-
-    private static double sum(List<Double> values) {
-        double sum = 0;
-        for (double val : values) {
-            sum += val;
-        }
-        return sum;
-    }
-
 
     /**
      * Finds a ClassStats in the direct children of this class. This can only be a directly nested class, for example
@@ -210,6 +188,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         }
     }
 
+
     /**
      * Computes the value of a metric for an operation.
      *
@@ -233,6 +212,31 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
         OperationStats stats = sigMap.get(name);
         return stats == null ? Double.NaN : stats.compute(key, node, force, version);
+    }
+
+
+    private static double sum(List<Double> values) {
+        double sum = 0;
+        for (double val : values) {
+            sum += val;
+        }
+        return sum;
+    }
+
+
+    private static double highest(List<Double> values) {
+        double highest = Double.NEGATIVE_INFINITY;
+        for (double val : values) {
+            if (val > highest) {
+                highest = val;
+            }
+        }
+        return highest == Double.NEGATIVE_INFINITY ? 0 : highest;
+    }
+
+
+    private static double average(List<Double> values) {
+        return sum(values) / values.size();
     }
 
 

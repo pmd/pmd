@@ -23,6 +23,7 @@ class MetricsVisitor extends JavaParserVisitorReducedAdapter {
 
     private Stack<ClassStats> stack = new Stack<>();
 
+
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         stack.push(((PackageStats) data).getClassStats(node.getQualifiedName(), true));

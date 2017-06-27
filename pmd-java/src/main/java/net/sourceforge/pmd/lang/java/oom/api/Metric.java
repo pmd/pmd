@@ -23,6 +23,7 @@ public interface Metric {
      */
     boolean supports(AccessNode node);
 
+
     /** Default metric versions. */
     enum Version implements MetricVersion {
         /** Standard option, used as a default. */

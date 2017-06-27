@@ -99,6 +99,7 @@ public final class OperationSignature extends Signature {
             }
         }
 
+
         private static boolean isGetterOrSetter(ASTMethodDeclaration node) {
             String name = node.getName();
             if (GETTER_OR_SETTER_NAME_PATTERN.matcher(name).matches()) {

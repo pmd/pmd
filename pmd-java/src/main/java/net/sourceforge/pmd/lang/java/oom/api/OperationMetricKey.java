@@ -26,14 +26,17 @@ public enum OperationMetricKey implements MetricKey<OperationMetric> {
 
     private final OperationMetric calculator;
 
+
     OperationMetricKey(OperationMetric m) {
         calculator = m;
     }
+
 
     @Override
     public OperationMetric getCalculator() {
         return calculator;
     }
+
 
     public boolean supports(ASTMethodOrConstructorDeclaration node) {
         return calculator.supports(node);

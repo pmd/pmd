@@ -30,6 +30,7 @@ public final class PackageStats {
     private Map<String, PackageStats> subPackages = new HashMap<>();
     private Map<String, ClassStats> classes = new HashMap<>();
 
+
     /**
      * Default constructor.
      */
@@ -120,6 +121,7 @@ public final class PackageStats {
         return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
     }
 
+
     /**
      * Returns true if the signature of the field designated by its name and the qualified name of its class is
      * covered by the mask.
@@ -135,6 +137,7 @@ public final class PackageStats {
 
         return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
     }
+
 
     /**
      * Computes the value of a metric on a class.
