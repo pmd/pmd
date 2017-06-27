@@ -29,9 +29,9 @@ import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 public class TypePropertyTest extends AbstractPropertyDescriptorTester<Class> {
 
     private static final Class[] JAVA_LANG_CLASSES = {String.class, Integer.class, Thread.class,
-                                                      Object.class, Runtime.class,};
+                                                      Object.class, Runtime.class, };
     private static final Class[] JAVA_UTIL_CLASSES = {HashMap.class, Map.class, Comparator.class, Set.class,
-                                                      Observer.class,};
+                                                      Observer.class, };
 
     public TypePropertyTest() {
         super("Class");

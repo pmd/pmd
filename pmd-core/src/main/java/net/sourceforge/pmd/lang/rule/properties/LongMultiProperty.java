@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import static net.sourceforge.pmd.lang.rule.properties.AbstractNumericProperty.NUMBER_FIELD_TYPES_BY_KEY;
-import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.LONG_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.LONG_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Multi-valued long property.

@@ -865,7 +865,7 @@ public class Designer implements ClipboardOwner {
     private JPanel createXPathVersionPanel() {
         JPanel p = new JPanel();
         p.add(new JLabel("XPath Version:"));
-        for (Entry<String, String> values : XPathRule.VERSION_DESCRIPTOR.choices()) {
+        for (Entry<String, String> values : XPathRule.VERSION_DESCRIPTOR.mappings().entrySet()) {
             JRadioButton b = new JRadioButton();
             b.setText(values.getKey());
             b.setActionCommand(b.getText());

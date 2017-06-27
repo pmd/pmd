@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Multi-valued property restricting the type of its values to some packages.

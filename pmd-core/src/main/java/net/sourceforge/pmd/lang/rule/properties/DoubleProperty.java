@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.DOUBLE_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.DOUBLE_PARSER;
 
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Defines a property type that support single double-type property values
@@ -23,17 +22,17 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
 
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
             = new BasicPropertyDescriptorFactory<Double>(Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public DoubleProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-                final String[] minMax = minMaxFrom(valuesById);
-                return new DoubleProperty(nameIn(valuesById),
-                                          descriptionIn(valuesById),
-                                          DOUBLE_PARSER.valueOf(minMax[0]),
-                                          DOUBLE_PARSER.valueOf(minMax[1]),
-                                          DOUBLE_PARSER.valueOf(numericDefaultValueIn(valuesById)),
-                                          0f);
-            }
-        }; // @formatter:on
+                @Override
+                public DoubleProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                    final String[] minMax = minMaxFrom(valuesById);
+                    return new DoubleProperty(nameIn(valuesById),
+                                              descriptionIn(valuesById),
+                                              DOUBLE_PARSER.valueOf(minMax[0]),
+                                              DOUBLE_PARSER.valueOf(minMax[1]),
+                                              DOUBLE_PARSER.valueOf(numericDefaultValueIn(valuesById)),
+                                              0f);
+                }
+            }; // @formatter:on
 
 
     /**

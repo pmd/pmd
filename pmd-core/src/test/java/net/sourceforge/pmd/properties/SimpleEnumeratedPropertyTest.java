@@ -23,7 +23,7 @@ import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
  */
 public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTester<Foo> {
 
-    private static final String[] KEYS = {"bar", "na", "bee", "coo",};
+    private static final String[] KEYS = {"bar", "na", "bee", "coo"};
     private static final Foo[] VALUES = Foo.values();
 
 
@@ -50,7 +50,7 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
                                              "Test enumerations with complex types",
                                              KEYS,
                                              VALUES,
-                                             new int[] {0, 1}, 1.0f);
+                                             new int[] {0, 1}, Foo.class, 1.0f);
     }
 
 
@@ -59,7 +59,7 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
         return new EnumeratedProperty<>("testEnumerations",
                                         "Test enumerations with complex types",
                                         KEYS,
-                                        VALUES, 0,
+                                        VALUES, 0, Foo.class,
                                         1.0f);
     }
 
@@ -67,14 +67,14 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
     @Override
     protected PropertyDescriptor<Foo> createBadProperty() {
         return new EnumeratedProperty<>("testEnumerations", "Test enumerations with simple type",
-                                        new String[0], VALUES, -1, 1.0f);
+                                        new String[0], VALUES, -1, Foo.class, 1.0f);
     }
 
 
     @Override
     protected PropertyDescriptor<List<Foo>> createBadMultiProperty() {
         return new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with simple type",
-                                             KEYS, VALUES, new int[] {99}, 1.0f);
+                                             KEYS, VALUES, new int[] {99}, Foo.class, 1.0f);
     }
 
 

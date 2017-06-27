@@ -11,7 +11,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Maintains a pair of boundary limit values between which all values managed by

@@ -80,25 +80,6 @@ import net.sourceforge.pmd.util.StringUtil;
 
 
     @Override
-    public final String asDelimitedString(T values) {
-        return asDelimitedString(values, multiValueDelimiter());
-    }
-
-
-    /**
-     * Return the specified values as a single string using the specified delimiter.
-     *
-     * @param values    Values to format
-     * @param delimiter Delimiter character
-     *
-     * @return Delimited string
-     *
-     * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(T)
-     */
-    protected abstract String asDelimitedString(T values, char delimiter);
-
-
-    @Override
     public final int compareTo(PropertyDescriptor<?> otherProperty) {
         float otherOrder = otherProperty.uiOrder();
         return (int) (otherOrder - uiOrder);
@@ -164,9 +145,6 @@ import net.sourceforge.pmd.util.StringUtil;
         attributes.put(NAME, name);
         attributes.put(DESCRIPTION, description);
         attributes.put(DEFAULT_VALUE, defaultAsString());
-        if (isMultiValue()) {
-            attributes.put(PropertyDescriptorField.DELIMITER, Character.toString(multiValueDelimiter()));
-        }
     }
 
 

@@ -7,10 +7,11 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.MultiValuePropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -21,7 +22,8 @@ import net.sourceforge.pmd.Rule;
  * @author Clément Fournier
  * @version 6.0.0
  */
-/* default */ abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>> {
+/* default */ abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>>
+    implements MultiValuePropertyDescriptor<V> {
 
     /** Default delimiter for multi-valued properties other than numeric ones. */
     public static final char DEFAULT_DELIMITER = '|';
@@ -30,8 +32,8 @@ import net.sourceforge.pmd.Rule;
     public static final char DEFAULT_NUMERIC_DELIMITER = ',';
 
     /** The default value. */
-    protected final List<V> defaultValue;
-    private char multiValueDelimiter = DEFAULT_DELIMITER;
+    private final List<V> defaultValue;
+    private final char multiValueDelimiter;
 
 
     /**
@@ -44,7 +46,7 @@ import net.sourceforge.pmd.Rule;
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    public AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault, float theUIOrder) {
+    AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault, float theUIOrder) {
         this(theName, theDescription, theDefault, theUIOrder, DEFAULT_DELIMITER);
     }
 
@@ -60,8 +62,8 @@ import net.sourceforge.pmd.Rule;
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    public AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault,
-                                      float theUIOrder, char delimiter) {
+    AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault,
+                               float theUIOrder, char delimiter) {
 
         super(theName, theDescription, theUIOrder);
         defaultValue = Collections.unmodifiableList(theDefault);
@@ -118,12 +120,6 @@ import net.sourceforge.pmd.Rule;
     }
 
 
-    @Override
-    public Set<Entry<String, List<V>>> choices() {
-        return null;
-    }
-
-
     /**
      * Returns a string representation of the default value.
      *
@@ -134,8 +130,7 @@ import net.sourceforge.pmd.Rule;
     }
 
 
-    @Override
-    public String asDelimitedString(List<V> values, char delimiter) {
+    private String asDelimitedString(List<V> values, char delimiter) {
         if (values == null) {
             return "";
         }
@@ -177,6 +172,12 @@ import net.sourceforge.pmd.Rule;
 
 
     @Override
+    public final String asDelimitedString(List<V> values) {
+        return asDelimitedString(values, multiValueDelimiter());
+    }
+
+
+    @Override
     public List<V> valueFrom(String valueString) throws IllegalArgumentException {
         String[] strValues = valueString.split(Pattern.quote("" + multiValueDelimiter()));
 
@@ -197,5 +198,12 @@ import net.sourceforge.pmd.Rule;
      * @return An instance of a value
      */
     protected abstract V createFrom(String toParse);
+
+
+    @Override
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
+        super.addAttributesTo(attributes);
+        attributes.put(PropertyDescriptorField.DELIMITER, Character.toString(multiValueDelimiter()));
+    }
 
 }

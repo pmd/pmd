@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.FLOAT_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.FLOAT_PARSER;
 
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Defines a property type that supports single float property values within an

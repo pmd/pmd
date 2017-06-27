@@ -31,11 +31,11 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public class MethodPropertyTest extends AbstractPropertyDescriptorTester<Method> {
 
-    private static final Method[] allMethods = String.class.getDeclaredMethods();
+    private static final Method[] ALL_METHODS = String.class.getDeclaredMethods();
 
     private static final String[] METHOD_SIGNATURES = {"String#indexOf(int)", "String#substring(int,int)",
                                                        "java.lang.String#substring(int,int)", "Integer#parseInt(String)", "java.util.HashMap#put(Object,Object)",
-                                                       "HashMap#containsKey(Object)",};
+                                                       "HashMap#containsKey(Object)", };
 
     public MethodPropertyTest() {
         super("Method");
@@ -74,7 +74,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester<Method>
 
     @Override
     protected Method createValue() {
-        return randomChoice(allMethods);
+        return randomChoice(ALL_METHODS);
     }
 
     @Override
@@ -84,24 +84,24 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester<Method>
 
     @Override
     protected PropertyDescriptor<Method> createProperty() {
-        return new MethodProperty("methodProperty", "asdf", allMethods[1], new String[] {"java.lang"}, 1.0f);
+        return new MethodProperty("methodProperty", "asdf", ALL_METHODS[1], new String[] {"java.lang"}, 1.0f);
     }
 
     @Override
     protected PropertyDescriptor<List<Method>> createMultiProperty() {
-        return new MethodMultiProperty("methodProperty", "asdf", new Method[] {allMethods[2], allMethods[3]},
+        return new MethodMultiProperty("methodProperty", "asdf", new Method[] {ALL_METHODS[2], ALL_METHODS[3]},
                                        new String[] {"java.lang"}, 1.0f);
     }
 
     @Override
     protected PropertyDescriptor<Method> createBadProperty() {
-        return new MethodProperty("methodProperty", "asdf", allMethods[1], new String[] {"java.util"}, 1.0f);
+        return new MethodProperty("methodProperty", "asdf", ALL_METHODS[1], new String[] {"java.util"}, 1.0f);
 
     }
 
     @Override
     protected PropertyDescriptor<List<Method>> createBadMultiProperty() {
-        return new MethodMultiProperty("methodProperty", "asdf", new Method[] {allMethods[2], allMethods[3]},
+        return new MethodMultiProperty("methodProperty", "asdf", new Method[] {ALL_METHODS[2], ALL_METHODS[3]},
                                        new String[] {"java.util"}, 1.0f);
     }
 }

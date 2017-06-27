@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import java.util.Map.Entry;
-import java.util.Set;
-
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.SingleValuePropertyDescriptor;
 
 /**
  * Single value property.
@@ -16,10 +14,11 @@ import net.sourceforge.pmd.Rule;
  *
  * @author Clément Fournier
  */
-/* default */ abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T> {
+/* default */ abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
+    implements SingleValuePropertyDescriptor<T> {
 
     /** Default value. */
-    protected T defaultValue;
+    private T defaultValue;
 
 
     /**
@@ -40,12 +39,6 @@ import net.sourceforge.pmd.Rule;
 
 
     @Override
-    public final char multiValueDelimiter() {
-        return '\0';
-    }
-
-
-    @Override
     public final T defaultValue() {
         return defaultValue;
     }
@@ -58,8 +51,8 @@ import net.sourceforge.pmd.Rule;
 
 
     @Override
-    public String asDelimitedString(T value, char delimiter) {
-        return value == null ? "" : asString(value);
+    public String asDelimitedString(T value) {
+        return asString(value);
     }
 
 
@@ -130,12 +123,6 @@ import net.sourceforge.pmd.Rule;
     @Override
     protected final String defaultAsString() {
         return asString(defaultValue);
-    }
-
-
-    @Override
-    public Set<Entry<String, T>> choices() {
-        return null;
     }
 
 

@@ -40,7 +40,7 @@ import net.sourceforge.pmd.PropertyDescriptorField;
      *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
-    public AbstractMultiNumericProperty(String theName, String theDescription, Number min, Number max, List<T> theDefault,
+    AbstractMultiNumericProperty(String theName, String theDescription, Number min, Number max, List<T> theDefault,
                                         float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
 

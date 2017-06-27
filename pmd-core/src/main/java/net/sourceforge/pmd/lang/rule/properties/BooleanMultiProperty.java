@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.BOOLEAN_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.BOOLEAN_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +12,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Defines a property type that supports multiple Boolean values.

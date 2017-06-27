@@ -5,8 +5,6 @@
 package net.sourceforge.pmd;
 
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Property value descriptor that defines the use &amp; requirements for setting
@@ -19,6 +17,7 @@ import java.util.Set;
  * @author Brian Remedios
  */
 public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>> {
+
     /**
      * The name of the property without spaces as it serves as the key into the
      * property map.
@@ -26,6 +25,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @return String
      */
     String name();
+
 
     /**
      * Describes the property and the role it plays within the rule it is
@@ -35,6 +35,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      */
     String description();
 
+
     /**
      * Denotes the value datatype. For multi value properties, this is not the
      * List class but the list's component class.
@@ -42,6 +43,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @return Class
      */
     Class<?> type();
+
 
     /**
      * Returns whether the property is multi-valued, i.e. an array of strings,
@@ -55,6 +57,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      */
     boolean isMultiValue();
 
+
     /**
      * Default value to use when the user hasn't specified one or when they wish
      * to revert to a known-good state.
@@ -63,6 +66,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      */
     T defaultValue();
 
+
     /**
      * Denotes whether the value is required before the rule can be executed.
      * Has no meaning for primitive types such as booleans, ints, etc.
@@ -70,6 +74,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @return boolean
      */
     boolean isRequired();
+
 
     /**
      * Validation function that returns a diagnostic error message for a sample
@@ -80,6 +85,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @return A diagnostic message.
      */
     String errorFor(T value);
+
 
     /**
      * Denotes the relative order the property field should occupy if we are
@@ -98,6 +104,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      */
     float uiOrder();
 
+
     /**
      * If the property is multi-valued then return the separate values after
      * parsing the propertyString provided. If it isn't a multi-valued property
@@ -112,6 +119,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      */
     T valueFrom(String propertyString) throws IllegalArgumentException;
 
+
     /**
      * Formats the object onto a string suitable for storage within the property
      * map.
@@ -122,14 +130,6 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      */
     String asDelimitedString(T value);
 
-    /**
-     * Returns a set of choice tuples if available, returns null if none are
-     * defined.
-     *
-     * @return a set of choice tuples if available, returns null if none are
-     * defined.
-     */
-    Set<Entry<String, T>> choices();
 
     /**
      * A convenience method that returns an error string if the rule holds onto
@@ -141,14 +141,6 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      */
     String propertyErrorFor(Rule rule);
 
-    /**
-     * Return the character being used to delimit multiple property values
-     * within a single string. You must ensure that this character does not
-     * appear within any rule property values to avoid deserialization errors.
-     *
-     * @return char
-     */
-    char multiValueDelimiter();
 
     /**
      * If the datatype is a String then return the preferred number of rows to
@@ -158,6 +150,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @return int
      */
     int preferredRowCount();
+
 
     /**
      * Returns a map representing all the property attributes of the receiver in

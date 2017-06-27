@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties.factories;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,27 +11,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.BooleanMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
-import net.sourceforge.pmd.lang.rule.properties.CharacterMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
-import net.sourceforge.pmd.lang.rule.properties.DoubleMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
-import net.sourceforge.pmd.lang.rule.properties.FileProperty;
-import net.sourceforge.pmd.lang.rule.properties.FloatMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
-import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-import net.sourceforge.pmd.lang.rule.properties.LongMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.LongProperty;
-import net.sourceforge.pmd.lang.rule.properties.MethodMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
-import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
-import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 /**
  * @author Brian Remedios

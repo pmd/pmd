@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.INTEGER_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.INTEGER_PARSER;
 
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Defines a datatype that supports single Integer property values within an
@@ -22,7 +21,7 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
 
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
-             @Override
+            @Override
             public IntegerProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 final String[] minMax = minMaxFrom(valuesById);
                 return new IntegerProperty(nameIn(valuesById),

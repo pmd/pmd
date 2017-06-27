@@ -10,9 +10,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -24,7 +24,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
+public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E>
+    implements EnumeratedPropertyDescriptor<E, List<E>> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
@@ -36,12 +37,14 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
                                                      labelsIn(valuesById),
                                                      choicesIn(valuesById),
                                                      indicesIn(valuesById),
+                                                     classIn(valuesById),
                                                      0f);
             }
         }; // @formatter:on
 
     private final Map<String, E> choicesByLabel;
     private final Map<E, String> labelsByChoice;
+    private final Class<E> valueType;
 
 
     /**
@@ -56,8 +59,9 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param theUIOrder     UI order
      */
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
-                                   int[] choiceIndices, float theUIOrder) {
-        this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices), selection(choiceIndices, theChoices), theUIOrder);
+                                   int[] choiceIndices, Class<E> valueType, float theUIOrder) {
+        this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
+             selection(choiceIndices, theChoices), valueType, theUIOrder);
     }
 
 
@@ -71,11 +75,12 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param theUIOrder     UI order
      */
     public EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
-                                   List<E> defaultValues, float theUIOrder) {
+                                   List<E> defaultValues, Class<E> valueType, float theUIOrder) {
         super(theName, theDescription, defaultValues, theUIOrder);
 
         checkDefaults(defaultValues, choices);
 
+        this.valueType = valueType;
         choicesByLabel = Collections.unmodifiableMap(choices);
         labelsByChoice = Collections.unmodifiableMap(CollectionUtil.invertedMapFrom(choicesByLabel));
     }
@@ -103,8 +108,14 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
 
 
     @Override
-    public Class<Enumeration> type() {
-        return Enumeration.class;
+    public Map<String, E> mappings() {
+        return choicesByLabel;
+    }
+
+
+    @Override
+    public Class<E> type() {
+        return valueType;
     }
 
 

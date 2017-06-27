@@ -8,7 +8,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 

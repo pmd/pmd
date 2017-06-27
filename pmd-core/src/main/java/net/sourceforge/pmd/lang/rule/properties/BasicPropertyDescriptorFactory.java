@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties.factories;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
 import static net.sourceforge.pmd.PropertyDescriptorField.DELIMITER;
@@ -21,7 +21,6 @@ import java.util.Map;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.AbstractMultiValueProperty;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -134,6 +133,11 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 
     protected static int indexIn(Map<PropertyDescriptorField, String> valuesById) {
         return 0; // TODO
+    }
+
+
+    protected static Class<Object> classIn(Map<PropertyDescriptorField, String> valuesById) {
+        return Object.class; // TODO
     }
 
 

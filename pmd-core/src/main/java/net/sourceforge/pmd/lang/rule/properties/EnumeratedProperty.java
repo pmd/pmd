@@ -7,12 +7,10 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
+import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -26,7 +24,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> {
+public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
+    implements EnumeratedPropertyDescriptor<E, E> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory<? extends Enumeration> FACTORY // @formatter:off
@@ -39,6 +38,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> 
                                                 labelsIn(valuesById),   // this is not implemented
                                                 choicesIn(valuesById),  // ditto
                                                 indexIn(valuesById),    // ditto
+                                                classIn(valuesById),
                                                 0f);
             }
         }; // @formatter:on
@@ -46,27 +46,29 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> 
 
     private final Map<String, E> choicesByLabel;
     private final Map<E, String> labelsByChoice;
+    private final Class<E> valueType;
 
 
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
-                              int defaultIndex, float theUIOrder) {
-        this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices), theChoices[defaultIndex],
-             theUIOrder);
+                              int defaultIndex, Class<E> valueType, float theUIOrder) {
+        this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
+             theChoices[defaultIndex], valueType, theUIOrder);
     }
 
 
     public EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
-                              E defaultValue, float theUIOrder) {
+                              E defaultValue, Class<E> valueType, float theUIOrder) {
         super(theName, theDescription, defaultValue, theUIOrder);
 
+        this.valueType = valueType;
         choicesByLabel = Collections.unmodifiableMap(labelsToChoices);
-        labelsByChoice = CollectionUtil.invertedMapFrom(choicesByLabel);
+        labelsByChoice = Collections.unmodifiableMap(CollectionUtil.invertedMapFrom(choicesByLabel));
     }
 
 
     @Override
-    public Class<Object> type() {
-        return Object.class;
+    public Class<E> type() {
+        return valueType;
     }
 
 
@@ -103,8 +105,8 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> 
 
 
     @Override
-    public Set<Entry<String, E>> choices() {
-        return choicesByLabel.entrySet();
+    public Map<String, E> mappings() {
+        return choicesByLabel;
     }
 
 }

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import static net.sourceforge.pmd.lang.rule.properties.AbstractNumericProperty.NUMBER_FIELD_TYPES_BY_KEY;
-import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.INTEGER_PARSER;
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.INTEGER_PARSER;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
  * Multi-valued integer property.
@@ -26,19 +25,19 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<List<Integer>>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
-        @Override
-        public IntegerMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            String[] minMax = minMaxFrom(valuesById);
-            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-            List<Integer> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, INTEGER_PARSER);
-            return new IntegerMultiProperty(nameIn(valuesById),
-                                            descriptionIn(valuesById),
-                                            INTEGER_PARSER.valueOf(minMax[0]),
-                                            INTEGER_PARSER.valueOf(minMax[1]),
-                                            defaultValues,
-                                            0f);
-        }
-    }; // @formatter:on
+            @Override
+            public IntegerMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                String[] minMax = minMaxFrom(valuesById);
+                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+                List<Integer> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, INTEGER_PARSER);
+                return new IntegerMultiProperty(nameIn(valuesById),
+                                                descriptionIn(valuesById),
+                                                INTEGER_PARSER.valueOf(minMax[0]),
+                                                INTEGER_PARSER.valueOf(minMax[1]),
+                                                defaultValues,
+                                                0f);
+            }
+        }; // @formatter:on
 
 
     /**

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties.factories;
+package net.sourceforge.pmd.lang.rule.properties;
 
 /**
  * Parses a value from a string.

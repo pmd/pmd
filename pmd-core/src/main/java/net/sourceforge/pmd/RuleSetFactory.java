@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,8 +37,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -868,17 +867,17 @@ public class RuleSetFactory {
             return;
         }
 
-        net.sourceforge.pmd.PropertyDescriptorFactory pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
+        net.sourceforge.pmd.PropertyDescriptorFactory<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
         if (pdFactory == null) {
             throw new RuntimeException("No property descriptor factory for type: " + typeId);
         }
 
-        Map<String, Boolean> valueKeys = pdFactory.expectedFields();
-        Map<String, String> values = new HashMap<>(valueKeys.size());
+        Map<PropertyDescriptorField, Boolean> valueKeys = pdFactory.expectedFields();
+        Map<PropertyDescriptorField, String> values = new HashMap<>(valueKeys.size());
 
         // populate a map of values for an individual descriptor
-        for (Map.Entry<String, Boolean> entry : valueKeys.entrySet()) {
-            String valueStr = propertyElement.getAttribute(entry.getKey());
+        for (Map.Entry<PropertyDescriptorField, Boolean> entry : valueKeys.entrySet()) {
+            String valueStr = propertyElement.getAttribute(entry.getKey().attributeName);
             if (entry.getValue() && StringUtil.isEmpty(valueStr)) {
                 // TODO debug pt
                 System.out.println("Missing required value for: " + entry.getKey());
@@ -887,7 +886,7 @@ public class RuleSetFactory {
         }
 
         PropertyDescriptor<?> desc = pdFactory.createWith(values);
-        PropertyDescriptorWrapper<?> wrapper = new PropertyDescriptorWrapper<>(desc);
+        PropertyDescriptorWrapper<?> wrapper = new PropertyDescriptorWrapper<>(desc); // TODO:cf fix me
 
         rule.definePropertyDescriptor(wrapper);
         setValue(rule, desc, strValue);

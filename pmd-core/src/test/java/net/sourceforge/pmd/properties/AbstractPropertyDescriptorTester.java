@@ -20,7 +20,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
 
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific

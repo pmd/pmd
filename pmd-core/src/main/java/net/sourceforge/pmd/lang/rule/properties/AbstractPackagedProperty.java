@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

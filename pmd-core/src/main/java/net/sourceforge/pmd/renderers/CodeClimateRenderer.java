@@ -16,12 +16,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Renderer for Code Climate JSON format

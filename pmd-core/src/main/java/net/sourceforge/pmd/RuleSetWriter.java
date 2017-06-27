@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -33,8 +32,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration

@@ -2,16 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties.factories;
+package net.sourceforge.pmd.lang.rule.properties.wrappers;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorFactory;
 
 /**
  * This class serves as a wrapper class for a PropertyDescriptor instance. It
@@ -24,7 +22,7 @@ import net.sourceforge.pmd.Rule;
  */
 public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
 
-    private final PropertyDescriptor<T> propertyDescriptor;
+    protected final PropertyDescriptor<T> propertyDescriptor;
 
 
     public PropertyDescriptorWrapper(PropertyDescriptor<T> propertyDescriptor) {
@@ -38,12 +36,6 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     @Override
     public String asDelimitedString(T value) {
         return propertyDescriptor.asDelimitedString(value);
-    }
-
-
-    @Override
-    public Set<Entry<String, T>> choices() {
-        return propertyDescriptor.choices();
     }
 
 
@@ -84,12 +76,6 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
 
 
     @Override
-    public char multiValueDelimiter() {
-        return propertyDescriptor.multiValueDelimiter();
-    }
-
-
-    @Override
     public String name() {
         return propertyDescriptor.name();
     }
@@ -109,20 +95,8 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Class<T> type() {
-        Class<?> clazz = propertyDescriptor.type();
-        Class<T> result = null;
-        try {
-            result = (Class<T>) clazz;
-        } catch (ClassCastException e1) {
-            try {
-                result = (Class<T>) List.class;
-            } catch (ClassCastException e2) {
-
-            }
-        }
-
-        return result;
+    public Class<?> type() {
+        return propertyDescriptor.type();
     }
 
 
