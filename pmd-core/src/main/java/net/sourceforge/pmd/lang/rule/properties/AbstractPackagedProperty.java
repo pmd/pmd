@@ -23,7 +23,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T> {
+/* default */ abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T> {
 
     /** Required keys in the map. */
     protected static final Map<PropertyDescriptorField, Boolean> PACKAGED_FIELD_TYPES_BY_KEY
@@ -56,18 +56,40 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
     }
 
 
-    protected static String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
-        String[] packageNames = StringUtil.substringsOf(params.get(LEGAL_PACKAGES),
-                                                        PACKAGE_NAME_DELIMITER);
+    /**
+     * Evaluates the names of the items against the allowable name prefixes. If
+     * one or more do not have valid prefixes then an exception will be thrown.
+     *
+     * @param item              The item to check
+     * @param legalNamePrefixes The legal name prefixes
+     *
+     * @throws IllegalArgumentException If the item's package is not whitelisted.
+     */
+    private void checkValidPackages(T item, String[] legalNamePrefixes) {
+        if (item == null) {
+            return;
+        }
 
-        for (String name : packageNames) {
-            if (!packageNamePattern.matcher(name).matches()) {
-                throw new IllegalArgumentException("One name is not a package: '" + name + "'");
+        String name = packageNameOf(item);
+
+        for (String legalNamePrefixe : legalNamePrefixes) {
+            if (name.startsWith(legalNamePrefixe)) {
+                return;
             }
         }
 
-        return packageNames;
+        throw new IllegalArgumentException("Invalid item: " + item);
     }
+
+
+    /**
+     * Returns the package name of the item.
+     *
+     * @param item Item
+     *
+     * @return Package name of the item
+     */
+    protected abstract String packageNameOf(T item);
 
 
     @Override
@@ -97,40 +119,6 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
     }
 
 
-    /**
-     * Evaluates the names of the items against the allowable name prefixes. If
-     * one or more do not have valid prefixes then an exception will be thrown.
-     *
-     * @param item              The item to check
-     * @param legalNamePrefixes The legal name prefixes
-     *
-     * @throws IllegalArgumentException If the item's package is not whitelisted.
-     */
-    private void checkValidPackages(T item, String[] legalNamePrefixes) {
-        if (item == null) {
-            return;
-        }
-
-        String name = packageNameOf(item);
-
-        for (String legalNamePrefixe : legalNamePrefixes) {
-            if (name.startsWith(legalNamePrefixe)) {
-                return;
-            }
-        }
-
-        throw new IllegalArgumentException("Invalid item: " + item);
-    }
-
-
-    /**
-     * Returns the name of the type of item.
-     *
-     * @return The name of the type of item
-     */
-    protected abstract String itemTypeName();
-
-
     @Override
     protected String valueErrorFor(T value) {
 
@@ -158,13 +146,11 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
 
 
     /**
-     * Returns the package name of the item.
+     * Returns the name of the type of item.
      *
-     * @param item Item
-     *
-     * @return Package name of the item
+     * @return The name of the type of item
      */
-    protected abstract String packageNameOf(T item);
+    protected abstract String itemTypeName();
 
 
     /**
@@ -174,6 +160,20 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
      */
     public String[] legalPackageNames() {
         return Arrays.copyOf(legalPackageNames, legalPackageNames.length); // defensive copy
+    }
+
+
+    protected static String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
+        String[] packageNames = StringUtil.substringsOf(params.get(LEGAL_PACKAGES),
+                                                        PACKAGE_NAME_DELIMITER);
+
+        for (String name : packageNames) {
+            if (!packageNamePattern.matcher(name).matches()) {
+                throw new IllegalArgumentException("One name is not a package: '" + name + "'");
+            }
+        }
+
+        return packageNames;
     }
 
 }

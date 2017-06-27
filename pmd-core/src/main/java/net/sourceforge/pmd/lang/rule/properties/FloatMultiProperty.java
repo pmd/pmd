@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
+public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off

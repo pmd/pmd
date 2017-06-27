@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer> {
+public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off

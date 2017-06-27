@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
+public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
@@ -40,8 +40,8 @@ public class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
             }
         }; // @formatter:on
 
-    private Map<String, E> choicesByLabel;
-    private Map<E, String> labelsByChoice;
+    private final Map<String, E> choicesByLabel;
+    private final Map<E, String> labelsByChoice;
 
 
     /**
@@ -57,9 +57,7 @@ public class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
      */
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                                    int[] choiceIndices, float theUIOrder) {
-        super(theName, theDescription, selection(choiceIndices, theChoices), theUIOrder);
-        choicesByLabel = CollectionUtil.mapFrom(theLabels, theChoices);
-        labelsByChoice = CollectionUtil.invertedMapFrom(choicesByLabel);
+        this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices), selection(choiceIndices, theChoices), theUIOrder);
     }
 
 
@@ -79,7 +77,7 @@ public class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
         checkDefaults(defaultValues, choices);
 
         choicesByLabel = Collections.unmodifiableMap(choices);
-        labelsByChoice = CollectionUtil.invertedMapFrom(choicesByLabel);
+        labelsByChoice = Collections.unmodifiableMap(CollectionUtil.invertedMapFrom(choicesByLabel));
     }
 
 
@@ -110,11 +108,6 @@ public class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
     }
 
 
-    private String nonLegalValueMsgFor(E value) {
-        return value + " is not a legal value";
-    }
-
-
     @Override
     public String errorFor(List<E> values) {
         for (E value : values) {
@@ -126,18 +119,23 @@ public class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
     }
 
 
-    private E choiceFrom(String label) {
-        E result = choicesByLabel.get(label);
-        if (result == null) {
-            throw new IllegalArgumentException(label);
-        }
-        return result;
+    private String nonLegalValueMsgFor(E value) {
+        return value + " is not a legal value";
     }
 
 
     @Override
     protected E createFrom(String toParse) {
         return choiceFrom(toParse);
+    }
+
+
+    private E choiceFrom(String label) {
+        E result = choicesByLabel.get(label);
+        if (result == null) {
+            throw new IllegalArgumentException(label);
+        }
+        return result;
     }
 
 

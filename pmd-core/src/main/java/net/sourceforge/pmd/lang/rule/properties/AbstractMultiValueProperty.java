@@ -21,7 +21,7 @@ import net.sourceforge.pmd.Rule;
  * @author Clément Fournier
  * @version 6.0.0
  */
-public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>> {
+/* default */ abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>> {
 
     /** Default delimiter for multi-valued properties other than numeric ones. */
     public static final char DEFAULT_DELIMITER = '|';
@@ -70,55 +70,8 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
 
 
     @Override
-    public List<V> defaultValue() {
-        return defaultValue;
-    }
-
-
-    private boolean defaultHasNullValue() {
-        return defaultValue == null || defaultValue.contains(null);
-    }
-
-
-    @Override
     public final boolean isMultiValue() {
         return true;
-    }
-
-
-    @Override
-    public char multiValueDelimiter() {
-        return multiValueDelimiter;
-    }
-
-
-    /**
-     * Returns a string representation of the value, even if it's null.
-     *
-     * @param value The value to describe
-     *
-     * @return A string representation of the value
-     */
-    protected String asString(V value) {
-        return value == null ? "" : value.toString();
-    }
-
-
-    @Override
-    public String asDelimitedString(List<V> values, char delimiter) {
-        if (values == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (V value : values) {
-            sb.append(asString(value)).append(delimiter);
-        }
-        if (sb.length() > 0) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-
-        return sb.toString();
     }
 
 
@@ -160,6 +113,11 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
     }
 
 
+    private boolean defaultHasNullValue() {
+        return defaultValue == null || defaultValue.contains(null);
+    }
+
+
     @Override
     public Set<Entry<String, List<V>>> choices() {
         return null;
@@ -176,14 +134,46 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
     }
 
 
+    @Override
+    public String asDelimitedString(List<V> values, char delimiter) {
+        if (values == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (V value : values) {
+            sb.append(asString(value)).append(delimiter);
+        }
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+
+        return sb.toString();
+    }
+
+
+    @Override
+    public List<V> defaultValue() {
+        return defaultValue;
+    }
+
+
+    @Override
+    public char multiValueDelimiter() {
+        return multiValueDelimiter;
+    }
+
+
     /**
-     * Parse a string and returns an instance of a single value (not a list).
+     * Returns a string representation of the value, even if it's null.
      *
-     * @param toParse String to parse
+     * @param value The value to describe
      *
-     * @return An instance of a value
+     * @return A string representation of the value
      */
-    protected abstract V createFrom(String toParse);
+    protected String asString(V value) {
+        return value == null ? "" : value.toString();
+    }
 
 
     @Override
@@ -197,5 +187,15 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
 
         return values;
     }
+
+
+    /**
+     * Parse a string and returns an instance of a single value (not a list).
+     *
+     * @param toParse String to parse
+     *
+     * @return An instance of a value
+     */
+    protected abstract V createFrom(String toParse);
 
 }

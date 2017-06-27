@@ -18,8 +18,9 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public class LongProperty extends AbstractNumericProperty<Long> {
+public final class LongProperty extends AbstractNumericProperty<Long> {
 
+    /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
@@ -33,23 +34,6 @@ public class LongProperty extends AbstractNumericProperty<Long> {
             }
         };
     // @formatter:on
-
-
-    /**
-     * Constructor that limits itself to a single value within the specified limits.
-     *
-     * @param theName        Name
-     * @param theDescription Description
-     * @param min            Minimum value of the property
-     * @param max            Maximum value of the property
-     * @param theDefault     Default value
-     * @param theUIOrder     UI order
-     *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
-     */
-    public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder);
-    }
 
 
     /**
@@ -69,6 +53,23 @@ public class LongProperty extends AbstractNumericProperty<Long> {
     public LongProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                         float theUIOrder) {
         this(theName, theDescription, longFrom(minStr), longFrom(maxStr), longFrom(defaultStr), theUIOrder);
+    }
+
+
+    /**
+     * Constructor that limits itself to a single value within the specified limits.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     */
+    public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder);
     }
 
 

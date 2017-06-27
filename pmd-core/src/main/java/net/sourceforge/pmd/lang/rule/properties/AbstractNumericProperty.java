@@ -20,8 +20,9 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * @param <T> The type of value.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public abstract class AbstractNumericProperty<T extends Number> extends AbstractSingleValueProperty<T>
+/* default */ abstract class AbstractNumericProperty<T extends Number> extends AbstractSingleValueProperty<T>
     implements NumericPropertyDescriptor<T> {
 
     public static final Map<PropertyDescriptorField, Boolean> NUMBER_FIELD_TYPES_BY_KEY
@@ -42,19 +43,6 @@ public abstract class AbstractNumericProperty<T extends Number> extends Abstract
 
         lowerLimit = lower;
         upperLimit = upper;
-    }
-
-
-    /**
-     * Returns a string representing the range defined by the two bounds.
-     *
-     * @param low Lower bound
-     * @param up  Upper bound
-     *
-     * @return String
-     */
-    static String rangeString(Number low, Number up) {
-        return "(" + low + " -> " + up + ")";
     }
 
 
@@ -98,6 +86,19 @@ public abstract class AbstractNumericProperty<T extends Number> extends Abstract
         }
 
         return null;
+    }
+
+
+    /**
+     * Returns a string representing the range defined by the two bounds.
+     *
+     * @param low Lower bound
+     * @param up  Upper bound
+     *
+     * @return String
+     */
+    static String rangeString(Number low, Number up) {
+        return "(" + low + " -> " + up + ")";
     }
 
 

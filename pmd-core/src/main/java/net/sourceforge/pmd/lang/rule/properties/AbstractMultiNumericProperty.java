@@ -21,11 +21,11 @@ import net.sourceforge.pmd.PropertyDescriptorField;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
+/* default */ abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
     implements NumericPropertyDescriptor<List<T>> {
 
-    private Number lowerLimit;
-    private Number upperLimit;
+    private final Number lowerLimit;
+    private final Number upperLimit;
 
 
     /**

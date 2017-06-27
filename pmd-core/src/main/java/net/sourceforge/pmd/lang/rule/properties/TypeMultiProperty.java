@@ -22,7 +22,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
+public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
@@ -50,10 +50,9 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
      *
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults,
+    public TypeMultiProperty(String theName, String theDescription, Class[] theDefaults,
                              String[] legalPackageNames, float theUIOrder) {
-        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
-
+        this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
     }
 
 
@@ -68,9 +67,10 @@ public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
      *
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, Class[] theDefaults,
+    public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults,
                              String[] legalPackageNames, float theUIOrder) {
-        this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
+        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
+
     }
 
 

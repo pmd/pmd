@@ -16,8 +16,9 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * Defines a property type that supports single Character values.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class CharacterProperty extends AbstractSingleValueProperty<Character> {
+public final class CharacterProperty extends AbstractSingleValueProperty<Character> {
 
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Character>(Character.class) {
@@ -33,19 +34,6 @@ public class CharacterProperty extends AbstractSingleValueProperty<Character> {
 
 
     /**
-     * Constructor.
-     *
-     * @param theName        Name
-     * @param theDescription Description
-     * @param theDefault     Default value
-     * @param theUIOrder     UI order
-     */
-    public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
-    }
-
-
-    /**
      * Constructor for CharacterProperty.
      *
      * @param theName        String
@@ -57,6 +45,19 @@ public class CharacterProperty extends AbstractSingleValueProperty<Character> {
      */
     public CharacterProperty(String theName, String theDescription, String defaultStr, float theUIOrder) {
         this(theName, theDescription, charFrom(defaultStr), theUIOrder);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     */
+    public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
+        super(theName, theDescription, theDefault, theUIOrder);
     }
 
 

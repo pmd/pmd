@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class TypeProperty extends AbstractPackagedProperty<Class> {
+public final class TypeProperty extends AbstractPackagedProperty<Class> {
 
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
@@ -86,6 +86,7 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
             throw new IllegalArgumentException(className);
         }
     }
+
 
     // TODO:cf deprecate this
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<PropertyDescriptorField, String> otherParams,

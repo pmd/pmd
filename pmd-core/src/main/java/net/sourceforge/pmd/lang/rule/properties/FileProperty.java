@@ -16,8 +16,9 @@ import net.sourceforge.pmd.util.StringUtil;
  * Property taking a File object as its value.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class FileProperty extends AbstractSingleValueProperty<File> {
+public final class FileProperty extends AbstractSingleValueProperty<File> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<File>(File.class) {

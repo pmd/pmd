@@ -16,7 +16,7 @@ import net.sourceforge.pmd.Rule;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T> {
+/* default */ abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T> {
 
     /** Default value. */
     protected T defaultValue;
@@ -51,16 +51,6 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
     }
 
 
-    /**
-     * Returns true if the default value is {@code null}.
-     *
-     * @return True if the default value is {@code null}.
-     */
-    private boolean defaultHasNullValue() {
-        return defaultValue == null;
-    }
-
-
     @Override
     public final boolean isMultiValue() {
         return false;
@@ -70,6 +60,18 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
     @Override
     public String asDelimitedString(T value, char delimiter) {
         return value == null ? "" : asString(value);
+    }
+
+
+    /**
+     * Returns a string representation of the value, even if it's null.
+     *
+     * @param value The value to describe
+     *
+     * @return A string representation of the value
+     */
+    protected String asString(T value) {
+        return value == null ? "" : value.toString();
     }
 
 
@@ -116,14 +118,12 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
 
 
     /**
-     * Returns a string representation of the value, even if it's null.
+     * Returns true if the default value is {@code null}.
      *
-     * @param value The value to describe
-     *
-     * @return A string representation of the value
+     * @return True if the default value is {@code null}.
      */
-    protected String asString(T value) {
-        return value == null ? "" : value.toString();
+    private boolean defaultHasNullValue() {
+        return defaultValue == null;
     }
 
 
@@ -139,6 +139,12 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
     }
 
 
+    @Override
+    public final T valueFrom(String valueString) throws IllegalArgumentException {
+        return createFrom(valueString);
+    }
+
+
     /**
      * Parse a string and returns an instance of a value.
      *
@@ -147,11 +153,5 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
      * @return An instance of a value
      */
     protected abstract T createFrom(String toParse);    // this is there to be symmetrical to multi values
-
-
-    @Override
-    public final T valueFrom(String valueString) throws IllegalArgumentException {
-        return createFrom(valueString);
-    }
 
 }

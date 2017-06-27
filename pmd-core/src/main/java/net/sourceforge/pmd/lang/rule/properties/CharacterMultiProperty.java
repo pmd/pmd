@@ -21,7 +21,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
+public final class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off

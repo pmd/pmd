@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  *
  * @author Brian Remedios
  */
-public class IntegerProperty extends AbstractNumericProperty<Integer> {
+public final class IntegerProperty extends AbstractNumericProperty<Integer> {
 
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
@@ -53,18 +53,6 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
 
-    /**
-     * Parses a String into an Integer.
-     *
-     * @param numberString String to parse
-     *
-     * @return Parsed Integer
-     */
-    public static Integer intFrom(String numberString) {
-        return INTEGER_PARSER.valueOf(numberString);
-    }
-
-
     @Override
     public Class<Integer> type() {
         return Integer.class;
@@ -74,5 +62,17 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
     @Override
     protected Integer createFrom(String value) {
         return INTEGER_PARSER.valueOf(value);
+    }
+
+
+    /**
+     * Parses a String into an Integer.
+     *
+     * @param numberString String to parse
+     *
+     * @return Parsed Integer
+     */
+    public static Integer intFrom(String numberString) {
+        return INTEGER_PARSER.valueOf(numberString);
     }
 }

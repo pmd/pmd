@@ -23,7 +23,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
+/* default */ abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
     private final String name;
     private final String description;
@@ -58,28 +58,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
             throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");
         }
         return arg;
-    }
-
-
-    /**
-     * Tests if two values are equal.
-     *
-     * @param value      First value
-     * @param otherValue Object
-     *
-     * @return True if the two values are equal.
-     *
-     * @deprecated Never used in pmd's codebase + is just an alias for Object#equals.
-     */
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    public static boolean areEqual(Object value, Object otherValue) {
-        return value != null && value.equals(otherValue);
-    }
-
-
-    @Override
-    public String name() {
-        return name;
     }
 
 
@@ -162,12 +140,10 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     }
 
 
-    /**
-     * Returns a string representation of the default value.
-     *
-     * @return A string representation of the default value.
-     */
-    protected abstract String defaultAsString();
+    @Override
+    public String name() {
+        return name;
+    }
 
 
     @Override
@@ -192,5 +168,13 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
             attributes.put(PropertyDescriptorField.DELIMITER, Character.toString(multiValueDelimiter()));
         }
     }
+
+
+    /**
+     * Returns a string representation of the default value.
+     *
+     * @return A string representation of the default value.
+     */
+    protected abstract String defaultAsString();
 
 }

@@ -18,8 +18,9 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  *
  * @author Brian Remedios
  */
-public class FloatProperty extends AbstractNumericProperty<Float> {
+public final class FloatProperty extends AbstractNumericProperty<Float> {
 
+    /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
@@ -32,24 +33,6 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
                                          FLOAT_PARSER.valueOf(numericDefaultValueIn(valuesById)), 0f);
             }
         }; // @formatter:on
-
-
-    /**
-     * Constructor that limits itself to a single value within the specified limits.
-     *
-     * @param theName        Name
-     * @param theDescription Description
-     * @param min            Minimum value of the property
-     * @param max            Maximum value of the property
-     * @param theDefault     Default value
-     * @param theUIOrder     UI order
-     *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
-     */
-    public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
-                         float theUIOrder) {
-        super(theName, theDescription, Float.valueOf(min), Float.valueOf(max), Float.valueOf(theDefault), theUIOrder);
-    }
 
 
     /**
@@ -69,6 +52,24 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
     public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                          float theUIOrder) {
         this(theName, theDescription, floatFrom(minStr), floatFrom(maxStr), floatFrom(defaultStr), theUIOrder);
+    }
+
+
+    /**
+     * Constructor that limits itself to a single value within the specified limits.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     */
+    public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
+                         float theUIOrder) {
+        super(theName, theDescription, Float.valueOf(min), Float.valueOf(max), Float.valueOf(theDefault), theUIOrder);
     }
 
 

@@ -24,8 +24,9 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @param <E> Type of the choices
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> {
+public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory<? extends Enumeration> FACTORY // @formatter:off
@@ -43,8 +44,8 @@ public class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> {
         }; // @formatter:on
 
 
-    private Map<String, E> choicesByLabel;
-    private Map<E, String> labelsByChoice;
+    private final Map<String, E> choicesByLabel;
+    private final Map<E, String> labelsByChoice;
 
 
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
@@ -80,18 +81,18 @@ public class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> {
     }
 
 
+    @Override
+    public E createFrom(String value) throws IllegalArgumentException {
+        return choiceFrom(value);
+    }
+
+
     private E choiceFrom(String label) {
         E result = choicesByLabel.get(label);
         if (result != null) {
             return result;
         }
         throw new IllegalArgumentException(label);
-    }
-
-
-    @Override
-    public E createFrom(String value) throws IllegalArgumentException {
-        return choiceFrom(value);
     }
 
 

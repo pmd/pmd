@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T> {
+/* default */ abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T> {
 
     /** Delimiter between values. */
     protected static final char DELIMITER = '|';
@@ -53,38 +53,6 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
         checkValidPackages(theDefault, theLegalPackageNames);
 
         legalPackageNames = theLegalPackageNames;
-    }
-
-
-    protected static String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
-        // TODO
-        return null;
-    }
-
-
-    @Override
-    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
-        super.addAttributesTo(attributes);
-
-        attributes.put(LEGAL_PACKAGES, delimitedPackageNames());
-    }
-
-
-    private String delimitedPackageNames() {
-
-        if (legalPackageNames == null || legalPackageNames.length == 0) {
-            return "";
-        }
-        if (legalPackageNames.length == 1) {
-            return legalPackageNames[0];
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(legalPackageNames[0]);
-        for (int i = 1; i < legalPackageNames.length; i++) {
-            sb.append(PACKAGE_NAME_DELIMITER).append(legalPackageNames[i]);
-        }
-        return sb.toString();
     }
 
 
@@ -126,11 +94,39 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
 
 
     /**
-     * Returns the name of the type of item.
+     * Returns the package name of the item.
      *
-     * @return The name of the type of item
+     * @param item Item
+     *
+     * @return Package name of the item
      */
-    protected abstract String itemTypeName();
+    protected abstract String packageNameOf(T item);
+
+
+    @Override
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
+        super.addAttributesTo(attributes);
+
+        attributes.put(LEGAL_PACKAGES, delimitedPackageNames());
+    }
+
+
+    private String delimitedPackageNames() {
+
+        if (legalPackageNames == null || legalPackageNames.length == 0) {
+            return "";
+        }
+        if (legalPackageNames.length == 1) {
+            return legalPackageNames[0];
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(legalPackageNames[0]);
+        for (int i = 1; i < legalPackageNames.length; i++) {
+            sb.append(PACKAGE_NAME_DELIMITER).append(legalPackageNames[i]);
+        }
+        return sb.toString();
+    }
 
 
     @Override
@@ -160,13 +156,11 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
 
 
     /**
-     * Returns the package name of the item.
+     * Returns the name of the type of item.
      *
-     * @param item Item
-     *
-     * @return Package name of the item
+     * @return The name of the type of item
      */
-    protected abstract String packageNameOf(T item);
+    protected abstract String itemTypeName();
 
 
     /**
@@ -176,5 +170,11 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
      */
     public String[] legalPackageNames() {
         return Arrays.copyOf(legalPackageNames, legalPackageNames.length);
+    }
+
+
+    protected static String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
+        // TODO
+        return null;
     }
 }

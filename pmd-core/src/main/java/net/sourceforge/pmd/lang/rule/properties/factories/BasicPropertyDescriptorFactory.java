@@ -61,6 +61,45 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     }
 
 
+    @Override
+    public Class<?> valueType() {
+        return valueType;
+    }
+
+
+    @Override
+    public PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById) {
+        throw new RuntimeException("Unimplemented createWith() method in subclass");
+    }
+
+
+    @Override
+    public Map<PropertyDescriptorField, Boolean> expectedFields() {
+        return fieldTypesByKey;
+    }
+
+
+    protected String nameIn(Map<PropertyDescriptorField, String> valuesById) {
+        return valuesById.get(NAME);
+    }
+
+
+    protected String descriptionIn(Map<PropertyDescriptorField, String> valuesById) {
+        return valuesById.get(DESCRIPTION);
+    }
+
+
+    protected String numericDefaultValueIn(Map<PropertyDescriptorField, String> valuesById) {
+        String number = defaultValueIn(valuesById);
+        return StringUtil.isEmpty(number) ? "0" : number; // TODO is 0 reasonable if undefined?
+    }
+
+
+    protected String defaultValueIn(Map<PropertyDescriptorField, String> valuesById) {
+        return valuesById.get(DEFAULT_VALUE);
+    }
+
+
     /**
      * Parses a string into a list of values of type {@literal <U>}.
      *
@@ -158,45 +197,6 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
             largerMap.put(otherKeys[i], otherValues[i]);
         }
         return largerMap;
-    }
-
-
-    @Override
-    public Class<?> valueType() {
-        return valueType;
-    }
-
-
-    @Override
-    public PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById) {
-        throw new RuntimeException("Unimplemented createWith() method in subclass");
-    }
-
-
-    @Override
-    public Map<PropertyDescriptorField, Boolean> expectedFields() {
-        return fieldTypesByKey;
-    }
-
-
-    protected String nameIn(Map<PropertyDescriptorField, String> valuesById) {
-        return valuesById.get(NAME);
-    }
-
-
-    protected String descriptionIn(Map<PropertyDescriptorField, String> valuesById) {
-        return valuesById.get(DESCRIPTION);
-    }
-
-
-    protected String numericDefaultValueIn(Map<PropertyDescriptorField, String> valuesById) {
-        String number = defaultValueIn(valuesById);
-        return StringUtil.isEmpty(number) ? "0" : number; // TODO is 0 reasonable if undefined?
-    }
-
-
-    protected String defaultValueIn(Map<PropertyDescriptorField, String> valuesById) {
-        return valuesById.get(DEFAULT_VALUE);
     }
 
     // protected static Map<String, PropertyDescriptorFactory>

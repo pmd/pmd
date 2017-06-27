@@ -14,8 +14,9 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * Defines a datatype that supports single String values.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class StringProperty extends AbstractSingleValueProperty<String> {
+public final class StringProperty extends AbstractSingleValueProperty<String> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<String>(String.class) {

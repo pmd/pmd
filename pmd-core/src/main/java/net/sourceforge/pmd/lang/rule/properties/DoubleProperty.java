@@ -17,8 +17,9 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * within an upper and lower boundary.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class DoubleProperty extends AbstractNumericProperty<Double> {
+public final class DoubleProperty extends AbstractNumericProperty<Double> {
 
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
             = new BasicPropertyDescriptorFactory<Double>(Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
@@ -33,24 +34,6 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
                                           0f);
             }
         }; // @formatter:on
-
-
-    /**
-     * Constructor that limits itself to a single value within the specified limits.
-     *
-     * @param theName        Name
-     * @param theDescription Description
-     * @param min            Minimum value of the property
-     * @param max            Maximum value of the property
-     * @param theDefault     Default value
-     * @param theUIOrder     UI order
-     *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
-     */
-    public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
-                          float theUIOrder) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder);
-    }
 
 
     /**
@@ -70,6 +53,24 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     public DoubleProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                           float theUIOrder) {
         this(theName, theDescription, doubleFrom(minStr), doubleFrom(maxStr), doubleFrom(defaultStr), theUIOrder);
+    }
+
+
+    /**
+     * Constructor that limits itself to a single value within the specified limits.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     */
+    public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
+                          float theUIOrder) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder);
     }
 
 

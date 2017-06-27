@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public class StringMultiProperty extends AbstractMultiValueProperty<String> {
+public final class StringMultiProperty extends AbstractMultiValueProperty<String> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off

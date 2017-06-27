@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  *
  * @author Brian Remedios
  */
-public class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
+public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off

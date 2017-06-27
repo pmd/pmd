@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
+public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
@@ -38,6 +38,12 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
                                                legalPackageNamesIn(valuesById, delimiter), 0f);
             }
         }; // @formatter:on
+
+
+    public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults,
+                               String[] legalPackageNames, float theUIOrder) {
+        this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
+    }
 
 
     /**
@@ -57,12 +63,6 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
     }
 
 
-    public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults,
-                               String[] legalPackageNames, float theUIOrder) {
-        this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
-    }
-
-
     /**
      * Constructor for MethodProperty.
      *
@@ -79,12 +79,6 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
         super(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder);
     }
 
-    // TODO:cf deprecate this
-    public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
-                               Map<PropertyDescriptorField, String> otherParams, float theUIOrder) {
-        this(theName, theDescription, methodsFrom(methodDefaults), packageNamesIn(otherParams), theUIOrder);
-    }
-
 
     public static List<Method> methodsFrom(String methodsStr) {
         String[] values = StringUtil.substringsOf(methodsStr, DELIMITER);
@@ -95,6 +89,13 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
                                                   MethodProperty.METHOD_ARG_DELIMITER));
         }
         return methods;
+    }
+
+
+    // TODO:cf deprecate this
+    public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
+                               Map<PropertyDescriptorField, String> otherParams, float theUIOrder) {
+        this(theName, theDescription, methodsFrom(methodDefaults), packageNamesIn(otherParams), theUIOrder);
     }
 
 

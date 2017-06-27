@@ -16,8 +16,9 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  * Defines a property type that supports single Boolean values.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
+public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
 
     public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Boolean>(Boolean.class) {
@@ -29,19 +30,6 @@ public class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
                                            0f);
             }
         }; // @formatter:on
-
-
-    /**
-     * Constructor.
-     *
-     * @param theName        Name
-     * @param theDescription Description
-     * @param defaultValue   Default value
-     * @param theUIOrder     UI order
-     */
-    public BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder) {
-        super(theName, theDescription, defaultValue, theUIOrder);
-    }
 
 
     /**
@@ -57,6 +45,19 @@ public class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
         this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValue   Default value
+     * @param theUIOrder     UI order
+     */
+    public BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder) {
+        super(theName, theDescription, defaultValue, theUIOrder);
     }
 
 
