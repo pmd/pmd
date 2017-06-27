@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -31,11 +32,6 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
             throw new IllegalArgumentException("PropertyDescriptor cannot be null.");
         }
         this.propertyDescriptor = propertyDescriptor;
-    }
-
-
-    public PropertyDescriptor<T> getPropertyDescriptor() {
-        return propertyDescriptor;
     }
 
 
@@ -143,7 +139,7 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
 
 
     @Override
-    public Map<String, String> attributeValuesById() {
+    public Map<PropertyDescriptorField, String> attributeValuesById() {
         return propertyDescriptor.attributeValuesById();
     }
 
@@ -154,6 +150,11 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
             return this.getPropertyDescriptor().equals(((PropertyDescriptorWrapper<?>) obj).getPropertyDescriptor());
         }
         return this.getPropertyDescriptor().equals(obj);
+    }
+
+
+    public PropertyDescriptor<T> getPropertyDescriptor() {
+        return propertyDescriptor;
     }
 
 

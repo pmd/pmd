@@ -19,7 +19,6 @@ public class StringProperty extends AbstractSingleValueProperty<String> {
 
     /** Factory. */
     public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<String>(String.class) {
-
         @Override
         public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
             return new StringProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById), 0f);
@@ -28,15 +27,15 @@ public class StringProperty extends AbstractSingleValueProperty<String> {
 
 
     /**
-     * Constructor for StringProperty.
+     * Constructor.
      *
-     * @param theName         String
-     * @param theDescription  String
-     * @param theDefaultValue String
-     * @param theUIOrder      float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValue   Default value
+     * @param theUIOrder     UI order
      */
-    public StringProperty(String theName, String theDescription, String theDefaultValue, float theUIOrder) {
-        super(theName, theDescription, theDefaultValue, theUIOrder);
+    public StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder) {
+        super(theName, theDescription, defaultValue, theUIOrder);
     }
 
 

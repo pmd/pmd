@@ -22,17 +22,17 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 public class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<List<Boolean>>(Boolean.class) {
-        @Override
-        public BooleanMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new BooleanMultiProperty(nameIn(valuesById),
-                                            descriptionIn(valuesById),
-                                            parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
-                                            0f);
-        }
-    };
+            @Override
+            public BooleanMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                char delimiter = delimiterIn(valuesById);
+                return new BooleanMultiProperty(nameIn(valuesById),
+                                                descriptionIn(valuesById),
+                                                parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
+                                                0f);
+            }
+        }; // @formatter:on
 
 
     /**

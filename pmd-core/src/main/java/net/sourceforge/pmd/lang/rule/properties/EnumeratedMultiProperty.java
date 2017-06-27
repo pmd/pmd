@@ -27,18 +27,19 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Enumeration>(Enumeration.class) {
-        @Override
-        public EnumeratedMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            return new EnumeratedMultiProperty<>(nameIn(valuesById),
-                                                 descriptionIn(valuesById),
-                                                 labelsIn(valuesById),
-                                                 choicesIn(valuesById),
-                                                 indicesIn(valuesById),
-                                                 0f);
-        }
-    };
+            @Override
+            public EnumeratedMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                return new EnumeratedMultiProperty<>(nameIn(valuesById),
+                                                     descriptionIn(valuesById),
+                                                     labelsIn(valuesById),
+                                                     choicesIn(valuesById),
+                                                     indicesIn(valuesById),
+                                                     0f);
+            }
+        }; // @formatter:on
+
     private Map<String, E> choicesByLabel;
     private Map<E, String> labelsByChoice;
 

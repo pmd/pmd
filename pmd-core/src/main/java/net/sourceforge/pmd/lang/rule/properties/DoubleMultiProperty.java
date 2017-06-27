@@ -24,21 +24,21 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<List<Double>>(Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
-        @Override
-        public DoubleMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            String[] minMax = minMaxFrom(valuesById);
-            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-            List<Double> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, DOUBLE_PARSER);
-            return new DoubleMultiProperty(nameIn(valuesById),
-                                           descriptionIn(valuesById),
-                                           DOUBLE_PARSER.valueOf(minMax[0]),
-                                           DOUBLE_PARSER.valueOf(minMax[1]),
-                                           defaultValues,
-                                           0f);
-        }
-    };
+            @Override
+            public DoubleMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                String[] minMax = minMaxFrom(valuesById);
+                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+                List<Double> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, DOUBLE_PARSER);
+                return new DoubleMultiProperty(nameIn(valuesById),
+                                               descriptionIn(valuesById),
+                                               DOUBLE_PARSER.valueOf(minMax[0]),
+                                               DOUBLE_PARSER.valueOf(minMax[1]),
+                                               defaultValues,
+                                               0f);
+            }
+        }; // @formatter:on
 
 
     /**

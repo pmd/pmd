@@ -24,17 +24,18 @@ import net.sourceforge.pmd.util.StringUtil;
 public class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<List<Character>>(Character.class) {
-        @Override
-        public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new CharacterMultiProperty(nameIn(valuesById),
-                                              descriptionIn(valuesById),
-                                              parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParser.CHARACTER_PARSER),
-                                              0.0f,
-                                              delimiter);
-        }
-    };
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
+        = new BasicPropertyDescriptorFactory<List<Character>>(Character.class) {
+            @Override
+            public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                char delimiter = delimiterIn(valuesById);
+                return new CharacterMultiProperty(nameIn(valuesById),
+                                                  descriptionIn(valuesById),
+                                                  parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParser.CHARACTER_PARSER),
+                                                  0.0f,
+                                                  delimiter);
+            }
+        }; // @formatter:on
 
 
     /**

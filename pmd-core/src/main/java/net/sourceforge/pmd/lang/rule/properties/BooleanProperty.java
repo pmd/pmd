@@ -19,21 +19,20 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<Boolean>(
-        Boolean.class) {
-
-        @Override
-        public BooleanProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            return new BooleanProperty(nameIn(valuesById),
-                                       descriptionIn(valuesById),
-                                       BOOLEAN_PARSER.valueOf(defaultValueIn(valuesById)),
-                                       0f);
-        }
-    };
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
+        = new BasicPropertyDescriptorFactory<Boolean>(Boolean.class) {
+            @Override
+            public BooleanProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                return new BooleanProperty(nameIn(valuesById),
+                                           descriptionIn(valuesById),
+                                           BOOLEAN_PARSER.valueOf(defaultValueIn(valuesById)),
+                                           0f);
+            }
+        }; // @formatter:on
 
 
     /**
-     * Constructor for BooleanProperty limited to a single value.
+     * Constructor.
      *
      * @param theName        Name
      * @param theDescription Description
@@ -53,6 +52,8 @@ public class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
      * @param theDescription Description
      * @param defaultBoolStr String representing the default value.
      * @param theUIOrder     UI order
+     *
+     * @deprecated ?
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
         this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder);

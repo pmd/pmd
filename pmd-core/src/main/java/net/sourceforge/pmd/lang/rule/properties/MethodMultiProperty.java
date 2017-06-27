@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -23,18 +24,20 @@ import net.sourceforge.pmd.util.StringUtil;
  * partial package names, i.e., ["java.lang", "com.mycompany" ].
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
 public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
 
-    public static final PropertyDescriptorFactory FACTORY
+    /** Factory. */
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<List<Method>>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
-        @Override
-        public MethodMultiProperty createWith(Map<String, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new MethodMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
-                                           legalPackageNamesIn(valuesById, delimiter), 0f);
-        }
-    };
+            @Override
+            public MethodMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                char delimiter = delimiterIn(valuesById);
+                return new MethodMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
+                                               legalPackageNamesIn(valuesById, delimiter), 0f);
+            }
+        }; // @formatter:on
 
 
     /**

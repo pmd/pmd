@@ -23,19 +23,25 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
 
 
     /**
-     * Creates a single value property using the default delimiter {@link #DEFAULT_DELIMITER}.
+     * Creates a single value property.
      *
-     * @param theName        Name of the property (must not be empty)
-     * @param theDescription Description (must not be empty)
-     * @param theUIOrder     UI order (must be positive or zero)
+     * @param theName        Name of the property
+     * @param theDescription Description
+     * @param theUIOrder     UI order
      * @param theDefault     Default value
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     protected AbstractSingleValueProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
-        super(theName, theDescription, theUIOrder, DEFAULT_DELIMITER);
+        super(theName, theDescription, theUIOrder);
 
         defaultValue = theDefault;
+    }
+
+
+    @Override
+    public final char multiValueDelimiter() {
+        return '\0';
     }
 
 
@@ -87,7 +93,7 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
     }
 
 
-    private String typeErrorFor(T value) { // TODO:cf consider subtypes!!
+    private String typeErrorFor(T value) { // TODO:cf consider subtypes?
 
         if (value != null && !type().isAssignableFrom(value.getClass())) {
             return value + " is not an instance of " + type();
@@ -97,11 +103,25 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
     }
 
 
+    /**
+     * Checks the value for an error.
+     *
+     * @param value Value to check
+     *
+     * @return A diagnostic error message, or null if there's no problem
+     */
     protected String valueErrorFor(T value) {
         return value != null || defaultHasNullValue() ? null : "missing value";
     }
 
 
+    /**
+     * Returns a string representation of the value, even if it's null.
+     *
+     * @param value The value to describe
+     *
+     * @return A string representation of the value
+     */
     protected String asString(T value) {
         return value == null ? "" : value.toString();
     }
@@ -126,9 +146,7 @@ public abstract class AbstractSingleValueProperty<T> extends AbstractProperty<T>
      *
      * @return An instance of a value
      */
-    protected abstract T createFrom(String toParse);
-
-    // this is there to be symmetrical.
+    protected abstract T createFrom(String toParse);    // this is there to be symmetrical to multi values
 
 
     @Override

@@ -56,7 +56,7 @@ public abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValu
     }
 
 
-    protected static String[] packageNamesIn(Map<String, String> params) {
+    protected static String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
         // TODO
         return null;
     }

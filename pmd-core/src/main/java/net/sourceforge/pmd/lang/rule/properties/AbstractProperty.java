@@ -18,56 +18,30 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Abstract class for properties.
  *
- * @param <T> The type of the values.
+ * @param <T> The type of the values
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
 public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
-
-    /**
-     * Default delimiter for multi properties. Note: Numeric properties usual
-     * use the {@value #DEFAULT_NUMERIC_DELIMITER}.
-     */
-    public static final char DEFAULT_DELIMITER = '|';
-
-    /**
-     * Default delimiter for numeric properties.
-     */
-    public static final char DEFAULT_NUMERIC_DELIMITER = ',';
 
     private final String name;
     private final String description;
     private final boolean isRequired;
     private final float uiOrder;
-    private char multiValueDelimiter = DEFAULT_DELIMITER;
 
 
     /**
-     * Creates an AbstractProperty using the default delimiter {@link #DEFAULT_DELIMITER}.
+     * Constructor for an abstract property.
      *
-     * @param theName        Name of the property (must not be empty)
-     * @param theDescription Description (must not be empty)
-     * @param theUIOrder     UI order (must be positive or zero)
-     *
-     * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
-     */
-    protected AbstractProperty(String theName, String theDescription, float theUIOrder) {
-        this(theName, theDescription, theUIOrder, DEFAULT_DELIMITER);
-    }
-
-
-    /**
-     * Constructor for AbstractPMDProperty.
-     *
-     * @param theName        Name of the property (must not be empty)
-     * @param theDescription Description (must not be empty)
-     * @param theUIOrder     UI order (must be positive or zero)
-     * @param delimiter      The delimiter to separate multi values
+     * @param theName        Name of the property
+     * @param theDescription Description
+     * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     protected AbstractProperty(String theName, String theDescription,
-                               float theUIOrder, char delimiter) {
+                               float theUIOrder) {
         if (theUIOrder < 0) {
             throw new IllegalArgumentException("Property attribute 'UI order' cannot be null or blank");
         }
@@ -76,11 +50,10 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
         description = checkNotEmpty(theDescription, DESCRIPTION);
         isRequired = false; // TODO - do we need this?
         uiOrder = theUIOrder;
-        multiValueDelimiter = delimiter;
     }
 
 
-    private static String checkNotEmpty(String arg, String argId) throws IllegalArgumentException {
+    private static String checkNotEmpty(String arg, PropertyDescriptorField argId) throws IllegalArgumentException {
         if (StringUtil.isEmpty(arg)) {
             throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");
         }
@@ -125,12 +98,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
     @Override
     public float uiOrder() {
         return uiOrder;
-    }
-
-
-    @Override
-    public char multiValueDelimiter() {
-        return multiValueDelimiter;
     }
 
 
@@ -212,7 +179,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
 
     /**
-     * Adds this property's attributes to the map. Subclasses can override this to add more Property fields.
+     * Adds this property's attributes to the map. Subclasses can override this to add more
+     * {@link PropertyDescriptorField}.
      *
      * @param attributes The map to fill
      */
@@ -224,4 +192,5 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
             attributes.put(PropertyDescriptorField.DELIMITER, Character.toString(multiValueDelimiter()));
         }
     }
+
 }

@@ -24,20 +24,20 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 public class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<List<Float>>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
-        @Override
-        public FloatMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            String[] minMax = minMaxFrom(valuesById);
-            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-            List<Float> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, FLOAT_PARSER);
-            return new FloatMultiProperty(nameIn(valuesById),
-                                          descriptionIn(valuesById),
-                                          FLOAT_PARSER.valueOf(minMax[0]),
-                                          FLOAT_PARSER.valueOf(minMax[1]),
-                                          defaultValues, 0f);
-        }
-    };
+            @Override
+            public FloatMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                String[] minMax = minMaxFrom(valuesById);
+                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+                List<Float> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, FLOAT_PARSER);
+                return new FloatMultiProperty(nameIn(valuesById),
+                                              descriptionIn(valuesById),
+                                              FLOAT_PARSER.valueOf(minMax[0]),
+                                              FLOAT_PARSER.valueOf(minMax[1]),
+                                              defaultValues, 0f);
+            }
+        }; // @formatter:on
 
 
     /**

@@ -19,25 +19,25 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class CharacterProperty extends AbstractSingleValueProperty<Character> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<Character>(Character.class) {
-
-        @Override
-        public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            return new CharacterProperty(nameIn(valuesById),
-                                         descriptionIn(valuesById),
-                                         CHARACTER_PARSER.valueOf(defaultValueIn(valuesById)),
-                                         0f);
-        }
-    };
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
+        = new BasicPropertyDescriptorFactory<Character>(Character.class) {
+            @Override
+            public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                return new CharacterProperty(nameIn(valuesById),
+                                             descriptionIn(valuesById),
+                                             CHARACTER_PARSER.valueOf(defaultValueIn(valuesById)),
+                                             0f);
+            }
+        }; // @formatter:on
 
 
     /**
-     * Constructor for CharacterProperty.
+     * Constructor.
      *
-     * @param theName        String
-     * @param theDescription String
-     * @param theDefault     Character
-     * @param theUIOrder     float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
      */
     public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);

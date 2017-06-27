@@ -24,18 +24,19 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
-    public static final PropertyDescriptorFactory FACTORY
+    /** Factory. */
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<List<Class>>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
-        @Override
-        public TypeMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new TypeMultiProperty(nameIn(valuesById),
-                                         descriptionIn(valuesById),
-                                         defaultValueIn(valuesById),
-                                         legalPackageNamesIn(valuesById, delimiter),
-                                         0f);
-        }
-    };
+            @Override
+            public TypeMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                char delimiter = delimiterIn(valuesById);
+                return new TypeMultiProperty(nameIn(valuesById),
+                                             descriptionIn(valuesById),
+                                             defaultValueIn(valuesById),
+                                             legalPackageNamesIn(valuesById, delimiter),
+                                             0f);
+            }
+        }; // @formatter:on
 
 
     /**

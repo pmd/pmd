@@ -13,6 +13,8 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * Property taking a File object as its value.
+ *
  * @author Brian Remedios
  */
 public class FileProperty extends AbstractSingleValueProperty<File> {

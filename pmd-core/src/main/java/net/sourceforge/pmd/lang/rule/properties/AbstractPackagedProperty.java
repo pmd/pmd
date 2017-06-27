@@ -6,25 +6,32 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import static net.sourceforge.pmd.PropertyDescriptorField.LEGAL_PACKAGES;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Concrete subclasses manage items that reside within namespaces per the design
- * of the Java language. Rule developers can limit the range of permissible
- * items by specifying portions of their package names in the constructor. If
+ * Property which restricts the type of its values to some packages. If
  * the legalPackageNames value is set to null then no restrictions are made.
  *
- * @param <T>
+ * @param <T> The type of the values
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
 public abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T> {
 
-    protected static final Map<String, Boolean> PACKAGED_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
-        .expectedFieldTypesWith(new String[] {LEGAL_PACKAGES}, new Boolean[] {Boolean.FALSE});
+    /** Required keys in the map. */
+    protected static final Map<PropertyDescriptorField, Boolean> PACKAGED_FIELD_TYPES_BY_KEY
+        = BasicPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {LEGAL_PACKAGES},
+                                                                new Boolean[] {false});
     private static final char PACKAGE_NAME_DELIMITER = ' ';
+    private static Pattern packageNamePattern = Pattern.compile("(\\w+)(\\.\\w+)*");
+
     private String[] legalPackageNames;
 
 
@@ -49,14 +56,22 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
     }
 
 
-    protected static String[] packageNamesIn(Map<String, String> params) {
-        // TODO
-        return null;
+    protected static String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
+        String[] packageNames = StringUtil.substringsOf(params.get(LEGAL_PACKAGES),
+                                                        PACKAGE_NAME_DELIMITER);
+
+        for (String name : packageNames) {
+            if (!packageNamePattern.matcher(name).matches()) {
+                throw new IllegalArgumentException("One name is not a package: '" + name + "'");
+            }
+        }
+
+        return packageNames;
     }
 
 
     @Override
-    protected void addAttributesTo(Map<String, String> attributes) {
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
         super.addAttributesTo(attributes);
 
         attributes.put(LEGAL_PACKAGES, delimitedPackageNames());
@@ -158,7 +173,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractSingleValuePro
      * @return The legal package names
      */
     public String[] legalPackageNames() {
-        return legalPackageNames;
+        return Arrays.copyOf(legalPackageNames, legalPackageNames.length); // defensive copy
     }
 
 }

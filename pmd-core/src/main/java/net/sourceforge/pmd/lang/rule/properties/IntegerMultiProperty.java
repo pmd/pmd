@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
 public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<List<Integer>>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
         @Override
         public IntegerMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
@@ -38,7 +38,7 @@ public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer> 
                                             defaultValues,
                                             0f);
         }
-    };
+    }; // @formatter:on
 
 
     /**

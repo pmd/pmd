@@ -23,8 +23,15 @@ import net.sourceforge.pmd.Rule;
  */
 public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>> {
 
+    /** Default delimiter for multi-valued properties other than numeric ones. */
+    static final char DEFAULT_DELIMITER = '|';
+
+    /** Default delimiter for numeric multi-valued properties. */
+    static final char DEFAULT_NUMERIC_DELIMITER = ',';
+
     /** The default value. */
     protected final List<V> defaultValue;
+    private char multiValueDelimiter = DEFAULT_DELIMITER;
 
 
     /**
@@ -49,15 +56,16 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
      * @param theDescription Description (must not be empty)
      * @param theDefault     Default value
      * @param theUIOrder     UI order (must be positive or zero)
-     * @param delimiter      The delimiter to use
+     * @param delimiter      The delimiter to separate multiple values
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     public AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault,
                                       float theUIOrder, char delimiter) {
 
-        super(theName, theDescription, theUIOrder, delimiter);
+        super(theName, theDescription, theUIOrder);
         defaultValue = Collections.unmodifiableList(theDefault);
+        multiValueDelimiter = delimiter;
     }
 
 
@@ -75,6 +83,12 @@ public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<Lis
     @Override
     public final boolean isMultiValue() {
         return true;
+    }
+
+
+    @Override
+    public char multiValueDelimiter() {
+        return multiValueDelimiter;
     }
 
 

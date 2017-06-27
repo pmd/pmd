@@ -23,18 +23,18 @@ import net.sourceforge.pmd.util.StringUtil;
 public class StringMultiProperty extends AbstractMultiValueProperty<String> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<List<String>>(String.class) {
-        @Override
-        public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new StringMultiProperty(nameIn(valuesById),
-                                           descriptionIn(valuesById),
-                                           StringUtil.substringsOf(defaultValueIn(valuesById), delimiter),
-                                           0.0f,
-                                           delimiter);
-        }
-    };
+            @Override
+            public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                char delimiter = delimiterIn(valuesById);
+                return new StringMultiProperty(nameIn(valuesById),
+                                               descriptionIn(valuesById),
+                                               StringUtil.substringsOf(defaultValueIn(valuesById), delimiter),
+                                               0.0f,
+                                               delimiter);
+            }
+        }; // @formatter:on
 
 
     /**
@@ -109,23 +109,6 @@ public class StringMultiProperty extends AbstractMultiValueProperty<String> {
     }
 
 
-    /**
-     * Returns true if the multi value delimiter is present in the string.
-     *
-     * @param value String
-     *
-     * @return boolean
-     */
-    private boolean containsDelimiter(String value) {
-        return value.indexOf(multiValueDelimiter()) >= 0;
-    }
-
-
-    private String illegalCharMsg() {
-        return "Value cannot contain the '" + multiValueDelimiter() + "' character";
-    }
-
-
     @Override
     protected String valueErrorFor(String value) {
 
@@ -140,6 +123,23 @@ public class StringMultiProperty extends AbstractMultiValueProperty<String> {
         // TODO - eval against regex checkers
 
         return null;
+    }
+
+
+    /**
+     * Returns true if the multi value delimiter is present in the string.
+     *
+     * @param value String
+     *
+     * @return boolean
+     */
+    private boolean containsDelimiter(String value) {
+        return value.indexOf(multiValueDelimiter()) >= 0;
+    }
+
+
+    private String illegalCharMsg() {
+        return "Value cannot contain the '" + multiValueDelimiter() + "' character";
     }
 
 

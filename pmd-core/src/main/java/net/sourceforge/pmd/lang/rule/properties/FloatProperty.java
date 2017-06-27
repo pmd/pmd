@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.factories.ValueParser.FLOAT_PARSER;
+
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
 
 /**
@@ -17,30 +20,31 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  */
 public class FloatProperty extends AbstractNumericProperty<Float> {
 
-    public static final PropertyDescriptorFactory FACTORY
+    public static final PropertyDescriptorFactory FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
-
-        @Override
-        public FloatProperty createWith(Map<String, String> valuesById) {
-            final String[] minMax = minMaxFrom(valuesById);
-            return new FloatProperty(nameIn(valuesById), descriptionIn(valuesById), Float.valueOf(minMax[0]),
-                                     Float.valueOf(minMax[1]), Float.valueOf(numericDefaultValueIn(valuesById)), 0f);
-        }
-    };
+            @Override
+            public FloatProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                final String[] minMax = minMaxFrom(valuesById);
+                return new FloatProperty(nameIn(valuesById),
+                                         descriptionIn(valuesById),
+                                         FLOAT_PARSER.valueOf(minMax[0]),
+                                         FLOAT_PARSER.valueOf(minMax[1]),
+                                         FLOAT_PARSER.valueOf(numericDefaultValueIn(valuesById)), 0f);
+            }
+        }; // @formatter:on
 
 
     /**
-     * Constructor for FloatProperty that limits itself to a single value within
-     * the specified limits.
+     * Constructor that limits itself to a single value within the specified limits.
      *
-     * @param theName        String
-     * @param theDescription String
-     * @param min            float
-     * @param max            float
-     * @param theDefault     float
-     * @param theUIOrder     float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
                          float theUIOrder) {
@@ -49,17 +53,18 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
 
 
     /**
-     * Constructor for FloatProperty that limits itself to a single value within
-     * the specified limits. Converts string arguments into the Float values.
+     * Constructor for FloatProperty that limits itself to a single value within the specified limits. Converts string
+     * arguments into the Float values.
      *
-     * @param theName        String
-     * @param theDescription String
-     * @param minStr         String
-     * @param maxStr         String
-     * @param defaultStr     String
-     * @param theUIOrder     float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param minStr         Minimum value of the property
+     * @param maxStr         Maximum value of the property
+     * @param defaultStr     Default value
+     * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @deprecated ?
      */
     public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                          float theUIOrder) {
@@ -75,7 +80,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
      * @return Parsed Float
      */
     public static Float floatFrom(String numberString) {
-        return Float.valueOf(numberString);
+        return FLOAT_PARSER.valueOf(numberString);
     }
 
 
@@ -87,6 +92,6 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
 
     @Override
     protected Float createFrom(String value) {
-        return floatFrom(value);
+        return FLOAT_PARSER.valueOf(value);
     }
 }

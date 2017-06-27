@@ -28,19 +28,21 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class EnumeratedProperty<E> extends AbstractSingleValueProperty<E> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory<? extends Enumeration> FACTORY
+    public static final PropertyDescriptorFactory<? extends Enumeration> FACTORY // @formatter:off
         = new BasicPropertyDescriptorFactory<Enumeration>(Enumeration.class) {
 
-        @Override
-        public EnumeratedProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            return new EnumeratedProperty<>(nameIn(valuesById),
-                                            descriptionIn(valuesById),
-                                            labelsIn(valuesById), // those are not implemented
-                                            choicesIn(valuesById), // ditto
-                                            indexIn(valuesById), // ditto
-                                            0f);
-        }
-    };
+            @Override
+            public EnumeratedProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                return new EnumeratedProperty<>(nameIn(valuesById),
+                                                descriptionIn(valuesById),
+                                                labelsIn(valuesById),   // this is not implemented
+                                                choicesIn(valuesById),  // ditto
+                                                indexIn(valuesById),    // ditto
+                                                0f);
+            }
+        }; // @formatter:on
+
+
     private Map<String, E> choicesByLabel;
     private Map<E, String> labelsByChoice;
 
