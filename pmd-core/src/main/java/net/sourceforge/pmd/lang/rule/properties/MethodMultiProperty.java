@@ -79,9 +79,9 @@ public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
         super(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder);
     }
 
-
+    // TODO:cf deprecate this
     public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
-                               Map<String, String> otherParams, float theUIOrder) {
+                               Map<PropertyDescriptorField, String> otherParams, float theUIOrder) {
         this(theName, theDescription, methodsFrom(methodDefaults), packageNamesIn(otherParams), theUIOrder);
     }
 

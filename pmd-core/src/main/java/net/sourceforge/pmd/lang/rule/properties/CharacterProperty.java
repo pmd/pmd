@@ -25,7 +25,8 @@ public class CharacterProperty extends AbstractSingleValueProperty<Character> {
             public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 return new CharacterProperty(nameIn(valuesById),
                                              descriptionIn(valuesById),
-                                             CHARACTER_PARSER.valueOf(defaultValueIn(valuesById)),
+                                             defaultValueIn(valuesById) == null ? null
+                                                                                : defaultValueIn(valuesById).charAt(0),
                                              0f);
             }
         }; // @formatter:on

@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 
 /**
@@ -385,12 +385,12 @@ public class RuleSetWriter {
 
         final Element propertyElement = createPropertyValueElement(propertyDescriptor,
                 propertyDescriptor.defaultValue());
-        propertyElement.setAttribute(PropertyDescriptorField.TYPE,
+        propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName,
                                      PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type()));
 
-        Map<String, String> propertyValuesById = propertyDescriptor.attributeValuesById();
-        for (Map.Entry<String, String> entry : propertyValuesById.entrySet()) {
-            propertyElement.setAttribute(entry.getKey(), entry.getValue());
+        Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();
+        for (Map.Entry<PropertyDescriptorField, String> entry : propertyValuesById.entrySet()) {
+            propertyElement.setAttribute(entry.getKey().attributeName, entry.getValue());
         }
 
         return propertyElement;

@@ -47,7 +47,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
-    public IntegerProperty(String theName, String theDescription, int min, int max, int theDefault,
+    public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
                            float theUIOrder) {
         super(theName, theDescription, min, max, theDefault, theUIOrder);
     }
@@ -61,7 +61,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
      * @return Parsed Integer
      */
     public static Integer intFrom(String numberString) {
-
+        return INTEGER_PARSER.valueOf(numberString);
     }
 
 

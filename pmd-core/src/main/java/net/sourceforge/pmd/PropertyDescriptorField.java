@@ -24,10 +24,6 @@ public enum PropertyDescriptorField {
     NAME("name"),
     /** The description of the property. */
     DESCRIPTION("description"),
-    /** The description of the property. */
-    DESC("description"),
-    /** The default value. */
-    VALUE("value"),
     /** The default value. */
     DEFAULT_VALUE("value"),
     /** For multi-valued properties, this defines the delimiter of the single values. */
@@ -45,15 +41,17 @@ public enum PropertyDescriptorField {
     /** Default index for enumerated properties. */
     DEFAULT_INDEX("defaultIndex");
 
-    final String representation;
+    final String attributeName;
 
-    PropertyDescriptorField(String representation) {
-        this.representation = representation;
+
+    PropertyDescriptorField(String attributeName) {
+        this.attributeName = attributeName;
     }
+
 
     @Override
     public String toString() {
-        return representation;
+        return attributeName;
     }
 
 }

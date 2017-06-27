@@ -227,8 +227,8 @@ public abstract class AbstractPropertyDescriptorTester<T> {
         return (PropertyDescriptorFactory<List<T>>) PropertyDescriptorUtil.factoryFor("List<" + typeName + ">");
     }
 
-    private Map<String, String> getPropertyDescriptorValues() {
-        Map<String, String> valuesById = new HashMap<>();
+    private Map<PropertyDescriptorField, String> getPropertyDescriptorValues() {
+        Map<PropertyDescriptorField, String> valuesById = new HashMap<>();
         valuesById.put(PropertyDescriptorField.NAME, "test");
         valuesById.put(PropertyDescriptorField.DESCRIPTION, "desc");
         valuesById.put(PropertyDescriptorField.MIN, "0");
@@ -260,7 +260,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     @Test
     public void testFactoryMultiValueCustomDelimiter() {
         PropertyDescriptorFactory<List<T>> multiFactory = getMultiFactory();
-        Map<String, String> valuesById = getPropertyDescriptorValues();
+        Map<PropertyDescriptorField, String> valuesById = getPropertyDescriptorValues();
         String customDelimiter = "ä";
         assertFalse(ALL_CHARS.contains(customDelimiter));
         valuesById.put(PropertyDescriptorField.DELIMITER, customDelimiter);

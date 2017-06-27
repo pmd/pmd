@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties;
+package net.sourceforge.pmd.lang.rule.properties.factories;
 
 import java.util.List;
 import java.util.Map;

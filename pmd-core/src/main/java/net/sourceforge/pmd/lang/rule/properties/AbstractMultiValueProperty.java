@@ -24,10 +24,10 @@ import net.sourceforge.pmd.Rule;
 public abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>> {
 
     /** Default delimiter for multi-valued properties other than numeric ones. */
-    static final char DEFAULT_DELIMITER = '|';
+    public static final char DEFAULT_DELIMITER = '|';
 
     /** Default delimiter for numeric multi-valued properties. */
-    static final char DEFAULT_NUMERIC_DELIMITER = ',';
+    public static final char DEFAULT_NUMERIC_DELIMITER = ',';
 
     /** The default value. */
     protected final List<V> defaultValue;

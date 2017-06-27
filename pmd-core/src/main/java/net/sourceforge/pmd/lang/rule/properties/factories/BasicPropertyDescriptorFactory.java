@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties.factories;
 
 import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
 import static net.sourceforge.pmd.PropertyDescriptorField.DELIMITER;
-import static net.sourceforge.pmd.PropertyDescriptorField.DESC;
+import static net.sourceforge.pmd.PropertyDescriptorField.DESCRIPTION;
 import static net.sourceforge.pmd.PropertyDescriptorField.LEGAL_PACKAGES;
 import static net.sourceforge.pmd.PropertyDescriptorField.MAX;
 import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
@@ -21,11 +21,13 @@ import java.util.Map;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.lang.rule.properties.AbstractProperty;
+import net.sourceforge.pmd.lang.rule.properties.AbstractMultiValueProperty;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * Basic implementation of a property descriptor factory.
+ *
  * @param <T>
  *
  * @author Brian Remedios
@@ -33,7 +35,8 @@ import net.sourceforge.pmd.util.StringUtil;
 public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory<T> {
 
     protected static final Map<PropertyDescriptorField, Boolean> CORE_FIELD_TYPES_BY_KEY
-        = CollectionUtil.mapFrom(new PropertyDescriptorField[] {NAME, DESC, DEFAULT_VALUE, DELIMITER}, new Boolean[] {true, true, true, false});
+        = CollectionUtil.mapFrom(new PropertyDescriptorField[] {NAME, DESCRIPTION, DEFAULT_VALUE, DELIMITER},
+                                 new Boolean[] {true, true, true, false});
 
     private final Class<?> valueType;
 
@@ -49,22 +52,12 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     public BasicPropertyDescriptorFactory(Class<?> theValueType, Map<PropertyDescriptorField, Boolean> additionalFieldTypesByKey) {
 
         valueType = theValueType;
-        Map<PropertyDescriptorField, Boolean> temp = new HashMap<>(
-            CORE_FIELD_TYPES_BY_KEY.size() + additionalFieldTypesByKey.size());
+        Map<PropertyDescriptorField, Boolean> temp
+            = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size() + additionalFieldTypesByKey.size());
         temp.putAll(CORE_FIELD_TYPES_BY_KEY);
         temp.putAll(additionalFieldTypesByKey);
 
         fieldTypesByKey = Collections.unmodifiableMap(temp);
-    }
-
-
-    private static String minValueIn(Map<PropertyDescriptorField, String> valuesById) {
-        return valuesById.get(MIN);
-    }
-
-
-    private static String maxValueIn(Map<PropertyDescriptorField, String> valuesById) {
-        return valuesById.get(MAX);
     }
 
 
@@ -88,91 +81,21 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
     }
 
 
-    protected static Boolean[] booleanValuesIn(String booleanString, char delimiter) {
-        String[] values = StringUtil.substringsOf(booleanString, delimiter);
-
-        Boolean[] result = new Boolean[values.length];
-        for (int i = 0; i < values.length; i++) {
-            result[i] = Boolean.valueOf(values[i]);
-        }
-        return result;
-    }
-
-
-    protected static Long[] longsIn(String numberString, char delimiter) {
-        String[] values = StringUtil.substringsOf(numberString, delimiter);
-        List<Long> longs = new ArrayList<>(values.length);
-        for (String value : values) {
-            try {
-                Long newLong = Long.parseLong(value);
-                longs.add(newLong);
-            } catch (Exception ex) {
-
-            }
-        }
-        return longs.toArray(new Long[longs.size()]);
-    }
-
-
-    protected static Float[] floatsIn(String numberString, char delimiter) {
-        String[] values = StringUtil.substringsOf(numberString, delimiter);
-        List<Float> floats = new ArrayList<>(values.length);
-        for (String value : values) {
-            try {
-                Float newFloat = Float.parseFloat(value);
-                floats.add(newFloat);
-            } catch (Exception ex) {
-
-            }
-        }
-        return floats.toArray(new Float[floats.size()]);
-    }
-
-
-    protected static Double[] doublesIn(String numberString, char delimiter) {
-        String[] values = StringUtil.substringsOf(numberString, delimiter);
-        List<Double> doubles = new ArrayList<>(values.length);
-        for (String value : values) {
-            try {
-                Double newDouble = Double.parseDouble(value);
-                doubles.add(newDouble);
-            } catch (Exception ex) {
-
-            }
-        }
-        return doubles.toArray(new Double[doubles.size()]);
-    }
-
-
     protected static String[] labelsIn(Map<PropertyDescriptorField, String> valuesById) {
-        return null; // TODO
+        return StringUtil.substringsOf(valuesById.get(PropertyDescriptorField.LABELS),
+                                       AbstractMultiValueProperty.DEFAULT_DELIMITER);
     }
 
 
     protected static Object[] choicesIn(Map<PropertyDescriptorField, String> valuesById) {
-        return null; // TODO
+        return null; // TODO: find a way to extract an arbitrary object from a string
+        // Maybe reason enough to only allow enums...
     }
 
 
     protected static int indexIn(Map<PropertyDescriptorField, String> valuesById) {
         return 0; // TODO
     }
-
-    // protected static T[] primitivesFrom(String text, WrapperBuilder<T>
-    // builder) {
-    //
-    // String[] values = text.split(","); // TODO
-    // List items = new ArrayList(values.length);
-    // for (String value : values) {
-    // try {
-    // Object newIten = builder.itemFrom(value);
-    // items.add(newIten);
-    // } catch (Exception ex) {
-    //
-    // }
-    // }
-    // return items.toArray(builder.newArray(items.size()));
-    // }
 
 
     protected static int[] indicesIn(Map<PropertyDescriptorField, String> valuesById) {
@@ -181,7 +104,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 
 
     protected static char delimiterIn(Map<PropertyDescriptorField, String> valuesById) {
-        return delimiterIn(valuesById, AbstractProperty.DEFAULT_DELIMITER);
+        return delimiterIn(valuesById, AbstractMultiValueProperty.DEFAULT_DELIMITER);
     }
 
 
@@ -190,7 +113,7 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
         if (valuesById.containsKey(DELIMITER)) {
             characterStr = valuesById.get(DELIMITER).trim();
         }
-        if (characterStr.isEmpty()) {
+        if (StringUtil.isEmpty(characterStr)) {
             return defaultDelimiter;
         }
         return characterStr.charAt(0);
@@ -204,6 +127,16 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
             throw new RuntimeException("min and max values must be specified");
         }
         return new String[] {min, max};
+    }
+
+
+    private static String minValueIn(Map<PropertyDescriptorField, String> valuesById) {
+        return valuesById.get(MIN);
+    }
+
+
+    private static String maxValueIn(Map<PropertyDescriptorField, String> valuesById) {
+        return valuesById.get(MAX);
     }
 
 
@@ -252,20 +185,18 @@ public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFact
 
 
     protected String descriptionIn(Map<PropertyDescriptorField, String> valuesById) {
-        return valuesById.get(DESC);
-    }
-
-
-    protected String defaultValueIn(Map<PropertyDescriptorField, String> valuesById) {
-        return valuesById.get(DEFAULT_VALUE);
+        return valuesById.get(DESCRIPTION);
     }
 
 
     protected String numericDefaultValueIn(Map<PropertyDescriptorField, String> valuesById) {
         String number = defaultValueIn(valuesById);
-        return StringUtil.isEmpty(number) ? "0" : number; // TODO is 0
-        // reasonable if
-        // undefined?
+        return StringUtil.isEmpty(number) ? "0" : number; // TODO is 0 reasonable if undefined?
+    }
+
+
+    protected String defaultValueIn(Map<PropertyDescriptorField, String> valuesById) {
+        return valuesById.get(DEFAULT_VALUE);
     }
 
     // protected static Map<String, PropertyDescriptorFactory>

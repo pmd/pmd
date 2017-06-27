@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
@@ -848,15 +848,15 @@ public class RuleSetFactory {
     private static void parsePropertyNodeBR(Rule rule, Node propertyNode) {
 
         Element propertyElement = (Element) propertyNode;
-        String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE);
-        String strValue = propertyElement.getAttribute(PropertyDescriptorField.VALUE);
+        String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName);
+        String strValue = propertyElement.getAttribute(PropertyDescriptorField.DEFAULT_VALUE.attributeName);
         if (StringUtil.isEmpty(strValue)) {
             strValue = valueFrom(propertyElement);
         }
 
         // Setting of existing property, or defining a new property?
         if (StringUtil.isEmpty(typeId)) {
-            String name = propertyElement.getAttribute(PropertyDescriptorField.NAME);
+            String name = propertyElement.getAttribute(PropertyDescriptorField.NAME.attributeName);
 
             PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
             if (propertyDescriptor == null) {
