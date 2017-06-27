@@ -46,7 +46,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
                                  MetricVersion version) {
 
-        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.getInstance(key, version);
         Double prev = memo.get(paramKey);
         if (!force && prev != null) {
             return prev;

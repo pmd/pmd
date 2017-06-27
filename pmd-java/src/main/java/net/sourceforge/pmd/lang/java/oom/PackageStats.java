@@ -40,6 +40,22 @@ public final class PackageStats {
 
 
     /**
+     * Returns true if the signature of the operation designated by the qualified name is covered by
+     * the mask.
+     *
+     * @param qname   The operation to test
+     * @param sigMask The signature mask to use
+     *
+     * @return True if the signature of the operation designated by the qualified name is covered by the mask
+     */
+    public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
+        ClassStats clazz = getClassStats(qname, false);
+
+        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
+    }
+
+
+    /**
      * Gets the ClassStats corresponding to the named resource. The class can be nested. If the
      * createIfNotFound parameter is set, the method also creates the hierarchy if it doesn't exist.
      *
@@ -103,22 +119,6 @@ public final class PackageStats {
         }
 
         return next;
-    }
-
-
-    /**
-     * Returns true if the signature of the operation designated by the qualified name is covered by
-     * the mask.
-     *
-     * @param qname   The operation to test
-     * @param sigMask The signature mask to use
-     *
-     * @return True if the signature of the operation designated by the qualified name is covered by the mask
-     */
-    public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
-        ClassStats clazz = getClassStats(qname, false);
-
-        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
     }
 
 

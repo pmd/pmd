@@ -28,6 +28,54 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
  */
 public abstract class AbstractMetric implements Metric {
 
+    protected List<QualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
+        List<QualifiedName> result = new ArrayList<>();
+        // TODO:cf findAllCalls
+        // Needs TypeRes
+        // Find the qualified names of all methods called in that method's block
+        return result;
+    }
+
+
+    /**
+     * Calls more specific methods that can be overriden by subclasses.
+     *
+     * @param node The node to check
+     *
+     * @return True if the metric can be computed on this node
+     */
+    @Override
+    public final boolean supports(AccessNode node) {
+        return node instanceof ASTAnyTypeDeclaration && supports((ASTAnyTypeDeclaration) node)
+            || node instanceof ASTMethodOrConstructorDeclaration && supports((ASTMethodOrConstructorDeclaration) node);
+    }
+
+
+    /**
+     * Returns true if the metric can be computed on this type declaration. By default, annotation and interface
+     * declarations are filtered out.
+     *
+     * @param node The type declaration
+     *
+     * @return True if the metric can be computed on this type declaration
+     */
+    protected boolean supports(ASTAnyTypeDeclaration node) {
+        return node.getTypeKind() != TypeKind.ANNOTATION && node.getTypeKind() != TypeKind.INTERFACE;
+    }
+
+
+    /**
+     * Returns true if the metric can be computed on this operation. By default, abstract operations are filtered out.
+     *
+     * @param node The operation
+     *
+     * @return True if the metric can be computed on this operation
+     */
+    protected boolean supports(ASTMethodOrConstructorDeclaration node) {
+        return !node.isAbstract();
+    }
+
+
     /**
      * Gives access to the toplevel package stats to metrics without having to pass them as a parameter to metrics.
      *
@@ -60,6 +108,40 @@ public abstract class AbstractMetric implements Metric {
             sum += val == Double.NaN ? 0 : val;
         }
         return sum;
+    }
+
+
+    /**
+     * Finds the declaration nodes of all methods or constructors that are declared inside a class.
+     *
+     * @param node          The class in which to look for.
+     * @param includeNested Include operations found in nested classes?
+     *
+     * @return The list of all operations declared inside the specified class.
+     *
+     * TODO:cf this one is computed every time
+     *
+     * TODO:cf it might not be at the best place too (used by ClassStats)
+     */
+    public static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
+                                                                         boolean includeNested) {
+
+        if (includeNested) {
+            return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
+        }
+
+        List<ASTClassOrInterfaceBodyDeclaration> outerDecls
+            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
+
+
+        List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
+
+        for (ASTClassOrInterfaceBodyDeclaration decl : outerDecls) {
+            if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
+                operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
+            }
+        }
+        return operations;
     }
 
 
@@ -113,88 +195,6 @@ public abstract class AbstractMetric implements Metric {
             }
         }
         return highest;
-    }
-
-
-    /**
-     * Finds the declaration nodes of all methods or constructors that are declared inside a class.
-     *
-     * @param node          The class in which to look for.
-     * @param includeNested Include operations found in nested classes?
-     *
-     * @return The list of all operations declared inside the specified class.
-     *
-     * TODO:cf this one is computed every time
-     *
-     * TODO:cf it might not be at the best place too (used by ClassStats)
-     */
-    public static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
-                                                                         boolean includeNested) {
-
-        if (includeNested) {
-            return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
-        }
-
-        List<ASTClassOrInterfaceBodyDeclaration> outerDecls
-            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
-
-
-        List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
-
-        for (ASTClassOrInterfaceBodyDeclaration decl : outerDecls) {
-            if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
-                operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
-            }
-        }
-        return operations;
-    }
-
-
-    protected List<QualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
-        List<QualifiedName> result = new ArrayList<>();
-        // TODO:cf findAllCalls
-        // Needs TypeRes
-        // Find the qualified names of all methods called in that method's block
-        return result;
-    }
-
-
-    /**
-     * Calls more specific methods that can be overriden by subclasses.
-     *
-     * @param node The node to check
-     *
-     * @return True if the metric can be computed on this node
-     */
-    @Override
-    public final boolean supports(AccessNode node) {
-        return node instanceof ASTAnyTypeDeclaration && supports((ASTAnyTypeDeclaration) node)
-            || node instanceof ASTMethodOrConstructorDeclaration && supports((ASTMethodOrConstructorDeclaration) node);
-    }
-
-
-    /**
-     * Returns true if the metric can be computed on this type declaration. By default, annotation and interface
-     * declarations are filtered out.
-     *
-     * @param node The type declaration
-     *
-     * @return True if the metric can be computed on this type declaration
-     */
-    protected boolean supports(ASTAnyTypeDeclaration node) {
-        return node.getTypeKind() != TypeKind.ANNOTATION && node.getTypeKind() != TypeKind.INTERFACE;
-    }
-
-
-    /**
-     * Returns true if the metric can be computed on this operation. By default, abstract operations are filtered out.
-     *
-     * @param node The operation
-     *
-     * @return True if the metric can be computed on this operation
-     */
-    protected boolean supports(ASTMethodOrConstructorDeclaration node) {
-        return !node.isAbstract();
     }
 
 }

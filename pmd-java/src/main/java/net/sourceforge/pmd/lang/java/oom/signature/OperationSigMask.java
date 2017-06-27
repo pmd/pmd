@@ -26,6 +26,14 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
 
 
     /**
+     * Sets the mask to cover all roles.
+     */
+    public void coverAllRoles() {
+        roleMask.addAll(Arrays.asList(OperationSignature.Role.values()));
+    }
+
+
+    /**
      * Restricts the roles covered by the mask to the parameters.
      *
      * @param roles The roles to cover
@@ -33,14 +41,6 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
     public void restrictRolesTo(OperationSignature.Role... roles) {
         roleMask.clear();
         roleMask.addAll(Arrays.asList(roles));
-    }
-
-
-    /**
-     * Sets the mask to cover all roles.
-     */
-    public void coverAllRoles() {
-        roleMask.addAll(Arrays.asList(OperationSignature.Role.values()));
     }
 
 

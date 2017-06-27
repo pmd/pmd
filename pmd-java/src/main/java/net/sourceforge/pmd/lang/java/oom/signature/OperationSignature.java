@@ -48,7 +48,13 @@ public final class OperationSignature extends Signature {
 
     @Override
     public int hashCode() {
-        return (isAbstract ? 1 : 0) + super.hashCode() << 1 + role.hashCode() << 2;
+        return code(visibility, role, isAbstract);
+    }
+
+
+    /** Used internally by the pooler. */
+    private static int code(Visibility visibility, Role role, boolean isAbstract) {
+        return visibility.hashCode() << 2 + role.hashCode() << 1 + (isAbstract ? 1 : 0);
     }
 
 
@@ -65,12 +71,6 @@ public final class OperationSignature extends Signature {
             POOL.put(code, new OperationSignature(Visibility.get(node), Role.get(node), node.isAbstract()));
         }
         return POOL.get(code);
-    }
-
-
-    /** Used internally by the pooler. */
-    private static int code(Visibility visibility, Role role, boolean isAbstract) {
-        return visibility.hashCode() * 31 + role.hashCode() * 2 + (isAbstract ? 1 : 0);
     }
 
 
@@ -114,7 +114,8 @@ public final class OperationSignature extends Signature {
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> decl
                 : scope.getVariableDeclarations().entrySet()) {
 
-                ASTFieldDeclaration field = decl.getKey().getNode()
+                ASTFieldDeclaration field = decl.getKey()
+                                                .getNode()
                                                 .getFirstParentOfType(ASTFieldDeclaration.class);
 
                 fieldNames.put(field.getVariableName(), field.getFirstChildOfType(ASTType.class).getTypeImage());
@@ -139,11 +140,12 @@ public final class OperationSignature extends Signature {
         /** Attempts to determine if the method is a setter. */
         private static boolean isSetter(ASTMethodDeclaration node, Map<String, String> fieldNames) {
 
-            if (node.getFirstDescendantOfType(ASTFormalParameters.class).getParameterCount() != 1) {
+            if (node.getFirstDescendantOfType(ASTFormalParameters.class).getParameterCount() != 1
+                || !node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
                 return false;
             }
 
-            return node.getFirstDescendantOfType(ASTResultType.class).isVoid();
+            return fieldNames.containsKey(node.getName());
         }
     }
 }

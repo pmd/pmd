@@ -6,10 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.api;
 
 /**
  * Version of a metric. Only one version can be active on a metric. Versions should typically be defined in an enum
- * named 'Version' nested inside the implementation class of the metric. Versions <i>cannot</i> be shared between
- * metrics, otherwise the internal memoization logic breaks down.
- *
- * TODO:cf Strictly enforce the non-sharing of versions, eg through generics.
+ * named 'Version' nested inside the implementation class of the metric.
  *
  * @author Clément Fournier
  */

@@ -29,6 +29,24 @@ public final class FieldSignature extends Signature {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        return this == o;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return code(visibility, isStatic, isFinal);
+    }
+
+
+    /** Used internally by the pooler. */
+    private static int code(Visibility visibility, boolean isStatic, boolean isFinal) {
+        return (isFinal ? 1 : 0) + visibility.hashCode() << 2 + (isStatic ? 1 : 0) << 1;
+    }
+
+
     /**
      * Builds a field signature from its AST node.
      *
@@ -42,23 +60,5 @@ public final class FieldSignature extends Signature {
             POOL.put(code, new FieldSignature(Visibility.get(node), node.isStatic(), node.isFinal()));
         }
         return POOL.get(code);
-    }
-
-
-    /** Used internally by the pooler. */
-    private static int code(Visibility visibility, boolean isStatic, boolean isFinal) {
-        return visibility.hashCode() * 31 + (isStatic ? 1 : 0) * 2 + (isFinal ? 1 : 0);
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        return this == o;
-    }
-
-
-    @Override
-    public int hashCode() {
-        return (isFinal ? 1 : 0) + super.hashCode() << 3 + (isStatic ? 1 : 0) << 1;
     }
 }

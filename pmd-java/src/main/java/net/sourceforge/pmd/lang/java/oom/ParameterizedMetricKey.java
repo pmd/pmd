@@ -25,37 +25,19 @@ public final class ParameterizedMetricKey {
     /** The version of the metric. */
     public final MetricVersion version;
 
+
     /** Used internally by the pooler. */
     private ParameterizedMetricKey(MetricKey<? extends Metric> key, MetricVersion version) {
         this.key = key;
         this.version = version;
     }
 
-    /** Builds a parameterized metric key. */
-    public static ParameterizedMetricKey build(MetricKey<? extends Metric> key, MetricVersion version) {
-        int code = code(key, version);
-        ParameterizedMetricKey paramKey = POOL.get(code);
-        if (paramKey == null) {
-            POOL.put(code, new ParameterizedMetricKey(key, version));
-        }
-        return POOL.get(code);
-    }
-
-    /** Used by the pooler. */
-    private static int code(MetricKey key, MetricVersion version) {
-        int result = key.hashCode();
-        result = 31 * result + version.hashCode();
-        return result;
-    }
-
 
     @Override
     public String toString() {
-        return "ParameterizedMetricKey{"
-            + "key=" + key
-            + ", version=" + version
-            + '}';
+        return "ParameterizedMetricKey{key=" + key + ", version=" + version + '}';
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -74,10 +56,28 @@ public final class ParameterizedMetricKey {
         return version.equals(that.version);
     }
 
+
     @Override
     public int hashCode() {
+        return code(key, version);
+    }
+
+
+    /** Used by the pooler. */
+    private static int code(MetricKey key, MetricVersion version) {
         int result = key.hashCode();
         result = 31 * result + version.hashCode();
         return result;
+    }
+
+
+    /** Builds a parameterized metric key. */
+    public static ParameterizedMetricKey getInstance(MetricKey<? extends Metric> key, MetricVersion version) {
+        int code = code(key, version);
+        ParameterizedMetricKey paramKey = POOL.get(code);
+        if (paramKey == null) {
+            POOL.put(code, new ParameterizedMetricKey(key, version));
+        }
+        return POOL.get(code);
     }
 }

@@ -250,7 +250,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      */
     /* default */ double compute(ClassMetricKey key, ASTAnyTypeDeclaration node, boolean force, MetricVersion version) {
 
-        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.getInstance(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
         Double prev = memo.get(paramKey);
         if (!force && prev != null) {

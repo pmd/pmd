@@ -32,7 +32,7 @@ public class GetterDetection {
     }
 
 
-  /*  public double speedModified() {
+    /*  public double speedModified() {
         return speed * 12 + 1;
     }
 
@@ -55,5 +55,5 @@ public class GetterDetection {
     public int mutableIntConditional() {
         return mutX == null ? 0 : mutX.getValue();
     }
-*/
+    */
 }

@@ -27,6 +27,14 @@ public abstract class SigMask<T extends Signature> {
 
 
     /**
+     * Sets the mask to cover all visibilities.
+     */
+    public void coverAllVisibilities() {
+        visMask.addAll(Arrays.asList(Signature.Visibility.values()));
+    }
+
+
+    /**
      * Restricts the visibilities covered by the mask to the parameters.
      *
      * @param visibilities The visibilities to cover
@@ -34,14 +42,6 @@ public abstract class SigMask<T extends Signature> {
     public void restrictVisibilitiesTo(Signature.Visibility... visibilities) {
         visMask.clear();
         visMask.addAll(Arrays.asList(visibilities));
-    }
-
-
-    /**
-     * Sets the mask to cover all visibilities.
-     */
-    public void coverAllVisibilities() {
-        visMask.addAll(Arrays.asList(Signature.Visibility.values()));
     }
 
 
