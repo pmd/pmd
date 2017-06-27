@@ -24,8 +24,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 public abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
     implements NumericPropertyDescriptor<List<T>> {
 
-    private T lowerLimit;
-    private T upperLimit;
+    private Number lowerLimit;
+    private Number upperLimit;
 
 
     /**
@@ -40,7 +40,8 @@ public abstract class AbstractMultiNumericProperty<T extends Number> extends Abs
      *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
-    public AbstractMultiNumericProperty(String theName, String theDescription, T min, T max, List<T> theDefault, float theUIOrder) {
+    public AbstractMultiNumericProperty(String theName, String theDescription, Number min, Number max, List<T> theDefault,
+                                        float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
 
         if (min.doubleValue() > max.doubleValue()) {
