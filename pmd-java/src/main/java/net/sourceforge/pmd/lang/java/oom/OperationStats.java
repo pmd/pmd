@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.api.MemoKey;
-import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
@@ -23,7 +21,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 /* default */ class OperationStats {
 
     private final String name;
-    private final Map<MemoKey, Double> memo = new HashMap<>();
+    private final Map<ParameterizedMetricKey, Double> memo = new HashMap<>();
 
 
     /* default */ OperationStats(String name) {
@@ -48,7 +46,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
                                  MetricVersion version) {
 
-        MemoKey paramKey = version == Version.STANDARD ? key : version;
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         Double prev = memo.get(paramKey);
         if (!force && prev != null) {
             return prev;

@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.oom.api;
  *
  * @author Clément Fournier
  */
-public interface MetricVersion extends MemoKey {
+public interface MetricVersion {
 
     /**
      * Returns the name of the version.

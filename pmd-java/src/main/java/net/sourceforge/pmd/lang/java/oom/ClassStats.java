@@ -16,8 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
-import net.sourceforge.pmd.lang.java.oom.api.MemoKey;
-import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
@@ -42,7 +40,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
     private Map<FieldSignature, Set<String>> fields = new HashMap<>();
     private Map<String, ClassStats> nestedClasses = new HashMap<>();
 
-    private Map<MemoKey, Double> memo = new HashMap<>();
+    private Map<ParameterizedMetricKey, Double> memo = new HashMap<>();
 
     // References to the hierarchy
     // TODO:cf useful?
@@ -252,7 +250,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      */
     /* default */ double compute(ClassMetricKey key, ASTAnyTypeDeclaration node, boolean force, MetricVersion version) {
 
-        MemoKey paramKey = version == Version.STANDARD ? key : version;
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
         Double prev = memo.get(paramKey);
         if (!force && prev != null) {
