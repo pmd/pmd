@@ -128,8 +128,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 
     /**
-     * Checks whether the class declares an operation by the name given which is covered by the
-     * signature mask.
+     * Checks whether the class declares an operation by the name given which is covered by the signature mask.
      *
      * @param name The name of the operation to look for
      * @param mask The mask covering accepted signatures
@@ -151,8 +150,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 
     /**
-     * Checks whether the class declares a field by the name given which is covered by the
-     * signature mask.
+     * Checks whether the class declares a field by the name given which is covered by the signature mask.
      *
      * @param name The name of the field to look for
      * @param mask The mask covering accepted signatures
@@ -226,7 +224,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
                                  boolean force, MetricVersion version) {
 
-        // TODO:cf the operation signature might be built many times, consider profiling
+        // TODO:cf the operation signature might be built many times, consider storing it in the node
         Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
 
         if (sigMap == null) {

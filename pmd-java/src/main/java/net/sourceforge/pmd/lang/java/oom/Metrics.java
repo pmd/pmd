@@ -33,8 +33,7 @@ public final class Metrics {
      *
      * @return The top level package stats
      */
-    /* default */
-    static PackageStats getTopLevelPackageStats() {
+    /* default */ static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 
