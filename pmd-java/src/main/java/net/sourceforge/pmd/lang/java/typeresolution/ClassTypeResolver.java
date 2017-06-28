@@ -382,7 +382,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         // TODO : Type is infered, ie, this is a lambda such as (var) -> var.equals(other)
                         return null;
                     }
-                    
+
                     if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
                         return ((TypeNode) typeNode.jjtGetChild(0)).getTypeDefinition();
                     } else { // primitive type
@@ -426,6 +426,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @return JavaTypeDefinition of the {@code genericType}.
      */
     private JavaTypeDefinition getNextTypeDefinition(JavaTypeDefinition context, Type genericType) {
+        return getNextTypeDefinition(context, genericType, null);
+    }
+
+    private JavaTypeDefinition getNextTypeDefinition(JavaTypeDefinition context, Type genericType,
+                                                     JavaTypeDefinitionBuilder buildTypeInAdvance) {
         if (genericType == null) {
             return null;
         }
@@ -436,6 +441,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
             JavaTypeDefinitionBuilder typeDef = JavaTypeDefinition.builder((Class) parameterizedType.getRawType());
+
+            if (buildTypeInAdvance != null) {
+                buildTypeInAdvance.addTypeArg(typeDef.build());
+            }
 
             // recursively determine each type argument's type def.
             for (Type type : parameterizedType.getActualTypeArguments()) {
@@ -521,7 +530,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
             for (TypeVariable parameter : clazzWithDefBounds.getTypeParameters()) {
                 // TODO: fix self reference "< ... E extends Something<E> ... >"
-                typeDef.addTypeArg(getNextTypeDefinition(context, parameter.getBounds()[0]));
+                JavaTypeDefinition typeDefOfParameter = getNextTypeDefinition(context, parameter.getBounds()[0],
+                                                                              typeDef);
+
+                // if it isn't 0, then it has already been added
+                if (typeDefOfParameter.getGenericArgs().size() == 0) {
+                    typeDef.addTypeArg(getNextTypeDefinition(context, parameter.getBounds()[0]));
+                }
             }
         }
 
