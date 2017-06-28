@@ -17,6 +17,11 @@ This is a bug fixing release.
 
 ### Fixed Issues
 
+*   java
+    *   [#471](https://github.com/pmd/pmd/issues/471): \[java] Error while processing class when EnumMap is used in PMD 5.8.0
+
 ### API Changes
 
 ### External Contributions
+
+*   [#472](https://github.com/pmd/pmd/pull/472): \[java] fix error with raw types, bug #471
