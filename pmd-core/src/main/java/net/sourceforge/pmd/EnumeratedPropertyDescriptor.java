@@ -23,4 +23,5 @@ public interface EnumeratedPropertyDescriptor<E, T> extends PropertyDescriptor<T
      */
     Map<String, E> mappings();
 
+    Object[][] choices();
 }

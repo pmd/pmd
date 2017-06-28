@@ -24,4 +24,10 @@ public class EnumeratedPropertyDescriptorWrapper<E, T> extends PropertyDescripto
         return ((EnumeratedPropertyDescriptor<E, T>) propertyDescriptor).mappings();
     }
 
+
+    @Override
+    public Object[][] choices() {
+        return ((EnumeratedPropertyDescriptor<E, T>) propertyDescriptor).choices();
+    }
+
 }

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
@@ -107,6 +108,18 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     @Override
     public Map<String, E> mappings() {
         return choicesByLabel;
+    }
+
+
+    @Override
+    public Object[][] choices() {
+        Object[][] res = new Object[choicesByLabel.size()][2];
+        int i = 0;
+        for (Entry<String, E> e : choicesByLabel.entrySet()) {
+            res[i++][0] = e.getKey();
+            res[i][1] = e.getValue();
+        }
+        return res;
     }
 
 }

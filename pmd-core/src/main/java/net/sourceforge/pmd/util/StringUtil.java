@@ -587,6 +587,7 @@ public final class StringUtil {
         return sb.toString();
     }
 
+
     /**
      * Returns an empty array of string
      *
