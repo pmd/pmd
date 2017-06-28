@@ -70,6 +70,7 @@ import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
@@ -1040,6 +1041,16 @@ public class ClassTypeResolverTest {
         assertEquals(Integer.class, expressions.get(index).getType());
         assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
 
+        // bug #471
+        // rawGeneric.fifth = new GenericClass();
+        assertEquals(GenericClass.class, expressions.get(index).getType());
+        assertEquals(GenericClass.class, getChildType(expressions.get(index++), 0));
+        // inheritedRawGeneric.fifth = new GenericClass();
+        assertEquals(GenericClass.class, expressions.get(index).getType());
+        assertEquals(GenericClass.class, getChildType(expressions.get(index++), 0));
+        // parameterRawGeneric.fifth = new GenericClass();
+        assertEquals(GenericClass.class, expressions.get(index).getType());
+        assertEquals(GenericClass.class, getChildType(expressions.get(index++), 0));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
