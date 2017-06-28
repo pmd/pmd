@@ -28,8 +28,8 @@ import net.sourceforge.pmd.util.StringUtil;
 public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Method> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<List<Method>>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory<List<Method>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Method>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
             @Override
             public MethodMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 char delimiter = delimiterIn(valuesById);

@@ -21,8 +21,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<List<Boolean>>(Boolean.class) {
+    public static final PropertyDescriptorFactory<List<Boolean>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Boolean>(Boolean.class) {
             @Override
             public BooleanMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 char delimiter = delimiterIn(valuesById);

@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.rule.complexity;
 
 import static apex.jorje.semantic.symbol.type.AnnotationTypeInfos.IS_TEST;
 
+import java.util.Arrays;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 
 /**
@@ -17,7 +19,7 @@ public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
         super(ASTUserClass.class);
         setProperty(MINIMUM_DESCRIPTOR, 1000d);
 
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Complexity" });
+        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Complexity"));
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 150);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

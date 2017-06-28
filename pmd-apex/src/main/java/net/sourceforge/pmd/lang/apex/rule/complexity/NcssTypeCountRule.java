@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.complexity;
 
+import java.util.Arrays;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -26,7 +28,7 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
     public NcssTypeCountRule() {
         super(ASTUserClass.class);
         setProperty(MINIMUM_DESCRIPTOR, 500d);
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Complexity" });
+        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Complexity"));
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 250);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

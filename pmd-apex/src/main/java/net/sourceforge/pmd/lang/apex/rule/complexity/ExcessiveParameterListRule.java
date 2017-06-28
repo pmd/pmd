@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.rule.complexity;
 
+import java.util.Arrays;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -17,7 +19,7 @@ public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
     public ExcessiveParameterListRule() {
         super(ASTMethod.class);
         setProperty(MINIMUM_DESCRIPTOR, 4d);
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Complexity" });
+        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Complexity"));
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.naming;
 
+import java.util.List;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
@@ -19,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 public class VariableNamingConventionsRule extends AbstractJavaRule {
 
@@ -27,14 +28,14 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
     private boolean checkLocals;
     private boolean checkParameters;
     private boolean checkNativeMethodParameters;
-    private String[] staticPrefixes;
-    private String[] staticSuffixes;
-    private String[] memberPrefixes;
-    private String[] memberSuffixes;
-    private String[] localPrefixes;
-    private String[] localSuffixes;
-    private String[] parameterPrefixes;
-    private String[] parameterSuffixes;
+    private List<String> staticPrefixes;
+    private List<String> staticSuffixes;
+    private List<String> memberPrefixes;
+    private List<String> memberSuffixes;
+    private List<String> localPrefixes;
+    private List<String> localSuffixes;
+    private List<String> parameterPrefixes;
+    private List<String> parameterSuffixes;
 
     private static final BooleanProperty CHECK_MEMBERS_DESCRIPTOR = new BooleanProperty("checkMembers",
             "Check member variables", true, 1.0f);
@@ -152,7 +153,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         return data;
     }
 
-    private Object checkVariableDeclarators(String[] prefixes, String[] suffixes, Node root, boolean isStatic,
+    private Object checkVariableDeclarators(List<String> prefixes, List<String> suffixes, Node root, boolean isStatic,
             boolean isFinal, Object data) {
         for (ASTVariableDeclarator variableDeclarator : root.findChildrenOfType(ASTVariableDeclarator.class)) {
             for (ASTVariableDeclaratorId variableDeclaratorId : variableDeclarator
@@ -163,7 +164,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         return data;
     }
 
-    private Object checkVariableDeclaratorId(String[] prefixes, String[] suffixes, Node root, boolean isStatic,
+    private Object checkVariableDeclaratorId(List<String> prefixes, List<String> suffixes, Node root, boolean isStatic,
             boolean isFinal, ASTVariableDeclaratorId variableDeclaratorId, Object data) {
 
         // Get the variable name
@@ -199,15 +200,15 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         return data;
     }
 
-    private String normalizeVariableName(String varName, String[] prefixes, String[] suffixes) {
+    private String normalizeVariableName(String varName, List<String> prefixes, List<String> suffixes) {
         return stripSuffix(stripPrefix(varName, prefixes), suffixes);
     }
 
-    private String stripSuffix(String varName, String[] suffixes) {
+    private String stripSuffix(String varName, List<String> suffixes) {
         if (suffixes != null) {
-            for (int i = 0; i < suffixes.length; i++) {
-                if (varName.endsWith(suffixes[i])) {
-                    varName = varName.substring(0, varName.length() - suffixes[i].length());
+            for (String suffix : suffixes) {
+                if (varName.endsWith(suffix)) {
+                    varName = varName.substring(0, varName.length() - suffix.length());
                     break;
                 }
             }
@@ -215,11 +216,11 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
         return varName;
     }
 
-    private String stripPrefix(String varName, String[] prefixes) {
+    private String stripPrefix(String varName, List<String> prefixes) {
         if (prefixes != null) {
-            for (int i = 0; i < prefixes.length; i++) {
-                if (varName.startsWith(prefixes[i])) {
-                    return varName.substring(prefixes[i].length());
+            for (String prefix : prefixes) {
+                if (varName.startsWith(prefix)) {
+                    return varName.substring(prefix.length());
                 }
             }
         }
@@ -230,8 +231,8 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 
         for (PropertyDescriptor<?> desc : getPropertyDescriptors()) {
             if (desc instanceof StringMultiProperty) {
-                String[] values = getProperty((StringMultiProperty) desc);
-                if (CollectionUtil.isNotEmpty(values)) {
+                List<String> values = getProperty((StringMultiProperty) desc);
+                if (!values.isEmpty()) {
                     return true;
                 }
             }

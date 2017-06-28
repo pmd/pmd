@@ -265,21 +265,11 @@ public class RuleSetWriter {
         Element propertiesElement = null;
         if (propertyDescriptors != null) {
 
-            for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) { // For
-                // each
-                // provided
-                // PropertyDescriptor
+            for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
+                // For each provided PropertyDescriptor
 
-                if (propertyDescriptor instanceof PropertyDescriptorWrapper) { // Any
-                    // wrapper
-                    // property
-                    // needs
-                    // to
-                    // go
-                    // out
-                    // as
-                    // a
-                    // definition.
+                if (propertyDescriptor instanceof PropertyDescriptorWrapper) {
+                    // Any wrapper property needs to go out as a definition.
                     if (propertiesElement == null) {
                         propertiesElement = createPropertiesElement();
                     }
@@ -288,17 +278,8 @@ public class RuleSetWriter {
                             ((PropertyDescriptorWrapper<?>) propertyDescriptor).getPropertyDescriptor());
                     propertiesElement.appendChild(propertyElement);
                 } else {
-                    if (propertiesByPropertyDescriptor != null) { // Otherwise,
-                        // any
-                        // property
-                        // which has a
-                        // value
-                        // different
-                        // than the
-                        // default
-                        // needs to go
-                        // out as a
-                        // value.
+                    if (propertiesByPropertyDescriptor != null) {
+                        // Otherwise, any property which has a value different than the default needs to go out as a value.
                         Object defaultValue = propertyDescriptor.defaultValue();
                         Object value = propertiesByPropertyDescriptor.get(propertyDescriptor);
                         if (value != defaultValue && (value == null || !value.equals(defaultValue))) {
@@ -385,7 +366,8 @@ public class RuleSetWriter {
         final Element propertyElement = createPropertyValueElement(propertyDescriptor,
                 propertyDescriptor.defaultValue());
         propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName,
-                                     PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type()));
+                                     PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type(),
+                                                                      propertyDescriptor.isMultiValue()));
 
         Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();
         for (Map.Entry<PropertyDescriptorField, String> entry : propertyValuesById.entrySet()) {

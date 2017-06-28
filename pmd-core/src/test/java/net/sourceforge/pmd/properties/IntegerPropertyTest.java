@@ -49,7 +49,7 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester<Intege
 
     @Override
     protected Integer createBadValue() {
-        return randomBool() ? randomInt(MIN - SHIFT, MIN - 1) : randomInt(MAX + 1, MAX + SHIFT );
+        return randomBool() ? randomInt(MIN - SHIFT, MIN - 1) : randomInt(MAX + 1, MAX + SHIFT);
     }
 
 

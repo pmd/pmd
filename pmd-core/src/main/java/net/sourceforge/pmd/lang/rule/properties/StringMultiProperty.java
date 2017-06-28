@@ -22,8 +22,8 @@ import net.sourceforge.pmd.util.StringUtil;
 public final class StringMultiProperty extends AbstractMultiValueProperty<String> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<List<String>>(String.class) {
+    public static final PropertyDescriptorFactory<List<String>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<String>(String.class) {
             @Override
             public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 char delimiter = delimiterIn(valuesById);

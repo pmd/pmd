@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.complexity;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
@@ -78,7 +79,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
         definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
 
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Complexity" });
+        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Complexity"));
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 250);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

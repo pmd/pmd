@@ -23,8 +23,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<List<Float>>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory<List<Float>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
             public FloatMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 String[] minMax = minMaxFrom(valuesById);

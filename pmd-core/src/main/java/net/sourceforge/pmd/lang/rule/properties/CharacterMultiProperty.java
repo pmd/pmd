@@ -22,8 +22,8 @@ import net.sourceforge.pmd.util.StringUtil;
 public final class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<List<Character>>(Character.class) {
+    public static final PropertyDescriptorFactory<List<Character>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Character>(Character.class) {
             @Override
             public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 char delimiter = delimiterIn(valuesById);

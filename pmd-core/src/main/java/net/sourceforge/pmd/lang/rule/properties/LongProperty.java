@@ -20,8 +20,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 public final class LongProperty extends AbstractNumericProperty<Long> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory<Long> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
             public LongProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 final String[] minMax = minMaxFrom(valuesById);

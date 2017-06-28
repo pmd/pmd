@@ -31,7 +31,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory<T> {
+public abstract class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory<T> {
 
     protected static final Map<PropertyDescriptorField, Boolean> CORE_FIELD_TYPES_BY_KEY
         = CollectionUtil.mapFrom(new PropertyDescriptorField[] {NAME, DESCRIPTION, DEFAULT_VALUE, DELIMITER},

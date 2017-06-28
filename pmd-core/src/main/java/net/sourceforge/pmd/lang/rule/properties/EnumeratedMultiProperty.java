@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +13,7 @@ import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Multi-valued property which can take only a fixed set of values of any type, then selected via String labels. The
@@ -28,8 +28,8 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     implements EnumeratedPropertyDescriptor<E, List<E>> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<Enumeration>(Enumeration.class) {
+    public static final PropertyDescriptorFactory<List<Object>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Object>(Object.class) {  // TODO:cf is Object the right type?
             @Override
             public EnumeratedMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 return new EnumeratedMultiProperty<>(nameIn(valuesById),
@@ -142,6 +142,9 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
 
 
     private E choiceFrom(String label) {
+        if (StringUtil.isEmpty(label)) {
+            return null;
+        }
         E result = choicesByLabel.get(label);
         if (result == null) {
             throw new IllegalArgumentException(label);

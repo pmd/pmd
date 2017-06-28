@@ -19,8 +19,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
  */
 public final class IntegerProperty extends AbstractNumericProperty<Integer> {
 
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory<Integer> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
             public IntegerProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 final String[] minMax = minMaxFrom(valuesById);

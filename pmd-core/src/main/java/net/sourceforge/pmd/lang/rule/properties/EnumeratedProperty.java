@@ -29,7 +29,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
 
     /** Factory. */
     public static final PropertyDescriptorFactory<? extends Enumeration> FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<Enumeration>(Enumeration.class) {
+        = new SingleValuePropertyDescriptorFactory<Enumeration>(Enumeration.class) { // TODO:cf Enumeration? Object?
 
             @Override
             public EnumeratedProperty createWith(Map<PropertyDescriptorField, String> valuesById) {

@@ -69,11 +69,11 @@ public class PropertyDescriptorUtil {
     }
 
 
-    public static String typeIdFor(Class<?> valueType) {
+    public static String typeIdFor(Class<?> valueType, boolean multiValue) {
 
         // a reverse lookup, not very efficient but fine for now
         for (Map.Entry<String, PropertyDescriptorFactory<?>> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
-            if (entry.getValue().valueType() == valueType) {
+            if (entry.getValue().valueType() == valueType && entry.getValue().isMultiValue() == multiValue) {
                 return entry.getKey();
             }
         }

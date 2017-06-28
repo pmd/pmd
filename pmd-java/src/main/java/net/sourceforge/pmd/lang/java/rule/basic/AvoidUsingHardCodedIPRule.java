@@ -21,7 +21,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 
     public static final EnumeratedMultiProperty<String> CHECK_ADDRESS_TYPES_DESCRIPTOR = new EnumeratedMultiProperty<>(
             "checkAddressTypes", "Check for IP address types.", new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 },
-            new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 }, new int[] { 0, 1, 2 }, 2.0f);
+            new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 }, new int[] { 0, 1, 2 }, String.class, 2.0f);
 
     // Provides 4 capture groups that can be used for additional validation
     protected static final String IPV4_REGEXP = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";
@@ -195,7 +195,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     }
 
     public boolean hasChosenAddressTypes() {
-        return getProperty(CHECK_ADDRESS_TYPES_DESCRIPTOR).length > 0;
+        return getProperty(CHECK_ADDRESS_TYPES_DESCRIPTOR).size() > 0;
     }
 
     /**

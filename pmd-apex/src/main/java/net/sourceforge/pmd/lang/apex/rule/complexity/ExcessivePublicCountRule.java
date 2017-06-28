@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.apex.rule.complexity;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.PUBLIC;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 
+import java.util.Arrays;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -31,7 +33,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
     public ExcessivePublicCountRule() {
         super(ASTUserClass.class);
         setProperty(MINIMUM_DESCRIPTOR, 20d);
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Complexity" });
+        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Complexity"));
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 150);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

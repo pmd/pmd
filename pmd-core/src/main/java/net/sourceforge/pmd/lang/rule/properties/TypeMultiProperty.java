@@ -24,8 +24,8 @@ import net.sourceforge.pmd.util.StringUtil;
 public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<List<Class>>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory<List<Class>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
             @Override
             public TypeMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 char delimiter = delimiterIn(valuesById);

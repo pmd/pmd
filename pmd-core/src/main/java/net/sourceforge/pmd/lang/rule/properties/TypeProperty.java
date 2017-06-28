@@ -21,8 +21,9 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public final class TypeProperty extends AbstractPackagedProperty<Class> {
 
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<Class> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
             @Override
             public TypeProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 char delimiter = delimiterIn(valuesById);

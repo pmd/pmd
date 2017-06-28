@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.rule.style;
 
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.GLOBAL;
 
+import java.util.Arrays;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
@@ -15,7 +17,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class AvoidGlobalModifierRule extends AbstractApexRule {
 
     public AvoidGlobalModifierRule() {
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Style" });
+        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Style"));
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

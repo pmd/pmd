@@ -20,12 +20,13 @@ import net.sourceforge.pmd.util.StringUtil;
 public final class FileProperty extends AbstractSingleValueProperty<File> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<File>(File.class) {
-        @Override
-        public FileProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            return new FileProperty(nameIn(valuesById), descriptionIn(valuesById), null, 0f);
-        }
-    };
+    public static final PropertyDescriptorFactory<File> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<File>(File.class) {
+            @Override
+            public FileProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                return new FileProperty(nameIn(valuesById), descriptionIn(valuesById), null, 0f);
+            }
+        }; // @formatter:on
 
 
     public FileProperty(String theName, String theDescription, File theDefault, float theUIOrder) {

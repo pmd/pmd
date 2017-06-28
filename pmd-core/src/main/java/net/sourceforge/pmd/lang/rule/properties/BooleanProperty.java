@@ -19,8 +19,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
  */
 public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
 
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<Boolean>(Boolean.class) {
+    public static final PropertyDescriptorFactory<Boolean> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Boolean>(Boolean.class) {
             @Override
             public BooleanProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 return new BooleanProperty(nameIn(valuesById),

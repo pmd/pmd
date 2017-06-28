@@ -9,6 +9,7 @@ import java.util.Map;
 /**
  * A factory to create {@link PropertyDescriptor}s based on a map of values.
  *
+ * @param <T> the type of values property descriptor returned by this factory. This can be a list.
  * @author Brian Remedios
  */
 public interface PropertyDescriptorFactory<T> {
@@ -20,6 +21,8 @@ public interface PropertyDescriptorFactory<T> {
      * @return the type of the value.
      */
     Class<?> valueType();
+
+    boolean isMultiValue();
 
     /**
      * Denote the identifiers of the expected fields paired with booleans

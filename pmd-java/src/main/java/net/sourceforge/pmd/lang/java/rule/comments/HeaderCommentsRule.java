@@ -48,7 +48,7 @@ public class HeaderCommentsRule extends AbstractCommentRule {
 
     public static final EnumeratedProperty<RequiredHeaderPlacement> HEADER_PLACEMENT_DESCRIPTOR = new EnumeratedProperty<>(
             "headerPlacement", "Placement of the header comment", RequiredHeaderPlacement.labels(),
-            RequiredHeaderPlacement.values(), 0, 3.0f);
+            RequiredHeaderPlacement.values(), 0, RequiredHeaderPlacement.class, 3.0f);
 
     public HeaderCommentsRule() {
         definePropertyDescriptor(REQUIRED_TERMS_DESCRIPTOR);

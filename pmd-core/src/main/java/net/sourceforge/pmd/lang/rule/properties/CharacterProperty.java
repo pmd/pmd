@@ -19,8 +19,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
  */
 public final class CharacterProperty extends AbstractSingleValueProperty<Character> {
 
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<Character>(Character.class) {
+    public static final PropertyDescriptorFactory<Character> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Character>(Character.class) {
             @Override
             public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 return new CharacterProperty(nameIn(valuesById),

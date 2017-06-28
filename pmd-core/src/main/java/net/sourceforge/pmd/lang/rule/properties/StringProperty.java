@@ -18,12 +18,13 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 public final class StringProperty extends AbstractSingleValueProperty<String> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<String>(String.class) {
-        @Override
-        public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-            return new StringProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById), 0f);
-        }
-    };
+    public static final PropertyDescriptorFactory<String> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<String>(String.class) {
+            @Override
+            public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                return new StringProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById), 0f);
+            }
+        }; // @formatter:on
 
 
     /**

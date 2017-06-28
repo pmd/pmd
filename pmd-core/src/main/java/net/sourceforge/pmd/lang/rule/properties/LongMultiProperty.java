@@ -23,8 +23,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> {
 
     /** Factory. */
-    public static final PropertyDescriptorFactory FACTORY // @formatter:off
-        = new BasicPropertyDescriptorFactory<List<Long>>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
+    public static final PropertyDescriptorFactory<List<Long>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
             public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
                 String[] minMax = minMaxFrom(valuesById);
