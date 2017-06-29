@@ -6,7 +6,7 @@ package net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +46,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -1067,9 +1066,6 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
-        JavaTypeDefinition typeDef;
-
-
         // this.genericField.first = "";
         assertEquals(String.class, expressions.get(index).getType());
         assertChildTypeArgsEqualTo(expressions.get(index), 1, String.class, Double.class);
@@ -1114,17 +1110,15 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
-    private Class getChildType(Node node, int childIndex) {
+    private Class<?> getChildType(Node node, int childIndex) {
         return ((TypeNode) node.jjtGetChild(childIndex)).getType();
     }
 
-    private void assertChildTypeArgsEqualTo(Node node, int childIndex, Class... classes) {
+    private void assertChildTypeArgsEqualTo(Node node, int childIndex, Class<?>... classes) {
         JavaTypeDefinition typeDef = ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();
 
-        assertTrue(typeDef.getGenericArgs().size() == classes.length);
-
         for (int index = 0; index < classes.length; ++index) {
-            assertTrue(typeDef.getGenericArgs().get(index).getType() == classes[index]);
+            assertSame(classes[index], typeDef.getGenericType(index).getType());
         }
     }
 

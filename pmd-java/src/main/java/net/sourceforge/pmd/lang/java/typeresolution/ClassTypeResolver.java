@@ -6,10 +6,6 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,7 +77,6 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinitionBuilder;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -155,12 +150,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private Map<String, String> importedClasses;
     private List<String> importedOnDemand;
     private int anonymousClassCounter = 0;
-
-    /**
-     * Contains Class -> JavaTypeDefinitions map for raw Class types. Also helps to avoid infinite recursion
-     * when determining default upper bounds.
-     */
-    private Map<Class<?>, JavaTypeDefinition> classToDefaultUpperBounds = new HashMap<>();
 
     public ClassTypeResolver() {
         this(ClassTypeResolver.class.getClassLoader());
@@ -251,15 +240,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
 
         if (typeArguments != null) {
-            JavaTypeDefinitionBuilder builder = JavaTypeDefinition.builder(node.getType());
-
-            for (int index = 0; index < typeArguments.jjtGetNumChildren(); ++index) {
-                builder.addTypeArg(((TypeNode) typeArguments.jjtGetChild(index)).getTypeDefinition());
+            final JavaTypeDefinition[] boundGenerics = new JavaTypeDefinition[typeArguments.jjtGetNumChildren()];
+            for (int i = 0; i < typeArguments.jjtGetNumChildren(); ++i) {
+                boundGenerics[i] = ((TypeNode) typeArguments.jjtGetChild(i)).getTypeDefinition();
             }
 
-            node.setTypeDefinition(builder.build());
-        } else if (isGeneric(node.getType()) && node.getTypeDefinition().getGenericArgs().size() == 0) {
-            node.setTypeDefinition(getDefaultUpperBounds(null, node.getType()));
+            node.setTypeDefinition(JavaTypeDefinition.forClass(node.getType(), boundGenerics));
         }
 
         return data;
@@ -297,8 +283,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 && node.getNameDeclaration().getNode() instanceof TypeNode) {
             // Carry over the type from the declaration
             Class<?> nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
-            // generic classes and class with generic super types could have the wrong type assigned here
-            if (nodeType != null && !isGeneric(nodeType) && !isGeneric(nodeType.getSuperclass())) {
+            // FIXME : generic classes and class with generic super types could have the wrong type assigned here
+            if (nodeType != null) {
                 node.setType(nodeType);
             }
         }
@@ -341,16 +327,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      */
     private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?>
             accessingClass) {
-        while (typeToSearch != null) {
+        while (typeToSearch != null && typeToSearch.getType() != Object.class) {
             try {
-                Field field = typeToSearch.getType().getDeclaredField(fieldImage);
+                final Field field = typeToSearch.getType().getDeclaredField(fieldImage);
                 if (isMemberVisibleFromClass(typeToSearch.getType(), field.getModifiers(), accessingClass)) {
-                    return getNextTypeDefinition(typeToSearch, field.getGenericType());
+                    return typeToSearch.resolveTypeDefinition(field.getGenericType());
                 }
             } catch (NoSuchFieldException e) { /* swallow */ }
 
             // transform the type into it's supertype
-            typeToSearch = getNextTypeDefinition(typeToSearch, typeToSearch.getType().getGenericSuperclass());
+            typeToSearch = typeToSearch.resolveTypeDefinition(typeToSearch.getType().getGenericSuperclass());
         }
 
         return null;
@@ -386,7 +372,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
                         return ((TypeNode) typeNode.jjtGetChild(0)).getTypeDefinition();
                     } else { // primitive type
-                        return JavaTypeDefinition.build(typeNode.getType());
+                        return JavaTypeDefinition.forClass(typeNode.getType());
                     }
                 }
             }
@@ -414,133 +400,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
         return null;
-    }
-
-    /**
-     * Given a type def. and a Type, resolves the type into a JavaTypeDefinition. Takes into account
-     * simple Classes, TypeVariables, ParameterizedTypes and WildCards types. Can resolve nested Generic
-     * type arguments.
-     *
-     * @param context     The JavaTypeDefinition in which the {@code genericType} was declared.
-     * @param genericType The Type to resolve.
-     * @return JavaTypeDefinition of the {@code genericType}.
-     */
-    private JavaTypeDefinition getNextTypeDefinition(JavaTypeDefinition context, Type genericType) {
-        return getNextTypeDefinition(context, genericType, null);
-    }
-
-    private JavaTypeDefinition getNextTypeDefinition(JavaTypeDefinition context, Type genericType,
-                                                     JavaTypeDefinitionBuilder buildTypeInAdvance) {
-        if (genericType == null) {
-            return null;
-        }
-
-        if (genericType instanceof Class) { // Raw types take this branch as well
-            return getDefaultUpperBounds(context, (Class) genericType);
-        } else if (genericType instanceof ParameterizedType) {
-
-            ParameterizedType parameterizedType = (ParameterizedType) genericType;
-            JavaTypeDefinitionBuilder typeDef = JavaTypeDefinition.builder((Class) parameterizedType.getRawType());
-
-            if (buildTypeInAdvance != null) {
-                buildTypeInAdvance.addTypeArg(typeDef.build());
-            }
-
-            // recursively determine each type argument's type def.
-            for (Type type : parameterizedType.getActualTypeArguments()) {
-                typeDef.addTypeArg(getNextTypeDefinition(context, type));
-            }
-
-            return typeDef.build();
-        } else if (genericType instanceof TypeVariable) {
-            int ordinal = getTypeParameterOrdinal(context.getType(), ((TypeVariable) genericType).getName());
-            if (ordinal != -1) {
-                return context.getGenericArgs().get(ordinal);
-            }
-        } else if (genericType instanceof WildcardType) {
-            Type[] wildcardUpperBounds = ((WildcardType) genericType).getUpperBounds();
-            if (wildcardUpperBounds.length != 0) { // upper bound wildcard
-                return getNextTypeDefinition(context, wildcardUpperBounds[0]);
-            } else { // lower bound wildcard
-                return JavaTypeDefinition.build(Object.class);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the ordinal of the type parameter with the name {@code parameterName} in {@code clazz}.
-     *
-     * @param clazz         The Class with the type parameters.
-     * @param parameterName The name of the type parameter.
-     * @return The ordinal of the type parameter.
-     */
-    private int getTypeParameterOrdinal(Class<?> clazz, String parameterName) {
-        TypeVariable[] classTypeParameters = clazz.getTypeParameters();
-
-        for (int index = 0; index < classTypeParameters.length; ++index) {
-            if (classTypeParameters[index].getName().equals(parameterName)) {
-                return index;
-            }
-        }
-
-        return -1;
-    }
-
-    /**
-     * Returns true if the class is generic.
-     *
-     * @param clazz The Class to examine.
-     * @return True if the Class is generic.
-     */
-    private boolean isGeneric(Class<?> clazz) {
-        if (clazz != null) {
-            return clazz.getTypeParameters().length != 0;
-        }
-
-        return false;
-    }
-
-    /**
-     * Given a Class, returns the type def. for when the Class stands without type arguments, meaning it
-     * is a raw type. Determines the generic types by looking at the upper bounds of it's generic parameters.
-     *
-     * @param context            Synthetic parameter for recursion, pass {@code null}.
-     * @param clazzWithDefBounds The raw Class type.
-     * @return The type def. of the raw Class.
-     */
-    private JavaTypeDefinition getDefaultUpperBounds(JavaTypeDefinition context, Class<?> clazzWithDefBounds) {
-        JavaTypeDefinitionBuilder typeDef = JavaTypeDefinition.builder(clazzWithDefBounds);
-
-        // helps avoid infinite recursion with Something<.... E extends Something (<- same raw type)... >
-        if (classToDefaultUpperBounds.containsKey(clazzWithDefBounds)) {
-            return classToDefaultUpperBounds.get(clazzWithDefBounds);
-        } else {
-            classToDefaultUpperBounds.put(clazzWithDefBounds, typeDef.build());
-        }
-
-        if (isGeneric(clazzWithDefBounds)) {
-            // Recursion, outer call should pass in null.
-            // Recursive calls will get the first JavaTypeDefinition to be able to resolve cases like
-            // ... < T extends Something ... E extends Other<T> ... >
-            if (context == null) {
-                context = typeDef.build();
-            }
-
-            for (TypeVariable parameter : clazzWithDefBounds.getTypeParameters()) {
-                // TODO: fix self reference "< ... E extends Something<E> ... >"
-                JavaTypeDefinition typeDefOfParameter = getNextTypeDefinition(context, parameter.getBounds()[0],
-                                                                              typeDef);
-
-                // if it isn't 0, then it has already been added
-                if (typeDefOfParameter.getGenericArgs().size() == 0) {
-                    typeDef.addTypeArg(getNextTypeDefinition(context, parameter.getBounds()[0]));
-                }
-            }
-        }
-
-        return typeDef.build();
     }
 
     /**
@@ -790,7 +649,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 if (currentChild.jjtGetLastToken().toString().equals("this")) {
 
                     if (previousChild != null) { // Qualified 'this' expression
-                        currentChild.setType(previousChild.getType());
+                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
                     } else { // simple 'this' expression
                         ASTClassOrInterfaceDeclaration typeDeclaration
                                 = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
@@ -817,8 +676,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         && currentChild.getImage() != null) {
 
                     currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
-                                                                currentChild.getImage(),
-                                                                accessingClass));
+                                        currentChild.getImage(), accessingClass));
                 }
             }
 
@@ -889,7 +747,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 if (extendsList != null) {
                     return ((TypeNode) extendsList.jjtGetChild(0)).getTypeDefinition();
                 } else {
-                    return JavaTypeDefinition.build(Object.class);
+                    return JavaTypeDefinition.forClass(Object.class);
                 }
                 // anonymous class declaration
 
@@ -939,13 +797,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
             TypeNode parent = (TypeNode) node.jjtGetParent();
 
-            JavaTypeDefinitionBuilder builder = JavaTypeDefinition.builder(parent.getType());
-
-            for (int childIndex = 0; childIndex < node.jjtGetNumChildren(); ++childIndex) {
-                builder.addTypeArg(((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition());
+            final JavaTypeDefinition[] boundGenerics = new JavaTypeDefinition[node.jjtGetNumChildren()];
+            for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+                boundGenerics[i] = ((TypeNode) node.jjtGetChild(i)).getTypeDefinition();
             }
 
-            parent.setTypeDefinition(builder.build());
+            parent.setTypeDefinition(JavaTypeDefinition.forClass(parent.getType(), boundGenerics));
         }
 
         return data;

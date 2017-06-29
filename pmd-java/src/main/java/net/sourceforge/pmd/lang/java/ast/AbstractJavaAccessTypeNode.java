@@ -28,7 +28,7 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
 
     @Override
     public void setType(Class<?> type) {
-        typeDefinition = JavaTypeDefinition.build(type);
+        typeDefinition = JavaTypeDefinition.forClass(type);
     }
 
     @Override
