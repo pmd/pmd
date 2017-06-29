@@ -147,7 +147,6 @@ public class JavaTypeDefinition implements TypeDefinition {
             // TODO : is this cast safe?
             return forClass((Class<?>) parameterizedType.getRawType(), genericBounds);
         } else if (type instanceof TypeVariable) {
-//            return forClass(Object.class);
             return getGenericType(((TypeVariable<?>) type).getName());
         } else if (type instanceof WildcardType) {
             final Type[] wildcardUpperBounds = ((WildcardType) type).getUpperBounds();
