@@ -19,8 +19,12 @@ This is a bug fixing release.
 
 *   java
     *   [#471](https://github.com/pmd/pmd/issues/471): \[java] Error while processing class when EnumMap is used in PMD 5.8.0
+    *   [#477](https://github.com/pmd/pmd/issues/477): \[core] NoClassDefFoundError under 5.8
 
 ### API Changes
+
+*   The `getGenericArgs()` method introduced to `TypeNode` in 5.8.0 was removed. You can access to generics' info through the `JavaTypeDefinition` object.
+*   The `JavaTypeDefinitionBuilder` class introduced in 5.8.0 is not more. You can use factory methods available on `JavaTypeDefinition`
 
 ### External Contributions
 
