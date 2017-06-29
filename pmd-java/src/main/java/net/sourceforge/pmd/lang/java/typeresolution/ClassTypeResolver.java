@@ -333,7 +333,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 if (isMemberVisibleFromClass(typeToSearch.getType(), field.getModifiers(), accessingClass)) {
                     return typeToSearch.resolveTypeDefinition(field.getGenericType());
                 }
-            } catch (NoSuchFieldException e) { /* swallow */ }
+            } catch (final NoSuchFieldException ignored) {
+                // swallow
+            } catch (final NoClassDefFoundError e) {
+                // TODO : report a missing class once we start doing that...
+                return null;
+            }
 
             // transform the type into it's supertype
             typeToSearch = typeToSearch.resolveTypeDefinition(typeToSearch.getType().getGenericSuperclass());
