@@ -19,22 +19,22 @@ public interface PropertySource {
     /**
      * Define a new property via a PropertyDescriptor.
      *
-     * @param propertyDescriptor
-     *            The property descriptor.
-     * @throws IllegalArgumentException
-     *             If there is already a property defined the same name.
+     * @param propertyDescriptor The property descriptor.
+     *
+     * @throws IllegalArgumentException If there is already a property defined the same name.
      */
     void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException;
+
 
     /**
      * Get the PropertyDescriptor for the given property name.
      *
-     * @param name
-     *            The name of the property.
-     * @return The PropertyDescriptor for the named property, <code>null</code>
-     *         if there is no such property defined.
+     * @param name The name of the property.
+     *
+     * @return The PropertyDescriptor for the named property, <code>null</code> if there is no such property defined.
      */
     PropertyDescriptor<?> getPropertyDescriptor(String name);
+
 
     /**
      * Get the PropertyDescriptors for all defined properties. The properties
@@ -44,28 +44,27 @@ public interface PropertySource {
      */
     List<PropertyDescriptor<?>> getPropertyDescriptors();
 
+
     /**
      * Get the typed value for the given property.
      *
-     * @param <T>
-     *            The underlying type of the property descriptor.
-     * @param propertyDescriptor
-     *            The property descriptor.
+     * @param <T>                The underlying type of the property descriptor.
+     * @param propertyDescriptor The property descriptor.
+     *
      * @return The property value.
      */
     <T> T getProperty(PropertyDescriptor<T> propertyDescriptor);
 
+
     /**
      * Set the property value specified (will be type-checked)
      *
-     * @param <T>
-     *            The underlying type of the property descriptor.
-     * @param propertyDescriptor
-     *            The property descriptor.
-     * @param value
-     *            The value to set.
+     * @param <T>                The underlying type of the property descriptor.
+     * @param propertyDescriptor The property descriptor.
+     * @param value              The value to set.
      */
     <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value);
+
 
     /**
      * Returns all the current property values for the receiver or an immutable
@@ -75,32 +74,33 @@ public interface PropertySource {
      */
     Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor();
 
+
     /**
      * Returns whether this Rule has the specified PropertyDescriptor.
      *
-     * @param descriptor
-     *            The PropertyDescriptor for which to check.
-     * @return boolean <code>true</code> if the descriptor is present,
-     *         <code>false</code> otherwise.
+     * @param descriptor The PropertyDescriptor for which to check.
+     *
+     * @return boolean <code>true</code> if the descriptor is present, <code>false</code> otherwise.
      */
     boolean hasDescriptor(PropertyDescriptor<?> descriptor);
+
 
     /**
      * Returns whether this Rule uses default values for properties.
      *
-     * @return boolean <code>true</code> if the properties all have default
-     *         values, <code>false</code> otherwise.
+     * @return boolean <code>true</code> if the properties all have default values, <code>false</code> otherwise.
      */
     boolean usesDefaultValues();
+
 
     /**
      * Clears out any user-specified value for the property allowing it to use
      * the default value in the descriptor.
      *
-     * @param desc
-     *            the property to clear out
+     * @param desc the property to clear out
      */
     void useDefaultValueFor(PropertyDescriptor<?> desc);
+
 
     /**
      * Return the properties that are effectively ignored due to the
@@ -110,6 +110,7 @@ public interface PropertySource {
      * @return the properties that are ignored
      */
     Set<PropertyDescriptor<?>> ignoredProperties();
+
 
     /**
      * Returns a description of why the receiver may be dysfunctional. Usually

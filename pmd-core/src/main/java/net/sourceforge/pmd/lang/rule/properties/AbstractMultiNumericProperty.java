@@ -41,7 +41,7 @@ import net.sourceforge.pmd.PropertyDescriptorField;
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     AbstractMultiNumericProperty(String theName, String theDescription, Number min, Number max, List<T> theDefault,
-                                        float theUIOrder) {
+                                 float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
 
         if (min.doubleValue() > max.doubleValue()) {
@@ -83,5 +83,11 @@ import net.sourceforge.pmd.PropertyDescriptorField;
         super.addAttributesTo(attributes);
         attributes.put(MIN, lowerLimit.toString());
         attributes.put(MAX, upperLimit.toString());
+    }
+
+
+    @Override
+    /* default */ PropertyDescriptorWrapper<List<T>> getWrapper() {
+        return new MultiValueNumericPropertyDescriptorWrapper<>(this);
     }
 }

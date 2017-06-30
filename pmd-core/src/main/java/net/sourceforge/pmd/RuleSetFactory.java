@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -485,12 +485,6 @@ public class RuleSetFactory {
      *
      * @param ruleSetReferenceId
      *            The RuleSetReferenceId of the RuleSet being parsed.
-     * @param ruleSet
-     *            The RuleSet being constructed.
-     * @param ruleNode
-     *            Must be a rule element node.
-     * @param ruleSetReferenceId
-     *            The RuleSetReferenceId of the RuleSet being parsed.
      * @param ruleSetBuilder
      *            The RuleSet being constructed.
      * @param ruleNode
@@ -886,7 +880,7 @@ public class RuleSetFactory {
         }
 
         PropertyDescriptor<?> desc = pdFactory.createWith(values);
-        PropertyDescriptorWrapper<?> wrapper = new PropertyDescriptorWrapper<>(desc); // TODO:cf fix me
+        PropertyDescriptorWrapper<?> wrapper = PropertyDescriptorWrapper.getWrapper(desc);
 
         rule.definePropertyDescriptor(wrapper);
         setValue(rule, desc, strValue);

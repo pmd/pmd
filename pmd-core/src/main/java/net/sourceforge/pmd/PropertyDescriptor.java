@@ -12,9 +12,18 @@ import java.util.Map;
  * descriptor instances are static and immutable they provide validation,
  * serialization, and default values for any specific datatypes.
  *
- * @param <T> type of the property's value
+ * <p>This interface is primarily specialized according to whether the property is
+ * multi-valued or single-valued, see {@link SingleValuePropertyDescriptor} and
+ * {@link MultiValuePropertyDescriptor}.
+ *
+ * <p>Several interfaces further specialize the behaviour of descriptors to accommodate
+ * specific types of descriptors, see {@link NumericPropertyDescriptor} and
+ * {@link EnumeratedPropertyDescriptor}.
+ *
+ * @param <T> type of the property's value. This is a list type for multi-valued properties.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
 public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>> {
 
@@ -40,7 +49,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * Denotes the value datatype. For multi value properties, this is not the
      * List class but the list's component class.
      *
-     * @return Class
+     * @return Class literal of the value type
      */
     Class<?> type();
 
@@ -106,14 +115,11 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
 
 
     /**
-     * If the property is multi-valued then return the separate values after
-     * parsing the propertyString provided. If it isn't a multi-valued property
-     * then the value will be returned within an array of size[1].
-     * // TODO:cf API change. This will return a T if single valued, and a list if multi valued.
+     * Retunrs the value represented by this string.
      *
-     * @param propertyString String
+     * @param propertyString The string to parse
      *
-     * @return Object
+     * @return The value represented by the string
      *
      * @throws IllegalArgumentException if the given string cannot be parsed
      */

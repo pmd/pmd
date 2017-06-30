@@ -17,8 +17,8 @@ import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
 import net.sf.saxon.om.ValueRepresentation;
@@ -98,7 +98,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
                         if (propertyDescriptor instanceof StringProperty) {
                             valueRepresentation = new StringValue((String) value);
                         } else if (propertyDescriptor instanceof BooleanProperty) {
-                            valueRepresentation = BooleanValue.get(((Boolean) value).booleanValue());
+                            valueRepresentation = BooleanValue.get((Boolean) value);
                         } else if (propertyDescriptor instanceof IntegerProperty) {
                             valueRepresentation = Int64Value.makeIntegerValue((Integer) value);
                         } else if (propertyDescriptor instanceof EnumeratedProperty) {

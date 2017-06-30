@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration

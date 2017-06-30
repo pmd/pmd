@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -63,12 +62,6 @@ public abstract class BasicPropertyDescriptorFactory<T> implements PropertyDescr
     @Override
     public Class<?> valueType() {
         return valueType;
-    }
-
-
-    @Override
-    public PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById) {
-        throw new RuntimeException("Unimplemented createWith() method in subclass");
     }
 
 

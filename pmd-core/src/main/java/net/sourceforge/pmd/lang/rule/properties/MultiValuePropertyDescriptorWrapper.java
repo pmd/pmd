@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties.wrappers;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.List;
 
@@ -11,10 +11,10 @@ import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 /**
  * @author Clément Fournier
  */
-public class MultiValuePropertyDescriptorWrapper<T> extends PropertyDescriptorWrapper<List<T>>
+/* default */  class MultiValuePropertyDescriptorWrapper<T> extends PropertyDescriptorWrapper<List<T>>
     implements MultiValuePropertyDescriptor<T> {
 
-    public MultiValuePropertyDescriptorWrapper(MultiValuePropertyDescriptor<T> propertyDescriptor) {
+    MultiValuePropertyDescriptorWrapper(MultiValuePropertyDescriptor<T> propertyDescriptor) {
         super(propertyDescriptor);
     }
 
@@ -29,6 +29,5 @@ public class MultiValuePropertyDescriptorWrapper<T> extends PropertyDescriptorWr
     public char multiValueDelimiter() {
         return ((MultiValuePropertyDescriptor<T>) propertyDescriptor).multiValueDelimiter();
     }
-
 
 }

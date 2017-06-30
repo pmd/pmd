@@ -2,17 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties.wrappers;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.SingleValuePropertyDescriptor;
 
 /**
  * @author Clément Fournier
  */
-public class SingleValuePropertyDescriptorWrapper<T> extends PropertyDescriptorWrapper<T>
+/* default */  class SingleValuePropertyDescriptorWrapper<T> extends PropertyDescriptorWrapper<T>
     implements SingleValuePropertyDescriptor<T> {
 
-    public SingleValuePropertyDescriptorWrapper(SingleValuePropertyDescriptor<T> propertyDescriptor) {
+    SingleValuePropertyDescriptorWrapper(SingleValuePropertyDescriptor<T> propertyDescriptor) {
         super(propertyDescriptor);
     }
 

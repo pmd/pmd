@@ -107,7 +107,7 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
 
     @Override
     public Map<String, E> mappings() {
-        return choicesByLabel;
+        return choicesByLabel; // unmodifiable
     }
 
 
@@ -120,6 +120,11 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
             res[i][1] = e.getValue();
         }
         return res;
+    }
+
+    @Override
+    /* default */ PropertyDescriptorWrapper<E> getWrapper() {
+        return new EnumeratedPropertyDescriptorWrapper<>(this);
     }
 
 }

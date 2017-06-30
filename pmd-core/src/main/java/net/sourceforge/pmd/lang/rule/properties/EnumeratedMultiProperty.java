@@ -110,7 +110,7 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
 
     @Override
     public Map<String, E> mappings() {
-        return choicesByLabel;
+        return choicesByLabel; // unmodifiable
     }
 
 
@@ -169,6 +169,12 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     @Override
     public String asString(E item) {
         return labelsByChoice.get(item);
+    }
+
+
+    @Override
+    /* default */ PropertyDescriptorWrapper<List<E>> getWrapper() {
+        return new EnumeratedPropertyDescriptorWrapper<>(this);
     }
 
 }

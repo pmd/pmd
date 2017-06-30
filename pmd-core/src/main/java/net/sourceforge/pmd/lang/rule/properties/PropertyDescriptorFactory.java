@@ -7,9 +7,11 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.wrappers.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.StringUtil;
 
+// TODO: delete? It's not used anywhere, including the plugins (the only usage is a doc import in
+// PropertyDescriptorWrapper
+// I'm pretty sure the functionality of this class was superseded by PropertyDescriptorUtil at some point
 public class PropertyDescriptorFactory {
 
     private PropertyDescriptorFactory() { }

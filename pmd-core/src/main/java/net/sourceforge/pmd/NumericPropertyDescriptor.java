@@ -8,9 +8,9 @@ package net.sourceforge.pmd;
  * Defines a descriptor type whose instance values are required lie within
  * specified upper and lower limits.
  *
- * @author Brian Remedios
- *
  * @param <T> type of the property value
+ *
+ * @author Brian Remedios
  */
 public interface NumericPropertyDescriptor<T> extends PropertyDescriptor<T> {
 
@@ -20,6 +20,7 @@ public interface NumericPropertyDescriptor<T> extends PropertyDescriptor<T> {
      * @return Number
      */
     Number upperLimit();
+
 
     /**
      * Returns the minimum value that instances of the property can have.

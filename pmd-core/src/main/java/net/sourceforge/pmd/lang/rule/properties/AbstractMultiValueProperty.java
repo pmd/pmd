@@ -206,4 +206,10 @@ import net.sourceforge.pmd.Rule;
         attributes.put(PropertyDescriptorField.DELIMITER, Character.toString(multiValueDelimiter()));
     }
 
+
+    @Override
+    /* default */ PropertyDescriptorWrapper<List<V>> getWrapper() {
+        return new MultiValuePropertyDescriptorWrapper<>(this);
+    }
+
 }

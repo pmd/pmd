@@ -18,7 +18,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Abstract class for properties.
  *
- * @param <T> The type of the values
+ * @param <T> The type of the property's value. This is a list type for multi-valued properties
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
@@ -154,5 +154,14 @@ import net.sourceforge.pmd.util.StringUtil;
      * @return A string representation of the default value.
      */
     protected abstract String defaultAsString();
+
+
+    /**
+     * Gets a wrapper for this property. This method ensures that a wrapper of a property always implements the same
+     * interfaces as that property using double dispatch.
+     *
+     * @return A wrapper for this property.
+     */
+    /* default */ abstract PropertyDescriptorWrapper<T> getWrapper();
 
 }

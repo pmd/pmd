@@ -2,14 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties.wrappers;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorFactory;
 
 /**
  * This class serves as a wrapper class for a PropertyDescriptor instance. It
@@ -25,7 +24,7 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     protected final PropertyDescriptor<T> propertyDescriptor;
 
 
-    public PropertyDescriptorWrapper(PropertyDescriptor<T> propertyDescriptor) {
+    /* default */ PropertyDescriptorWrapper(PropertyDescriptor<T> propertyDescriptor) {
         if (propertyDescriptor == null) {
             throw new IllegalArgumentException("PropertyDescriptor cannot be null.");
         }
@@ -93,7 +92,6 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     }
 
 
-    @SuppressWarnings("unchecked")
     @Override
     public Class<?> type() {
         return propertyDescriptor.type();
@@ -121,12 +119,17 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof PropertyDescriptorWrapper) {
-            return this.getPropertyDescriptor().equals(((PropertyDescriptorWrapper<?>) obj).getPropertyDescriptor());
+            return this.propertyDescriptor.equals(((PropertyDescriptorWrapper<?>) obj).getPropertyDescriptor());
         }
-        return this.getPropertyDescriptor().equals(obj);
+        return this.propertyDescriptor.equals(obj);
     }
 
 
+    /**
+     * Returns the underlying property descriptor.
+     *
+     * @return The underlying property descriptor
+     */
     public PropertyDescriptor<T> getPropertyDescriptor() {
         return propertyDescriptor;
     }
@@ -142,4 +145,18 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     public String toString() {
         return "wrapped:" + propertyDescriptor.toString();
     }
+
+
+    /**
+     * Gets the wrapper of this property descriptor.
+     *
+     * @param desc The descriptor
+     * @param <T>  The type of the descriptor
+     *
+     * @return The wrapper of this descriptor
+     */
+    public static <T> PropertyDescriptorWrapper<T> getWrapper(PropertyDescriptor<T> desc) {
+        return ((AbstractProperty<T>) desc).getWrapper();
+    }
+
 }

@@ -141,4 +141,10 @@ import net.sourceforge.pmd.SingleValuePropertyDescriptor;
      */
     protected abstract T createFrom(String toParse);    // this is there to be symmetrical to multi values
 
+
+    @Override
+    /* default */ PropertyDescriptorWrapper<T> getWrapper() {
+        return new SingleValuePropertyDescriptorWrapper<>(this);
+    }
+
 }

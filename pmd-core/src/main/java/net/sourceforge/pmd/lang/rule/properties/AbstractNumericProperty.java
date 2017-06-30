@@ -107,4 +107,11 @@ import net.sourceforge.pmd.PropertyDescriptorField;
         attributes.put(MIN, lowerLimit.toString());
         attributes.put(MAX, upperLimit.toString());
     }
+
+
+    @Override
+    /* default */ PropertyDescriptorWrapper<T> getWrapper() {
+        return new SingleValueNumericPropertyDescriptorWrapper<>(this);
+    }
+
 }
