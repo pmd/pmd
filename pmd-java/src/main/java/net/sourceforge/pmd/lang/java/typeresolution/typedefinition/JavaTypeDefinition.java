@@ -27,6 +27,7 @@ public class JavaTypeDefinition implements TypeDefinition {
 
         final TypeVariable<?>[] typeParameters;
         if (clazz.isAnonymousClass()) {
+            // the anonymous class can't have generics, but we may be bounding generics from super classes
             typeParameters = resolveTypeDefinition(clazz.getGenericSuperclass()).clazz.getTypeParameters();
         } else {
             typeParameters = clazz.getTypeParameters();
