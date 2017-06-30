@@ -26,9 +26,14 @@ public class JavaTypeDefinition implements TypeDefinition {
         this.clazz = clazz;
 
         final TypeVariable<?>[] typeParameters;
+        // the anonymous class can't have generics, but we may be binding generics from super classes
         if (clazz.isAnonymousClass()) {
-            // the anonymous class can't have generics, but we may be bounding generics from super classes
-            typeParameters = resolveTypeDefinition(clazz.getGenericSuperclass()).clazz.getTypeParameters();
+            // is this an anonymous class based on an interface or a class?
+            if (clazz.getSuperclass() == Object.class) {
+                typeParameters = clazz.getInterfaces()[0].getTypeParameters();
+            } else {
+                typeParameters = clazz.getSuperclass().getTypeParameters();
+            }
         } else {
             typeParameters = clazz.getTypeParameters();
         }
@@ -54,7 +59,7 @@ public class JavaTypeDefinition implements TypeDefinition {
         }
         
         final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz);
-        
+
         // We can only cache types without generics, since their values are context-based
         if (!newDef.isGeneric) {
             CLASS_TYPE_DEF_CACHE.put(clazz, newDef);
@@ -64,13 +69,13 @@ public class JavaTypeDefinition implements TypeDefinition {
     }
     
     public static JavaTypeDefinition forClass(final Class<?> clazz, final JavaTypeDefinition... boundGenerics) {
-        // With generics there is no cache
-        final JavaTypeDefinition typeDef = forClass(clazz);
-        
-        if (typeDef == null) {
+        if (clazz == null) {
             return null;
         }
         
+        // With generics there is no cache
+        final JavaTypeDefinition typeDef = new JavaTypeDefinition(clazz);
+
         for (final JavaTypeDefinition generic : boundGenerics) {
             typeDef.genericArgs.add(generic);
         }

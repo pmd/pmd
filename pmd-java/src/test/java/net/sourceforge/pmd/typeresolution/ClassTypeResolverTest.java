@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -49,6 +50,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
@@ -168,6 +170,15 @@ public class ClassTypeResolverTest {
                                                         + "}", "1.8");
         ASTClassOrInterfaceType statement = acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         Assert.assertTrue(statement.isReferenceToClassSameCompilationUnit());
+    }
+
+    @Test
+    public void testAnonymousClassFromInterface() throws Exception {
+        Node acu = parseAndTypeResolveForClass(AnonymousClassFromInterface.class, "1.8");
+        ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
+        TypeNode child = (TypeNode) allocationExpression.jjtGetChild(0);
+        Assert.assertTrue(Comparator.class.isAssignableFrom(child.getType()));
+        Assert.assertSame(Integer.class, child.getTypeDefinition().getGenericType(0).getType());
     }
 
     @Test
