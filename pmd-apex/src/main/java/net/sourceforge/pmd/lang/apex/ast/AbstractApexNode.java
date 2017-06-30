@@ -8,8 +8,8 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-import apex.jorje.data.Loc;
-import apex.jorje.data.Loc.RealLoc;
+import apex.jorje.data.Location;
+import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
 
@@ -27,7 +27,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
             return;
         }
 
-        RealLoc loc = (RealLoc) node.getLoc();
+        Location loc = node.getLoc();
         int startOffset = loc.startIndex;
         int endOffset = loc.endIndex;
         // end column will be interpreted as inclusive, while endOffset/endIndex
@@ -113,8 +113,8 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
 
     protected boolean hasRealLoc() {
         try {
-            Loc loc = node.getLoc();
-            return loc instanceof RealLoc;
+            Location loc = node.getLoc();
+            return loc != null && Locations.isReal(loc);
         } catch (UnexpectedCodePathException e) {
             return false;
         } catch (IndexOutOfBoundsException e) {

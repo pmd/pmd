@@ -8,21 +8,49 @@ Apex Reference:
 
 In order to add a the jar files to the local repo, use the following commands:
 
-    mvn install:install-file -Dfile=path/to/apex-jorje-ide-1.0-sfdc-187-SNAPSHOT.jar \
+    mvn install:install-file -Dfile=apex-jorje-data-1.0-sfdc-224-SNAPSHOT.jar \
                              -DgroupId=apex \
-                             -DartifactId=apex-jorje-ide \
-                             -Dversion=1.0-sfdc-187-SNAPSHOT \
+                             -DartifactId=apex-jorje-data \
+                             -Dversion=1.0-sfdc-224-SNAPSHOT \
                              -Dpackaging=jar \
                              -DlocalRepositoryPath=./repo
     
-    mvn install:install-file -Dfile=path/to/apex-jorje-semantic-1.0-sfdc-187-SNAPSHOT-tests.jar \
+    mvn install:install-file -Dfile=apex-jorje-ide-1.0-sfdc-224-SNAPSHOT.jar \
                              -DgroupId=apex \
-                             -DartifactId=apex-jorje-semantic \
-                             -Dversion=1.0-sfdc-187-SNAPSHOT \
-                             -Dclassifier=tests \
+                             -DartifactId=apex-jorje-ide \
+                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
                              -Dpackaging=jar \
                              -DlocalRepositoryPath=./repo
+    
+    mvn install:install-file -Dfile=apex-jorje-parser-1.0-sfdc-224-SNAPSHOT.jar \
+                             -DgroupId=apex \
+                             -DartifactId=apex-jorje-parser \
+                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
+                             -Dpackaging=jar \
+                             -DlocalRepositoryPath=./repo
+    
+    mvn install:install-file -Dfile=apex-jorje-semantic-1.0-sfdc-224-SNAPSHOT.jar \
+                             -DgroupId=apex \
+                             -DartifactId=apex-jorje-semantic \
+                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
+                             -Dpackaging=jar \
+                             -DlocalRepositoryPath=./repo
+    
+    mvn install:install-file -Dfile=apex-jorje-services-1.0-sfdc-224-SNAPSHOT.jar \
+                             -DgroupId=apex \
+                             -DartifactId=apex-jorje-services \
+                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
+                             -Dpackaging=jar \
+                             -DlocalRepositoryPath=./repo
+    
+    mvn install:install-file -Dfile=apex-jorje-tools-1.0-sfdc-224-SNAPSHOT.jar \
+                             -DgroupId=apex \
+                             -DartifactId=apex-jorje-tools \
+                             -Dversion=1.0-sfdc-224-SNAPSHOT-3083815933 \
+                             -Dpackaging=jar \
+                             -DlocalRepositoryPath=./repo
+    
 
-For the PMD 5.5.0 Release, the versions from
-<https://github.com/forcedotcom/idecore/tree/55042bfc2ebeb4c9f38c445b577c3bdd6a18fc5a/com.salesforce.ide.apex.core/lib>
+For the PMD 6.0.0 Release, the versions from
+<https://github.com/forcedotcom/idecore/tree/3083815933c2d015d03417986f57bd25786d58ce/com.salesforce.ide.apex.core/lib>
 have been taken.
