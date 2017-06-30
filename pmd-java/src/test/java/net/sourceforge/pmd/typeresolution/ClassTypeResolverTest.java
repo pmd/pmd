@@ -67,10 +67,12 @@ import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
+import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
@@ -179,6 +181,16 @@ public class ClassTypeResolverTest {
         TypeNode child = (TypeNode) allocationExpression.jjtGetChild(0);
         Assert.assertTrue(Comparator.class.isAssignableFrom(child.getType()));
         Assert.assertSame(Integer.class, child.getTypeDefinition().getGenericType(0).getType());
+    }
+    
+    @Test
+    public void testNestedAnonymousClass() throws Exception {
+        Node acu = parseAndTypeResolveForClass(NestedAnonymousClass.class, "1.8");
+        ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
+        ASTAllocationExpression nestedAllocation = allocationExpression.getFirstDescendantOfType(ASTAllocationExpression.class);
+        TypeNode child = (TypeNode) nestedAllocation.jjtGetChild(0);
+        Assert.assertTrue(Converter.class.isAssignableFrom(child.getType()));
+        Assert.assertSame(String.class, child.getTypeDefinition().getGenericType(0).getType());
     }
 
     @Test
