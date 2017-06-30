@@ -20,6 +20,7 @@ This is a bug fixing release.
 *   java
     *   [#471](https://github.com/pmd/pmd/issues/471): \[java] Error while processing class when EnumMap is used in PMD 5.8.0
     *   [#477](https://github.com/pmd/pmd/issues/477): \[core] NoClassDefFoundError under 5.8
+    *   [#478](https://github.com/pmd/pmd/issues/478): \[core] Processing issues dealing with anonymous classes
 
 ### API Changes
 
