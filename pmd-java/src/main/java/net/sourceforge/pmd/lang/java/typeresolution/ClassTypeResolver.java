@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
@@ -149,7 +150,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private final PMDASMClassLoader pmdClassLoader;
     private Map<String, String> importedClasses;
     private List<String> importedOnDemand;
-    private int anonymousClassCounter = 0;
+    private Map<Node, AnonymousClassMetadata> anonymousClassMetadata = new HashMap<>();
+    
+    private static class AnonymousClassMetadata {
+        public final String name;
+        public int anonymousClassCounter;
+        
+        AnonymousClassMetadata(final String className) {
+            this.name = className;
+        }
+    }
 
     public ClassTypeResolver() {
         this(ClassTypeResolver.class.getClassLoader());
@@ -227,12 +237,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         String typeName = node.getImage();
 
         if (node.isAnonymousClass()) {
-            anonymousClassCounter++;
-            AbstractNode parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if (parent == null) {
-                parent = node.getFirstParentOfType(ASTEnumDeclaration.class);
+            final AnonymousClassMetadata parentAnonymousClassMetadata = getParentAnonymousClassMetadata(node);
+            if (parentAnonymousClassMetadata != null) {
+                typeName = parentAnonymousClassMetadata.name + "$" + ++parentAnonymousClassMetadata.anonymousClassCounter;
+                anonymousClassMetadata.put(node, new AnonymousClassMetadata(typeName));
             }
-            typeName = parent.getImage() + "$" + anonymousClassCounter;
         }
 
         populateType(node, typeName);
@@ -249,6 +258,52 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
         return data;
+    }
+
+    private AnonymousClassMetadata getParentAnonymousClassMetadata(final ASTClassOrInterfaceType node) {
+        Node parent = node;
+        do {
+            parent = parent.jjtGetParent();
+        } while (parent != null && !(parent instanceof ASTClassOrInterfaceBody) && !(parent instanceof ASTEnumBody));
+
+        // TODO : Should never happen, but add this for safety until we are sure to cover all possible scenarios in unit testing
+        if (parent == null) {
+            return null;
+        }
+
+        parent = parent.jjtGetParent();
+
+        TypeNode typedParent;
+        // The parent may now be an ASTEnumConstant, an ASTAllocationExpression, an ASTEnumDeclaration or an ASTClassOrInterfaceDeclaration
+        if (parent instanceof ASTAllocationExpression) {
+            typedParent = parent.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        } else if (parent instanceof ASTClassOrInterfaceDeclaration || parent instanceof ASTEnumDeclaration) {
+            typedParent = (TypeNode) parent;
+        } else {
+            typedParent = parent.getFirstParentOfType(ASTEnumDeclaration.class);
+        }
+
+        final AnonymousClassMetadata metadata = anonymousClassMetadata.get(typedParent);
+        if (metadata != null) {
+            return metadata;
+        }
+
+        final AnonymousClassMetadata newMetadata;
+        if (typedParent instanceof ASTClassOrInterfaceType) {
+            ASTClassOrInterfaceType parentTypeNode = (ASTClassOrInterfaceType) typedParent;
+            if (parentTypeNode.isAnonymousClass()) {
+                final AnonymousClassMetadata parentMetadata = getParentAnonymousClassMetadata(parentTypeNode);
+                newMetadata = new AnonymousClassMetadata(parentMetadata.name + "$" + ++parentMetadata.anonymousClassCounter);
+            } else {
+                newMetadata = new AnonymousClassMetadata(parentTypeNode.getImage());
+            }
+        } else {
+            newMetadata = new AnonymousClassMetadata(typedParent.getImage());
+        }
+
+        anonymousClassMetadata.put(typedParent, newMetadata);
+
+        return newMetadata;
     }
 
     @Override
