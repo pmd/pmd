@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
@@ -161,7 +162,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
     /* default */ double computeWithResultOption(OperationMetricKey key, ASTAnyTypeDeclaration node,
                                                  boolean force, MetricVersion version, ResultOption option) {
 
-        List<ASTMethodOrConstructorDeclaration> ops = AbstractMetric.findOperations(node, false);
+        List<ASTMethodOrConstructorDeclaration> ops = findOperations(node, false);
 
         List<Double> values = new ArrayList<>();
         for (ASTMethodOrConstructorDeclaration op : ops) {
@@ -262,6 +263,38 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         memo.put(paramKey, val);
 
         return val;
+    }
+
+
+    /**
+     * Finds the declaration nodes of all methods or constructors that are declared inside a class.
+     *
+     * @param node          The class in which to look for.
+     * @param includeNested Include operations found in nested classes?
+     *
+     * @return The list of all operations declared inside the specified class.
+     *
+     * TODO:cf this one is computed every time
+     */
+    private static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
+                                                                          boolean includeNested) {
+
+        if (includeNested) {
+            return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
+        }
+
+        List<ASTClassOrInterfaceBodyDeclaration> outerDecls
+            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
+
+
+        List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
+
+        for (ASTClassOrInterfaceBodyDeclaration decl : outerDecls) {
+            if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
+                operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
+            }
+        }
+        return operations;
     }
 
 }
