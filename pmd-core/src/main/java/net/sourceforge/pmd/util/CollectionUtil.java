@@ -289,28 +289,6 @@ public final class CollectionUtil {
     }
 
 
-    public static <T> boolean areSemanticEquals(List<T> a, List<T> b) {
-
-        if (a == null) {
-            return b == null || b.isEmpty();
-        }
-        if (b == null) {
-            return a.isEmpty();
-        }
-
-        if (a.size() != b.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < a.size(); i++) {
-            if (!areEqual(a.get(i), b.get(i))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     /**
      * If the newValue is already held within the values array then the values
      * array is returned, otherwise a new array is created appending the
