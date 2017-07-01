@@ -29,8 +29,15 @@ RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
 MAJOR=$(echo $RELEASE_VERSION | cut -d . -f 1)
 MINOR=$(echo $RELEASE_VERSION | cut -d . -f 2)
 PATCH=$(echo $RELEASE_VERSION | cut -d . -f 3)
-NEXT_MINOR=$(expr ${MINOR} + 1)
-DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.0"
+if [ "$PATCH" == "0" ]; then
+    NEXT_MINOR=$(expr ${MINOR} + 1)
+    NEXT_PATCH="0"
+else
+    # this is a bugfixing release
+    NEXT_MINOR="${MINOR}"
+    NEXT_PATCH=$(expr ${PATCH} + 1)
+fi
+DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
 DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
 
 # http://stackoverflow.com/questions/1593051/how-to-programmatically-determine-the-current-checked-out-git-branch
