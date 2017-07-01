@@ -34,7 +34,7 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
 
     @Override
     public void setType(Class<?> type) {
-        typeDefinition = JavaTypeDefinition.build(type);
+        typeDefinition = JavaTypeDefinition.forClass(type);
     }
 
     @Override
