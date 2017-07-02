@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.typeresolution.testdata;
 
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericSuperClassA;
 
@@ -33,5 +34,10 @@ public class FieldAccessGenericRaw<T extends GenericClass2> extends GenericSuper
         parameterRawGeneric.third = new Object();
         parameterRawGeneric.fourth.second = "";
         parameterRawGeneric.rawGeneric.second = new Integer(0);
+
+        // Bug #471
+        rawGeneric.fifth = new GenericClass();
+        inheritedRawGeneric.fifth = new GenericClass();
+        parameterRawGeneric.fifth = new GenericClass();
     }
 }
