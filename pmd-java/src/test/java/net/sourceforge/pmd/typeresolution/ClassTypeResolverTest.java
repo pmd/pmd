@@ -1144,12 +1144,12 @@ public class ClassTypeResolverTest {
 
         int index = 0;
 
-        // int a = vararg("", "");
+        // int a = vararg("");
         assertEquals(int.class, expressions.get(index).getType());
         assertEquals(int.class, getChildType(expressions.get(index), 0));
         assertEquals(int.class, getChildType(expressions.get(index++), 1));
         
-        // int b = vararg("", "", 10);
+        // int b = vararg("", 10);
         assertEquals(int.class, expressions.get(index).getType());
         assertEquals(int.class, getChildType(expressions.get(index), 0));
         assertEquals(int.class, getChildType(expressions.get(index++), 1));
@@ -1164,6 +1164,15 @@ public class ClassTypeResolverTest {
         assertEquals(Number.class, getChildType(expressions.get(index), 0));
         assertEquals(Number.class, getChildType(expressions.get(index++), 1));
 
+        // Number e = field.noArguments();
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index), 0));
+        assertEquals(Number.class, getChildType(expressions.get(index++), 1));
+
+        // int f = this.vararg("");
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 1));
+        assertEquals(int.class, getChildType(expressions.get(index++), 2));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());

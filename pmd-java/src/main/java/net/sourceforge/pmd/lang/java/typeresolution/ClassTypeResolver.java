@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
@@ -71,6 +74,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.Token;
@@ -151,11 +155,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private Map<String, String> importedClasses;
     private List<String> importedOnDemand;
     private Map<Node, AnonymousClassMetadata> anonymousClassMetadata = new HashMap<>();
-    
+
     private static class AnonymousClassMetadata {
         public final String name;
         public int anonymousClassCounter;
-        
+
         AnonymousClassMetadata(final String className) {
             this.name = className;
         }
@@ -239,7 +243,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.isAnonymousClass()) {
             final AnonymousClassMetadata parentAnonymousClassMetadata = getParentAnonymousClassMetadata(node);
             if (parentAnonymousClassMetadata != null) {
-                typeName = parentAnonymousClassMetadata.name + "$" + ++parentAnonymousClassMetadata.anonymousClassCounter;
+                typeName = parentAnonymousClassMetadata.name + "$" + ++parentAnonymousClassMetadata
+                        .anonymousClassCounter;
                 anonymousClassMetadata.put(node, new AnonymousClassMetadata(typeName));
             }
         }
@@ -266,7 +271,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             parent = parent.jjtGetParent();
         } while (parent != null && !(parent instanceof ASTClassOrInterfaceBody) && !(parent instanceof ASTEnumBody));
 
-        // TODO : Should never happen, but add this for safety until we are sure to cover all possible scenarios in unit testing
+        // TODO : Should never happen, but add this for safety until we are sure to cover all possible scenarios in
+        // unit testing
         if (parent == null) {
             return null;
         }
@@ -274,7 +280,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         parent = parent.jjtGetParent();
 
         TypeNode typedParent;
-        // The parent may now be an ASTEnumConstant, an ASTAllocationExpression, an ASTEnumDeclaration or an ASTClassOrInterfaceDeclaration
+        // The parent may now be an ASTEnumConstant, an ASTAllocationExpression, an ASTEnumDeclaration or an
+        // ASTClassOrInterfaceDeclaration
         if (parent instanceof ASTAllocationExpression) {
             typedParent = parent.getFirstChildOfType(ASTClassOrInterfaceType.class);
         } else if (parent instanceof ASTClassOrInterfaceDeclaration || parent instanceof ASTEnumDeclaration) {
@@ -293,7 +300,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             ASTClassOrInterfaceType parentTypeNode = (ASTClassOrInterfaceType) typedParent;
             if (parentTypeNode.isAnonymousClass()) {
                 final AnonymousClassMetadata parentMetadata = getParentAnonymousClassMetadata(parentTypeNode);
-                newMetadata = new AnonymousClassMetadata(parentMetadata.name + "$" + ++parentMetadata.anonymousClassCounter);
+                newMetadata = new AnonymousClassMetadata(parentMetadata.name + "$" + ++parentMetadata
+                        .anonymousClassCounter);
             } else {
                 newMetadata = new AnonymousClassMetadata(parentTypeNode.getImage());
             }
@@ -326,49 +334,210 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTName node, Object data) {
-        Class<?> accessingClass = getEnclosingTypeDeclaration(node);
+        // TODO: handle cases where static fields are accessed in a fully qualified way
+        //       make sure it handles same name classes and packages
+        // TODO: handle generic static field cases
 
-        String[] dotSplitImage = node.getImage().split("\\.");
-        JavaTypeDefinition previousType
-                = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0], accessingClass);
-
-
-        if (node.getNameDeclaration() != null
-                && previousType == null // if it's not null, then let other code handle things
-                && node.getNameDeclaration().getNode() instanceof TypeNode) {
-            // Carry over the type from the declaration
-            Class<?> nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
-            // FIXME : generic classes and class with generic super types could have the wrong type assigned here
-            if (nodeType != null) {
-                node.setType(nodeType);
-            }
-        }
+        // handles cases where first part is a fully qualified name
+        populateType(node, node.getImage());
 
         if (node.getType() == null) {
-            // TODO: handle cases where static fields are accessed in a fully qualified way
-            //       make sure it handles same name classes and packages
-            // TODO: handle generic static field cases
+            Class<?> accessingClass = getEnclosingTypeDeclarationClass(node);
 
-            // handles cases where first part is a fully qualified name
-            populateType(node, node.getImage());
+            String[] dotSplitImage = node.getImage().split("\\.");
+            ASTArguments astArguments = getSuffixMethodArgs(node);
+            ASTArgumentList astArgumentList = null;
+            int methodArgsArity = 0;
 
-            if (node.getType() == null) {
-                for (int i = 1; i < dotSplitImage.length; ++i) {
-                    if (previousType == null) {
-                        break;
-                    }
+            if (astArguments != null) {
+                astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
+            }
 
+            if (astArgumentList != null) {
+                methodArgsArity = astArgumentList.jjtGetNumChildren();
+            }
+
+            JavaTypeDefinition previousType = null;
+            if (dotSplitImage.length == 1 && astArguments != null) { // method
+
+                List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
+                                                                     methodArgsArity, accessingClass);
+
+                previousType = getBestMethodReturnType(methods, astArgumentList, null);
+            } else {
+                previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0], accessingClass);
+            }
+
+            for (int i = 1; i < dotSplitImage.length; ++i) {
+                if (previousType == null) {
+                    break;
+                }
+
+                if (i == dotSplitImage.length - 1 && astArguments != null) { // method
+                    List<MethodType> methods = getApplicableMethods(previousType, dotSplitImage[i], null,
+                                                                    methodArgsArity, accessingClass);
+
+                    previousType = getBestMethodReturnType(methods, astArgumentList, null);
+                } else { // field
                     previousType = getFieldType(previousType, dotSplitImage[i], accessingClass);
                 }
+            }
 
-                if (previousType != null) {
-                    node.setTypeDefinition(previousType);
-                }
+            if (previousType != null) {
+                node.setTypeDefinition(previousType);
             }
         }
 
         return super.visit(node, data);
     }
+
+    public JavaTypeDefinition getBestMethodReturnType(List<MethodType> methods, ASTArgumentList arguments,
+                                                      List<JavaTypeDefinition> typeArgs) {
+        // TODO: add overload resolution
+        if (methods.size() == 1) {
+            return methods.get(0).getReturnType();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Search outwards from a node the enclosing type declarations. Searching them and their supertypes
+     * for method
+     */
+    private List<MethodType> getLocalApplicableMethods(TypeNode node, String methodName,
+                                                       List<JavaTypeDefinition> typeArguments,
+                                                       int argArity,
+                                                       Class<?> accessingClass) {
+        if (accessingClass == null) {
+            return null;
+        }
+
+        List<MethodType> foundMethods = new ArrayList<>();
+
+        // we search each enclosing type declaration, looking at their supertypes as well
+        for (node = getEnclosingTypeDeclaration(node); node != null;
+             node = getEnclosingTypeDeclaration(node.jjtGetParent())) {
+
+            getApplicableMethods(node.getTypeDefinition(), methodName, typeArguments, argArity, accessingClass,
+                                 foundMethods);
+        }
+
+        // TODO: search static methods
+
+        return foundMethods;
+    }
+
+    public List<MethodType> getApplicableMethods(JavaTypeDefinition context,
+                                                 String methodName,
+                                                 List<JavaTypeDefinition> typeArguments,
+                                                 int arity,
+                                                 Class<?> accessingClass) {
+        List<MethodType> result = new ArrayList<>();
+
+        getApplicableMethods(context, methodName, typeArguments, arity, accessingClass, result);
+
+        return result;
+    }
+
+    public void getApplicableMethods(JavaTypeDefinition context,
+                                     String methodName,
+                                     List<JavaTypeDefinition> typeArguments,
+                                     int argArity,
+                                     Class<?> accessingClass,
+                                     List<MethodType> result) {
+
+        if (context == null) {
+            return;
+        }
+
+        // TODO: shadowing, overriding
+        // TODO: add multiple upper bounds
+
+        Class<?> contextClass = context.getType();
+
+        // search the class
+        for (Method method : contextClass.getDeclaredMethods()) {
+            if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
+                if (isGeneric(method)) {
+                    // TODO: do generic methods
+                    // this disables invocations which could match generic methods
+                    result.clear();
+                    return;
+                }
+
+                result.add(getTypeDefOfMethod(context, method));
+            }
+        }
+
+        // search it's supertype
+        if (!contextClass.equals(Object.class)) {
+            getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
+                                 methodName, typeArguments, argArity, accessingClass, result);
+        }
+
+        // search it's interfaces
+        for (Type interfaceType : contextClass.getGenericInterfaces()) {
+            getApplicableMethods(context.resolveTypeDefinition(interfaceType),
+                                 methodName, typeArguments, argArity, accessingClass, result);
+        }
+    }
+
+    public boolean isMethodApplicable(Method method, String methodName, int argArity,
+                                      Class<?> accessingClass, List<JavaTypeDefinition> typeArguments) {
+
+        if (method.getName().equals(methodName) // name matches
+                // is visible
+                && isMemberVisibleFromClass(method.getDeclaringClass(), method.getModifiers(), accessingClass)
+                // if method is vararg with arity n, then the invocation's arity >= n - 1
+                && (!method.isVarArgs() || (argArity >= getArity(method) - 1))
+                // if the method isn't vararg, then arity matches
+                && (method.isVarArgs() || (argArity == getArity(method)))
+                // isn't generic or arity of type arguments matches that of parameters
+                && (!isGeneric(method) || typeArguments == null
+                || method.getTypeParameters().length == typeArguments.size())) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private MethodType getTypeDefOfMethod(JavaTypeDefinition context, Method method) {
+        JavaTypeDefinition returnType = context.resolveTypeDefinition(method.getGenericReturnType());
+        List<JavaTypeDefinition> argTypes = new ArrayList<>();
+
+        // search typeArgs vs
+        for (Type argType : method.getGenericParameterTypes()) {
+            argTypes.add(context.resolveTypeDefinition(argType));
+        }
+
+        return new MethodType(returnType, argTypes, method);
+    }
+
+    private boolean isGeneric(Method method) {
+        return method.getTypeParameters().length != 0;
+    }
+
+    private int getArity(Method method) {
+        return method.getParameterTypes().length;
+    }
+
+    private ASTArguments getSuffixMethodArgs(Node node) {
+        Node prefix = node.jjtGetParent();
+
+        if (prefix instanceof ASTPrimaryPrefix
+                && prefix.jjtGetParent().jjtGetNumChildren() >= 2) {
+            ASTArguments args = prefix.jjtGetParent().jjtGetChild(1).getFirstChildOfType(ASTArguments.class);
+            // TODO: investigate if this will cause double visitation
+            super.visit(args, null);
+
+            return args;
+        }
+
+        return null;
+    }
+
 
     /**
      * Searches a JavaTypeDefinition and it's superclasses until a field with name {@code fieldImage} that
@@ -698,10 +867,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         JavaTypeDefinition primaryNodeType = null;
         AbstractJavaTypeNode previousChild = null;
-        Class<?> accessingClass = getEnclosingTypeDeclaration(primaryNode);
+        AbstractJavaTypeNode nextChild = null;
+        Class<?> accessingClass = getEnclosingTypeDeclarationClass(primaryNode);
 
         for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
             AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
+            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren() ?
+                    (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
 
             // skip children which already have their type assigned
             if (currentChild.getType() == null) {
@@ -732,11 +904,37 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
                     }
 
+                } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
+                    currentChild.setTypeDefinition(previousChild.getTypeDefinition());
                 } else if (previousChild != null && previousChild.getType() != null
                         && currentChild.getImage() != null) {
 
-                    currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
-                                        currentChild.getImage(), accessingClass));
+                    ASTArguments astArguments = null;
+                    ASTArgumentList astArgumentList = null;
+                    int methodArgsArity = 0;
+
+                    if (nextChild != null) {
+                        astArguments = nextChild.getFirstChildOfType(ASTArguments.class);
+                    }
+
+                    if (astArguments != null) {
+                        astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
+                    }
+
+                    if (astArgumentList != null) {
+                        methodArgsArity = astArgumentList.jjtGetNumChildren();
+                    }
+
+                    if (astArguments != null) { // method
+                        List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
+                                                                        currentChild.getImage(),
+                                                                        null, methodArgsArity, accessingClass);
+
+                        currentChild.setTypeDefinition(getBestMethodReturnType(methods, astArgumentList, null));
+                    } else { // field
+                        currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
+                                                                    currentChild.getImage(), accessingClass));
+                    }
                 }
             }
 
@@ -758,24 +956,24 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     /**
-     * Returns the type def. of the first Class declaration around the node. Looks for Class declarations
+     * Returns the the first Class declaration around the node. Looks for Class declarations
      * and if the second argument is null, then for anonymous classes as well.
      *
      * @param node The node with the enclosing Class declaration.
      * @return The JavaTypeDefinition of the enclosing Class declaration.
      */
-    private Class<?> getEnclosingTypeDeclaration(Node node) {
+    private TypeNode getEnclosingTypeDeclaration(Node node) {
         Node previousNode = null;
         while (node != null) {
             if (node instanceof ASTClassOrInterfaceDeclaration) {
-                return ((TypeNode) node).getType();
+                return (TypeNode) node;
                 // anonymous class declaration
             } else if (node instanceof ASTAllocationExpression // is anonymous class declaration
                     && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // array cant anonymous
                     && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
                 ASTClassOrInterfaceType typeDecl = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
                 if (typeDecl != null) {
-                    return typeDecl.getType();
+                    return typeDecl;
                 }
             }
 
@@ -785,6 +983,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         return null;
     }
+
+    private Class<?> getEnclosingTypeDeclarationClass(Node node) {
+        TypeNode typeDecl = getEnclosingTypeDeclaration(node);
+
+        if (typeDecl == null) {
+            return null;
+        } else {
+            return typeDecl.getType();
+        }
+    }
+
 
     /**
      * Get the type def. of the super class of the enclosing type declaration which has the same class
