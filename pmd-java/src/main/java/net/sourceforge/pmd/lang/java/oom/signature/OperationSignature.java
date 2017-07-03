@@ -27,7 +27,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public final class OperationSignature extends Signature {
 
-
     private static final Map<Integer, OperationSignature> POOL = new HashMap<>();
     public final Role role;
     public final boolean isAbstract;
@@ -54,7 +53,7 @@ public final class OperationSignature extends Signature {
 
     /** Used internally by the pooler. */
     private static int code(Visibility visibility, Role role, boolean isAbstract) {
-        return visibility.hashCode() << 2 + role.hashCode() << 1 + (isAbstract ? 1 : 0);
+        return visibility.hashCode() * 31 + role.hashCode() * 2 + (isAbstract ? 1 : 0);
     }
 
 

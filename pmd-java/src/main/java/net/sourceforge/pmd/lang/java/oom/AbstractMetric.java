@@ -75,7 +75,7 @@ public abstract class AbstractMetric implements Metric {
     /**
      * Gives access to the toplevel package stats to metrics without having to pass them as a parameter to metrics.
      *
-     * @return The toplevel package stats (singleton contained within {@link Metrics}.
+     * @return The toplevel package stats (singleton contained within {@link Metrics}).
      */
     protected static PackageStats getTopLevelPackageStats() {
         return Metrics.getTopLevelPackageStats();

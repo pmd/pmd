@@ -65,9 +65,7 @@ public final class ParameterizedMetricKey {
 
     /** Used by the pooler. */
     private static int code(MetricKey key, MetricVersion version) {
-        int result = key.hashCode();
-        result = 31 * result + version.hashCode();
-        return result;
+        return 31 * key.hashCode() + version.hashCode();
     }
 
 

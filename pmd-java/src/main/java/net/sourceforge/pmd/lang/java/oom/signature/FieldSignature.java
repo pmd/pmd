@@ -43,7 +43,7 @@ public final class FieldSignature extends Signature {
 
     /** Used internally by the pooler. */
     private static int code(Visibility visibility, boolean isStatic, boolean isFinal) {
-        return (isFinal ? 1 : 0) + visibility.hashCode() << 2 + (isStatic ? 1 : 0) << 1;
+        return visibility.hashCode() * 31 + (isStatic ? 1 : 0) * 2 + (isFinal ? 1 : 0);
     }
 
 

@@ -166,7 +166,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
         List<Double> values = new ArrayList<>();
         for (ASTMethodOrConstructorDeclaration op : ops) {
-            if (key.getCalculator().supports(op)) {
+            if (key.supports(op)) {
                 double val = this.compute(key, op, op.getQualifiedName().getOperation(), force, version);
                 if (val != Double.NaN) {
                     values.add(val);

@@ -83,7 +83,7 @@ public class Foo {		// This has a Cyclomatic Complexity = 12
             <![CDATA[
 public class Foo extends Bar {
  public Foo() {
- //this class only has 6 NCSS lines
+ //this class only has 4 NCSS lines
      super();
 
 
