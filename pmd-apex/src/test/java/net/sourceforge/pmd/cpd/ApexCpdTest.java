@@ -15,6 +15,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
+
 public class ApexCpdTest {
     private File testdir;
 
@@ -27,8 +29,8 @@ public class ApexCpdTest {
     @Test
     public void testIssue427() throws IOException {
         CPDConfiguration configuration = new CPDConfiguration();
-        configuration.setMinimumTileSize(50);
-        configuration.setLanguage(LanguageFactory.createLanguage("apex"));
+        configuration.setMinimumTileSize(10);
+        configuration.setLanguage(LanguageFactory.createLanguage(ApexLanguageModule.TERSE_NAME));
         CPD cpd = new CPD(configuration);
         cpd.add(new File(testdir, "SFDCEncoder.cls"));
         cpd.add(new File(testdir, "SFDCEncoderConstants.cls"));
@@ -38,10 +40,11 @@ public class ApexCpdTest {
         Iterator<Match> matches = cpd.getMatches();
         int duplications = 0;
         while (matches.hasNext()) {
-            Match match = matches.next();
+            matches.next();
             duplications++;
-            assertTrue(match.getSourceCodeSlice().startsWith("/*"));
         }
         assertEquals(1, duplications);
+        Match firstDuplication = cpd.getMatches().next();
+        assertTrue(firstDuplication.getSourceCodeSlice().startsWith("global with sharing class SFDCEncoder"));
     }
 }
