@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -1126,8 +1127,43 @@ public class ClassTypeResolverTest {
         assertEquals(String.class, getChildType(expressions.get(index++), 3));
 
         // this.field.first = "";
+        assertEquals(String.class, expressions.get(index).getType()); assertEquals(String.class, getChildType(expressions.get(index++), 2));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+
+    @Test
+    public void testMethodPotentialApplicability() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodPotentialApplicability.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // int a = vararg("", "");
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+        
+        // int b = vararg("", "", 10);
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // String c = notVararg(0, 0);
         assertEquals(String.class, expressions.get(index).getType());
-        assertEquals(String.class, getChildType(expressions.get(index++), 2));
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+
+        // Number d = noArguments();
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index), 0));
+        assertEquals(Number.class, getChildType(expressions.get(index++), 1));
+
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
