@@ -65,7 +65,7 @@ For Linux, there is since PMD 5.0 a combined start script for all command line t
 The start script is called `run.sh` and is located in the `bin` subdirectory in the PMD binary distribution
 zip-file. Let's assume, you are in this directory, then you can start CPD this way:
 
-    ./run.sh cpd --minimum-tokens 100 --files c:\temp\src\java
+    ./run.sh cpd --minimum-tokens 100 --files /tmp/src/java
 
 The options "minimum-tokens" and "files" are the two required options; there are more options, see below.
 
