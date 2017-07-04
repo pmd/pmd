@@ -56,7 +56,7 @@ public final class CycloMetric extends AbstractMetric implements ClassMetric, Op
 
     @Override
     public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-        return 1 + Metrics.get(OperationMetricKey.CYCLO, node, ResultOption.AVERAGE);
+        return 1 + Metrics.get(OperationMetricKey.CYCLO, node, version, ResultOption.AVERAGE);
     }
 
 

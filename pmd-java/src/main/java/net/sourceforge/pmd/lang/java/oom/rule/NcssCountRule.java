@@ -24,10 +24,10 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
 
     private static final IntegerProperty METHOD_REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
-        "methodReportLevel", "Metric reporting threshold for methods", 1, 30, 10, 1.0f);
+        "methodReportLevel", "Metric reporting threshold for methods", 1, 60, 12, 1.0f);
 
     private static final IntegerProperty CLASS_REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
-        "classReportLevel", "Metric reporting threshold for classes", 1, 30, 10, 1.0f);
+        "classReportLevel", "Metric reporting threshold for classes", 1, 1000, 250, 1.0f);
 
     private int methodReportLevel;
     private int classReportLevel;
