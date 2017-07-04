@@ -36,4 +36,5 @@ This is a major release.
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements
+*   [#484](https://github.com/pmd/pmd/pull/484): \[core] Changed linux usage to a more unix like path
 
