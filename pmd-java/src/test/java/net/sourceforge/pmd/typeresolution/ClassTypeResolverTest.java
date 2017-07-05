@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
 import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
@@ -1173,6 +1174,30 @@ public class ClassTypeResolverTest {
         assertEquals(int.class, expressions.get(index).getType());
         assertEquals(int.class, getChildType(expressions.get(index), 1));
         assertEquals(int.class, getChildType(expressions.get(index++), 2));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testMethodAccessibility() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodAccessibility.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // SuperClassA a = inheritedA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 1));
+
+        // SuperClassB b = inheritedB();
+        assertEquals(SuperClassB.class, expressions.get(index).getType());
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index++), 1));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());

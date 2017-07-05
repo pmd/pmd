@@ -920,6 +920,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     }
 
                     if (astArguments != null) {
+                        super.visit(astArguments, data);
                         astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
                     }
 
@@ -954,6 +955,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         primaryNode.setTypeDefinition(primaryNodeType);
 
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTArguments node, Object data) {
         return data;
     }
 
