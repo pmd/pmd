@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -14,13 +16,13 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  */
 
 public class MethodType {
-    private JavaTypeDefinition returnType;
-    private List<JavaTypeDefinition> argTypes;
-    private Method method;
+    private final JavaTypeDefinition returnType;
+    private final List<JavaTypeDefinition> argTypes;
+    private final Method method;
 
     public MethodType(JavaTypeDefinition returnType, List<JavaTypeDefinition> argTypes, Method method) {
         this.returnType = returnType;
-        this.argTypes = argTypes;
+        this.argTypes = Collections.unmodifiableList(new ArrayList<JavaTypeDefinition>(argTypes));
         this.method = method;
     }
 

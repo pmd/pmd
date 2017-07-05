@@ -432,8 +432,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         for (node = getEnclosingTypeDeclaration(node); node != null;
              node = getEnclosingTypeDeclaration(node.jjtGetParent())) {
 
-            getApplicableMethods(node.getTypeDefinition(), methodName, typeArguments, argArity, accessingClass,
-                                 foundMethods);
+            foundMethods.addAll(getApplicableMethods(node.getTypeDefinition(), methodName, typeArguments,
+                                                     argArity, accessingClass));
         }
 
         // TODO: search static methods
@@ -444,24 +444,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public List<MethodType> getApplicableMethods(JavaTypeDefinition context,
                                                  String methodName,
                                                  List<JavaTypeDefinition> typeArguments,
-                                                 int arity,
+                                                 int argArity,
                                                  Class<?> accessingClass) {
         List<MethodType> result = new ArrayList<>();
 
-        getApplicableMethods(context, methodName, typeArguments, arity, accessingClass, result);
-
-        return result;
-    }
-
-    public void getApplicableMethods(JavaTypeDefinition context,
-                                     String methodName,
-                                     List<JavaTypeDefinition> typeArguments,
-                                     int argArity,
-                                     Class<?> accessingClass,
-                                     List<MethodType> result) {
-
         if (context == null) {
-            return;
+            return result;
         }
 
         // TODO: shadowing, overriding
@@ -476,7 +464,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     // TODO: do generic methods
                     // this disables invocations which could match generic methods
                     result.clear();
-                    return;
+                    return result;
                 }
 
                 result.add(getTypeDefOfMethod(context, method));
@@ -485,15 +473,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         // search it's supertype
         if (!contextClass.equals(Object.class)) {
-            getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
-                                 methodName, typeArguments, argArity, accessingClass, result);
+            result.addAll(getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
+                                               methodName, typeArguments, argArity, accessingClass));
         }
 
         // search it's interfaces
         for (Type interfaceType : contextClass.getGenericInterfaces()) {
-            getApplicableMethods(context.resolveTypeDefinition(interfaceType),
-                                 methodName, typeArguments, argArity, accessingClass, result);
+            result.addAll(getApplicableMethods(context.resolveTypeDefinition(interfaceType),
+                                               methodName, typeArguments, argArity, accessingClass));
         }
+
+        return result;
     }
 
     public boolean isMethodApplicable(Method method, String methodName, int argArity,
