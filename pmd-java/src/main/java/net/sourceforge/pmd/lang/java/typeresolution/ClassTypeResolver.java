@@ -409,11 +409,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                        List<JavaTypeDefinition> typeArguments,
                                                        int argArity,
                                                        Class<?> accessingClass) {
-        if (accessingClass == null) {
-            return null;
-        }
-
         List<MethodType> foundMethods = new ArrayList<>();
+
+        if (accessingClass == null) {
+            return foundMethods;
+        }
 
         // we search each enclosing type declaration, looking at their supertypes as well
         for (node = getEnclosingTypeDeclaration(node); node != null;
@@ -530,7 +530,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 && prefix.jjtGetParent().jjtGetNumChildren() >= 2) {
             ASTArguments args = prefix.jjtGetParent().jjtGetChild(1).getFirstChildOfType(ASTArguments.class);
             // TODO: investigate if this will cause double visitation
-            super.visit(args, null);
+            if(args != null) {
+                super.visit(args, null);
+            }
 
             return args;
         }
@@ -956,25 +958,22 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     /**
-     * Returns the the first Class declaration around the node. Looks for Class declarations
-     * and if the second argument is null, then for anonymous classes as well.
+     * Returns the the first Class declaration around the node.
      *
      * @param node The node with the enclosing Class declaration.
      * @return The JavaTypeDefinition of the enclosing Class declaration.
      */
     private TypeNode getEnclosingTypeDeclaration(Node node) {
         Node previousNode = null;
+
         while (node != null) {
             if (node instanceof ASTClassOrInterfaceDeclaration) {
                 return (TypeNode) node;
                 // anonymous class declaration
             } else if (node instanceof ASTAllocationExpression // is anonymous class declaration
-                    && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // array cant anonymous
+                    && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // array cant be anonymous
                     && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
-                ASTClassOrInterfaceType typeDecl = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
-                if (typeDecl != null) {
-                    return typeDecl;
-                }
+                return (TypeNode) node;
             }
 
             previousNode = node;
