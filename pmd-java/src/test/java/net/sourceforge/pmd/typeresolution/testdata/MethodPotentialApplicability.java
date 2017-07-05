@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
 public class MethodPotentialApplicability {
@@ -24,15 +28,25 @@ public class MethodPotentialApplicability {
     }
 
     // test if variable arity with arity n -> then call arity >= n-1
-    int vararg(String b, int... a) { return 0;}
+    int vararg(String b, int... a) {
+        return 0;
+    }
 
-    Exception vararg(String a, String b, String c, int... d) {return null;}
+    Exception vararg(String a, String b, String c, int... d) {
+        return null;
+    }
 
     // test no arguments
-    Number noArguments() {return null;}
+    Number noArguments() {
+        return null;
+    }
 
     // test not vararg mathching arity
-    String notVararg(int a, int b) {return null;}
+    String notVararg(int a, int b) {
+        return null;
+    }
 
-    Exception notVararg(int a) {return null;}
+    Exception notVararg(int a) {
+        return null;
+    }
 }

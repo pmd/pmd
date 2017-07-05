@@ -16,8 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
-import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -69,6 +67,8 @@ import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
+import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
+import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
@@ -184,12 +184,13 @@ public class ClassTypeResolverTest {
         Assert.assertTrue(Comparator.class.isAssignableFrom(child.getType()));
         Assert.assertSame(Integer.class, child.getTypeDefinition().getGenericType(0).getType());
     }
-    
+
     @Test
     public void testNestedAnonymousClass() throws Exception {
         Node acu = parseAndTypeResolveForClass(NestedAnonymousClass.class, "1.8");
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
-        ASTAllocationExpression nestedAllocation = allocationExpression.getFirstDescendantOfType(ASTAllocationExpression.class);
+        ASTAllocationExpression nestedAllocation
+                = allocationExpression.getFirstDescendantOfType(ASTAllocationExpression.class);
         TypeNode child = (TypeNode) nestedAllocation.jjtGetChild(0);
         Assert.assertTrue(Converter.class.isAssignableFrom(child.getType()));
         Assert.assertSame(String.class, child.getTypeDefinition().getGenericType(0).getType());
@@ -1128,7 +1129,8 @@ public class ClassTypeResolverTest {
         assertEquals(String.class, getChildType(expressions.get(index++), 3));
 
         // this.field.first = "";
-        assertEquals(String.class, expressions.get(index).getType()); assertEquals(String.class, getChildType(expressions.get(index++), 2));
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 2));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
@@ -1149,7 +1151,7 @@ public class ClassTypeResolverTest {
         assertEquals(int.class, expressions.get(index).getType());
         assertEquals(int.class, getChildType(expressions.get(index), 0));
         assertEquals(int.class, getChildType(expressions.get(index++), 1));
-        
+
         // int b = vararg("", 10);
         assertEquals(int.class, expressions.get(index).getType());
         assertEquals(int.class, getChildType(expressions.get(index), 0));
@@ -1181,6 +1183,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodAccessibility() throws JaxenException {
+        // ASTCompilationUnit acu = parseAndTypeResolveForClass15(Dummy.class);
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodAccessibility.class);
 
         List<AbstractJavaTypeNode> expressions = convertList(

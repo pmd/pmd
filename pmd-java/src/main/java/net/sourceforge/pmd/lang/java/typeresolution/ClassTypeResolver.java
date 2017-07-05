@@ -74,7 +74,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.Token;
@@ -338,56 +337,70 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //       make sure it handles same name classes and packages
         // TODO: handle generic static field cases
 
-        // handles cases where first part is a fully qualified name
-        populateType(node, node.getImage());
+        Class<?> accessingClass = getEnclosingTypeDeclarationClass(node);
 
-        if (node.getType() == null) {
-            Class<?> accessingClass = getEnclosingTypeDeclarationClass(node);
+        String[] dotSplitImage = node.getImage().split("\\.");
+        ASTArguments astArguments = getSuffixMethodArgs(node);
+        ASTArgumentList astArgumentList = null;
+        int methodArgsArity = 0;
 
-            String[] dotSplitImage = node.getImage().split("\\.");
-            ASTArguments astArguments = getSuffixMethodArgs(node);
-            ASTArgumentList astArgumentList = null;
-            int methodArgsArity = 0;
+        if (astArguments != null) {
+            astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
+        }
 
-            if (astArguments != null) {
-                astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
-            }
+        if (astArgumentList != null) {
+            methodArgsArity = astArgumentList.jjtGetNumChildren();
+        }
 
-            if (astArgumentList != null) {
-                methodArgsArity = astArgumentList.jjtGetNumChildren();
-            }
+        JavaTypeDefinition previousType = null;
+        if (dotSplitImage.length == 1 && astArguments != null) { // method
 
-            JavaTypeDefinition previousType = null;
-            if (dotSplitImage.length == 1 && astArguments != null) { // method
+            List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
+                                                                 methodArgsArity, accessingClass);
 
-                List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
-                                                                     methodArgsArity, accessingClass);
+            previousType = getBestMethodReturnType(methods, astArgumentList, null);
+        } else {
+            previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0], accessingClass);
+        }
 
-                previousType = getBestMethodReturnType(methods, astArgumentList, null);
-            } else {
-                previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0], accessingClass);
-            }
-
-            for (int i = 1; i < dotSplitImage.length; ++i) {
-                if (previousType == null) {
-                    break;
-                }
-
-                if (i == dotSplitImage.length - 1 && astArguments != null) { // method
-                    List<MethodType> methods = getApplicableMethods(previousType, dotSplitImage[i], null,
-                                                                    methodArgsArity, accessingClass);
-
-                    previousType = getBestMethodReturnType(methods, astArgumentList, null);
-                } else { // field
-                    previousType = getFieldType(previousType, dotSplitImage[i], accessingClass);
-                }
-            }
-
-            if (previousType != null) {
-                node.setTypeDefinition(previousType);
+        // TODO: remove this if branch, it's only purpose is to make JUnitAssertionsShouldIncludeMessage's tests pass
+        //       as the code is not compiled there and symbol table works on uncompiled code    
+        if (node.getNameDeclaration() != null
+                && previousType == null // if it's not null, then let other code handle things
+                && node.getNameDeclaration().getNode() instanceof TypeNode) {
+            // Carry over the type from the declaration
+            Class<?> nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
+            // FIXME : generic classes and class with generic super types could have the wrong type assigned here
+            if (nodeType != null) {
+                node.setType(nodeType);
             }
         }
 
+        if (node.getType() == null) {
+            // handles cases where first part is a fully qualified name
+            populateType(node, node.getImage());
+
+            if (node.getType() == null) {
+                for (int i = 1; i < dotSplitImage.length; ++i) {
+                    if (previousType == null) {
+                        break;
+                    }
+
+                    if (i == dotSplitImage.length - 1 && astArguments != null) { // method
+                        List<MethodType> methods = getApplicableMethods(previousType, dotSplitImage[i], null,
+                                                                        methodArgsArity, accessingClass);
+
+                        previousType = getBestMethodReturnType(methods, astArgumentList, null);
+                    } else { // field
+                        previousType = getFieldType(previousType, dotSplitImage[i], accessingClass);
+                    }
+                }
+
+                if (previousType != null) {
+                    node.setTypeDefinition(previousType);
+                }
+            }
+        }
         return super.visit(node, data);
     }
 
@@ -530,7 +543,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 && prefix.jjtGetParent().jjtGetNumChildren() >= 2) {
             ASTArguments args = prefix.jjtGetParent().jjtGetChild(1).getFirstChildOfType(ASTArguments.class);
             // TODO: investigate if this will cause double visitation
-            if(args != null) {
+            if (args != null) {
                 super.visit(args, null);
             }
 
@@ -874,8 +887,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
             AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
-            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren() ?
-                    (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
+            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren()
+                    ? (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
 
             // skip children which already have their type assigned
             if (currentChild.getType() == null) {
