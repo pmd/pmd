@@ -221,7 +221,7 @@ public abstract class AbstractNode implements Node {
 
     /**
      * Traverses up the tree to find the first parent instance of type
-     * parentType
+     * parentType or one of its subclasses.
      *
      * @param parentType
      *            class which you want to find.
