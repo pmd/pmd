@@ -30,7 +30,13 @@ public class JavaTypeDefinition implements TypeDefinition {
         if (clazz.isAnonymousClass()) {
             // is this an anonymous class based on an interface or a class?
             if (clazz.getSuperclass() == Object.class) {
-                typeParameters = clazz.getInterfaces()[0].getTypeParameters();
+                // is this based off an interface?
+                if (clazz.getInterfaces().length != 0) {
+                    typeParameters = clazz.getInterfaces()[0].getTypeParameters();
+                } else {
+                    // This guy is just doing new Object() { ... }
+                    typeParameters = clazz.getTypeParameters();
+                }
             } else {
                 typeParameters = clazz.getSuperclass().getTypeParameters();
             }
