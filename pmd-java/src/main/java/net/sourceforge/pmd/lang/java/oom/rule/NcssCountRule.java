@@ -54,13 +54,13 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
         super.visit(node, data);
 
         if (ClassMetricKey.NCSS.supports(node)) {
-            int classCount = (int) Metrics.get(ClassMetricKey.NCSS, node);
+            int classSize = (int) Metrics.get(ClassMetricKey.NCSS, node);
             int classHighest = (int) Metrics.get(OperationMetricKey.NCSS, node, ResultOption.HIGHEST);
 
-            if (classCount >= classReportLevel || classHighest >= methodReportLevel) {
+            if (classSize >= classReportLevel || classHighest >= methodReportLevel) {
                 String[] messageParams = {node.getTypeKind().name().toLowerCase(),
                                           node.getImage(),
-                                          classCount + " (Highest = " + classHighest + ")", };
+                                          classSize + " (Highest = " + classHighest + ")", };
 
                 addViolation(data, node, messageParams);
             }
@@ -72,10 +72,10 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
 
-        int cyclo = (int) Metrics.get(OperationMetricKey.NCSS, node);
-        if (cyclo >= methodReportLevel) {
+        int methodSize = (int) Metrics.get(OperationMetricKey.NCSS, node);
+        if (methodSize >= methodReportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                   node.getQualifiedName().getOperation(), "" + cyclo, });
+                                                   node.getQualifiedName().getOperation(), "" + methodSize, });
         }
 
         return data;

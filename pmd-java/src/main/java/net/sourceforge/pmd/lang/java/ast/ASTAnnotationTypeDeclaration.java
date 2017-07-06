@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
-    QualifiedName qualifiedName;
+    private QualifiedName qualifiedName;
 
     public ASTAnnotationTypeDeclaration(int id) {
         super(id);

@@ -36,7 +36,7 @@ public final class QualifiedName {
      *
      * @return The qualified name of the node
      */
-    public static QualifiedName makeOperationOf(ASTMethodDeclaration node) {
+    /* default */ static QualifiedName makeOperationOf(ASTMethodDeclaration node) {
         QualifiedName parentQname = node.getFirstParentOfType(ASTAnyTypeDeclaration.class)
                                         .getQualifiedName();
 
@@ -53,7 +53,7 @@ public final class QualifiedName {
      *
      * @return The qualified name of the node
      */
-    public static QualifiedName makeOperationOf(ASTConstructorDeclaration node) {
+    /* default */ static QualifiedName makeOperationOf(ASTConstructorDeclaration node) {
         ASTClassOrInterfaceDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 
         return makeOperationOf(parent.getQualifiedName(),
@@ -82,7 +82,7 @@ public final class QualifiedName {
      *
      * @return The qualified name of the nested class
      */
-    public static QualifiedName makeNestedClassOf(QualifiedName parent, String className) {
+    /* default */ static QualifiedName makeNestedClassOf(QualifiedName parent, String className) {
         QualifiedName qname = new QualifiedName();
         qname.packages = parent.packages;
         if (parent.classes[0] != null) {
@@ -102,7 +102,7 @@ public final class QualifiedName {
      *
      * @return The qualified name of the node
      */
-    public static QualifiedName makeOuterClassOf(ASTAnyTypeDeclaration node) {
+    /* default */ static QualifiedName makeOuterClassOf(ASTAnyTypeDeclaration node) {
         ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
                                         .getFirstChildOfType(ASTPackageDeclaration.class);
 

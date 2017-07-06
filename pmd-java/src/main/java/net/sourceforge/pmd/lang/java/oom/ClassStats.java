@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
  * operate on a nested class, retrieve the correct ClassStats with
  * {@link PackageStats#getClassStats(QualifiedName, boolean)} then use the methods of ClassStats.
  *
- * <p>Note that at this level, entities of the DS do not manipulate QualifiedNames anymore, only Strings.
+ * <p>Note that at this level, entities of the data structure do not manipulate QualifiedNames anymore, only Strings.
  *
  * @author Clément Fournier
  */

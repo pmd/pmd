@@ -20,29 +20,40 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  */
 public abstract class AbstractJavaMetricsRule extends AbstractJavaRule {
 
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    @Override
+    public final Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
 
-    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+
+    @Override
+    public final Object visit(ASTAnnotationTypeDeclaration node, Object data) {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
 
-    public Object visit(ASTEnumDeclaration node, Object data) {
+
+    @Override
+    public final Object visit(ASTEnumDeclaration node, Object data) {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
+
 
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
 
-    public Object visit(ASTMethodDeclaration node, Object data) {
+
+    @Override
+    public final Object visit(ASTMethodDeclaration node, Object data) {
         return visit((ASTMethodOrConstructorDeclaration) node, data);
     }
 
-    public Object visit(ASTConstructorDeclaration node, Object data) {
+
+    @Override
+    public final Object visit(ASTConstructorDeclaration node, Object data) {
         return visit((ASTMethodOrConstructorDeclaration) node, data);
     }
+
 
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         return visit((JavaNode) node, data);
