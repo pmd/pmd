@@ -23,6 +23,8 @@ This is a major release.
 
 ### Fixed Issues
 
+*   apex
+    *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
 *   java
     *   [#1513](https://sourceforge.net/p/pmd/bugs/1513/): \[java] Remove deprecated rule UseSingleton
 *   java-controversial
