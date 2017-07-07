@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.Locale;
+import java.util.Properties;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Lexer;
@@ -15,6 +16,18 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import apex.jorje.parser.impl.ApexLexer;
 
 public class ApexTokenizer implements Tokenizer {
+
+    /**
+     * If the properties is <code>false</code> (default), then the case of any token
+     * is ignored.
+     */
+    public static final String CASE_SENSITIVE = "net.sourceforge.pmd.cpd.ApexTokenizer.caseSensitive";
+
+    private boolean caseSensitive;
+
+    public void setProperties(Properties properties) {
+        caseSensitive = Boolean.parseBoolean(properties.getProperty(CASE_SENSITIVE, "false"));
+    }
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
@@ -33,8 +46,9 @@ public class ApexTokenizer implements Tokenizer {
             while (token.getType() != Token.EOF) {
                 if (token.getChannel() != Lexer.HIDDEN) {
                     String tokenText = token.getText();
-                    // note: old behavior of AbstractTokenizer was, to consider only lowercase
-                    tokenText = tokenText.toLowerCase(Locale.ROOT);
+                    if (!caseSensitive) {
+                        tokenText = tokenText.toLowerCase(Locale.ROOT);
+                    }
                     TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine());
                     tokenEntries.add(tokenEntry);
                 }

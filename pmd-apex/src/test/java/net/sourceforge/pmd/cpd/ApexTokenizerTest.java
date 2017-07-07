@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -28,6 +29,16 @@ public class ApexTokenizerTest {
         }
         assertEquals(28, tokens.size());
         assertEquals("someparam", findTokensByLine(8, tokens).get(0).toString());
+    }
+
+    @Test
+    public void testTokenizeCaseSensitive() throws IOException {
+        Tokens tokens = tokenize(load("Simple.cls"), true);
+        if (tokens.size() != 28) {
+            printTokens(tokens);
+        }
+        assertEquals(28, tokens.size());
+        assertEquals("someParam", findTokensByLine(8, tokens).get(0).toString());
     }
 
     /**
@@ -56,7 +67,14 @@ public class ApexTokenizerTest {
     }
 
     private Tokens tokenize(String code) {
+        return tokenize(code, false);
+    }
+
+    private Tokens tokenize(String code, boolean caseSensitive) {
         ApexTokenizer tokenizer = new ApexTokenizer();
+        Properties properties = new Properties();
+        properties.setProperty(ApexTokenizer.CASE_SENSITIVE, Boolean.toString(caseSensitive));
+        tokenizer.setProperties(properties);
         Tokens tokens = new Tokens();
         tokenizer.tokenize(new SourceCode(new StringCodeLoader(code)), tokens);
         return tokens;
