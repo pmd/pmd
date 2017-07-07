@@ -9,12 +9,22 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
+    * [Revamped Apex CPD](#Revamped_Apex_CPD)
     * [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
+
+#### Revamped Apex CPD
+
+We are now using the Apex jorje lexer to tokenize Apex code for CPD. This change means:
+
+    *   All comments are now ignored for CPD. This is consistent with how other languages such as Java and Groovy work.
+    *   Tokenization honors the language specification, which improves accurancy.
+
+CPD will therefore have less false positives and false negatives.
 
 #### Removed Rules
 
