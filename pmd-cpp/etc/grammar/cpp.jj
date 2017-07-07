@@ -149,10 +149,6 @@ SKIP :
   "/*"  : IN_COMMENT
 |
   "#" : PREPROCESSOR_OUTPUT
-|
-  "\\\r\n"
-|
-  "\\\n"
 }
 
 <IN_LINE_COMMENT> SKIP:

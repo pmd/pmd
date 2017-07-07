@@ -49,7 +49,6 @@ public class CPPTokenizerContinuationTest {
     public void testContinuationIntraToken() throws Exception {
         Tokens tokens = parse(load("cpp_continuation_intra_token.cpp"));
         assertEquals(7, tokens.size());
-        printTokens(tokens);
     }
 
     @Test
