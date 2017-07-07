@@ -22,5 +22,6 @@
 public with sharing class SFDCEncoderConstants {
 
 	/************ CLASS CODE HERE *************/
+	public String someParam { get; set; }
 }
 
