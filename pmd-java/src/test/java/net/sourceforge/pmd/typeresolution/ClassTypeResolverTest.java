@@ -11,8 +11,6 @@ import static org.junit.Assert.assertSame;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.util.AbstractCollection;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +18,7 @@ import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodMostSpecific;
+import net.sourceforge.pmd.typeresolution.testdata.MethodSecondPhase;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -84,8 +83,6 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
-
-import javax.management.relation.RoleList;
 
 
 public class ClassTypeResolverTest {
@@ -1264,6 +1261,47 @@ public class ClassTypeResolverTest {
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }
+
+    @Test
+    public void testMethodSecondPhase() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodSecondPhase.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // String a = boxing(10, "");
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+        // Exception b = boxing('a', "");
+        assertEquals(Exception.class, expressions.get(index).getType());
+        assertEquals(Exception.class, getChildType(expressions.get(index), 0));
+        assertEquals(Exception.class, getChildType(expressions.get(index++), 1));
+        // int c = boxing(10L, "");
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // String d = unboxing("", (Integer) null);
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+        // Exception e = unboxing("", (Character) null);
+        assertEquals(Exception.class, expressions.get(index).getType());
+        assertEquals(Exception.class, getChildType(expressions.get(index), 0));
+        assertEquals(Exception.class, getChildType(expressions.get(index++), 1));
+        // int f = unboxing("", (Byte) null);
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
 
 
     private Class<?> getChildType(Node node, int childIndex) {
