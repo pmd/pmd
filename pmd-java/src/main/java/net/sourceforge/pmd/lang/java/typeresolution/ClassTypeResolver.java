@@ -435,13 +435,69 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         List<MethodType> selectedMethods = selectMethodsFirstPhase(methods, arguments, typeArgs);
         if (!selectedMethods.isEmpty()) {
-            if(selectedMethods.size() == 1) {
-                return selectedMethods.get(0).getReturnType();
-                // TODO: select most specific method
-            }
+            return selectMostSpecificMethod(selectedMethods).getReturnType();
         }
 
         return null;
+    }
+
+    private MethodType selectMostSpecificMethod(List<MethodType> selectedMethods) {
+
+        MethodType mostSpecific = selectedMethods.get(0);
+
+        for (int methodIndex = 1; methodIndex < selectedMethods.size(); ++methodIndex) {
+            MethodType nextMethod = selectedMethods.get(methodIndex);
+
+            if (checkSubtypeability(mostSpecific, nextMethod)) {
+                if (checkSubtypeability(nextMethod, mostSpecific)) { // both are maximally specific
+                    mostSpecific = selectAmongMaximallySpecific(mostSpecific, nextMethod);
+                } else {
+                    mostSpecific = nextMethod;
+                }
+            }
+        }
+
+        return mostSpecific;
+    }
+
+
+    private MethodType selectAmongMaximallySpecific(MethodType first, MethodType second) {
+        if(isAbstract(first)) {
+            if(isAbstract(second)) {
+                // https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.5
+                // the bottom of the section is relevant here, we can't resolve this type
+                // TODO: resolve this
+                
+                return null;
+            } else { // second one isn't abstract
+                return second;
+            }
+        } else if(isAbstract(second)){
+            return first; // first isn't abstract, second one is
+        } else {
+            throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
+            + first.toString() + "\n" + second.toString());
+        }
+    }
+
+    private boolean isAbstract(MethodType method) {
+        return Modifier.isAbstract(method.getMethod().getModifiers());
+    }
+
+
+    private boolean checkSubtypeability(MethodType method, MethodType subtypeableMethod) {
+        List<JavaTypeDefinition> subtypeableArgs = subtypeableMethod.getParameterTypes();
+        List<JavaTypeDefinition> methodTypeArgs = method.getParameterTypes();
+
+        // TODO: add support for not matching arity methods
+
+        for (int index = 0; index < subtypeableArgs.size(); ++index) {
+            if (!isSubtypeable(methodTypeArgs.get(index), subtypeableArgs.get(index))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private List<MethodType> selectMethodsFirstPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,

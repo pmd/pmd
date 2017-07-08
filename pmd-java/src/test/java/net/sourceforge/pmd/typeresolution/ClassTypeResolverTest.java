@@ -11,12 +11,15 @@ import static org.junit.Assert.assertSame;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.AbstractCollection;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
+import net.sourceforge.pmd.typeresolution.testdata.MethodMostSpecific;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -81,6 +84,8 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
+
+import javax.management.relation.RoleList;
 
 
 public class ClassTypeResolverTest {
@@ -1184,7 +1189,6 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodAccessibility() throws JaxenException {
-        // ASTCompilationUnit acu = parseAndTypeResolveForClass15(Dummy.class);
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodAccessibility.class);
 
         List<AbstractJavaTypeNode> expressions = convertList(
@@ -1210,7 +1214,6 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodFirstPhase() throws JaxenException {
-        // ASTCompilationUnit acu = parseAndTypeResolveForClass15(Dummy.class);
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodFirstPhase.class);
 
         List<AbstractJavaTypeNode> expressions = convertList(
@@ -1228,6 +1231,35 @@ public class ClassTypeResolverTest {
         assertEquals(Exception.class, expressions.get(index).getType());
         assertEquals(Exception.class, getChildType(expressions.get(index), 0));
         assertEquals(Exception.class, getChildType(expressions.get(index++), 1));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testMethodMostSpecific() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodMostSpecific.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // String a = moreSpecific((Number) null, (AbstractCollection) null);
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+
+        // Exception b = moreSpecific((Integer) null, (AbstractList) null);
+        assertEquals(Exception.class, expressions.get(index).getType());
+        assertEquals(Exception.class, getChildType(expressions.get(index), 0));
+        assertEquals(Exception.class, getChildType(expressions.get(index++), 1));
+
+        // int c = moreSpecific((Double) null, (RoleList) null);
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
