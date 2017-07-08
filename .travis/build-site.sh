@@ -20,7 +20,7 @@ fi
     echo -e "Finished executing ./mvnw install\n\n"
 
     echo -e "\n\nExecuting ./mvnw site site:stage...\n\n"
-    travis_wait ./mvnw site site:stage -Psite -B -V -q
+    travis_wait ./mvnw site site:stage -DskipTests=true -Psite -B -V -q
     echo -e "Finished executing ./mvnw site site:stage...\n\n"
 )
 
