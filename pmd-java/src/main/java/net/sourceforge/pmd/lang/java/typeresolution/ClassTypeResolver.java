@@ -427,8 +427,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     public JavaTypeDefinition getBestMethodReturnType(List<MethodType> methods, ASTArgumentList arguments,
                                                       List<JavaTypeDefinition> typeArgs) {
-        // TODO: add second and third phase
-
         if (methods.size() == 1) {
             return methods.get(0).getReturnType(); // TODO: remove this in the end, needed to pass some previous tests
         }
@@ -441,6 +439,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         selectedMethods = selectMethodsSecondPhase(methods, arguments, typeArgs);
         if (!selectedMethods.isEmpty()) {
             return selectMostSpecificMethod(selectedMethods).getReturnType();
+        }
+
+        selectedMethods = selectMethodsThirdPhase(methods, arguments, typeArgs);
+        if (!selectedMethods.isEmpty()) {
+            if(selectedMethods.size() == 1)  {
+                return selectedMethods.get(0).getReturnType();
+                // TODO: add selecting most specific vararg method
+            }
         }
 
         return null;
@@ -580,6 +586,52 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         return selectedMethods;
     }
+
+
+    private List<MethodType> selectMethodsThirdPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
+                                                     List<JavaTypeDefinition> typeArgs) {
+        List<MethodType> selectedMethods = new ArrayList<>();
+
+        for (MethodType methodType : methodsToSearch) {
+            if (isGeneric(methodType.getMethod().getDeclaringClass()) && typeArgs.size() == 0) {
+                // TODO: look at type interference, weep again
+            }
+
+            if (argList == null) {
+                selectedMethods.add(methodType);
+
+                // now we consider varargs as not fixed arity
+            } else { // check subtypeability of each argument to the corresponding parameter
+                boolean methodIsApplicable = true;
+
+                List<JavaTypeDefinition> methodParameters = methodType.getParameterTypes();
+                JavaTypeDefinition varargComponentType = methodType.getVarargComponentType();
+
+                // try each arguments if it's method convertible
+                for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                    JavaTypeDefinition parameterType = argIndex < methodParameters.size() - 1
+                            ? methodParameters.get(argIndex) : varargComponentType;
+
+                    if (!isMethodConvertble(parameterType, (ASTExpression) argList.jjtGetChild(argIndex))) {
+                        methodIsApplicable = false;
+                        break;
+                    }
+
+                    // TODO: If k != n, or if k = n and An cannot be converted by method invocation conversion to
+                    // Sn[], then the type which is the erasure (§4.6) of Sn is accessible at the point of invocation.
+
+                    // TODO: add unchecked conversion in an else if branch
+                }
+
+                if (methodIsApplicable) {
+                    selectedMethods.add(methodType);
+                }
+            }
+        }
+
+        return selectedMethods;
+    }
+
 
     private boolean isMethodConvertble(JavaTypeDefinition parameter, ASTExpression argument) {
         return isMethodConvertible(parameter, argument.getTypeDefinition());

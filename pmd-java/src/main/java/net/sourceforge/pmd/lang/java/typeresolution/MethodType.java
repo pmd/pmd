@@ -36,4 +36,8 @@ public class MethodType {
     public Method getMethod() {
         return method;
     }
+
+    public JavaTypeDefinition getVarargComponentType() {
+        return argTypes.get(argTypes.size() - 1).getComponentType();
+    }
 }

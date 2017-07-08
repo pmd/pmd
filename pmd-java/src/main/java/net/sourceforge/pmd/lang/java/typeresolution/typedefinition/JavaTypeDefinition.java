@@ -166,4 +166,14 @@ public class JavaTypeDefinition implements TypeDefinition {
         // TODO : Shall we throw here?
         return forClass(Object.class);
     }
+
+    public JavaTypeDefinition getComponentType() {
+        Class<?> componentType = getType().getComponentType();
+
+        if(componentType == null) {
+            throw new IllegalStateException(getType().getSimpleName() + " is not an array type!");
+        }
+
+        return forClass(componentType);
+    }
 }
