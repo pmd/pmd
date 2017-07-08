@@ -14,11 +14,17 @@ fi
 
 (
     # Run the build, truncate output due to Travis log limits
+
+    echo -e "\n\nExecuting ./mvnw install...\n\n"
     travis_wait ./mvnw install -DskipTests=true -B -V | tail -100
+    echo -e "Finished executing ./mvnw install\n\n"
+
+    echo -e "\n\nExecuting ./mvnw site site:stage...\n\n"
     travis_wait ./mvnw site site:stage -Psite -B -V | tail -100
+    echo -e "Finished executing ./mvnw site site:stage...\n\n"
 )
 
-# create pmd-doc archive
+echo -e "\n\nCreating pmd-doc archive...\n\n"
 (
     cd target
     mv staging pmd-doc-${VERSION}
@@ -32,7 +38,7 @@ fi
 
 (
     if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
-        # Uploading snapshot site...
+        echo -e "\n\nUploading snapshot site...\n\n"
         travis_wait rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/ | tail -100
     fi
 )
