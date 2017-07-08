@@ -46,6 +46,7 @@ public class CPPTokenizerContinuationTest {
         assertEquals(")", findByLine(12, tokens).get(3).toString());
         assertEquals("{", findByLine(13, tokens).get(0).toString());
         assertEquals("\"world!\\n\"", findByLine(16, tokens).get(0).toString());
+        assertEquals("\"3 Hello, \\world!\\n\"", findByLine(22, tokens).get(4).toString());
         assertEquals("}", findByLine(29, tokens).get(0).toString());
     }
 
