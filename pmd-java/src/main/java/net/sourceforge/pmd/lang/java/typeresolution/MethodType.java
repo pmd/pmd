@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class MethodType {
 
     public MethodType(JavaTypeDefinition returnType, List<JavaTypeDefinition> argTypes, Method method) {
         this.returnType = returnType;
-        this.argTypes = Collections.unmodifiableList(new ArrayList<JavaTypeDefinition>(argTypes));
+        this.argTypes = Collections.unmodifiableList(argTypes);
         this.method = method;
     }
 
