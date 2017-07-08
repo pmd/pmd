@@ -97,6 +97,27 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private static final Map<String, Class<?>> PRIMITIVE_TYPES;
     private static final Map<String, String> JAVA_LANG;
 
+    private static ArrayList<Class<?>> primitiveSubTypeOrder = new ArrayList<Class<?>>();
+    private static ArrayList<Class<?>> boxedPrimitivesSubTypeOrder = new ArrayList<>();
+
+    static {
+        primitiveSubTypeOrder.add(double.class);
+        primitiveSubTypeOrder.add(float.class);
+        primitiveSubTypeOrder.add(long.class);
+        primitiveSubTypeOrder.add(int.class);
+        primitiveSubTypeOrder.add(short.class);
+        primitiveSubTypeOrder.add(byte.class);
+        primitiveSubTypeOrder.add(char.class); // this is here for convenience, not really in order
+
+        boxedPrimitivesSubTypeOrder.add(Double.class);
+        boxedPrimitivesSubTypeOrder.add(Float.class);
+        boxedPrimitivesSubTypeOrder.add(Long.class);
+        boxedPrimitivesSubTypeOrder.add(Integer.class);
+        boxedPrimitivesSubTypeOrder.add(Short.class);
+        boxedPrimitivesSubTypeOrder.add(Byte.class);
+        boxedPrimitivesSubTypeOrder.add(Character.class);
+    }
+
     static {
         // Note: Assumption here that primitives come from same parent
         // ClassLoader regardless of what ClassLoader we are passed
@@ -406,12 +427,93 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     public JavaTypeDefinition getBestMethodReturnType(List<MethodType> methods, ASTArgumentList arguments,
                                                       List<JavaTypeDefinition> typeArgs) {
-        // TODO: add overload resolution
-        if (methods.size() == 1) {
-            return methods.get(0).getReturnType();
-        } else {
-            return null;
+        // TODO: add second and third phase
+
+        if(methods.size() == 1) {
+            return methods.get(0).getReturnType(); // TODO: remove this in the end, needed to pass some previous tests
         }
+
+        List<MethodType> selectedMethods = selectMethodsFirstPhase(methods, arguments, typeArgs);
+        if (!selectedMethods.isEmpty()) {
+            if(selectedMethods.size() == 1) {
+                return selectedMethods.get(0).getReturnType();
+                // TODO: select most specific method
+            }
+        }
+
+        return null;
+    }
+
+    private List<MethodType> selectMethodsFirstPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
+                                                     List<JavaTypeDefinition> typeArgs) {
+        List<MethodType> selectedMethods = new ArrayList<>();
+
+        for (MethodType methodType : methodsToSearch) {
+            if (isGeneric(methodType.getMethod().getDeclaringClass())
+                    && (typeArgs == null || typeArgs.size() == 0)) {
+                // TODO: type interference
+            }
+
+            if (argList == null) {
+                selectedMethods.add(methodType);
+
+                // vararg methods are considered fixed arity here
+            } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
+                // check subtypeability of each argument to the corresponding parameter
+                boolean methodIsApplicable = true;
+
+                // try each arguments if it's subtypeable
+                for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                    if (!isSubtypeable(methodType.getParameterTypes().get(argIndex),
+                                       (ASTExpression) argList.jjtGetChild(argIndex))) {
+                        methodIsApplicable = false;
+                        break;
+                    }
+                    // TODO: add unchecked conversion in an else if branch
+                }
+
+                if (methodIsApplicable) {
+                    selectedMethods.add(methodType);
+                }
+
+            }
+
+        }
+
+        return selectedMethods;
+    }
+
+    private boolean isSubtypeable(JavaTypeDefinition parameter, ASTExpression argument) {
+        return isSubtypeable(parameter, argument.getTypeDefinition());
+    }
+
+    private boolean isSubtypeable(JavaTypeDefinition parameter, JavaTypeDefinition argument) {
+        // null types are always applicable
+        if (argument.getType() == null) {
+            return true;
+        }
+
+        // this covers arrays, simple class/interface cases
+        if (parameter.getType().isAssignableFrom(argument.getType())) {
+            return true;
+        }
+
+        int indexOfParameter = primitiveSubTypeOrder.indexOf(parameter.getType());
+
+        if(indexOfParameter != -1) {
+            if (argument.getType() == char.class) {
+                if (indexOfParameter <= 3) { // <= 3 because short and byte are not compatible with char
+                    return true;
+                }
+            } else {
+                int indexOfArg = primitiveSubTypeOrder.indexOf(argument.getType());
+                if(indexOfArg != -1 && indexOfParameter <= indexOfArg) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -520,6 +622,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private boolean isGeneric(Method method) {
         return method.getTypeParameters().length != 0;
+    }
+
+    private boolean isGeneric(Class<?> clazz) {
+        return clazz.getTypeParameters().length != 0;
     }
 
     private int getArity(Method method) {

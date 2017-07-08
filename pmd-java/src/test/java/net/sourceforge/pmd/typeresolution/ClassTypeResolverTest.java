@@ -1229,11 +1229,6 @@ public class ClassTypeResolverTest {
         assertEquals(Exception.class, getChildType(expressions.get(index), 0));
         assertEquals(Exception.class, getChildType(expressions.get(index++), 1));
 
-        // String c = vararg((Object[]) null);
-        assertEquals(String.class, expressions.get(index).getType());
-        assertEquals(String.class, getChildType(expressions.get(index), 0));
-        assertEquals(String.class, getChildType(expressions.get(index++), 1));
-
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }

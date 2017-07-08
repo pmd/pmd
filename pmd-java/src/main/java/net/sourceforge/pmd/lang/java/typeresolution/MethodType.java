@@ -29,7 +29,7 @@ public class MethodType {
         return returnType;
     }
 
-    public List<JavaTypeDefinition> getArgTypes() {
+    public List<JavaTypeDefinition> getParameterTypes() {
         return argTypes;
     }
 
