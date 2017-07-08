@@ -9,8 +9,9 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
-    * [Revamped Apex CPD](#Revamped_Apex_CPD)
-    * [Removed Rules](#Removed_Rules)
+    *   [Revamped Apex CPD](#Revamped_Apex_CPD)
+    *   [Modified Rules](#Modified_Rules)
+    *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
@@ -25,6 +26,12 @@ We are now using the Apex jorje lexer to tokenize Apex code for CPD. This change
     *   Tokenization honors the language specification, which improves accurancy.
 
 CPD will therefore have less false positives and false negatives.
+
+#### Modified Rules
+
+*   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
+    It will now flag anonymous class' methods marked as final (can't be overriden, so it's pointless), along with
+    final methods overriden / defined within enum instances.
 
 #### Removed Rules
 
@@ -41,6 +48,8 @@ CPD will therefore have less false positives and false negatives.
     *   [#1513](https://sourceforge.net/p/pmd/bugs/1513/): \[java] Remove deprecated rule UseSingleton
 *   java-controversial
     *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
+*   java-unnecessarycode
+    *   [#412](https://github.com/pmd/pmd/issues/412): \[java] java-unnecessarycode/UnnecessaryFinalModifier missing cases
 
 ### API Changes
 
