@@ -25,6 +25,7 @@ env:
   - BUILD=deploy
   - BUILD=site
   - BUILD=sonar
+  - BUILD=coveralls
 
 matrix:
   fast_finish: true
