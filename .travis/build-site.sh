@@ -13,21 +13,9 @@ fi
 
 
 (
-    export PING_SLEEP=30s
-    export BUILD_OUTPUT=/tmp/build-site.out
-    export PING_PID_FILE=/tmp/build-site-ping.pid
-
-    source .travis/background-job-funcs.sh
-
-    # Run the build, redirect output into the file
-    ./mvnw install -DskipTests=true -B -V >> $BUILD_OUTPUT 2>&1
-    ./mvnw site site:stage -Psite -B -V >> $BUILD_OUTPUT 2>&1
-
-    # The build finished without returning an error so dump a tail of the output
-    dump_output
-
-    # nicely terminate the ping output loop
-    kill_ping
+    # Run the build, truncate output due to Travis log limits
+    travis_wait ./mvnw install -DskipTests=true -B -V | tail -100
+    travis_wait ./mvnw site site:stage -Psite -B -V | tail -100
 )
 
 # create pmd-doc archive
@@ -44,20 +32,7 @@ fi
 
 (
     if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
-        # this can take very long and no output is generated. therefore use the background job again
-        export PING_SLEEP=30s
-        export BUILD_OUTPUT=/tmp/build-site-upload.out
-        export PING_PID_FILE=/tmp/build-site-upload-ping.pid
-
-        source .travis/background-job-funcs.sh
-
         # Uploading snapshot site...
-        rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
-
-        # The build finished without returning an error so dump a tail of the output
-        dump_output
-
-        # nicely terminate the ping output loop
-        kill_ping
+        travis_wait rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/ | tail -100
     fi
 )
