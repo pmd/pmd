@@ -16,11 +16,11 @@ fi
     # Run the build, truncate output due to Travis log limits
 
     echo -e "\n\nExecuting ./mvnw install...\n\n"
-    travis_wait_truncated ./mvnw install -DskipTests=true -B -V
+    travis_wait ./mvnw install -DskipTests=true -B -V -q
     echo -e "Finished executing ./mvnw install\n\n"
 
     echo -e "\n\nExecuting ./mvnw site site:stage...\n\n"
-    travis_wait_truncated ./mvnw site site:stage -Psite -B -V
+    travis_wait ./mvnw site site:stage -Psite -B -V -q
     echo -e "Finished executing ./mvnw site site:stage...\n\n"
 )
 
@@ -39,6 +39,6 @@ fi
 (
     if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
         echo -e "\n\nUploading snapshot site...\n\n"
-        travis_wait_truncated rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
+        travis_wait rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
     fi
 )
