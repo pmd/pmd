@@ -62,7 +62,8 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryFinalModifier">
       <description>
 When a class has the final modifier, all the methods are automatically final and do not need to be
-tagged as such. Similarly, private methods can't be overriden, and therefore do not need to be tagged either.
+tagged as such. Similarly, methods that can't be overridden (private methods, methods of anonymous classes,
+methods of enum instance) do not need to be tagged either.
       </description>
       <priority>3</priority>
       <properties>
@@ -73,7 +74,9 @@ tagged as such. Similarly, private methods can't be overriden, and therefore do 
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [count(./Annotation/MarkerAnnotation/Name[@Image='SafeVarargs' or @Image='java.lang.SafeVarargs']) = 0]
     /MethodDeclaration[@Final='true']
-    | //MethodDeclaration[@Final='true' and @Private='true']
+| //MethodDeclaration[@Final='true' and @Private='true']
+| //EnumConstant/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
+| //AllocationExpression/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
     ]]>
               </value>
           </property>
