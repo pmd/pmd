@@ -67,6 +67,8 @@ import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
+import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
+import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
@@ -182,12 +184,13 @@ public class ClassTypeResolverTest {
         Assert.assertTrue(Comparator.class.isAssignableFrom(child.getType()));
         Assert.assertSame(Integer.class, child.getTypeDefinition().getGenericType(0).getType());
     }
-    
+
     @Test
     public void testNestedAnonymousClass() throws Exception {
         Node acu = parseAndTypeResolveForClass(NestedAnonymousClass.class, "1.8");
         ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
-        ASTAllocationExpression nestedAllocation = allocationExpression.getFirstDescendantOfType(ASTAllocationExpression.class);
+        ASTAllocationExpression nestedAllocation
+                = allocationExpression.getFirstDescendantOfType(ASTAllocationExpression.class);
         TypeNode child = (TypeNode) nestedAllocation.jjtGetChild(0);
         Assert.assertTrue(Converter.class.isAssignableFrom(child.getType()));
         Assert.assertSame(String.class, child.getTypeDefinition().getGenericType(0).getType());
@@ -1128,6 +1131,76 @@ public class ClassTypeResolverTest {
         // this.field.first = "";
         assertEquals(String.class, expressions.get(index).getType());
         assertEquals(String.class, getChildType(expressions.get(index++), 2));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+
+    @Test
+    public void testMethodPotentialApplicability() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodPotentialApplicability.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // int a = vararg("");
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // int b = vararg("", 10);
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // String c = notVararg(0, 0);
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+
+        // Number d = noArguments();
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index), 0));
+        assertEquals(Number.class, getChildType(expressions.get(index++), 1));
+
+        // Number e = field.noArguments();
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index), 0));
+        assertEquals(Number.class, getChildType(expressions.get(index++), 1));
+
+        // int f = this.vararg("");
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 1));
+        assertEquals(int.class, getChildType(expressions.get(index++), 2));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testMethodAccessibility() throws JaxenException {
+        // ASTCompilationUnit acu = parseAndTypeResolveForClass15(Dummy.class);
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodAccessibility.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // SuperClassA a = inheritedA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 1));
+
+        // SuperClassB b = inheritedB();
+        assertEquals(SuperClassB.class, expressions.get(index).getType());
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index++), 1));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());

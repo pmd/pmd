@@ -10,6 +10,7 @@ This is a major release.
 
 * [New and noteworthy](#New_and_noteworthy)
     *   [Revamped Apex CPD](#Revamped_Apex_CPD)
+    *   [Java Type Resolution](#Java_Type_Resolution)
     *   [Modified Rules](#Modified_Rules)
     *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
@@ -26,6 +27,13 @@ We are now using the Apex jorje lexer to tokenize Apex code for CPD. This change
     *   Tokenization honors the language specification, which improves accurancy.
 
 CPD will therefore have less false positives and false negatives.
+
+#### Java Type Resolution
+
+As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph)'s work on type resolution for Java continues.
+For this release he has extended support for method calls.
+
+Method shadowing and overloading are still work in progress, but expect it to be fully supported soon enough.
 
 #### Modified Rules
 
@@ -60,4 +68,5 @@ CPD will therefore have less false positives and false negatives.
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
 *   [#484](https://github.com/pmd/pmd/pull/484): \[core] Changed linux usage to a more unix like path - [patriksevallius](https://github.com/patriksevallius)
+*   [#486](https://github.com/pmd/pmd/pull/486): \[java] Add basic method typeresolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 
