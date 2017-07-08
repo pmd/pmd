@@ -27,3 +27,18 @@ function travis_isPush() {
         return 1
     fi
 }
+
+#
+# Since travis_wait outputs the "Still running" indication into the
+# same stream as the command's output, we need to make sure, we
+# output these indications to avoid a build timeout.
+# But to workaround the log size limit, we shouldn't output everything.
+# travis_wait_truncated now outputs the head immediately, while
+# only outputting the tail of the log after the command is finished.
+#
+function travis_wait_truncated() {
+    local log=$(tempfile)
+    travis_wait "$@" | tee $log | head -100
+    tail -100 $log
+    rm -f $log
+}
