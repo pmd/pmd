@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -1205,6 +1206,38 @@ public class ClassTypeResolverTest {
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }
+
+
+    @Test
+    public void testMethodFirstPhase() throws JaxenException {
+        // ASTCompilationUnit acu = parseAndTypeResolveForClass15(Dummy.class);
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodFirstPhase.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // int a = subtype(10, 'a', null, new Integer[0]);
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // Exception b = vararg((Object) null);
+        assertEquals(Exception.class, expressions.get(index).getType());
+        assertEquals(Exception.class, getChildType(expressions.get(index), 0));
+        assertEquals(Exception.class, getChildType(expressions.get(index++), 1));
+
+        // String c = vararg((Object[]) null);
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
 
     private Class<?> getChildType(Node node, int childIndex) {
         return ((TypeNode) node.jjtGetChild(childIndex)).getType();
