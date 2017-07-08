@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,8 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
+import net.sourceforge.pmd.lang.cpp.CppTokenManager;
+import net.sourceforge.pmd.lang.cpp.ast.Token;
 
 public class CPPTokenizerContinuationTest {
 
@@ -34,7 +37,8 @@ public class CPPTokenizerContinuationTest {
 
         // special case, if the continuation is *within* a token
         // see also test #testContinuationIntraToken
-        assertEquals("ab", findByLine(8, tokens).get(2).toString());
+        TokenEntry tokenEntry = findByLine(8, tokens).get(2);
+        assertEquals("ab", tokenEntry.toString());
 
         assertEquals("int", findByLine(12, tokens).get(0).toString());
         assertEquals("main", findByLine(12, tokens).get(1).toString());
@@ -43,6 +47,37 @@ public class CPPTokenizerContinuationTest {
         assertEquals("{", findByLine(13, tokens).get(0).toString());
         assertEquals("\"world!\\n\"", findByLine(16, tokens).get(0).toString());
         assertEquals("}", findByLine(29, tokens).get(0).toString());
+    }
+
+    /**
+     * Verifies the begin/end of a token. Uses the underlaying JavaCC Token and
+     * not TokenEntry.
+     */
+    @Test
+    public void parseWithContinuationCppTokenManager() throws Exception {
+        String code = load("cpp_with_continuation.cpp");
+        CppTokenManager tokenManager = new CppTokenManager(new StringReader(code));
+        List<Token> tokens = new ArrayList<>();
+
+        Token token = (Token) tokenManager.getNextToken();
+        while (!token.image.isEmpty()) {
+            tokens.add(token);
+            token = (Token) tokenManager.getNextToken();
+        }
+
+        assertEquals(51, tokens.size());
+
+        assertToken(tokens.get(2), "ab", 8, 12, 9, 1);
+        assertToken(tokens.get(22), "\"2 Hello, world!\\n\"", 18, 16, 19, 9);
+    }
+
+
+    private void assertToken(Token token, String image, int beginLine, int beginColumn, int endLine, int endColumn) {
+        assertEquals(image, token.image);
+        assertEquals(beginLine, token.beginLine);
+        assertEquals(beginColumn, token.beginColumn);
+        assertEquals(endLine, token.endLine);
+        assertEquals(endColumn, token.endColumn);
     }
 
     @Test
