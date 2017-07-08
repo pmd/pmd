@@ -443,7 +443,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         selectedMethods = selectMethodsThirdPhase(methods, arguments, typeArgs);
         if (!selectedMethods.isEmpty()) {
-            if(selectedMethods.size() == 1)  {
+            if (selectedMethods.size() == 1) {
                 return selectedMethods.get(0).getReturnType();
                 // TODO: add selecting most specific vararg method
             }
@@ -648,8 +648,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         int indexInPrimitive = primitiveSubTypeOrder.indexOf(argument.getType());
 
         if (indexInPrimitive != -1 // arg is primitive
-            && isSubtypeable(parameter,
-                             JavaTypeDefinition.forClass(boxedPrimitivesSubTypeOrder.get(indexInPrimitive)))) {
+                && isSubtypeable(parameter,
+                                 JavaTypeDefinition.forClass(boxedPrimitivesSubTypeOrder.get(indexInPrimitive)))) {
             return true;
         }
 

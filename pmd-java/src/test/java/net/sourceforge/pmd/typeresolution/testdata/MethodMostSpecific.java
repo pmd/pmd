@@ -1,9 +1,13 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
-import javax.management.relation.RoleList;
 import java.util.AbstractCollection;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import javax.management.relation.RoleList;
 
 
 public abstract class MethodMostSpecific {

@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
 public class MethodThirdPhase {
@@ -15,7 +19,11 @@ public class MethodThirdPhase {
 
     }
 
-    Exception vararg(int a, Number... b) { return null; }
+    Exception vararg(int a, Number... b) {
+        return null;
+    }
 
-    int vararg(int a, String c, String... b) {return 0; }
+    int vararg(int a, String c, String... b) {
+        return 0;
+    }
 }

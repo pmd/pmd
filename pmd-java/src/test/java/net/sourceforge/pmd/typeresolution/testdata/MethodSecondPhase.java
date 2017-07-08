@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
 public class MethodSecondPhase {
@@ -16,15 +20,27 @@ public class MethodSecondPhase {
         int f = unboxing("", (Byte) null);
     }
 
-    String boxing(Number a, String b) {return null;}
+    String boxing(Number a, String b) {
+        return null;
+    }
 
-    Exception boxing(Character a, String b) {return null;}
+    Exception boxing(Character a, String b) {
+        return null;
+    }
 
-    int boxing(Long a, String b) {return 0;}
+    int boxing(Long a, String b) {
+        return 0;
+    }
 
-    String unboxing(String b, long a) {return null;}
+    String unboxing(String b, long a) {
+        return null;
+    }
 
-    Exception unboxing(String b, char a) {return null;}
+    Exception unboxing(String b, char a) {
+        return null;
+    }
 
-    int unboxing(String b, short a) {return 0;}
+    int unboxing(String b, short a) {
+        return 0;
+    }
 }
