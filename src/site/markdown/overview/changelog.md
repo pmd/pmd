@@ -9,12 +9,20 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
-    * [Removed Rules](#Removed_Rules)
+    *   [Java Type Resolution](#Java_Type_Resolution)
+    *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
+
+#### Java Type Resolution
+
+As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph)'s work on type resolution for Java continues.
+For this release he has extended support for method calls.
+
+Method shadowing and overloading are still work in progress, but expect it to be fully supported soon enough.
 
 #### Removed Rules
 
@@ -36,4 +44,5 @@ This is a major release.
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements
+*   [#486](https://github.com/pmd/pmd/pull/486): \[java] Add basic method typeresolution
 
