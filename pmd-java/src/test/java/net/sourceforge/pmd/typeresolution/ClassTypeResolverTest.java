@@ -1325,6 +1325,10 @@ public class ClassTypeResolverTest {
         assertEquals(int.class, expressions.get(index).getType());
         assertEquals(int.class, getChildType(expressions.get(index), 0));
         assertEquals(int.class, getChildType(expressions.get(index++), 1));
+        // String d = mostSpecific(10, 10, 10);
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
