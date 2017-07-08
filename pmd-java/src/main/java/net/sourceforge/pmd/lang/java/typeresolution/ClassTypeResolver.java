@@ -429,11 +429,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                       List<JavaTypeDefinition> typeArgs) {
         // TODO: add second and third phase
 
-        if(methods.size() == 1) {
+        if (methods.size() == 1) {
             return methods.get(0).getReturnType(); // TODO: remove this in the end, needed to pass some previous tests
         }
 
         List<MethodType> selectedMethods = selectMethodsFirstPhase(methods, arguments, typeArgs);
+        if (!selectedMethods.isEmpty()) {
+            return selectMostSpecificMethod(selectedMethods).getReturnType();
+        }
+
+        selectedMethods = selectMethodsSecondPhase(methods, arguments, typeArgs);
         if (!selectedMethods.isEmpty()) {
             return selectMostSpecificMethod(selectedMethods).getReturnType();
         }
@@ -462,21 +467,21 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 
     private MethodType selectAmongMaximallySpecific(MethodType first, MethodType second) {
-        if(isAbstract(first)) {
-            if(isAbstract(second)) {
+        if (isAbstract(first)) {
+            if (isAbstract(second)) {
                 // https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.5
                 // the bottom of the section is relevant here, we can't resolve this type
                 // TODO: resolve this
-                
+
                 return null;
             } else { // second one isn't abstract
                 return second;
             }
-        } else if(isAbstract(second)){
+        } else if (isAbstract(second)) {
             return first; // first isn't abstract, second one is
         } else {
             throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
-            + first.toString() + "\n" + second.toString());
+                                                    + first.toString() + "\n" + second.toString());
         }
     }
 
@@ -539,6 +544,78 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return selectedMethods;
     }
 
+    private List<MethodType> selectMethodsSecondPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
+                                                      List<JavaTypeDefinition> typeArgs) {
+        List<MethodType> selectedMethods = new ArrayList<>();
+
+        for (MethodType methodType : methodsToSearch) {
+            if (isGeneric(methodType.getMethod().getDeclaringClass()) && typeArgs.size() == 0) {
+                // TODO: look at type interference, weep again
+            }
+
+            if (argList == null) {
+                selectedMethods.add(methodType);
+
+                // vararg methods are considered fixed arity here
+            } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
+                // check method convertability of each argument to the corresponding parameter
+                boolean methodIsApplicable = true;
+
+                // try each arguments if it's method convertible
+                for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                    if (!isMethodConvertble(methodType.getParameterTypes().get(argIndex),
+                                            (ASTExpression) argList.jjtGetChild(argIndex))) {
+                        methodIsApplicable = false;
+                        break;
+                    }
+                    // TODO: add unchecked conversion in an else if branch
+                }
+
+                if (methodIsApplicable) {
+                    selectedMethods.add(methodType);
+                }
+            }
+
+        }
+
+        return selectedMethods;
+    }
+
+    private boolean isMethodConvertble(JavaTypeDefinition parameter, ASTExpression argument) {
+        return isMethodConvertible(parameter, argument.getTypeDefinition());
+    }
+
+    private boolean isMethodConvertible(JavaTypeDefinition parameter, JavaTypeDefinition argument) {
+        // covers identity conversion, widening primitive conversion, widening reference conversion, null
+        // covers if both are primitive or bot are boxed primitive
+        if (isSubtypeable(parameter, argument)) {
+            return true;
+        }
+
+        // covers boxing
+        int indexInPrimitive = primitiveSubTypeOrder.indexOf(argument.getType());
+
+        if (indexInPrimitive != -1 // arg is primitive
+            && isSubtypeable(parameter,
+                             JavaTypeDefinition.forClass(boxedPrimitivesSubTypeOrder.get(indexInPrimitive)))) {
+            return true;
+        }
+
+        // covers unboxing
+        int indexInBoxed = boxedPrimitivesSubTypeOrder.indexOf(argument.getType());
+
+        if (indexInBoxed != -1 // arg is boxed primitive
+                && isSubtypeable(parameter,
+                                 JavaTypeDefinition.forClass(primitiveSubTypeOrder.get(indexInBoxed)))) {
+            return true;
+        }
+
+        // TODO: add raw unchecked conversion part
+
+        return false;
+    }
+
+
     private boolean isSubtypeable(JavaTypeDefinition parameter, ASTExpression argument) {
         return isSubtypeable(parameter, argument.getTypeDefinition());
     }
@@ -556,14 +633,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         int indexOfParameter = primitiveSubTypeOrder.indexOf(parameter.getType());
 
-        if(indexOfParameter != -1) {
+        if (indexOfParameter != -1) {
             if (argument.getType() == char.class) {
                 if (indexOfParameter <= 3) { // <= 3 because short and byte are not compatible with char
                     return true;
                 }
             } else {
                 int indexOfArg = primitiveSubTypeOrder.indexOf(argument.getType());
-                if(indexOfArg != -1 && indexOfParameter <= indexOfArg) {
+                if (indexOfArg != -1 && indexOfParameter <= indexOfArg) {
                     return true;
                 }
             }
