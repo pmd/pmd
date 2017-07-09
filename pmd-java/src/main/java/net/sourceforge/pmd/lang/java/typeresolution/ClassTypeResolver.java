@@ -425,6 +425,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    /**
+     * Searches a list of methods by trying the three phases of method overload resolution.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2
+     */
     public JavaTypeDefinition getBestMethodReturnType(List<MethodType> methods, ASTArgumentList arguments,
                                                       List<JavaTypeDefinition> typeArgs) {
         if (methods.size() == 1) {
@@ -452,6 +456,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
+    /**
+     * Most specific method selection.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.5
+     */
     private MethodType selectMostSpecificMethod(List<MethodType> selectedMethods) {
 
         MethodType mostSpecific = selectedMethods.get(0);
@@ -472,6 +480,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
 
+    /**
+     * Select maximally specific method.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.5
+     */
     private MethodType selectAmongMaximallySpecific(MethodType first, MethodType second) {
         if (isAbstract(first)) {
             if (isAbstract(second)) {
@@ -511,6 +523,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return true;
     }
 
+    /**
+     * Look for methods be subtypeability.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.2
+     */
     private List<MethodType> selectMethodsFirstPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
                                                      List<JavaTypeDefinition> typeArgs) {
         List<MethodType> selectedMethods = new ArrayList<>();
@@ -550,6 +566,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return selectedMethods;
     }
 
+    /**
+     * Look for methods be method conversion.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.3
+     */
     private List<MethodType> selectMethodsSecondPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
                                                       List<JavaTypeDefinition> typeArgs) {
         List<MethodType> selectedMethods = new ArrayList<>();
@@ -588,6 +608,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
 
+    /**
+     * Look for methods considering varargs as well.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.4
+     */
     private List<MethodType> selectMethodsThirdPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
                                                      List<JavaTypeDefinition> typeArgs) {
         List<MethodType> selectedMethods = new ArrayList<>();
@@ -637,6 +661,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return isMethodConvertible(parameter, argument.getTypeDefinition());
     }
 
+    /**
+     * Method invocation conversion rules.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-5.html#jls-5.3
+     */
     private boolean isMethodConvertible(JavaTypeDefinition parameter, JavaTypeDefinition argument) {
         // covers identity conversion, widening primitive conversion, widening reference conversion, null
         // covers if both are primitive or bot are boxed primitive
@@ -672,6 +700,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return isSubtypeable(parameter, argument.getTypeDefinition());
     }
 
+    /**
+     * Subtypeability rules.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.10
+     */
     private boolean isSubtypeable(JavaTypeDefinition parameter, JavaTypeDefinition argument) {
         // null types are always applicable
         if (argument.getType() == null) {
@@ -702,8 +734,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     /**
-     * Search outwards from a node the enclosing type declarations. Searching them and their supertypes
-     * for method
+     * This method looks for method invocations be simple name.
+     * It searches outwards class declarations and their supertypes and in the end, static method imports.
+     * Compiles a list of potentially applicable methods.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.1
      */
     private List<MethodType> getLocalApplicableMethods(TypeNode node, String methodName,
                                                        List<JavaTypeDefinition> typeArguments,
@@ -728,6 +762,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return foundMethods;
     }
 
+    /**
+     * Looks for potentially applicable methods in a given type definition.
+     */
     public List<MethodType> getApplicableMethods(JavaTypeDefinition context,
                                                  String methodName,
                                                  List<JavaTypeDefinition> typeArguments,
@@ -773,6 +810,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return result;
     }
 
+    /**
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.1
+     * Potential applicability.
+     */
     public boolean isMethodApplicable(Method method, String methodName, int argArity,
                                       Class<?> accessingClass, List<JavaTypeDefinition> typeArguments) {
 
@@ -817,6 +858,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return method.getParameterTypes().length;
     }
 
+    /**
+     * This method can be called on a prefix
+     */
     private ASTArguments getSuffixMethodArgs(Node node) {
         Node prefix = node.jjtGetParent();
 
@@ -1252,6 +1296,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+    /**
+     * The reason arguments are not visited here, is because they will be visited once the method
+     * to which they are arguments to is resolved.
+     */
     @Override
     public Object visit(ASTArguments node, Object data) {
         return data;
