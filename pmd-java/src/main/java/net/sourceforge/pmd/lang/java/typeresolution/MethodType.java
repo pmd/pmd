@@ -53,4 +53,12 @@ public class MethodType {
     public boolean isAbstract() {
         return Modifier.isAbstract(method.getModifiers());
     }
+    
+    public JavaTypeDefinition getArgTypeIncludingVararg(int index) {
+        if (index < argTypes.size() - 1) {
+            return argTypes.get(index);
+        } else {
+            return getVarargComponentType();
+        }
+    }
 }
