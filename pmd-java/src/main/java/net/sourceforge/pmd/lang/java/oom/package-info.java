@@ -7,4 +7,5 @@
  *
  * @author Clément Fournier
  */
+
 package net.sourceforge.pmd.lang.java.oom;

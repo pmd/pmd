@@ -46,6 +46,9 @@ public class SigMaskTest extends ParserTst {
         + "}";
 
     private static final String TEST_OPERATIONS = "abstract class Bzaz{ "
+        + "int x;"
+        + "int y;"
+        + "int z;"
         // constructors
         + "public Bzaz() {}"
         + "private Bzaz(int x){}"
@@ -65,10 +68,10 @@ public class SigMaskTest extends ParserTst {
         + "protected void foo(int x){} "
         + "private void rand(){}"
         // abstract
-        + "protected abstract int getXAbs();"
+        + "protected abstract int getZ();"
         + "abstract int abs2();"
         + "public static abstract String abstr();"
-        + "abstract int setXAbs();"
+        + "abstract void setZ(int x);"
         + "}";
 
     /**

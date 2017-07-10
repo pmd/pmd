@@ -124,7 +124,6 @@ public class SignatureTest extends ParserTst {
         compilationUnit.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
             public Object visit(ASTMethodDeclaration node, Object data) {
-                System.err.println(node.getMethodName());
                 assertEquals(Role.GETTER_OR_SETTER, Role.get(node));
                 return data;
             }

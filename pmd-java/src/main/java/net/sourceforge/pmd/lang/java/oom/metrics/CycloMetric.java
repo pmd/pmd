@@ -6,13 +6,15 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
+import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathUnawareOperationVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
@@ -49,9 +51,12 @@ import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
  */
 public final class CycloMetric extends AbstractMetric implements ClassMetric, OperationMetric {
 
+    // TODO:cf Cyclo should develop factorized boolean operators to count them
+
+
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
-        return 1 + averageMetricOverOperations(node, OperationMetricKey.CYCLO, version, false);
+    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+        return 1 + Metrics.get(OperationMetricKey.CYCLO, node, version, ResultOption.AVERAGE);
     }
 
 
