@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
-import org.junit.After;
-import org.junit.AfterClass;
-
-import net.sourceforge.pmd.lang.java.oom.Metrics;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.java.oom.MetricsHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 /**
@@ -20,9 +18,9 @@ public class AllMetricsTest extends SimpleAggregatorTst {
 
 
     @Override
-    public Rule reset() {
-        System.err.println("resettt");
-        Metrics.reset();
+    protected Rule reinitializeRule(Rule rule) {
+        MetricsHook.reset();
+        return rule;
     }
 
 

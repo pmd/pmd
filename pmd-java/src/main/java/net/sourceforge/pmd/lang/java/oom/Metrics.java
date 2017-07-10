@@ -40,7 +40,7 @@ public final class Metrics {
 
 
     /** Sets whether computations are forced or not. Used for tests. */
-    public static void reset() {
+    /* default */ static void reset() {
         TOP_LEVEL_PACKAGE.reset();
     }
 
