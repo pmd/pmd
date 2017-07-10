@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.typeresolution;
 
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.primitiveStaticMethod;
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.staticInstanceMethod;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -16,6 +18,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.typeresolution.testdata.MethodStaticAccess;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticSuper;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 
@@ -1169,15 +1174,15 @@ public class ClassTypeResolverTest {
         assertEquals(Long.class, expressions.get(index).getType());
         assertEquals(Long.class, getChildType(expressions.get(index++), 0));
 
-        // StaticFields.staticPrimitive = 10;
+        // StaticMembers.staticPrimitive = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.staticPrimitive = 10;
+        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.staticPrimitive = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields
+        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers
         //       .staticGeneric.generic.second = new Long(10);
         assertEquals(Long.class, expressions.get(index).getType());
         assertEquals(Long.class, getChildType(expressions.get(index++), 0));
@@ -1393,6 +1398,50 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
+    @Test
+    public void testMethodStaticAccess() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodStaticAccess.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+
+        // int a = primitiveStaticMethod();
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // StaticMembers b = staticInstanceMethod();
+        assertEquals(StaticMembers.class, expressions.get(index).getType());
+        assertEquals(StaticMembers.class, getChildType(expressions.get(index), 0));
+        assertEquals(StaticMembers.class, getChildType(expressions.get(index++), 1));
+
+        // int c = StaticMembers.primitiveStaticMethod();
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // String a = primitiveStaticMethod();
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+
+        // double b = staticCharMethod();
+        assertEquals(double.class, expressions.get(index).getType());
+        assertEquals(double.class, getChildType(expressions.get(index), 0));
+        assertEquals(double.class, getChildType(expressions.get(index++), 1));
+
+        // String c = MethodStaticAccess.Nested.primitiveStaticMethod();
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
 
 
 

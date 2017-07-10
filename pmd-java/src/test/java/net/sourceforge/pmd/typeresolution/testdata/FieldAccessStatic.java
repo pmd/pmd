@@ -5,10 +5,11 @@
 package net.sourceforge.pmd.typeresolution.testdata;
 
 
-import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.*;
-import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.staticPrimitive;
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.*;
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.staticPrimitive;
 
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticSuper;
 
 public class FieldAccessStatic {
     public static double staticChar;
@@ -22,15 +23,15 @@ public class FieldAccessStatic {
         // Primary[Prefix[Name[...]]]
         staticGeneric.first = new Long(0);
 
-        StaticFields.staticPrimitive = 10;
+        StaticMembers.staticPrimitive = 10;
 
         // Fully qualified static field access
         // Primary[Prefix[Name[...]]]
-        net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.staticPrimitive = 10;
+        StaticMembers.staticPrimitive = 10;
 
         // Fully qualified multiple static field access
         // Primary[Prefix[Name[...]]]
-        net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields
+        StaticMembers
                 .staticGeneric.generic.second = new Long(10);
     }
 
@@ -51,8 +52,5 @@ public class FieldAccessStatic {
     }
 }
 
-class StaticSuper {
-    static String staticPrimitive;
-}
 
 
