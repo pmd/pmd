@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.metrics;
 
-import net.sourceforge.pmd.lang.java.oom.MetricsForceHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 /**
@@ -14,12 +13,6 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 public class MetricsRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-metrics";
-
-
-    static {
-        MetricsForceHook.setForce(true); // TODO:cf get rid of that when you can
-    }
-
 
     @Override
     public void setUp() {

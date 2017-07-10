@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
-import net.sourceforge.pmd.lang.java.oom.MetricsForceHook;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
@@ -25,10 +24,6 @@ import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
  * @author Clément Fournier
  */
 public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
-
-    static {
-        MetricsForceHook.setForce(true); // force recomputation every time.
-    }
 
 
     private final BooleanProperty reportClassesDescriptor = new BooleanProperty(

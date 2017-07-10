@@ -27,8 +27,8 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
  */
 public final class PackageStats {
 
-    private Map<String, PackageStats> subPackages = new HashMap<>();
-    private Map<String, ClassStats> classes = new HashMap<>();
+    private final Map<String, PackageStats> subPackages = new HashMap<>();
+    private final Map<String, ClassStats> classes = new HashMap<>();
 
 
     /**
@@ -36,6 +36,15 @@ public final class PackageStats {
      */
     /* default */ PackageStats() {
 
+    }
+
+
+    /**
+     * Resets the entire data structure.
+     */
+    /* default */ void reset() {
+        subPackages.clear();
+        classes.clear();
     }
 
 
