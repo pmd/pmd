@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -75,7 +74,7 @@ public abstract class RuleTst {
         Rule rule = test.getRule();
 
         if (test.getReinitializeRule()) {
-            rule = findRule(rule.getRuleSetName(), rule.getName());
+            rule = reinitializeRule(rule);
         }
 
         Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
@@ -118,6 +117,19 @@ public abstract class RuleTst {
             }
         }
     }
+
+
+    /**
+     * Code to be executed if the rule is reinitialised.
+     *
+     * @param rule The rule to reinitialise
+     *
+     * @return The rule once it has be reinitialised
+     */
+    protected Rule reinitializeRule(Rule rule) {
+        return findRule(rule.getRuleSetName(), rule.getName());
+    }
+
 
     private void assertMessages(Report report, TestDescriptor test) {
         if (report == null || test.getExpectedMessages().isEmpty()) {
