@@ -1,10 +1,14 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.typeresolution.testdata;
 
+
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.*;
 import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.staticPrimitive;
 
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields;
-
-import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.*;
 
 public class FieldAccessStatic {
     public static double staticChar;
@@ -50,3 +54,5 @@ public class FieldAccessStatic {
 class StaticSuper {
     static String staticPrimitive;
 }
+
+

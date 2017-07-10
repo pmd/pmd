@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.typeresolution.testdata.FieldAccessStatic;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 import org.junit.Assert;
@@ -66,6 +65,7 @@ import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericSimple;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessNested;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessPrimaryGenericSimple;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessStatic;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
