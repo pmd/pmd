@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
  * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
  */
 public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
+
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         super.visit(node, data);
@@ -32,6 +33,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         ((MutableInt) data).add(boolCompIf);
         return data;
     }
+
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
@@ -43,6 +45,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         return data;
     }
 
+
     @Override
     public Object visit(ASTDoStatement node, Object data) {
         super.visit(node, data);
@@ -51,6 +54,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         ((MutableInt) data).add(boolCompDo);
         return data;
     }
+
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
@@ -61,6 +65,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         return data;
     }
 
+
     @Override
     public Object visit(ASTSwitchLabel node, Object data) {
         if (!node.isDefault()) {
@@ -70,6 +75,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         return data;
     }
 
+
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
         super.visit(node, data);
@@ -78,6 +84,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         ((MutableInt) data).add(boolCompWhile);
         return data;
     }
+
 
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {

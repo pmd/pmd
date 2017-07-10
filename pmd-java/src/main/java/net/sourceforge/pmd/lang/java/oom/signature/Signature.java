@@ -15,19 +15,23 @@ public abstract class Signature {
 
     public final Visibility visibility;
 
+
     public Signature(Visibility visibility) {
         this.visibility = visibility;
     }
+
 
     @Override
     public boolean equals(Object o) {
         return o instanceof Signature && visibility == ((Signature) o).visibility;
     }
 
+
     @Override
     public int hashCode() {
-        return visibility.hashCode() * 2;
+        return visibility.hashCode();
     }
+
 
     /**
      * The visibility of a node.
@@ -35,12 +39,13 @@ public abstract class Signature {
     public enum Visibility {
         PUBLIC, PACKAGE, PROTECTED, PRIVATE;
 
+
         /**
          * Returns the Visibility enum key for a node.
          *
          * @param node A node
          *
-         * @return The visibility enum key for a node.
+         * @return The visibility enum key for a node
          */
         public static Visibility get(AccessNode node) {
             if (node.isPublic()) {

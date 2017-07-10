@@ -11,6 +11,7 @@ This is a major release.
 * [New and noteworthy](#New_and_noteworthy)
     *   [Revamped Apex CPD](#Revamped_Apex_CPD)
     *   [Java Type Resolution](#Java_Type_Resolution)
+    *   [Metrics Framework](#Metrics_Framework)
     *   [Modified Rules](#Modified_Rules)
     *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
@@ -34,6 +35,15 @@ As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/Winte
 For this release he has extended support for method calls.
 
 Method shadowing and overloading are still work in progress, but expect it to be fully supported soon enough.
+
+#### Metrics Framework
+
+As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) is continueing his work
+on the new metrics framework for object-oriented metrics.
+
+There are already a couple of metrics (e.g. ATFD, WMC, Cyclo, LoC) implemented. More metrics are planned.
+Based on those metrics, rules like "GodClass" detection can be implemented more easily.
+
 
 #### Modified Rules
 
@@ -67,6 +77,8 @@ Method shadowing and overloading are still work in progress, but expect it to be
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
+*   [#482](https://github.com/pmd/pmd/pull/482): \[java] Metrics testing framework + improved capabilities for metrics - [Clément Fournier](https://github.com/oowekyala)
 *   [#484](https://github.com/pmd/pmd/pull/484): \[core] Changed linux usage to a more unix like path - [patriksevallius](https://github.com/patriksevallius)
 *   [#486](https://github.com/pmd/pmd/pull/486): \[java] Add basic method typeresolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#495](https://github.com/pmd/pmd/pull/495): \[core] Custom rule reinitialization code - [Clément Fournier](https://github.com/oowekyala)
 
