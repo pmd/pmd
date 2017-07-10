@@ -11,6 +11,11 @@ package net.sourceforge.pmd.lang.java.oom;
  */
 public class MetricsHook {
 
+    private MetricsHook() {
+
+    }
+
+
     public static void reset() {
         Metrics.reset();
     }

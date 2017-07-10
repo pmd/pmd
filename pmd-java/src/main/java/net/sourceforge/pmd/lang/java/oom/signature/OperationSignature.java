@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.oom.signature;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -80,7 +80,7 @@ public final class OperationSignature extends Signature {
         GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC;
 
 
-        private static final Pattern GETTER_OR_SETTER_NAME_PATTERN = Pattern.compile("(?:get|set|is)\\w*");
+        //   private static final Pattern GETTER_OR_SETTER_NAME_PATTERN = Pattern.compile("(?:get|set|is)\\w*");
 
 
         public static Role get(ASTMethodOrConstructorDeclaration node) {
@@ -100,10 +100,6 @@ public final class OperationSignature extends Signature {
 
 
         private static boolean isGetterOrSetter(ASTMethodDeclaration node) {
-            String name = node.getName();
-            if (GETTER_OR_SETTER_NAME_PATTERN.matcher(name).matches()) {
-                return true;
-            }
 
             ClassScope scope = node.getScope().getEnclosingScope(ClassScope.class);
 
@@ -131,8 +127,15 @@ public final class OperationSignature extends Signature {
                 || node.getFirstDescendantOfType(ASTResultType.class).isVoid()) {
                 return false;
             }
-            return fieldNames.containsKey(node.getName());
 
+            if (node.getName().startsWith("get")) {
+                return containsIgnoreCase(fieldNames.keySet(), node.getName().substring(3));
+            } else if (node.getName().startsWith("is")) {
+                return containsIgnoreCase(fieldNames.keySet(), node.getName().substring(2));
+            }
+
+
+            return fieldNames.containsKey(node.getName());
         }
 
 
@@ -144,7 +147,20 @@ public final class OperationSignature extends Signature {
                 return false;
             }
 
+            if (node.getName().startsWith("set")) {
+                return containsIgnoreCase(fieldNames.keySet(), node.getName().substring(3));
+            }
+
             return fieldNames.containsKey(node.getName());
+        }
+
+        private static boolean containsIgnoreCase(Set<String> set, String str) {
+            for (String s : set) {
+                if (str.equalsIgnoreCase(s)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

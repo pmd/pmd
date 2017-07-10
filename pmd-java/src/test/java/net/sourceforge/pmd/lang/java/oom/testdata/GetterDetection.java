@@ -22,7 +22,7 @@ public class GetterDetection {
     }
 
 
-    public boolean isBooleanTrue() {
+    public boolean isBool() {
         return bool;
     }
 
