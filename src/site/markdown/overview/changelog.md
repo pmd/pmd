@@ -22,10 +22,10 @@ This is a major release.
 
 #### Revamped Apex CPD
 
-We are now using the Apex jorje lexer to tokenize Apex code for CPD. This change means:
+We are now using the Apex Jorje Lexer to tokenize Apex code for CPD. This change means:
 
     *   All comments are now ignored for CPD. This is consistent with how other languages such as Java and Groovy work.
-    *   Tokenization honors the language specification, which improves accurancy.
+    *   Tokenization honors the language specification, which improves accuracy.
 
 CPD will therefore have less false positives and false negatives.
 
@@ -38,7 +38,7 @@ Method shadowing and overloading are still work in progress, but expect it to be
 
 #### Metrics Framework
 
-As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) is continueing his work
+As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) is continuing his work
 on the new metrics framework for object-oriented metrics.
 
 There are already a couple of metrics (e.g. ATFD, WMC, Cyclo, LoC) implemented. More metrics are planned.
@@ -48,8 +48,8 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 #### Modified Rules
 
 *   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
-    It will now flag anonymous class' methods marked as final (can't be overriden, so it's pointless), along with
-    final methods overriden / defined within enum instances.
+    It will now flag anonymous class' methods marked as final (can't be overridden, so it's pointless), along with
+    final methods overridden / defined within enum instances.
 
 #### Removed Rules
 
