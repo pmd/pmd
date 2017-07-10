@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.typeresolution;
 
-import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.primitiveStaticMethod;
-import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.staticInstanceMethod;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -18,9 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.typeresolution.testdata.MethodStaticAccess;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticSuper;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 
@@ -80,6 +75,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodMostSpecific;
 import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import net.sourceforge.pmd.typeresolution.testdata.MethodSecondPhase;
+import net.sourceforge.pmd.typeresolution.testdata.MethodStaticAccess;
 import net.sourceforge.pmd.typeresolution.testdata.MethodThirdPhase;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
@@ -88,6 +84,7 @@ import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
@@ -1423,16 +1420,6 @@ public class ClassTypeResolverTest {
         assertEquals(int.class, expressions.get(index).getType());
         assertEquals(int.class, getChildType(expressions.get(index), 0));
         assertEquals(int.class, getChildType(expressions.get(index++), 1));
-
-        // String a = primitiveStaticMethod();
-        assertEquals(String.class, expressions.get(index).getType());
-        assertEquals(String.class, getChildType(expressions.get(index), 0));
-        assertEquals(String.class, getChildType(expressions.get(index++), 1));
-
-        // double b = staticCharMethod();
-        assertEquals(double.class, expressions.get(index).getType());
-        assertEquals(double.class, getChildType(expressions.get(index), 0));
-        assertEquals(double.class, getChildType(expressions.get(index++), 1));
 
         // String c = MethodStaticAccess.Nested.primitiveStaticMethod();
         assertEquals(String.class, expressions.get(index).getType());

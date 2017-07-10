@@ -101,7 +101,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private static final Map<String, String> JAVA_LANG;
 
     private Map<String, JavaTypeDefinition> staticFieldImageToTypeDef;
-    private List<String> staticFieldImportOnDemand;
+    private Map<String, List<JavaTypeDefinition>> staticNamesToClasses;
+    private List<JavaTypeDefinition> importOnDemandStaticClasses;
     private ASTCompilationUnit currentAcu;
 
     static {
@@ -189,7 +190,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             importedOnDemand = new ArrayList<>();
             importedClasses = new HashMap<>();
             staticFieldImageToTypeDef = new HashMap<>();
-            staticFieldImportOnDemand = new ArrayList<>();
+            staticNamesToClasses = new HashMap<>();
+            importOnDemandStaticClasses = new ArrayList<>();
 
             // TODO: this fails to account for multiple classes in the same file
             // later classes (in the ACU) won't have their Nested classes registered
@@ -409,21 +411,19 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         JavaTypeDefinition previousType;
 
-        // TODO: static method invocation
-        if (dotSplitImage.length == 1 && astArguments != null) { // method
+        if (node.getType() != null) { // static field or method
+            previousType = JavaTypeDefinition.forClass(node.getType());
+        } else { // non-static field or method
+            if (dotSplitImage.length == 1 && astArguments != null) { // method
+                List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
+                                                                     methodArgsArity, accessingClass);
 
-            List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
-                                                                 methodArgsArity, accessingClass);
-
-            previousType = getBestMethodReturnType(methods, astArgumentList, null);
-            startIndex = 1;
-        } else { // field
-            if (node.getType() != null) { // the searchNodeNameForClass above found a class in the image -> static field
-                previousType = JavaTypeDefinition.forClass(node.getType());
-            } else { // non-static field access
-                previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0], accessingClass);
-                startIndex = 1; // first element's type in dotSplitImage has already been resolved
+                previousType = getBestMethodReturnType(methods, astArgumentList, null);
+            } else { // field
+                previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0],
+                                                                    accessingClass);
             }
+            startIndex = 1; // first element's type in dotSplitImage has already been resolved
         }
 
         // TODO: remove this if branch, it's only purpose is to make JUnitAssertionsShouldIncludeMessage's tests pass
@@ -486,7 +486,37 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                      argArity, accessingClass));
         }
 
-        // TODO: search static methods
+        foundMethods.addAll(searchImportedStaticMethods(methodName, typeArguments, argArity, accessingClass));
+
+        return foundMethods;
+    }
+
+    private List<MethodType> searchImportedStaticMethods(String methodName,
+                                                         List<JavaTypeDefinition> typeArguments,
+                                                         int argArity,
+                                                         Class<?> accessingClass) {
+        List<MethodType> foundMethods = new ArrayList<>();
+
+        // TODO: member methods must not be looked at in the code below
+        List<JavaTypeDefinition> explicitImports = staticNamesToClasses.get(methodName);
+
+        if (explicitImports != null) {
+            for (JavaTypeDefinition anImport : explicitImports) {
+                foundMethods.addAll(getApplicableMethods(anImport, methodName, typeArguments, argArity,
+                                                         accessingClass));
+            }
+        }
+
+        if (!foundMethods.isEmpty()) {
+            // if we found an method by explicit imports, on deamand imports mustn't be searched, because
+            // explicit imports shadow them by name, regardless of method parameters
+            return foundMethods;
+        }
+
+        for (JavaTypeDefinition anOnDemandImport : importOnDemandStaticClasses) {
+            foundMethods.addAll(getApplicableMethods(anOnDemandImport, methodName, typeArguments, argArity,
+                                                     accessingClass));
+        }
 
         return foundMethods;
     }
@@ -605,10 +635,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             return staticFieldImageToTypeDef.get(fieldName);
         }
 
-        for (String anOnDemandImport : staticFieldImportOnDemand) {
-            JavaTypeDefinition typeDef
-                    = getFieldType(JavaTypeDefinition.forClass(loadClass(anOnDemandImport)), fieldName,
-                                   currentAcu.getType());
+        for (JavaTypeDefinition anOnDemandImport : importOnDemandStaticClasses) {
+            JavaTypeDefinition typeDef = getFieldType(anOnDemandImport, fieldName, currentAcu.getType());
             if (typeDef != null) {
                 staticFieldImageToTypeDef.put(fieldName, typeDef);
                 return typeDef;
@@ -1349,7 +1377,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             String strPackage = anImportDeclaration.getPackageName();
             if (anImportDeclaration.isStatic()) {
                 if (anImportDeclaration.isImportOnDemand()) {
-                    staticFieldImportOnDemand.add(strPackage);
+                    importOnDemandStaticClasses.add(JavaTypeDefinition.forClass(loadClass(strPackage)));
                 } else { // not import on-demand
                     String strName = anImportDeclaration.getImportedName();
                     String fieldName = strName.substring(strName.lastIndexOf('.') + 1);
@@ -1360,6 +1388,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                                   fieldName, currentAcu.getType());
                         staticFieldImageToTypeDef.put(fieldName, typeDef);
                     }
+
+                    List<JavaTypeDefinition> typeList = staticNamesToClasses.get(fieldName);
+
+                    if (typeList == null) {
+                        typeList = new ArrayList<>();
+                    }
+
+                    typeList.add(JavaTypeDefinition.forClass(staticClassWithField));
+
+                    staticNamesToClasses.put(fieldName, typeList);
                 }
             } else { // non-static
                 if (anImportDeclaration.isImportOnDemand()) {

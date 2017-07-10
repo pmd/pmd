@@ -1,17 +1,18 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.typeresolution.testdata;
+
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.*;
+import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.primitiveStaticMethod;
 
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticSuper;
 
-import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.primitiveStaticMethod;
-import static net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.*;
 
 public class MethodStaticAccess {
     public static double staticChar;
-
-    public static double staticCharMethod() {
-        return 0;
-    }
 
     void foo() {
         // static field import by explicit import
@@ -26,12 +27,6 @@ public class MethodStaticAccess {
 
     public class Nested extends StaticSuper {
         void bar() {
-            // import shadowed by inherited static
-            String a = primitiveStaticMethod();
-
-            // enclosing scope staticChar shadows imported static field
-            double b = staticCharMethod();
-
             // qualified access
             String c = MethodStaticAccess.Nested.primitiveStaticMethod();
         }
