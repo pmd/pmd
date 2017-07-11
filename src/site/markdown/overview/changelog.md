@@ -33,7 +33,8 @@ CPD will therefore have less false positives and false negatives.
 As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph)'s work on type resolution for Java continues.
 For this release he has extended support for method calls.
 
-Method shadowing and overloading are still work in progress, but expect it to be fully supported soon enough.
+Method shadowing and overloading are supported, as is varargs management. However, the selection of the target method upon the presence
+of generics and type inference is still work in progress. Expect it in forecoming releases.
 
 #### Modified Rules
 
@@ -69,4 +70,5 @@ Method shadowing and overloading are still work in progress, but expect it to be
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
 *   [#484](https://github.com/pmd/pmd/pull/484): \[core] Changed linux usage to a more unix like path - [patriksevallius](https://github.com/patriksevallius)
 *   [#486](https://github.com/pmd/pmd/pull/486): \[java] Add basic method typeresolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#492](https://github.com/pmd/pmd/pull/492): \[java] Typeresolution for overloaded methods - [Bendegúz Nagy](https://github.com/WinterGrascph)
 
