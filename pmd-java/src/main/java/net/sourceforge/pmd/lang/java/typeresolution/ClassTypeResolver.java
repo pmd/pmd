@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getApplicableMethods;
+import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
+import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
+
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -83,6 +84,7 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+
 
 //
 // Helpful reading:
@@ -404,19 +406,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    public JavaTypeDefinition getBestMethodReturnType(List<MethodType> methods, ASTArgumentList arguments,
-                                                      List<JavaTypeDefinition> typeArgs) {
-        // TODO: add overload resolution
-        if (methods.size() == 1) {
-            return methods.get(0).getReturnType();
-        } else {
-            return null;
-        }
-    }
-
     /**
-     * Search outwards from a node the enclosing type declarations. Searching them and their supertypes
-     * for method
+     * This method looks for method invocations be simple name.
+     * It searches outwards class declarations and their supertypes and in the end, static method imports.
+     * Compiles a list of potentially applicable methods.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.1
      */
     private List<MethodType> getLocalApplicableMethods(TypeNode node, String methodName,
                                                        List<JavaTypeDefinition> typeArguments,
@@ -441,91 +435,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return foundMethods;
     }
 
-    public List<MethodType> getApplicableMethods(JavaTypeDefinition context,
-                                                 String methodName,
-                                                 List<JavaTypeDefinition> typeArguments,
-                                                 int argArity,
-                                                 Class<?> accessingClass) {
-        List<MethodType> result = new ArrayList<>();
 
-        if (context == null) {
-            return result;
-        }
-
-        // TODO: shadowing, overriding
-        // TODO: add multiple upper bounds
-
-        Class<?> contextClass = context.getType();
-
-        // search the class
-        for (Method method : contextClass.getDeclaredMethods()) {
-            if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
-                if (isGeneric(method)) {
-                    // TODO: do generic methods
-                    // this disables invocations which could match generic methods
-                    result.clear();
-                    return result;
-                }
-
-                result.add(getTypeDefOfMethod(context, method));
-            }
-        }
-
-        // search it's supertype
-        if (!contextClass.equals(Object.class)) {
-            result.addAll(getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
-                                               methodName, typeArguments, argArity, accessingClass));
-        }
-
-        // search it's interfaces
-        for (Type interfaceType : contextClass.getGenericInterfaces()) {
-            result.addAll(getApplicableMethods(context.resolveTypeDefinition(interfaceType),
-                                               methodName, typeArguments, argArity, accessingClass));
-        }
-
-        return result;
-    }
-
-    public boolean isMethodApplicable(Method method, String methodName, int argArity,
-                                      Class<?> accessingClass, List<JavaTypeDefinition> typeArguments) {
-
-        if (method.getName().equals(methodName) // name matches
-                // is visible
-                && isMemberVisibleFromClass(method.getDeclaringClass(), method.getModifiers(), accessingClass)
-                // if method is vararg with arity n, then the invocation's arity >= n - 1
-                && (!method.isVarArgs() || (argArity >= getArity(method) - 1))
-                // if the method isn't vararg, then arity matches
-                && (method.isVarArgs() || (argArity == getArity(method)))
-                // isn't generic or arity of type arguments matches that of parameters
-                && (!isGeneric(method) || typeArguments == null
-                || method.getTypeParameters().length == typeArguments.size())) {
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private MethodType getTypeDefOfMethod(JavaTypeDefinition context, Method method) {
-        JavaTypeDefinition returnType = context.resolveTypeDefinition(method.getGenericReturnType());
-        List<JavaTypeDefinition> argTypes = new ArrayList<>();
-
-        // search typeArgs vs
-        for (Type argType : method.getGenericParameterTypes()) {
-            argTypes.add(context.resolveTypeDefinition(argType));
-        }
-
-        return new MethodType(returnType, argTypes, method);
-    }
-
-    private boolean isGeneric(Method method) {
-        return method.getTypeParameters().length != 0;
-    }
-
-    private int getArity(Method method) {
-        return method.getParameterTypes().length;
-    }
-
+    /**
+     * This method can be called on a prefix
+     */
     private ASTArguments getSuffixMethodArgs(Node node) {
         Node prefix = node.jjtGetParent();
 
@@ -634,51 +547,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
         return null;
-    }
-
-    /**
-     * Given a class, the modifiers of on of it's member and the class that is trying to access that member,
-     * returns true is the member is accessible from the accessingClass Class.
-     *
-     * @param classWithMember The Class with the member.
-     * @param modifiers       The modifiers of that member.
-     * @param accessingClass  The Class trying to access the member.
-     * @return True if the member is visible from the accessingClass Class.
-     */
-    private boolean isMemberVisibleFromClass(Class<?> classWithMember, int modifiers, Class<?> accessingClass) {
-        if (accessingClass == null) {
-            return false;
-        }
-
-        // public members
-        if (Modifier.isPublic(modifiers)) {
-            return true;
-        }
-
-        boolean areInTheSamePackage;
-        if (accessingClass.getPackage() != null) {
-            areInTheSamePackage = accessingClass.getPackage().getName().startsWith(
-                    classWithMember.getPackage().getName());
-        } else {
-            return false; // if the package information is null, we can't do nothin'
-        }
-
-        // protected members
-        if (Modifier.isProtected(modifiers)) {
-            if (areInTheSamePackage || classWithMember.isAssignableFrom(accessingClass)) {
-                return true;
-            }
-            // private members
-        } else if (Modifier.isPrivate(modifiers)) {
-            if (classWithMember.equals(accessingClass)) {
-                return true;
-            }
-            // package private members
-        } else if (areInTheSamePackage) {
-            return true;
-        }
-
-        return false;
     }
 
 
@@ -961,6 +829,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+    /**
+     * The reason arguments are not visited here, is because they will be visited once the method
+     * to which they are arguments to is resolved.
+     */
     @Override
     public Object visit(ASTArguments node, Object data) {
         return data;
