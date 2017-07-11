@@ -16,9 +16,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.MetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
@@ -159,14 +159,14 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    /* default */ double computeWithResultOption(OperationMetricKey key, ASTAnyTypeDeclaration node,
+    /* default */ double computeWithResultOption(MetricKey<OperationMetric> key, ASTAnyTypeDeclaration node,
                                                  boolean force, MetricVersion version, ResultOption option) {
 
         List<ASTMethodOrConstructorDeclaration> ops = findOperations(node, false);
 
         List<Double> values = new ArrayList<>();
         for (ASTMethodOrConstructorDeclaration op : ops) {
-            if (key.supports(op)) {
+            if (key.getCalculator().supports(op)) {
                 double val = this.compute(key, op, op.getQualifiedName().getOperation(), force, version);
                 if (val != Double.NaN) {
                     values.add(val);
@@ -189,6 +189,38 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 
     /**
+     * Finds the declaration nodes of all methods or constructors that are declared inside a class.
+     *
+     * @param node          The class in which to look for.
+     * @param includeNested Include operations found in nested classes?
+     *
+     * @return The list of all operations declared inside the specified class.
+     *
+     * TODO:cf this one is computed every time
+     */
+    private static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
+                                                                          boolean includeNested) {
+
+        if (includeNested) {
+            return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
+        }
+
+        List<ASTClassOrInterfaceBodyDeclaration> outerDecls
+            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
+
+
+        List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
+
+        for (ASTClassOrInterfaceBodyDeclaration decl : outerDecls) {
+            if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
+                operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
+            }
+        }
+        return operations;
+    }
+
+
+    /**
      * Computes the value of a metric for an operation.
      *
      * @param key     The operation metric for which to find a memoized result
@@ -199,8 +231,8 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, String name,
-                                 boolean force, MetricVersion version) {
+    /* default */ double compute(MetricKey<OperationMetric> key, ASTMethodOrConstructorDeclaration node,
+                                 String name, boolean force, MetricVersion version) {
 
         // TODO:cf the operation signature might be built many times, consider storing it in the node
         Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
@@ -249,7 +281,8 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    /* default */ double compute(ClassMetricKey key, ASTAnyTypeDeclaration node, boolean force, MetricVersion version) {
+    /* default */ double compute(MetricKey<ClassMetric> key, ASTAnyTypeDeclaration node, boolean force,
+                                 MetricVersion version) {
 
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.getInstance(key, version);
         // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
@@ -263,38 +296,6 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         memo.put(paramKey, val);
 
         return val;
-    }
-
-
-    /**
-     * Finds the declaration nodes of all methods or constructors that are declared inside a class.
-     *
-     * @param node          The class in which to look for.
-     * @param includeNested Include operations found in nested classes?
-     *
-     * @return The list of all operations declared inside the specified class.
-     *
-     * TODO:cf this one is computed every time
-     */
-    private static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
-                                                                          boolean includeNested) {
-
-        if (includeNested) {
-            return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
-        }
-
-        List<ASTClassOrInterfaceBodyDeclaration> outerDecls
-            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
-
-
-        List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
-
-        for (ASTClassOrInterfaceBodyDeclaration decl : outerDecls) {
-            if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
-                operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
-            }
-        }
-        return operations;
     }
 
 }

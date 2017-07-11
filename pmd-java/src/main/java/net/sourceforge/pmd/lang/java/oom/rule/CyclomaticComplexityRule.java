@@ -28,13 +28,13 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  */
 public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
-    public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
+    private static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
         "reportLevel", "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
 
-    public static final BooleanProperty REPORT_CLASSES_DESCRIPTOR = new BooleanProperty(
+    private static final BooleanProperty REPORT_CLASSES_DESCRIPTOR = new BooleanProperty(
         "reportClasses", "Add class average violations to the report", true, 2.0f);
 
-    public static final BooleanProperty REPORT_METHODS_DESCRIPTOR = new BooleanProperty(
+    private static final BooleanProperty REPORT_METHODS_DESCRIPTOR = new BooleanProperty(
         "reportMethods", "Add method average violations to the report", true, 3.0f);
 
 
@@ -42,7 +42,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     private static final MetricVersion[] CYCLO_VERSIONS = {Metric.Version.STANDARD, CycloMetric.Version.IGNORE_BOOLEAN_PATHS};
 
-    public static final EnumeratedProperty<MetricVersion> CYCLO_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
+    private static final EnumeratedProperty<MetricVersion> CYCLO_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
         "cycloVersion", "Choose a variant of Cyclo or the standard",
         VERSION_LABELS, CYCLO_VERSIONS, 0, 3.0f);
 

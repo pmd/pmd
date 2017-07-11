@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
  *
  * @author Clément Fournier
  */
-public final class ParameterizedMetricKey {
+/* default */ final class ParameterizedMetricKey {
 
     private static final Map<Integer, ParameterizedMetricKey> POOL = new HashMap<>();
 
