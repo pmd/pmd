@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +38,19 @@ public class MethodType {
         return method;
     }
 
+    public boolean isVararg() {
+        return method.isVarArgs();
+    }
+
     public JavaTypeDefinition getVarargComponentType() {
+        if (!isVararg()) {
+            throw new IllegalStateException("Method is not vararg: " + method.toString() + "!");
+        }
+
         return argTypes.get(argTypes.size() - 1).getComponentType();
+    }
+
+    public boolean isAbstract() {
+        return Modifier.isAbstract(method.getModifiers());
     }
 }
