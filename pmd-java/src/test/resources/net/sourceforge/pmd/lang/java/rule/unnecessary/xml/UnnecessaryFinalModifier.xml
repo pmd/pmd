@@ -127,4 +127,32 @@ public class TestClass {
 }
         ]]></code>
     </test-code>
+    <test-code>
+    <description>Unnecessary final of enum method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum Foo {
+    BAR {
+        @Override
+        public final void magic() {}
+    };
+
+    public void magic() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+    <description>Unnecessary final of anonymous class method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void stuff() {
+        Listener list = new Listener() {
+            @Override
+            public final void onEvent() {}
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

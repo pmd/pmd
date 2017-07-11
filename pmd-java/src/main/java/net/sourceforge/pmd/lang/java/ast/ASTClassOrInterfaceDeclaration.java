@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements QualifiableNode {
+public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
     private boolean isInterface;
     private QualifiedName qualifiedName;
@@ -58,5 +58,10 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
         }
 
         return qualifiedName;
+    }
+
+    @Override
+    public TypeKind getTypeKind() {
+        return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;
     }
 }

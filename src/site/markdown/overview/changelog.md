@@ -9,12 +9,47 @@ This is a major release.
 ### Table Of Contents
 
 * [New and noteworthy](#New_and_noteworthy)
-    * [Removed Rules](#Removed_Rules)
+    *   [Revamped Apex CPD](#Revamped_Apex_CPD)
+    *   [Java Type Resolution](#Java_Type_Resolution)
+    *   [Metrics Framework](#Metrics_Framework)
+    *   [Modified Rules](#Modified_Rules)
+    *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
 * [API Changes](#API_Changes)
 * [External Contributions](#External_Contributions)
 
 ### New and noteworthy
+
+#### Revamped Apex CPD
+
+We are now using the Apex Jorje Lexer to tokenize Apex code for CPD. This change means:
+
+    *   All comments are now ignored for CPD. This is consistent with how other languages such as Java and Groovy work.
+    *   Tokenization honors the language specification, which improves accuracy.
+
+CPD will therefore have less false positives and false negatives.
+
+#### Java Type Resolution
+
+As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph)'s work on type resolution for Java continues.
+For this release he has extended support for method calls.
+
+Method shadowing and overloading are still work in progress, but expect it to be fully supported soon enough.
+
+#### Metrics Framework
+
+As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) is continuing his work
+on the new metrics framework for object-oriented metrics.
+
+There are already a couple of metrics (e.g. ATFD, WMC, Cyclo, LoC) implemented. More metrics are planned.
+Based on those metrics, rules like "GodClass" detection can be implemented more easily.
+
+
+#### Modified Rules
+
+*   The rule `UnnecessaryFinalModifier` (ruleset `java-unnecessarycode`) has been revamped to detect more cases.
+    It will now flag anonymous class' methods marked as final (can't be overridden, so it's pointless), along with
+    final methods overridden / defined within enum instances.
 
 #### Removed Rules
 
@@ -23,10 +58,16 @@ This is a major release.
 
 ### Fixed Issues
 
+*   apex
+    *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
+*   cpp
+    *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
 *   java
     *   [#1513](https://sourceforge.net/p/pmd/bugs/1513/): \[java] Remove deprecated rule UseSingleton
 *   java-controversial
     *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
+*   java-unnecessarycode
+    *   [#412](https://github.com/pmd/pmd/issues/412): \[java] java-unnecessarycode/UnnecessaryFinalModifier missing cases
 
 ### API Changes
 
@@ -35,5 +76,9 @@ This is a major release.
 
 ### External Contributions
 
-*   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements
+*   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
+*   [#482](https://github.com/pmd/pmd/pull/482): \[java] Metrics testing framework + improved capabilities for metrics - [Clément Fournier](https://github.com/oowekyala)
+*   [#484](https://github.com/pmd/pmd/pull/484): \[core] Changed linux usage to a more unix like path - [patriksevallius](https://github.com/patriksevallius)
+*   [#486](https://github.com/pmd/pmd/pull/486): \[java] Add basic method typeresolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#495](https://github.com/pmd/pmd/pull/495): \[core] Custom rule reinitialization code - [Clément Fournier](https://github.com/oowekyala)
 

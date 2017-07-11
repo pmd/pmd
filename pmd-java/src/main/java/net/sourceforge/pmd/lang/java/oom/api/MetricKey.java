@@ -14,16 +14,16 @@ public interface MetricKey<T extends Metric> {
     /**
      * Returns the name of the metric.
      *
-     * @return The name of the metric.
+     * @return The name of the metric
      */
     String name();
+
 
     /**
      * Returns the object used to calculate the metric.
      *
-     * @return The calculator.
+     * @return The calculator
      */
     T getCalculator();
-
 
 }

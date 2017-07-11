@@ -18,20 +18,12 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
     private Set<OperationSignature.Role> roleMask = new HashSet<>();
     private boolean coverAbstract = false;
 
+
     public OperationSigMask() {
         super();
         coverAllRoles();
     }
 
-    /**
-     * Restricts the roles covered by the mask to the parameters.
-     *
-     * @param roles The roles to cover.
-     */
-    public void restrictRolesTo(OperationSignature.Role... roles) {
-        roleMask.clear();
-        roleMask.addAll(Arrays.asList(roles));
-    }
 
     /**
      * Sets the mask to cover all roles.
@@ -40,23 +32,37 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
         roleMask.addAll(Arrays.asList(OperationSignature.Role.values()));
     }
 
+
+    /**
+     * Restricts the roles covered by the mask to the parameters.
+     *
+     * @param roles The roles to cover
+     */
+    public void restrictRolesTo(OperationSignature.Role... roles) {
+        roleMask.clear();
+        roleMask.addAll(Arrays.asList(roles));
+    }
+
+
     /**
      * Forbid all mentioned roles.
      *
-     * @param roles The roles to forbid.
+     * @param roles The roles to forbid
      */
     public void forbid(OperationSignature.Role... roles) {
         roleMask.removeAll(Arrays.asList(roles));
     }
 
+
     /**
      * Forbid all mentioned visibilities.
      *
-     * @param coverAbstract The visibilities to forbid.
+     * @param coverAbstract The visibilities to forbid
      */
     public void coverAbstract(boolean coverAbstract) {
         this.coverAbstract = coverAbstract;
     }
+
 
     @Override
     public boolean covers(OperationSignature sig) {

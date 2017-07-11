@@ -16,19 +16,23 @@ public class GetterDetection {
     private MutableInt mutX;
     private boolean bool;
 
+
     public int getValue() {
         return value;
     }
 
-    public boolean isBooleanTrue() {
+
+    public boolean isBool() {
         return bool;
     }
+
 
     public int value() {
         return value;
     }
 
-    public double speedModified() {
+
+    /*  public double speedModified() {
         return speed * 12 + 1;
     }
 
@@ -51,5 +55,5 @@ public class GetterDetection {
     public int mutableIntConditional() {
         return mutX == null ? 0 : mutX.getValue();
     }
-
+    */
 }

@@ -25,5 +25,7 @@ global with sharing class SFDCEncoder {
 	/* Note - the order of these encoding strings is very important so we don't end up with double encoding.
 	      Each string we search for, must not be found as a result of a previous encoded string replacement */
 	/************ CLASS CODE HERE *************/
+
+	public String someParam { get; set; }
 }
 

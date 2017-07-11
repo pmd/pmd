@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+
+    <code-fragment id="full-example">
+        <![CDATA[
+        public class Complicated {
+          int x = 0, y = 1, z = 2, t = 2;
+          boolean a = false, b = true, c = false, d = true;
+
+          public void example1() {
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = 2;
+              } else {
+                x = 2;
+              }
+            }
+          }
+
+          public void example2() {
+            if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example3() {
+            if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example4() {
+            switch (x) {
+            case 1:
+              x = 2;
+              break;
+
+            case 2:
+            case 3:
+              x = 2;
+              break;
+
+            default:
+              x = 2;
+              break;
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Complicated class</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Complicated' has value 20.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Empty classes count 0</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo' has value 0.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Abstract classes and enums are supported</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'.Foo' has value 2.</message>
+            <message>'.Foo$Bar' has value 4.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            abstract class Foo {
+              void foo() {
+                if (true) {
+                  foo();
+                }
+              }
+
+              enum Bar {
+                BAR, NA, BEE;
+
+                void bar() {
+                  switch (this) {
+                    case BAR:
+                    case NA:
+                    case BEE: break;
+                  }
+                }
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Annotations and interfaces are not supported</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            interface Foo {
+              void foo();
+            }
+            ]]>
+        </code>
+    </test-code>
+
+</test-data>

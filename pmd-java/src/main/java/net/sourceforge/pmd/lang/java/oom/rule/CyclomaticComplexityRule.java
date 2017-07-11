@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.java.oom.rule;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
@@ -18,26 +18,26 @@ import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
- * Refactored to use metrics.
+ * Cyclomatic complexity rule using metrics.
  *
  * @author Clément Fournier
  */
-public class CyclomaticComplexityRule extends AbstractJavaRule {
+public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
         "reportLevel", "Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
 
-    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
-        "showClassesComplexity", "Add class average violations to the report", true, 2.0f);
+    public static final BooleanProperty REPORT_CLASSES_DESCRIPTOR = new BooleanProperty(
+        "reportClasses", "Add class average violations to the report", true, 2.0f);
 
-    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
-        "showMethodsComplexity", "Add method average violations to the report", true, 3.0f);
+    public static final BooleanProperty REPORT_METHODS_DESCRIPTOR = new BooleanProperty(
+        "reportMethods", "Add method average violations to the report", true, 3.0f);
 
 
     private static final Map<String, MetricVersion> VERSION_MAP;
@@ -53,15 +53,15 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
         VERSION_MAP, Version.STANDARD, MetricVersion.class, 3.0f);
 
     private int reportLevel;
-    private boolean showClassesComplexity = true;
-    private boolean showMethodsComplexity = true;
+    private boolean reportClasses = true;
+    private boolean reportMethods = true;
     private MetricVersion cycloVersion = Version.STANDARD;
 
 
     public CyclomaticComplexityRule() {
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
-        definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
-        definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_CLASSES_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_METHODS_DESCRIPTOR);
         definePropertyDescriptor(CYCLO_VERSION_DESCRIPTOR);
     }
 
@@ -69,54 +69,46 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
-        showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
-        showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
         cycloVersion = getProperty(CYCLO_VERSION_DESCRIPTOR);
+        reportClasses = getProperty(REPORT_CLASSES_DESCRIPTOR);
+        reportMethods = getProperty(REPORT_METHODS_DESCRIPTOR);
 
         super.visit(node, data);
         return data;
     }
 
-    // TODO:cf consider enum classes too (eg create some ASTAnyTypeDeclaration umbrella interface)
+
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
+    public Object visit(ASTAnyTypeDeclaration node, Object data) {
 
         super.visit(node, data);
-        if (showClassesComplexity) {
+
+        if (reportClasses && ClassMetricKey.CYCLO.supports(node)) {
             int classCyclo = (int) Metrics.get(ClassMetricKey.CYCLO, node, cycloVersion);
             int classHighest = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion, ResultOption.HIGHEST);
 
             if (classCyclo >= reportLevel || classHighest >= reportLevel) {
-                addViolation(data, node,
-                             new String[] {"class", node.getImage(), classCyclo + " (Highest = " + classHighest + ')'});
+                String[] messageParams = {node.getTypeKind().name().toLowerCase(),
+                                          node.getImage(),
+                                          classCyclo + " (Highest = " + classHighest + ")", };
+
+                addViolation(data, node, messageParams);
             }
         }
         return data;
     }
 
-    // TODO:cf consider merging these two methods (changes to JavaParserVisitor)
-    @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion);
-
-        if (showMethodsComplexity && cyclo >= reportLevel) {
-            addViolation(data, node, new String[] {"method", node.getQualifiedName().getOperation(), "" + cyclo});
-        }
-        return data;
-    }
-
 
     @Override
-    public Object visit(ASTConstructorDeclaration node, Object data) {
-        int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion);
+    public final Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
 
-        if (showMethodsComplexity && cyclo >= reportLevel) {
-            addViolation(data, node, new String[] {"constructor", node.getQualifiedName().getOperation(), "" + cyclo});
+        if (reportMethods) {
+            int cyclo = (int) Metrics.get(OperationMetricKey.CYCLO, node, cycloVersion);
+            if (cyclo >= reportLevel) {
+                addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                                                       node.getQualifiedName().getOperation(), "" + cyclo, });
+            }
         }
-
         return data;
     }
 

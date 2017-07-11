@@ -13,24 +13,18 @@ fi
 
 
 (
-    export PING_SLEEP=30s
-    export BUILD_OUTPUT=/tmp/build-site.out
-    export PING_PID_FILE=/tmp/build-site-ping.pid
+    # Run the build, truncate output due to Travis log limits
 
-    source .travis/background-job-funcs.sh
+    echo -e "\n\nExecuting ./mvnw install...\n\n"
+    travis_wait ./mvnw install -DskipTests=true -B -V -q
+    echo -e "Finished executing ./mvnw install\n\n"
 
-    # Run the build, redirect output into the file
-    ./mvnw install -DskipTests=true -B -V >> $BUILD_OUTPUT 2>&1
-    ./mvnw site site:stage -Psite -B -V >> $BUILD_OUTPUT 2>&1
-
-    # The build finished without returning an error so dump a tail of the output
-    dump_output
-
-    # nicely terminate the ping output loop
-    kill_ping
+    echo -e "\n\nExecuting ./mvnw site site:stage...\n\n"
+    travis_wait ./mvnw site site:stage -DskipTests=true -Psite -B -V -q
+    echo -e "Finished executing ./mvnw site site:stage...\n\n"
 )
 
-# create pmd-doc archive
+echo -e "\n\nCreating pmd-doc archive...\n\n"
 (
     cd target
     mv staging pmd-doc-${VERSION}
@@ -44,20 +38,7 @@ fi
 
 (
     if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
-        # this can take very long and no output is generated. therefore use the background job again
-        export PING_SLEEP=30s
-        export BUILD_OUTPUT=/tmp/build-site-upload.out
-        export PING_PID_FILE=/tmp/build-site-upload-ping.pid
-
-        source .travis/background-job-funcs.sh
-
-        # Uploading snapshot site...
-        rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
-
-        # The build finished without returning an error so dump a tail of the output
-        dump_output
-
-        # nicely terminate the ping output loop
-        kill_ping
+        echo -e "\n\nUploading snapshot site...\n\n"
+        travis_wait rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
     fi
 )

@@ -20,33 +20,19 @@ public class SetterDetection {
         value = x;
     }
 
-    public void putNewValue(int x) {
-        value = x;
-    }
-
-    public void putNewValueComposed(int x) {
-        value += x;
-    }
-
-    public void putNewValueIf(int x) {
-        if (x > 0) {
-            value = x;
-        }
-    }
-
-    public void putNewValueConditional(int x) {
+    public void value(int x) {
         value = x > 0 ? x : -x;
     }
 
-    public void updateWithMethod(int x) {
+    public void speed(int x) {
         mutX.setValue(x);
     }
 
-    public void updateWithOtherMethod(int x) {
+    public void mutX(int x) {
         mutX.increment();
     }
 
-    public void updateHiddenVal(int value) {
+    public void bool(int value) {
         this.value = value;
     }
 }

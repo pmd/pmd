@@ -6,12 +6,13 @@ package net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -46,10 +47,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import net.sourceforge.pmd.typeresolution.testdata.DefaultJavaLangImport;
@@ -66,10 +67,15 @@ import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
+import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
+import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
+import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
 import net.sourceforge.pmd.typeresolution.testdata.Promotion;
 import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
@@ -168,6 +174,26 @@ public class ClassTypeResolverTest {
                                                         + "}", "1.8");
         ASTClassOrInterfaceType statement = acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         Assert.assertTrue(statement.isReferenceToClassSameCompilationUnit());
+    }
+
+    @Test
+    public void testAnonymousClassFromInterface() throws Exception {
+        Node acu = parseAndTypeResolveForClass(AnonymousClassFromInterface.class, "1.8");
+        ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
+        TypeNode child = (TypeNode) allocationExpression.jjtGetChild(0);
+        Assert.assertTrue(Comparator.class.isAssignableFrom(child.getType()));
+        Assert.assertSame(Integer.class, child.getTypeDefinition().getGenericType(0).getType());
+    }
+
+    @Test
+    public void testNestedAnonymousClass() throws Exception {
+        Node acu = parseAndTypeResolveForClass(NestedAnonymousClass.class, "1.8");
+        ASTAllocationExpression allocationExpression = acu.getFirstDescendantOfType(ASTAllocationExpression.class);
+        ASTAllocationExpression nestedAllocation
+                = allocationExpression.getFirstDescendantOfType(ASTAllocationExpression.class);
+        TypeNode child = (TypeNode) nestedAllocation.jjtGetChild(0);
+        Assert.assertTrue(Converter.class.isAssignableFrom(child.getType()));
+        Assert.assertSame(String.class, child.getTypeDefinition().getGenericType(0).getType());
     }
 
     @Test
@@ -1040,6 +1066,16 @@ public class ClassTypeResolverTest {
         assertEquals(Integer.class, expressions.get(index).getType());
         assertEquals(Integer.class, getChildType(expressions.get(index++), 0));
 
+        // bug #471
+        // rawGeneric.fifth = new GenericClass();
+        assertEquals(GenericClass.class, expressions.get(index).getType());
+        assertEquals(GenericClass.class, getChildType(expressions.get(index++), 0));
+        // inheritedRawGeneric.fifth = new GenericClass();
+        assertEquals(GenericClass.class, expressions.get(index).getType());
+        assertEquals(GenericClass.class, getChildType(expressions.get(index++), 0));
+        // parameterRawGeneric.fifth = new GenericClass();
+        assertEquals(GenericClass.class, expressions.get(index).getType());
+        assertEquals(GenericClass.class, getChildType(expressions.get(index++), 0));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
@@ -1055,9 +1091,6 @@ public class ClassTypeResolverTest {
 
 
         int index = 0;
-
-        JavaTypeDefinition typeDef;
-
 
         // this.genericField.first = "";
         assertEquals(String.class, expressions.get(index).getType());
@@ -1103,17 +1136,85 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
-    private Class getChildType(Node node, int childIndex) {
+
+    @Test
+    public void testMethodPotentialApplicability() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodPotentialApplicability.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // int a = vararg("");
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // int b = vararg("", 10);
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // String c = notVararg(0, 0);
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+
+        // Number d = noArguments();
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index), 0));
+        assertEquals(Number.class, getChildType(expressions.get(index++), 1));
+
+        // Number e = field.noArguments();
+        assertEquals(Number.class, expressions.get(index).getType());
+        assertEquals(Number.class, getChildType(expressions.get(index), 0));
+        assertEquals(Number.class, getChildType(expressions.get(index++), 1));
+
+        // int f = this.vararg("");
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 1));
+        assertEquals(int.class, getChildType(expressions.get(index++), 2));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testMethodAccessibility() throws JaxenException {
+        // ASTCompilationUnit acu = parseAndTypeResolveForClass15(Dummy.class);
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodAccessibility.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // SuperClassA a = inheritedA();
+        assertEquals(SuperClassA.class, expressions.get(index).getType());
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassA.class, getChildType(expressions.get(index++), 1));
+
+        // SuperClassB b = inheritedB();
+        assertEquals(SuperClassB.class, expressions.get(index).getType());
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassB.class, getChildType(expressions.get(index++), 1));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    private Class<?> getChildType(Node node, int childIndex) {
         return ((TypeNode) node.jjtGetChild(childIndex)).getType();
     }
 
-    private void assertChildTypeArgsEqualTo(Node node, int childIndex, Class... classes) {
+    private void assertChildTypeArgsEqualTo(Node node, int childIndex, Class<?>... classes) {
         JavaTypeDefinition typeDef = ((TypeNode) node.jjtGetChild(childIndex)).getTypeDefinition();
 
-        assertTrue(typeDef.getGenericArgs().size() == classes.length);
-
         for (int index = 0; index < classes.length; ++index) {
-            assertTrue(typeDef.getGenericArgs().get(index).getType() == classes[index]);
+            assertSame(classes[index], typeDef.getGenericType(index).getType());
         }
     }
 
