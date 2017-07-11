@@ -69,12 +69,6 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
 
 
     @Override
-    public boolean isRequired() {
-        return propertyDescriptor.isRequired();
-    }
-
-
-    @Override
     public String name() {
         return propertyDescriptor.name();
     }

@@ -81,10 +81,7 @@ import net.sourceforge.pmd.Rule;
     @Override
     public String propertyErrorFor(Rule rule) {
         List<V> realValues = rule.getProperty(this);
-        if (realValues == null && !isRequired()) {
-            return null;
-        }
-        return errorFor(realValues);
+        return realValues == null ? null : errorFor(realValues);
     }
 
 

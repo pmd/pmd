@@ -71,10 +71,7 @@ import net.sourceforge.pmd.SingleValuePropertyDescriptor;
     @Override
     public String propertyErrorFor(Rule rule) {
         T realValue = rule.getProperty(this);
-        if (realValue == null && !isRequired()) {
-            return null;
-        }
-        return errorFor(realValue);
+        return realValue == null ? null : errorFor(realValue);
     }
 
 

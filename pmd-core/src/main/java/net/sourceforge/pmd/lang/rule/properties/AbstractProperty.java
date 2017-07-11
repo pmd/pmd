@@ -27,7 +27,6 @@ import net.sourceforge.pmd.util.StringUtil;
 
     private final String name;
     private final String description;
-    private final boolean isRequired;
     private final float uiOrder;
 
 
@@ -48,7 +47,6 @@ import net.sourceforge.pmd.util.StringUtil;
 
         name = checkNotEmpty(theName, NAME);
         description = checkNotEmpty(theDescription, DESCRIPTION);
-        isRequired = false; // TODO - do we need this?
         uiOrder = theUIOrder;
     }
 
@@ -64,12 +62,6 @@ import net.sourceforge.pmd.util.StringUtil;
     @Override
     public String description() {
         return description;
-    }
-
-
-    @Override
-    public boolean isRequired() {
-        return isRequired;
     }
 
 
@@ -162,6 +154,7 @@ import net.sourceforge.pmd.util.StringUtil;
      *
      * @return A wrapper for this property.
      */
-    /* default */ abstract PropertyDescriptorWrapper<T> getWrapper();
+    /* default */
+    abstract PropertyDescriptorWrapper<T> getWrapper();
 
 }

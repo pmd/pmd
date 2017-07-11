@@ -77,15 +77,6 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
 
 
     /**
-     * Denotes whether the value is required before the rule can be executed.
-     * Has no meaning for primitive types such as booleans, ints, etc.
-     *
-     * @return boolean
-     */
-    boolean isRequired();
-
-
-    /**
      * Validation function that returns a diagnostic error message for a sample
      * property value. Returns null if the value is acceptable.
      *
