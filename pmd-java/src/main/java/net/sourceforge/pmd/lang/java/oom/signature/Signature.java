@@ -13,23 +13,17 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
  */
 public abstract class Signature {
 
+    /** Visibility. */
     public final Visibility visibility;
 
 
-    public Signature(Visibility visibility) {
+    /**
+     * Initialises the visibility.
+     *
+     * @param visibility The visibility of the signature
+     */
+    protected Signature(Visibility visibility) {
         this.visibility = visibility;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Signature && visibility == ((Signature) o).visibility;
-    }
-
-
-    @Override
-    public int hashCode() {
-        return visibility.hashCode();
     }
 
 
