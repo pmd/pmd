@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.metrics.cyclo;
+package net.sourceforge.pmd.lang.java.oom.metrics.visitors;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
@@ -24,7 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
  */
-public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter implements CycloVisitor {
+public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {

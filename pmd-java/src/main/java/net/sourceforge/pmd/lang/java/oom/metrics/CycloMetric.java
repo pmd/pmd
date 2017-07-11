@@ -8,6 +8,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
@@ -15,9 +16,8 @@ import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
-import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloPathUnawareOperationVisitor;
-import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.CycloVisitor;
-import net.sourceforge.pmd.lang.java.oom.metrics.cyclo.StandardCycloVisitor;
+import net.sourceforge.pmd.lang.java.oom.metrics.visitors.CycloPathUnawareOperationVisitor;
+import net.sourceforge.pmd.lang.java.oom.metrics.visitors.StandardCycloVisitor;
 
 /**
  * McCabe's Cyclomatic Complexity. Number of independent paths through a block of code [1, 2]. Formally, given that the
@@ -63,7 +63,7 @@ public final class CycloMetric extends AbstractMetric implements ClassMetric, Op
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
-        CycloVisitor visitor = (Version.IGNORE_BOOLEAN_PATHS.equals(version))
+        JavaParserVisitor visitor = (Version.IGNORE_BOOLEAN_PATHS.equals(version))
                                ? new CycloPathUnawareOperationVisitor()
                                : new StandardCycloVisitor();
 
