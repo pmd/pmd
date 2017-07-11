@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
@@ -111,18 +110,6 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     @Override
     public Map<String, E> mappings() {
         return choicesByLabel; // unmodifiable
-    }
-
-
-    @Override
-    public Object[][] choices() {
-        Object[][] res = new Object[choicesByLabel.size()][2];
-        int i = 0;
-        for (Entry<String, E> e : choicesByLabel.entrySet()) {
-            res[i++][0] = e.getKey();
-            res[i][1] = e.getValue();
-        }
-        return res;
     }
 
 

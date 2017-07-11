@@ -25,9 +25,4 @@ import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
     }
 
 
-    @Override
-    public Object[][] choices() {
-        return ((EnumeratedPropertyDescriptor<E, T>) propertyDescriptor).choices();
-    }
-
 }

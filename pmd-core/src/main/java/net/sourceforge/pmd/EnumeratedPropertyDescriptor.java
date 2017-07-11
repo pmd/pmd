@@ -24,12 +24,4 @@ public interface EnumeratedPropertyDescriptor<E, T> extends PropertyDescriptor<T
      */
     Map<String, E> mappings();
 
-
-    /**
-     * Returns a set of choice tuples if available. This is kept for compatibility with the eclipse plugin, even
-     * though it returns the same information as {@link #mappings()} (only it returns them ordered).
-     *
-     * @return An array of the label value mappings. The first column is the labels, the second is the value.
-     */
-    Object[][] choices();
 }
