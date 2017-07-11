@@ -6,9 +6,8 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
@@ -24,12 +23,6 @@ import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
  * @author Clément Fournier
  */
 public final class AtfdMetric extends AbstractMetric implements ClassMetric, OperationMetric {
-
-    @Override
-    public boolean supports(AccessNode node) {
-        return node instanceof ASTClassOrInterfaceDeclaration
-            || node instanceof ASTMethodOrConstructorDeclaration && !node.isAbstract();
-    }
 
     @Override // TODO:cf
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
@@ -49,8 +42,9 @@ public final class AtfdMetric extends AbstractMetric implements ClassMetric, Ope
         return foreignCalls / callQNames.size();
     }
 
+
     @Override
-    public double computeFor(ASTClassOrInterfaceDeclaration node, MetricVersion version) {
+    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
         // TODO:cf
         return 0;
     }

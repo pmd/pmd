@@ -221,7 +221,7 @@ public abstract class AbstractNode implements Node {
 
     /**
      * Traverses up the tree to find the first parent instance of type
-     * parentType
+     * parentType or one of its subclasses.
      *
      * @param parentType
      *            class which you want to find.
@@ -230,7 +230,7 @@ public abstract class AbstractNode implements Node {
     @Override
     public <T> T getFirstParentOfType(Class<T> parentType) {
         Node parentNode = jjtGetParent();
-        while (parentNode != null && parentNode.getClass() != parentType) {
+        while (parentNode != null && !parentType.isInstance(parentNode)) {
             parentNode = parentNode.jjtGetParent();
         }
         return (T) parentNode;

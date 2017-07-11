@@ -48,6 +48,7 @@ public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter i
         return data;
     }
 
+
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         if (node.isTernary()) {
@@ -57,12 +58,14 @@ public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter i
         return data;
     }
 
+
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
         ((MutableInt) data).increment();
         super.visit(node, data);
         return data;
     }
+
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
@@ -71,6 +74,7 @@ public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter i
         return data;
     }
 
+
     @Override
     public Object visit(ASTCatchStatement node, Object data) {
         ((MutableInt) data).increment();
@@ -78,12 +82,14 @@ public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter i
         return data;
     }
 
+
     @Override
     public Object visit(ASTForStatement node, Object data) {
         ((MutableInt) data).increment();
         super.visit(node, data);
         return data;
     }
+
 
     @Override
     public Object visit(ASTDoStatement node, Object data) {

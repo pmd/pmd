@@ -28,23 +28,25 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
         this.name = name;
     }
 
+
     /* default */ String getName() {
         return name;
     }
 
+
     /**
      * Computes the value of a metric for an operation.
      *
-     * @param key   The operation metric for which to find a memoized result.
-     * @param node  The AST node of the operation.
-     * @param force Force the recomputation. If unset, we'll first check for a memoized result.
+     * @param key   The operation metric for which to find a memoized result
+     * @param node  The AST node of the operation
+     * @param force Force the recomputation; if unset, we'll first check for a memoized result
      *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed.
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
     /* default */ double compute(OperationMetricKey key, ASTMethodOrConstructorDeclaration node, boolean force,
                                  MetricVersion version) {
 
-        ParameterizedMetricKey paramKey = ParameterizedMetricKey.build(key, version);
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.getInstance(key, version);
         Double prev = memo.get(paramKey);
         if (!force && prev != null) {
             return prev;
@@ -55,6 +57,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
         memo.put(paramKey, val);
         return val;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -69,6 +72,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 
         return name != null ? name.equals(stats.name) : stats.name == null;
     }
+
 
     @Override
     public int hashCode() {
