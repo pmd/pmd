@@ -333,33 +333,6 @@ public class RuleSetWriter {
         return propertyElement;
     }
 
-    // private Element createPropertyDefinitionElement(PropertyDescriptor<?>
-    // propertyDescriptor) {
-    // Element propertyElement = createPropertyValueElement(propertyDescriptor,
-    // propertyDescriptor.defaultValue());
-    //
-    // propertyElement.setAttribute("description",
-    // propertyDescriptor.description());
-    // String type =
-    // PropertyDescriptorFactory.getPropertyDescriptorType(propertyDescriptor);
-    // propertyElement.setAttribute("type", type);
-    //
-    // if (propertyDescriptor.isMultiValue()) {
-    // propertyElement.setAttribute("delimiter",
-    // String.valueOf(propertyDescriptor.multiValueDelimiter()));
-    // }
-    //
-    // if (propertyDescriptor instanceof AbstractNumericProperty) {
-    // propertyElement.setAttribute("min",
-    // String.valueOf(((AbstractNumericProperty<?>)
-    // propertyDescriptor).lowerLimit()));
-    // propertyElement.setAttribute("max",
-    // String.valueOf(((AbstractNumericProperty<?>)
-    // propertyDescriptor).upperLimit()));
-    // }
-    //
-    // return propertyElement;
-    // }
 
     private Element createPropertyDefinitionElementBR(PropertyDescriptor<?> propertyDescriptor) {
 
