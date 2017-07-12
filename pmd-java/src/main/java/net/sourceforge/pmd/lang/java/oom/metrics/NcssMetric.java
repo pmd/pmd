@@ -65,7 +65,7 @@ public final class NcssMetric extends AbstractMetric implements ClassMetric, Ope
         return (double) ncss.getValue();
     }
 
-
+    /** Variants of NCSS. */
     public enum Version implements MetricVersion {
         /** JavaNCSS compliant cyclo visitor. */
         JAVANCSS

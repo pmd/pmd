@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
 public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
     private QualifiedName qualifiedName;
@@ -45,5 +47,12 @@ public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode implements AS
     @Override
     public TypeKind getTypeKind() {
         return TypeKind.ENUM;
+    }
+
+
+    @Override
+    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return findChildrenOfType(ASTEnumBody.class)
+            .get(0).findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 }

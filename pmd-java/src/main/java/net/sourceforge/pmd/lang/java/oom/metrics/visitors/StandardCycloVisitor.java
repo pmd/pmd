@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.oom.metrics.visitors.CycloPathUnawareOperationVisitor;
 import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
 
 /**

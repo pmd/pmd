@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
 /**
  * Groups enums, classes and interface declarations.
  *
@@ -18,6 +20,18 @@ public interface ASTAnyTypeDeclaration extends QualifiableNode, AccessNode, Java
      */
     TypeKind getTypeKind();
 
+
+    /**
+     * Retrieves the body of the declaration.
+     *
+     * @return The body of the declaration
+     */
+    List<ASTAnyTypeBodyDeclaration> getDeclarations();
+
+
+    /**
+     * The kind of type this node declares.
+     */
     enum TypeKind {
         CLASS, INTERFACE, ENUM, ANNOTATION
     }

@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
@@ -205,13 +207,9 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
             return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
         }
 
-        List<ASTClassOrInterfaceBodyDeclaration> outerDecls
-            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
-
-
         List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
 
-        for (ASTClassOrInterfaceBodyDeclaration decl : outerDecls) {
+        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
             if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
                 operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
             }

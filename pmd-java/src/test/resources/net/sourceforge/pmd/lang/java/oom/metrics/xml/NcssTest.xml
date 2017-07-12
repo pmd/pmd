@@ -1,31 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
     <!-- All these tests have been validated against JavaNCSS. -->
-    <!-- The major difference between this version of NCSS and
-         that of JavaNCSS is that package statements and import
-         statements are not counted. -->
 
 
     <code-fragment id="full-example">
         <![CDATA[
-          public class Foo {
+          package com
+                     .company
+                             .money;
+
+          import com
+                     .company
+                             .money.Bar;
+          import com.company.Carrot;
+
+          public class Foo extends Bar {
             int y, z, t;
             String q;
 
             {
               bar();
               int x;
-              switch (x) {
+              switch
+                (x) {
               case 1: foo(); break;
               case 2:
-              case 3: bar(); break;
+              case 3: bar();
+                      break;
               default: break;
               }
             }
 
-            public void foo() {}
+            public Foo() {
+              this(2);
+            }
 
-            public static void main(String args[]) {
+            public Foo(int z) {
+
+              Random r = new Random();
+              label: for (int j = -12; i < z; i++) {
+                theNonsense: for (int k = -20; k < 20; k += j) {
+                  if (r.nextInt() == 42) {
+                    System
+                      .out
+                      .println("Bye");
+                    break label;
+                  } else if (k > 12) {
+                    continue theNonsense;
+                  }
+                }
+              }
+
+              super(z);
+            }
+
+            public void foo() {
+              int x = 0;
+              synchronized (x) {
+                x++;
+              }
+
+              do {
+                if (x == 0) {
+                  synchronized (x) {
+                    x++;
+                  }
+                } else if (x == 1) {
+                  x = 0;
+                } else {
+                  System.out.println("Bonjour");
+                  throw new ScaryException("Surprise!");
+                }
+              } while (x != 2);
+            }
+
+            public static void main(String args[]) throws RadioactiveException {
               String k, l, m;
 
               bar();
@@ -53,6 +102,8 @@
                 x++;
               } catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
+              } catch (ThemAll pokemon) {
+                pokemon.train();
               } finally {
                 // Do nothing
               }
@@ -70,13 +121,30 @@
     </code-fragment>
 
     <test-code>
-        <description>Full example</description>
+        <description>Full example - Standard version</description>
         <rule-property name="reportClasses">true</rule-property>
-        <expected-problems>3</expected-problems>
+        <expected-problems>5</expected-problems>
         <expected-messages>
-            <message>'.Foo' has value 35 highest 18.</message>
-            <message>'.Foo#foo()' has value 1.</message>
-            <message>'.Foo#main(String)' has value 18.</message>
+            <message>'com.company.money.Foo' has value 65 highest 20.</message>
+            <message>'com.company.money.Foo#Foo()' has value 2.</message>
+            <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
+            <message>'com.company.money.Foo#foo()' has value 14.</message>
+            <message>'com.company.money.Foo#main(String)' has value 20.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Full example - JavaNcss version</description>
+        <rule-property name="reportClasses">true</rule-property>
+        <rule-property name="metricVersion">javaNcss</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>'com.company.money.Foo' has value 68 highest 20.</message>
+            <message>'com.company.money.Foo#Foo()' has value 2.</message>
+            <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
+            <message>'com.company.money.Foo#foo()' has value 14.</message>
+            <message>'com.company.money.Foo#main(String)' has value 20.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>

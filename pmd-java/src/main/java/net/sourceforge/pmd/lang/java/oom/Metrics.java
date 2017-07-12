@@ -35,15 +35,13 @@ public final class Metrics {
      *
      * @return The top level package stats
      */
-    /* default */
-    static PackageStats getTopLevelPackageStats() {
+    /* default */ static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 
 
     /** Sets whether computations are forced or not. Used for tests. */
-    /* default */
-    static void reset() {
+    /* default */ static void reset() {
         TOP_LEVEL_PACKAGE.reset();
     }
 

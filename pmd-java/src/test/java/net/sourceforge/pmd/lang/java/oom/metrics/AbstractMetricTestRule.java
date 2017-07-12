@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.Metric;
 import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 
 /**
  * Abstract test rule for a metric. Tests of metrics use the standard framework for rule testing, using one dummy rule
@@ -25,14 +27,16 @@ import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
  */
 public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
-
+    private final EnumeratedProperty<MetricVersion> versionDescriptor = new EnumeratedProperty<>(
+        "metricVersion", "Choose a variant of the metric or the standard",
+        versionLabels(), versionValues(), 0, 3.0f);
     private final BooleanProperty reportClassesDescriptor = new BooleanProperty(
         "reportClasses", "Add class violations to the report", isReportClasses(), 2.0f);
     private final BooleanProperty reportMethodsDescriptor = new BooleanProperty(
         "reportMethods", "Add method violations to the report", isReportMethods(), 3.0f);
     private final DoubleProperty reportLevelDescriptor = new DoubleProperty(
         "reportLevel", "Minimum value required to report", -1., Double.POSITIVE_INFINITY, defaultReportLevel(), 3.0f);
-    protected MetricVersion version;
+    private MetricVersion metricVersion;
     private boolean reportClasses;
     private boolean reportMethods;
     private double reportLevel;
@@ -44,9 +48,14 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         classKey = getClassKey();
         opKey = getOpKey();
 
+        if (versionValues()[0] != Version.STANDARD) {
+            throw new RuntimeException("The versions array must begin with the standard version");
+        }
+
         definePropertyDescriptor(reportClassesDescriptor);
         definePropertyDescriptor(reportMethodsDescriptor);
         definePropertyDescriptor(reportLevelDescriptor);
+        definePropertyDescriptor(versionDescriptor);
     }
 
 
@@ -66,10 +75,23 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     protected abstract OperationMetricKey getOpKey();
 
 
+    /**
+     * Values of the version.
+     *
+     * @return Array of the ordered values
+     */
+    protected MetricVersion[] versionValues() {
+        return new MetricVersion[] {Version.STANDARD}; // TODO simplify that after #479
+    }
+
+
     public Object visit(ASTCompilationUnit node, Object data) {
         reportClasses = getProperty(reportClassesDescriptor);
         reportMethods = getProperty(reportMethodsDescriptor);
         reportLevel = getProperty(reportLevelDescriptor);
+        Object version = getProperty(versionDescriptor);
+        metricVersion = version instanceof MetricVersion ? (MetricVersion) version : Metric.Version.STANDARD;
+
         return super.visit(node, data);
     }
 
@@ -95,12 +117,12 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
 
     /**
-     * Sets the version to test
+     * Labels of the versions.
      *
-     * @return The version to test
+     * @return Array of the ordered labels
      */
-    protected MetricVersion version() {
-        return Version.STANDARD;
+    protected String[] versionLabels() {
+        return new String[] {"standard"};
     }
 
 
@@ -117,12 +139,12 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         if (classKey != null && reportClasses && classKey.supports(node)) {
-            int classValue = (int) Metrics.get(classKey, node, version);
+            int classValue = (int) Metrics.get(classKey, node, metricVersion);
 
             String valueReport = String.valueOf(classValue);
 
             if (opKey != null) {
-                int highest = (int) Metrics.get(opKey, node, version, ResultOption.HIGHEST);
+                int highest = (int) Metrics.get(opKey, node, metricVersion, ResultOption.HIGHEST);
                 valueReport += " highest " + highest;
             }
             if (classValue >= reportLevel) {
@@ -136,7 +158,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         if (opKey != null && reportMethods && opKey.supports(node)) {
-            int methodValue = (int) Metrics.get(opKey, node, version);
+            int methodValue = (int) Metrics.get(opKey, node, metricVersion);
             if (methodValue >= reportLevel) {
                 addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + methodValue});
             }

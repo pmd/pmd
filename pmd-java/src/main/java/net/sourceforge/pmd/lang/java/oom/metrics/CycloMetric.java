@@ -64,8 +64,8 @@ public final class CycloMetric extends AbstractMetric implements ClassMetric, Op
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
         JavaParserVisitor visitor = (Version.IGNORE_BOOLEAN_PATHS.equals(version))
-                               ? new CycloPathUnawareOperationVisitor()
-                               : new StandardCycloVisitor();
+                                    ? new CycloPathUnawareOperationVisitor()
+                                    : new StandardCycloVisitor();
 
         MutableInt cyclo = (MutableInt) node.jjtAccept(visitor, new MutableInt(1));
         return (double) cyclo.getValue();

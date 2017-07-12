@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
 public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
     private boolean isInterface;
@@ -63,5 +65,12 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
     @Override
     public TypeKind getTypeKind() {
         return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;
+    }
+
+
+    @Override
+    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return findChildrenOfType(ASTClassOrInterfaceBody.class)
+            .get(0).findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 }
