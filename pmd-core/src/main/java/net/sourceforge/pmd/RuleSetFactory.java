@@ -788,7 +788,51 @@ public class RuleSetFactory {
         return null;
     }
 
-
+    /**
+     * Parse a property node.
+     *
+     * @param rule
+     *            The Rule to which the property should be added. //@param
+     *            propertyNode Must be a property element node.
+     */
+    // private static void parsePropertyNode(Rule rule, Node propertyNode) {
+    // Element propertyElement = (Element) propertyNode;
+    // String name = propertyElement.getAttribute("name");
+    // String description = propertyElement.getAttribute("description");
+    // String type = propertyElement.getAttribute("type");
+    // String delimiter = propertyElement.getAttribute("delimiter");
+    // String min = propertyElement.getAttribute("min");
+    // String max = propertyElement.getAttribute("max");
+    // String value = propertyElement.getAttribute("value");
+    //
+    // // If value not provided, get from child <value> element.
+    // if (StringUtil.isEmpty(value)) {
+    // for (int i = 0; i < propertyNode.getChildNodes().getLength(); i++) {
+    // Node node = propertyNode.getChildNodes().item(i);
+    // if ((node.getNodeType() == Node.ELEMENT_NODE) &&
+    // node.getNodeName().equals("value")) {
+    // value = parseTextNode(node);
+    // }
+    // }
+    // }
+    //
+    // // Setting of existing property, or defining a new property?
+    // if (StringUtil.isEmpty(type)) {
+    // PropertyDescriptor propertyDescriptor = rule.getPropertyDescriptor(name);
+    // if (propertyDescriptor == null) {
+    // throw new IllegalArgumentException("Cannot set non-existant property '" +
+    // name + "' on Rule " + rule.getName());
+    // } else {
+    // Object realValue = propertyDescriptor.valueFrom(value);
+    // rule.setProperty(propertyDescriptor, realValue);
+    // }
+    // } else {
+    // PropertyDescriptor propertyDescriptor =
+    // PropertyDescriptorFactory.createPropertyDescriptor(name, description,
+    // type, delimiter, min, max, value);
+    // rule.definePropertyDescriptor(propertyDescriptor);
+    // }
+    // }
     private static <T> void setValue(Rule rule, PropertyDescriptor<T> desc, String strValue) {
         T realValue = desc.valueFrom(strValue);
         rule.setProperty(desc, realValue);
