@@ -84,7 +84,8 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester<Method>
 
     @Override
     protected PropertyDescriptor<Method> createProperty() {
-        return new MethodProperty("methodProperty", "asdf", ALL_METHODS[1], new String[] {"java.lang"}, 1.0f);
+        return new MethodProperty("methodProperty", "asdf", ALL_METHODS[1], new String[] {"java.lang", "org.apache"},
+                                  1.0f);
     }
 
     @Override

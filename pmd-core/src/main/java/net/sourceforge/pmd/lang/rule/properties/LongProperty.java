@@ -51,7 +51,7 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      */
     public LongProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                         float theUIOrder) {
-        this(theName, theDescription, longFrom(minStr), longFrom(maxStr), longFrom(defaultStr), theUIOrder);
+        this(theName, theDescription, Long.valueOf(minStr), Long.valueOf(maxStr), Long.valueOf(defaultStr), theUIOrder);
     }
 
 
@@ -69,18 +69,6 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      */
     public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
         super(theName, theDescription, min, max, theDefault, theUIOrder);
-    }
-
-
-    /**
-     * Parses a String into a Long.
-     *
-     * @param numberString String to parse
-     *
-     * @return Parsed Long
-     */
-    public static Long longFrom(String numberString) {
-        return Long.valueOf(numberString);
     }
 
 

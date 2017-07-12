@@ -64,14 +64,4 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
 
-    /**
-     * Parses a String into an Integer.
-     *
-     * @param numberString String to parse
-     *
-     * @return Parsed Integer
-     */
-    public static Integer intFrom(String numberString) {
-        return INTEGER_PARSER.valueOf(numberString);
-    }
 }

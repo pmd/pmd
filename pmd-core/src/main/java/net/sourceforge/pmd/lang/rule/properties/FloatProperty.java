@@ -50,7 +50,7 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
      */
     public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                          float theUIOrder) {
-        this(theName, theDescription, floatFrom(minStr), floatFrom(maxStr), floatFrom(defaultStr), theUIOrder);
+        this(theName, theDescription, FLOAT_PARSER.valueOf(minStr), FLOAT_PARSER.valueOf(maxStr), FLOAT_PARSER.valueOf(defaultStr), theUIOrder);
     }
 
 
@@ -68,19 +68,7 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
      */
     public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
                          float theUIOrder) {
-        super(theName, theDescription, Float.valueOf(min), Float.valueOf(max), Float.valueOf(theDefault), theUIOrder);
-    }
-
-
-    /**
-     * Parses a String into a Float.
-     *
-     * @param numberString String to parse
-     *
-     * @return Parsed Float
-     */
-    public static Float floatFrom(String numberString) {
-        return FLOAT_PARSER.valueOf(numberString);
+        super(theName, theDescription, min, max, theDefault, theUIOrder);
     }
 
 

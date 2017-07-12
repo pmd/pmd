@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -17,10 +18,15 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
+import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.SingleValuePropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
+import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
 
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific
@@ -248,6 +254,66 @@ public abstract class AbstractPropertyDescriptorTester<T> {
             count--;
         }
         return res;
+    }
+
+    @Test
+    public void testIsMultiValue() {
+        assertFalse(createProperty().isMultiValue());
+        assertTrue(createMultiProperty().isMultiValue());
+    }
+
+    @Test
+    public void testAddAttributes() {
+        Map<PropertyDescriptorField, String> atts = createProperty().attributeValuesById();
+        Map<PropertyDescriptorField, String> multiAtts = createMultiProperty().attributeValuesById();
+
+        assertTrue(atts.containsKey(PropertyDescriptorField.NAME));
+        assertTrue(atts.containsKey(PropertyDescriptorField.DESCRIPTION));
+        assertTrue(atts.containsKey(PropertyDescriptorField.DEFAULT_VALUE));
+
+        assertTrue(multiAtts.containsKey(PropertyDescriptorField.DELIMITER));
+        assertTrue(multiAtts.containsKey(PropertyDescriptorField.NAME));
+        assertTrue(multiAtts.containsKey(PropertyDescriptorField.DESCRIPTION));
+        assertTrue(multiAtts.containsKey(PropertyDescriptorField.DEFAULT_VALUE));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testWrapper() {
+        PropertyDescriptor<T> prop = createProperty();
+        PropertyDescriptor<List<T>> multi = createMultiProperty();
+
+        PropertyDescriptor<T> propW = null;
+        PropertyDescriptor<List<T>> multiW = null;
+        try {
+            propW = (SingleValuePropertyDescriptor<T>) PropertyDescriptorWrapper.getWrapper(prop);
+            multiW = (MultiValuePropertyDescriptor<T>) PropertyDescriptorWrapper.getWrapper(multi);
+        } catch (ClassCastException ioe) {
+            fail();
+        }
+
+        assertEquals(prop.type(), propW.type());
+        assertEquals(prop.defaultValue(), propW.defaultValue());
+        assertEquals(prop.description(), propW.description());
+        assertEquals(prop.isMultiValue(), propW.isMultiValue());
+        assertEquals(prop.name(), propW.name());
+        assertEquals(prop.preferredRowCount(), propW.preferredRowCount());
+        assertEquals(prop.uiOrder(), propW.uiOrder(), 0);
+        assertEquals(prop.attributeValuesById(), propW.attributeValuesById());
+        assertEquals(prop.hashCode(), propW.hashCode());
+
+
+
+        assertEquals(multi.type(), multiW.type());
+        assertEquals(multi.defaultValue(), multiW.defaultValue());
+        assertEquals(multi.description(), multiW.description());
+        assertEquals(multi.isMultiValue(), multiW.isMultiValue());
+        assertEquals(multi.name(), multiW.name());
+        assertEquals(multi.preferredRowCount(), multiW.preferredRowCount());
+        assertEquals(multi.uiOrder(), multiW.uiOrder(), 0);
+        assertEquals(multi.attributeValuesById(), multiW.attributeValuesById());
+        assertEquals(multi.hashCode(), multiW.hashCode());
+
     }
 
 

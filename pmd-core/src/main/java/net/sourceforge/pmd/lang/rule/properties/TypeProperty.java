@@ -89,7 +89,7 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
 
 
     /**
-     * Deprecated.
+     * Deprecated constructor.
      *
      * @deprecated
      */

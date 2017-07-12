@@ -71,7 +71,6 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
         assertEquals(prop.mappings(), propW.mappings());
         assertEquals(multi.mappings(), multiW.mappings());
 
-
     }
 
 

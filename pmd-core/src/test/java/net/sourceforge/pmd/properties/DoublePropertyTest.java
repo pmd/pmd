@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
  *
  * @author Brian Remedios
  */
-public class DoublePropertyTest extends AbstractPropertyDescriptorTester<Double> {
+public class DoublePropertyTest extends AbstractNumericPropertyDescriptorTester<Double> {
 
     private static final double MIN = -10.0;
     private static final double MAX = 100.0;

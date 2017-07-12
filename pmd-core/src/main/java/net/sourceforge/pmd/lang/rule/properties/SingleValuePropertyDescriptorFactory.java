@@ -35,7 +35,7 @@ public abstract class SingleValuePropertyDescriptorFactory<T> extends BasicPrope
 
 
     @Override
-    public boolean isMultiValue() {
+    public final boolean isMultiValue() {
         return false;
     }
 }
