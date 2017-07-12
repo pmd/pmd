@@ -154,7 +154,6 @@ import net.sourceforge.pmd.util.StringUtil;
      *
      * @return A wrapper for this property.
      */
-    /* default */
-    abstract PropertyDescriptorWrapper<T> getWrapper();
+    /* default */ abstract PropertyDescriptorWrapper<T> getWrapper();
 
 }

@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
@@ -26,7 +25,6 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.SingleValuePropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
 
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific

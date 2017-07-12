@@ -9,9 +9,10 @@ import java.util.List;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.util.StringUtil;
 
-// TODO: delete? It's not used anywhere, including the plugins (the only usage is a doc import in
-// PropertyDescriptorWrapper
-// I'm pretty sure the functionality of this class was superseded by PropertyDescriptorUtil at some point
+
+/**
+ * @deprecated
+ */
 public class PropertyDescriptorFactory {
 
     private PropertyDescriptorFactory() { }
@@ -21,6 +22,8 @@ public class PropertyDescriptorFactory {
      * Returns the String type of the PropertyDescriptor for use in XML
      * serialization. If the value is <code>null</code> the type cannot be
      * serialized.
+     *
+     * @deprecated
      */
     public static String getPropertyDescriptorType(PropertyDescriptor<?> propertyDescriptor) {
         Class<?> type = propertyDescriptor.type();
@@ -44,7 +47,19 @@ public class PropertyDescriptorFactory {
     }
 
 
-    // TODO:cf  Deprecate? PropertyDescriptors can already be made from a map
+    /**
+     * @param name
+     * @param description
+     * @param type
+     * @param delimiter
+     * @param min
+     * @param max
+     * @param value
+     *
+     * @return
+     *
+     * @deprecated
+     */
     public static PropertyDescriptor<?> createPropertyDescriptor(String name, String description, String type,
                                                                  String delimiter, String min, String max, String value) {
         return new PropertyDescriptorWrapper<>(
@@ -80,7 +95,7 @@ public class PropertyDescriptorFactory {
         } else if ("List<Float>".equals(type)) {
             checkMinMax(name, type, min, max);
             FloatMultiProperty property = new FloatMultiProperty(name, description, 0f, 0f, (List<Float>) null, 0.0f);
-            return new FloatMultiProperty(name, description, FloatProperty.floatFrom(min), FloatProperty.floatFrom(max),
+            return new FloatMultiProperty(name, description, Float.valueOf(min), Float.valueOf(max),
                                           property.valueFrom(value), 0.0f);
         } else if ("Integer".equals(type)) {
             checkMinMax(name, type, min, max);
@@ -98,7 +113,7 @@ public class PropertyDescriptorFactory {
         } else if ("List<Long>".equals(type)) {
             checkMinMax(name, type, min, max);
             LongMultiProperty property = new LongMultiProperty(name, description, 0L, 0L, (List<Long>) null, 0.0f);
-            return new LongMultiProperty(name, description, LongProperty.longFrom(min), LongProperty.longFrom(max),
+            return new LongMultiProperty(name, description, Long.valueOf(min), Long.valueOf(max),
                                          property.valueFrom(value), 0.0f);
 
             // TODO - include legal package names for next four types

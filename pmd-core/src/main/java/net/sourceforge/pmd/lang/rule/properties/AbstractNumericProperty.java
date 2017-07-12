@@ -32,20 +32,34 @@ import net.sourceforge.pmd.PropertyDescriptorField;
     private T upperLimit;
 
 
+    /**
+     * Constructor for a single-valued numeric property.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param lower          Minimum value of the property
+     * @param upper          Maximum value of the property
+     * @param theDefault     List of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if lower > upper, or one of them is null, or the default is not between the
+     *                                  bounds
+     */
     protected AbstractNumericProperty(String theName, String theDescription, T lower, T upper, T theDefault,
                                       float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
+
+        lowerLimit = lower;
+        upperLimit = upper;
+
+        checkNumber(lower);
+        checkNumber(upper);
 
         if (lower.doubleValue() > upper.doubleValue()) {
             throw new IllegalArgumentException("Lower limit cannot be greater than the upper limit");
         }
 
-        lowerLimit = lower;
-        upperLimit = upper;
 
-        checkNumber(lowerLimit);
-        checkNumber(upperLimit);
-        checkNumber(theDefault);
     }
 
 
@@ -89,7 +103,7 @@ import net.sourceforge.pmd.PropertyDescriptorField;
      *
      * @return String
      */
-    static String rangeString(Number low, Number up) {
+    /* default */ static String rangeString(Number low, Number up) {
         return "(" + low + " -> " + up + ")";
     }
 

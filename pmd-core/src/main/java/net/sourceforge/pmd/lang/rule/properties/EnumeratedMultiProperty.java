@@ -13,7 +13,6 @@ import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Multi-valued property which can take only a fixed set of values of any type, then selected via String labels. The
