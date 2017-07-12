@@ -4,14 +4,24 @@
 
 package net.sourceforge.pmd.properties;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assume;
 import org.junit.Test;
 
+import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
 
 /**
@@ -24,7 +34,18 @@ import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
 public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTester<Foo> {
 
     private static final String[] KEYS = {"bar", "na", "bee", "coo"};
-    private static final Foo[] VALUES = Foo.values();
+    private static final Foo[] VALUES = {Foo.BAR, Foo.NA, Foo.BEE, Foo.COO};
+    private static final Map<String, Foo> MAPPINGS;
+
+
+    static {
+        Map<String, Foo> map = new HashMap<>();
+        map.put("bar", Foo.BAR);
+        map.put("na", Foo.NA);
+        map.put("bee", Foo.BEE);
+        map.put("coo", Foo.COO);
+        MAPPINGS = Collections.unmodifiableMap(map);
+    }
 
 
     public SimpleEnumeratedPropertyTest() {
@@ -32,15 +53,35 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
     }
 
 
-    @Override
-    protected Foo createValue() {
-        return randomChoice(Foo.values());
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testWrapper() {
+        EnumeratedPropertyDescriptor<Foo, Foo> prop = (EnumeratedPropertyDescriptor<Foo, Foo>) createProperty();
+        EnumeratedPropertyDescriptor<Foo, List<Foo>> multi = (EnumeratedPropertyDescriptor<Foo, List<Foo>>) createMultiProperty();
+
+        EnumeratedPropertyDescriptor<Foo, Foo> propW = null;
+        EnumeratedPropertyDescriptor<Foo, List<Foo>> multiW = null;
+        try {
+            propW = (EnumeratedPropertyDescriptor<Foo, Foo>) PropertyDescriptorWrapper.getWrapper(prop);
+            multiW = (EnumeratedPropertyDescriptor<Foo, List<Foo>>) PropertyDescriptorWrapper.getWrapper(multi);
+        } catch (ClassCastException ioe) {
+            fail();
+        }
+
+        assertEquals(prop.mappings(), propW.mappings());
+        assertEquals(multi.mappings(), multiW.mappings());
+
+
     }
 
 
     @Override
-    protected Foo createBadValue() {
-        return null; // not in the set of values
+    protected PropertyDescriptor<Foo> createProperty() {
+        return new EnumeratedProperty<>("testEnumerations",
+                                        "Test enumerations with complex types",
+                                        KEYS,
+                                        VALUES, 0, Foo.class,
+                                        1.0f);
     }
 
 
@@ -54,13 +95,65 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
     }
 
 
+    @Test
+    public void testMappings() {
+        EnumeratedPropertyDescriptor<Foo, Foo> prop
+            = (EnumeratedPropertyDescriptor<Foo, Foo>) createProperty();
+        EnumeratedPropertyDescriptor<Foo, List<Foo>> multi
+            = (EnumeratedPropertyDescriptor<Foo, List<Foo>>) createMultiProperty();
+
+        assertEquals(MAPPINGS, prop.mappings());
+        assertEquals(MAPPINGS, multi.mappings());
+    }
+
+
+    @Test
+    public void testDefaultIndexOutOfBounds() {
+        try {
+            EnumeratedMultiProperty<Foo> multi
+                = new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with simple type",
+                                                KEYS, VALUES, new int[] {99}, Foo.class, 1.0f);
+        } catch (IllegalArgumentException iae) {
+            return;
+        }
+        fail();
+    }
+
+
+    @Test
+    public void testNoMappingForDefault() {
+        try {
+            EnumeratedMultiProperty<Foo> multi
+                = new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with simple type",
+                                                MAPPINGS, Arrays.asList(Foo.IGNORED), Foo.class, 1.0f);
+        } catch (IllegalArgumentException iae) {
+            return;
+        }
+        fail();
+    }
+
+
+    @Test
+    public void creationTest() {
+        PropertyDescriptor<Foo> prop = createProperty();
+        PropertyDescriptor<List<Foo>> multi = createMultiProperty();
+
+        for (Map.Entry<String, Foo> e : MAPPINGS.entrySet()) {
+            assertEquals(e.getValue(), prop.valueFrom(e.getKey()));
+            assertTrue(multi.valueFrom(e.getKey()).contains(e.getValue()));
+        }
+    }
+
+
     @Override
-    protected PropertyDescriptor<Foo> createProperty() {
-        return new EnumeratedProperty<>("testEnumerations",
-                                        "Test enumerations with complex types",
-                                        KEYS,
-                                        VALUES, 0, Foo.class,
-                                        1.0f);
+    protected Foo createValue() {
+        return randomChoice(Foo.values());
+    }
+
+
+    @Override
+    protected Foo createBadValue() {
+        return null; // not in the set of values
     }
 
 
@@ -100,6 +193,6 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
 
 
     enum Foo {
-        BAR, NA, BEE, COO
+        BAR, NA, BEE, COO, IGNORED
     }
 }

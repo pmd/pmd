@@ -88,7 +88,11 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
 
-    // TODO:cf deprecate this
+    /**
+     * Deprecated.
+     *
+     * @deprecated
+     */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<PropertyDescriptorField, String> otherParams,
                         float theUIOrder) {
         this(theName, theDescription, classFrom(defaultTypeStr), packageNamesIn(otherParams), theUIOrder);

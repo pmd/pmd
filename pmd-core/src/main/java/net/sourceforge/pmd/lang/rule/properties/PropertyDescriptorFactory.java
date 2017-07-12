@@ -90,8 +90,8 @@ public class PropertyDescriptorFactory {
             checkMinMax(name, type, min, max);
             IntegerMultiProperty property = new IntegerMultiProperty(name, description, 0, 0, (List<Integer>) null,
                                                                      0.0f);
-            return new IntegerMultiProperty(name, description, IntegerProperty.intFrom(min),
-                                            IntegerProperty.intFrom(max), property.valueFrom(value), 0.0f);
+            return new IntegerMultiProperty(name, description, ValueParser.INTEGER_PARSER.valueOf(min),
+                                            ValueParser.INTEGER_PARSER.valueOf(max), property.valueFrom(value), 0.0f);
         } else if ("Long".equals(type)) {
             checkMinMax(name, type, min, max);
             return new LongProperty(name, description, min, max, value, 0.0f);

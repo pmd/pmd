@@ -28,11 +28,11 @@ import net.sourceforge.pmd.PropertyDescriptorField;
         = BasicPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {MIN, MAX},
                                                                 new Boolean[] {true, true});
 
-    private Number lowerLimit;
-    private Number upperLimit;
+    private T lowerLimit;
+    private T upperLimit;
 
 
-    protected AbstractNumericProperty(String theName, String theDescription, Number lower, Number upper, T theDefault,
+    protected AbstractNumericProperty(String theName, String theDescription, T lower, T upper, T theDefault,
                                       float theUIOrder) {
         super(theName, theDescription, theDefault, theUIOrder);
 
@@ -42,6 +42,55 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 
         lowerLimit = lower;
         upperLimit = upper;
+
+        checkNumber(lowerLimit);
+        checkNumber(upperLimit);
+        checkNumber(theDefault);
+    }
+
+
+    private void checkNumber(T number) {
+        if (valueErrorFor(number) != null) {
+            throw new IllegalArgumentException(valueErrorFor(number));
+        }
+    }
+
+
+    /**
+     * Returns a string describing any error the value may have when
+     * characterized by the receiver.
+     *
+     * @param value Object
+     *
+     * @return String
+     */
+    @Override
+    protected String valueErrorFor(T value) {
+
+        if (value == null) {
+            return "Missing value";
+        }
+
+        double number = value.doubleValue();
+
+        if (number > upperLimit.doubleValue() || number < lowerLimit.doubleValue()) {
+            return value + " is out of range " + rangeString(lowerLimit, upperLimit);
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Returns a string representing the range defined by the two bounds.
+     *
+     * @param low Lower bound
+     * @param up  Upper bound
+     *
+     * @return String
+     */
+    static String rangeString(Number low, Number up) {
+        return "(" + low + " -> " + up + ")";
     }
 
 
@@ -64,40 +113,6 @@ import net.sourceforge.pmd.PropertyDescriptorField;
     @Override
     public Number upperLimit() {
         return upperLimit;
-    }
-
-
-    /**
-     * Returns a string describing any error the value may have when
-     * characterized by the receiver.
-     *
-     * @param value Object
-     *
-     * @return String
-     */
-    @Override
-    protected String valueErrorFor(T value) {
-
-        double number = value.doubleValue();
-
-        if (number > upperLimit.doubleValue() || number < lowerLimit.doubleValue()) {
-            return value + " is out of range " + rangeString(lowerLimit, upperLimit);
-        }
-
-        return null;
-    }
-
-
-    /**
-     * Returns a string representing the range defined by the two bounds.
-     *
-     * @param low Lower bound
-     * @param up  Upper bound
-     *
-     * @return String
-     */
-    static String rangeString(Number low, Number up) {
-        return "(" + low + " -> " + up + ")";
     }
 
 

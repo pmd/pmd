@@ -142,11 +142,8 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
 
 
     private E choiceFrom(String label) {
-        if (StringUtil.isEmpty(label)) {
-            return null;
-        }
         E result = choicesByLabel.get(label);
-        if (result == null) {
+        if (label == null || result == null) {
             throw new IllegalArgumentException(label);
         }
         return result;

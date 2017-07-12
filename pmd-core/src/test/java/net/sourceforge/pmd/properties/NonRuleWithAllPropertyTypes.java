@@ -64,7 +64,7 @@ public class NonRuleWithAllPropertyTypes extends AbstractRule {
                                                                               5.0f);
     public static final CharacterMultiProperty MULTI_CHAR = new CharacterMultiProperty("multiChar",
                                                                                        "Multiple characters", new Character[] {'a', 'e', 'i', 'o', 'u'}, 6.0f, '|');
-    public static final FloatProperty SINGLE_FLOAT = new FloatProperty("singleFloat", "Single float value", 9f, 10f, .9f,
+    public static final FloatProperty SINGLE_FLOAT = new FloatProperty("singleFloat", "Single float value", .9f, 10f, .9f,
                                                                        5.0f);
     public static final FloatMultiProperty MULTI_FLOAT = new FloatMultiProperty("multiFloat", "Multiple float values",
                                                                                 0f, 5f, new Float[] {1f, 2f, 3f}, 6.0f);

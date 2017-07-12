@@ -112,11 +112,11 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     protected String valueErrorFor(String value) {
 
         if (value == null) {
-            return "missing value";
+            return "Missing value";
         }
 
         if (containsDelimiter(value)) {
-            return illegalCharMsg();
+            return "Value cannot contain the '" + multiValueDelimiter() + "' character";
         }
 
         // TODO - eval against regex checkers
@@ -134,11 +134,6 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      */
     private boolean containsDelimiter(String value) {
         return value.indexOf(multiValueDelimiter()) >= 0;
-    }
-
-
-    private String illegalCharMsg() {
-        return "Value cannot contain the '" + multiValueDelimiter() + "' character";
     }
 
 
