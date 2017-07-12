@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Multi-valued property.
@@ -176,11 +177,15 @@ import net.sourceforge.pmd.Rule;
 
     @Override
     public List<V> valueFrom(String valueString) throws IllegalArgumentException {
+        if (StringUtil.isEmpty(valueString)) {
+            return Collections.emptyList();
+        }
+
         String[] strValues = valueString.split(Pattern.quote("" + multiValueDelimiter()));
 
         List<V> values = new ArrayList<>(strValues.length);
-        for (int i = 0; i < strValues.length; i++) {
-            values.add(createFrom(strValues[i]));
+        for (String strValue : strValues) {
+            values.add(createFrom(strValue));
         }
 
         return values;
