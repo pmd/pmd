@@ -34,7 +34,7 @@ CPD will therefore have less false positives and false negatives.
 As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph)'s work on type resolution for Java continues.
 For this release he has extended support for method calls.
 
-Method shadowing and overloading are supported, as is varargs management. However, the selection of the target method upon the presence
+Method shadowing and overloading are supported, as are varargs. However, the selection of the target method upon the presence
 of generics and type inference is still work in progress. Expect it in forecoming releases.
 
 #### Metrics Framework
@@ -83,4 +83,5 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 *   [#486](https://github.com/pmd/pmd/pull/486): \[java] Add basic method typeresolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#492](https://github.com/pmd/pmd/pull/492): \[java] Typeresolution for overloaded methods - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#495](https://github.com/pmd/pmd/pull/495): \[core] Custom rule reinitialization code - [Clément Fournier](https://github.com/oowekyala)
+*   [#501](https://github.com/pmd/pmd/pull/501): \[java] Add support for most specific vararg method type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 
