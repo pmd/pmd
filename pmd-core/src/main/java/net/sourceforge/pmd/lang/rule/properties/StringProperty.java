@@ -21,8 +21,12 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     public static final PropertyDescriptorFactory<String> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<String>(String.class) {
             @Override
-            public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-                return new StringProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById), 0f);
+            public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                return new StringProperty(nameIn(valuesById),
+                                          descriptionIn(valuesById),
+                                          defaultValueIn(valuesById),
+                                          0f,
+                                          isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -36,7 +40,13 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
      * @param theUIOrder     UI order
      */
     public StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder) {
-        super(theName, theDescription, defaultValue, theUIOrder);
+        this(theName, theDescription, defaultValue, theUIOrder, false);
+    }
+
+
+    private StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder, boolean
+        isDefinedExternally) {
+        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
     }
 
 

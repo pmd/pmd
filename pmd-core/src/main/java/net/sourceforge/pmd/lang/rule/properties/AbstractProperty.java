@@ -28,6 +28,7 @@ import net.sourceforge.pmd.util.StringUtil;
     private final String name;
     private final String description;
     private final float uiOrder;
+    private final boolean isDefinedExternally;
 
 
     /**
@@ -39,8 +40,7 @@ import net.sourceforge.pmd.util.StringUtil;
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    protected AbstractProperty(String theName, String theDescription,
-                               float theUIOrder) {
+    protected AbstractProperty(String theName, String theDescription, float theUIOrder, boolean isDefinedExternally) {
         if (theUIOrder < 0) {
             throw new IllegalArgumentException("Property attribute 'UI order' cannot be null or blank");
         }
@@ -48,6 +48,7 @@ import net.sourceforge.pmd.util.StringUtil;
         name = checkNotEmpty(theName, NAME);
         description = checkNotEmpty(theDescription, DESCRIPTION);
         uiOrder = theUIOrder;
+        this.isDefinedExternally = isDefinedExternally;
     }
 
 
@@ -156,4 +157,9 @@ import net.sourceforge.pmd.util.StringUtil;
      */
     /* default */ abstract PropertyDescriptorWrapper<T> getWrapper();
 
+
+    @Override
+    public boolean isDefinedExternally() {
+        return isDefinedExternally;
+    }
 }

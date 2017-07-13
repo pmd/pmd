@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
@@ -28,8 +29,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
     protected static final char DELIMITER = '|';
     /** Required keys in the map. */
     protected static final Map<PropertyDescriptorField, Boolean> PACKAGED_FIELD_TYPES_BY_KEY
-        = BasicPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {LEGAL_PACKAGES},
-                                                                new Boolean[] {false});
+        = AbstractPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {LEGAL_PACKAGES},
+                                                                   new Boolean[] {false});
     private static final char PACKAGE_NAME_DELIMITER = ' ';
     private String[] legalPackageNames;
 
@@ -46,8 +47,9 @@ import net.sourceforge.pmd.PropertyDescriptorField;
      * @throws IllegalArgumentException
      */
     protected AbstractMultiPackagedProperty(String theName, String theDescription, List<T> theDefault,
-                                            String[] theLegalPackageNames, float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
+                                            String[] theLegalPackageNames, float theUIOrder,
+                                            boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
         checkValidPackages(theDefault, theLegalPackageNames);
 

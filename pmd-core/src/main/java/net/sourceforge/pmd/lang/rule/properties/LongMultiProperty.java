@@ -26,7 +26,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     public static final PropertyDescriptorFactory<List<Long>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
-            public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
                 List<Long> defaultValues = parsePrimitives(defaultValueIn(valuesById), delimiter, LONG_PARSER);
@@ -34,7 +34,9 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
                                              descriptionIn(valuesById),
                                              LONG_PARSER.valueOf(minMax[0]),
                                              LONG_PARSER.valueOf(minMax[1]),
-                                             defaultValues, 0f);
+                                             defaultValues,
+                                             0f,
+                                             isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -53,7 +55,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
                              Long[] defaultValues, float theUIOrder) {
-        super(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder);
+        this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
     }
 
 
@@ -71,7 +73,13 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
                              List<Long> defaultValues, float theUIOrder) {
-        super(theName, theDescription, min, max, defaultValues, theUIOrder);
+        this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
+    }
+
+
+    private LongMultiProperty(String theName, String theDescription, Long min, Long max,
+                             List<Long> defaultValues, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
     }
 
 

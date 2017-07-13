@@ -31,10 +31,14 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
     public static final PropertyDescriptorFactory<List<Method>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<Method>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
             @Override
-            public MethodMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public MethodMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);
-                return new MethodMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
-                                               legalPackageNamesIn(valuesById, delimiter), 0f);
+                return new MethodMultiProperty(nameIn(valuesById),
+                                               descriptionIn(valuesById),
+                                               methodsFrom(defaultValueIn(valuesById)),
+                                               legalPackageNamesIn(valuesById, delimiter),
+                                               0f,
+                                               isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -58,7 +62,13 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
      */
     public MethodMultiProperty(String theName, String theDescription, List<Method> theDefaults,
                                String[] legalPackageNames, float theUIOrder) {
-        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
+        this(theName, theDescription, theDefaults, legalPackageNames, theUIOrder, false);
+    }
+
+
+    private MethodMultiProperty(String theName, String theDescription, List<Method> theDefaults,
+                                String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder, isDefinedExternally);
     }
 
 
@@ -75,7 +85,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
      */
     public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
                                String[] legalPackageNames, float theUIOrder) {
-        super(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder);
+        this(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder, false);
     }
 
 
@@ -88,13 +98,6 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
                                                   MethodProperty.METHOD_ARG_DELIMITER));
         }
         return methods;
-    }
-
-
-    // TODO:cf deprecate this
-    public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
-                               Map<PropertyDescriptorField, String> otherParams, float theUIOrder) {
-        this(theName, theDescription, methodsFrom(methodDefaults), packageNamesIn(otherParams), theUIOrder);
     }
 
 
@@ -113,8 +116,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
 
     @Override
     protected String packageNameOf(Method item) {
-        final Method method = item;
-        return method.getDeclaringClass().getName() + '.' + method.getName();
+        return item.getDeclaringClass().getName() + '.' + item.getName();
     }
 
 

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.SingleValuePropertyDescriptor;
 
@@ -17,7 +18,7 @@ import net.sourceforge.pmd.SingleValuePropertyDescriptor;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public abstract class SingleValuePropertyDescriptorFactory<T> extends BasicPropertyDescriptorFactory<T> {
+public abstract class SingleValuePropertyDescriptorFactory<T> extends AbstractPropertyDescriptorFactory<T> {
 
     public SingleValuePropertyDescriptorFactory(Class<T> theValueType) {
         super(theValueType);
@@ -31,7 +32,8 @@ public abstract class SingleValuePropertyDescriptorFactory<T> extends BasicPrope
 
 
     @Override
-    public abstract SingleValuePropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById);
+    public abstract SingleValuePropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById,
+                                                                boolean isDefinedExternally);
 
 
     @Override

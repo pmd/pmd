@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
 import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
 
@@ -25,8 +26,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
     implements NumericPropertyDescriptor<T> {
 
     public static final Map<PropertyDescriptorField, Boolean> NUMBER_FIELD_TYPES_BY_KEY
-        = BasicPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {MIN, MAX},
-                                                                new Boolean[] {true, true});
+        = AbstractPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {MIN, MAX},
+                                                                   new Boolean[] {true, true});
 
     private T lowerLimit;
     private T upperLimit;
@@ -46,8 +47,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
      *                                  bounds
      */
     protected AbstractNumericProperty(String theName, String theDescription, T lower, T upper, T theDefault,
-                                      float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
+                                      float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
         lowerLimit = lower;
         upperLimit = upper;

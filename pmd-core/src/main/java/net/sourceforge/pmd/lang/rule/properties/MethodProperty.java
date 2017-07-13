@@ -33,13 +33,14 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
     public static final PropertyDescriptorFactory<Method> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Method>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
             @Override
-            public MethodProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public MethodProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);
                 return new MethodProperty(nameIn(valuesById),
                                           descriptionIn(valuesById),
-                                          defaultValueIn(valuesById),
+                                          methodFrom(defaultValueIn(valuesById)),
                                           legalPackageNamesIn(valuesById, delimiter),
-                                          0f);
+                                          0f,
+                                          isDefinedExternally);
             }
         }; // @formatter:on
     private static final String ARRAY_FLAG = "[]";
@@ -48,15 +49,37 @@ public final class MethodProperty extends AbstractPackagedProperty<Method> {
 
     public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
                           float theUIOrder) {
-        super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
+        this(theName, theDescription, theDefault, legalPackageNames, theUIOrder, false);
     }
 
 
+    /**
+     * Constructor for MethodProperty using a string as a default value.
+     *
+     * @param theName           Name of the property
+     * @param theDescription    Description
+     * @param defaultMethodStr  Default value, that will be parsed into a Method object
+     * @param legalPackageNames Legal packages
+     * @param theUIOrder        UI order
+     */
     public MethodProperty(String theName, String theDescription, String defaultMethodStr, String[] legalPackageNames,
                           float theUIOrder) {
-        super(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder);
+        this(theName, theDescription, methodFrom(defaultMethodStr), legalPackageNames, theUIOrder, false);
     }
 
+    /**
+     * Constructor for MethodProperty.
+     *
+     * @param theName           Name of the property
+     * @param theDescription    Description
+     * @param theDefault        Default value
+     * @param legalPackageNames Legal packages
+     * @param theUIOrder        UI order
+     */
+    private MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
+                            float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, legalPackageNames, theUIOrder, isDefinedExternally);
+    }
 
     @Override
     protected String asString(Method value) {

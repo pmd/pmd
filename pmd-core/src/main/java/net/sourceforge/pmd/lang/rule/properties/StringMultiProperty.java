@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.STRING_PARSER;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +27,14 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     public static final PropertyDescriptorFactory<List<String>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<String>(String.class) {
             @Override
-            public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);
                 return new StringMultiProperty(nameIn(valuesById),
                                                descriptionIn(valuesById),
-                                               StringUtil.substringsOf(defaultValueIn(valuesById), delimiter),
+                                               parsePrimitives(defaultValueIn(valuesById), delimiter, STRING_PARSER),
                                                0.0f,
-                                               delimiter);
+                                               delimiter,
+                                               isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -68,7 +71,14 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      */
     public StringMultiProperty(String theName, String theDescription, List<String> defaultValues, float theUIOrder,
                                char delimiter) {
-        super(theName, theDescription, defaultValues, theUIOrder, delimiter);
+        this(theName, theDescription, defaultValues, theUIOrder, delimiter, false);
+    }
+
+
+    /** For external defition. */
+    private StringMultiProperty(String theName, String theDescription, List<String> defaultValues, float theUIOrder,
+                                char delimiter, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValues, theUIOrder, delimiter, isDefinedExternally);
 
         checkDefaults(defaultValues, delimiter);
     }

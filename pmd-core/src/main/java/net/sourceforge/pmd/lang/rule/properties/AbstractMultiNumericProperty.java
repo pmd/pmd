@@ -42,8 +42,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
      * the bounds
      */
     AbstractMultiNumericProperty(String theName, String theDescription, T lower, T upper, List<T> theDefault,
-                                 float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
+                                 float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
         lowerLimit = lower;
         upperLimit = upper;

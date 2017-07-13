@@ -25,13 +25,14 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     public static final PropertyDescriptorFactory<Class> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
             @Override
-            public TypeProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public TypeProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);
                 return new TypeProperty(nameIn(valuesById),
                                         descriptionIn(valuesById),
-                                        defaultValueIn(valuesById),
+                                        classFrom(defaultValueIn(valuesById)),
                                         legalPackageNamesIn(valuesById, delimiter),
-                                        0f);
+                                        0f,
+                                        isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -46,10 +47,11 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param theUIOrder        float
      *
      * @throws IllegalArgumentException if the default string could not be parsed into a Class
+     * @deprecated will be removed in 7.0.0
      */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames,
                         float theUIOrder) {
-        this(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder);
+        this(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder, false);
     }
 
 
@@ -62,11 +64,16 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param legalPackageNames String[]
      * @param theUIOrder        float
      *
-     * @throws IllegalArgumentException
      */
     public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
                         float theUIOrder) {
-        super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
+        this(theName, theDescription, theDefault, legalPackageNames, theUIOrder, false);
+    }
+
+
+    private TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
+                         float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, legalPackageNames, theUIOrder, isDefinedExternally);
     }
 
 

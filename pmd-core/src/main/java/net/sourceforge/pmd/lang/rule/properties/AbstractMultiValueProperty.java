@@ -26,11 +26,7 @@ import net.sourceforge.pmd.util.StringUtil;
 /* default */ abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>>
     implements MultiValuePropertyDescriptor<V> {
 
-    /** Default delimiter for multi-valued properties other than numeric ones. */
-    public static final char DEFAULT_DELIMITER = '|';
 
-    /** Default delimiter for numeric multi-valued properties. */
-    public static final char DEFAULT_NUMERIC_DELIMITER = ',';
 
     /** The default value. */
     private final List<V> defaultValue;
@@ -47,8 +43,9 @@ import net.sourceforge.pmd.util.StringUtil;
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault, float theUIOrder) {
-        this(theName, theDescription, theDefault, theUIOrder, DEFAULT_DELIMITER);
+    AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault, float theUIOrder,
+                               boolean isDefinedExternally) {
+        this(theName, theDescription, theDefault, theUIOrder, DEFAULT_DELIMITER, isDefinedExternally);
     }
 
 
@@ -64,9 +61,9 @@ import net.sourceforge.pmd.util.StringUtil;
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
     AbstractMultiValueProperty(String theName, String theDescription, List<V> theDefault,
-                               float theUIOrder, char delimiter) {
+                               float theUIOrder, char delimiter, boolean isDefinedExternally) {
 
-        super(theName, theDescription, theUIOrder);
+        super(theName, theDescription, theUIOrder, isDefinedExternally);
         defaultValue = Collections.unmodifiableList(theDefault);
         multiValueDelimiter = delimiter;
     }

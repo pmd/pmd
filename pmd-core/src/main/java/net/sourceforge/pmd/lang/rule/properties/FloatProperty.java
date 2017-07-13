@@ -23,13 +23,15 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     public static final PropertyDescriptorFactory<Float> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
-            public FloatProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public FloatProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 final String[] minMax = minMaxFrom(valuesById);
                 return new FloatProperty(nameIn(valuesById),
                                          descriptionIn(valuesById),
                                          FLOAT_PARSER.valueOf(minMax[0]),
                                          FLOAT_PARSER.valueOf(minMax[1]),
-                                         FLOAT_PARSER.valueOf(numericDefaultValueIn(valuesById)), 0f);
+                                         FLOAT_PARSER.valueOf(numericDefaultValueIn(valuesById)),
+                                         0f,
+                                         isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -46,11 +48,12 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
-     * @deprecated ?
+     * @deprecated will be removed in 7.0.0
      */
     public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                          float theUIOrder) {
-        this(theName, theDescription, FLOAT_PARSER.valueOf(minStr), FLOAT_PARSER.valueOf(maxStr), FLOAT_PARSER.valueOf(defaultStr), theUIOrder);
+        this(theName, theDescription, FLOAT_PARSER.valueOf(minStr),
+             FLOAT_PARSER.valueOf(maxStr), FLOAT_PARSER.valueOf(defaultStr), theUIOrder, false);
     }
 
 
@@ -68,7 +71,13 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
      */
     public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
                          float theUIOrder) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder);
+        this(theName, theDescription, min, max, theDefault, theUIOrder, false);
+    }
+
+
+    private FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
+                         float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 
 

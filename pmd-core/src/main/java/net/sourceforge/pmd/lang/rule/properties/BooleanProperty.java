@@ -23,11 +23,12 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
     public static final PropertyDescriptorFactory<Boolean> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Boolean>(Boolean.class) {
             @Override
-            public BooleanProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public BooleanProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 return new BooleanProperty(nameIn(valuesById),
                                            descriptionIn(valuesById),
                                            BOOLEAN_PARSER.valueOf(defaultValueIn(valuesById)),
-                                           0f);
+                                           0f,
+                                           isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -41,10 +42,10 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
      * @param defaultBoolStr String representing the default value.
      * @param theUIOrder     UI order
      *
-     * @deprecated ?
+     * @deprecated will be removed in 7.0.0
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
-        this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder);
+        this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder, false);
     }
 
 
@@ -57,9 +58,13 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
      * @param theUIOrder     UI order
      */
     public BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder) {
-        super(theName, theDescription, defaultValue, theUIOrder);
+        this(theName, theDescription, defaultValue, theUIOrder, false);
     }
 
+
+    private BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
+    }
 
     @Override
     public Class<Boolean> type() {

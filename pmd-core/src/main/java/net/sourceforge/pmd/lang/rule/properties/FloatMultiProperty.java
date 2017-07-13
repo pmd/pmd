@@ -26,7 +26,8 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     public static final PropertyDescriptorFactory<List<Float>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
-            public FloatMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public FloatMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById,
+                                                 boolean isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
                 List<Float> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, FLOAT_PARSER);
@@ -34,7 +35,9 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
                                               descriptionIn(valuesById),
                                               FLOAT_PARSER.valueOf(minMax[0]),
                                               FLOAT_PARSER.valueOf(minMax[1]),
-                                              defaultValues, 0f);
+                                              defaultValues,
+                                              0f,
+                                              isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -53,7 +56,7 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
      */
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
                               Float[] defaultValues, float theUIOrder) {
-        this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder);
+        this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
     }
 
 
@@ -71,7 +74,13 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
      */
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
                               List<Float> defaultValues, float theUIOrder) {
-        super(theName, theDescription, min, max, defaultValues, theUIOrder);
+        this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
+    }
+
+
+    private FloatMultiProperty(String theName, String theDescription, Float min, Float max,
+                               List<Float> defaultValues, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
     }
 
 

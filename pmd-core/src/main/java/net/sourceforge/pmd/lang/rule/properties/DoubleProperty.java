@@ -23,14 +23,16 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     public static final PropertyDescriptorFactory<Double> FACTORY // @formatter:off
             = new SingleValuePropertyDescriptorFactory<Double>(Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
                 @Override
-                public DoubleProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+                public DoubleProperty createWith(Map<PropertyDescriptorField, String> valuesById,
+                                                 boolean isDefinedExternally) {
                     final String[] minMax = minMaxFrom(valuesById);
                     return new DoubleProperty(nameIn(valuesById),
                                               descriptionIn(valuesById),
                                               DOUBLE_PARSER.valueOf(minMax[0]),
                                               DOUBLE_PARSER.valueOf(minMax[1]),
                                               DOUBLE_PARSER.valueOf(numericDefaultValueIn(valuesById)),
-                                              0f);
+                                              0f,
+                                              isDefinedExternally);
                 }
             }; // @formatter:on
 
@@ -47,11 +49,11 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
-     * @deprecated ?
+     * @deprecated will be removed in 7.0.0
      */
     public DoubleProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                           float theUIOrder) {
-        this(theName, theDescription, doubleFrom(minStr), doubleFrom(maxStr), doubleFrom(defaultStr), theUIOrder);
+        this(theName, theDescription, doubleFrom(minStr), doubleFrom(maxStr), doubleFrom(defaultStr), theUIOrder, false);
     }
 
 
@@ -69,7 +71,13 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      */
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
                           float theUIOrder) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder);
+        this(theName, theDescription, min, max, theDefault, theUIOrder, false);
+    }
+
+
+    private DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
+                          float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 
 

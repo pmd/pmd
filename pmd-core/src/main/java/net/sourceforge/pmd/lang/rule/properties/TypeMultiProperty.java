@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     public static final PropertyDescriptorFactory<List<Class>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
             @Override
-            public TypeMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public TypeMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);
                 return new TypeMultiProperty(nameIn(valuesById),
                                              descriptionIn(valuesById),
@@ -49,26 +48,9 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
      *
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, Class[] theDefaults,
-                             String[] legalPackageNames, float theUIOrder) {
-        this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
-    }
-
-
-    /**
-     * Constructor for TypeProperty.
-     *
-     * @param theName           String
-     * @param theDescription    String
-     * @param theDefaults       Class[]
-     * @param legalPackageNames String[]
-     * @param theUIOrder        float
-     *
-     * @throws IllegalArgumentException
-     */
     public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults,
                              String[] legalPackageNames, float theUIOrder) {
-        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
+        this(theName, theDescription, theDefaults, legalPackageNames, theUIOrder, false);
 
     }
 
@@ -86,10 +68,15 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
                              String[] legalPackageNames, float theUIOrder) {
-        this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder);
+        this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder, false);
 
     }
 
+
+    private TypeMultiProperty(String theName, String theDescription, List<Class> theTypeDefaults,
+                              String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theTypeDefaults, legalPackageNames, theUIOrder, isDefinedExternally);
+    }
 
     /**
      * Returns a list of Class objects parsed from the input string.

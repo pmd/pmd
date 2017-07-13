@@ -31,8 +31,9 @@ import net.sourceforge.pmd.SingleValuePropertyDescriptor;
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    protected AbstractSingleValueProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
-        super(theName, theDescription, theUIOrder);
+    protected AbstractSingleValueProperty(String theName, String theDescription, T theDefault,
+                                          float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theUIOrder, isDefinedExternally);
 
         defaultValue = theDefault;
     }

@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Multi-valued property which can take only a fixed set of values of any type, then selected via String labels. The
- * choices method returns the set of mappings between the labels and their values.
+ * mappings method returns the set of mappings between the labels and their values.
  *
  * @param <E> The type of the values
  *
@@ -30,14 +30,15 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     public static final PropertyDescriptorFactory<List<Object>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<Object>(Object.class) {  // TODO:cf is Object the right type?
             @Override
-            public EnumeratedMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public EnumeratedMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                Object[] choices = choicesIn(valuesById);
                 return new EnumeratedMultiProperty<>(nameIn(valuesById),
                                                      descriptionIn(valuesById),
-                                                     labelsIn(valuesById),
-                                                     choicesIn(valuesById),
-                                                     indicesIn(valuesById),
+                                                     CollectionUtil.mapFrom(labelsIn(valuesById), choices),
+                                                     selection(indicesIn(valuesById), choices),
                                                      classIn(valuesById),
-                                                     0f);
+                                                     0f,
+                                                     isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -60,9 +61,8 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                                    int[] choiceIndices, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
-             selection(choiceIndices, theChoices), valueType, theUIOrder);
+             selection(choiceIndices, theChoices), valueType, theUIOrder, false);
     }
-
 
     /**
      * Constructor using a map to define the label-value mappings. The default values are specified with a list.
@@ -75,7 +75,14 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      */
     public EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
                                    List<E> defaultValues, Class<E> valueType, float theUIOrder) {
-        super(theName, theDescription, defaultValues, theUIOrder);
+        this(theName, theDescription, choices, defaultValues, valueType, theUIOrder, false);
+    }
+
+
+    private EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
+                                    List<E> defaultValues, Class<E> valueType, float theUIOrder,
+                                    boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValues, theUIOrder, isDefinedExternally);
 
         checkDefaults(defaultValues, choices);
 

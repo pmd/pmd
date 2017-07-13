@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -28,30 +30,36 @@ import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
  */
 public class TypePropertyTest extends AbstractPropertyDescriptorTester<Class> {
 
-    private static final Class[] JAVA_LANG_CLASSES = {String.class, Integer.class, Thread.class,
-                                                      Object.class, Runtime.class, };
-    private static final Class[] JAVA_UTIL_CLASSES = {HashMap.class, Map.class, Comparator.class, Set.class,
-                                                      Observer.class, };
+    private static final List<Class> JAVA_LANG_CLASSES = Arrays.<Class>asList(String.class, Integer.class, Thread.class,
+                                                                              Object.class, Runtime.class);
+    private static final List<Class> JAVA_UTIL_CLASSES = Arrays.<Class>asList(HashMap.class, Map.class,
+                                                                              Comparator.class, Set.class,
+                                                                              Observer.class);
+
 
     public TypePropertyTest() {
         super("Class");
     }
 
+
     @Override
     protected Class createValue() {
-        return randomChoice(JAVA_LANG_CLASSES);
+        return JAVA_LANG_CLASSES.get(randomInt(0, JAVA_LANG_CLASSES.size()));
     }
+
 
     @Override
     protected Class createBadValue() {
-        return randomChoice(JAVA_UTIL_CLASSES);
+        return JAVA_UTIL_CLASSES.get(randomInt(0, JAVA_UTIL_CLASSES.size()));
     }
+
 
     @Override
     protected PropertyDescriptor<Class> createProperty() {
-        return new TypeProperty("testType", "Test type property", JAVA_LANG_CLASSES[0], new String[] {"java.lang"},
+        return new TypeProperty("testType", "Test type property", createValue(), new String[] {"java.lang"},
                                 1.0f);
     }
+
 
     @Override
     protected PropertyDescriptor<List<Class>> createMultiProperty() {
@@ -59,15 +67,17 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester<Class> {
                                      1.0f);
     }
 
+
     @Override
     protected PropertyDescriptor<Class> createBadProperty() {
-        return new TypeProperty("testType", "Test type property", JAVA_LANG_CLASSES[0], new String[] {"java.util"},
+        return new TypeProperty("testType", "Test type property", createValue(), new String[] {"java.util"},
                                 1.0f);
     }
 
+
     @Override
     protected PropertyDescriptor<List<Class>> createBadMultiProperty() {
-        return new TypeMultiProperty("testType", "Test type property", new Class[] {Set.class},
+        return new TypeMultiProperty("testType", "Test type property", Collections.<Class>singletonList(Set.class),
                                      new String[] {"java.lang"}, 1.0f);
     }
 }

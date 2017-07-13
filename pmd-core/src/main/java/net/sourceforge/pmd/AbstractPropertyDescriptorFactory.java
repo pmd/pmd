@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.properties;
+package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
 import static net.sourceforge.pmd.PropertyDescriptorField.DELIMITER;
@@ -18,19 +18,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Basic implementation of a property descriptor factory.
  *
- * @param <T>
+ * @param <T> The type of values property descriptor returned by this factory. This can be a list.
  *
  * @author Brian Remedios
  */
-public abstract class BasicPropertyDescriptorFactory<T> implements PropertyDescriptorFactory<T> {
+public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDescriptorFactory<T> {
 
     protected static final Map<PropertyDescriptorField, Boolean> CORE_FIELD_TYPES_BY_KEY
         = CollectionUtil.mapFrom(new PropertyDescriptorField[] {NAME, DESCRIPTION, DEFAULT_VALUE, DELIMITER},
@@ -41,13 +40,13 @@ public abstract class BasicPropertyDescriptorFactory<T> implements PropertyDescr
     private final Map<PropertyDescriptorField, Boolean> fieldTypesByKey;
 
 
-    public BasicPropertyDescriptorFactory(Class<?> theValueType) {
+    public AbstractPropertyDescriptorFactory(Class<?> theValueType) {
         valueType = theValueType;
         fieldTypesByKey = Collections.unmodifiableMap(CORE_FIELD_TYPES_BY_KEY);
     }
 
 
-    public BasicPropertyDescriptorFactory(Class<?> theValueType, Map<PropertyDescriptorField, Boolean> additionalFieldTypesByKey) {
+    public AbstractPropertyDescriptorFactory(Class<?> theValueType, Map<PropertyDescriptorField, Boolean> additionalFieldTypesByKey) {
 
         valueType = theValueType;
         Map<PropertyDescriptorField, Boolean> temp
@@ -114,7 +113,7 @@ public abstract class BasicPropertyDescriptorFactory<T> implements PropertyDescr
 
     protected static String[] labelsIn(Map<PropertyDescriptorField, String> valuesById) {
         return StringUtil.substringsOf(valuesById.get(PropertyDescriptorField.LABELS),
-                                       AbstractMultiValueProperty.DEFAULT_DELIMITER);
+                                       MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
     }
 
 
@@ -140,7 +139,7 @@ public abstract class BasicPropertyDescriptorFactory<T> implements PropertyDescr
 
 
     protected static char delimiterIn(Map<PropertyDescriptorField, String> valuesById) {
-        return delimiterIn(valuesById, AbstractMultiValueProperty.DEFAULT_DELIMITER);
+        return delimiterIn(valuesById, MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
     }
 
 
@@ -185,8 +184,8 @@ public abstract class BasicPropertyDescriptorFactory<T> implements PropertyDescr
     }
 
 
-    public static Map<PropertyDescriptorField, Boolean> expectedFieldTypesWith(PropertyDescriptorField[] otherKeys, Boolean[]
-        otherValues) {
+    public static Map<PropertyDescriptorField, Boolean> expectedFieldTypesWith(PropertyDescriptorField[] otherKeys,
+                                                                               Boolean[] otherValues) {
         Map<PropertyDescriptorField, Boolean> largerMap = new HashMap<>(
             otherKeys.length + CORE_FIELD_TYPES_BY_KEY.size());
         largerMap.putAll(CORE_FIELD_TYPES_BY_KEY);
@@ -196,13 +195,38 @@ public abstract class BasicPropertyDescriptorFactory<T> implements PropertyDescr
         return largerMap;
     }
 
-    // protected static Map<String, PropertyDescriptorFactory>
-    // factoriesByTypeIdFrom(PropertyDescriptorFactory[] factories) {
-    // Map<String, PropertyDescriptorFactory> factoryMap = new HashMap<String,
-    // PropertyDescriptorFactory>(factories.length);
-    // for (PropertyDescriptorFactory factory : factories)
-    // factoryMap.put(factory.typeId(), factory);
-    // return factoryMap;
-    // }
-    //
+
+    @Override
+    public final PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById) {
+        return createWith(valuesById, false);
+    }
+
+
+    /**
+     * Creates a new property descriptor which was defined externally.
+     *
+     * @param valuesById The map of values
+     *
+     * @return A new and initialized {@link PropertyDescriptor}
+     *
+     * @see PropertyDescriptor#isDefinedExternally()
+     */
+    /* default */
+    final PropertyDescriptor<T> createExternalWith(Map<PropertyDescriptorField, String> valuesById) {
+        return createWith(valuesById, true);
+    }
+
+
+    /**
+     * Creates a new property descriptor specifying whether the descriptor is externally defined or not. This is
+     * meant to be implemented by subclasses.
+     *
+     * @param valuesById          The map of values
+     * @param isExternallyDefined Whether the descriptor is externally defined
+     *
+     * @return A new and initialized {@link PropertyDescriptor}
+     */
+    protected abstract PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById, boolean isExternallyDefined);
+
+
 }

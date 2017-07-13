@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
 import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
 
@@ -18,7 +19,7 @@ import net.sourceforge.pmd.PropertyDescriptorField;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public abstract class MultiValuePropertyDescriptorFactory<T> extends BasicPropertyDescriptorFactory<List<T>> {
+public abstract class MultiValuePropertyDescriptorFactory<T> extends AbstractPropertyDescriptorFactory<List<T>> {
 
     public MultiValuePropertyDescriptorFactory(Class<T> theValueType) {
         super(theValueType);
@@ -32,7 +33,8 @@ public abstract class MultiValuePropertyDescriptorFactory<T> extends BasicProper
 
 
     @Override
-    public abstract MultiValuePropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById);
+    protected abstract MultiValuePropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById,
+                                                               boolean isDefinedExternally);
 
 
     @Override

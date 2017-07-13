@@ -156,4 +156,16 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @return map
      */
     Map<PropertyDescriptorField, String> attributeValuesById();
+
+
+    /**
+     * True if this descriptor was defined in the ruleset xml. This precision is
+     * necessary for the {@link RuleSetWriter} to write out the property correctly:
+     * if it was defined externally, then its definition must be written out, otherwise
+     * only its value.
+     *
+     * @return True if the descriptor was defined in xml
+     */
+    boolean isDefinedExternally();
+
 }

@@ -111,6 +111,12 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
 
 
     @Override
+    public boolean isDefinedExternally() {
+        return false;
+    }
+
+
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof PropertyDescriptorWrapper) {
             return this.propertyDescriptor.equals(((PropertyDescriptorWrapper<?>) obj).getPropertyDescriptor());

@@ -33,7 +33,6 @@ import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -268,14 +267,13 @@ public class RuleSetWriter {
             for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
                 // For each provided PropertyDescriptor
 
-                if (propertyDescriptor instanceof PropertyDescriptorWrapper) {
-                    // Any wrapper property needs to go out as a definition.
+                if (propertyDescriptor.isDefinedExternally()) {
+                    // Any externally defined property needs to go out as a definition.
                     if (propertiesElement == null) {
                         propertiesElement = createPropertiesElement();
                     }
 
-                    Element propertyElement = createPropertyDefinitionElementBR(
-                            ((PropertyDescriptorWrapper<?>) propertyDescriptor).getPropertyDescriptor());
+                    Element propertyElement = createPropertyDefinitionElementBR(propertyDescriptor);
                     propertiesElement.appendChild(propertyElement);
                 } else {
                     if (propertiesByPropertyDescriptor != null) {

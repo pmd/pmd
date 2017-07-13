@@ -23,13 +23,15 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
     public static final PropertyDescriptorFactory<Long> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
-            public LongProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public LongProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 final String[] minMax = minMaxFrom(valuesById);
                 return new LongProperty(nameIn(valuesById),
                                         descriptionIn(valuesById),
                                         LONG_PARSER.valueOf(minMax[0]),
                                         LONG_PARSER.valueOf(minMax[1]),
-                                        LONG_PARSER.valueOf(numericDefaultValueIn(valuesById)), 0f);
+                                        LONG_PARSER.valueOf(numericDefaultValueIn(valuesById)),
+                                        0f,
+                                        isDefinedExternally);
             }
         };
     // @formatter:on
@@ -47,11 +49,12 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
-     * @deprecated ?
+     * @deprecated will be removed in 7.0.0
      */
     public LongProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                         float theUIOrder) {
-        this(theName, theDescription, Long.valueOf(minStr), Long.valueOf(maxStr), Long.valueOf(defaultStr), theUIOrder);
+        this(theName, theDescription, Long.valueOf(minStr), Long.valueOf(maxStr),
+             Long.valueOf(defaultStr), theUIOrder, false);
     }
 
 
@@ -68,7 +71,12 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder);
+        this(theName, theDescription, min, max, theDefault, theUIOrder, false);
+    }
+
+    private LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault,
+                         float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 
 

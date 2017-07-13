@@ -24,12 +24,13 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
     public static final PropertyDescriptorFactory<List<Boolean>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<Boolean>(Boolean.class) {
             @Override
-            public BooleanMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public BooleanMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);
                 return new BooleanMultiProperty(nameIn(valuesById),
                                                 descriptionIn(valuesById),
                                                 parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
-                                                0f);
+                                                0f,
+                                                isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -43,7 +44,7 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
      * @param theUIOrder     UI order
      */
     public BooleanMultiProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder) {
-        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder);
+        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, false);
     }
 
 
@@ -56,7 +57,13 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
      * @param theUIOrder     UI order
      */
     public BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues, float theUIOrder) {
-        super(theName, theDescription, defaultValues, theUIOrder);
+        this(theName, theDescription, defaultValues, theUIOrder, false);
+    }
+
+
+    private BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues,
+                                 float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValues, theUIOrder, isDefinedExternally);
     }
 
 

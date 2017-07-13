@@ -22,14 +22,15 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
     public static final PropertyDescriptorFactory<Integer> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
             @Override
-            public IntegerProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public IntegerProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 final String[] minMax = minMaxFrom(valuesById);
                 return new IntegerProperty(nameIn(valuesById),
                                            descriptionIn(valuesById),
                                            INTEGER_PARSER.valueOf(minMax[0]),
                                            INTEGER_PARSER.valueOf(minMax[1]),
                                            INTEGER_PARSER.valueOf(numericDefaultValueIn(valuesById)),
-                                           0f);
+                                           0f,
+                                           isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -48,7 +49,13 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
      */
     public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
                            float theUIOrder) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder);
+        this(theName, theDescription, min, max, theDefault, theUIOrder, false);
+    }
+
+
+    private IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
+                           float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 
 

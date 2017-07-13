@@ -17,6 +17,13 @@ import java.util.List;
  */
 public interface MultiValuePropertyDescriptor<V> extends PropertyDescriptor<List<V>> {
 
+    /** Default delimiter for multi-valued properties other than numeric ones. */
+    char DEFAULT_DELIMITER = '|';
+
+    /** Default delimiter for numeric multi-valued properties. */
+    char DEFAULT_NUMERIC_DELIMITER = ',';
+
+
     /**
      * Return the character being used to delimit multiple property values within a single string. You must ensure that
      * this character does not appear within any rule property values to avoid deserialization errors.

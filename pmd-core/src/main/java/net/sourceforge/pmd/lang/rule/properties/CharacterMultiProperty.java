@@ -25,13 +25,14 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
     public static final PropertyDescriptorFactory<List<Character>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<Character>(Character.class) {
             @Override
-            public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);
                 return new CharacterMultiProperty(nameIn(valuesById),
                                                   descriptionIn(valuesById),
                                                   parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParser.CHARACTER_PARSER),
                                                   0.0f,
-                                                  delimiter);
+                                                  delimiter,
+                                                  isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -47,9 +48,22 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
      *
      * @throws IllegalArgumentException if the delimiter is in the default values
      */
-    public CharacterMultiProperty(String theName, String theDescription, Character[] defaultValues, float theUIOrder,
-                                  char delimiter) {
-        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, delimiter);
+    public CharacterMultiProperty(String theName, String theDescription, Character[] defaultValues, float theUIOrder, char delimiter) {
+        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, delimiter, false);
+    }
+
+
+    private CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder,
+                                   char delimiter, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValues, theUIOrder, delimiter, isDefinedExternally);
+
+        if (defaultValues != null) {
+            for (Character c : defaultValues) {
+                if (c == delimiter) {
+                    throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
+                }
+            }
+        }
     }
 
 
@@ -64,17 +78,8 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
      *
      * @throws IllegalArgumentException if the delimiter is in the default values
      */
-    public CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder,
-                                  char delimiter) {
-        super(theName, theDescription, defaultValues, theUIOrder, delimiter);
-
-        if (defaultValues != null) {
-            for (Character c : defaultValues) {
-                if (c == delimiter) {
-                    throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
-                }
-            }
-        }
+    public CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder, char delimiter) {
+        this(theName, theDescription, defaultValues, theUIOrder, delimiter, false);
     }
 
 

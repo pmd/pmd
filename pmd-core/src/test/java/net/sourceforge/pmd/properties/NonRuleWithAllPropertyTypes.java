@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.properties;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
@@ -71,7 +72,7 @@ public class NonRuleWithAllPropertyTypes extends AbstractRule {
     public static final TypeProperty SINGLE_TYPE = new TypeProperty("singleType", "Single type", String.class,
                                                                     new String[] {"java.lang"}, 5.0f);
     public static final TypeMultiProperty MULTI_TYPE = new TypeMultiProperty("multiType", "Multiple types",
-                                                                             new Class[] {Integer.class, Object.class}, new String[] {"java.lang"}, 6.0f);
+                                                                             Arrays.<Class>asList(Integer.class, Object.class), new String[] {"java.lang"}, 6.0f);
     public static final EnumeratedProperty<Class> ENUM_TYPE = new EnumeratedProperty<>("enumType",
                                                                                        "Enumerated choices",
                                                                                        new String[] {"String", "Object"}, new Class[] {String.class, Object.class}, 1, Class.class, 5.0f);

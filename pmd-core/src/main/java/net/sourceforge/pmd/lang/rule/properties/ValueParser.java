@@ -24,6 +24,15 @@ public interface ValueParser<U> {
         }
     };
 
+
+    /** Extracts strings. That's a dummy used to return a list in StringMultiProperty. */
+    ValueParser<String> STRING_PARSER = new ValueParser<String>() {
+        @Override
+        public String valueOf(String value) {
+            return value;
+        }
+    };
+
     // FUTURE Integer::valueOf
     /** Extracts integers. */
     ValueParser<Integer> INTEGER_PARSER = new ValueParser<Integer>() {

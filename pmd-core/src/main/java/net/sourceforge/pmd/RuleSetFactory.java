@@ -38,7 +38,6 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -850,10 +849,9 @@ public class RuleSetFactory {
             values.put(entry.getKey(), valueStr);
         }
 
-        PropertyDescriptor<?> desc = pdFactory.createWith(values);
-        PropertyDescriptorWrapper<?> wrapper = PropertyDescriptorWrapper.getWrapper(desc);
+        PropertyDescriptor<?> desc = ((AbstractPropertyDescriptorFactory) pdFactory).createExternalWith(values);
 
-        rule.definePropertyDescriptor(wrapper);
+        rule.definePropertyDescriptor(desc);
         setValue(rule, desc, strValue);
     }
 

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -26,8 +27,8 @@ import net.sourceforge.pmd.util.StringUtil;
 
     /** Required keys in the map. */
     protected static final Map<PropertyDescriptorField, Boolean> PACKAGED_FIELD_TYPES_BY_KEY
-        = BasicPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {LEGAL_PACKAGES},
-                                                                new Boolean[] {false});
+        = AbstractPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {LEGAL_PACKAGES},
+                                                                   new Boolean[] {false});
     private static final char PACKAGE_NAME_DELIMITER = ' ';
     private static Pattern packageNamePattern = Pattern.compile("(\\w+)(\\.\\w+)*");
 
@@ -46,8 +47,8 @@ import net.sourceforge.pmd.util.StringUtil;
      * @throws IllegalArgumentException
      */
     protected AbstractPackagedProperty(String theName, String theDescription, T theDefault,
-                                       String[] theLegalPackageNames, float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
+                                       String[] theLegalPackageNames, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
         checkValidPackages(theDefault, theLegalPackageNames);
 

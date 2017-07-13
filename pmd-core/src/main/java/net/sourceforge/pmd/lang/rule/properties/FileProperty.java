@@ -23,16 +23,32 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
     public static final PropertyDescriptorFactory<File> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<File>(File.class) {
             @Override
-            public FileProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
-                return new FileProperty(nameIn(valuesById), descriptionIn(valuesById), null, 0f);
+            public FileProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                return new FileProperty(nameIn(valuesById),
+                                        descriptionIn(valuesById),
+                                        null,
+                                        0f,
+                                        isDefinedExternally);
             }
         }; // @formatter:on
 
 
+    /**
+     * Constructor for file property.
+     *
+     * @param theName        Name of the property
+     * @param theDescription Description
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     */
     public FileProperty(String theName, String theDescription, File theDefault, float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
+        super(theName, theDescription, theDefault, theUIOrder, false);
     }
 
+
+    private FileProperty(String theName, String theDescription, File theDefault, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
+    }
 
     @Override
     public Class<File> type() {

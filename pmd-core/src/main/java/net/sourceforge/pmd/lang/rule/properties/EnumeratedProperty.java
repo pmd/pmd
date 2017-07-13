@@ -14,12 +14,12 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Defines a datatype with a set of preset values of any type as held within a
- * pair of maps. While the values are not serialized out, the labels are and
- * serve as keys to obtain the values. The choices() method provides the ordered
- * selections to be used in an editor widget.
+ * Property which can take only a fixed set of values of any type, then selected via String labels. The
+ * mappings method returns the set of mappings between the labels and their values.
  *
- * @param <E> Type of the choices
+ * <p>This property currently doesn't support serialization and cannot be defined in a ruleset file.z
+ *
+ * @param <E> Type of the values
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
@@ -32,14 +32,16 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
         = new SingleValuePropertyDescriptorFactory<Enumeration>(Enumeration.class) { // TODO:cf Enumeration? Object?
 
             @Override
-            public EnumeratedProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public EnumeratedProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                Map<String, Object> labelsToChoices = CollectionUtil.mapFrom(labelsIn(valuesById),   // this is not implemented
+                                                                            choicesIn(valuesById));  // ditto
                 return new EnumeratedProperty<>(nameIn(valuesById),
                                                 descriptionIn(valuesById),
-                                                labelsIn(valuesById),   // this is not implemented
-                                                choicesIn(valuesById),  // ditto
-                                                indexIn(valuesById),    // ditto
+                                                labelsToChoices,
+                                                choicesIn(valuesById)[indexIn(valuesById)],
                                                 classIn(valuesById),
-                                                0f);
+                                                0f,
+                                                isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -49,16 +51,44 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     private final Class<E> valueType;
 
 
+    /**
+     * Constructor using arrays to define the label-value mappings. The correct construction of the property depends
+     * on the correct ordering of the arrays.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param theLabels      Labels of the choices
+     * @param theChoices     Values that can be chosen
+     * @param defaultIndex   The index of the default value.
+     * @param theUIOrder     UI order
+     *
+     * @deprecated will be removed in 7.0.0. Use a map.
+     */
     public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                               int defaultIndex, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
-             theChoices[defaultIndex], valueType, theUIOrder);
+             theChoices[defaultIndex], valueType, theUIOrder, false);
     }
 
 
+    /**
+     * Constructor using a map to define the label-value mappings.
+     *
+     * @param theName         Name
+     * @param theDescription  Description
+     * @param labelsToChoices Map of labels to values
+     * @param defaultValue    Default value
+     * @param theUIOrder      UI order
+     */
     public EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
                               E defaultValue, Class<E> valueType, float theUIOrder) {
-        super(theName, theDescription, defaultValue, theUIOrder);
+        this(theName, theDescription, labelsToChoices, defaultValue, valueType, theUIOrder, false);
+    }
+
+
+    private EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
+                               E defaultValue, Class<E> valueType, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
 
         this.valueType = valueType;
         choicesByLabel = Collections.unmodifiableMap(labelsToChoices);

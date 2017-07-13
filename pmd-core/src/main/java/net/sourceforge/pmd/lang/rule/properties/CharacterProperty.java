@@ -22,12 +22,13 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     public static final PropertyDescriptorFactory<Character> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Character>(Character.class) {
             @Override
-            public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById) {
+            public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 return new CharacterProperty(nameIn(valuesById),
                                              descriptionIn(valuesById),
                                              defaultValueIn(valuesById) == null ? null
                                                                                 : defaultValueIn(valuesById).charAt(0),
-                                             0f);
+                                             0f,
+                                             isDefinedExternally);
             }
         }; // @formatter:on
 
@@ -41,9 +42,10 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
      * @param theUIOrder     float
      *
      * @throws IllegalArgumentException
+     * @deprecated will be removed in 7.0.0
      */
     public CharacterProperty(String theName, String theDescription, String defaultStr, float theUIOrder) {
-        this(theName, theDescription, charFrom(defaultStr), theUIOrder);
+        this(theName, theDescription, charFrom(defaultStr), theUIOrder, false);
     }
 
 
@@ -56,7 +58,12 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
      * @param theUIOrder     UI order
      */
     public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
+        this(theName, theDescription, theDefault, theUIOrder, false);
+    }
+
+
+    private CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
     }
 
 
