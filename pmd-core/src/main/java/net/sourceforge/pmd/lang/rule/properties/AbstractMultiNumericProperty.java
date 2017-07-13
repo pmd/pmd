@@ -100,8 +100,4 @@ import net.sourceforge.pmd.PropertyDescriptorField;
     }
 
 
-    @Override
-    /* default */ PropertyDescriptorWrapper<List<T>> getWrapper() {
-        return new MultiValueNumericPropertyDescriptorWrapper<>(this);
-    }
 }

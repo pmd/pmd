@@ -162,9 +162,4 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     }
 
 
-    @Override
-    /* default */ PropertyDescriptorWrapper<List<E>> getWrapper() {
-        return new EnumeratedPropertyDescriptorWrapper<>(this);
-    }
-
 }

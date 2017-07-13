@@ -139,9 +139,4 @@ import net.sourceforge.pmd.PropertyDescriptorField;
     }
 
 
-    @Override
-    /* default */ PropertyDescriptorWrapper<T> getWrapper() {
-        return new SingleValueNumericPropertyDescriptorWrapper<>(this);
-    }
-
 }

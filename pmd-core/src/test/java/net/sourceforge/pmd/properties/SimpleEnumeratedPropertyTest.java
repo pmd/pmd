@@ -21,7 +21,6 @@ import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
 
 /**
@@ -53,25 +52,7 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
     }
 
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testWrapper() {
-        EnumeratedPropertyDescriptor<Foo, Foo> prop = (EnumeratedPropertyDescriptor<Foo, Foo>) createProperty();
-        EnumeratedPropertyDescriptor<Foo, List<Foo>> multi = (EnumeratedPropertyDescriptor<Foo, List<Foo>>) createMultiProperty();
 
-        EnumeratedPropertyDescriptor<Foo, Foo> propW = null;
-        EnumeratedPropertyDescriptor<Foo, List<Foo>> multiW = null;
-        try {
-            propW = (EnumeratedPropertyDescriptor<Foo, Foo>) PropertyDescriptorWrapper.getWrapper(prop);
-            multiW = (EnumeratedPropertyDescriptor<Foo, List<Foo>>) PropertyDescriptorWrapper.getWrapper(multi);
-        } catch (ClassCastException ioe) {
-            fail();
-        }
-
-        assertEquals(prop.mappings(), propW.mappings());
-        assertEquals(multi.mappings(), multiW.mappings());
-
-    }
 
 
     @Override

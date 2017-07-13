@@ -206,9 +206,4 @@ import net.sourceforge.pmd.util.StringUtil;
     }
 
 
-    @Override
-    /* default */ PropertyDescriptorWrapper<List<V>> getWrapper() {
-        return new MultiValuePropertyDescriptorWrapper<>(this);
-    }
-
 }

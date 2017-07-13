@@ -140,9 +140,4 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     }
 
 
-    @Override
-    /* default */ PropertyDescriptorWrapper<E> getWrapper() {
-        return new EnumeratedPropertyDescriptorWrapper<>(this);
-    }
-
 }

@@ -18,13 +18,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.SingleValuePropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 
 /**
  * Base functionality for all concrete subclasses that evaluate type-specific
@@ -275,44 +272,7 @@ public abstract class AbstractPropertyDescriptorTester<T> {
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.DEFAULT_VALUE));
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testWrapper() {
-        PropertyDescriptor<T> prop = createProperty();
-        PropertyDescriptor<List<T>> multi = createMultiProperty();
 
-        PropertyDescriptor<T> propW = null;
-        PropertyDescriptor<List<T>> multiW = null;
-        try {
-            propW = (SingleValuePropertyDescriptor<T>) PropertyDescriptorWrapper.getWrapper(prop);
-            multiW = (MultiValuePropertyDescriptor<T>) PropertyDescriptorWrapper.getWrapper(multi);
-        } catch (ClassCastException ioe) {
-            fail();
-        }
-
-        assertEquals(prop.type(), propW.type());
-        assertEquals(prop.defaultValue(), propW.defaultValue());
-        assertEquals(prop.description(), propW.description());
-        assertEquals(prop.isMultiValue(), propW.isMultiValue());
-        assertEquals(prop.name(), propW.name());
-        assertEquals(prop.preferredRowCount(), propW.preferredRowCount());
-        assertEquals(prop.uiOrder(), propW.uiOrder(), 0);
-        assertEquals(prop.attributeValuesById(), propW.attributeValuesById());
-        assertEquals(prop.hashCode(), propW.hashCode());
-
-
-
-        assertEquals(multi.type(), multiW.type());
-        assertEquals(multi.defaultValue(), multiW.defaultValue());
-        assertEquals(multi.description(), multiW.description());
-        assertEquals(multi.isMultiValue(), multiW.isMultiValue());
-        assertEquals(multi.name(), multiW.name());
-        assertEquals(multi.preferredRowCount(), multiW.preferredRowCount());
-        assertEquals(multi.uiOrder(), multiW.uiOrder(), 0);
-        assertEquals(multi.attributeValuesById(), multiW.attributeValuesById());
-        assertEquals(multi.hashCode(), multiW.hashCode());
-
-    }
 
 
     @Test

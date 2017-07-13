@@ -149,15 +149,6 @@ import net.sourceforge.pmd.util.StringUtil;
     protected abstract String defaultAsString();
 
 
-    /**
-     * Gets a wrapper for this property. This method ensures that a wrapper of a property always implements the same
-     * interfaces as that property using double dispatch.
-     *
-     * @return A wrapper for this property.
-     */
-    /* default */ abstract PropertyDescriptorWrapper<T> getWrapper();
-
-
     @Override
     public boolean isDefinedExternally() {
         return isDefinedExternally;
