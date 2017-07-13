@@ -251,11 +251,13 @@ public abstract class AbstractPropertyDescriptorTester<T> {
         return res;
     }
 
+
     @Test
     public void testIsMultiValue() {
         assertFalse(createProperty().isMultiValue());
         assertTrue(createMultiProperty().isMultiValue());
     }
+
 
     @Test
     public void testAddAttributes() {
@@ -271,8 +273,6 @@ public abstract class AbstractPropertyDescriptorTester<T> {
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.DESCRIPTION));
         assertTrue(multiAtts.containsKey(PropertyDescriptorField.DEFAULT_VALUE));
     }
-
-
 
 
     @Test

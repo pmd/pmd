@@ -27,7 +27,6 @@ import net.sourceforge.pmd.util.StringUtil;
     implements MultiValuePropertyDescriptor<V> {
 
 
-
     /** The default value. */
     private final List<V> defaultValue;
     private final char multiValueDelimiter;

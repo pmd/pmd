@@ -12,13 +12,10 @@ import static net.sourceforge.pmd.PropertyDescriptorField.MAX;
 import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
 import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.rule.properties.ValueParser;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -91,23 +88,36 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
     }
 
 
+    @Override
+    public final PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById) {
+        return createWith(valuesById, false);
+    }
+
+
     /**
-     * Parses a string into a list of values of type {@literal <U>}.
+     * Creates a new property descriptor specifying whether the descriptor is externally defined or not. This is
+     * meant to be implemented by subclasses.
      *
-     * @param toParse   The string to parse
-     * @param delimiter The delimiter to use
-     * @param extractor The function mapping a string to an instance of {@code <U>}
-     * @param <U>       The type of the values to parse
+     * @param valuesById          The map of values
+     * @param isExternallyDefined Whether the descriptor is externally defined
      *
-     * @return A list of values
+     * @return A new and initialized {@link PropertyDescriptor}
      */
-    protected static <U> List<U> parsePrimitives(String toParse, char delimiter, ValueParser<U> extractor) {
-        String[] values = StringUtil.substringsOf(toParse, delimiter);
-        List<U> result = new ArrayList<>();
-        for (String s : values) {
-            result.add(extractor.valueOf(s));
-        }
-        return result;
+    protected abstract PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById, boolean isExternallyDefined);
+
+
+    /**
+     * Creates a new property descriptor which was defined externally.
+     *
+     * @param valuesById The map of values
+     *
+     * @return A new and initialized {@link PropertyDescriptor}
+     *
+     * @see PropertyDescriptor#isDefinedExternally()
+     */
+    /* default */
+    final PropertyDescriptor<T> createExternalWith(Map<PropertyDescriptorField, String> valuesById) {
+        return createWith(valuesById, true);
     }
 
 
@@ -185,9 +195,11 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
 
 
     /**
-     * Returns a map of mappings of property descriptor fields
+     * Returns a map describing which fields are required to build an
+     *
      * @param otherKeys
      * @param otherValues
+     *
      * @return
      */
     public static Map<PropertyDescriptorField, Boolean> expectedFieldTypesWith(PropertyDescriptorField[] otherKeys,
@@ -200,39 +212,6 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
         }
         return largerMap;
     }
-
-
-    @Override
-    public final PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById) {
-        return createWith(valuesById, false);
-    }
-
-
-    /**
-     * Creates a new property descriptor which was defined externally.
-     *
-     * @param valuesById The map of values
-     *
-     * @return A new and initialized {@link PropertyDescriptor}
-     *
-     * @see PropertyDescriptor#isDefinedExternally()
-     */
-    /* default */
-    final PropertyDescriptor<T> createExternalWith(Map<PropertyDescriptorField, String> valuesById) {
-        return createWith(valuesById, true);
-    }
-
-
-    /**
-     * Creates a new property descriptor specifying whether the descriptor is externally defined or not. This is
-     * meant to be implemented by subclasses.
-     *
-     * @param valuesById          The map of values
-     * @param isExternallyDefined Whether the descriptor is externally defined
-     *
-     * @return A new and initialized {@link PropertyDescriptor}
-     */
-    protected abstract PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById, boolean isExternallyDefined);
 
 
 }

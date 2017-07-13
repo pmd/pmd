@@ -43,12 +43,6 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester<Class> {
 
 
     @Override
-    protected Class createValue() {
-        return JAVA_LANG_CLASSES.get(randomInt(0, JAVA_LANG_CLASSES.size()));
-    }
-
-
-    @Override
     protected Class createBadValue() {
         return JAVA_UTIL_CLASSES.get(randomInt(0, JAVA_UTIL_CLASSES.size()));
     }
@@ -58,6 +52,12 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester<Class> {
     protected PropertyDescriptor<Class> createProperty() {
         return new TypeProperty("testType", "Test type property", createValue(), new String[] {"java.lang"},
                                 1.0f);
+    }
+
+
+    @Override
+    protected Class createValue() {
+        return JAVA_LANG_CLASSES.get(randomInt(0, JAVA_LANG_CLASSES.size()));
     }
 
 

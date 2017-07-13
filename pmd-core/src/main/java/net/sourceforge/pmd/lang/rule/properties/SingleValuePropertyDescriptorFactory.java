@@ -20,13 +20,13 @@ import net.sourceforge.pmd.SingleValuePropertyDescriptor;
  */
 public abstract class SingleValuePropertyDescriptorFactory<T> extends AbstractPropertyDescriptorFactory<T> {
 
-    public SingleValuePropertyDescriptorFactory(Class<T> theValueType) {
+    /* default */ SingleValuePropertyDescriptorFactory(Class<T> theValueType) {
         super(theValueType);
     }
 
 
-    public SingleValuePropertyDescriptorFactory(Class<T> theValueType,
-                                                Map<PropertyDescriptorField, Boolean> additionalFieldTypesByKey) {
+    /* default */ SingleValuePropertyDescriptorFactory(Class<T> theValueType,
+                                                       Map<PropertyDescriptorField, Boolean> additionalFieldTypesByKey) {
         super(theValueType, additionalFieldTypesByKey);
     }
 

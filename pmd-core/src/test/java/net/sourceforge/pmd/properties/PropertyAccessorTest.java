@@ -25,10 +25,12 @@ public class PropertyAccessorTest {
 
     private Rule rule;
 
+
     @Before
     public void setUpSingleRule() {
         rule = new NonRuleWithAllPropertyTypes();
     }
+
 
     @Test
     public void testIntegers() {
@@ -40,6 +42,7 @@ public class PropertyAccessorTest {
         assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_INT), Arrays.asList(0, 1));
     }
 
+
     @Test
     public void testBooleans() {
 
@@ -49,6 +52,7 @@ public class PropertyAccessorTest {
         rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_BOOL, Arrays.asList(Boolean.TRUE, Boolean.FALSE));
         assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_BOOL), Arrays.asList(true, false));
     }
+
 
     @Ignore
     @Test
@@ -72,6 +76,7 @@ public class PropertyAccessorTest {
          * assertTrue(exceptionOccurred);
          */
     }
+
 
     @Test
     public void testStrings() {

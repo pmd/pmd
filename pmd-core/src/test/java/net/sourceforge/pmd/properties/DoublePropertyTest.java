@@ -24,6 +24,7 @@ public class DoublePropertyTest extends AbstractNumericPropertyDescriptorTester<
     private static final double MAX = 100.0;
     private static final double SHIFT = 5.0;
 
+
     public DoublePropertyTest() {
         super("Double");
     }
@@ -34,16 +35,19 @@ public class DoublePropertyTest extends AbstractNumericPropertyDescriptorTester<
         return randomDouble(MIN, MAX);
     }
 
+
     @Override
     protected Double createBadValue() {
         return randomBool() ? randomDouble(MIN - SHIFT, MIN - 0.01) : randomDouble(MAX + 0.01, MAX + SHIFT);
 
     }
 
+
     @Override
     protected PropertyDescriptor<Double> createProperty() {
         return new DoubleProperty("testDouble", "Test double property", MIN, MAX, 9.0, 1.0f);
     }
+
 
     @Override
     protected PropertyDescriptor<List<Double>> createMultiProperty() {
@@ -51,10 +55,12 @@ public class DoublePropertyTest extends AbstractNumericPropertyDescriptorTester<
                                        new Double[] {-1d, 0d, 1d, 2d}, 1.0f);
     }
 
+
     @Override
     protected PropertyDescriptor<Double> createBadProperty() {
         return new DoubleProperty("testDouble", "Test double property", MAX, MIN, 9.0, 1.0f);
     }
+
 
     @Override
     protected PropertyDescriptor<List<Double>> createBadMultiProperty() {

@@ -53,8 +53,9 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
     }
 
 
+    /** Master constructor. */
     private IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
-                           float theUIOrder, boolean isDefinedExternally) {
+                            float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 

@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.lang.rule.properties.modules.TypePropertyModule;
 
 /**
  * Defines a property that supports multiple class types, even for primitive
@@ -55,6 +54,14 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
     }
 
 
+    /** Master constructor. */
+    private TypeMultiProperty(String theName, String theDescription, List<Class> theTypeDefaults,
+                              String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theTypeDefaults, theUIOrder, isDefinedExternally,
+              new TypePropertyModule(legalPackageNames, theTypeDefaults));
+    }
+
+
     /**
      * Constructor for TypeProperty.
      *
@@ -68,49 +75,21 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
      */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
                              String[] legalPackageNames, float theUIOrder) {
-        this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder, false);
+        this(theName, theDescription, typesFrom(theTypeDefaults),
+             legalPackageNames,
+             theUIOrder, false);
 
     }
 
 
-    private TypeMultiProperty(String theName, String theDescription, List<Class> theTypeDefaults,
-                              String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, theTypeDefaults, legalPackageNames, theUIOrder, isDefinedExternally);
-    }
-
-    /**
-     * Returns a list of Class objects parsed from the input string.
-     *
-     * @param classesStr String to parse
-     *
-     * @return A list of class objects
-     */
-    private static List<Class> typesFrom(String classesStr) {
-        String[] values = StringUtil.substringsOf(classesStr, DELIMITER);
-
-        List<Class> classes = new ArrayList<>(values.length);
-        for (int i = 0; i < values.length; i++) {
-            classes.add(TypeProperty.classFrom(values[i]));
-        }
-        return classes;
-    }
-
-
-    @Override
-    protected String packageNameOf(Class item) {
-        return ((Class<?>) item).getName();
+    private static List<Class> typesFrom(String valueString) {
+        return ValueParser.Companion.parsePrimitives(valueString, MULTI_VALUE_DELIMITER, ValueParser.CLASS_PARSER);
     }
 
 
     @Override
     public Class<Class> type() {
         return Class.class;
-    }
-
-
-    @Override
-    protected String itemTypeName() {
-        return "type";
     }
 
 
@@ -122,7 +101,7 @@ public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class
 
     @Override
     protected Class createFrom(String toParse) {
-        throw new UnsupportedOperationException(); // not used
+        return ValueParser.CLASS_PARSER.valueOf(toParse);
     }
 
 

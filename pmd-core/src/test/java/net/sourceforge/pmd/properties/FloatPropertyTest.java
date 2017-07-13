@@ -24,32 +24,29 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester<Float> {
     private static final float MAX = 11.0f;
     private static final float SHIFT = 3.0f;
 
+
     public FloatPropertyTest() {
         super("Float");
     }
 
-    public static FloatProperty randomProperty(int nameLength, int descLength, boolean multiValue) {
-
-        float defalt = randomFloat(0, 1000f);
-
-        return new FloatProperty(randomString(nameLength), randomString(descLength), defalt - 1000f, defalt + 1000,
-                                 defalt, 0f);
-    }
 
     @Override
     protected Float createValue() {
         return randomFloat(MIN, MAX);
     }
 
+
     @Override
     protected Float createBadValue() {
         return randomBool() ? randomFloat(MIN - SHIFT, MIN) : randomFloat(MAX, MAX + SHIFT);
     }
 
+
     @Override
     protected PropertyDescriptor<Float> createProperty() {
         return new FloatProperty("testFloat", "Test float property", MIN, MAX, 9.0f, 1.0f);
     }
+
 
     @Override
     protected PropertyDescriptor<List<Float>> createMultiProperty() {
@@ -57,14 +54,25 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester<Float> {
                                       new Float[] {-1f, 0f, 1f, 2f}, 1.0f);
     }
 
+
     @Override
     protected PropertyDescriptor<Float> createBadProperty() {
         return new FloatProperty("testFloat", "Test float property", 5f, 4f, 9.0f, 1.0f);
     }
 
+
     @Override
     protected PropertyDescriptor<List<Float>> createBadMultiProperty() {
         return new FloatMultiProperty("testFloat", "Test float property", 0f, 5f,
                                       new Float[] {-1f, 0f, 1f, 2f}, 1.0f);
+    }
+
+
+    public static FloatProperty randomProperty(int nameLength, int descLength, boolean multiValue) {
+
+        float defalt = randomFloat(0, 1000f);
+
+        return new FloatProperty(randomString(nameLength), randomString(descLength), defalt - 1000f, defalt + 1000,
+                                 defalt, 0f);
     }
 }

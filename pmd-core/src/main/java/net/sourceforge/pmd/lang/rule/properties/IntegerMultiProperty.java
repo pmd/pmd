@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.AbstractNumericProperty.NUMBER_FIELD_TYPES_BY_KEY;
 import static net.sourceforge.pmd.lang.rule.properties.ValueParser.INTEGER_PARSER;
 
 import java.util.Arrays;
@@ -13,6 +12,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
  * Multi-valued integer property.
@@ -30,7 +30,7 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
                 isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Integer> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, INTEGER_PARSER);
+                List<Integer> defaultValues = Companion.parsePrimitives(numericDefaultValueIn(valuesById), delimiter, INTEGER_PARSER);
                 return new IntegerMultiProperty(nameIn(valuesById),
                                                 descriptionIn(valuesById),
                                                 INTEGER_PARSER.valueOf(minMax[0]),
@@ -60,6 +60,14 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
     }
 
 
+    /** Master constructor. */
+    private IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max,
+                                 List<Integer> defaultValues, float theUIOrder, boolean isDefinedExternally) {
+
+        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
      * Constructor using a list of defaults.
      *
@@ -76,13 +84,6 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
                                 List<Integer> defaultValues, float theUIOrder) {
 
         this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
-    }
-
-
-    private IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max,
-                                List<Integer> defaultValues, float theUIOrder, boolean isDefinedExternally) {
-
-        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
     }
 
 

@@ -52,7 +52,16 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
     }
 
 
+    @Test
+    public void testMappings() {
+        EnumeratedPropertyDescriptor<Foo, Foo> prop
+            = (EnumeratedPropertyDescriptor<Foo, Foo>) createProperty();
+        EnumeratedPropertyDescriptor<Foo, List<Foo>> multi
+            = (EnumeratedPropertyDescriptor<Foo, List<Foo>>) createMultiProperty();
 
+        assertEquals(MAPPINGS, prop.mappings());
+        assertEquals(MAPPINGS, multi.mappings());
+    }
 
 
     @Override
@@ -72,18 +81,6 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
                                              KEYS,
                                              VALUES,
                                              new int[] {0, 1}, Foo.class, 1.0f);
-    }
-
-
-    @Test
-    public void testMappings() {
-        EnumeratedPropertyDescriptor<Foo, Foo> prop
-            = (EnumeratedPropertyDescriptor<Foo, Foo>) createProperty();
-        EnumeratedPropertyDescriptor<Foo, List<Foo>> multi
-            = (EnumeratedPropertyDescriptor<Foo, List<Foo>>) createMultiProperty();
-
-        assertEquals(MAPPINGS, prop.mappings());
-        assertEquals(MAPPINGS, multi.mappings());
     }
 
 

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -29,7 +30,7 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
                 char delimiter = delimiterIn(valuesById);
                 return new CharacterMultiProperty(nameIn(valuesById),
                                                   descriptionIn(valuesById),
-                                                  parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParser.CHARACTER_PARSER),
+                                                  Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParser.CHARACTER_PARSER),
                                                   0.0f,
                                                   delimiter,
                                                   isDefinedExternally);
@@ -53,6 +54,7 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
     }
 
 
+    /** Master constructor. */
     private CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder,
                                    char delimiter, boolean isDefinedExternally) {
         super(theName, theDescription, defaultValues, theUIOrder, delimiter, isDefinedExternally);

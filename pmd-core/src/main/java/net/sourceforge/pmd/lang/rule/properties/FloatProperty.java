@@ -57,6 +57,13 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     }
 
 
+    /** Master constructor. */
+    private FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
+                          float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
      * Constructor that limits itself to a single value within the specified limits.
      *
@@ -72,12 +79,6 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
                          float theUIOrder) {
         this(theName, theDescription, min, max, theDefault, theUIOrder, false);
-    }
-
-
-    private FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
-                         float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 
 

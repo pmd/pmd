@@ -11,9 +11,12 @@ import java.util.Map;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 
 /**
+ * Utility class allowing to find the factory of a specific type of descriptor. That's used to define descriptors in
+ * the xml, eg for xpath rules.
+ *
  * @author Brian Remedios
  */
-public class PropertyDescriptorUtil {
+public final class PropertyDescriptorUtil {
 
     private static final Map<String, PropertyDescriptorFactory<?>> DESCRIPTOR_FACTORIES_BY_TYPE;
 
@@ -38,8 +41,8 @@ public class PropertyDescriptorUtil {
         temp.put("Double", DoubleProperty.FACTORY);
         temp.put("List<Double>", DoubleMultiProperty.FACTORY);
 
-    //    temp.put("Enum", EnumeratedProperty.FACTORY);
-    //    temp.put("List<Enum>", EnumeratedMultiProperty.FACTORY);
+        //    temp.put("Enum", EnumeratedProperty.FACTORY); // TODO:cf implement that
+        //    temp.put("List<Enum>", EnumeratedMultiProperty.FACTORY);
 
         temp.put("Class", TypeProperty.FACTORY);
         temp.put("List<Class>", TypeMultiProperty.FACTORY);
@@ -55,14 +58,28 @@ public class PropertyDescriptorUtil {
     private PropertyDescriptorUtil() { }
 
 
+    /**
+     * Gets the factory for the descriptor identified by the string id.
+     *
+     * @param typeId The identifier of the type
+     *
+     * @return The factory used to build new instances of a descriptor
+     */
     public static PropertyDescriptorFactory<?> factoryFor(String typeId) {
         return DESCRIPTOR_FACTORIES_BY_TYPE.get(typeId);
     }
 
 
+    /**
+     * Gets the string representation of this type, as it should be given when defining a descriptor in the xml.
+     *
+     * @param valueType  The type to look for
+     * @param multiValue Whether the descriptor is multivalued or not
+     *
+     * @return The type id
+     */
     public static String typeIdFor(Class<?> valueType, boolean multiValue) {
 
-        // a reverse lookup, not very efficient but fine for now
         for (Map.Entry<String, PropertyDescriptorFactory<?>> entry : DESCRIPTOR_FACTORIES_BY_TYPE.entrySet()) {
             if (entry.getValue().valueType() == valueType && entry.getValue().isMultiValue() == multiValue) {
                 return entry.getKey();

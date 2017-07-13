@@ -64,20 +64,6 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
              selection(choiceIndices, theChoices), valueType, theUIOrder, false);
     }
 
-    /**
-     * Constructor using a map to define the label-value mappings. The default values are specified with a list.
-     *
-     * @param theName        Name
-     * @param theDescription Description
-     * @param choices        Map of labels to values
-     * @param defaultValues  List of default values
-     * @param theUIOrder     UI order
-     */
-    public EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
-                                   List<E> defaultValues, Class<E> valueType, float theUIOrder) {
-        this(theName, theDescription, choices, defaultValues, valueType, theUIOrder, false);
-    }
-
 
     private EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
                                     List<E> defaultValues, Class<E> valueType, float theUIOrder,
@@ -110,6 +96,21 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
                 throw new IllegalArgumentException("Invalid default value: no mapping to this value");
             }
         }
+    }
+
+
+    /**
+     * Constructor using a map to define the label-value mappings. The default values are specified with a list.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param choices        Map of labels to values
+     * @param defaultValues  List of default values
+     * @param theUIOrder     UI order
+     */
+    public EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
+                                   List<E> defaultValues, Class<E> valueType, float theUIOrder) {
+        this(theName, theDescription, choices, defaultValues, valueType, theUIOrder, false);
     }
 
 

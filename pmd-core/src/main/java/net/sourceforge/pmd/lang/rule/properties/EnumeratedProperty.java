@@ -71,6 +71,16 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     }
 
 
+    private EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
+                               E defaultValue, Class<E> valueType, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
+
+        this.valueType = valueType;
+        choicesByLabel = Collections.unmodifiableMap(labelsToChoices);
+        labelsByChoice = Collections.unmodifiableMap(CollectionUtil.invertedMapFrom(choicesByLabel));
+    }
+
+
     /**
      * Constructor using a map to define the label-value mappings.
      *
@@ -83,16 +93,6 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     public EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
                               E defaultValue, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, labelsToChoices, defaultValue, valueType, theUIOrder, false);
-    }
-
-
-    private EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
-                               E defaultValue, Class<E> valueType, float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
-
-        this.valueType = valueType;
-        choicesByLabel = Collections.unmodifiableMap(labelsToChoices);
-        labelsByChoice = Collections.unmodifiableMap(CollectionUtil.invertedMapFrom(choicesByLabel));
     }
 
 

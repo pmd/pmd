@@ -44,6 +44,7 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     }
 
 
+    /** Master constructor. */
     private StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder, boolean
         isDefinedExternally) {
         super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);

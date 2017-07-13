@@ -12,6 +12,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -31,7 +32,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
                 char delimiter = delimiterIn(valuesById);
                 return new StringMultiProperty(nameIn(valuesById),
                                                descriptionIn(valuesById),
-                                               parsePrimitives(defaultValueIn(valuesById), delimiter, STRING_PARSER),
+                                               Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, STRING_PARSER),
                                                0.0f,
                                                delimiter,
                                                isDefinedExternally);
@@ -75,7 +76,7 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     }
 
 
-    /** For external defition. */
+    /** Master constructor. */
     private StringMultiProperty(String theName, String theDescription, List<String> defaultValues, float theUIOrder,
                                 char delimiter, boolean isDefinedExternally) {
         super(theName, theDescription, defaultValues, theUIOrder, delimiter, isDefinedExternally);

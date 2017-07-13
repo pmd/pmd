@@ -27,11 +27,13 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester<Boolea
         return System.currentTimeMillis() % 1 > 0 ? Boolean.TRUE : Boolean.FALSE;
     }
 
+
     @Override
     @Test
     public void testErrorForBadSingle() {
         // override, cannot create a 'bad' boolean per se
     }
+
 
     @Override
     @Test
@@ -39,15 +41,18 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester<Boolea
         // override, cannot create a 'bad' boolean per se
     }
 
+
     @Override
     protected Boolean createBadValue() {
         return null;
     }
 
+
     @Override
     protected PropertyDescriptor<Boolean> createProperty() {
         return new BooleanProperty("testBoolean", "Test boolean property", false, 1.0f);
     }
+
 
     @Override
     protected PropertyDescriptor<List<Boolean>> createMultiProperty() {
@@ -55,10 +60,12 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester<Boolea
                                         new Boolean[] {false, true, true}, 1.0f);
     }
 
+
     @Override
     protected PropertyDescriptor<List<Boolean>> createBadMultiProperty() {
         return new BooleanMultiProperty("", "Test boolean property", new Boolean[] {false, true, true}, 1.0f);
     }
+
 
     @Override
     protected PropertyDescriptor<Boolean> createBadProperty() {

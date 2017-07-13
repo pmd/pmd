@@ -46,9 +46,11 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
     }
 
 
+    /** Master constructor. */
     private FileProperty(String theName, String theDescription, File theDefault, float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
     }
+
 
     @Override
     public Class<File> type() {

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Collections;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.util.ClassUtil;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.lang.rule.properties.modules.TypePropertyModule;
 
 /**
  * Defines a property that supports single class types, even for primitive
@@ -29,7 +29,7 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
                 char delimiter = delimiterIn(valuesById);
                 return new TypeProperty(nameIn(valuesById),
                                         descriptionIn(valuesById),
-                                        classFrom(defaultValueIn(valuesById)),
+                                        ValueParser.CLASS_PARSER.valueOf(defaultValueIn(valuesById)),
                                         legalPackageNamesIn(valuesById, delimiter),
                                         0f,
                                         isDefinedExternally);
@@ -51,7 +51,15 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
      */
     public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames,
                         float theUIOrder) {
-        this(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder, false);
+        this(theName, theDescription, ValueParser.CLASS_PARSER.valueOf(defaultTypeStr), legalPackageNames, theUIOrder, false);
+    }
+
+
+    /** Master constructor. */
+    private TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
+                         float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally,
+              new TypePropertyModule(legalPackageNames, Collections.<Class>singletonList(theDefault)));
     }
 
 
@@ -63,7 +71,6 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param theDefault        Class
      * @param legalPackageNames String[]
      * @param theUIOrder        float
-     *
      */
     public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
                         float theUIOrder) {
@@ -71,56 +78,9 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
 
-    private TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
-                         float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, theDefault, legalPackageNames, theUIOrder, isDefinedExternally);
-    }
-
-
-    static Class<?> classFrom(String className) {
-        if (StringUtil.isEmpty(className)) {
-            return null;
-        }
-
-        Class<?> cls = ClassUtil.getTypeFor(className);
-        if (cls != null) {
-            return cls;
-        }
-
-        try {
-            return Class.forName(className);
-        } catch (Exception ex) {
-            throw new IllegalArgumentException(className);
-        }
-    }
-
-
-    /**
-     * Deprecated constructor.
-     *
-     * @deprecated
-     */
-    public TypeProperty(String theName, String theDescription, String defaultTypeStr, Map<PropertyDescriptorField, String> otherParams,
-                        float theUIOrder) {
-        this(theName, theDescription, classFrom(defaultTypeStr), packageNamesIn(otherParams), theUIOrder);
-    }
-
-
-    @Override
-    protected String packageNameOf(Class item) {
-        return item.getName();
-    }
-
-
     @Override
     public Class<Class> type() {
         return Class.class;
-    }
-
-
-    @Override
-    protected String itemTypeName() {
-        return "type";
     }
 
 
@@ -132,6 +92,6 @@ public final class TypeProperty extends AbstractPackagedProperty<Class> {
 
     @Override
     public Class<?> createFrom(String valueString) {
-        return classFrom(valueString);
+        return ValueParser.CLASS_PARSER.valueOf(valueString);
     }
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
  * Defines a property type that supports multiple Boolean values.
@@ -28,7 +29,7 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
                 char delimiter = delimiterIn(valuesById);
                 return new BooleanMultiProperty(nameIn(valuesById),
                                                 descriptionIn(valuesById),
-                                                parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
+                                                Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
                                                 0f,
                                                 isDefinedExternally);
             }
@@ -48,6 +49,13 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
     }
 
 
+    /** Master constructor. */
+    private BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues,
+                                 float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValues, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
      * Constructor using a list of defaults.
      *
@@ -58,12 +66,6 @@ public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boole
      */
     public BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues, float theUIOrder) {
         this(theName, theDescription, defaultValues, theUIOrder, false);
-    }
-
-
-    private BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues,
-                                 float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, defaultValues, theUIOrder, isDefinedExternally);
     }
 
 

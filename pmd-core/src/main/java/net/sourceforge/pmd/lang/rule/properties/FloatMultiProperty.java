@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.AbstractNumericProperty.NUMBER_FIELD_TYPES_BY_KEY;
 import static net.sourceforge.pmd.lang.rule.properties.ValueParser.FLOAT_PARSER;
 
 import java.util.Arrays;
@@ -13,6 +12,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
  * Multi-valued float property.
@@ -30,7 +30,7 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
                                                  boolean isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Float> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, FLOAT_PARSER);
+                List<Float> defaultValues = Companion.parsePrimitives(numericDefaultValueIn(valuesById), delimiter, FLOAT_PARSER);
                 return new FloatMultiProperty(nameIn(valuesById),
                                               descriptionIn(valuesById),
                                               FLOAT_PARSER.valueOf(minMax[0]),
@@ -60,6 +60,13 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     }
 
 
+    /** Master constructor. */
+    private FloatMultiProperty(String theName, String theDescription, Float min, Float max,
+                               List<Float> defaultValues, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
      * Constructor using a list of defaults.
      *
@@ -75,12 +82,6 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
                               List<Float> defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
-    }
-
-
-    private FloatMultiProperty(String theName, String theDescription, Float min, Float max,
-                               List<Float> defaultValues, float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
     }
 
 

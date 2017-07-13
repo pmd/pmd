@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorField.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
-
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.modules.NumericPropertyModule;
 
 /**
  * Base class for multi-valued numeric properties.
@@ -24,8 +22,7 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 /* default */ abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
     implements NumericPropertyDescriptor<List<T>> {
 
-    private final T lowerLimit;
-    private final T upperLimit;
+    private final NumericPropertyModule<T> module;
 
 
     /**
@@ -39,65 +36,38 @@ import net.sourceforge.pmd.PropertyDescriptorField;
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if lower > upper, or one of them is null, or one of the defaults is not between
-     * the bounds
+     *                                  the bounds
      */
     AbstractMultiNumericProperty(String theName, String theDescription, T lower, T upper, List<T> theDefault,
                                  float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
-        lowerLimit = lower;
-        upperLimit = upper;
-
-        checkNumber(lower);
-        checkNumber(upper);
-
-        if (lower.doubleValue() > upper.doubleValue()) {
-            throw new IllegalArgumentException("Lower limit cannot be greater than the upper limit");
-        }
-
-
-    }
-
-
-    private void checkNumber(T number) {
-        String error = valueErrorFor(number);
-        if (error != null) {
-            throw new IllegalArgumentException(error);
-        }
+        module = new NumericPropertyModule<>(lower, upper);
     }
 
 
     @Override
     protected String valueErrorFor(T value) {
-
-        double number = value.doubleValue();
-
-        if (number > upperLimit.doubleValue() || number < lowerLimit.doubleValue()) {
-            return value + " is out of range " + AbstractNumericProperty.rangeString(lowerLimit, upperLimit);
-        }
-
-        return null;
+        return module.valueErrorFor(value);
     }
 
 
     @Override
     public Number lowerLimit() {
-        return lowerLimit;
+        return module.getLowerLimit();
     }
 
 
     @Override
     public Number upperLimit() {
-        return upperLimit;
+        return module.getUpperLimit();
     }
 
 
     @Override
     protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
         super.addAttributesTo(attributes);
-        attributes.put(MIN, lowerLimit.toString());
-        attributes.put(MAX, upperLimit.toString());
+        module.addAttributesTo(attributes);
     }
-
 
 }

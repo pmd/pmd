@@ -24,9 +24,17 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester<String>
     private static final char DELIMITER = '|';
     private static final char[] CHARSET = filter(ALL_CHARS.toCharArray(), DELIMITER);
 
+
     public StringPropertyTest() {
         super("String");
     }
+
+
+    @Override
+    protected String createValue() {
+        return newString();
+    }
+
 
     /**
      * Method newString.
@@ -44,6 +52,7 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester<String>
         return new String(chars);
     }
 
+
     /**
      * Method randomCharIn.
      *
@@ -57,19 +66,16 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester<String>
 
 
     @Override
-    protected String createValue() {
-        return newString();
-    }
-
-    @Override
     protected String createBadValue() {
         return null;
     }
+
 
     @Override
     protected PropertyDescriptor<String> createProperty() {
         return new StringProperty("testString", "Test string property", "brian", 1.0f);
     }
+
 
     @Override
     protected PropertyDescriptor<List<String>> createMultiProperty() {
@@ -77,10 +83,12 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester<String>
                                        new String[] {"hello", "world"}, 1.0f, DELIMITER);
     }
 
+
     @Override
     protected PropertyDescriptor<String> createBadProperty() {
         return new StringProperty("", "Test string property", "brian", 1.0f);
     }
+
 
     @Override
     protected PropertyDescriptor<List<String>> createBadMultiProperty() {

@@ -49,6 +49,12 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
     }
 
 
+    /** Master constructor. */
+    private BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
      * Constructor.
      *
@@ -61,10 +67,6 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
         this(theName, theDescription, defaultValue, theUIOrder, false);
     }
 
-
-    private BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
-    }
 
     @Override
     public Class<Boolean> type() {

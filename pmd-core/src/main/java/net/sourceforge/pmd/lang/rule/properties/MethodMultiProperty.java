@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.METHOD_PARSER;
+
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.lang.rule.properties.modules.MethodPropertyModule;
 
 /**
  * Defines a property type that can specify multiple methods to use as part of a
@@ -40,6 +41,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
                                                0f,
                                                isDefinedExternally);
             }
+
         }; // @formatter:on
 
 
@@ -66,9 +68,11 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
     }
 
 
+    /** Master constructor. */
     private MethodMultiProperty(String theName, String theDescription, List<Method> theDefaults,
                                 String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder, isDefinedExternally);
+        super(theName, theDescription, theDefaults, theUIOrder, isDefinedExternally,
+              new MethodPropertyModule(legalPackageNames, theDefaults));
     }
 
 
@@ -82,47 +86,31 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
      * @param theUIOrder        float
      *
      * @throws IllegalArgumentException
+     * @deprecated will be removed in 7.O.O
      */
     public MethodMultiProperty(String theName, String theDescription, String methodDefaults,
                                String[] legalPackageNames, float theUIOrder) {
-        this(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder, false);
+        this(theName, theDescription,
+             methodsFrom(methodDefaults),
+             legalPackageNames, theUIOrder,
+             false);
     }
 
 
-    public static List<Method> methodsFrom(String methodsStr) {
-        String[] values = StringUtil.substringsOf(methodsStr, DELIMITER);
-
-        List<Method> methods = new ArrayList<>(values.length);
-        for (String name : values) {
-            methods.add(MethodProperty.methodFrom(name, MethodProperty.CLASS_METHOD_DELIMITER,
-                                                  MethodProperty.METHOD_ARG_DELIMITER));
-        }
-        return methods;
+    private static List<Method> methodsFrom(String valueString) {
+        return ValueParser.Companion.parsePrimitives(valueString, MULTI_VALUE_DELIMITER, METHOD_PARSER);
     }
 
 
     @Override
     public String asString(Method value) {
-        return value == null ? "" : MethodProperty.asStringFor(value);
+        return MethodPropertyModule.asString(value);
     }
 
 
     @Override
     protected Method createFrom(String toParse) {
-        return MethodProperty.methodFrom(toParse, MethodProperty.CLASS_METHOD_DELIMITER,
-                                         MethodProperty.METHOD_ARG_DELIMITER);
-    }
-
-
-    @Override
-    protected String packageNameOf(Method item) {
-        return item.getDeclaringClass().getName() + '.' + item.getName();
-    }
-
-
-    @Override
-    protected String itemTypeName() {
-        return "method";
+        return METHOD_PARSER.valueOf(toParse);
     }
 
 

@@ -57,6 +57,25 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     }
 
 
+    /** Master constructor. */
+    private DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
+                           float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
+    }
+
+
+    /**
+     * Parses a String into a Double.
+     *
+     * @param numberString String to parse
+     *
+     * @return Parsed Double
+     */
+    public static Double doubleFrom(String numberString) {
+        return Double.valueOf(numberString);
+    }
+
+
     /**
      * Constructor that limits itself to a single value within the specified limits.
      *
@@ -72,24 +91,6 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
                           float theUIOrder) {
         this(theName, theDescription, min, max, theDefault, theUIOrder, false);
-    }
-
-
-    private DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
-                          float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
-    }
-
-
-    /**
-     * Parses a String into a Double.
-     *
-     * @param numberString String to parse
-     *
-     * @return Parsed Double
-     */
-    public static Double doubleFrom(String numberString) {
-        return Double.valueOf(numberString);
     }
 
 

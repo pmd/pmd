@@ -24,6 +24,7 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester<Char
     private static final char DELIMITER = '|';
     private static final char[] CHARSET = filter(ALL_CHARS.toCharArray(), DELIMITER);
 
+
     public CharacterPropertyTest() {
         super("Character");
     }
@@ -34,11 +35,11 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester<Char
     public void testErrorForBadSingle() {
     } // not until char properties use illegal chars
 
+
     @Override
     @Test
     public void testErrorForBadMulti() {
     } // not until char properties use illegal chars
-
 
 
     @Override
@@ -46,30 +47,35 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester<Char
         return randomChar(CHARSET);
     }
 
+
     @Override
     protected Character createBadValue() {
         return null;
     }
+
 
     @Override
     protected PropertyDescriptor<Character> createProperty() {
         return new CharacterProperty("testCharacter", "Test character property", 'a', 1.0f);
     }
 
+
     @Override
     protected PropertyDescriptor<List<Character>> createMultiProperty() {
         return new CharacterMultiProperty("testCharacter", "Test character property",
-                                          new Character[] { 'a', 'b', 'c' }, 1.0f, DELIMITER);
+                                          new Character[] {'a', 'b', 'c'}, 1.0f, DELIMITER);
     }
+
 
     @Override
     protected PropertyDescriptor<Character> createBadProperty() {
         return new CharacterProperty("", "Test character property", 'a', 1.0f);
     }
 
+
     @Override
     protected PropertyDescriptor<List<Character>> createBadMultiProperty() {
         return new CharacterMultiProperty("testCharacter", "Test character property",
-                                          new Character[] { 'a', 'b', 'c' }, 1.0f, DELIMITER);
+                                          new Character[] {'a', 'b', 'c'}, 1.0f, DELIMITER);
     }
 }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.lang.rule.properties.AbstractNumericProperty.NUMBER_FIELD_TYPES_BY_KEY;
 import static net.sourceforge.pmd.lang.rule.properties.ValueParser.DOUBLE_PARSER;
 
 import java.util.Arrays;
@@ -29,7 +28,8 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
             public DoubleMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Double> defaultValues = parsePrimitives(numericDefaultValueIn(valuesById), delimiter, DOUBLE_PARSER);
+                List<Double> defaultValues = ValueParser.Companion.parsePrimitives(numericDefaultValueIn(valuesById),
+                                                                            delimiter, DOUBLE_PARSER);
                 return new DoubleMultiProperty(nameIn(valuesById),
                                                descriptionIn(valuesById),
                                                DOUBLE_PARSER.valueOf(minMax[0]),
@@ -59,6 +59,13 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
     }
 
 
+    /** Master constructor. */
+    private DoubleMultiProperty(String theName, String theDescription, Double min, Double max,
+                                List<Double> defaultValues, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
      * Constructor using a list of defaults.
      *
@@ -74,11 +81,6 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
     public DoubleMultiProperty(String theName, String theDescription, Double min, Double max,
                                List<Double> defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
-    }
-
-    private DoubleMultiProperty(String theName, String theDescription, Double min, Double max,
-                               List<Double> defaultValues, float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
     }
 
 

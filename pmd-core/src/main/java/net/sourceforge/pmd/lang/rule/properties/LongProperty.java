@@ -58,6 +58,13 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
     }
 
 
+    /** Master constructor. */
+    private LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault,
+                         float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
      * Constructor that limits itself to a single value within the specified limits.
      *
@@ -72,11 +79,6 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
      */
     public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
         this(theName, theDescription, min, max, theDefault, theUIOrder, false);
-    }
-
-    private LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault,
-                         float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 
 

@@ -49,19 +49,7 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     }
 
 
-    /**
-     * Constructor.
-     *
-     * @param theName        Name
-     * @param theDescription Description
-     * @param theDefault     Default value
-     * @param theUIOrder     UI order
-     */
-    public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
-        this(theName, theDescription, theDefault, theUIOrder, false);
-    }
-
-
+    /** Master constructor. */
     private CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder, boolean isDefinedExternally) {
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
     }
@@ -78,6 +66,19 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
      */
     public static Character charFrom(String charStr) {
         return CHARACTER_PARSER.valueOf(charStr);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     */
+    public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
+        this(theName, theDescription, theDefault, theUIOrder, false);
     }
 
 
