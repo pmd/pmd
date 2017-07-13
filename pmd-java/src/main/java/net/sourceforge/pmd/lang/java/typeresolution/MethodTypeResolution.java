@@ -48,15 +48,37 @@ public final class MethodTypeResolution {
     }
 
     public static boolean checkSubtypeability(MethodType method, MethodType subtypeableMethod) {
-        List<JavaTypeDefinition> subtypeableArgs = subtypeableMethod.getParameterTypes();
-        List<JavaTypeDefinition> methodTypeArgs = method.getParameterTypes();
+        List<JavaTypeDefinition> subtypeableParams = subtypeableMethod.getParameterTypes();
+        List<JavaTypeDefinition> methodParams = method.getParameterTypes();
 
-        // TODO: add support for not matching arity methods
 
-        for (int index = 0; index < subtypeableArgs.size(); ++index) {
-            if (!isSubtypeable(methodTypeArgs.get(index), subtypeableArgs.get(index))) {
-                return false;
+        if (!method.getMethod().isVarArgs() && !subtypeableMethod.getMethod().isVarArgs()) {
+            for (int index = 0; index < subtypeableParams.size(); ++index) {
+                if (!isSubtypeable(methodParams.get(index), subtypeableParams.get(index))) {
+                    return false;
+                }
             }
+        } else if (method.getMethod().isVarArgs() && subtypeableMethod.getMethod().isVarArgs()) {
+
+            if (methodParams.size() < subtypeableParams.size()) {
+                for (int index = 0; index < subtypeableParams.size(); ++index) {
+                    if (!isSubtypeable(method.getArgTypeIncludingVararg(index),
+                                       subtypeableMethod.getArgTypeIncludingVararg(index))) {
+                        return false;
+                    }
+                }
+            } else {
+                for (int index = 0; index < methodParams.size(); ++index) {
+                    if (!isSubtypeable(method.getArgTypeIncludingVararg(index),
+                                       subtypeableMethod.getArgTypeIncludingVararg(index))) {
+                        return false;
+                    }
+                }
+            }
+
+        } else {
+            throw new IllegalStateException("These methods can only be vararg at the same time:\n"
+                                                    + method.toString() + "\n" + subtypeableMethod.toString());
         }
 
         return true;
@@ -202,10 +224,7 @@ public final class MethodTypeResolution {
      */
     public static JavaTypeDefinition getBestMethodReturnType(List<MethodType> methods, ASTArgumentList arguments,
                                                              List<JavaTypeDefinition> typeArgs) {
-        if (methods.size() == 1) {
-            return methods.get(0).getReturnType(); // TODO: remove this in the end, needed to pass some previous tests
-        }
-
+        
         List<MethodType> selectedMethods = selectMethodsFirstPhase(methods, arguments, typeArgs);
         if (!selectedMethods.isEmpty()) {
             return selectMostSpecificMethod(selectedMethods).getReturnType();
@@ -218,10 +237,7 @@ public final class MethodTypeResolution {
 
         selectedMethods = selectMethodsThirdPhase(methods, arguments, typeArgs);
         if (!selectedMethods.isEmpty()) {
-            if (selectedMethods.size() == 1) {
-                return selectedMethods.get(0).getReturnType();
-                // TODO: add selecting most specific vararg method
-            }
+            return selectMostSpecificMethod(selectedMethods).getReturnType();
         }
 
         return null;

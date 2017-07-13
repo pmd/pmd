@@ -15,8 +15,16 @@ public class MethodThirdPhase {
         // component type determined properly
         int c = vararg(10, "", "", "");
 
-        // TODO: add most specific tests among vararg conversion
+        // most specific vararg method
+        String d = mostSpecific(10, 10, 10);
+    }
 
+    Exception mostSpecific(Number... b) {
+        return null;
+    }
+
+    String mostSpecific(Integer... b) {
+        return null;
     }
 
     Exception vararg(int a, Number... b) {
