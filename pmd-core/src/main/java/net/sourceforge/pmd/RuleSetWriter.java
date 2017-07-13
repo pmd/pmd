@@ -333,45 +333,18 @@ public class RuleSetWriter {
         return propertyElement;
     }
 
-    // private Element createPropertyDefinitionElement(PropertyDescriptor<?>
-    // propertyDescriptor) {
-    // Element propertyElement = createPropertyValueElement(propertyDescriptor,
-    // propertyDescriptor.defaultValue());
-    //
-    // propertyElement.setAttribute("description",
-    // propertyDescriptor.description());
-    // String type =
-    // PropertyDescriptorFactory.getPropertyDescriptorType(propertyDescriptor);
-    // propertyElement.setAttribute("type", type);
-    //
-    // if (propertyDescriptor.isMultiValue()) {
-    // propertyElement.setAttribute("delimiter",
-    // String.valueOf(propertyDescriptor.multiValueDelimiter()));
-    // }
-    //
-    // if (propertyDescriptor instanceof AbstractNumericProperty) {
-    // propertyElement.setAttribute("min",
-    // String.valueOf(((AbstractNumericProperty<?>)
-    // propertyDescriptor).lowerLimit()));
-    // propertyElement.setAttribute("max",
-    // String.valueOf(((AbstractNumericProperty<?>)
-    // propertyDescriptor).upperLimit()));
-    // }
-    //
-    // return propertyElement;
-    // }
 
     private Element createPropertyDefinitionElementBR(PropertyDescriptor<?> propertyDescriptor) {
 
         final Element propertyElement = createPropertyValueElement(propertyDescriptor,
                 propertyDescriptor.defaultValue());
-        propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName,
+        propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName(),
                                      PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type(),
                                                                       propertyDescriptor.isMultiValue()));
 
         Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();
         for (Map.Entry<PropertyDescriptorField, String> entry : propertyValuesById.entrySet()) {
-            propertyElement.setAttribute(entry.getKey().attributeName, entry.getValue());
+            propertyElement.setAttribute(entry.getKey().attributeName(), entry.getValue());
         }
 
         return propertyElement;

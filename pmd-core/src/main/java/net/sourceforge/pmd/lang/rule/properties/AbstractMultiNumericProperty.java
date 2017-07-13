@@ -60,8 +60,9 @@ import net.sourceforge.pmd.PropertyDescriptorField;
 
 
     private void checkNumber(T number) {
-        if (valueErrorFor(number) != null) {
-            throw new IllegalArgumentException(valueErrorFor(number));
+        String error = valueErrorFor(number);
+        if (error != null) {
+            throw new IllegalArgumentException(error);
         }
     }
 

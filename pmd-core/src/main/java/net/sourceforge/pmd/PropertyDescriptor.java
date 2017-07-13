@@ -106,7 +106,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
 
 
     /**
-     * Retunrs the value represented by this string.
+     * Returns the value represented by this string.
      *
      * @param propertyString The string to parse
      *

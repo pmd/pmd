@@ -41,7 +41,7 @@ public enum PropertyDescriptorField {
     /** Default index for enumerated properties. */
     DEFAULT_INDEX("defaultIndex");
 
-    final String attributeName;
+    private final String attributeName;
 
 
     PropertyDescriptorField(String attributeName) {
@@ -49,9 +49,19 @@ public enum PropertyDescriptorField {
     }
 
 
+    /**
+     * Returns the String name of this attribute.
+     *
+     * @return The attribute's name
+     */
+    public String attributeName() {
+        return attributeName;
+    }
+
+
     @Override
     public String toString() {
-        return attributeName;
+        return attributeName();
     }
 
 }

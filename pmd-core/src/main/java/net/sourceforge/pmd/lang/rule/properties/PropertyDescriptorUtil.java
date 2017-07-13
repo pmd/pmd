@@ -5,24 +5,15 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 
 /**
  * @author Brian Remedios
  */
 public class PropertyDescriptorUtil {
-
-    public static final Comparator<PropertyDescriptor<?>> COMPARATOR_BY_ORDER = new Comparator<PropertyDescriptor<?>>() {
-        @Override
-        public int compare(PropertyDescriptor<?> pd1, PropertyDescriptor<?> pd2) {
-            return pd2.uiOrder() > pd1.uiOrder() ? -1 : 1;
-        }
-    };
 
     private static final Map<String, PropertyDescriptorFactory<?>> DESCRIPTOR_FACTORIES_BY_TYPE;
 
