@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.style;
 
-import java.util.Arrays;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -13,7 +11,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class ClassNamingConventionsRule extends AbstractApexRule {
 
     public ClassNamingConventionsRule() {
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Style"));
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
         // Note: x10 as Apex has not automatic refactoring
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 5);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);

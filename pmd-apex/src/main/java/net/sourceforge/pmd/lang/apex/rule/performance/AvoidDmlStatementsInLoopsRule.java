@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
-import java.util.Arrays;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
@@ -23,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AvoidDmlStatementsInLoopsRule extends AbstractApexRule {
 
     public AvoidDmlStatementsInLoopsRule() {
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Performance"));
+        setProperty(CODECLIMATE_CATEGORIES, "Performance");
         // Note: Often more complicated as just moving the SOQL a few lines.
         // Involves Maps...
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 150);

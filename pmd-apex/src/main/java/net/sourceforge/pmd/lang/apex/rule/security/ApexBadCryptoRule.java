@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +34,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     private final Set<String> potentiallyStaticBlob = new HashSet<>();
 
     public ApexBadCryptoRule() {
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Security"));
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

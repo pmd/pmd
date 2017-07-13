@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.rule.style;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -81,7 +80,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         definePropertyDescriptor(PARAMETER_PREFIXES_DESCRIPTOR);
         definePropertyDescriptor(PARAMETER_SUFFIXES_DESCRIPTOR);
 
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Style"));
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
         // Note: x10 as Apex has not automatic refactoring
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 5);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);

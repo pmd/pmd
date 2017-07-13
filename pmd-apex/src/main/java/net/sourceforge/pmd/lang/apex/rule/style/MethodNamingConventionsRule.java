@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.style;
 
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
 
-import java.util.Arrays;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -16,7 +14,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class MethodNamingConventionsRule extends AbstractApexRule {
 
     public MethodNamingConventionsRule() {
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Style"));
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
         // Note: x10 as Apex has not automatic refactoring
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);

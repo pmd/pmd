@@ -46,7 +46,7 @@ public interface PropertySource {
 
 
     /**
-     * Get the typed value for the given property.
+     * Get the typed value for the given property. Multi valued properties return immutable lists.
      *
      * @param <T>                The underlying type of the property descriptor.
      * @param propertyDescriptor The property descriptor.
@@ -64,6 +64,39 @@ public interface PropertySource {
      * @param value              The value to set.
      */
     <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value);
+
+
+    /**
+     * Sets the value of a multi value property descriptor with only one argument.
+     *
+     * @param propertyDescriptor The property descriptor for which to add a value
+     * @param value              Value
+     * @param <V>                The type of the values
+     */
+    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value);
+
+
+    /**
+     * Sets the value of a multi value property descriptor with two arguments.
+     *
+     * @param propertyDescriptor The property descriptor for which to add a value
+     * @param value1             First value
+     * @param value2             Second value
+     * @param <V>                The type of the values
+     */
+    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value1, V value2);
+
+
+    /**
+     * Sets the value of a multi value property descriptor with a variable number of arguments.
+     *
+     * @param propertyDescriptor The property descriptor for which to add a value
+     * @param value1             First value
+     * @param value2             Second value
+     * @param values             Rest of the values
+     * @param <V>                The type of the values
+     */
+    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value1, V value2, V... values);
 
 
     /**

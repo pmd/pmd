@@ -78,7 +78,7 @@ public class PropertyAccessorTest {
         rule.setProperty(NonRuleWithAllPropertyTypes.SINGLE_STR, "brian");
         assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.SINGLE_STR), "brian");
 
-        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_STR, Arrays.asList("hello", "world"));
+        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_STR, "hello", "world");
         assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_STR),
                      Arrays.asList("hello", "world"));
     }

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.apexunit;
 
-import java.util.Arrays;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -21,7 +19,7 @@ import apex.jorje.services.Version;
 public abstract class AbstractApexUnitTestRule extends AbstractApexRule {
 
     public AbstractApexUnitTestRule() {
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Bug Risk"));
+        setProperty(CODECLIMATE_CATEGORIES, "Bug Risk");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

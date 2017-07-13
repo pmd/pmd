@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +50,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private final Set<String> urlParameterStrings = new HashSet<>();
 
     public ApexXSSFromURLParamRule() {
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Security"));
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.style;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
@@ -14,7 +13,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class AvoidLogicInTriggerRule extends AbstractApexRule {
 
     public AvoidLogicInTriggerRule() {
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Style"));
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 200);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
-import java.util.Arrays;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
@@ -18,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AvoidSoqlInLoopsRule extends AbstractApexRule {
 
     public AvoidSoqlInLoopsRule() {
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Performance"));
+        setProperty(CODECLIMATE_CATEGORIES, "Performance");
         // Note: Often more complicated as just moving the SOQL a few lines.
         // Involves Maps...
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 150);

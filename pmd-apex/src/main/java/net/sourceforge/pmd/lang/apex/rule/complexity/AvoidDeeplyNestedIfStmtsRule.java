@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.complexity;
 
-import java.util.Arrays;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -22,7 +20,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
     public AvoidDeeplyNestedIfStmtsRule() {
         definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);
 
-        setProperty(CODECLIMATE_CATEGORIES, Arrays.asList("Complexity"));
+        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
         // Note: Remedy needs better OO design and therefore high effort
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 200);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);

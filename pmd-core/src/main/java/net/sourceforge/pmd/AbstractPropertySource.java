@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -122,14 +123,45 @@ public abstract class AbstractPropertySource implements PropertySource {
     @Override
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
         checkValidPropertyDescriptor(propertyDescriptor);
-        propertyValuesByDescriptor.put(propertyDescriptor, value);
+        if (value instanceof List) {
+            propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList((List) value));
+
+        } else {
+            propertyValuesByDescriptor.put(propertyDescriptor, value);
+        }
     }
 
 
+    @Override
+    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value) {
+        checkValidPropertyDescriptor(propertyDescriptor);
+        propertyValuesByDescriptor.put(propertyDescriptor, Collections.singletonList(value));
+    }
+
+
+    @Override
+    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value1, V value2) {
+        checkValidPropertyDescriptor(propertyDescriptor);
+        propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(value1, value2)));
+    }
+
+
+    @Override
+    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value1, V value2, V... values) {
+        checkValidPropertyDescriptor(propertyDescriptor);
+        propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(value1, value2, values)));
+    }
+
+
+    /**
+     * Checks whether this property descriptor is defined for this property source.
+     *
+     * @param propertyDescriptor The property descriptor to check
+     */
     private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         if (!propertyDescriptors.contains(propertyDescriptor)) {
             throw new IllegalArgumentException(
-                    "Property descriptor not defined for Rule " + getName() + ": " + propertyDescriptor);
+                "Property descriptor not defined for Rule " + getName() + ": " + propertyDescriptor);
         }
     }
 
