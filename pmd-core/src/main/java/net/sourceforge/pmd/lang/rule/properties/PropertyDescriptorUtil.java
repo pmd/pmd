@@ -38,8 +38,8 @@ public class PropertyDescriptorUtil {
         temp.put("Double", DoubleProperty.FACTORY);
         temp.put("List<Double>", DoubleMultiProperty.FACTORY);
 
-        temp.put("Enum", EnumeratedProperty.FACTORY);
-        temp.put("List<Enum>", EnumeratedMultiProperty.FACTORY);
+    //    temp.put("Enum", EnumeratedProperty.FACTORY);
+    //    temp.put("List<Enum>", EnumeratedMultiProperty.FACTORY);
 
         temp.put("Class", TypeProperty.FACTORY);
         temp.put("List<Class>", TypeMultiProperty.FACTORY);

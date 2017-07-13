@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
+import net.sourceforge.pmd.PackagedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
@@ -23,7 +24,8 @@ import net.sourceforge.pmd.PropertyDescriptorField;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-/* default */ abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T> {
+/* default */ abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T>
+    implements PackagedPropertyDescriptor<List<T>>{
 
     /** Delimiter between values. */
     protected static final char DELIMITER = '|';
@@ -164,11 +166,7 @@ import net.sourceforge.pmd.PropertyDescriptorField;
     protected abstract String itemTypeName();
 
 
-    /**
-     * Returns the legal package names.
-     *
-     * @return The legal package names
-     */
+    @Override
     public String[] legalPackageNames() {
         return Arrays.copyOf(legalPackageNames, legalPackageNames.length);
     }

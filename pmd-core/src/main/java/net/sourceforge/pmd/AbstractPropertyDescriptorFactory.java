@@ -184,6 +184,12 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
     }
 
 
+    /**
+     * Returns a map of mappings of property descriptor fields
+     * @param otherKeys
+     * @param otherValues
+     * @return
+     */
     public static Map<PropertyDescriptorField, Boolean> expectedFieldTypesWith(PropertyDescriptorField[] otherKeys,
                                                                                Boolean[] otherValues) {
         Map<PropertyDescriptorField, Boolean> largerMap = new HashMap<>(

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd;
 
 /**
- * Defines a descriptor type whose instance values are required lie within
+ * Defines a descriptor type whose instance values are required to lie within
  * specified upper and lower limits.
  *
  * @param <T> type of the property value

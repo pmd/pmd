@@ -7,18 +7,16 @@ package net.sourceforge.pmd;
 import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
 
 /**
- * Field names for parsing the properties out of the ruleset xml files.
+ * Field names for parsing the properties out of the ruleset xml files. These are intended to be used as the keys to
+ * a map of fields to values. Most property descriptors can be built directly from such a map using their factory.
  *
  * @author Brian Remedios
  * @see RuleSetFactory
+ * @see PropertyDescriptorUtil
  */
 public enum PropertyDescriptorField {
 
-    /**
-     * The type of the property.
-     *
-     * @see PropertyDescriptorUtil
-     */
+    /** The type of the property. */
     TYPE("type"),
     /** The name of the property. */
     NAME("name"),
@@ -28,11 +26,14 @@ public enum PropertyDescriptorField {
     DEFAULT_VALUE("value"),
     /** For multi-valued properties, this defines the delimiter of the single values. */
     DELIMITER("delimiter"),
-    /** The minium allowed value. */
+    /** The minimum allowed value for numeric properties. */
     MIN("min"),
-    /** The maximum allowed value. */
+    /** The maximum allowed value for numeric properties. */
     MAX("max"),
-    /** To limit the range of valid values, {@literal e.g.} to Enums. */
+    /**
+     * To limit the range of valid values, package names.
+     * @see PackagedPro
+     */
     LEGAL_PACKAGES("legalPackages"),
     /** Labels for enumerated properties. */
     LABELS("labels"),

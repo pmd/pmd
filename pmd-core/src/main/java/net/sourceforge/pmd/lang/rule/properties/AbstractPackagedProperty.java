@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.AbstractPropertyDescriptorFactory;
+import net.sourceforge.pmd.PackagedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -23,7 +24,8 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
-/* default */ abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T> {
+/* default */ abstract class AbstractPackagedProperty<T> extends AbstractSingleValueProperty<T>
+    implements PackagedPropertyDescriptor<T> {
 
     /** Required keys in the map. */
     protected static final Map<PropertyDescriptorField, Boolean> PACKAGED_FIELD_TYPES_BY_KEY
@@ -153,11 +155,7 @@ import net.sourceforge.pmd.util.StringUtil;
     protected abstract String itemTypeName();
 
 
-    /**
-     * Returns the legal package names.
-     *
-     * @return The legal package names
-     */
+    @Override
     public String[] legalPackageNames() {
         return Arrays.copyOf(legalPackageNames, legalPackageNames.length); // defensive copy
     }
