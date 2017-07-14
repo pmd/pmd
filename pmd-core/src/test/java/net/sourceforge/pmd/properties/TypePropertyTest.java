@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
  *
  * @author Brian Remedios
  */
-public class TypePropertyTest extends AbstractPropertyDescriptorTester<Class> {
+public class TypePropertyTest extends AbstractPackagedPropertyDescriptorTester<Class> {
 
     private static final List<Class> JAVA_LANG_CLASSES = Arrays.<Class>asList(String.class, Integer.class, Thread.class,
                                                                               Object.class, Runtime.class);

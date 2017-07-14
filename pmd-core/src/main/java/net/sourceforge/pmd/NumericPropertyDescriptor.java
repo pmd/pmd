@@ -9,6 +9,8 @@ import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
 
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
+
 /**
  * Defines a descriptor type whose instance values are required to lie within
  * specified upper and lower limits.
@@ -20,8 +22,7 @@ import java.util.Map;
 public interface NumericPropertyDescriptor<T> extends PropertyDescriptor<T> {
 
     Map<PropertyDescriptorField, Boolean> NUMBER_FIELD_TYPES_BY_KEY
-        = AbstractPropertyDescriptorFactory.expectedFieldTypesWith(new PropertyDescriptorField[] {MIN, MAX},
-                                                                   new Boolean[] {true, true});
+        = PropertyDescriptorUtil.expectedFields().put(MIN, true).put(MAX, true).get();
 
 
     /**

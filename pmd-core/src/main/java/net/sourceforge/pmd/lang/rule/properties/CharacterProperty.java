@@ -10,6 +10,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property type that supports single Character values.
@@ -21,6 +22,12 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
 
     public static final PropertyDescriptorFactory<Character> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Character>(Character.class) {
+
+            @Override
+            protected boolean isValueMissing(String value) {
+                return StringUtil.isMissing(value);
+            }
+
             @Override
             public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 return new CharacterProperty(nameIn(valuesById),

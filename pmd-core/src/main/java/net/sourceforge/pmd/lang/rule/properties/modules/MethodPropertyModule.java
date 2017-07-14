@@ -29,7 +29,7 @@ public class MethodPropertyModule extends PackagedPropertyModule<Method> {
 
     @Override
     protected String packageNameOf(Method method) {
-        return method == null ? null : method.getDeclaringClass().getName() + '.' + method.getName();
+        return method.getDeclaringClass().getName() + '.' + method.getName();
     }
 
 

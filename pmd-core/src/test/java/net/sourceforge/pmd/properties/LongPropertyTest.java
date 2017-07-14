@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.rule.properties.LongProperty;
 /**
  * @author Clément Fournier
  */
-public class LongPropertyTest extends AbstractPropertyDescriptorTester<Long> {
+public class LongPropertyTest extends AbstractNumericPropertyDescriptorTester<Long> {
 
     private static final long MIN = 10L;
     private static final long MAX = 11000L;
@@ -60,15 +60,6 @@ public class LongPropertyTest extends AbstractPropertyDescriptorTester<Long> {
     protected PropertyDescriptor<List<Long>> createBadMultiProperty() {
         return new LongMultiProperty("testFloat", "Test float property", 0L, 5L,
                                      new Long[] {-1000L, 0L, 100L, 20L}, 1.0f);
-    }
-
-
-    public static LongProperty randomProperty(int nameLength, int descLength, boolean multiValue) {
-
-        long defalt = randomLong(0, 1000);
-
-        return new LongProperty(randomString(nameLength), randomString(descLength), defalt - 10000, defalt + 10000,
-                                defalt, 0f);
     }
 
 }

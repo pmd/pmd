@@ -18,10 +18,12 @@ public final class StringUtil {
 
     private static final String[] EMPTY_STRINGS = new String[0];
     private static final boolean SUPPORTS_UTF8 = "yes"
-            .equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
+        .equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
+
 
     private StringUtil() {
     }
+
 
     /**
      * Return whether the non-null text arg starts with any of the prefix
@@ -29,6 +31,7 @@ public final class StringUtil {
      *
      * @param text
      * @param prefixes
+     *
      * @return boolean
      */
     public static boolean startsWithAny(String text, String... prefixes) {
@@ -42,11 +45,13 @@ public final class StringUtil {
         return false;
     }
 
+
     /**
      * Returns whether the non-null text arg matches any of the test values.
      *
      * @param text
      * @param tests
+     *
      * @return boolean
      */
     public static boolean isAnyOf(String text, String... tests) {
@@ -60,12 +65,14 @@ public final class StringUtil {
         return false;
     }
 
+
     /**
      * Checks for the existence of any of the listed prefixes on the non-null
      * text and removes them.
      *
      * @param text
      * @param prefixes
+     *
      * @return String
      */
     public static String withoutPrefixes(String text, String... prefixes) {
@@ -79,21 +86,50 @@ public final class StringUtil {
         return text;
     }
 
+
+    /**
+     * @param value String
+     *
+     * @return boolean
+     */
+    public static boolean isNotEmpty(String value) {
+        return !isEmpty(value);
+    }
+
+
     /**
      * Returns true if the value arg is either null, empty, or full of
      * whitespace characters. More efficient that calling
      * (string).trim().length() == 0
      *
      * @param value
-     * @return <code>true</code> if the value is empty, <code>false</code>
-     *         otherwise.
+     *
+     * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
      */
     public static boolean isEmpty(String value) {
+        return isMissing(value) || nullSafeIsBlank(value);
+    }
+
+
+    /**
+     * Returns true if the argument is null or the empty string.
+     *
+     * @param value String to test
+     *
+     * @return True if the argument is null or the empty string
+     */
+    public static boolean isMissing(String value) {
 
         if (value == null || "".equals(value)) {
             return true;
         }
 
+        return false;
+    }
+
+
+    /** Argument must not be null. */
+    private static boolean nullSafeIsBlank(String value) {
         for (int i = 0; i < value.length(); i++) {
             if (!Character.isWhitespace(value.charAt(i))) {
                 return false;
@@ -103,15 +139,23 @@ public final class StringUtil {
         return true;
     }
 
+
     /**
+     * Returns true if the argument is null or entirely composed of whitespace characters.
      *
-     * @param value
-     *            String
-     * @return boolean
+     * @param value String to test
+     *
+     * @return True if the argument is null or entirely composed of whitespace characters.
      */
-    public static boolean isNotEmpty(String value) {
-        return !isEmpty(value);
+    public static boolean isBlank(String value) {
+
+        if (value == null) {
+            return true;
+        }
+
+        return nullSafeIsBlank(value);
     }
+
 
     /**
      * Returns true if both strings are effectively null or whitespace, returns
@@ -119,6 +163,7 @@ public final class StringUtil {
      *
      * @param a
      * @param b
+     *
      * @return boolean
      */
     public static boolean areSemanticEquals(String a, String b) {
@@ -133,43 +178,12 @@ public final class StringUtil {
         return a.equals(b);
     }
 
-    /**
-     *
-     * @param original
-     *            String
-     * @param oldChar
-     *            char
-     * @param newString
-     *            String
-     * @return String
-     */
-    public static String replaceString(final String original, char oldChar, final String newString) {
-        int index = original.indexOf(oldChar);
-        if (index < 0) {
-            return original;
-        } else {
-            final String replace = newString == null ? "" : newString;
-            final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
-            int last = 0;
-            while (index != -1) {
-                buf.append(original.substring(last, index));
-                buf.append(replace);
-                last = index + 1;
-                index = original.indexOf(oldChar, last);
-            }
-            buf.append(original.substring(last));
-            return buf.toString();
-        }
-    }
 
     /**
+     * @param original  String
+     * @param oldString String
+     * @param newString String
      *
-     * @param original
-     *            String
-     * @param oldString
-     *            String
-     * @param newString
-     *            String
      * @return String
      */
     public static String replaceString(final String original, final String oldString, final String newString) {
@@ -191,64 +205,28 @@ public final class StringUtil {
         }
     }
 
+
     /**
      * Appends to a StringBuilder the String src where non-ASCII and XML special
      * chars are escaped.
      *
-     * @param buf
-     *            The destination XML stream
-     * @param src
-     *            The String to append to the stream
+     * @param buf The destination XML stream
+     * @param src The String to append to the stream
      *
-     * @deprecated use {@link #appendXmlEscaped(StringBuilder, String, boolean)}
-     *             instead
+     * @deprecated use {@link #appendXmlEscaped(StringBuilder, String, boolean)} instead
      */
     @Deprecated
     public static void appendXmlEscaped(StringBuilder buf, String src) {
         appendXmlEscaped(buf, src, SUPPORTS_UTF8);
     }
 
-    /**
-     * Replace some whitespace characters so they are visually apparent.
-     *
-     * @param o
-     * @return String
-     */
-    public static String escapeWhitespace(Object o) {
-
-        if (o == null) {
-            return null;
-        }
-        String s = String.valueOf(o);
-        s = s.replace("\n", "\\n");
-        s = s.replace("\r", "\\r");
-        s = s.replace("\t", "\\t");
-        return s;
-    }
 
     /**
-     *
-     * @param string
-     *            String
-     * @return String
-     *
-     * @deprecated Use StringEscapeUtils#escapeHtml4 instead
-     */
-    @Deprecated
-    public static String htmlEncode(String string) {
-        String encoded = replaceString(string, '&', "&amp;");
-        encoded = replaceString(encoded, '<', "&lt;");
-        return replaceString(encoded, '>', "&gt;");
-    }
-
-    /**
-     *
      * @param buf
      * @param src
-     * @param supportUTF8
-     *            override the default setting, whether special characters
-     *            should be replaced with entities ( <code>false</code>) or
-     *            should be included as is ( <code>true</code>).
+     * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
+     *                    <code>false</code>) or should be included as is ( <code>true</code>).
+     *
      * @see #appendXmlEscaped(StringBuilder, String)
      */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
@@ -283,6 +261,69 @@ public final class StringUtil {
         }
     }
 
+
+    /**
+     * Replace some whitespace characters so they are visually apparent.
+     *
+     * @param o
+     *
+     * @return String
+     */
+    public static String escapeWhitespace(Object o) {
+
+        if (o == null) {
+            return null;
+        }
+        String s = String.valueOf(o);
+        s = s.replace("\n", "\\n");
+        s = s.replace("\r", "\\r");
+        s = s.replace("\t", "\\t");
+        return s;
+    }
+
+
+    /**
+     * @param string String
+     *
+     * @return String
+     *
+     * @deprecated Use StringEscapeUtils#escapeHtml4 instead
+     */
+    @Deprecated
+    public static String htmlEncode(String string) {
+        String encoded = replaceString(string, '&', "&amp;");
+        encoded = replaceString(encoded, '<', "&lt;");
+        return replaceString(encoded, '>', "&gt;");
+    }
+
+
+    /**
+     * @param original  String
+     * @param oldChar   char
+     * @param newString String
+     *
+     * @return String
+     */
+    public static String replaceString(final String original, char oldChar, final String newString) {
+        int index = original.indexOf(oldChar);
+        if (index < 0) {
+            return original;
+        } else {
+            final String replace = newString == null ? "" : newString;
+            final StringBuilder buf = new StringBuilder(Math.max(16, original.length() + replace.length()));
+            int last = 0;
+            while (index != -1) {
+                buf.append(original.substring(last, index));
+                buf.append(replace);
+                last = index + 1;
+                index = original.indexOf(oldChar, last);
+            }
+            buf.append(original.substring(last));
+            return buf.toString();
+        }
+    }
+
+
     /**
      * Parses the input source using the delimiter specified. This method is
      * much faster than using the StringTokenizer or String.split(char) approach
@@ -291,10 +332,9 @@ public final class StringUtil {
      *
      * FIXME - we're on JDK 1.4 now, can we replace this with String.split?
      *
-     * @param source
-     *            String
-     * @param delimiter
-     *            char
+     * @param source    String
+     * @param delimiter char
+     *
      * @return String[]
      */
     public static String[] substringsOf(String source, char delimiter) {
@@ -314,7 +354,7 @@ public final class StringUtil {
         }
 
         if (delimiterCount == 0) {
-            return new String[] { source };
+            return new String[] {source};
         }
 
         String[] results = new String[delimiterCount + 1];
@@ -334,13 +374,13 @@ public final class StringUtil {
         return results;
     }
 
+
     /**
      * Much more efficient than StringTokenizer.
      *
-     * @param str
-     *            String
-     * @param separator
-     *            char
+     * @param str       String
+     * @param separator char
+     *
      * @return String[]
      */
     public static String[] substringsOf(String str, String separator) {
@@ -351,7 +391,7 @@ public final class StringUtil {
 
         int index = str.indexOf(separator);
         if (index == -1) {
-            return new String[] { str };
+            return new String[] {str};
         }
 
         List<String> list = new ArrayList<>();
@@ -366,16 +406,14 @@ public final class StringUtil {
         return list.toArray(new String[list.size()]);
     }
 
+
     /**
      * Copies the elements returned by the iterator onto the string buffer each
      * delimited by the separator.
      *
-     * @param sb
-     *            StringBuffer
-     * @param iter
-     *            Iterator
-     * @param separator
-     *            String
+     * @param sb        StringBuffer
+     * @param iter      Iterator
+     * @param separator String
      */
     public static void asStringOn(StringBuffer sb, Iterator<?> iter, String separator) {
 
@@ -391,16 +429,14 @@ public final class StringUtil {
         }
     }
 
+
     /**
      * Copies the array items onto the string builder each delimited by the
      * separator. Does nothing if the array is null or empty.
      *
-     * @param sb
-     *            StringBuilder
-     * @param items
-     *            Object[]
-     * @param separator
-     *            String
+     * @param sb        StringBuilder
+     * @param items     Object[]
+     * @param separator String
      */
     public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
 
@@ -416,31 +452,6 @@ public final class StringUtil {
         }
     }
 
-    /**
-     * Return the length of the shortest string in the array. If the collection
-     * is empty or any one of them is null then it returns 0.
-     *
-     * @param strings
-     *            String[]
-     * @return int
-     */
-    public static int lengthOfShortestIn(String[] strings) {
-
-        if (CollectionUtil.isEmpty(strings)) {
-            return 0;
-        }
-
-        int minLength = Integer.MAX_VALUE;
-
-        for (int i = 0; i < strings.length; i++) {
-            if (strings[i] == null) {
-                return 0;
-            }
-            minLength = Math.min(minLength, strings[i].length());
-        }
-
-        return minLength;
-    }
 
     /**
      * Determine the maximum number of common leading whitespace characters the
@@ -448,8 +459,8 @@ public final class StringUtil {
      * leading characters can be removed to shift all the text in the strings to
      * the left without misaligning them.
      *
-     * @param strings
-     *            String[]
+     * @param strings String[]
+     *
      * @return int
      */
     public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
@@ -478,12 +489,41 @@ public final class StringUtil {
         return shortest;
     }
 
+
+    /**
+     * Return the length of the shortest string in the array. If the collection
+     * is empty or any one of them is null then it returns 0.
+     *
+     * @param strings String[]
+     *
+     * @return int
+     */
+    public static int lengthOfShortestIn(String[] strings) {
+
+        if (CollectionUtil.isEmpty(strings)) {
+            return 0;
+        }
+
+        int minLength = Integer.MAX_VALUE;
+
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i] == null) {
+                return 0;
+            }
+            minLength = Math.min(minLength, strings[i].length());
+        }
+
+        return minLength;
+    }
+
+
     /**
      * Trims off the leading characters off the strings up to the trimDepth
      * specified. Returns the same strings if trimDepth = 0
      *
      * @param strings
      * @param trimDepth
+     *
      * @return String[]
      */
     public static String[] trimStartOn(String[] strings, int trimDepth) {
@@ -499,13 +539,13 @@ public final class StringUtil {
         return results;
     }
 
+
     /**
      * Left pads a string.
      *
-     * @param s
-     *            The String to pad
-     * @param length
-     *            The desired minimum length of the resulting padded String
+     * @param s      The String to pad
+     * @param length The desired minimum length of the resulting padded String
+     *
      * @return The resulting left padded String
      */
     public static String lpad(String s, int length) {
@@ -518,29 +558,23 @@ public final class StringUtil {
         return res;
     }
 
+
     /**
      * Are the two String values the same. The Strings can be optionally trimmed
      * before checking. The Strings can be optionally compared ignoring case.
      * The Strings can be have embedded whitespace standardized before
      * comparing. Two null values are treated as equal.
      *
-     * @param s1
-     *            The first String.
-     * @param s2
-     *            The second String.
-     * @param trim
-     *            Indicates if the Strings should be trimmed before comparison.
-     * @param ignoreCase
-     *            Indicates if the case of the Strings should ignored during
-     *            comparison.
-     * @param standardizeWhitespace
-     *            Indicates if the embedded whitespace should be standardized
-     *            before comparison.
-     * @return <code>true</code> if the Strings are the same, <code>false</code>
-     *         otherwise.
+     * @param s1                    The first String.
+     * @param s2                    The second String.
+     * @param trim                  Indicates if the Strings should be trimmed before comparison.
+     * @param ignoreCase            Indicates if the case of the Strings should ignored during comparison.
+     * @param standardizeWhitespace Indicates if the embedded whitespace should be standardized before comparison.
+     *
+     * @return <code>true</code> if the Strings are the same, <code>false</code> otherwise.
      */
     public static boolean isSame(String s1, String s2, boolean trim, boolean ignoreCase,
-            boolean standardizeWhitespace) {
+                                 boolean standardizeWhitespace) {
         if (s1 == null && s2 == null) {
             return true;
         } else if (s1 == null || s2 == null) {
@@ -560,14 +594,14 @@ public final class StringUtil {
         }
     }
 
+
     /**
      * Formats all items onto a string with separators if more than one exists,
      * return an empty string if the items are null or empty.
      *
-     * @param items
-     *            Object[]
-     * @param separator
-     *            String
+     * @param items     Object[]
+     * @param separator String
+     *
      * @return String
      */
     public static String asString(Object[] items, String separator) {

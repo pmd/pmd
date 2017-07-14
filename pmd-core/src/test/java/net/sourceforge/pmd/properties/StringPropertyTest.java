@@ -43,7 +43,7 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester<String>
      */
     private String newString() {
 
-        int strLength = randomInt(0, MAX_STRING_LENGTH);
+        int strLength = randomInt(1, MAX_STRING_LENGTH);
 
         char[] chars = new char[strLength];
         for (int i = 0; i < chars.length; i++) {

@@ -29,9 +29,35 @@ public abstract class PackagedPropertyModule<T> {
 
     public PackagedPropertyModule(String[] legalPackageNames, List<T> defaults) {
 
-        checkValidPackages(defaults, legalPackageNames);
+        checkValidPackages(legalPackageNames);
+        checkValidDefaults(defaults, legalPackageNames);
 
         this.legalPackageNames = legalPackageNames;
+    }
+
+
+    /**
+     * Checks that the legal packages are okay.
+     *
+     * @param legalNamePrefixes Prefixes to check. Can be null, but not contain null
+     *
+     * @throws IllegalArgumentException If the prefixes contain null
+     * @throws IllegalArgumentException If one name that does not look like a package name
+     */
+    private void checkValidPackages(String[] legalNamePrefixes) throws IllegalArgumentException {
+        if (legalNamePrefixes == null) {
+            return;
+        }
+
+        for (String name : legalNamePrefixes) {
+            if (name == null) {
+                throw new IllegalArgumentException("Null is not allowed in the legal package names:"
+                                                       + Arrays.toString(legalNamePrefixes));
+            } else if (!PACKAGE_NAME_PATTERN.matcher(name).matches()) {
+                throw new IllegalArgumentException("One name is not a package: '" + name + "'");
+
+            }
+        }
     }
 
 
@@ -44,15 +70,18 @@ public abstract class PackagedPropertyModule<T> {
      *
      * @throws IllegalArgumentException if some items are not allowed
      */
-    private void checkValidPackages(List<T> items, String[] legalNamePrefixes) {
+    private void checkValidDefaults(List<T> items, String[] legalNamePrefixes) {
 
-        if (legalNamePrefixes == null) {
+        if (legalNamePrefixes == null) { // valid value, matches everything
             return;
         }
 
         Set<String> nameSet = new HashSet<>();
 
         for (T item : items) {
+            if (item == null) {
+                continue;
+            }
             nameSet.add(packageNameOf(item));
         }
 
@@ -79,7 +108,7 @@ public abstract class PackagedPropertyModule<T> {
     /**
      * Returns the package name of the item.
      *
-     * @param item Item
+     * @param item Item (not null)
      *
      * @return Package name of the item
      */
@@ -142,13 +171,6 @@ public abstract class PackagedPropertyModule<T> {
 
     public String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
         String[] packageNames = StringUtil.substringsOf(params.get(LEGAL_PACKAGES), PACKAGE_NAME_DELIMITER);
-
-        for (String name : packageNames) {
-            if (!PACKAGE_NAME_PATTERN.matcher(name).matches()) {
-                throw new IllegalArgumentException("One name is not a package: '" + name + "'");
-            }
-        }
-
         return packageNames;
     }
 

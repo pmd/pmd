@@ -28,8 +28,9 @@ public final class DoubleMultiProperty extends AbstractMultiNumericProperty<Doub
             public DoubleMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Double> defaultValues = ValueParser.Companion.parsePrimitives(numericDefaultValueIn(valuesById),
-                                                                            delimiter, DOUBLE_PARSER);
+                List<Double> defaultValues
+                    = ValueParser.Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, DOUBLE_PARSER);
+
                 return new DoubleMultiProperty(nameIn(valuesById),
                                                descriptionIn(valuesById),
                                                DOUBLE_PARSER.valueOf(minMax[0]),

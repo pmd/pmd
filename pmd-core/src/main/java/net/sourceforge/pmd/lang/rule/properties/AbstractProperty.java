@@ -153,4 +153,6 @@ import net.sourceforge.pmd.util.StringUtil;
     public boolean isDefinedExternally() {
         return isDefinedExternally;
     }
+
+
 }

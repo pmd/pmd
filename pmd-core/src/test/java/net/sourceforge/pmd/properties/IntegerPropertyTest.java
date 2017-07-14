@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  *
  * @author Brian Remedios
  */
-public class IntegerPropertyTest extends AbstractPropertyDescriptorTester<Integer> {
+public class IntegerPropertyTest extends AbstractNumericPropertyDescriptorTester<Integer> {
 
     private static final int MIN = 1;
     private static final int MAX = 12;

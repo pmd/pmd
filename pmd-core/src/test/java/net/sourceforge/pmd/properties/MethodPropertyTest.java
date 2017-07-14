@@ -31,7 +31,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  *
  * @author Brian Remedios
  */
-public class MethodPropertyTest extends AbstractPropertyDescriptorTester<Method> {
+public class MethodPropertyTest extends AbstractPackagedPropertyDescriptorTester<Method> {
 
     private static final Method[] ALL_METHODS = String.class.getDeclaredMethods();
 
@@ -48,7 +48,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester<Method>
     @Test
     public void testAsStringOn() {
 
-        Method method = null;
+        Method method;
 
         for (int i = 0; i < METHOD_SIGNATURES.length; i++) {
             method = ValueParser.METHOD_PARSER.valueOf(METHOD_SIGNATURES[i]);
@@ -67,7 +67,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester<Method>
             assertNotNull("Unable to identify method: " + METHOD_SIGNATURES[i], methods[i]);
         }
 
-        String translatedMethod = null;
+        String translatedMethod;
         for (int i = 0; i < methods.length; i++) {
             translatedMethod = MethodPropertyModule.asString(methods[i]);
             assertTrue("Translated method does not match", ClassUtil.withoutPackageName(METHOD_SIGNATURES[i])

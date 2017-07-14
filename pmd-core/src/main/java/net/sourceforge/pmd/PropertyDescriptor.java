@@ -4,7 +4,14 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorField.DELIMITER;
+import static net.sourceforge.pmd.PropertyDescriptorField.DESCRIPTION;
+import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
+
 import java.util.Map;
+
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil.ExpectedFieldsBuilder;
 
 /**
  * Property value descriptor that defines the use &amp; requirements for setting
@@ -26,6 +33,16 @@ import java.util.Map;
  * @version Refactored June 2017 (6.0.0)
  */
 public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>> {
+
+    /** Default expected fields. Unmodifiable. */
+    Map<PropertyDescriptorField, Boolean> CORE_FIELD_TYPES_BY_KEY
+        = (new ExpectedFieldsBuilder())
+        .put(NAME, true)
+        .put(DESCRIPTION, true)
+        .put(DEFAULT_VALUE, true)
+        .put(DELIMITER, false)
+        .get();
+
 
     /**
      * The name of the property without spaces as it serves as the key into the

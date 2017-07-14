@@ -34,9 +34,9 @@ public abstract class AbstractPropertyDescriptorTester<T> {
 
     public static final String PUNCTUATION_CHARS = "!@#$%^&*()_-+=[]{}\\|;:'\",.<>/?`~";
     public static final String WHITESPACE_CHARS = " \t\n";
-    public static final String DIGIST_CHARS = "0123456789";
+    public static final String DIGIT_CHARS = "0123456789";
     public static final String ALPHA_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmniopqrstuvwxyz";
-    public static final String ALPHA_NUMERIC_CHARS = DIGIST_CHARS + ALPHA_CHARS;
+    public static final String ALPHA_NUMERIC_CHARS = DIGIT_CHARS + ALPHA_CHARS;
     public static final String ALL_CHARS = PUNCTUATION_CHARS + WHITESPACE_CHARS + ALPHA_NUMERIC_CHARS;
     private static final int MULTI_VALUE_COUNT = 10;
     protected final String typeName;
@@ -62,18 +62,18 @@ public abstract class AbstractPropertyDescriptorTester<T> {
     }
 
 
+
     @SuppressWarnings("unchecked")
     protected final PropertyDescriptorFactory<T> getSingleFactory() {
         return (PropertyDescriptorFactory<T>) PropertyDescriptorUtil.factoryFor(typeName);
     }
 
 
-    private Map<PropertyDescriptorField, String> getPropertyDescriptorValues() {
+    protected Map<PropertyDescriptorField, String> getPropertyDescriptorValues() {
         Map<PropertyDescriptorField, String> valuesById = new HashMap<>();
         valuesById.put(PropertyDescriptorField.NAME, "test");
         valuesById.put(PropertyDescriptorField.DESCRIPTION, "desc");
-        valuesById.put(PropertyDescriptorField.MIN, "0");
-        valuesById.put(PropertyDescriptorField.MAX, "10");
+        valuesById.put(PropertyDescriptorField.DEFAULT_VALUE, createProperty().asDelimitedString(createValue()));
         return valuesById;
     }
 

@@ -29,7 +29,7 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
                                          descriptionIn(valuesById),
                                          FLOAT_PARSER.valueOf(minMax[0]),
                                          FLOAT_PARSER.valueOf(minMax[1]),
-                                         FLOAT_PARSER.valueOf(numericDefaultValueIn(valuesById)),
+                                         FLOAT_PARSER.valueOf(defaultValueIn(valuesById)),
                                          0f,
                                          isDefinedExternally);
             }

@@ -83,7 +83,7 @@ public class RuleSetFactory {
 
     /**
      * Constructor copying all configuration from another factory.
-     * 
+     *
      * @param factory
      *            The factory whose configuration to copy.
      * @param warnDeprecated
@@ -109,7 +109,7 @@ public class RuleSetFactory {
      * "rulesets.properties" resource for each Language with Rule support.
      *
      * @return An Iterator of RuleSet objects.
-     * 
+     *
      * @throws RuleSetNotFoundException if the ruleset file could not be found
      */
     public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
@@ -262,7 +262,7 @@ public class RuleSetFactory {
 
     /**
      * Creates a new RuleSet for a single rule
-     * 
+     *
      * @param rule
      *            The rule being created
      * @return The newly created RuleSet
@@ -831,24 +831,21 @@ public class RuleSetFactory {
             return;
         }
 
-        net.sourceforge.pmd.PropertyDescriptorFactory<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
+        PropertyDescriptorFactory<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
         if (pdFactory == null) {
             throw new RuntimeException("No property descriptor factory for type: " + typeId);
         }
 
-        Map<PropertyDescriptorField, Boolean> valueKeys = pdFactory.expectedFields();
+        Set<PropertyDescriptorField> valueKeys = pdFactory.expectableFields();
         Map<PropertyDescriptorField, String> values = new HashMap<>(valueKeys.size());
 
         // populate a map of values for an individual descriptor
-        for (Map.Entry<PropertyDescriptorField, Boolean> entry : valueKeys.entrySet()) {
-            String valueStr = propertyElement.getAttribute(entry.getKey().attributeName());
-            if (entry.getValue() && StringUtil.isEmpty(valueStr)) {
-                // TODO debug pt
-                System.out.println("Missing required value for: " + entry.getKey());
-            }
-            values.put(entry.getKey(), valueStr);
+        for (PropertyDescriptorField field : valueKeys) {
+            String valueStr = propertyElement.getAttribute(field.attributeName());
+            values.put(field, valueStr);
         }
 
+        // casting is not pretty but prevents the interface from having this method
         PropertyDescriptor<?> desc = ((AbstractPropertyDescriptorFactory) pdFactory).createExternalWith(values);
 
         rule.definePropertyDescriptor(desc);

@@ -27,6 +27,12 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     /** Factory. */
     public static final PropertyDescriptorFactory<List<String>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<String>(String.class) {
+
+            @Override
+            protected boolean isValueMissing(String value) {
+                return StringUtil.isMissing(value);
+            }
+
             @Override
             public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);

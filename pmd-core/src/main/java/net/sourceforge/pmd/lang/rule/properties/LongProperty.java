@@ -29,7 +29,7 @@ public final class LongProperty extends AbstractNumericProperty<Long> {
                                         descriptionIn(valuesById),
                                         LONG_PARSER.valueOf(minMax[0]),
                                         LONG_PARSER.valueOf(minMax[1]),
-                                        LONG_PARSER.valueOf(numericDefaultValueIn(valuesById)),
+                                        LONG_PARSER.valueOf(defaultValueIn(valuesById)),
                                         0f,
                                         isDefinedExternally);
             }

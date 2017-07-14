@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a datatype that supports single String values.
@@ -20,6 +21,12 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
     /** Factory. */
     public static final PropertyDescriptorFactory<String> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<String>(String.class) {
+
+            @Override
+            protected boolean isValueMissing(String value) {
+                return StringUtil.isMissing(value);
+            }
+
             @Override
             public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 return new StringProperty(nameIn(valuesById),

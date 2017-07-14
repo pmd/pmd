@@ -21,6 +21,7 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
 
     public static final PropertyDescriptorFactory<Integer> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
+
             @Override
             public IntegerProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 final String[] minMax = minMaxFrom(valuesById);
@@ -28,11 +29,16 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
                                            descriptionIn(valuesById),
                                            INTEGER_PARSER.valueOf(minMax[0]),
                                            INTEGER_PARSER.valueOf(minMax[1]),
-                                           INTEGER_PARSER.valueOf(numericDefaultValueIn(valuesById)),
+                                           INTEGER_PARSER.valueOf(defaultValueIn(valuesById)),
                                            0f,
                                            isDefinedExternally);
             }
         }; // @formatter:on
+
+
+    static {
+        System.err.println(FACTORY);
+    }
 
 
     /**

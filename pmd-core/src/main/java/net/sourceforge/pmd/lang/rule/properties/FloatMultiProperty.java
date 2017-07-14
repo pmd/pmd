@@ -30,7 +30,7 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
                                                  boolean isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Float> defaultValues = Companion.parsePrimitives(numericDefaultValueIn(valuesById), delimiter, FLOAT_PARSER);
+                List<Float> defaultValues = Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, FLOAT_PARSER);
                 return new FloatMultiProperty(nameIn(valuesById),
                                               descriptionIn(valuesById),
                                               FLOAT_PARSER.valueOf(minMax[0]),

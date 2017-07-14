@@ -25,6 +25,12 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
     /** Factory. */
     public static final PropertyDescriptorFactory<List<Character>> FACTORY // @formatter:off
         = new MultiValuePropertyDescriptorFactory<Character>(Character.class) {
+
+            @Override
+            protected boolean isValueMissing(String value) {
+                return StringUtil.isMissing(value);
+            }
+
             @Override
             public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
                 char delimiter = delimiterIn(valuesById);

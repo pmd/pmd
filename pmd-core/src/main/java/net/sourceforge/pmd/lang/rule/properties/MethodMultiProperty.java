@@ -33,7 +33,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
         = new MultiValuePropertyDescriptorFactory<Method>(Method.class, PACKAGED_FIELD_TYPES_BY_KEY) {
             @Override
             public MethodMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                char delimiter = delimiterIn(valuesById);
+                char delimiter = delimiterIn(valuesById, MULTI_VALUE_DELIMITER);
                 return new MethodMultiProperty(nameIn(valuesById),
                                                descriptionIn(valuesById),
                                                methodsFrom(defaultValueIn(valuesById)),
@@ -45,6 +45,15 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
         }; // @formatter:on
 
 
+    /**
+     * Constructor for MethodMultiProperty using an array of defaults.
+     *
+     * @param theName           String
+     * @param theDescription    String
+     * @param theDefaults       Method[]
+     * @param legalPackageNames String[]
+     * @param theUIOrder        float
+     */
     public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults,
                                String[] legalPackageNames, float theUIOrder) {
         this(theName, theDescription, Arrays.asList(theDefaults), legalPackageNames, theUIOrder);
@@ -52,7 +61,7 @@ public final class MethodMultiProperty extends AbstractMultiPackagedProperty<Met
 
 
     /**
-     * Constructor for MethodProperty.
+     * Constructor for MethodProperty using a list of defaults.
      *
      * @param theName           String
      * @param theDescription    String

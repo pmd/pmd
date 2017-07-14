@@ -30,7 +30,7 @@ public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Int
                 isDefinedExternally) {
                 String[] minMax = minMaxFrom(valuesById);
                 char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Integer> defaultValues = Companion.parsePrimitives(numericDefaultValueIn(valuesById), delimiter, INTEGER_PARSER);
+                List<Integer> defaultValues = Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, INTEGER_PARSER);
                 return new IntegerMultiProperty(nameIn(valuesById),
                                                 descriptionIn(valuesById),
                                                 INTEGER_PARSER.valueOf(minMax[0]),
