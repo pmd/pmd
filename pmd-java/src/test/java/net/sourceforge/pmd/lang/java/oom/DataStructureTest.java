@@ -130,98 +130,54 @@ public class DataStructureTest extends ParserTst {
 
     @Test
     public void memoizationTest() {
-
-        final List<Integer> res = new ArrayList<>();
-        final PackageStats toplevel = Metrics.getTopLevelPackageStats();
-
         ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
 
-        acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
-            @Override
-            public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                res.add((int) toplevel.compute(opMetricKey, node, true, Version.STANDARD));
-                return super.visit(node, data);
-            }
+        List<Integer> expected = visitWith(acu, true);
+        List<Integer> real = visitWith(acu, false);
 
-
-            @Override
-            public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                res.add((int) toplevel.compute(classMetricKey, node, true, Version.STANDARD));
-                return super.visit(node, data);
-            }
-        }, null);
-
-        System.out.println();
-
-        final List<Integer> cmp = new ArrayList<>();
-
-        acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
-            @Override
-            public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                cmp.add((int) toplevel.compute(opMetricKey, node, false, Version.STANDARD));
-                return super.visit(node, data);
-            }
-
-
-            @Override
-            public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                cmp.add((int) toplevel.compute(classMetricKey, node, false, Version.STANDARD));
-                return super.visit(node, data);
-            }
-        }, null);
-
-        assertEquals(res, cmp);
-
+        assertEquals(expected, real);
     }
 
 
     @Test
     public void forceMemoizationTest() {
-
-        final List<Integer> res = new ArrayList<>();
-        final PackageStats toplevel = Metrics.getTopLevelPackageStats();
-
         ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
 
-        acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
-            @Override
-            public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                res.add((int) toplevel.compute(opMetricKey, node, true, Version.STANDARD));
-                return super.visit(node, data);
-            }
+        List<Integer> reference = visitWith(acu, true);
+        List<Integer> real = visitWith(acu, true);
 
+        assertEquals(reference.size(), real.size());
 
-            @Override
-            public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                res.add((int) toplevel.compute(classMetricKey, node, true, Version.STANDARD));
-                return super.visit(node, data);
-            }
-        }, null);
-
-        System.out.println();
-
-        final List<Integer> cmp = new ArrayList<>();
-
-        acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
-            @Override
-            public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                cmp.add((int) toplevel.compute(opMetricKey, node, true, Version.STANDARD));
-                return super.visit(node, data);
-            }
-
-
-            @Override
-            public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                cmp.add((int) toplevel.compute(classMetricKey, node, true, Version.STANDARD));
-                return super.visit(node, data);
-            }
-        }, null);
-
-        for (int i = 0; i < res.size(); i++) {
-            assertNotEquals(res.get(i), cmp.get(i));
+        // we force recomputation so each result should be different
+        for (int i = 0; i < reference.size(); i++) {
+            assertNotEquals(reference.get(i), real.get(i));
         }
-
     }
+
+
+    private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
+        final PackageStats toplevel = Metrics.getTopLevelPackageStats();
+
+        final List<Integer> result = new ArrayList<>();
+
+        acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
+            @Override
+            public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+                result.add((int) toplevel.compute(opMetricKey, node, force, Version.STANDARD));
+                return super.visit(node, data);
+            }
+
+
+            @Override
+            public Object visit(ASTAnyTypeDeclaration node, Object data) {
+                result.add((int) toplevel.compute(classMetricKey, node, force, Version.STANDARD));
+                return super.visit(node, data);
+            }
+        }, null);
+
+        return result;
+    }
+
 
 
     /**
