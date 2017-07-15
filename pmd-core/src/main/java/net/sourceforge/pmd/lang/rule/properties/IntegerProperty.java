@@ -19,6 +19,7 @@ import net.sourceforge.pmd.PropertyDescriptorField;
  */
 public final class IntegerProperty extends AbstractNumericProperty<Integer> {
 
+    /** Factory. */
     public static final PropertyDescriptorFactory<Integer> FACTORY // @formatter:off
         = new SingleValuePropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
@@ -34,11 +35,6 @@ public final class IntegerProperty extends AbstractNumericProperty<Integer> {
                                            isDefinedExternally);
             }
         }; // @formatter:on
-
-
-    static {
-        System.err.println(FACTORY);
-    }
 
 
     /**

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
  * plugins.
@@ -100,14 +102,14 @@ public final class StringUtil {
     /**
      * Returns true if the value arg is either null, empty, or full of
      * whitespace characters. More efficient that calling
-     * (string).trim().length() == 0
+     * (string).trim().length() == 0.
      *
-     * @param value
+     * @param value String to test
      *
      * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
      */
     public static boolean isEmpty(String value) {
-        return isMissing(value) || nullSafeIsBlank(value);
+        return StringUtils.isBlank(value);
     }
 
 
@@ -119,41 +121,7 @@ public final class StringUtil {
      * @return True if the argument is null or the empty string
      */
     public static boolean isMissing(String value) {
-
-        if (value == null || "".equals(value)) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /** Argument must not be null. */
-    private static boolean nullSafeIsBlank(String value) {
-        for (int i = 0; i < value.length(); i++) {
-            if (!Character.isWhitespace(value.charAt(i))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
-     * Returns true if the argument is null or entirely composed of whitespace characters.
-     *
-     * @param value String to test
-     *
-     * @return True if the argument is null or entirely composed of whitespace characters.
-     */
-    public static boolean isBlank(String value) {
-
-        if (value == null) {
-            return true;
-        }
-
-        return nullSafeIsBlank(value);
+        return StringUtils.isEmpty(value);
     }
 
 

@@ -92,4 +92,6 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
     protected Float createFrom(String value) {
         return FLOAT_PARSER.valueOf(value);
     }
+
+
 }

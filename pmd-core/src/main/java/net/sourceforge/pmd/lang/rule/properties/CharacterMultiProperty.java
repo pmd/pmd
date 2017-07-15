@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
@@ -28,7 +30,7 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
 
             @Override
             protected boolean isValueMissing(String value) {
-                return StringUtil.isMissing(value);
+                return StringUtils.isEmpty(value);
             }
 
             @Override

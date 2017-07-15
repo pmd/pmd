@@ -11,7 +11,7 @@ import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil.ExpectedFieldsBuilder;
+import net.sourceforge.pmd.lang.rule.properties.ExpectedFieldsBuilder;
 
 /**
  * Property value descriptor that defines the use &amp; requirements for setting
@@ -35,13 +35,13 @@ import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil.ExpectedF
 public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>> {
 
     /** Default expected fields. Unmodifiable. */
-    Map<PropertyDescriptorField, Boolean> CORE_FIELD_TYPES_BY_KEY
-        = (new ExpectedFieldsBuilder())
+    Map<PropertyDescriptorField, Boolean> CORE_EXPECTED_FIELDS
+        = ExpectedFieldsBuilder.instance()
         .put(NAME, true)
         .put(DESCRIPTION, true)
         .put(DEFAULT_VALUE, true)
         .put(DELIMITER, false)
-        .get();
+        .build();
 
 
     /**

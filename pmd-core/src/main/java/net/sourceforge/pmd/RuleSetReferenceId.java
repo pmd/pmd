@@ -408,7 +408,7 @@ public class RuleSetReferenceId {
      */
     public InputStream getInputStream(ClassLoader classLoader) throws RuleSetNotFoundException {
         if (externalRuleSetReferenceId == null) {
-            InputStream in = StringUtil.isEmpty(ruleSetFileName) ? null
+            InputStream in = StringUtils.isBlank(ruleSetFileName) ? null
                     : ResourceLoader.loadResourceAsStream(ruleSetFileName, classLoader);
             if (in == null) {
                 throw new RuleSetNotFoundException("Can't find resource '" + ruleSetFileName + "' for rule '" + ruleName

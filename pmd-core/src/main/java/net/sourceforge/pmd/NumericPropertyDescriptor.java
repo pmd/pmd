@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.PropertyDescriptorField.MIN;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.ExpectedFieldsBuilder;
 
 /**
  * Defines a descriptor type whose instance values are required to lie within
@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
 public interface NumericPropertyDescriptor<T> extends PropertyDescriptor<T> {
 
     Map<PropertyDescriptorField, Boolean> NUMBER_FIELD_TYPES_BY_KEY
-        = PropertyDescriptorUtil.expectedFields().put(MIN, true).put(MAX, true).get();
+        = ExpectedFieldsBuilder.instance().put(MIN, true).put(MAX, true).build();
 
 
     /**

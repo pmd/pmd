@@ -21,18 +21,18 @@ import net.sourceforge.pmd.PropertyDescriptorField;
  */
 public final class DoubleProperty extends AbstractNumericProperty<Double> {
 
+    /** Factory. */
     public static final PropertyDescriptorFactory<Double> FACTORY // @formatter:off
             = new SingleValuePropertyDescriptorFactory<Double>(Double.class, NUMBER_FIELD_TYPES_BY_KEY) {
                 @Override
                 public DoubleProperty createWith(Map<PropertyDescriptorField, String> valuesById,
                                                  boolean isDefinedExternally) {
                     final String[] minMax = minMaxFrom(valuesById);
-                    System.out.println(Arrays.asList(minMax));
                     return new DoubleProperty(nameIn(valuesById),
                                               descriptionIn(valuesById),
-                                              DOUBLE_PARSER.valueOf(minMax[0]),
-                                              DOUBLE_PARSER.valueOf(minMax[1]),
-                                              DOUBLE_PARSER.valueOf(defaultValueIn(valuesById)),
+                                              doubleFrom(minMax[0]),
+                                              doubleFrom(minMax[1]),
+                                              doubleFrom(defaultValueIn(valuesById)),
                                               0f,
                                               isDefinedExternally);
                 }
@@ -73,8 +73,8 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      *
      * @return Parsed Double
      */
-    public static Double doubleFrom(String numberString) {
-        return Double.valueOf(numberString);
+    private static Double doubleFrom(String numberString) {
+        return DOUBLE_PARSER.valueOf(numberString);
     }
 
 

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -414,7 +417,7 @@ public class RuleSetFactory {
         String ref = ruleElement.getAttribute("ref");
         if (ref.endsWith("xml")) {
             parseRuleSetReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleElement, ref);
-        } else if (StringUtil.isEmpty(ref)) {
+        } else if (StringUtils.isBlank(ref)) {
             parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode);
         } else {
             parseRuleReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, ref, withDeprecatedRuleReferences);
@@ -812,13 +815,13 @@ public class RuleSetFactory {
 
         Element propertyElement = (Element) propertyNode;
         String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName());
-        String strValue = propertyElement.getAttribute(PropertyDescriptorField.DEFAULT_VALUE.attributeName());
-        if (StringUtil.isEmpty(strValue)) {
+        String strValue = propertyElement.getAttribute(DEFAULT_VALUE.attributeName());
+        if (StringUtils.isBlank(strValue)) {
             strValue = valueFrom(propertyElement);
         }
 
         // Setting of existing property, or defining a new property?
-        if (StringUtil.isEmpty(typeId)) {
+        if (StringUtils.isBlank(typeId)) {
             String name = propertyElement.getAttribute(PropertyDescriptorField.NAME.attributeName());
 
             PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
@@ -842,7 +845,17 @@ public class RuleSetFactory {
         // populate a map of values for an individual descriptor
         for (PropertyDescriptorField field : valueKeys) {
             String valueStr = propertyElement.getAttribute(field.attributeName());
+            if (valueStr != null)
             values.put(field, valueStr);
+        }
+
+        if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {
+            NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
+            if (children.getLength() == 1) {
+                values.put(DEFAULT_VALUE, children.item(0).getTextContent());
+            } else {
+                throw new RuntimeException("No value defined!");
+            }
         }
 
         // casting is not pretty but prevents the interface from having this method

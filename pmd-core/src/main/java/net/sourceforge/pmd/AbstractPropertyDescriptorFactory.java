@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd;
 
-import static net.sourceforge.pmd.PropertyDescriptor.CORE_FIELD_TYPES_BY_KEY;
+import static net.sourceforge.pmd.PropertyDescriptor.CORE_EXPECTED_FIELDS;
 import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
 import static net.sourceforge.pmd.PropertyDescriptorField.DELIMITER;
 import static net.sourceforge.pmd.PropertyDescriptorField.DESCRIPTION;
@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -30,26 +32,18 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDescriptorFactory<T> {
 
-
-
-
-    static {
-        System.err.println(CORE_FIELD_TYPES_BY_KEY);
-    }
-
-
     private final Class<?> valueType;
 
     /**
      * Denote the identifiers of the expected fields paired with booleans
-     * denoting whether they are required (non-null) or not.
+     * denoting whether they are required or not.
      */
     private final Map<PropertyDescriptorField, Boolean> expectedFields;
 
 
     public AbstractPropertyDescriptorFactory(Class<?> theValueType) {
         valueType = theValueType;
-        expectedFields = CORE_FIELD_TYPES_BY_KEY;
+        expectedFields = CORE_EXPECTED_FIELDS;
     }
 
 
@@ -57,12 +51,12 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
 
         valueType = theValueType;
         if (additionalFieldTypesByKey == null) {
-            expectedFields = CORE_FIELD_TYPES_BY_KEY;
+            expectedFields = CORE_EXPECTED_FIELDS;
             return;
         }
         Map<PropertyDescriptorField, Boolean> temp
-            = new HashMap<>(CORE_FIELD_TYPES_BY_KEY.size() + additionalFieldTypesByKey.size());
-        temp.putAll(CORE_FIELD_TYPES_BY_KEY);
+            = new HashMap<>(CORE_EXPECTED_FIELDS.size() + additionalFieldTypesByKey.size());
+        temp.putAll(CORE_EXPECTED_FIELDS);
         temp.putAll(additionalFieldTypesByKey);
 
         expectedFields = Collections.unmodifiableMap(temp);
@@ -116,7 +110,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
      */
     protected String defaultValueIn(Map<PropertyDescriptorField, String> valuesById) {
         String deft = valuesById.get(DEFAULT_VALUE);
-        if (StringUtil.isEmpty(deft)) {
+        if (isValueMissing(deft)) {
             throw new RuntimeException("Default value was null, empty, or missing");
         }
         return deft;
@@ -125,7 +119,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
 
     @Override
     public final PropertyDescriptor<T> createWith(Map<PropertyDescriptorField, String> valuesById) {
-      //  checkRequiredFields(valuesById);
+        checkRequiredFields(valuesById);
         return createWith(valuesById, false);
     }
 
@@ -133,7 +127,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
     /** Checks whether all required fields are present in the map. */
     private void checkRequiredFields(Map<PropertyDescriptorField, String> valuesById) {
         for (Entry<PropertyDescriptorField, Boolean> entry : expectedFields.entrySet()) {
-            if (entry.getValue() && StringUtil.isEmpty(valuesById.get(entry.getKey()))) {
+            if (entry.getValue() && isValueMissing(valuesById.get(entry.getKey()))) {
                 throw new RuntimeException("Missing required value for key: " + entry.getKey());
             }
         }
@@ -249,7 +243,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
             characterStr = valuesById.get(DELIMITER).trim();
         }
 
-        if (StringUtil.isEmpty(characterStr)) {
+        if (StringUtils.isBlank(characterStr)) {
             return defaultDelimiter;
         }
 
@@ -272,7 +266,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
     protected static String[] minMaxFrom(Map<PropertyDescriptorField, String> valuesById) {
         String min = minValueIn(valuesById);
         String max = maxValueIn(valuesById);
-        if (StringUtil.isEmpty(min) || StringUtil.isEmpty(max)) {
+        if (StringUtils.isBlank(min) || StringUtils.isBlank(max)) {
             throw new RuntimeException("min and max values must be specified");
         }
         return new String[] {min, max};
@@ -291,7 +285,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
 
     protected static String[] legalPackageNamesIn(Map<PropertyDescriptorField, String> valuesById, char delimiter) {
         String names = valuesById.get(LEGAL_PACKAGES);
-        if (StringUtil.isEmpty(names)) {
+        if (StringUtils.isBlank(names)) {
             return null;
         }
         return StringUtil.substringsOf(names, delimiter);
@@ -299,18 +293,19 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
 
 
     /**
-     * Returns a map describing which fields are required to build an
+     * Returns a map describing which fields are required to build a property using this factory. The parameters are
+     * added to the {@link PropertyDescriptor#CORE_EXPECTED_FIELDS}, which are required for all descriptors.
      *
-     * @param otherKeys
-     * @param otherValues
+     * @param otherKeys Additional keys
+     * @param otherValues Whether the corresponding keys are required or not
      *
-     * @return
+     * @return The complete map of expected fields.
      */
-    public static Map<PropertyDescriptorField, Boolean> expectedFieldTypesWith(PropertyDescriptorField[] otherKeys,
+    static Map<PropertyDescriptorField, Boolean> expectedFieldTypesWith(PropertyDescriptorField[] otherKeys,
                                                                                Boolean[] otherValues) {
         Map<PropertyDescriptorField, Boolean> largerMap = new HashMap<>(
-            otherKeys.length + CORE_FIELD_TYPES_BY_KEY.size());
-        largerMap.putAll(CORE_FIELD_TYPES_BY_KEY);
+            otherKeys.length + CORE_EXPECTED_FIELDS.size());
+        largerMap.putAll(CORE_EXPECTED_FIELDS);
         for (int i = 0; i < otherKeys.length; i++) {
             largerMap.put(otherKeys[i], otherValues[i]);
         }

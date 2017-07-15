@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.StringUtil;
@@ -24,7 +26,7 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
 
             @Override
             protected boolean isValueMissing(String value) {
-                return StringUtil.isMissing(value);
+                return StringUtils.isEmpty(value);
             }
 
             @Override
