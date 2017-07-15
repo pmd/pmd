@@ -845,8 +845,9 @@ public class RuleSetFactory {
         // populate a map of values for an individual descriptor
         for (PropertyDescriptorField field : valueKeys) {
             String valueStr = propertyElement.getAttribute(field.attributeName());
-            if (valueStr != null)
-            values.put(field, valueStr);
+            if (valueStr != null) {
+                values.put(field, valueStr);
+            }
         }
 
         if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import static net.sourceforge.pmd.lang.rule.properties.ValueParser.DOUBLE_PARSER;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;

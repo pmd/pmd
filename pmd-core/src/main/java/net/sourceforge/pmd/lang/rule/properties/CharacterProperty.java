@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property type that supports single Character values.

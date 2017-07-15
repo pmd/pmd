@@ -155,8 +155,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
      * @return True if the value must be considered missing, false otherwise
      */
     protected boolean isValueMissing(String value) {
-     //   return StringUtil.isEmpty(value);
-    return false;
+        return StringUtils.isBlank(value);
     }
 
 
@@ -296,13 +295,13 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
      * Returns a map describing which fields are required to build a property using this factory. The parameters are
      * added to the {@link PropertyDescriptor#CORE_EXPECTED_FIELDS}, which are required for all descriptors.
      *
-     * @param otherKeys Additional keys
+     * @param otherKeys   Additional keys
      * @param otherValues Whether the corresponding keys are required or not
      *
      * @return The complete map of expected fields.
      */
     static Map<PropertyDescriptorField, Boolean> expectedFieldTypesWith(PropertyDescriptorField[] otherKeys,
-                                                                               Boolean[] otherValues) {
+                                                                        Boolean[] otherValues) {
         Map<PropertyDescriptorField, Boolean> largerMap = new HashMap<>(
             otherKeys.length + CORE_EXPECTED_FIELDS.size());
         largerMap.putAll(CORE_EXPECTED_FIELDS);
