@@ -210,7 +210,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
         List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
 
         for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
+            if (decl.jjtGetNumChildren() > 0 && decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
                 operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
             }
         }
