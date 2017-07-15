@@ -209,20 +209,8 @@ public abstract class AbstractDelegateRule implements Rule {
 
 
     @Override
-    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value) {
-        rule.setProperty(propertyDescriptor, value);
-    }
-
-
-    @Override
-    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value1, V value2) {
-        rule.setProperty(propertyDescriptor, value1, value2);
-    }
-
-
-    @Override
-    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value1, V value2, V... values) {
-        rule.setProperty(propertyDescriptor, value1, value2, values);
+    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
+        rule.setProperty(propertyDescriptor, values);
     }
 
 

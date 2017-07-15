@@ -67,36 +67,13 @@ public interface PropertySource {
 
 
     /**
-     * Sets the value of a multi value property descriptor with only one argument.
-     *
-     * @param propertyDescriptor The property descriptor for which to add a value
-     * @param value              Value
-     * @param <V>                The type of the values
-     */
-    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value);
-
-
-    /**
-     * Sets the value of a multi value property descriptor with two arguments.
-     *
-     * @param propertyDescriptor The property descriptor for which to add a value
-     * @param value1             First value
-     * @param value2             Second value
-     * @param <V>                The type of the values
-     */
-    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value1, V value2);
-
-
-    /**
      * Sets the value of a multi value property descriptor with a variable number of arguments.
      *
      * @param propertyDescriptor The property descriptor for which to add a value
-     * @param value1             First value
-     * @param value2             Second value
-     * @param values             Rest of the values
+     * @param values             Values
      * @param <V>                The type of the values
      */
-    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V value1, V value2, V... values);
+    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values);
 
 
     /**
