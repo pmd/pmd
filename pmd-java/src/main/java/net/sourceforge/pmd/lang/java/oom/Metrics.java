@@ -54,7 +54,7 @@ public final class Metrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
-    public static double get(MetricKey<ClassMetric> key, ASTAnyTypeDeclaration node) {
+    public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node) {
         return get(key, node, Version.STANDARD);
     }
 
@@ -69,7 +69,7 @@ public final class Metrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
-    public static double get(MetricKey<ClassMetric> key, ASTAnyTypeDeclaration node, MetricVersion version) {
+    public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version) {
         if (!key.getCalculator().supports(node)) {
             return Double.NaN;
         }
@@ -88,7 +88,7 @@ public final class Metrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
-    public static double get(MetricKey<OperationMetric> key, ASTMethodOrConstructorDeclaration node) {
+    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node) {
         return get(key, node, Version.STANDARD);
     }
 
@@ -102,7 +102,7 @@ public final class Metrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
-    public static double get(MetricKey<OperationMetric> key, ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node, MetricVersion version) {
         if (!key.getCalculator().supports(node)) {
             return Double.NaN;
         }
@@ -124,7 +124,7 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<OperationMetric> key, ASTAnyTypeDeclaration node, ResultOption option) {
+    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, ResultOption option) {
         return get(key, node, Version.STANDARD, option);
     }
 
@@ -141,7 +141,7 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<OperationMetric> key, ASTAnyTypeDeclaration node, MetricVersion version,
+    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version,
                              ResultOption option) {
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;

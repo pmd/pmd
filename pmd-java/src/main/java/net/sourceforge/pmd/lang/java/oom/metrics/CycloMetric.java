@@ -9,11 +9,8 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.metrics.visitors.CycloPathUnawareOperationVisitor;
@@ -49,33 +46,41 @@ import net.sourceforge.pmd.lang.java.oom.metrics.visitors.StandardCycloVisitor;
  * @author Clément Fournier
  * @since June 2017
  */
-public final class CycloMetric extends AbstractMetric implements ClassMetric, OperationMetric {
+public final class CycloMetric {
+
+
+    private CycloMetric() {
+
+    }
 
     // TODO:cf Cyclo should develop factorized boolean operators to count them
-
-
-    @Override
-    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-        return 1 + Metrics.get(OperationMetricKey.CYCLO, node, version, ResultOption.AVERAGE);
-    }
-
-
-    @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-
-        JavaParserVisitor visitor = (Version.IGNORE_BOOLEAN_PATHS.equals(version))
-                                    ? new CycloPathUnawareOperationVisitor()
-                                    : new StandardCycloVisitor();
-
-        MutableInt cyclo = (MutableInt) node.jjtAccept(visitor, new MutableInt(1));
-        return (double) cyclo.getValue();
-    }
-
 
     /** Variants of CYCLO. */
     public enum Version implements MetricVersion {
         /** Do not count the paths in boolean expressions as decision points. */
         IGNORE_BOOLEAN_PATHS
+    }
+
+    public static final class OperationMetric extends AbstractOperationMetric {
+
+        @Override
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+
+            JavaParserVisitor visitor = (CycloMetric.Version.IGNORE_BOOLEAN_PATHS.equals(version))
+                                        ? new CycloPathUnawareOperationVisitor()
+                                        : new StandardCycloVisitor();
+
+            MutableInt cyclo = (MutableInt) node.jjtAccept(visitor, new MutableInt(1));
+            return (double) cyclo.getValue();
+        }
+    }
+
+    public static final class ClassMetric extends AbstractClassMetric {
+
+        @Override
+        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+            return 1 + Metrics.get(OperationMetricKey.CYCLO, node, version, ResultOption.AVERAGE);
+        }
     }
 
 }

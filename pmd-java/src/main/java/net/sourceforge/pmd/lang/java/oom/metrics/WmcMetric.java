@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
@@ -21,7 +19,7 @@ import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
  * @author Clément Fournier
  * @since June 2017
  */
-public final class WmcMetric extends AbstractMetric implements ClassMetric {
+public final class WmcMetric extends AbstractClassMetric {
 
     @Override
     public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {

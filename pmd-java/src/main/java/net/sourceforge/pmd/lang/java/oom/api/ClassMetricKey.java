@@ -14,22 +14,22 @@ import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
 /**
  * Keys identifying standard class metrics.
  */
-public enum ClassMetricKey implements MetricKey<ClassMetric> {
+public enum ClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
 
     /** Access to Foreign Data. */
-    ATFD(new AtfdMetric()),
+    ATFD(new AtfdMetric.ClassMetric()),
 
     /** Weighed Method Count. */
     WMC(new WmcMetric()),
 
     /** Cyclomatic complexity. */
-    CYCLO(new CycloMetric()),
+    CYCLO(new CycloMetric.ClassMetric()),
 
     /** Non Commenting Source Statements. */
-    NCSS(new NcssMetric()),
+    NCSS(new NcssMetric.ClassMetric()),
 
     /** Lines of Code. */
-    LOC(new LocMetric());
+    LOC(new LocMetric.ClassMetric());
 
     private final ClassMetric calculator;
 
@@ -45,8 +45,9 @@ public enum ClassMetricKey implements MetricKey<ClassMetric> {
     }
 
 
+    @Override
     public boolean supports(ASTAnyTypeDeclaration node) {
         return calculator.supports(node);
     }
-
+    
 }

@@ -9,10 +9,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.visitors.DefaultNcssVisitor;
 import net.sourceforge.pmd.lang.java.oom.metrics.visitors.JavaNcssVisitor;
 
@@ -30,45 +27,59 @@ import net.sourceforge.pmd.lang.java.oom.metrics.visitors.JavaNcssVisitor;
  * @see LocMetric
  * @since June 2017
  */
-public final class NcssMetric extends AbstractMetric implements ClassMetric, OperationMetric {
+public final class NcssMetric {
 
-    @Override
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return true;
+
+    private NcssMetric() {
+
     }
 
-
-    @Override
-    public boolean supports(ASTMethodOrConstructorDeclaration node) {
-        return true;
-    }
-
-
-    @Override
-    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-        JavaParserVisitor visitor = (Version.JAVANCSS.equals(version))
-                                    ? new JavaNcssVisitor()
-                                    : new DefaultNcssVisitor();
-
-        MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
-        return (double) ncss.getValue();
-    }
-
-
-    @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-        JavaParserVisitor visitor = (Version.JAVANCSS.equals(version))
-                                    ? new JavaNcssVisitor()
-                                    : new DefaultNcssVisitor();
-
-        MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
-        return (double) ncss.getValue();
-    }
 
     /** Variants of NCSS. */
     public enum Version implements MetricVersion {
         /** JavaNCSS compliant cyclo visitor. */
         JAVANCSS
     }
+
+    public static final class ClassMetric extends AbstractClassMetric {
+
+        @Override
+        public boolean supports(ASTAnyTypeDeclaration node) {
+            return true;
+        }
+
+
+        @Override
+        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+            JavaParserVisitor visitor = (NcssMetric.Version.JAVANCSS.equals(version))
+                                        ? new JavaNcssVisitor()
+                                        : new DefaultNcssVisitor();
+
+            MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
+            return (double) ncss.getValue();
+        }
+
+    }
+
+    public static final class OperationMetric extends AbstractOperationMetric {
+
+        @Override
+        public boolean supports(ASTMethodOrConstructorDeclaration node) {
+            return true;
+        }
+
+
+        @Override
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+            JavaParserVisitor visitor = (NcssMetric.Version.JAVANCSS.equals(version))
+                                        ? new JavaNcssVisitor()
+                                        : new DefaultNcssVisitor();
+
+            MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
+            return (double) ncss.getValue();
+        }
+
+    }
+
 
 }

@@ -13,19 +13,19 @@ import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
 /**
  * Keys identifying standard operation metrics.
  */
-public enum OperationMetricKey implements MetricKey<OperationMetric> {
+public enum OperationMetricKey implements MetricKey<ASTMethodOrConstructorDeclaration> {
 
     /** Access to Foreign Data. */
-    ATFD(new AtfdMetric()),
+    ATFD(new AtfdMetric.OperationMetric()),
 
     /** Cyclomatic complexity. */
-    CYCLO(new CycloMetric()),
+    CYCLO(new CycloMetric.OperationMetric()),
 
     /** Non Commenting Source Statements. */
-    NCSS(new NcssMetric()),
+    NCSS(new NcssMetric.OperationMetric()),
 
     /** Lines of Code. */
-    LOC(new LocMetric());
+    LOC(new LocMetric.OperationMetric());
 
     private final OperationMetric calculator;
 
@@ -41,6 +41,7 @@ public enum OperationMetricKey implements MetricKey<OperationMetric> {
     }
 
 
+    @Override
     public boolean supports(ASTMethodOrConstructorDeclaration node) {
         return calculator.supports(node);
     }

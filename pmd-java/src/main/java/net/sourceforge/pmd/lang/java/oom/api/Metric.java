@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.oom.api;
 
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Umbrella marker interface for metrics.
  *
+ * @param <N> Type of nodes the metric can be computed on
+ *
  * @author Clément Fournier
  */
-public interface Metric {
+public interface Metric<N extends Node> {
 
 
     /**
@@ -21,7 +23,18 @@ public interface Metric {
      *
      * @return True if the metric can be computed
      */
-    boolean supports(AccessNode node);
+    boolean supports(N node);
+
+
+    /**
+     * Actually computes the value of a metric for an AST node.
+     *
+     * @param node    The node
+     * @param version The version of the metric
+     *
+     * @return The value of the metric, or {@code Double.NaN} if it could not be computed.
+     */
+    double computeFor(N node, MetricVersion version);
 
 
     /** Default metric versions. */

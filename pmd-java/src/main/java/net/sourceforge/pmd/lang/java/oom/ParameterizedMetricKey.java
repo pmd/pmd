@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.oom;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.oom.api.Metric;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.oom.api.MetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 
@@ -21,13 +21,13 @@ import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
     private static final Map<Integer, ParameterizedMetricKey> POOL = new HashMap<>();
 
     /** The metric key. */
-    public final MetricKey<? extends Metric> key;
+    public final MetricKey<? extends Node> key;
     /** The version of the metric. */
     public final MetricVersion version;
 
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey<? extends Metric> key, MetricVersion version) {
+    private ParameterizedMetricKey(MetricKey<? extends Node> key, MetricVersion version) {
         this.key = key;
         this.version = version;
     }
@@ -58,7 +58,7 @@ import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 
 
     /** Builds a parameterized metric key. */
-    public static ParameterizedMetricKey getInstance(MetricKey<? extends Metric> key, MetricVersion version) {
+    public static ParameterizedMetricKey getInstance(MetricKey<? extends Node> key, MetricVersion version) {
         int code = code(key, version);
         ParameterizedMetricKey paramKey = POOL.get(code);
         if (paramKey == null) {
