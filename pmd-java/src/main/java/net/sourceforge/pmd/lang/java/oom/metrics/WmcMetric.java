@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 
 /**
  * Weighed Method Count. It is the sum of the statical complexity of all operations of a class. We use
- * {@link CycloMetric} to quantify the complexity of a metric. [1]
+ * the standard version of {@link CycloMetric} to quantify the complexity of a metric. [1]
  *
  * <p>[1] Lanza. Object-Oriented Metrics in Practice.
  *

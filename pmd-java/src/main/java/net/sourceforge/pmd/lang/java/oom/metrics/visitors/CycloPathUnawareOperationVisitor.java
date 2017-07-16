@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
@@ -76,14 +77,6 @@ public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTCatchStatement node, Object data) {
-        ((MutableInt) data).increment();
-        super.visit(node, data);
-        return data;
-    }
-
-
-    @Override
     public Object visit(ASTForStatement node, Object data) {
         ((MutableInt) data).increment();
         super.visit(node, data);
@@ -97,4 +90,21 @@ public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter {
         super.visit(node, data);
         return data;
     }
+
+
+    @Override
+    public Object visit(ASTCatchStatement node, Object data) {
+        ((MutableInt) data).increment();
+        super.visit(node, data);
+        return data;
+    }
+
+
+    @Override
+    public Object visit(ASTThrowStatement node, Object data) {
+        ((MutableInt) data).increment();
+        super.visit(node, data);
+        return data;
+    }
+
 }

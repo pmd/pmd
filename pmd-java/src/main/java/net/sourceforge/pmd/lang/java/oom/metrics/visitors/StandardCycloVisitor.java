@@ -97,4 +97,5 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         }
         return data;
     }
+
 }

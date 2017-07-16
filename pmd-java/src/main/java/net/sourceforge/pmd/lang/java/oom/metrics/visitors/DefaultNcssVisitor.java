@@ -44,19 +44,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  */
 public class DefaultNcssVisitor extends JavaParserVisitorAdapter {
 
-    @Override
-    public Object visit(ASTImportDeclaration node, Object data) {
-        ((MutableInt) data).increment();
-        return data;
-    }
-
-
-    @Override
-    public Object visit(ASTPackageDeclaration node, Object data) {
-        ((MutableInt) data).increment();
-        return data;
-    }
-
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
