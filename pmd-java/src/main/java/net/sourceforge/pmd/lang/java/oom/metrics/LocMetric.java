@@ -19,12 +19,8 @@ import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
  */
 public final class LocMetric {
 
-    private LocMetric() {
 
-    }
-
-
-    public static final class OperationMetric extends AbstractOperationMetric {
+    public static final class LocOperationMetric extends AbstractOperationMetric {
 
         @Override
         public boolean supports(ASTMethodOrConstructorDeclaration node) {
@@ -38,7 +34,7 @@ public final class LocMetric {
         }
     }
 
-    public static final class ClassMetric extends AbstractClassMetric {
+    public static final class LocClassMetric extends AbstractClassMetric {
 
         @Override
         public boolean supports(ASTAnyTypeDeclaration node) {

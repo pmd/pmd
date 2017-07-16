@@ -30,18 +30,13 @@ import net.sourceforge.pmd.lang.java.oom.metrics.visitors.JavaNcssVisitor;
 public final class NcssMetric {
 
 
-    private NcssMetric() {
-
-    }
-
-
     /** Variants of NCSS. */
     public enum Version implements MetricVersion {
         /** JavaNCSS compliant cyclo visitor. */
         JAVANCSS
     }
 
-    public static final class ClassMetric extends AbstractClassMetric {
+    public static final class NcssClassMetric extends AbstractClassMetric {
 
         @Override
         public boolean supports(ASTAnyTypeDeclaration node) {
@@ -61,7 +56,7 @@ public final class NcssMetric {
 
     }
 
-    public static final class OperationMetric extends AbstractOperationMetric {
+    public static final class NcssOperationMetric extends AbstractOperationMetric {
 
         @Override
         public boolean supports(ASTMethodOrConstructorDeclaration node) {

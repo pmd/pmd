@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.java.oom.api;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.LocMetric;
-import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric.AtfdOperationMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.CycloOperationMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.LocMetric.LocOperationMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric.NcssOperationMetric;
 
 /**
  * Keys identifying standard operation metrics.
@@ -16,16 +16,16 @@ import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
 public enum OperationMetricKey implements MetricKey<ASTMethodOrConstructorDeclaration> {
 
     /** Access to Foreign Data. */
-    ATFD(new AtfdMetric.OperationMetric()),
+    ATFD(new AtfdOperationMetric()),
 
     /** Cyclomatic complexity. */
-    CYCLO(new CycloMetric.OperationMetric()),
+    CYCLO(new CycloOperationMetric()),
 
     /** Non Commenting Source Statements. */
-    NCSS(new NcssMetric.OperationMetric()),
+    NCSS(new NcssOperationMetric()),
 
     /** Lines of Code. */
-    LOC(new LocMetric.OperationMetric());
+    LOC(new LocOperationMetric());
 
     private final OperationMetric calculator;
 
@@ -45,5 +45,38 @@ public enum OperationMetricKey implements MetricKey<ASTMethodOrConstructorDeclar
     public boolean supports(ASTMethodOrConstructorDeclaration node) {
         return calculator.supports(node);
     }
+
+
+    /**
+     * Creates a new metric key holding a metric which can be computed on a class.
+     *
+     * TODO:cf Generify and move to MetricKey after upgrading compiler to 1.8
+     *
+     * @param metric The metric to use
+     * @param name   The name of the metric
+     *
+     * @return The metric key
+     */
+    public static MetricKey<ASTMethodOrConstructorDeclaration> of(final Metric<ASTMethodOrConstructorDeclaration> metric, final String name) {
+        return new MetricKey<ASTMethodOrConstructorDeclaration>() {
+            @Override
+            public String name() {
+                return name;
+            }
+
+
+            @Override
+            public Metric<ASTMethodOrConstructorDeclaration> getCalculator() {
+                return metric;
+            }
+
+
+            @Override
+            public boolean supports(ASTMethodOrConstructorDeclaration node) {
+                return metric.supports(node);
+            }
+        };
+    }
+
 
 }

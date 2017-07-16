@@ -22,12 +22,7 @@ import net.sourceforge.pmd.lang.java.oom.signature.Signature.Visibility;
 public final class AtfdMetric {
 
 
-    private AtfdMetric() {
-
-    }
-
-
-    public static final class OperationMetric extends AbstractOperationMetric {
+    public static final class AtfdOperationMetric extends AbstractOperationMetric {
 
         @Override // TODO:cf
         public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
@@ -48,7 +43,7 @@ public final class AtfdMetric {
         }
     }
 
-    public static final class ClassMetric extends AbstractClassMetric {
+    public static final class AtfdClassMetric extends AbstractClassMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {

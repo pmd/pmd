@@ -48,11 +48,6 @@ import net.sourceforge.pmd.lang.java.oom.metrics.visitors.StandardCycloVisitor;
  */
 public final class CycloMetric {
 
-
-    private CycloMetric() {
-
-    }
-
     // TODO:cf Cyclo should develop factorized boolean operators to count them
 
     /** Variants of CYCLO. */
@@ -61,7 +56,7 @@ public final class CycloMetric {
         IGNORE_BOOLEAN_PATHS
     }
 
-    public static final class OperationMetric extends AbstractOperationMetric {
+    public static final class CycloOperationMetric extends AbstractOperationMetric {
 
         @Override
         public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
@@ -75,12 +70,11 @@ public final class CycloMetric {
         }
     }
 
-    public static final class ClassMetric extends AbstractClassMetric {
+    public static final class CycloClassMetric extends AbstractClassMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
             return 1 + Metrics.get(OperationMetricKey.CYCLO, node, version, ResultOption.AVERAGE);
         }
     }
-
 }
