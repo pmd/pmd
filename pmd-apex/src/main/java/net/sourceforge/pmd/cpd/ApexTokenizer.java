@@ -11,11 +11,16 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.Token;
 
+import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 import apex.jorje.parser.impl.ApexLexer;
 
 public class ApexTokenizer implements Tokenizer {
+
+    public ApexTokenizer() {
+        ApexJorjeLogging.disableLogging();
+    }
 
     /**
      * If the properties is <code>false</code> (default), then the case of any token

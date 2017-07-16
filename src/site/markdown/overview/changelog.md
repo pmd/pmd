@@ -61,6 +61,7 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 
 *   apex
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
+    *   [#500](https://github.com/pmd/pmd/issues/500): \[apex] Running through CLI shows jorje optimization messages
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
 *   java
