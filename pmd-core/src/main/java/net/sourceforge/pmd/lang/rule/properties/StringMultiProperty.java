@@ -4,10 +4,17 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.STRING_PARSER;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -15,112 +22,120 @@ import net.sourceforge.pmd.util.StringUtil;
  * strings must be filtered by the delimiter character.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class StringMultiProperty extends AbstractProperty<String[]> {
+public final class StringMultiProperty extends AbstractMultiValueProperty<String> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringMultiProperty>(
-            String[].class) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<List<String>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<String>(String.class) {
 
-        @Override
-        public StringMultiProperty createWith(Map<String, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new StringMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    StringUtil.substringsOf(defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
-        }
-    };
+            @Override
+            protected boolean isValueMissing(String value) {
+                return StringUtils.isEmpty(value);
+            }
+
+            @Override
+            public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                char delimiter = delimiterIn(valuesById);
+                return new StringMultiProperty(nameIn(valuesById),
+                                               descriptionIn(valuesById),
+                                               Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, STRING_PARSER),
+                                               0.0f,
+                                               delimiter,
+                                               isDefinedExternally);
+            }
+        }; // @formatter:on
+
 
     /**
-     * Constructor for StringProperty.
+     * Constructor using an array of defaults.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefaults
-     *            String[]
-     * @param theUIOrder
-     *            float
-     * @param delimiter
-     *            String
-     * @throws IllegalArgumentException
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  Array of defaults
+     * @param theUIOrder     UI order
+     * @param delimiter      The delimiter to use
+     *
+     * @throws IllegalArgumentException if a default value contains the delimiter
+     * @throws NullPointerException     if the defaults array is null
      */
-    public StringMultiProperty(String theName, String theDescription, String[] theDefaults, float theUIOrder,
-            char delimiter) {
-        super(theName, theDescription, theDefaults, theUIOrder, delimiter);
-
-        checkDefaults(theDefaults, delimiter);
+    public StringMultiProperty(String theName, String theDescription, String[] defaultValues, float theUIOrder,
+                               char delimiter) {
+        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, delimiter);
     }
 
+
     /**
-     * @param defaultValue
-     * @param delim
-     * @throws IllegalArgumentException
+     * Constructor using a list of defaults.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
+     * @param delimiter      The delimiter to useg
+     *
+     * @throws IllegalArgumentException if a default value contains the delimiter
+     * @throws NullPointerException     if the defaults array is null
      */
-    private static void checkDefaults(String[] defaultValue, char delim) {
+    public StringMultiProperty(String theName, String theDescription, List<String> defaultValues, float theUIOrder,
+                               char delimiter) {
+        this(theName, theDescription, defaultValues, theUIOrder, delimiter, false);
+    }
+
+
+    /** Master constructor. */
+    private StringMultiProperty(String theName, String theDescription, List<String> defaultValues, float theUIOrder,
+                                char delimiter, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValues, theUIOrder, delimiter, isDefinedExternally);
+
+        checkDefaults(defaultValues, delimiter);
+    }
+
+
+    /**
+     * Checks if the values are valid.
+     *
+     * @param defaultValue The default value
+     * @param delim        The delimiter
+     *
+     * @throws IllegalArgumentException if one value contains the delimiter
+     */
+    private static void checkDefaults(List<String> defaultValue, char delim) {
 
         if (defaultValue == null) {
             return;
         }
 
-        for (int i = 0; i < defaultValue.length; i++) {
-            if (defaultValue[i].indexOf(delim) >= 0) {
+        for (String aDefaultValue : defaultValue) {
+            if (aDefaultValue.indexOf(delim) >= 0) {
                 throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
             }
         }
     }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
+
     @Override
-    public Class<String[]> type() {
-        return String[].class;
+    public Class<String> type() {
+        return String.class;
     }
 
-    /**
-     * @param valueString
-     *            String
-     * @return Object
-     * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
-     */
+
     @Override
-    public String[] valueFrom(String valueString) {
-        return StringUtil.substringsOf(valueString, multiValueDelimiter());
+    public List<String> valueFrom(String valueString) {
+        return Arrays.asList(StringUtil.substringsOf(valueString, multiValueDelimiter()));
     }
 
-    /**
-     * @param value
-     *            String
-     * @return boolean
-     */
-    private boolean containsDelimiter(String value) {
-        return value.indexOf(multiValueDelimiter()) >= 0;
-    }
 
-    /**
-     * @return String
-     */
-    private String illegalCharMsg() {
-        return "Value cannot contain the '" + multiValueDelimiter() + "' character";
-    }
-
-    /**
-     *
-     * @param value
-     *            Object
-     * @return String
-     */
     @Override
-    protected String valueErrorFor(Object value) {
+    protected String valueErrorFor(String value) {
 
         if (value == null) {
-            return "missing value";
+            return "Missing value";
         }
 
-        String testValue = (String) value;
-        if (containsDelimiter(testValue)) {
-            return illegalCharMsg();
+        if (containsDelimiter(value)) {
+            return "Value cannot contain the '" + multiValueDelimiter() + "' character";
         }
 
         // TODO - eval against regex checkers
@@ -128,12 +143,21 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
         return null;
     }
 
+
     /**
+     * Returns true if the multi value delimiter is present in the string.
+     *
+     * @param value String
+     *
      * @return boolean
-     * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
      */
+    private boolean containsDelimiter(String value) {
+        return value.indexOf(multiValueDelimiter()) >= 0;
+    }
+
+
     @Override
-    public boolean isMultiValue() {
-        return true;
+    protected String createFrom(String toParse) {
+        return toParse;
     }
 }

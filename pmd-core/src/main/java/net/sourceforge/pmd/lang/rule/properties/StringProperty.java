@@ -6,68 +6,67 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
  * Defines a datatype that supports single String values.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class StringProperty extends AbstractProperty<String> {
+public final class StringProperty extends AbstractSingleValueProperty<String> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringProperty>(
-            String.class) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<String> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<String>(String.class) {
 
-        @Override
-        public StringProperty createWith(Map<String, String> valuesById) {
-            return new StringProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById), 0f);
-        }
-    };
+            @Override
+            protected boolean isValueMissing(String value) {
+                return StringUtils.isEmpty(value);
+            }
+
+            @Override
+            public StringProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                return new StringProperty(nameIn(valuesById),
+                                          descriptionIn(valuesById),
+                                          defaultValueIn(valuesById),
+                                          0f,
+                                          isDefinedExternally);
+            }
+        }; // @formatter:on
+
 
     /**
-     * Constructor for StringProperty.
+     * Constructor.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefaultValue
-     *            String
-     * @param theUIOrder
-     *            float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValue   Default value
+     * @param theUIOrder     UI order
      */
-    public StringProperty(String theName, String theDescription, String theDefaultValue, float theUIOrder) {
-        super(theName, theDescription, theDefaultValue, theUIOrder);
+    public StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder) {
+        this(theName, theDescription, defaultValue, theUIOrder, false);
     }
 
-    /**
-     * @return String
-     */
-    @Override
-    protected String defaultAsString() {
-        return defaultValue();
+
+    /** Master constructor. */
+    private StringProperty(String theName, String theDescription, String defaultValue, float theUIOrder, boolean
+        isDefinedExternally) {
+        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
     }
 
-    /**
-     *
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
+
     @Override
     public Class<String> type() {
         return String.class;
     }
 
-    /**
-     *
-     * @param valueString
-     *            String
-     * @return Object
-     * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
-     */
+
     @Override
-    public String valueFrom(String valueString) {
+    public String createFrom(String valueString) {
         return valueString;
     }
 }

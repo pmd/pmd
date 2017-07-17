@@ -34,6 +34,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -864,11 +865,11 @@ public class Designer implements ClipboardOwner {
     private JPanel createXPathVersionPanel() {
         JPanel p = new JPanel();
         p.add(new JLabel("XPath Version:"));
-        for (Object[] values : XPathRule.VERSION_DESCRIPTOR.choices()) {
+        for (Entry<String, String> values : XPathRule.VERSION_DESCRIPTOR.mappings().entrySet()) {
             JRadioButton b = new JRadioButton();
-            b.setText((String) values[0]);
+            b.setText(values.getKey());
             b.setActionCommand(b.getText());
-            if (values[0].equals(XPathRule.VERSION_DESCRIPTOR.defaultValue())) {
+            if (values.getKey().equals(XPathRule.VERSION_DESCRIPTOR.defaultValue())) {
                 b.setSelected(true);
             }
             xpathVersionButtonGroup.add(b);

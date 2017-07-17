@@ -4,82 +4,95 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.LONG_PARSER;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
- * Defines a datatype that supports multiple Long property values within an
- * upper and lower boundary.
+ * Multi-valued long property.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
+public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<LongMultiProperty>(
-            Long[].class, NUMBER_FIELD_TYPES_BY_KEY) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<List<Long>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
+            @Override
+            public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                String[] minMax = minMaxFrom(valuesById);
+                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+                List<Long> defaultValues = Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, LONG_PARSER);
+                return new LongMultiProperty(nameIn(valuesById),
+                                             descriptionIn(valuesById),
+                                             LONG_PARSER.valueOf(minMax[0]),
+                                             LONG_PARSER.valueOf(minMax[1]),
+                                             defaultValues,
+                                             0f,
+                                             isDefinedExternally);
+            }
+        }; // @formatter:on
 
-        @Override
-        public LongMultiProperty createWith(Map<String, String> valuesById) {
-            String[] minMax = minMaxFrom(valuesById);
-            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-            Long[] defaultValues = longsIn(defaultValueIn(valuesById), delimiter);
-            return new LongMultiProperty(nameIn(valuesById), descriptionIn(valuesById), Long.parseLong(minMax[0]),
-                    Long.parseLong(minMax[1]), defaultValues, 0f);
-        }
-    };
 
     /**
-     * Constructor for LongProperty.
+     * Constructor using an array of defaults.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param min
-     *            Long
-     * @param max
-     *            Long
-     * @param theDefaults
-     *            Long[]
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param defaultValues  Array of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
-    public LongMultiProperty(String theName, String theDescription, Long min, Long max, Long[] theDefaults,
-            float theUIOrder) {
-        super(theName, theDescription, min, max, theDefaults, theUIOrder);
+    public LongMultiProperty(String theName, String theDescription, Long min, Long max,
+                             Long[] defaultValues, float theUIOrder) {
+        this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
     }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
-    @Override
-    public Class<Long[]> type() {
-        return Long[].class;
+
+    /** Master constructor. */
+    private LongMultiProperty(String theName, String theDescription, Long min, Long max,
+                              List<Long> defaultValues, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
     }
 
+
     /**
-     * @param value
-     *            String
-     * @return Object
+     * Constructor using a list of defaults.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
+    public LongMultiProperty(String theName, String theDescription, Long min, Long max,
+                             List<Long> defaultValues, float theUIOrder) {
+        this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
+    }
+
+
     @Override
-    protected Object createFrom(String value) {
+    public Class<Long> type() {
+        return Long.class;
+    }
+
+
+    @Override
+    protected Long createFrom(String value) {
         return Long.valueOf(value);
     }
 
-    /**
-     * Returns an array of the correct type for the receiver.
-     *
-     * @param size
-     *            int
-     * @return Object[]
-     */
-    @Override
-    protected Object[] arrayFor(int size) {
-        return new Long[size];
-    }
 }

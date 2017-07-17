@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class ClassNamingConventionsRule extends AbstractApexRule {
 
     public ClassNamingConventionsRule() {
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Style" });
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
         // Note: x10 as Apex has not automatic refactoring
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 5);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);

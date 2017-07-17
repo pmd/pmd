@@ -4,87 +4,78 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.BOOLEAN_PARSER;
+
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
  * Defines a property type that supports single Boolean values.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class BooleanProperty extends AbstractScalarProperty<Boolean> {
+public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<BooleanProperty>(
-            Boolean.class) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<Boolean> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Boolean>(Boolean.class) {
+            @Override
+            public BooleanProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                return new BooleanProperty(nameIn(valuesById),
+                                           descriptionIn(valuesById),
+                                           BOOLEAN_PARSER.valueOf(defaultValueIn(valuesById)),
+                                           0f,
+                                           isDefinedExternally);
+            }
+        }; // @formatter:on
 
-        @Override
-        public BooleanProperty createWith(Map<String, String> valuesById) {
-            return new BooleanProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    Boolean.valueOf(defaultValueIn(valuesById)), 0f);
-        }
-    };
-
-    /**
-     * Constructor for BooleanProperty limited to a single value.
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultValue
-     *            boolean
-     * @param theUIOrder
-     *            float
-     */
-    public BooleanProperty(String theName, String theDescription, Boolean defaultValue, float theUIOrder) {
-        super(theName, theDescription, Boolean.valueOf(defaultValue), theUIOrder);
-    }
 
     /**
      * Constructor for BooleanProperty limited to a single value. Converts
      * default argument string into a boolean.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultBoolStr
-     *            String
-     * @param theUIOrder
-     *            float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultBoolStr String representing the default value.
+     * @param theUIOrder     UI order
+     *
+     * @deprecated will be removed in 7.0.0
      */
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
-        this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder);
+        this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder, false);
     }
 
+
+    /** Master constructor. */
+    private BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
+     * Constructor.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValue   Default value
+     * @param theUIOrder     UI order
      */
+    public BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder) {
+        this(theName, theDescription, defaultValue, theUIOrder, false);
+    }
+
+
     @Override
     public Class<Boolean> type() {
         return Boolean.class;
     }
 
-    /**
-     * @return String
-     */
-    @Override
-    protected String defaultAsString() {
-        return Boolean.toString(defaultValue());
-    }
 
-    /**
-     * Creates and returns a Boolean instance from a raw string
-     *
-     * @param value
-     *            String
-     * @return Object
-     */
     @Override
-    protected Object createFrom(String value) {
-        return Boolean.valueOf(value);
+    public Boolean createFrom(String propertyString) throws IllegalArgumentException {
+        return BOOLEAN_PARSER.valueOf(propertyString);
     }
 }

@@ -24,14 +24,14 @@ import java.util.Set;
 public final class CollectionUtil {
 
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
-    public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(new Class[] { java.util.List.class,
-        java.util.Collection.class, java.util.Map.class, java.util.Set.class, });
+    public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(List.class, Collection.class, Map.class, Set.class);
 
-    @SuppressWarnings({ "PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName" })
-    public static final TypeMap COLLECTION_CLASSES_BY_NAMES = new TypeMap(new Class[] { java.util.ArrayList.class,
-        java.util.LinkedList.class, java.util.Vector.class, java.util.HashMap.class, java.util.LinkedHashMap.class,
-        java.util.TreeMap.class, java.util.TreeSet.class, java.util.HashSet.class, java.util.LinkedHashSet.class,
-        java.util.Hashtable.class, });
+    @SuppressWarnings({"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName" })
+    public static final TypeMap COLLECTION_CLASSES_BY_NAMES
+        = new TypeMap(ArrayList.class, java.util.LinkedList.class, java.util.Vector.class, HashMap.class,
+                      java.util.LinkedHashMap.class, java.util.TreeMap.class, java.util.TreeSet.class,
+                      HashSet.class, java.util.LinkedHashSet.class, java.util.Hashtable.class);
+
 
     private CollectionUtil() {
     }
@@ -44,11 +44,11 @@ public final class CollectionUtil {
      * @param target
      * @return int
      */
-    public static int addWithoutDuplicates(Collection<String> source, Collection<String> target) {
+    public static <T> int addWithoutDuplicates(Collection<T> source, Collection<T> target) {
 
         int added = 0;
 
-        for (String item : source) {
+        for (T item : source) {
             if (target.contains(item)) {
                 continue;
             }
@@ -269,10 +269,10 @@ public final class CollectionUtil {
     public static <T> boolean areSemanticEquals(T[] a, T[] b) {
 
         if (a == null) {
-            return isEmpty(b);
+            return b == null || b.length == 0;
         }
         if (b == null) {
-            return isEmpty(a);
+            return a.length == 0;
         }
 
         if (a.length != b.length) {
@@ -287,6 +287,7 @@ public final class CollectionUtil {
 
         return true;
     }
+
 
     /**
      * If the newValue is already held within the values array then the values

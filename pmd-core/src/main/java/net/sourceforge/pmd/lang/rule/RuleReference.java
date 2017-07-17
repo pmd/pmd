@@ -252,6 +252,11 @@ public class RuleReference extends AbstractDelegateRule {
         }
     }
 
+
+
+
+
+
     public RuleSetReference getRuleSetReference() {
         return ruleSetReference;
     }

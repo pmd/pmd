@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.INTEGER_PARSER;
+
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
  * Defines a datatype that supports single Integer property values within an
@@ -15,90 +17,61 @@ import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescripto
  *
  * @author Brian Remedios
  */
-public class IntegerProperty extends AbstractNumericProperty<Integer> {
+public final class IntegerProperty extends AbstractNumericProperty<Integer> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<IntegerProperty>(
-            Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<Integer> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
 
-        @Override
-        public IntegerProperty createWith(Map<String, String> valuesById) {
-            final String[] minMax = minMaxFrom(valuesById);
-            return new IntegerProperty(nameIn(valuesById), descriptionIn(valuesById), Integer.valueOf(minMax[0]),
-                    Integer.valueOf(minMax[1]), Integer.valueOf(numericDefaultValueIn(valuesById)), 0f);
-        }
-    };
+            @Override
+            public IntegerProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                final String[] minMax = minMaxFrom(valuesById);
+                return new IntegerProperty(nameIn(valuesById),
+                                           descriptionIn(valuesById),
+                                           INTEGER_PARSER.valueOf(minMax[0]),
+                                           INTEGER_PARSER.valueOf(minMax[1]),
+                                           INTEGER_PARSER.valueOf(defaultValueIn(valuesById)),
+                                           0f,
+                                           isDefinedExternally);
+            }
+        }; // @formatter:on
+
 
     /**
-     * Constructor for IntegerProperty that limits itself to a single value
-     * within the specified limits.
+     * Constructor that limits itself to a single value within the specified limits.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param min
-     *            Integer
-     * @param max
-     *            Integer
-     * @param theDefault
-     *            Integer
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
     public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
-            float theUIOrder) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder);
+                           float theUIOrder) {
+        this(theName, theDescription, min, max, theDefault, theUIOrder, false);
     }
 
-    /**
-     * Constructor for IntegerProperty that limits itself to a single value
-     * within the specified limits. Converts string arguments into the Float
-     * values.
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param minStr
-     *            String
-     * @param maxStr
-     *            String
-     * @param defaultStr
-     *            String
-     * @param theUIOrder
-     * @throws IllegalArgumentException
-     */
-    public IntegerProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
-            float theUIOrder) {
-        this(theName, theDescription, intFrom(minStr), intFrom(maxStr), intFrom(defaultStr), theUIOrder);
+
+    /** Master constructor. */
+    private IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault,
+                            float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 
-    /**
-     * @param numberString
-     *            String
-     * @return Integer
-     */
-    public static Integer intFrom(String numberString) {
-        return Integer.valueOf(numberString);
-    }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
     @Override
     public Class<Integer> type() {
         return Integer.class;
     }
 
-    /**
-     * @param value
-     *            String
-     * @return Object
-     */
+
     @Override
-    protected Object createFrom(String value) {
-        return intFrom(value);
+    protected Integer createFrom(String value) {
+        return INTEGER_PARSER.valueOf(value);
     }
+
+
 }
