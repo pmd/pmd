@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.oom.metrics.visitors.StandardCycloVisitor;
  * block is given by {@code CYCLO = e - n + 2p} [2]. In practice it can be calculated by counting control flow
  * statements following the standard rules given below.
  *
- * <p>The standard version of the metric complies with McCabe's original definition:
+ * <p>The standard version of the metric complies with McCabe's original definition [3]:
  *
  * <ul>
  * <li>+1 for every control flow statement ({@code if, case, catch, throw, do, while, for, break, continue}) and
@@ -34,11 +34,15 @@ import net.sourceforge.pmd.lang.java.oom.metrics.visitors.StandardCycloVisitor;
  * control flow statement in itself.
  * </ul>
  *
- * <p>Version {@link Version#IGNORE_BOOLEAN_PATHS}: Boolean operators are not counted, which means that empty
+ * <p>Version {@link CycloVersion#IGNORE_BOOLEAN_PATHS}: Boolean operators are not counted, which means that empty
  * fall-through cases in {@code switch} statements are not counted as well.
  *
- * <p>References: <ul> <li> [1] Lanza, Object-Oriented Metrics in Practice, 2005. <li> [2] McCabe, A Complexity Measure,
- * in Proceedings of the 2nd ICSE (1976). </ul>
+ * <p>References:
+ * <ul>
+ * <li> [1] Lanza, Object-Oriented Metrics in Practice, 2005.
+ * <li> [2] McCabe, A Complexity Measure, in Proceedings of the 2nd ICSE (1976).
+ * <li> [3] <a href="https://docs.sonarqube.org/display/SONAR/Metrics+-+Complexity">Sonarqube online documentation</a>
+ * </ul>
  *
  * @author Clément Fournier
  * @since June 2017
@@ -48,7 +52,7 @@ public final class CycloMetric {
     // TODO:cf Cyclo should develop factorized boolean operators to count them
 
     /** Variants of CYCLO. */
-    public enum Version implements MetricVersion {
+    public enum CycloVersion implements MetricVersion {
         /** Do not count the paths in boolean expressions as decision points. */
         IGNORE_BOOLEAN_PATHS
     }
@@ -58,7 +62,7 @@ public final class CycloMetric {
         @Override
         public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
-            JavaParserVisitor visitor = (CycloMetric.Version.IGNORE_BOOLEAN_PATHS.equals(version))
+            JavaParserVisitor visitor = (CycloVersion.IGNORE_BOOLEAN_PATHS.equals(version))
                                         ? new CycloPathUnawareOperationVisitor()
                                         : new StandardCycloVisitor();
 

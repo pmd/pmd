@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.Metric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.CycloVersion;
 
 /**
  * Tests standard cyclo.
@@ -36,6 +37,6 @@ public class CycloTestRule extends AbstractMetricTestRule {
 
     @Override
     protected MetricVersion[] versionValues() {
-        return new MetricVersion[] {Metric.Version.STANDARD, CycloMetric.Version.IGNORE_BOOLEAN_PATHS};
+        return new MetricVersion[] {Metric.Version.STANDARD, CycloVersion.IGNORE_BOOLEAN_PATHS};
     }
 }
