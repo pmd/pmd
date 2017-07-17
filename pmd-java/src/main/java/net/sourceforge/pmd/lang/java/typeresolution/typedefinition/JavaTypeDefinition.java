@@ -29,7 +29,7 @@ public class JavaTypeDefinition implements TypeDefinition {
         // the anonymous class can't have generics, but we may be binding generics from super classes
         if (clazz.isAnonymousClass()) {
             // is this an anonymous class based on an interface or a class?
-            if (clazz.getSuperclass() == Object.class) {
+            if (clazz.getInterfaces().length != 0) {
                 typeParameters = clazz.getInterfaces()[0].getTypeParameters();
             } else {
                 typeParameters = clazz.getSuperclass().getTypeParameters();
