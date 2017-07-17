@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.oom.rule;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
-import net.sourceforge.pmd.lang.java.oom.api.Metric;
 import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
@@ -38,13 +40,17 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         "reportMethods", "Add method average violations to the report", true, 3.0f);
 
 
-    private static final String[] VERSION_LABELS = {"standard", "ignoreBooleanPaths"};
+    private static final Map<String, MetricVersion> VERSION_MAP;
 
-    private static final MetricVersion[] CYCLO_VERSIONS = {Metric.Version.STANDARD, CycloVersion.IGNORE_BOOLEAN_PATHS};
+    static {
+        VERSION_MAP = new HashMap<>();
+        VERSION_MAP.put("standard", Version.STANDARD);
+        VERSION_MAP.put("ignoreBooleanPaths", CycloVersion.IGNORE_BOOLEAN_PATHS);
+    }
 
     private static final EnumeratedProperty<MetricVersion> CYCLO_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
         "cycloVersion", "Choose a variant of Cyclo or the standard",
-        VERSION_LABELS, CYCLO_VERSIONS, 0, 3.0f);
+        VERSION_MAP, Version.STANDARD, MetricVersion.class, 3.0f);
 
     private int reportLevel;
     private boolean reportClasses = true;
@@ -63,10 +69,9 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
+        cycloVersion = getProperty(CYCLO_VERSION_DESCRIPTOR);
         reportClasses = getProperty(REPORT_CLASSES_DESCRIPTOR);
         reportMethods = getProperty(REPORT_METHODS_DESCRIPTOR);
-        Object version = getProperty(CYCLO_VERSION_DESCRIPTOR);
-        cycloVersion = version instanceof MetricVersion ? (MetricVersion) version : Version.STANDARD;
 
         super.visit(node, data);
         return data;

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
@@ -205,6 +206,13 @@ public abstract class AbstractDelegateRule implements Rule {
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
         rule.setProperty(propertyDescriptor, value);
     }
+
+
+    @Override
+    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
+        rule.setProperty(propertyDescriptor, values);
+    }
+
 
     @Override
     public Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor() {

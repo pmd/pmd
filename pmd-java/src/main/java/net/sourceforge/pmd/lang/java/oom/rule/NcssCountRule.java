@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.oom.rule;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -14,7 +17,7 @@ import net.sourceforge.pmd.lang.java.oom.api.Metric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
-import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric.Version;
+import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric.NcssVersion;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
@@ -33,13 +36,17 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     private static final IntegerProperty CLASS_REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
         "classReportLevel", "Metric reporting threshold for classes", 1, 1000, 250, 1.0f);
 
-    private static final String[] VERSION_LABELS = {"standard", "javaNcss"};
+    private static final Map<String, MetricVersion> VERSION_MAP;
 
-    private static final MetricVersion[] CYCLO_VERSIONS = {Metric.Version.STANDARD, Version.JAVANCSS};
+    static {
+        VERSION_MAP = new HashMap<>();
+        VERSION_MAP.put("standard", Metric.Version.STANDARD);
+        VERSION_MAP.put("javaNcss", NcssVersion.JAVANCSS);
+    }
 
     private static final EnumeratedProperty<MetricVersion> NCSS_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
         "ncssVersion", "Choose a variant of Ncss or the standard",
-        VERSION_LABELS, CYCLO_VERSIONS, 0, 3.0f);
+        VERSION_MAP, Metric.Version.STANDARD, MetricVersion.class, 3.0f);
 
 
     private int methodReportLevel;
@@ -58,8 +65,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         methodReportLevel = getProperty(METHOD_REPORT_LEVEL_DESCRIPTOR);
         classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
-        Object version = getProperty(NCSS_VERSION_DESCRIPTOR);
-        ncssVersion = version instanceof MetricVersion ? (MetricVersion) version : Metric.Version.STANDARD;
+        ncssVersion = getProperty(NCSS_VERSION_DESCRIPTOR);
 
         super.visit(node, data);
         return data;

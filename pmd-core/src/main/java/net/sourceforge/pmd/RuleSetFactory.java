@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,11 +21,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,8 +40,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -85,7 +86,7 @@ public class RuleSetFactory {
 
     /**
      * Constructor copying all configuration from another factory.
-     * 
+     *
      * @param factory
      *            The factory whose configuration to copy.
      * @param warnDeprecated
@@ -111,7 +112,7 @@ public class RuleSetFactory {
      * "rulesets.properties" resource for each Language with Rule support.
      *
      * @return An Iterator of RuleSet objects.
-     * 
+     *
      * @throws RuleSetNotFoundException if the ruleset file could not be found
      */
     public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
@@ -264,7 +265,7 @@ public class RuleSetFactory {
 
     /**
      * Creates a new RuleSet for a single rule
-     * 
+     *
      * @param rule
      *            The rule being created
      * @return The newly created RuleSet
@@ -416,7 +417,7 @@ public class RuleSetFactory {
         String ref = ruleElement.getAttribute("ref");
         if (ref.endsWith("xml")) {
             parseRuleSetReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleElement, ref);
-        } else if (StringUtil.isEmpty(ref)) {
+        } else if (StringUtils.isBlank(ref)) {
             parseSingleRuleNode(ruleSetReferenceId, ruleSetBuilder, ruleNode);
         } else {
             parseRuleReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, ref, withDeprecatedRuleReferences);
@@ -484,12 +485,6 @@ public class RuleSetFactory {
      * Parse a rule node as a single Rule. The Rule has been fully defined
      * within the context of the current RuleSet.
      *
-     * @param ruleSetReferenceId
-     *            The RuleSetReferenceId of the RuleSet being parsed.
-     * @param ruleSet
-     *            The RuleSet being constructed.
-     * @param ruleNode
-     *            Must be a rule element node.
      * @param ruleSetReferenceId
      *            The RuleSetReferenceId of the RuleSet being parsed.
      * @param ruleSetBuilder
@@ -730,14 +725,14 @@ public class RuleSetFactory {
         }
     }
 
+
     /**
      * Check whether the given ruleName is contained in the given ruleset.
      *
-     * @param ruleSetReferenceId
-     *            the ruleset to check
-     * @param ruleName
-     *            the rule name to search for
-     * @return <code>true</code> if the ruleName exists
+     * @param ruleSetReferenceId the ruleset to check
+     * @param ruleName           the rule name to search for
+     *
+     * @return {@code true} if the ruleName exists
      */
     private boolean containsRule(RuleSetReferenceId ruleSetReferenceId, String ruleName) {
         boolean found = false;
@@ -795,68 +790,39 @@ public class RuleSetFactory {
         return null;
     }
 
+
     /**
-     * Parse a property node.
+     * Sets the value of a property.
      *
-     * @param rule
-     *            The Rule to which the property should be added. //@param
-     *            propertyNode Must be a property element node.
+     * @param rule     The rule which has the property
+     * @param desc     The property descriptor
+     * @param strValue The string value of the property, converted to a T
+     * @param <T>      The type of values of the property descriptor
      */
-    // private static void parsePropertyNode(Rule rule, Node propertyNode) {
-    // Element propertyElement = (Element) propertyNode;
-    // String name = propertyElement.getAttribute("name");
-    // String description = propertyElement.getAttribute("description");
-    // String type = propertyElement.getAttribute("type");
-    // String delimiter = propertyElement.getAttribute("delimiter");
-    // String min = propertyElement.getAttribute("min");
-    // String max = propertyElement.getAttribute("max");
-    // String value = propertyElement.getAttribute("value");
-    //
-    // // If value not provided, get from child <value> element.
-    // if (StringUtil.isEmpty(value)) {
-    // for (int i = 0; i < propertyNode.getChildNodes().getLength(); i++) {
-    // Node node = propertyNode.getChildNodes().item(i);
-    // if ((node.getNodeType() == Node.ELEMENT_NODE) &&
-    // node.getNodeName().equals("value")) {
-    // value = parseTextNode(node);
-    // }
-    // }
-    // }
-    //
-    // // Setting of existing property, or defining a new property?
-    // if (StringUtil.isEmpty(type)) {
-    // PropertyDescriptor propertyDescriptor = rule.getPropertyDescriptor(name);
-    // if (propertyDescriptor == null) {
-    // throw new IllegalArgumentException("Cannot set non-existant property '" +
-    // name + "' on Rule " + rule.getName());
-    // } else {
-    // Object realValue = propertyDescriptor.valueFrom(value);
-    // rule.setProperty(propertyDescriptor, realValue);
-    // }
-    // } else {
-    // PropertyDescriptor propertyDescriptor =
-    // PropertyDescriptorFactory.createPropertyDescriptor(name, description,
-    // type, delimiter, min, max, value);
-    // rule.definePropertyDescriptor(propertyDescriptor);
-    // }
-    // }
     private static <T> void setValue(Rule rule, PropertyDescriptor<T> desc, String strValue) {
         T realValue = desc.valueFrom(strValue);
         rule.setProperty(desc, realValue);
     }
 
+
+    /**
+     * Parse a property node.
+     *
+     * @param rule         The Rule to which the property should be added.
+     * @param propertyNode Must be a property element node.
+     */
     private static void parsePropertyNodeBR(Rule rule, Node propertyNode) {
 
         Element propertyElement = (Element) propertyNode;
-        String typeId = propertyElement.getAttribute(PropertyDescriptorFields.TYPE);
-        String strValue = propertyElement.getAttribute(PropertyDescriptorFields.VALUE);
-        if (StringUtil.isEmpty(strValue)) {
+        String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName());
+        String strValue = propertyElement.getAttribute(DEFAULT_VALUE.attributeName());
+        if (StringUtils.isBlank(strValue)) {
             strValue = valueFrom(propertyElement);
         }
 
         // Setting of existing property, or defining a new property?
-        if (StringUtil.isEmpty(typeId)) {
-            String name = propertyElement.getAttribute(PropertyDescriptorFields.NAME);
+        if (StringUtils.isBlank(typeId)) {
+            String name = propertyElement.getAttribute(PropertyDescriptorField.NAME.attributeName());
 
             PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
             if (propertyDescriptor == null) {
@@ -868,28 +834,35 @@ public class RuleSetFactory {
             return;
         }
 
-        net.sourceforge.pmd.PropertyDescriptorFactory pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
+        PropertyDescriptorFactory<?> pdFactory = PropertyDescriptorUtil.factoryFor(typeId);
         if (pdFactory == null) {
             throw new RuntimeException("No property descriptor factory for type: " + typeId);
         }
 
-        Map<String, Boolean> valueKeys = pdFactory.expectedFields();
-        Map<String, String> values = new HashMap<>(valueKeys.size());
+        Set<PropertyDescriptorField> valueKeys = pdFactory.expectableFields();
+        Map<PropertyDescriptorField, String> values = new HashMap<>(valueKeys.size());
 
         // populate a map of values for an individual descriptor
-        for (Map.Entry<String, Boolean> entry : valueKeys.entrySet()) {
-            String valueStr = propertyElement.getAttribute(entry.getKey());
-            if (entry.getValue() && StringUtil.isEmpty(valueStr)) {
-                // TODO debug pt
-                System.out.println("Missing required value for: " + entry.getKey());
+        for (PropertyDescriptorField field : valueKeys) {
+            String valueStr = propertyElement.getAttribute(field.attributeName());
+            if (valueStr != null) {
+                values.put(field, valueStr);
             }
-            values.put(entry.getKey(), valueStr);
         }
 
-        PropertyDescriptor<?> desc = pdFactory.createWith(values);
-        PropertyDescriptorWrapper<?> wrapper = new PropertyDescriptorWrapper<>(desc);
+        if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {
+            NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
+            if (children.getLength() == 1) {
+                values.put(DEFAULT_VALUE, children.item(0).getTextContent());
+            } else {
+                throw new RuntimeException("No value defined!");
+            }
+        }
 
-        rule.definePropertyDescriptor(wrapper);
+        // casting is not pretty but prevents the interface from having this method
+        PropertyDescriptor<?> desc = ((AbstractPropertyDescriptorFactory) pdFactory).createExternalWith(values);
+
+        rule.definePropertyDescriptor(desc);
         setValue(rule, desc, strValue);
     }
 
@@ -918,16 +891,15 @@ public class RuleSetFactory {
         return buffer.toString();
     }
 
+
     /**
      * Determine if the specified rule element will represent a Rule with the
      * given name.
      *
-     * @param ruleElement
-     *            The rule element.
-     * @param ruleName
-     *            The Rule name.
-     * @return <code>true</code> if the Rule would have the given name,
-     *         <code>false</code> otherwise.
+     * @param ruleElement The rule element.
+     * @param ruleName    The Rule name.
+     *
+     * @return {@code true} if the Rule would have the given name, {@code false} otherwise.
      */
     private boolean isRuleName(Element ruleElement, String ruleName) {
         if (ruleElement.hasAttribute("name")) {

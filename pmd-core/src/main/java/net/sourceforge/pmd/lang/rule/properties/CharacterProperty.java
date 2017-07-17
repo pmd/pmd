@@ -4,103 +4,101 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.CHARACTER_PARSER;
+
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
  * Defines a property type that supports single Character values.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class CharacterProperty extends AbstractProperty<Character> {
+public final class CharacterProperty extends AbstractSingleValueProperty<Character> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterProperty>(
-            Character.class) {
+    public static final PropertyDescriptorFactory<Character> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Character>(Character.class) {
 
-        @Override
-        public CharacterProperty createWith(Map<String, String> valuesById) {
-            return new CharacterProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    defaultValueIn(valuesById) != null ? new Character(defaultValueIn(valuesById).charAt(0)) : null,
-                    0f);
-        }
-    };
+            @Override
+            protected boolean isValueMissing(String value) {
+                return StringUtils.isEmpty(value);
+            }
 
-    /**
-     * Constructor for CharacterProperty.
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefault
-     *            Character
-     * @param theUIOrder
-     *            float
-     */
-    public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
-    }
+            @Override
+            public CharacterProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                return new CharacterProperty(nameIn(valuesById),
+                                             descriptionIn(valuesById),
+                                             defaultValueIn(valuesById) == null ? null
+                                                                                : defaultValueIn(valuesById).charAt(0),
+                                             0f,
+                                             isDefinedExternally);
+            }
+        }; // @formatter:on
+
 
     /**
      * Constructor for CharacterProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultStr
-     *            String
-     * @param theUIOrder
-     *            float
+     * @param theName        String
+     * @param theDescription String
+     * @param defaultStr     String
+     * @param theUIOrder     float
+     *
      * @throws IllegalArgumentException
+     * @deprecated will be removed in 7.0.0
      */
     public CharacterProperty(String theName, String theDescription, String defaultStr, float theUIOrder) {
-        this(theName, theDescription, charFrom(defaultStr), theUIOrder);
+        this(theName, theDescription, charFrom(defaultStr), theUIOrder, false);
     }
 
+
+    /** Master constructor. */
+    private CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
+    }
+
+
     /**
-     * @param charStr
-     *            String
-     * @return Character
+     * Parses a String into a Character.
+     *
+     * @param charStr String to parse
+     *
+     * @return Parsed Character
+     *
+     * @throws IllegalArgumentException if the String doesn't have length 1
      */
     public static Character charFrom(String charStr) {
-
-        if (charStr == null || charStr.length() != 1) {
-            throw new IllegalArgumentException("missing/invalid character value");
-        }
-        return charStr.charAt(0);
+        return CHARACTER_PARSER.valueOf(charStr);
     }
 
+
     /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
+     * Constructor.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
      */
+    public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
+        this(theName, theDescription, theDefault, theUIOrder, false);
+    }
+
+
     @Override
     public Class<Character> type() {
         return Character.class;
     }
 
-    /**
-     * @param valueString
-     *            String
-     * @return Object
-     * @throws IllegalArgumentException
-     * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
-     */
+
     @Override
-    public Character valueFrom(String valueString) throws IllegalArgumentException {
+    public Character createFrom(String valueString) throws IllegalArgumentException {
         return charFrom(valueString);
     }
 
-    /**
-     * Method defaultAsString.
-     *
-     * @return String
-     */
-    @Override
-    protected String defaultAsString() {
-        return Character.toString(defaultValue());
-    }
 }

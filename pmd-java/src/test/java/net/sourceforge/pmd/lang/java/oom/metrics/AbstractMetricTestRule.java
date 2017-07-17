@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.Metrics;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
-import net.sourceforge.pmd.lang.java.oom.api.Metric;
 import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
@@ -29,7 +31,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
     private final EnumeratedProperty<MetricVersion> versionDescriptor = new EnumeratedProperty<>(
         "metricVersion", "Choose a variant of the metric or the standard",
-        versionLabels(), versionValues(), 0, 3.0f);
+        versionMappings(), Version.STANDARD, MetricVersion.class, 3.0f);
     private final BooleanProperty reportClassesDescriptor = new BooleanProperty(
         "reportClasses", "Add class violations to the report", isReportClasses(), 2.0f);
     private final BooleanProperty reportMethodsDescriptor = new BooleanProperty(
@@ -47,10 +49,6 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     public AbstractMetricTestRule() {
         classKey = getClassKey();
         opKey = getOpKey();
-
-        if (versionValues()[0] != Version.STANDARD) {
-            throw new RuntimeException("The versions array must begin with the standard version");
-        }
 
         definePropertyDescriptor(reportClassesDescriptor);
         definePropertyDescriptor(reportMethodsDescriptor);
@@ -75,22 +73,12 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     protected abstract OperationMetricKey getOpKey();
 
 
-    /**
-     * Values of the version.
-     *
-     * @return Array of the ordered values
-     */
-    protected MetricVersion[] versionValues() {
-        return new MetricVersion[] {Version.STANDARD}; // TODO simplify that after #479
-    }
-
-
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         reportClasses = getProperty(reportClassesDescriptor);
         reportMethods = getProperty(reportMethodsDescriptor);
         reportLevel = getProperty(reportLevelDescriptor);
-        Object version = getProperty(versionDescriptor);
-        metricVersion = version instanceof MetricVersion ? (MetricVersion) version : Metric.Version.STANDARD;
+        metricVersion = getProperty(versionDescriptor);
 
         return super.visit(node, data);
     }
@@ -117,12 +105,14 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
 
     /**
-     * Labels of the versions.
+     * Mappings of labels to versions for use in the version property.
      *
-     * @return Array of the ordered labels
+     * @return A map of labels to versions
      */
-    protected String[] versionLabels() {
-        return new String[] {"standard"};
+    protected Map<String, MetricVersion> versionMappings() {
+        Map<String, MetricVersion> mappings = new HashMap<>();
+        mappings.put("standard", Version.STANDARD);
+        return mappings;
     }
 
 

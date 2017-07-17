@@ -21,7 +21,7 @@ public class JavaTypeDefinition implements TypeDefinition {
     private final Class<?> clazz;
     private final List<JavaTypeDefinition> genericArgs;
     private final boolean isGeneric;
-    
+
     private JavaTypeDefinition(final Class<?> clazz) {
         this.clazz = clazz;
 
@@ -29,7 +29,7 @@ public class JavaTypeDefinition implements TypeDefinition {
         // the anonymous class can't have generics, but we may be binding generics from super classes
         if (clazz.isAnonymousClass()) {
             // is this an anonymous class based on an interface or a class?
-            if (clazz.getSuperclass() == Object.class) {
+            if (clazz.getInterfaces().length != 0) {
                 typeParameters = clazz.getInterfaces()[0].getTypeParameters();
             } else {
                 typeParameters = clazz.getSuperclass().getTypeParameters();
@@ -37,7 +37,7 @@ public class JavaTypeDefinition implements TypeDefinition {
         } else {
             typeParameters = clazz.getTypeParameters();
         }
-        
+
         isGeneric = typeParameters.length != 0;
         if (isGeneric) {
             // Generics will be lazily loaded
@@ -46,48 +46,48 @@ public class JavaTypeDefinition implements TypeDefinition {
             this.genericArgs = Collections.emptyList();
         }
     }
-    
+
     public static JavaTypeDefinition forClass(final Class<?> clazz) {
         if (clazz == null) {
             return null;
         }
-        
+
         final JavaTypeDefinition typeDef = CLASS_TYPE_DEF_CACHE.get(clazz);
-        
+
         if (typeDef != null) {
             return typeDef;
         }
-        
+
         final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz);
 
         // We can only cache types without generics, since their values are context-based
         if (!newDef.isGeneric) {
             CLASS_TYPE_DEF_CACHE.put(clazz, newDef);
         }
-        
+
         return newDef;
     }
-    
+
     public static JavaTypeDefinition forClass(final Class<?> clazz, final JavaTypeDefinition... boundGenerics) {
         if (clazz == null) {
             return null;
         }
-        
+
         // With generics there is no cache
         final JavaTypeDefinition typeDef = new JavaTypeDefinition(clazz);
 
         for (final JavaTypeDefinition generic : boundGenerics) {
             typeDef.genericArgs.add(generic);
         }
-        
+
         return typeDef;
     }
-    
+
     @Override
     public Class<?> getType() {
         return clazz;
     }
-    
+
     public boolean isGeneric() {
         return !genericArgs.isEmpty();
     }
@@ -99,9 +99,9 @@ public class JavaTypeDefinition implements TypeDefinition {
                 return getGenericType(i);
             }
         }
-        
+
         throw new IllegalArgumentException("No generic parameter by name " + parameterName
-                + " on class " + clazz.getSimpleName());
+                                                   + " on class " + clazz.getSimpleName());
     }
 
     public JavaTypeDefinition getGenericType(final int index) {
@@ -112,7 +112,7 @@ public class JavaTypeDefinition implements TypeDefinition {
                 return cachedDefinition;
             }
         }
-        
+
         // Force the list to have enough elements
         for (int i = genericArgs.size(); i <= index; i++) {
             genericArgs.add(null);
@@ -123,10 +123,10 @@ public class JavaTypeDefinition implements TypeDefinition {
          * Object.class is a right answer in those scenarios
          */
         genericArgs.set(index, forClass(Object.class));
-        
+
         final TypeVariable<?> typeVariable = clazz.getTypeParameters()[index];
         final JavaTypeDefinition typeDefinition = resolveTypeDefinition(typeVariable.getBounds()[0]);
-        
+
         // cache result
         genericArgs.set(index, typeDefinition);
         return typeDefinition;
@@ -149,7 +149,7 @@ public class JavaTypeDefinition implements TypeDefinition {
             for (int i = 0; i < typeArguments.length; i++) {
                 genericBounds[i] = resolveTypeDefinition(typeArguments[i]);
             }
-            
+
             // TODO : is this cast safe?
             return forClass((Class<?>) parameterizedType.getRawType(), genericBounds);
         } else if (type instanceof TypeVariable) {
@@ -165,5 +165,15 @@ public class JavaTypeDefinition implements TypeDefinition {
 
         // TODO : Shall we throw here?
         return forClass(Object.class);
+    }
+
+    public JavaTypeDefinition getComponentType() {
+        Class<?> componentType = getType().getComponentType();
+
+        if (componentType == null) {
+            throw new IllegalStateException(getType().getSimpleName() + " is not an array type!");
+        }
+
+        return forClass(componentType);
     }
 }

@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.oom.metrics;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
-import net.sourceforge.pmd.lang.java.oom.api.Metric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.CycloVersion;
@@ -30,13 +31,9 @@ public class CycloTestRule extends AbstractMetricTestRule {
 
 
     @Override
-    protected String[] versionLabels() {
-        return new String[] {"standard", "ignoreBooleanPaths"};
-    }
-
-
-    @Override
-    protected MetricVersion[] versionValues() {
-        return new MetricVersion[] {Metric.Version.STANDARD, CycloVersion.IGNORE_BOOLEAN_PATHS};
+    protected Map<String, MetricVersion> versionMappings() {
+        Map<String, MetricVersion> mappings = super.versionMappings();
+        mappings.put("ignoreBooleanPaths", CycloVersion.IGNORE_BOOLEAN_PATHS);
+        return mappings;
     }
 }
