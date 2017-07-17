@@ -4,99 +4,93 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.LONG_PARSER;
+
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 
 /**
- * Defines a datatype that supports the single Long property values within an
- * upper and lower boundary.
+ * Single valued long property.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class LongProperty extends AbstractNumericProperty<Long> {
+public final class LongProperty extends AbstractNumericProperty<Long> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<LongProperty>(Long.class,
-            NUMBER_FIELD_TYPES_BY_KEY) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<Long> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
+            @Override
+            public LongProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                final String[] minMax = minMaxFrom(valuesById);
+                return new LongProperty(nameIn(valuesById),
+                                        descriptionIn(valuesById),
+                                        LONG_PARSER.valueOf(minMax[0]),
+                                        LONG_PARSER.valueOf(minMax[1]),
+                                        LONG_PARSER.valueOf(defaultValueIn(valuesById)),
+                                        0f,
+                                        isDefinedExternally);
+            }
+        };
+    // @formatter:on
 
-        @Override
-        public LongProperty createWith(Map<String, String> valuesById) {
-            final String[] minMax = minMaxFrom(valuesById);
-            return new LongProperty(nameIn(valuesById), descriptionIn(valuesById), Long.valueOf(minMax[0]),
-                    Long.valueOf(minMax[1]), Long.valueOf(numericDefaultValueIn(valuesById)), 0f);
-        }
-    };
-
-    /**
-     * Constructor for LongProperty.
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param min
-     *            Long
-     * @param max
-     *            Long
-     * @param theDefault
-     *            Long
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
-     */
-    public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
-        super(theName, theDescription, min, max, theDefault, theUIOrder);
-    }
 
     /**
-     * Constructor for LongProperty that limits itself to a single value within
-     * the specified limits. Converts string arguments into the Long values.
+     * Constructor for LongProperty that limits itself to a single value within the specified limits. Converts string
+     * arguments into the Long values.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param minStr
-     *            String
-     * @param maxStr
-     *            String
-     * @param defaultStr
-     *            String
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
+     * @param theName        Name
+     * @param theDescription Description
+     * @param minStr         Minimum value of the property
+     * @param maxStr         Maximum value of the property
+     * @param defaultStr     Default value
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @deprecated will be removed in 7.0.0
      */
     public LongProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
-            float theUIOrder) {
-        this(theName, theDescription, longFrom(minStr), longFrom(maxStr), longFrom(defaultStr), theUIOrder);
+                        float theUIOrder) {
+        this(theName, theDescription, Long.valueOf(minStr), Long.valueOf(maxStr),
+             Long.valueOf(defaultStr), theUIOrder, false);
     }
 
-    /**
-     * @param numberString
-     *            String
-     * @return Long
-     */
-    public static Long longFrom(String numberString) {
-        return Long.valueOf(numberString);
+
+    /** Master constructor. */
+    private LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault,
+                         float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, theDefault, theUIOrder, isDefinedExternally);
     }
 
+
     /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
+     * Constructor that limits itself to a single value within the specified limits.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
+    public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
+        this(theName, theDescription, min, max, theDefault, theUIOrder, false);
+    }
+
+
     @Override
     public Class<Long> type() {
         return Long.class;
     }
 
-    /**
-     * @param value
-     *            String
-     * @return Object
-     */
+
     @Override
-    protected Object createFrom(String value) {
-        return longFrom(value);
+    protected Long createFrom(String toParse) {
+        return Long.valueOf(toParse);
     }
+
 }

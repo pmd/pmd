@@ -29,8 +29,8 @@ public class GuardLogStatementJavaUtilRule extends GuardLogStatementRule {
             return data;
         }
 
-        String[] logLevels = getProperty(LOG_LEVELS);
-        String[] guardMethods = getProperty(GUARD_METHODS);
+        String[] logLevels = getProperty(LOG_LEVELS).toArray(new String[0]); // TODO:cf convert to list
+        String[] guardMethods = getProperty(GUARD_METHODS).toArray(new String[0]);
 
         if (super.guardStmtByLogLevel.isEmpty() && logLevels.length > 0 && guardMethods.length > 0) {
             configureGuards(logLevels, guardMethods);

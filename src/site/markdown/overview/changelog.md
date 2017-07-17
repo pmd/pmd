@@ -76,6 +76,9 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 *   The class `net.sourceforge.pmd.lang.dfa.NodeType` has been converted to an enum.
     All node types are enum members now instead of int constants. The names for node types are retained.
 
+*   The properties API (rule and report properties) have been revamped to be fully typesafe. This is everything
+    around `net.sourceforge.pmd.PropertyDescriptor`.
+
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)
@@ -84,5 +87,6 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 *   [#486](https://github.com/pmd/pmd/pull/486): \[java] Add basic method typeresolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#492](https://github.com/pmd/pmd/pull/492): \[java] Typeresolution for overloaded methods - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#495](https://github.com/pmd/pmd/pull/495): \[core] Custom rule reinitialization code - [Clément Fournier](https://github.com/oowekyala)
+*   [#479](https://github.com/pmd/pmd/pull/479): \[core] Typesafe and immutable properties - [Clément Fournier](https://github.com/oowekyala)
 *   [#501](https://github.com/pmd/pmd/pull/501): \[java] Add support for most specific vararg method type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 

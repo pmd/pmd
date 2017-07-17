@@ -21,7 +21,7 @@ public class NcssMethodCountRule extends AbstractNcssCountRule {
     public NcssMethodCountRule() {
         super(ASTMethod.class);
         setProperty(MINIMUM_DESCRIPTOR, 40d);
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Complexity" });
+        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
