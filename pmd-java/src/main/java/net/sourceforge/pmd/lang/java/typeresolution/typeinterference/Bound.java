@@ -1,25 +1,30 @@
-package net.sourceforge.pmd.lang.java.typeresolution.typeinterference;
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+package net.sourceforge.pmd.lang.java.typeresolution.typeinterference;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+
+
 public class Bound extends BoundOrConstraint {
-    public Bound(JavaTypeDefinition leftProperType, JavaTypeDefinition rightProperType, IntferenceRuleType ruleType) {
+    public Bound(JavaTypeDefinition leftProperType, JavaTypeDefinition rightProperType, InferenceRuleType ruleType) {
         super(leftProperType, rightProperType, ruleType);
     }
 
-    public Bound(JavaTypeDefinition leftProperType, BoundOrConstraint rightTypeVariable, IntferenceRuleType
+    public Bound(JavaTypeDefinition leftProperType, Variable rightTypeVariable, InferenceRuleType
             ruleType) {
         super(leftProperType, rightTypeVariable, ruleType);
     }
 
-    public Bound(BoundOrConstraint leftTypeVariable, JavaTypeDefinition rightProperType, IntferenceRuleType
+    public Bound(Variable leftTypeVariable, JavaTypeDefinition rightProperType, InferenceRuleType
             ruleType) {
         super(leftTypeVariable, rightProperType, ruleType);
     }
 
-    public Bound(BoundOrConstraint leftTypeVariable, BoundOrConstraint rightTypeVariable, IntferenceRuleType
+    public Bound(Variable leftTypeVariable, Variable rightTypeVariable, InferenceRuleType
             ruleType) {
         super(leftTypeVariable, rightTypeVariable, ruleType);
     }

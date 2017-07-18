@@ -1,12 +1,18 @@
-package net.sourceforge.pmd.lang.java.typeresolution.typeinterference;
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
-import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+package net.sourceforge.pmd.lang.java.typeresolution.typeinterference;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public enum IntferenceRuleType {
+import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+
+
+public enum InferenceRuleType {
+
     /**
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.2.4
      */
@@ -37,22 +43,22 @@ public enum IntferenceRuleType {
                 // Otherwise, if S is an inference variable, α, and T is not a primitive type, the constraint reduces to
                 // the bound α = T.
                 if (val.isLeftVariable() && !val.isRightPrimitive()) {
-                    newConstraints.add(new Bound(val.leftVariable(), val.rightProper(), EQUALITY));
+                    newConstraints.add(copyBound(val, EQUALITY));
                     return newConstraints;
                 }
 
                 // Otherwise, if T is an inference variable, α, and S is not a primitive type, the constraint reduces
                 // to the bound S = α.
                 if (val.isRightVariable() && !val.isLeftPrimitive()) {
-                    newConstraints.add(new Bound(val.leftProper(), val.rightVariable(), EQUALITY));
+                    newConstraints.add(copyBound(val, EQUALITY));
                     return newConstraints;
                 }
 
                 // Otherwise, if S and T are class or interface types with the same erasure, where S has type
                 // arguments B1, ..., Bn and T has type arguments A1, ..., An, the constraint reduces to the
                 // following new constraints: for all i (1 ≤ i ≤ n), ‹Bi = Ai›.
-                if (val.isLeftClassOrInterface() && val.isRightClassOrInterface() &&
-                        val.leftProper().hasSameErasureAs(val.rightProper())) {
+                if (val.isLeftClassOrInterface() && val.isRightClassOrInterface()
+                        && val.leftProper().hasSameErasureAs(val.rightProper())) {
                     JavaTypeDefinition right = val.rightProper();
                     JavaTypeDefinition left = val.leftProper();
                     for (int index = 0; index < right.getTypeParameterCount(); ++index) {
@@ -91,7 +97,7 @@ public enum IntferenceRuleType {
             // If S and T are proper types, the constraint reduces to true if S is a subtype of T (§4.10),
             // and false otherwise.
             if (val.isLeftProper() && val.isRightProper()) {
-                if (MethodTypeResolution.isSubtypeable(val.leftProper(), val.rightProper())) {
+                if (MethodTypeResolution.isSubtypeable(val.rightProper(), val.leftProper())) {
                     return newConstraints;
                 } else {
                     return null;
@@ -110,27 +116,13 @@ public enum IntferenceRuleType {
 
             // Otherwise, if S is an inference variable, α, the constraint reduces to the bound α <: T.
             if (val.isLeftVariable()) {
-                if (val.isRightProper()) {
-                    newConstraints.add(new Bound(val.leftVariable(), val.rightProper(), SUBTYPE));
-                } else if (val.isRightVariable()) {
-                    newConstraints.add(new Bound(val.leftVariable(), val.rightVariable(), SUBTYPE));
-                } else {
-                    throw new IllegalStateException("Reduce method is flawed! " + val.toString());
-                }
-
+                newConstraints.add(copyBound(val, SUBTYPE));
                 return newConstraints;
             }
 
             // Otherwise, if T is an inference variable, α, the constraint reduces to the bound S <: α.
             if (val.isRightVariable()) {
-                if (val.isLeftProper()) {
-                    newConstraints.add(new Bound(val.leftProper(), val.rightVariable(), SUBTYPE));
-                } else if (val.isLeftVariable()) {
-                    newConstraints.add(new Bound(val.leftVariable(), val.rightVariable(), SUBTYPE));
-                } else {
-                    throw new IllegalStateException("Reduce method is flawed! " + val.toString());
-                }
-
+                newConstraints.add(copyBound(val, SUBTYPE));
                 return newConstraints;
             }
 
@@ -162,14 +154,12 @@ public enum IntferenceRuleType {
             // Otherwise, if S is a primitive type, let S' be the result of applying boxing conversion (§5.1.7) to S.
             // Then the constraint reduces to ‹S' → T›.
             if (val.isLeftPrimitive()) {
-                if (val.isRightProper()) {
+                if (val.rightProper() != null) {
                     newConstraints.add(new Constraint(MethodTypeResolution.boxPrimitive(val.leftProper()),
                                                       val.rightProper(), LOOSE_INVOCATION));
-                } else if (val.isRightVariable()) {
+                } else {
                     newConstraints.add(new Constraint(MethodTypeResolution.boxPrimitive(val.leftProper()),
                                                       val.rightVariable(), LOOSE_INVOCATION));
-                } else {
-                    throw new IllegalStateException("Reduce method is flawed! " + val.toString());
                 }
 
                 return newConstraints;
@@ -181,11 +171,9 @@ public enum IntferenceRuleType {
                 if (val.leftProper() != null) {
                     newConstraints.add(new Constraint(val.leftProper(), MethodTypeResolution.boxPrimitive(val.rightProper()),
                                                       EQUALITY));
-                } else if (val.leftVariable() != null) {
+                } else {
                     newConstraints.add(new Constraint(val.leftVariable(), MethodTypeResolution.boxPrimitive(val.rightProper()),
                                                       EQUALITY));
-                } else {
-                    throw new IllegalStateException("Reduce method is flawed! " + val.toString());
                 }
 
                 return newConstraints;
@@ -200,26 +188,7 @@ public enum IntferenceRuleType {
             // reduces to true. (The notation []k indicates an array type of k dimensions.) TODO
 
             // Otherwise, the constraint reduces to ‹S<:T›.
-            if (val.leftProper() != null) {
-                if (val.rightProper() != null) {
-                    newConstraints.add(new Constraint(val.leftProper(), val.rightProper(), SUBTYPE));
-                } else if (val.rightVariable() != null) {
-                    newConstraints.add(new Constraint(val.leftProper(), val.rightVariable(), SUBTYPE));
-                } else {
-                    throw new IllegalStateException("Reduce method is flawed! " + val.toString());
-                }
-            } else if (val.leftVariable() != null) {
-                if (val.rightProper() != null) {
-                    newConstraints.add(new Constraint(val.leftVariable(), val.rightProper(), SUBTYPE));
-                } else if (val.rightVariable() != null) {
-                    newConstraints.add(new Constraint(val.leftVariable(), val.rightVariable(), SUBTYPE));
-                } else {
-                    throw new IllegalStateException("Reduce method is flawed! " + val.toString());
-                }
-            } else {
-                throw new IllegalStateException("Reduce method is flawed! " + val.toString());
-            }
-
+            newConstraints.add(copyConstraint(val, SUBTYPE));
             return newConstraints;
         }
     },
@@ -236,26 +205,7 @@ public enum IntferenceRuleType {
             if (val.isRightType()) {
                 // If S is a type, the constraint reduces to ‹S = T›.
                 if (val.isLeftType()) {
-
-                    if (val.isRightProper()) {
-                        if (val.isLeftProper()) {
-                            newConstraints.add(new Constraint(val.leftProper(), val.rightProper(), EQUALITY));
-                        } else if (val.isLeftVariable()) {
-                            newConstraints.add(new Constraint(val.leftVariable(), val.rightProper(), EQUALITY));
-                        } else {
-                            throw new IllegalStateException("Reduce method is flawed! " + val.toString());
-                        }
-                    } else if (val.isRightVariable()) {
-                        if (val.isLeftProper()) {
-                            newConstraints.add(new Constraint(val.leftProper(), val.rightVariable(), EQUALITY));
-                        } else if (val.isLeftVariable()) {
-                            newConstraints.add(new Constraint(val.leftVariable(), val.rightVariable(), EQUALITY));
-                        } else {
-                            throw new IllegalStateException("Reduce method is flawed! " + val.toString());
-                        }
-                    } else {
-                        throw new IllegalStateException("Reduce method is flawed! " + val.toString());
-                    }
+                    newConstraints.add(copyConstraint(val, EQUALITY));
 
                     return newConstraints;
                 }
@@ -274,6 +224,38 @@ public enum IntferenceRuleType {
         }
     };
 
+
+    private static Bound copyBound(BoundOrConstraint val, InferenceRuleType rule) {
+        if (val.leftProper() != null) {
+            if (val.rightProper() != null) {
+                return new Bound(val.leftProper(), val.rightProper(), rule);
+            } else {
+                return new Bound(val.leftProper(), val.rightVariable(), rule);
+            }
+        } else {
+            if (val.rightProper() != null) {
+                return new Bound(val.leftVariable(), val.rightProper(), rule);
+            } else {
+                return new Bound(val.leftVariable(), val.rightVariable(), rule);
+            }
+        }
+    }
+
+    private static Constraint copyConstraint(BoundOrConstraint val, InferenceRuleType rule) {
+        if (val.leftProper() != null) {
+            if (val.rightProper() != null) {
+                return new Constraint(val.leftProper(), val.rightProper(), rule);
+            } else {
+                return new Constraint(val.leftProper(), val.rightVariable(), rule);
+            }
+        } else {
+            if (val.rightProper() != null) {
+                return new Constraint(val.leftVariable(), val.rightProper(), rule);
+            } else {
+                return new Constraint(val.leftVariable(), val.rightVariable(), rule);
+            }
+        }
+    }
 
     public List<BoundOrConstraint> reduce(BoundOrConstraint constraint) {
         return null;

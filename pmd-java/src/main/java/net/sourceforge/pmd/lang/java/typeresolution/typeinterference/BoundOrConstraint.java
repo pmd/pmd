@@ -1,20 +1,25 @@
-package net.sourceforge.pmd.lang.java.typeresolution.typeinterference;
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+package net.sourceforge.pmd.lang.java.typeresolution.typeinterference;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+
+
 public abstract class BoundOrConstraint {
     private final JavaTypeDefinition leftProperType;
-    private final BoundOrConstraint leftTypeVariable;
+    private final Variable leftTypeVariable;
 
     private final JavaTypeDefinition rightProperType;
-    private final BoundOrConstraint rightTypeVariable;
+    private final Variable rightTypeVariable;
 
-    protected final IntferenceRuleType ruleType;
+    protected final InferenceRuleType ruleType;
 
     public BoundOrConstraint(JavaTypeDefinition leftProperType, JavaTypeDefinition rightProperType,
-                             IntferenceRuleType ruleType) {
+                             InferenceRuleType ruleType) {
         this.leftProperType = leftProperType;
         this.leftTypeVariable = null;
         this.rightProperType = rightProperType;
@@ -22,8 +27,8 @@ public abstract class BoundOrConstraint {
         this.ruleType = ruleType;
     }
 
-    public BoundOrConstraint(JavaTypeDefinition leftProperType, BoundOrConstraint rightTypeVariable,
-                             IntferenceRuleType ruleType) {
+    public BoundOrConstraint(JavaTypeDefinition leftProperType, Variable rightTypeVariable,
+                             InferenceRuleType ruleType) {
         this.leftProperType = leftProperType;
         this.leftTypeVariable = null;
         this.rightProperType = null;
@@ -31,8 +36,8 @@ public abstract class BoundOrConstraint {
         this.ruleType = ruleType;
     }
 
-    public BoundOrConstraint(BoundOrConstraint leftTypeVariable, JavaTypeDefinition rightProperType,
-                             IntferenceRuleType ruleType) {
+    public BoundOrConstraint(Variable leftTypeVariable, JavaTypeDefinition rightProperType,
+                             InferenceRuleType ruleType) {
         this.leftProperType = null;
         this.leftTypeVariable = leftTypeVariable;
         this.rightProperType = rightProperType;
@@ -40,8 +45,8 @@ public abstract class BoundOrConstraint {
         this.ruleType = ruleType;
     }
 
-    public BoundOrConstraint(BoundOrConstraint leftTypeVariable, BoundOrConstraint rightTypeVariable,
-                             IntferenceRuleType ruleType) {
+    public BoundOrConstraint(Variable leftTypeVariable, Variable rightTypeVariable,
+                             InferenceRuleType ruleType) {
         this.leftProperType = null;
         this.leftTypeVariable = leftTypeVariable;
         this.rightProperType = null;
@@ -64,7 +69,7 @@ public abstract class BoundOrConstraint {
     }
 
     public boolean isLeftType() {
-        return isLeftProper() || isLeftVariable(); // wildcard is not a type
+        return leftProperType != null || leftTypeVariable != null; // wildcard is not a type
     }
 
     public boolean isLeftPrimitive() {
@@ -72,8 +77,7 @@ public abstract class BoundOrConstraint {
     }
 
     public boolean isLeftClassOrInterface() {
-        // TODO: is this valid?
-        return !isLeftPrimitive() && !isLeftArray();
+        return leftProperType != null && leftProperType.isClassOrInterface();
     }
 
     public boolean isLeftArray() {
@@ -81,7 +85,8 @@ public abstract class BoundOrConstraint {
     }
 
     public boolean isRightProper() {
-        return rightProperType != null && !rightProperType.isNullType();
+        return rightProperType != null && !rightProperType.isNullType() && !rightProperType.isPrimitive()
+                && !rightProperType.isArrayType() && !rightProperType.isGeneric();
     }
 
     public boolean isRightVariable() {
@@ -93,7 +98,7 @@ public abstract class BoundOrConstraint {
     }
 
     public boolean isRightType() {
-        return isRightProper() || isRightVariable(); // wildcard is not a type
+        return rightProperType != null || rightTypeVariable != null; // wildcard is not a type
     }
 
     public boolean isRightPrimitive() {
@@ -101,8 +106,7 @@ public abstract class BoundOrConstraint {
     }
 
     public boolean isRightClassOrInterface() {
-        // TODO: is this valid?
-        return !isRightPrimitive() && !isRightArray();
+        return rightProperType != null && rightProperType.isClassOrInterface();
     }
 
     public boolean isRightArray() {
@@ -113,7 +117,7 @@ public abstract class BoundOrConstraint {
         return leftProperType;
     }
 
-    public BoundOrConstraint leftVariable() {
+    public Variable leftVariable() {
         return leftTypeVariable;
     }
 
@@ -121,11 +125,11 @@ public abstract class BoundOrConstraint {
         return rightProperType;
     }
 
-    public BoundOrConstraint rightVariable() {
+    public Variable rightVariable() {
         return rightTypeVariable;
     }
 
-    public IntferenceRuleType getRuleType() {
+    public InferenceRuleType getRuleType() {
         return ruleType;
     }
 

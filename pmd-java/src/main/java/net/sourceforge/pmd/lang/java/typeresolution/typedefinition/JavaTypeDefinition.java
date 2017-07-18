@@ -178,6 +178,10 @@ public class JavaTypeDefinition implements TypeDefinition {
         return forClass(componentType);
     }
 
+    public boolean isClassOrInterface() {
+        return !clazz.isEnum() && !clazz.isPrimitive() && !clazz.isAnnotation() && !clazz.isArray();
+    }
+
     public boolean isNullType() {
         return false;
     }
