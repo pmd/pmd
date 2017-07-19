@@ -102,7 +102,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private Map<String, JavaTypeDefinition> staticFieldImageToTypeDef;
     private List<String> staticFieldImportOnDemand;
     private ASTCompilationUnit currentAcu;
-    
+
     static {
         // Note: Assumption here that primitives come from same parent
         // ClassLoader regardless of what ClassLoader we are passed
@@ -343,13 +343,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    @Override
-    public Object visit(ASTName node, Object data) {
-        Class<?> accessingClass = getEnclosingTypeDeclarationClass(node);
-        String[] dotSplitImage = node.getImage().split("\\.");
-
+    /**
+     * Set's the node's type to the found Class in the node's name (if there is a class to be found).
+     *
+     * @param node
+     * @return The index in the array produced by splitting the node's name by '.', which is not part of the
+     * class name found. Example: com.package.SomeClass.staicField.otherField, return would be 3
+     */
+    private int searchNodeNameForClass(TypeNode node) {
         // this is the index from which field/method names start in the dotSplitImage array
-        int startIndex = dotSplitImage.length;
+        int startIndex = node.getImage().split("\\.").length;
 
         // tries to find a class in the node's image by omitting the parts after each '.', example:
         // First try: com.package.SomeClass.staticField.otherField
@@ -373,18 +376,36 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         }
 
+        return startIndex;
+    }
+
+    private ASTArgumentList getArgumentList(ASTArguments args) {
+        if (args != null) {
+            super.visit(args, null);
+            return args.getFirstChildOfType(ASTArgumentList.class);
+        }
+
+        return null;
+    }
+
+    private int getArgumentListArity(ASTArgumentList argList) {
+        if (argList != null) {
+            return argList.jjtGetNumChildren();
+        }
+
+        return 0;
+    }
+
+    @Override
+    public Object visit(ASTName node, Object data) {
+        Class<?> accessingClass = getEnclosingTypeDeclarationClass(node);
+        String[] dotSplitImage = node.getImage().split("\\.");
+
+        int startIndex = searchNodeNameForClass(node);
 
         ASTArguments astArguments = getSuffixMethodArgs(node);
-        ASTArgumentList astArgumentList = null;
-        int methodArgsArity = 0;
-
-        if (astArguments != null) {
-            astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
-        }
-
-        if (astArgumentList != null) {
-            methodArgsArity = astArgumentList.jjtGetNumChildren();
-        }
+        ASTArgumentList astArgumentList = getArgumentList(astArguments);
+        int methodArgsArity = getArgumentListArity(astArgumentList);
 
         JavaTypeDefinition previousType;
 
@@ -397,7 +418,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             previousType = getBestMethodReturnType(methods, astArgumentList, null);
             startIndex = 1;
         } else { // field
-            if (node.getType() != null) { // the for loop above found a class in the image -> static field
+            if (node.getType() != null) { // the searchNodeNameForClass above found a class in the image -> static field
                 previousType = JavaTypeDefinition.forClass(node.getType());
             } else { // non-static field access
                 previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0], accessingClass);
@@ -480,11 +501,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (prefix instanceof ASTPrimaryPrefix
                 && prefix.jjtGetParent().jjtGetNumChildren() >= 2) {
             ASTArguments args = prefix.jjtGetParent().jjtGetChild(1).getFirstChildOfType(ASTArguments.class);
-            // TODO: investigate if this will cause double visitation
-            if (args != null) {
-                super.visit(args, null);
-            }
-
             return args;
         }
 
@@ -601,7 +617,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         return null;
     }
-    
+
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -835,22 +851,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 } else if (previousChild != null && previousChild.getType() != null
                         && currentChild.getImage() != null) {
 
-                    ASTArguments astArguments = null;
-                    ASTArgumentList astArgumentList = null;
-                    int methodArgsArity = 0;
-
-                    if (nextChild != null) {
-                        astArguments = nextChild.getFirstChildOfType(ASTArguments.class);
-                    }
-
-                    if (astArguments != null) {
-                        super.visit(astArguments, data);
-                        astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
-                    }
-
-                    if (astArgumentList != null) {
-                        methodArgsArity = astArgumentList.jjtGetNumChildren();
-                    }
+                    ASTArguments astArguments = nextChild != null
+                            ? nextChild.getFirstChildOfType(ASTArguments.class) : null;
+                    ASTArgumentList astArgumentList = getArgumentList(astArguments);
+                    int methodArgsArity = getArgumentListArity(astArgumentList);
 
                     if (astArguments != null) { // method
                         List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
