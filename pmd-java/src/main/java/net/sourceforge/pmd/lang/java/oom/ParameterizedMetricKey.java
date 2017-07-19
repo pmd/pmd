@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
  *
  * @author Clément Fournier
  */
-public final class ParameterizedMetricKey {
+/* default */ final class ParameterizedMetricKey {
 
     private static final Map<Integer, ParameterizedMetricKey> POOL = new HashMap<>();
 
@@ -35,25 +35,13 @@ public final class ParameterizedMetricKey {
 
     @Override
     public String toString() {
-        return "ParameterizedMetricKey{key=" + key + ", version=" + version + '}';
+        return "ParameterizedMetricKey{key=" + key.name() + ", version=" + version.name() + '}';
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        ParameterizedMetricKey that = (ParameterizedMetricKey) o;
-
-        if (!key.equals(that.key)) {
-            return false;
-        }
-        return version.equals(that.version);
+        return this == o;
     }
 
 

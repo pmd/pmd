@@ -108,7 +108,7 @@ public class MetricsVisitorTest {
     }
 
 
-    private ASTCompilationUnit parseAndVisitForClass15(Class<?> clazz) {
+    /* default */ static ASTCompilationUnit parseAndVisitForClass15(Class<?> clazz) {
         return parseAndVisitForClass(clazz, "1.5");
     }
 
@@ -117,7 +117,7 @@ public class MetricsVisitorTest {
     // the classpath. Normally the IDE doesn't put source directories themselves
     // directly in the classpath, only
     // the output directories are in the classpath.
-    private ASTCompilationUnit parseAndVisitForClass(Class<?> clazz, String version) {
+    private static ASTCompilationUnit parseAndVisitForClass(Class<?> clazz, String version) {
         String sourceFile = clazz.getName().replace('.', '/') + ".java";
         InputStream is = ClassTypeResolverTest.class.getClassLoader().getResourceAsStream(sourceFile);
         if (is == null) {
@@ -133,7 +133,7 @@ public class MetricsVisitorTest {
         return parseAndVisitForString(source, version);
     }
 
-    private ASTCompilationUnit parseAndVisitForString(String source, String version) {
+    private static ASTCompilationUnit parseAndVisitForString(String source, String version) {
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
                                                                         .getVersion(version).getLanguageVersionHandler();
         ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler

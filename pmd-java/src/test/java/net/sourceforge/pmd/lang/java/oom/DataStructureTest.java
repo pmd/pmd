@@ -4,23 +4,39 @@
 
 package net.sourceforge.pmd.lang.java.oom;
 
+import static net.sourceforge.pmd.lang.java.oom.MetricsVisitorTest.parseAndVisitForClass15;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.ParserTst;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
+import net.sourceforge.pmd.lang.java.oom.api.MetricKey;
+import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
+import net.sourceforge.pmd.lang.java.oom.testdata.MetricsVisitorTestData;
 
 /**
  * Tests functionality of the whole data structure (PackageStats, ClassStats, OperationStats). The behaviour of the
@@ -30,12 +46,38 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
  */
 public class DataStructureTest extends ParserTst {
 
+    MetricKey<ClassMetric> classMetricKey = new MetricKey<ClassMetric>() {
+        @Override
+        public String name() {
+            return null;
+        }
+
+
+        @Override
+        public ClassMetric getCalculator() {
+            return new RandomMetric();
+        }
+    };
+    MetricKey<OperationMetric> opMetricKey = new MetricKey<OperationMetric>() {
+        @Override
+        public String name() {
+            return null;
+        }
+
+
+        @Override
+        public OperationMetric getCalculator() {
+            return new RandomMetric();
+        }
+    };
     private PackageStats pack;
+
 
     @Before
     public void setUp() {
         pack = new PackageStats();
     }
+
 
     @Test
     public void testAddClass() {
@@ -47,6 +89,7 @@ public class DataStructureTest extends ParserTst {
         // now it's added, this shouldn't return null
         assertNotNull(pack.getClassStats(qname, false));
     }
+
 
     @Test
     public void testAddOperation() {
@@ -65,6 +108,7 @@ public class DataStructureTest extends ParserTst {
         assertTrue(pack.hasMatchingSig(qname, new OperationSigMask()));
     }
 
+
     @Test
     public void testAddField() {
         final String TEST = "package org.foo; class Boo{ "
@@ -82,4 +126,79 @@ public class DataStructureTest extends ParserTst {
         clazz.addField(fieldName, signature);
         assertTrue(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
     }
+
+
+    @Test
+    public void memoizationTest() {
+        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
+
+        List<Integer> expected = visitWith(acu, true);
+        List<Integer> real = visitWith(acu, false);
+
+        assertEquals(expected, real);
+    }
+
+
+    @Test
+    public void forceMemoizationTest() {
+        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
+
+        List<Integer> reference = visitWith(acu, true);
+        List<Integer> real = visitWith(acu, true);
+
+        assertEquals(reference.size(), real.size());
+
+        // we force recomputation so each result should be different
+        for (int i = 0; i < reference.size(); i++) {
+            assertNotEquals(reference.get(i), real.get(i));
+        }
+    }
+
+
+    private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
+        final PackageStats toplevel = Metrics.getTopLevelPackageStats();
+
+        final List<Integer> result = new ArrayList<>();
+
+        acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
+            @Override
+            public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+                result.add((int) toplevel.compute(opMetricKey, node, force, Version.STANDARD));
+                return super.visit(node, data);
+            }
+
+
+            @Override
+            public Object visit(ASTAnyTypeDeclaration node, Object data) {
+                result.add((int) toplevel.compute(classMetricKey, node, force, Version.STANDARD));
+                return super.visit(node, data);
+            }
+        }, null);
+
+        return result;
+    }
+
+
+
+    /**
+     * Test metric.
+     */
+    private class RandomMetric extends AbstractMetric implements ClassMetric, OperationMetric {
+
+        private Random random = new Random();
+
+
+        @Override
+        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+            return random.nextInt();
+        }
+
+
+        @Override
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+            return random.nextInt();
+        }
+    }
+
+
 }

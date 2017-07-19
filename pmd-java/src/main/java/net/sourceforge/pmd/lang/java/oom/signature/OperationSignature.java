@@ -80,9 +80,6 @@ public final class OperationSignature extends Signature {
         GETTER_OR_SETTER, CONSTRUCTOR, METHOD, STATIC;
 
 
-        //   private static final Pattern GETTER_OR_SETTER_NAME_PATTERN = Pattern.compile("(?:get|set|is)\\w*");
-
-
         public static Role get(ASTMethodOrConstructorDeclaration node) {
             return node instanceof ASTConstructorDeclaration ? CONSTRUCTOR : get((ASTMethodDeclaration) node);
         }
@@ -153,6 +150,7 @@ public final class OperationSignature extends Signature {
 
             return fieldNames.containsKey(node.getName());
         }
+
 
         private static boolean containsIgnoreCase(Set<String> set, String str) {
             for (String s : set) {
