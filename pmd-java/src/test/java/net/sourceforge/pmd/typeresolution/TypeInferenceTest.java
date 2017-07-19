@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.typeresolution;
 
-
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.CONTAINS;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.EQUALITY;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
@@ -12,17 +11,18 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.Inferen
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-
 
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.BoundOrConstraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 
 public class TypeInferenceTest {
@@ -197,13 +197,106 @@ public class TypeInferenceTest {
         // If T is a wildcard of the form ? super T': TODO
     }
 
+    @Test
+    public void testIncorporation() {
+        List<Constraint> result;
+        List<Bound> current = new ArrayList<>();
+        List<Bound> newBounds = new ArrayList<>();
+
+        JavaTypeDefinition s = JavaTypeDefinition.forClass(int.class);
+        JavaTypeDefinition t = JavaTypeDefinition.forClass(double.class);
+        Variable alpha = a;
+
+        // ### Original rule 1. : α = S and α = T imply ‹S = T›
+        result = incorporationResult(new Bound(alpha, s, EQUALITY), new Bound(alpha, t, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, EQUALITY, Constraint.class);
+
+        // α = S and T = α imply ‹S = T›
+        result = incorporationResult(new Bound(alpha, s, EQUALITY), new Bound(t, alpha, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, EQUALITY, Constraint.class);
+
+        // S = α and α = T imply ‹S = T›
+        result = incorporationResult(new Bound(s, alpha, EQUALITY), new Bound(alpha, t, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, EQUALITY, Constraint.class);
+
+        // S = α and T = α imply ‹S = T›
+        result = incorporationResult(new Bound(s, alpha, EQUALITY), new Bound(t, alpha, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, EQUALITY, Constraint.class);
+
+
+        // ### Original rule 2. : α = S and α <: T imply ‹S <: T›
+        result = incorporationResult(new Bound(alpha, s, EQUALITY), new Bound(alpha, t, SUBTYPE));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, SUBTYPE, Constraint.class);
+
+        // S = α and α <: T imply ‹S <: T›
+        result = incorporationResult(new Bound(s, alpha, EQUALITY), new Bound(alpha, t, SUBTYPE));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, SUBTYPE, Constraint.class);
+
+        // α <: T and α = S imply ‹S <: T›
+        result = incorporationResult(new Bound(alpha, t, SUBTYPE), new Bound(alpha, s, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, SUBTYPE, Constraint.class);
+
+        // α <: T and S = α imply ‹S <: T›
+        result = incorporationResult(new Bound(alpha, t, SUBTYPE), new Bound(s, alpha, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, SUBTYPE, Constraint.class);
+
+
+        // ### Original rule 3. : α = S and T <: α imply ‹T <: S›
+        result = incorporationResult(new Bound(alpha, s, EQUALITY), new Bound(t, alpha, SUBTYPE));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), t, s, SUBTYPE, Constraint.class);
+
+        // S = α and T <: α imply ‹T <: S›
+        result = incorporationResult(new Bound(s, alpha, EQUALITY), new Bound(t, alpha, SUBTYPE));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), t, s, SUBTYPE, Constraint.class);
+
+        // T <: α and α = S imply ‹T <: S›
+        result = incorporationResult(new Bound(t, alpha, SUBTYPE), new Bound(alpha, s, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), t, s, SUBTYPE, Constraint.class);
+
+        // T <: α and S = α imply ‹T <: S›
+        result = incorporationResult(new Bound(t, alpha, SUBTYPE), new Bound(s, alpha, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), t, s, SUBTYPE, Constraint.class);
+
+
+        // ### Original rule 4. : S <: α and α <: T imply ‹S <: T›
+        result = incorporationResult(new Bound(s, alpha, EQUALITY), new Bound(alpha, t, SUBTYPE));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, SUBTYPE, Constraint.class);
+
+        // α <: T and S <: α imply ‹S <: T›
+        result = incorporationResult(new Bound(alpha, t, SUBTYPE), new Bound(s, alpha, EQUALITY));
+        assertEquals(result.size(), 1);
+        testBoundOrConstraint(result.get(0), s, t, SUBTYPE, Constraint.class);
+
+    }
+
+    private List<Constraint> incorporationResult(Bound firstBound, Bound secondBound) {
+        List<Bound> current = new ArrayList<>();
+        List<Bound> newBounds = new ArrayList<>();
+        current.add(firstBound);
+        newBounds.add(secondBound);
+        return TypeInferenceResolver.incorporateBounds(current, newBounds);
+    }
+
 
     private void testBoundOrConstraint(BoundOrConstraint val, JavaTypeDefinition left, JavaTypeDefinition right,
                                        InferenceRuleType rule, Class<? extends BoundOrConstraint> type) {
         assertTrue(val.getClass() == type);
         assertEquals(val.leftProper(), left);
         assertEquals(val.rightProper(), right);
-        assertEquals(val.getRuleType(), rule);
+        assertEquals(val.ruleType(), rule);
     }
 
 
@@ -212,7 +305,7 @@ public class TypeInferenceTest {
         assertTrue(val.getClass() == type);
         assertEquals(val.leftProper(), left);
         assertEquals(val.rightVariable(), right);
-        assertEquals(val.getRuleType(), rule);
+        assertEquals(val.ruleType(), rule);
     }
 
     private void testBoundOrConstraint(BoundOrConstraint val, Variable left, JavaTypeDefinition right,
@@ -220,7 +313,7 @@ public class TypeInferenceTest {
         assertTrue(val.getClass() == type);
         assertEquals(val.leftVariable(), left);
         assertEquals(val.rightProper(), right);
-        assertEquals(val.getRuleType(), rule);
+        assertEquals(val.ruleType(), rule);
     }
 
     private void testBoundOrConstraint(BoundOrConstraint val, Variable left, Variable right,
@@ -228,6 +321,6 @@ public class TypeInferenceTest {
         assertTrue(val.getClass() == type);
         assertEquals(val.leftVariable(), left);
         assertEquals(val.rightVariable(), right);
-        assertEquals(val.getRuleType(), rule);
+        assertEquals(val.ruleType(), rule);
     }
 }

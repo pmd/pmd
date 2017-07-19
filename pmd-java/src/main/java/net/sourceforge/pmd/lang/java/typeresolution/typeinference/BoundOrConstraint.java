@@ -129,7 +129,7 @@ public abstract class BoundOrConstraint {
         return rightTypeVariable;
     }
 
-    public InferenceRuleType getRuleType() {
+    public InferenceRuleType ruleType() {
         return ruleType;
     }
 
