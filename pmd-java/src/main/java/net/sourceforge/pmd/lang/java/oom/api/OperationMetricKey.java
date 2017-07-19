@@ -11,16 +11,19 @@ import net.sourceforge.pmd.lang.java.oom.metrics.LocMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
 
 /**
- * Keys identifying operation metrics.
+ * Keys identifying standard operation metrics.
  */
 public enum OperationMetricKey implements MetricKey<OperationMetric> {
 
     /** Access to Foreign Data. */
     ATFD(new AtfdMetric()),
+
     /** Cyclomatic complexity. */
     CYCLO(new CycloMetric()),
+
     /** Non Commenting Source Statements. */
     NCSS(new NcssMetric()),
+
     /** Lines of Code. */
     LOC(new LocMetric());
 

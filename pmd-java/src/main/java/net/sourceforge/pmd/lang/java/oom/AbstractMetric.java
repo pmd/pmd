@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.oom.api.Metric;
  * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a
  * PackageStats and node. They're stateless.
  *
- *
  * @author Clément Fournier
  */
 public abstract class AbstractMetric implements Metric {

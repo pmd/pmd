@@ -18,7 +18,7 @@ import java.util.Set;
 public abstract class SigMask<T extends Signature> {
 
     /** Visibility mask. */
-    protected Set<Signature.Visibility> visMask = new HashSet<>();
+    private Set<Signature.Visibility> visMask = new HashSet<>();
 
 
     public SigMask() {

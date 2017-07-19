@@ -39,6 +39,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     private ClassMetricKey classKey;
     private OperationMetricKey opKey;
 
+
     public AbstractMetricTestRule() {
         classKey = getClassKey();
         opKey = getOpKey();
@@ -48,12 +49,30 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         definePropertyDescriptor(reportLevelDescriptor);
     }
 
+
+    /**
+     * Returns the class metric key to test, or null if we shouldn't test classes.
+     *
+     * @return The class metric key to test.
+     */
+    protected abstract ClassMetricKey getClassKey();
+
+
+    /**
+     * Returns the class metric key to test, or null if we shouldn't test classes.
+     *
+     * @return The class metric key to test.
+     */
+    protected abstract OperationMetricKey getOpKey();
+
+
     public Object visit(ASTCompilationUnit node, Object data) {
         reportClasses = getProperty(reportClassesDescriptor);
         reportMethods = getProperty(reportMethodsDescriptor);
         reportLevel = getProperty(reportLevelDescriptor);
         return super.visit(node, data);
     }
+
 
     /**
      * Sets the default for reportClasses descriptor.
@@ -64,6 +83,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         return true;
     }
 
+
     /**
      * Sets the default for reportMethods descriptor.
      *
@@ -72,6 +92,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
     protected boolean isReportMethods() {
         return true;
     }
+
 
     /**
      * Sets the version to test
@@ -82,19 +103,6 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         return Version.STANDARD;
     }
 
-    /**
-     * Returns the class metric key to test, or null if we shouldn't test classes.
-     *
-     * @return The class metric key to test.
-     */
-    protected abstract ClassMetricKey getClassKey();
-
-    /**
-     * Returns the class metric key to test, or null if we shouldn't test classes.
-     *
-     * @return The class metric key to test.
-     */
-    protected abstract OperationMetricKey getOpKey();
 
     /**
      * Default report level, which is 0.

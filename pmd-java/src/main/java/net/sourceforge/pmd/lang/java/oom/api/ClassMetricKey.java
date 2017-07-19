@@ -12,17 +12,22 @@ import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric;
 import net.sourceforge.pmd.lang.java.oom.metrics.WmcMetric;
 
 /**
- * Keys identifying class metrics.
+ * Keys identifying standard class metrics.
  */
 public enum ClassMetricKey implements MetricKey<ClassMetric> {
+
     /** Access to Foreign Data. */
     ATFD(new AtfdMetric()),
+
     /** Weighed Method Count. */
     WMC(new WmcMetric()),
+
     /** Cyclomatic complexity. */
     CYCLO(new CycloMetric()),
+
     /** Non Commenting Source Statements. */
     NCSS(new NcssMetric()),
+
     /** Lines of Code. */
     LOC(new LocMetric());
 
