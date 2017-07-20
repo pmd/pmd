@@ -24,7 +24,7 @@ toc:
 
 ### Description
 
-McCabe's Cyclomatic Complexity is the number of independent paths through a block of code \[[Lanza05](#Lanza05)\]. 
+Number of independent paths through a block of code \[[Lanza05](#Lanza05)\]. 
 Formally, given that the control flow graph of the block has n vertices, e edges and p connected components, the 
 Cyclomatic complexity of the block is given by `CYCLO = e - n + 2p` \[[McCabe76](#McCabe76)\]. In practice it can be 
 calculated by counting control flow statements following the standard rules given below.
@@ -62,7 +62,7 @@ Simply counts the number of lines of code the operation or class takes up in the
 
 ### Description
 
-Counts statements of a class or operation. That's roughly equivalent to counting the number of semicolons and 
+Number of statements in a class or operation. That's roughly equivalent to counting the number of semicolons and 
 opening braces in the program. Comments and blank lines are ignored, and so are split statements (e.g. `int\n a;` counts
  a single statement). 
 
@@ -73,7 +73,7 @@ The standard version of the metric is based off JavaNCSS's version  \[[JavaNcss]
 * +1 for each assignment, variable declaration (except `for` loop initializers) or statement expression. We count 
 variables  declared on the same line (e.g. `int a, b, c;`) as a single statement. 
 * Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, interface, enum, annotation),  
-and method and field declarations.
+and method and field declarations \[[Sonarqube](#Sonarqube)\].
 * Contrary to JavaNCSS, but as Sonarqube, we do not count package declaration and import declarations as statements.
 
 
@@ -81,6 +81,20 @@ and method and field declarations.
 
 * Version `NcssVersion#JAVANCSS`: Import and package statements are counted as well. This version fully complies with
  JavaNCSS.
+ 
+ 
+## Weighted Method Count (WMC)
+
+*Class metric.* Can be computed on classes and enums
+
+### Description
+
+Sum of the statistical complexity of the operations in the class. We use [CYCLO](#cyclomatic-complexity-cyclo) to 
+quantify the complexity of an operation \[[Lanza05](#Lanza05)\].
+
+### Versions
+
+WMC uses the same versions as CYCLO, which have the effect of summing that version of CYCLO to calculate the metric.
 
 # References
 
@@ -88,6 +102,6 @@ and method and field declarations.
 
 <a name="McCabe76">McCabe76:</a> McCabe, A Complexity Measure, in Proceedings of the 2nd ICSE (1976).
 
-<a name="Sonarqube">Sonarqube:</a> [Sonarqube online documentation.](https://docs.sonarqube.org/display/SONAR/Metrics+-+Complexity)
+<a name="Sonarqube">Sonarqube:</a> [Sonarqube online documentation.](https://docs.sonarqube.org/display/SONAR/Metric+Definitions)
 
 <a name="JavaNcss">JavaNcss:</a> [JavaNCSS online documentation.](http://www.kclee.de/clemens/java/javancss/)
