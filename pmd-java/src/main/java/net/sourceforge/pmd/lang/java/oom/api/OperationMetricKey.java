@@ -20,28 +20,28 @@ public enum OperationMetricKey implements MetricKey<ASTMethodOrConstructorDeclar
      *
      * @see net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric
      */
-    ATFD(new AtfdClassMetric()),
+    ATFD(new AtfdOperationMetric()),
 
     /**
      * Cyclomatic complexity.
      *
      * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
      */
-    CYCLO(new CycloClassMetric()),
+    CYCLO(new CycloOperationMetric()),
 
     /**
      * Non Commenting Source Statements.
      *
      * @see net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric
      */
-    NCSS(new NcssClassMetric()),
+    NCSS(new NcssOperationMetric()),
 
     /**
      * Lines of Code.
      *
      * @see net.sourceforge.pmd.lang.java.oom.metrics.LocMetric
      */
-    LOC(new LocClassMetric());
+    LOC(new LocOperationMetric());
 
     private final OperationMetric calculator;
 
