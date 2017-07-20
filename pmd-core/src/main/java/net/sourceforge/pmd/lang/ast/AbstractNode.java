@@ -227,7 +227,7 @@ public abstract class AbstractNode implements Node {
         List<T> parents = new ArrayList<>();
         Node parentNode = jjtGetParent();
         while (parentNode != null) {
-            if (parentType.isInstance(parentNode.getClass())) {
+            if (parentType.isInstance(parentNode)) {
                 parents.add((T) parentNode);
             }
             parentNode = parentNode.jjtGetParent();

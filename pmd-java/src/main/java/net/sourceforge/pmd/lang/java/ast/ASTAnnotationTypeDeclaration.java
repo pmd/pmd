@@ -56,7 +56,7 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode imp
 
     @Override
     public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return findChildrenOfType(ASTAnnotationTypeBody.class)
-            .get(0).findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+        return getFirstChildOfType(ASTAnnotationTypeBody.class)
+            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 }

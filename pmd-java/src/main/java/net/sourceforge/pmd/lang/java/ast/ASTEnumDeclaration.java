@@ -52,7 +52,7 @@ public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode implements AS
 
     @Override
     public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return findChildrenOfType(ASTEnumBody.class)
-            .get(0).findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+        return getFirstChildOfType(ASTEnumBody.class)
+            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 }

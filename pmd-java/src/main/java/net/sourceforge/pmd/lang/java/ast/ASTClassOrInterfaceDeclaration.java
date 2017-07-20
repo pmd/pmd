@@ -70,7 +70,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
 
     @Override
     public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return findChildrenOfType(ASTClassOrInterfaceBody.class)
-            .get(0).findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+        return getFirstChildOfType(ASTClassOrInterfaceBody.class)
+            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 }

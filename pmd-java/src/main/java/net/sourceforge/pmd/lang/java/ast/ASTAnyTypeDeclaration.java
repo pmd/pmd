@@ -22,9 +22,9 @@ public interface ASTAnyTypeDeclaration extends QualifiableNode, AccessNode, Java
 
 
     /**
-     * Retrieves the body of the declaration.
+     * Retrieves the member declarations (fields, methods, classes, etc.) from the body of this type declaration.
      *
-     * @return The body of the declaration
+     * @return The member declarations declared in this type declaration
      */
     List<ASTAnyTypeBodyDeclaration> getDeclarations();
 

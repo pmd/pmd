@@ -62,7 +62,7 @@ public final class CycloMetric {
         @Override
         public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
-            JavaParserVisitor visitor = (CycloVersion.IGNORE_BOOLEAN_PATHS.equals(version))
+            JavaParserVisitor visitor = (CycloVersion.IGNORE_BOOLEAN_PATHS == version)
                                         ? new CycloPathUnawareOperationVisitor()
                                         : new StandardCycloVisitor();
 

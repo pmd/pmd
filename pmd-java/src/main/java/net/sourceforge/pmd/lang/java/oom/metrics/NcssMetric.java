@@ -46,7 +46,7 @@ public final class NcssMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-            JavaParserVisitor visitor = (NcssVersion.JAVANCSS.equals(version))
+            JavaParserVisitor visitor = (NcssVersion.JAVANCSS == version)
                                         ? new JavaNcssVisitor()
                                         : new DefaultNcssVisitor();
 
