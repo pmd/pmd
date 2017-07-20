@@ -76,6 +76,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.Token;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -381,7 +382,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private ASTArgumentList getArgumentList(ASTArguments args) {
         if (args != null) {
-            super.visit(args, null);
             return args.getFirstChildOfType(ASTArgumentList.class);
         }
 
@@ -805,11 +805,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTPrimaryExpression primaryNode, Object data) {
-        super.visit(primaryNode, data);
+        // visit method arguments in reverse
+        for (int i = primaryNode.jjtGetNumChildren() - 1; i >= 0; --i) {
+            ((JavaNode) primaryNode.jjtGetChild(i)).jjtAccept(this, data);
+        }
 
         JavaTypeDefinition primaryNodeType = null;
         AbstractJavaTypeNode previousChild = null;
-        AbstractJavaTypeNode nextChild = null;
+        AbstractJavaTypeNode nextChild;
         Class<?> accessingClass = getEnclosingTypeDeclarationClass(primaryNode);
 
         for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
@@ -892,6 +895,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      */
     @Override
     public Object visit(ASTArguments node, Object data) {
+        super.visit(node, data);
         return data;
     }
 
