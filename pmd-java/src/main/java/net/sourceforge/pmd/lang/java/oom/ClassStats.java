@@ -174,6 +174,38 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 
     /**
+     * Finds the declaration nodes of all methods or constructors that are declared inside a class.
+     *
+     * @param node          The class in which to look for.
+     * @param includeNested Include operations found in nested classes?
+     *
+     * @return The list of all operations declared inside the specified class.
+     *
+     * TODO:cf this one is computed every time
+     */
+    private static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
+                                                                          boolean includeNested) {
+
+        if (includeNested) {
+            return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
+        }
+
+        List<ASTClassOrInterfaceBodyDeclaration> outerDecls
+            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
+
+
+        List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
+
+        for (ASTClassOrInterfaceBodyDeclaration decl : outerDecls) {
+            if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
+                operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
+            }
+        }
+        return operations;
+    }
+
+
+    /**
      * Computes the value of a metric for an operation.
      *
      * @param key     The operation metric for which to find a memoized result
@@ -290,5 +322,4 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
     private static double average(List<Double> values) {
         return sum(values) / values.size();
     }
-
 }

@@ -71,6 +71,7 @@ public class ParameterizedMetricKeyTest {
 
     @Test
     public void testAdHocMetricKey() {
+
         MetricKey<ASTAnyTypeDeclaration> adHocKey = ClassMetricKey.of(null, "metric");
 
         MetricVersion adHocVersion = new MetricVersion() {

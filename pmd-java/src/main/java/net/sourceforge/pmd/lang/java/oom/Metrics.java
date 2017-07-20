@@ -68,6 +68,7 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
     public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version) {
+  
         if (!key.getCalculator().supports(node)) {
             return Double.NaN;
         }
@@ -101,6 +102,7 @@ public final class Metrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+
         if (!key.getCalculator().supports(node)) {
             return Double.NaN;
         }

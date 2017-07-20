@@ -72,7 +72,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
      */
     protected abstract OperationMetricKey getOpKey();
 
-
+  
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         reportClasses = getProperty(reportClassesDescriptor);
@@ -155,5 +155,4 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         }
         return data;
     }
-
 }

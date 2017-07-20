@@ -118,6 +118,21 @@ public class DataStructureTest extends ParserTst {
         assertEquals(expected, real);
     }
 
+  
+    @Test
+    public void forceMemoizationTest() {
+        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
+
+        List<Integer> reference = visitWith(acu, true);
+        List<Integer> real = visitWith(acu, true);
+
+        assertEquals(reference.size(), real.size());
+
+        // we force recomputation so each result should be different
+        for (int i = 0; i < reference.size(); i++) {
+            assertNotEquals(reference.get(i), real.get(i));
+        }
+    }
 
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
         final PackageStats toplevel = Metrics.getTopLevelPackageStats();
@@ -143,22 +158,6 @@ public class DataStructureTest extends ParserTst {
     }
 
 
-    @Test
-    public void forceMemoizationTest() {
-        ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
-
-        List<Integer> reference = visitWith(acu, true);
-        List<Integer> real = visitWith(acu, true);
-
-        assertEquals(reference.size(), real.size());
-
-        // we force recomputation so each result should be different
-        for (int i = 0; i < reference.size(); i++) {
-            assertNotEquals(reference.get(i), real.get(i));
-        }
-    }
-
-
     private class RandomOperationMetric extends AbstractOperationMetric {
 
         private Random random = new Random();
@@ -179,9 +178,5 @@ public class DataStructureTest extends ParserTst {
         public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
             return random.nextInt();
         }
-
-
     }
-
-
 }

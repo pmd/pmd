@@ -15,17 +15,33 @@ import net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric.NcssOperationMetric;
  */
 public enum OperationMetricKey implements MetricKey<ASTMethodOrConstructorDeclaration> {
 
-    /** Access to Foreign Data. */
-    ATFD(new AtfdOperationMetric()),
+    /**
+     * Access to Foreign Data.
+     *
+     * @see net.sourceforge.pmd.lang.java.oom.metrics.AtfdMetric
+     */
+    ATFD(new AtfdClassMetric()),
 
-    /** Cyclomatic complexity. */
-    CYCLO(new CycloOperationMetric()),
+    /**
+     * Cyclomatic complexity.
+     *
+     * @see net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric
+     */
+    CYCLO(new CycloClassMetric()),
 
-    /** Non Commenting Source Statements. */
-    NCSS(new NcssOperationMetric()),
+    /**
+     * Non Commenting Source Statements.
+     *
+     * @see net.sourceforge.pmd.lang.java.oom.metrics.NcssMetric
+     */
+    NCSS(new NcssClassMetric()),
 
-    /** Lines of Code. */
-    LOC(new LocOperationMetric());
+    /**
+     * Lines of Code.
+     *
+     * @see net.sourceforge.pmd.lang.java.oom.metrics.LocMetric
+     */
+    LOC(new LocClassMetric());
 
     private final OperationMetric calculator;
 

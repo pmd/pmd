@@ -15,13 +15,13 @@ fi
 (
     # Run the build, truncate output due to Travis log limits
 
-    echo -e "\n\nExecuting ./mvnw install...\n\n"
+    echo -e "\n\nExecuting ./mvnw install..."
     travis_wait ./mvnw install -DskipTests=true -B -V -q
-    echo -e "Finished executing ./mvnw install\n\n"
+    echo "Finished executing ./mvnw install"
 
-    echo -e "\n\nExecuting ./mvnw site site:stage...\n\n"
-    travis_wait ./mvnw site site:stage -DskipTests=true -Psite -B -V -q
-    echo -e "Finished executing ./mvnw site site:stage...\n\n"
+    echo -e "\n\nExecuting ./mvnw site site:stage...
+    travis_wait 40 ./mvnw site site:stage -DskipTests=true -Psite -B -V -q
+    echo "Finished executing ./mvnw site site:stage..."
 )
 
 echo -e "\n\nCreating pmd-doc archive...\n\n"
