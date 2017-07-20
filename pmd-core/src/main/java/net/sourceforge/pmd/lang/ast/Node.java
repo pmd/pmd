@@ -32,7 +32,7 @@ public interface Node {
 
 
     /**
-     * Sets the parent of the node
+     * Sets the parent of this node.
      *
      * @param parent The parent
      */
@@ -40,7 +40,7 @@ public interface Node {
 
 
     /**
-     * Returns the parent of this node
+     * Returns the parent of this node.
      *
      * @return The parent of the node
      */
@@ -110,14 +110,15 @@ public interface Node {
 
     boolean isFindBoundary();
 
+
     /**
-     * Returns the n-th parent or null if there are not <code>n</code> ancestors
+     * Returns the n-th parent or null if there are not {@code n} ancestors
      *
-     * @param n
-     *            how many ancestors to iterate over.
+     * @param n how many ancestors to iterate over.
+     *
      * @return the n-th parent or null.
-     * @throws IllegalArgumentException
-     *             if <code>n</code> is not positive.
+     *
+     * @throws IllegalArgumentException if {@code n} is negative or zero.
      */
     Node getNthParent(int n);
 
@@ -136,7 +137,7 @@ public interface Node {
 
     /**
      * Traverses up the tree to find all of the parent instances of type
-     * parentType
+     * parentType or one of its subclasses.
      *
      * @param parentType Class literal of the type you want to find
      * @param <T>        The type you want to find

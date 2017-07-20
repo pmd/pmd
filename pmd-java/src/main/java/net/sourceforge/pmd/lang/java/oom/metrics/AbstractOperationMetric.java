@@ -9,6 +9,8 @@ import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 
 /**
+ * Base class for operation metrics.
+ *
  * @author Clément Fournier
  */
 public abstract class AbstractOperationMetric extends AbstractMetric<ASTMethodOrConstructorDeclaration>
@@ -24,6 +26,4 @@ public abstract class AbstractOperationMetric extends AbstractMetric<ASTMethodOr
     public boolean supports(ASTMethodOrConstructorDeclaration node) {
         return !node.isAbstract();
     }
-
-
 }

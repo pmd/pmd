@@ -10,6 +10,8 @@ import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 
 /**
+ * Base class for class metrics.
+ *
  * @author Clément Fournier
  */
 public abstract class AbstractClassMetric extends AbstractMetric<ASTAnyTypeDeclaration> implements ClassMetric {
