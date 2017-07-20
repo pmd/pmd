@@ -87,6 +87,12 @@ entries:
     - title: Writing XPath Rules
       url: /pmd_devdocs_writing_xpath_rules.html
       output: web, pdf
+    - title: Using code metrics in custom rules
+      url: /pmd_devdocs_metrics_howto.html
+      output: web, pdf
+    - title: Index of code metrics
+      url: /pmd_devdocs_metrics_index.html
+      output: web, pdf
     - title: Making Rulesets
       url: /pmd_devdocs_making_rulesets.html
       output: web, pdf
