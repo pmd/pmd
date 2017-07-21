@@ -27,11 +27,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
+import net.sourceforge.pmd.lang.java.oom.api.ClassMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
+import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
+import net.sourceforge.pmd.lang.java.oom.metrics.AbstractClassMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.AbstractOperationMetric;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
@@ -46,30 +48,8 @@ import net.sourceforge.pmd.lang.java.oom.testdata.MetricsVisitorTestData;
  */
 public class DataStructureTest extends ParserTst {
 
-    MetricKey<ClassMetric> classMetricKey = new MetricKey<ClassMetric>() {
-        @Override
-        public String name() {
-            return null;
-        }
-
-
-        @Override
-        public ClassMetric getCalculator() {
-            return new RandomMetric();
-        }
-    };
-    MetricKey<OperationMetric> opMetricKey = new MetricKey<OperationMetric>() {
-        @Override
-        public String name() {
-            return null;
-        }
-
-
-        @Override
-        public OperationMetric getCalculator() {
-            return new RandomMetric();
-        }
-    };
+    MetricKey<ASTAnyTypeDeclaration> classMetricKey = ClassMetricKey.of(new RandomClassMetric(), null);
+    MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = OperationMetricKey.of(new RandomOperationMetric(), null);
     private PackageStats pack;
 
 
@@ -138,7 +118,7 @@ public class DataStructureTest extends ParserTst {
         assertEquals(expected, real);
     }
 
-
+  
     @Test
     public void forceMemoizationTest() {
         ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
@@ -153,7 +133,6 @@ public class DataStructureTest extends ParserTst {
             assertNotEquals(reference.get(i), real.get(i));
         }
     }
-
 
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
         final PackageStats toplevel = Metrics.getTopLevelPackageStats();
@@ -179,19 +158,9 @@ public class DataStructureTest extends ParserTst {
     }
 
 
-
-    /**
-     * Test metric.
-     */
-    private class RandomMetric extends AbstractMetric implements ClassMetric, OperationMetric {
+    private class RandomOperationMetric extends AbstractOperationMetric {
 
         private Random random = new Random();
-
-
-        @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-            return random.nextInt();
-        }
 
 
         @Override
@@ -200,5 +169,14 @@ public class DataStructureTest extends ParserTst {
         }
     }
 
+    private class RandomClassMetric extends AbstractClassMetric {
 
+        private Random random = new Random();
+
+
+        @Override
+        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+            return random.nextInt();
+        }
+    }
 }

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.oom.metrics.cyclo;
+package net.sourceforge.pmd.lang.java.oom.metrics.visitors;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -97,4 +97,5 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         }
         return data;
     }
+
 }

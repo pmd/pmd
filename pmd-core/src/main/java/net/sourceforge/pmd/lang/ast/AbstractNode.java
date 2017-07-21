@@ -195,15 +195,7 @@ public abstract class AbstractNode implements Node {
         this.dataFlowNode = dataFlowNode;
     }
 
-    /**
-     * Returns the n-th parent or null if there are not <code>n</code> ancestors
-     *
-     * @param n
-     *            how many ancestors to iterate over.
-     * @return the n-th parent or null.
-     * @throws IllegalArgumentException
-     *             if <code>n</code> is not positive.
-     */
+
     @Override
     public Node getNthParent(int n) {
         if (n <= 0) {
@@ -219,14 +211,7 @@ public abstract class AbstractNode implements Node {
         return result;
     }
 
-    /**
-     * Traverses up the tree to find the first parent instance of type
-     * parentType or one of its subclasses.
-     *
-     * @param parentType
-     *            class which you want to find.
-     * @return Node of type parentType. Returns null if none found.
-     */
+
     @Override
     public <T> T getFirstParentOfType(Class<T> parentType) {
         Node parentNode = jjtGetParent();
@@ -236,20 +221,13 @@ public abstract class AbstractNode implements Node {
         return (T) parentNode;
     }
 
-    /**
-     * Traverses up the tree to find all of the parent instances of type
-     * parentType
-     *
-     * @param parentType
-     *            classes which you want to find.
-     * @return List of parentType instances found.
-     */
+
     @Override
     public <T> List<T> getParentsOfType(Class<T> parentType) {
         List<T> parents = new ArrayList<>();
         Node parentNode = jjtGetParent();
         while (parentNode != null) {
-            if (parentNode.getClass() == parentType) {
+            if (parentType.isInstance(parentNode)) {
                 parents.add((T) parentNode);
             }
             parentNode = parentNode.jjtGetParent();
@@ -257,9 +235,7 @@ public abstract class AbstractNode implements Node {
         return parents;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public <T> List<T> findDescendantsOfType(Class<T> targetType) {
         List<T> list = new ArrayList<>();
@@ -267,9 +243,7 @@ public abstract class AbstractNode implements Node {
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossBoundaries) {
         findDescendantsOfType(this, targetType, results, crossBoundaries);
@@ -293,16 +267,14 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public <T> List<T> findChildrenOfType(Class<T> targetType) {
         List<T> list = new ArrayList<>();
         int n = jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             Node child = jjtGetChild(i);
-            if (child.getClass() == targetType) {
+            if (targetType.isInstance(child)) {
                 list.add((T) child);
             }
         }
@@ -348,17 +320,13 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public <T> T getFirstDescendantOfType(Class<T> descendantType) {
         return getFirstDescendantOfType(descendantType, this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public <T> T getFirstChildOfType(Class<T> childType) {
         int n = jjtGetNumChildren();
@@ -386,9 +354,7 @@ public abstract class AbstractNode implements Node {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public final <T> boolean hasDescendantOfType(Class<T> type) {
         return getFirstDescendantOfType(type) != null;
@@ -408,18 +374,14 @@ public abstract class AbstractNode implements Node {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     @SuppressWarnings("unchecked")
     public List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException {
         return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public boolean hasDescendantMatchingXPath(String xpathString) {
         try {
@@ -429,17 +391,13 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public Object getUserData() {
         return userData;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void setUserData(Object userData) {
         this.userData = userData;

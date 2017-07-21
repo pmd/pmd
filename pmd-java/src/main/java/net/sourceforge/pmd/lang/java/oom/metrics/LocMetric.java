@@ -6,10 +6,7 @@ package net.sourceforge.pmd.lang.java.oom.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.oom.AbstractMetric;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 
 /**
  * Lines of Code. Equates the length in lines of code of the measured entity, counting everything including blank lines
@@ -20,30 +17,37 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
  * @see NcssMetric
  * @since June 2017
  */
-public final class LocMetric extends AbstractMetric implements ClassMetric, OperationMetric {
+public final class LocMetric {
 
 
-    @Override
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return true;
+    public static final class LocOperationMetric extends AbstractOperationMetric {
+
+        @Override
+        public boolean supports(ASTMethodOrConstructorDeclaration node) {
+            return true;
+        }
+
+
+        @Override
+        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+            return 1 + node.getEndLine() - node.getBeginLine();
+        }
     }
 
+    public static final class LocClassMetric extends AbstractClassMetric {
 
-    @Override
-    public boolean supports(ASTMethodOrConstructorDeclaration node) {
-        return true;
-    }
-
-
-    @Override
-    public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-        return 1 + node.getEndLine() - node.getBeginLine();
-    }
+        @Override
+        public boolean supports(ASTAnyTypeDeclaration node) {
+            return true;
+        }
 
 
-    @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-        return 1 + node.getEndLine() - node.getBeginLine();
+        @Override
+        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
+            return 1 + node.getEndLine() - node.getBeginLine();
+        }
+
+
     }
 
 }

@@ -10,10 +10,8 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.OperationSigMask;
@@ -159,7 +157,7 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    /* default */ double compute(MetricKey<ClassMetric> key, ASTAnyTypeDeclaration node, boolean force,
+    /* default */ double compute(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, boolean force,
                                  MetricVersion version) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
@@ -178,7 +176,7 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    /* default */ double compute(MetricKey<OperationMetric> key, ASTMethodOrConstructorDeclaration node,
+    /* default */ double compute(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
                                  boolean force, MetricVersion version) {
         QualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
@@ -199,7 +197,7 @@ public final class PackageStats {
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    /* default */ double computeWithResultOption(MetricKey<OperationMetric> key, ASTAnyTypeDeclaration node,
+    /* default */ double computeWithResultOption(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
                                                  boolean force, MetricVersion version, ResultOption option) {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 

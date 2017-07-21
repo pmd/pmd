@@ -10,7 +10,6 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.oom.api.MetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 
 
 /**
@@ -43,7 +42,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    /* default */ double compute(MetricKey<OperationMetric> key, ASTMethodOrConstructorDeclaration node,
+    /* default */ double compute(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
                                  boolean force, MetricVersion version) {
 
         ParameterizedMetricKey paramKey = ParameterizedMetricKey.getInstance(key, version);
@@ -52,8 +51,7 @@ import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
             return prev;
         }
 
-        OperationMetric metric = key.getCalculator();
-        double val = metric.computeFor(node, version);
+        double val = key.getCalculator().computeFor(node, version);
         memo.put(paramKey, val);
         return val;
     }
