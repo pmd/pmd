@@ -4,3 +4,28 @@ sidebar: pmd_sidebar
 permalink: pmd_best_practices.html
 folder: pmd/userdocs
 ---
+
+## Choose the rules that are right for you
+
+Running every ruleset will result in a huge number of rule violations, most of which will be unimportant.
+Having to sort through a thousand line report to find the few you're really interested in takes
+all the fun out of things.
+
+Instead, start with some of the obvious rulesets - just run [unusedcode](../pmd-java/rules/index.html#Unused_Code) and fix any unused locals and fields.
+Then, run [empty](../pmd-java/rules/index.html#Empty_Code) and fix all the empty `if` statements and such-like. After that, take [unnecessary](../pmd-java/rules/index.html#Unnecessary)
+and fix these violations. Then, run [basic](../pmd-java/rules/index.html#Basic) and fix the remaining violations.
+Then peruse the [design](../pmd-java/rules/index.html#Design) and [controversial](../pmd-java/rules/index.html#Controversial) rulesets and use the ones
+you like [via a custom ruleset](../customizing/howtomakearuleset.html).
+
+## PMD rules are not set in stone
+
+Generally, pick the ones you like, and ignore or [suppress](../usage/suppressing.html) the warnings you don't like. It's just a tool.
+
+## PMD IDE plugins are nice
+
+Using PMD within your IDE is much more enjoyable than flipping back and forth
+between an HTML report and your IDE. Most IDE plugins have the "click on the rule
+violation and jump to that line of code" feature. Find the PMD plugin for your IDE, install it,
+and soon you'll be fixing problems much faster.
+
+Suggestions?  Comments?  Post them [here](https://github.com/pmd/pmd/issues). Thanks!

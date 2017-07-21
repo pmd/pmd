@@ -42,6 +42,24 @@ entries:
     - title: Getting Help
       url: /pmd_help.html
       output: web, pdf
+    - title: PMD in the press
+      url: /pmd_userdocs_news.html
+      output: web, pdf
+    - title: Products/books related to PMD
+      url: /pmd_userdocs_products.html
+      output: web, pdf
+    - title: Similar Projects
+      url: /pmd_userdocs_similarprojects.html
+      output: web, pdf
+    - title: License
+      url: /license.html
+      output: web, pdf
+    - title: Credits
+      url: /pmd_credits.html
+      output: web, pdf
+    - title: What does 'PMD' mean?
+      url: /pmd_userdocs_meaning.html
+      output: web, pdf
   - title: Rule Reference
     output: web, pdf
     folderitems:
