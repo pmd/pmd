@@ -890,16 +890,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     /**
-     * The reason arguments are not visited here, is because they will be visited once the method
-     * to which they are arguments to is resolved.
-     */
-    @Override
-    public Object visit(ASTArguments node, Object data) {
-        super.visit(node, data);
-        return data;
-    }
-
-    /**
      * Returns the the first Class declaration around the node.
      *
      * @param node The node with the enclosing Class declaration.
