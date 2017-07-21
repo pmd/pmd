@@ -7,4 +7,6 @@ folder: pmd/userdocs
 
 * IDE plugins
 * build tool plugins
+    *   [Ant Task Usage](/pmd_userdocs_ant.html)
+* [Continuous Integrations plugins](/pmd_userdocs_ci.html)
 * GUIs
