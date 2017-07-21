@@ -4,7 +4,7 @@
 entries:
 - title: sidebar
   product: PMD Project
-  version: 5.7.0
+  version: 6.0.0
   folders:
 
   - title:
@@ -101,36 +101,4 @@ entries:
       output: web, pdf
     - title: Adding a New CPD Language
       url: /pmd_devdocs_adding_new_cpd_language.html
-      output: web, pdf
-
-  - title: Release Notes
-    output: web, pdf
-    folderitems:
-
-    - title: 5.7.0 Release Notes
-      url: /2017-05-20-release-notes-5-7-0.html
-      output: web, pdf
-    - title: 5.6.1 Release Notes
-      url: /2017-04-29-release-notes-5-6-1.html
-      output: web, pdf
-    - title: 5.6.0 Release Notes
-      url: /2017-04-22-release-notes-5-6-0.html
-      output: web, pdf
-    - title: 5.5.7 Release Notes
-      url: /2017-04-29-release-notes-5-5-7.html
-      output: web, pdf
-    - title: 5.5.6 Release Notes
-      url: /2017-04-19-release-notes-5-5-6.html
-      output: web, pdf
-    - title: 5.5.5 Release Notes
-      url: /2017-03-27-release-notes-5-5-5.html
-      output: web, pdf
-    - title: 5.5.0 Release Notes
-      url: /2016-06-25-release-notes-5-5-0.html
-      output: web, pdf
-    - title: 5.4.2 Release Notes
-      url: /2016-05-29-release-notes-5-4-2.html
-      output: web, pdf
-    - title: 5.4.1 Release Notes
-      url: /2015-12-04-release-notes-5-4-1.html
       output: web, pdf
