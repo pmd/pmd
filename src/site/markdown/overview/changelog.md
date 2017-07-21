@@ -37,6 +37,8 @@ For this release he has extended support for method calls.
 Method shadowing and overloading are supported, as are varargs. However, the selection of the target method upon the presence
 of generics and type inference is still work in progress. Expect it in forecoming releases.
 
+As for fields, the basic support was in place for release 5.8.0, but has now been expanded to support static fields.
+
 #### Metrics Framework
 
 As part of Google Summer of Code 2017, [Clément Fournier](https://github.com/oowekyala) is continuing his work
@@ -91,4 +93,5 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 *   [#479](https://github.com/pmd/pmd/pull/479): \[core] Typesafe and immutable properties - [Clément Fournier](https://github.com/oowekyala)
 *   [#499](https://github.com/pmd/pmd/pull/499): \[java] Metrics memoization tests - [Clément Fournier](https://github.com/oowekyala)
 *   [#501](https://github.com/pmd/pmd/pull/501): \[java] Add support for most specific vararg method type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#502](https://github.com/pmd/pmd/pull/502): \[java] Add support for static field type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 
