@@ -397,12 +397,12 @@ public final class MethodTypeResolution {
             return true;
         }
 
-        boolean areInTheSamePackage;
-        if (accessingClass.getPackage() != null) {
-            areInTheSamePackage = accessingClass.getPackage().getName().startsWith(
+        boolean areInTheSamePackage = false;
+
+        if (accessingClass.getPackage() != null) { // if null, then it's in the default package
+            // if calssWithMember.getPackage() is null, result will be false
+            areInTheSamePackage = accessingClass.getPackage().getName().equals(
                     classWithMember.getPackage().getName());
-        } else {
-            return false; // if the package information is null, we can't do nothin'
         }
 
         // protected members
