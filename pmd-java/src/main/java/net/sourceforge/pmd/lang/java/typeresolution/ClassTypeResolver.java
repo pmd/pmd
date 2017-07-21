@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getApplicableMethods;
+import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
+import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,12 +17,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -28,16 +34,20 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
@@ -48,7 +58,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
@@ -56,13 +65,26 @@ import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSingleMemberAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBound;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.Token;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+
 
 //
 // Helpful reading:
@@ -133,7 +155,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     private final PMDASMClassLoader pmdClassLoader;
     private Map<String, String> importedClasses;
     private List<String> importedOnDemand;
-    private int anonymousClassCounter = 0;
+    private Map<Node, AnonymousClassMetadata> anonymousClassMetadata = new HashMap<>();
+
+    private static class AnonymousClassMetadata {
+        public final String name;
+        public int anonymousClassCounter;
+
+        AnonymousClassMetadata(final String className) {
+            this.name = className;
+        }
+    }
 
     public ClassTypeResolver() {
         this(ClassTypeResolver.class.getClassLoader());
@@ -174,8 +205,15 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
+    public Object visit(ASTPackageDeclaration node, Object data) {
+        // no need to visit children, the only child, ASTName, will have no type
+        return data;
+    }
+
+    @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         ASTName importedType = (ASTName) node.jjtGetChild(0);
+
         if (importedType.getType() != null) {
             node.setType(importedType.getType());
         } else {
@@ -185,6 +223,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.getType() != null) {
             node.setPackage(node.getType().getPackage());
         }
+
+        // no need to visit children, the only child, ASTName, will have no type
         return data;
     }
 
@@ -197,17 +237,82 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
+        super.visit(node, data);
+
         String typeName = node.getImage();
-        if (node.jjtGetParent().hasDescendantOfType(ASTClassOrInterfaceBody.class)) {
-            anonymousClassCounter++;
-            AbstractNode parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if (parent == null) {
-                parent = node.getFirstParentOfType(ASTEnumDeclaration.class);
+
+        if (node.isAnonymousClass()) {
+            final AnonymousClassMetadata parentAnonymousClassMetadata = getParentAnonymousClassMetadata(node);
+            if (parentAnonymousClassMetadata != null) {
+                typeName = parentAnonymousClassMetadata.name + "$" + ++parentAnonymousClassMetadata
+                        .anonymousClassCounter;
+                anonymousClassMetadata.put(node, new AnonymousClassMetadata(typeName));
             }
-            typeName = parent.getImage() + "$" + anonymousClassCounter;
         }
+
         populateType(node, typeName);
+
+        ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
+
+        if (typeArguments != null) {
+            final JavaTypeDefinition[] boundGenerics = new JavaTypeDefinition[typeArguments.jjtGetNumChildren()];
+            for (int i = 0; i < typeArguments.jjtGetNumChildren(); ++i) {
+                boundGenerics[i] = ((TypeNode) typeArguments.jjtGetChild(i)).getTypeDefinition();
+            }
+
+            node.setTypeDefinition(JavaTypeDefinition.forClass(node.getType(), boundGenerics));
+        }
+
         return data;
+    }
+
+    private AnonymousClassMetadata getParentAnonymousClassMetadata(final ASTClassOrInterfaceType node) {
+        Node parent = node;
+        do {
+            parent = parent.jjtGetParent();
+        } while (parent != null && !(parent instanceof ASTClassOrInterfaceBody) && !(parent instanceof ASTEnumBody));
+
+        // TODO : Should never happen, but add this for safety until we are sure to cover all possible scenarios in
+        // unit testing
+        if (parent == null) {
+            return null;
+        }
+
+        parent = parent.jjtGetParent();
+
+        TypeNode typedParent;
+        // The parent may now be an ASTEnumConstant, an ASTAllocationExpression, an ASTEnumDeclaration or an
+        // ASTClassOrInterfaceDeclaration
+        if (parent instanceof ASTAllocationExpression) {
+            typedParent = parent.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        } else if (parent instanceof ASTClassOrInterfaceDeclaration || parent instanceof ASTEnumDeclaration) {
+            typedParent = (TypeNode) parent;
+        } else {
+            typedParent = parent.getFirstParentOfType(ASTEnumDeclaration.class);
+        }
+
+        final AnonymousClassMetadata metadata = anonymousClassMetadata.get(typedParent);
+        if (metadata != null) {
+            return metadata;
+        }
+
+        final AnonymousClassMetadata newMetadata;
+        if (typedParent instanceof ASTClassOrInterfaceType) {
+            ASTClassOrInterfaceType parentTypeNode = (ASTClassOrInterfaceType) typedParent;
+            if (parentTypeNode.isAnonymousClass()) {
+                final AnonymousClassMetadata parentMetadata = getParentAnonymousClassMetadata(parentTypeNode);
+                newMetadata = new AnonymousClassMetadata(parentMetadata.name + "$" + ++parentMetadata
+                        .anonymousClassCounter);
+            } else {
+                newMetadata = new AnonymousClassMetadata(parentTypeNode.getImage());
+            }
+        } else {
+            newMetadata = new AnonymousClassMetadata(typedParent.getImage());
+        }
+
+        anonymousClassMetadata.put(typedParent, newMetadata);
+
+        return newMetadata;
     }
 
     @Override
@@ -230,33 +335,220 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTName node, Object data) {
-        /*
-         * Only doing this for nodes where getNameDeclaration is null this means
-         * it's not a named node, i.e. Static reference or Annotation Doing this
-         * for memory - TODO: Investigate if there is a valid memory concern or
-         * not
-         */
-        if (node.getNameDeclaration() == null) {
-            // Skip these scenarios as there is no type to populate in these
-            // cases:
-            // 1) Parent is a PackageDeclaration, which is not a type
-            // 2) Parent is a ImportDeclaration, this is handled elsewhere.
-            if (!(node.jjtGetParent() instanceof ASTPackageDeclaration
-                    || node.jjtGetParent() instanceof ASTImportDeclaration)) {
-                String name = node.getImage();
-                if (name.indexOf('.') != -1) {
-                    name = name.substring(0, name.indexOf('.'));
-                }
-                populateType(node, name);
-            }
+        // TODO: handle cases where static fields are accessed in a fully qualified way
+        //       make sure it handles same name classes and packages
+        // TODO: handle generic static field cases
+
+        Class<?> accessingClass = getEnclosingTypeDeclarationClass(node);
+
+        String[] dotSplitImage = node.getImage().split("\\.");
+        ASTArguments astArguments = getSuffixMethodArgs(node);
+        ASTArgumentList astArgumentList = null;
+        int methodArgsArity = 0;
+
+        if (astArguments != null) {
+            astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
+        }
+
+        if (astArgumentList != null) {
+            methodArgsArity = astArgumentList.jjtGetNumChildren();
+        }
+
+        JavaTypeDefinition previousType = null;
+        if (dotSplitImage.length == 1 && astArguments != null) { // method
+
+            List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
+                                                                 methodArgsArity, accessingClass);
+
+            previousType = getBestMethodReturnType(methods, astArgumentList, null);
         } else {
+            previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0], accessingClass);
+        }
+
+        // TODO: remove this if branch, it's only purpose is to make JUnitAssertionsShouldIncludeMessage's tests pass
+        //       as the code is not compiled there and symbol table works on uncompiled code    
+        if (node.getNameDeclaration() != null
+                && previousType == null // if it's not null, then let other code handle things
+                && node.getNameDeclaration().getNode() instanceof TypeNode) {
             // Carry over the type from the declaration
-            if (node.getNameDeclaration().getNode() instanceof TypeNode) {
-                node.setType(((TypeNode) node.getNameDeclaration().getNode()).getType());
+            Class<?> nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
+            // FIXME : generic classes and class with generic super types could have the wrong type assigned here
+            if (nodeType != null) {
+                node.setType(nodeType);
+            }
+        }
+
+        if (node.getType() == null) {
+            // handles cases where first part is a fully qualified name
+            populateType(node, node.getImage());
+
+            if (node.getType() == null) {
+                for (int i = 1; i < dotSplitImage.length; ++i) {
+                    if (previousType == null) {
+                        break;
+                    }
+
+                    if (i == dotSplitImage.length - 1 && astArguments != null) { // method
+                        List<MethodType> methods = getApplicableMethods(previousType, dotSplitImage[i], null,
+                                                                        methodArgsArity, accessingClass);
+
+                        previousType = getBestMethodReturnType(methods, astArgumentList, null);
+                    } else { // field
+                        previousType = getFieldType(previousType, dotSplitImage[i], accessingClass);
+                    }
+                }
+
+                if (previousType != null) {
+                    node.setTypeDefinition(previousType);
+                }
             }
         }
         return super.visit(node, data);
     }
+
+    /**
+     * This method looks for method invocations be simple name.
+     * It searches outwards class declarations and their supertypes and in the end, static method imports.
+     * Compiles a list of potentially applicable methods.
+     * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.1
+     */
+    private List<MethodType> getLocalApplicableMethods(TypeNode node, String methodName,
+                                                       List<JavaTypeDefinition> typeArguments,
+                                                       int argArity,
+                                                       Class<?> accessingClass) {
+        List<MethodType> foundMethods = new ArrayList<>();
+
+        if (accessingClass == null) {
+            return foundMethods;
+        }
+
+        // we search each enclosing type declaration, looking at their supertypes as well
+        for (node = getEnclosingTypeDeclaration(node); node != null;
+             node = getEnclosingTypeDeclaration(node.jjtGetParent())) {
+
+            foundMethods.addAll(getApplicableMethods(node.getTypeDefinition(), methodName, typeArguments,
+                                                     argArity, accessingClass));
+        }
+
+        // TODO: search static methods
+
+        return foundMethods;
+    }
+
+
+    /**
+     * This method can be called on a prefix
+     */
+    private ASTArguments getSuffixMethodArgs(Node node) {
+        Node prefix = node.jjtGetParent();
+
+        if (prefix instanceof ASTPrimaryPrefix
+                && prefix.jjtGetParent().jjtGetNumChildren() >= 2) {
+            ASTArguments args = prefix.jjtGetParent().jjtGetChild(1).getFirstChildOfType(ASTArguments.class);
+            // TODO: investigate if this will cause double visitation
+            if (args != null) {
+                super.visit(args, null);
+            }
+
+            return args;
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Searches a JavaTypeDefinition and it's superclasses until a field with name {@code fieldImage} that
+     * is visible from the {@code accessingClass} class. Once it's found, it's possibly generic type is
+     * resolved with the help of {@code typeToSearch} TypeDefinition.
+     *
+     * @param typeToSearch   The type def. to search the field in.
+     * @param fieldImage     The simple name of the field.
+     * @param accessingClass The class that is trying to access the field, some Class declared in the current ACU.
+     * @return JavaTypeDefinition of the resolved field or null if it could not be found.
+     */
+    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?>
+            accessingClass) {
+        while (typeToSearch != null && typeToSearch.getType() != Object.class) {
+            try {
+                final Field field = typeToSearch.getType().getDeclaredField(fieldImage);
+                if (isMemberVisibleFromClass(typeToSearch.getType(), field.getModifiers(), accessingClass)) {
+                    return typeToSearch.resolveTypeDefinition(field.getGenericType());
+                }
+            } catch (final NoSuchFieldException ignored) {
+                // swallow
+            } catch (final NoClassDefFoundError e) {
+                // TODO : report a missing class once we start doing that...
+                return null;
+            }
+
+            // transform the type into it's supertype
+            typeToSearch = typeToSearch.resolveTypeDefinition(typeToSearch.getType().getGenericSuperclass());
+        }
+
+        return null;
+    }
+
+    /**
+     * Search for a field by it's image stating from a scope and taking into account if it's visible from the
+     * accessingClass Class. The method takes into account that Nested inherited fields shadow outer scope fields.
+     *
+     * @param scope          The scope to start the search from.
+     * @param image          The name of the field, local variable or method parameter.
+     * @param accessingClass The Class (which is defined in the current ACU) that is trying to access the field.
+     * @return Type def. of the field, or null if it could not be resolved.
+     */
+    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?>
+            accessingClass) {
+        if (accessingClass == null) {
+            return null;
+        }
+
+        for (/* empty */; scope != null; scope = scope.getParent()) {
+            // search each enclosing scope one by one
+            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
+                    : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
+                if (entry.getKey().getImage().equals(image)) {
+                    ASTType typeNode = entry.getKey().getDeclaratorId().getTypeNode();
+
+                    if (typeNode == null) {
+                        // TODO : Type is infered, ie, this is a lambda such as (var) -> var.equals(other)
+                        return null;
+                    }
+
+                    if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
+                        return ((TypeNode) typeNode.jjtGetChild(0)).getTypeDefinition();
+                    } else { // primitive type
+                        return JavaTypeDefinition.forClass(typeNode.getType());
+                    }
+                }
+            }
+
+            // Nested class' inherited fields shadow enclosing variables
+            if (scope instanceof ClassScope) {
+                try {
+                    // get the superclass type def. ot the Class the ClassScope belongs to
+                    JavaTypeDefinition superClass
+                            = getSuperClassTypeDefinition(((ClassScope) scope).getClassDeclaration().getNode(),
+                                                          null);
+                    // TODO: check if anonymous classes are class scope
+
+                    // try searching this type def.
+                    JavaTypeDefinition foundTypeDef = getFieldType(superClass, image, accessingClass);
+
+                    if (foundTypeDef != null) { // if null, then it's not an inherited field
+                        return foundTypeDef;
+                    }
+                } catch (ClassCastException e) {
+                    // if there is an anonymous class, getClassDeclaration().getType() will throw
+                    // TODO: maybe there is a better way to handle this, maybe this hides bugs
+                }
+            }
+        }
+
+        return null;
+    }
+
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -441,35 +733,246 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+
     @Override
-    public Object visit(ASTPrimaryExpression node, Object data) {
-        super.visit(node, data);
-        if (node.jjtGetNumChildren() == 1) {
-            rollupTypeUnary(node);
-        } else {
-            // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
-            // and PrimarySuffix are all related.
+    public Object visit(ASTPrimaryExpression primaryNode, Object data) {
+        super.visit(primaryNode, data);
+
+        JavaTypeDefinition primaryNodeType = null;
+        AbstractJavaTypeNode previousChild = null;
+        AbstractJavaTypeNode nextChild = null;
+        Class<?> accessingClass = getEnclosingTypeDeclarationClass(primaryNode);
+
+        for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
+            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
+            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren()
+                    ? (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
+
+            // skip children which already have their type assigned
+            if (currentChild.getType() == null) {
+                // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
+                if (currentChild.jjtGetLastToken().toString().equals("this")) {
+
+                    if (previousChild != null) { // Qualified 'this' expression
+                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
+                    } else { // simple 'this' expression
+                        ASTClassOrInterfaceDeclaration typeDeclaration
+                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+
+                        if (typeDeclaration != null) {
+                            currentChild.setTypeDefinition(typeDeclaration.getTypeDefinition());
+                        }
+                    }
+
+                    // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
+                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
+
+                    if (previousChild != null) { // Qualified 'super' expression
+                        // anonymous classes can't have qualified super expression, thus
+                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
+                        // looking for enclosing super types
+                        currentChild.setTypeDefinition(
+                                getSuperClassTypeDefinition(currentChild, previousChild.getType()));
+                    } else { // simple 'super' expression
+                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
+                    }
+
+                } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
+                    currentChild.setTypeDefinition(previousChild.getTypeDefinition());
+                } else if (previousChild != null && previousChild.getType() != null
+                        && currentChild.getImage() != null) {
+
+                    ASTArguments astArguments = null;
+                    ASTArgumentList astArgumentList = null;
+                    int methodArgsArity = 0;
+
+                    if (nextChild != null) {
+                        astArguments = nextChild.getFirstChildOfType(ASTArguments.class);
+                    }
+
+                    if (astArguments != null) {
+                        super.visit(astArguments, data);
+                        astArgumentList = astArguments.getFirstChildOfType(ASTArgumentList.class);
+                    }
+
+                    if (astArgumentList != null) {
+                        methodArgsArity = astArgumentList.jjtGetNumChildren();
+                    }
+
+                    if (astArguments != null) { // method
+                        List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
+                                                                        currentChild.getImage(),
+                                                                        null, methodArgsArity, accessingClass);
+
+                        currentChild.setTypeDefinition(getBestMethodReturnType(methods, astArgumentList, null));
+                    } else { // field
+                        currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
+                                                                    currentChild.getImage(), accessingClass));
+                    }
+                }
+            }
+
+
+            if (currentChild.getType() != null) {
+                primaryNodeType = currentChild.getTypeDefinition();
+            } else {
+                // avoid falsely passing tests
+                primaryNodeType = null;
+                break;
+            }
+
+            previousChild = currentChild;
         }
+
+        primaryNode.setTypeDefinition(primaryNodeType);
+
         return data;
+    }
+
+    /**
+     * The reason arguments are not visited here, is because they will be visited once the method
+     * to which they are arguments to is resolved.
+     */
+    @Override
+    public Object visit(ASTArguments node, Object data) {
+        return data;
+    }
+
+    /**
+     * Returns the the first Class declaration around the node.
+     *
+     * @param node The node with the enclosing Class declaration.
+     * @return The JavaTypeDefinition of the enclosing Class declaration.
+     */
+    private TypeNode getEnclosingTypeDeclaration(Node node) {
+        Node previousNode = null;
+
+        while (node != null) {
+            if (node instanceof ASTClassOrInterfaceDeclaration) {
+                return (TypeNode) node;
+                // anonymous class declaration
+            } else if (node instanceof ASTAllocationExpression // is anonymous class declaration
+                    && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // array cant be anonymous
+                    && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
+                return (TypeNode) node;
+            }
+
+            previousNode = node;
+            node = node.jjtGetParent();
+        }
+
+        return null;
+    }
+
+    private Class<?> getEnclosingTypeDeclarationClass(Node node) {
+        TypeNode typeDecl = getEnclosingTypeDeclaration(node);
+
+        if (typeDecl == null) {
+            return null;
+        } else {
+            return typeDecl.getType();
+        }
+    }
+
+
+    /**
+     * Get the type def. of the super class of the enclosing type declaration which has the same class
+     * as the second argument, or if the second argument is null, then anonymous classes are considered
+     * as well and the first enclosing scope's super class is returned.
+     *
+     * @param node  The node from which to start searching.
+     * @param clazz The type of the enclosing class.
+     * @return The TypeDefinition of the superclass.
+     */
+    private JavaTypeDefinition getSuperClassTypeDefinition(Node node, Class<?> clazz) {
+        Node previousNode = null;
+        for (; node != null; previousNode = node, node = node.jjtGetParent()) {
+            if (node instanceof ASTClassOrInterfaceDeclaration // class declaration
+                    // is the class we are looking for or caller requested first class
+                    && (((TypeNode) node).getType() == clazz || clazz == null)) {
+
+                ASTExtendsList extendsList = node.getFirstChildOfType(ASTExtendsList.class);
+
+                if (extendsList != null) {
+                    return ((TypeNode) extendsList.jjtGetChild(0)).getTypeDefinition();
+                } else {
+                    return JavaTypeDefinition.forClass(Object.class);
+                }
+                // anonymous class declaration
+
+            } else if (clazz == null // callers requested any class scope
+                    && node instanceof ASTAllocationExpression // is anonymous class decl
+                    && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // arrays can't be anonymous
+                    && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
+                return node.getFirstChildOfType(ASTClassOrInterfaceType.class).getTypeDefinition();
+            }
+        }
+
+        return null;
     }
 
     @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
         super.visit(node, data);
-        if (node.getImage() == null) {
-            rollupTypeUnary(node);
-        } else {
-            // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix
-            // and PrimarySuffix are all related.
-        }
+        rollupTypeUnary(node);
+
         return data;
     }
 
     @Override
-    public Object visit(ASTPrimarySuffix node, Object data) {
+    public Object visit(ASTTypeArgument node, Object data) {
         super.visit(node, data);
-        // TODO OMG, this is complicated. PrimaryExpression, PrimaryPrefix and
-        // PrimarySuffix are all related.
+        rollupTypeUnary(node);
+
+        if (node.getType() == null) {
+            // ? extends Something
+            if (node.jjtGetFirstToken() instanceof Token
+                    && ((Token) node.jjtGetFirstToken()).next.image.equals("extends")) {
+
+                populateType(node, node.jjtGetLastToken().toString());
+
+            } else {  // ? or ? super Something
+                node.setType(Object.class);
+            }
+        }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTypeParameters node, Object data) {
+        super.visit(node, data);
+
+        if (node.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
+            TypeNode parent = (TypeNode) node.jjtGetParent();
+
+            final JavaTypeDefinition[] boundGenerics = new JavaTypeDefinition[node.jjtGetNumChildren()];
+            for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+                boundGenerics[i] = ((TypeNode) node.jjtGetChild(i)).getTypeDefinition();
+            }
+
+            parent.setTypeDefinition(JavaTypeDefinition.forClass(parent.getType(), boundGenerics));
+        }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTypeParameter node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+
+        if (node.getType() == null) {
+            node.setType(Object.class);
+        }
+
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTTypeBound node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
         return data;
     }
 
@@ -586,7 +1089,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (node.jjtGetNumChildren() >= 1) {
             Node child = node.jjtGetChild(0);
             if (child instanceof TypeNode) {
-                typeNode.setType(((TypeNode) child).getType());
+                typeNode.setTypeDefinition(((TypeNode) child).getTypeDefinition());
             }
         }
     }
@@ -696,9 +1199,42 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 // ignored
             }
         }
-        if (myType != null) {
+
+        // try generics
+        // TODO: generic declarations can shadow type declarations ... :(
+        if (myType == null) {
+            ASTTypeParameter parameter = getTypeParameterDeclaration(node, className);
+            if (parameter != null) {
+                node.setTypeDefinition(parameter.getTypeDefinition());
+            }
+        } else {
             node.setType(myType);
         }
+    }
+
+    private ASTTypeParameter getTypeParameterDeclaration(Node startNode, String image) {
+        for (Node parent = startNode.jjtGetParent(); parent != null; parent = parent.jjtGetParent()) {
+            ASTTypeParameters typeParameters = null;
+
+            if (parent instanceof ASTTypeParameters) { // if type parameter defined in the same < >
+                typeParameters = (ASTTypeParameters) parent;
+            } else if (parent instanceof ASTConstructorDeclaration
+                    || parent instanceof ASTMethodDeclaration
+                    || parent instanceof ASTClassOrInterfaceDeclaration) {
+                typeParameters = parent.getFirstChildOfType(ASTTypeParameters.class);
+            }
+
+            if (typeParameters != null) {
+                for (int index = 0; index < typeParameters.jjtGetNumChildren(); ++index) {
+                    String imageToCompareTo = typeParameters.jjtGetChild(index).getImage();
+                    if (imageToCompareTo != null && imageToCompareTo.equals(image)) {
+                        return (ASTTypeParameter) typeParameters.jjtGetChild(index);
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

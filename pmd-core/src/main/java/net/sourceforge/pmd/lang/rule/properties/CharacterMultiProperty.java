@@ -4,91 +4,116 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a property type that supports multiple Character values.
+ * Multi-valued character property.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class CharacterMultiProperty extends AbstractProperty<Character[]> {
+public final class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<CharacterMultiProperty>(
-            Character[].class) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<List<Character>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Character>(Character.class) {
 
-        @Override
-        public CharacterMultiProperty createWith(Map<String, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new CharacterMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    charsIn(defaultValueIn(valuesById), delimiter), 0.0f, delimiter);
-        }
-    };
+            @Override
+            protected boolean isValueMissing(String value) {
+                return StringUtils.isEmpty(value);
+            }
+
+            @Override
+            public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                char delimiter = delimiterIn(valuesById);
+                return new CharacterMultiProperty(nameIn(valuesById),
+                                                  descriptionIn(valuesById),
+                                                  Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParser.CHARACTER_PARSER),
+                                                  0.0f,
+                                                  delimiter,
+                                                  isDefinedExternally);
+            }
+        }; // @formatter:on
+
 
     /**
-     * Constructor for CharacterProperty.
+     * Constructor using an array of defaults.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefaults
-     *            char[]
-     * @param theUIOrder
-     *            float
-     * @param delimiter
-     *            char
-     * @throws IllegalArgumentException
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  Array of defaults
+     * @param theUIOrder     UI order
+     * @param delimiter      The delimiter to use
+     *
+     * @throws IllegalArgumentException if the delimiter is in the default values
      */
-    public CharacterMultiProperty(String theName, String theDescription, Character[] theDefaults, float theUIOrder,
-            char delimiter) {
-        super(theName, theDescription, theDefaults, theUIOrder, delimiter);
+    public CharacterMultiProperty(String theName, String theDescription, Character[] defaultValues, float theUIOrder, char delimiter) {
+        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, delimiter, false);
+    }
 
-        if (theDefaults != null) {
-            for (int i = 0; i < theDefaults.length; i++) {
-                if (theDefaults[i].charValue() == delimiter) {
+
+    /** Master constructor. */
+    private CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder,
+                                   char delimiter, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValues, theUIOrder, delimiter, isDefinedExternally);
+
+        if (defaultValues != null) {
+            for (Character c : defaultValues) {
+                if (c == delimiter) {
                     throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
                 }
             }
         }
     }
 
+
     /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
+     * Constructor using a list of defaults.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
+     * @param delimiter      The delimiter to use
+     *
+     * @throws IllegalArgumentException if the delimiter is in the default values
      */
-    @Override
-    public Class<Character[]> type() {
-        return Character[].class;
+    public CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder, char delimiter) {
+        this(theName, theDescription, defaultValues, theUIOrder, delimiter, false);
     }
 
-    /**
-     * @param valueString
-     *            String
-     * @return Object
-     * @throws IllegalArgumentException
-     * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
-     */
+
     @Override
-    public Character[] valueFrom(String valueString) throws IllegalArgumentException {
+    protected Character createFrom(String toParse) {
+        return CharacterProperty.charFrom(toParse);
+    }
+
+
+    @Override
+    public Class<Character> type() {
+        return Character.class;
+    }
+
+
+    @Override
+    public List<Character> valueFrom(String valueString) throws IllegalArgumentException {
         String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter());
 
-        Character[] chars = new Character[values.length];
+        List<Character> chars = new ArrayList<>(values.length);
         for (int i = 0; i < values.length; i++) {
-            chars[i] = Character.valueOf(values[i].charAt(0));
+            chars.add(values[i].charAt(0));
         }
         return chars;
     }
 
-    /**
-     * @return boolean
-     * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-     */
-    @Override
-    public boolean isMultiValue() {
-        return true;
-    }
 }

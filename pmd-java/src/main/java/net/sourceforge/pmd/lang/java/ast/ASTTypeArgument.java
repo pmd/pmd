@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTTypeArgument extends AbstractJavaNode {
+public class ASTTypeArgument extends AbstractJavaTypeNode {
     public ASTTypeArgument(int id) {
         super(id);
     }

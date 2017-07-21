@@ -4,80 +4,97 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.INTEGER_PARSER;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
- * Defines a datatype that supports multiple Integer property values within an
- * upper and lower boundary.
+ * Multi-valued integer property.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]> {
+public final class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<IntegerMultiProperty>(
-            Integer[].class, NUMBER_FIELD_TYPES_BY_KEY) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<List<Integer>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Integer>(Integer.class, NUMBER_FIELD_TYPES_BY_KEY) {
+            @Override
+            public IntegerMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean
+                isDefinedExternally) {
+                String[] minMax = minMaxFrom(valuesById);
+                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+                List<Integer> defaultValues = Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, INTEGER_PARSER);
+                return new IntegerMultiProperty(nameIn(valuesById),
+                                                descriptionIn(valuesById),
+                                                INTEGER_PARSER.valueOf(minMax[0]),
+                                                INTEGER_PARSER.valueOf(minMax[1]),
+                                                defaultValues,
+                                                0f,
+                                                isDefinedExternally);
+            }
+        }; // @formatter:on
 
-        @Override
-        public IntegerMultiProperty createWith(Map<String, String> valuesById) {
-            String[] minMax = minMaxFrom(valuesById);
-            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-            Integer[] defaultValues = integersIn(numericDefaultValueIn(valuesById), delimiter);
-            return new IntegerMultiProperty(nameIn(valuesById), descriptionIn(valuesById), Integer.parseInt(minMax[0]),
-                    Integer.parseInt(minMax[1]), defaultValues, 0f);
-        }
-    };
 
     /**
-     * Constructor for IntegerProperty.
+     * Constructor using an array of defaults.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param min
-     *            Integer
-     * @param max
-     *            Integer
-     * @param theDefaults
-     *            Integer[]
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param defaultValues  Array of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
-    public IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max, Integer[] theDefaults,
-            float theUIOrder) {
-        super(theName, theDescription, min, max, theDefaults, theUIOrder);
+    public IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max,
+                                Integer[] defaultValues, float theUIOrder) {
+        this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
     }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
-    @Override
-    public Class<Integer[]> type() {
-        return Integer[].class;
+
+    /** Master constructor. */
+    private IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max,
+                                 List<Integer> defaultValues, float theUIOrder, boolean isDefinedExternally) {
+
+        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
     }
 
-    /**
-     * @param value
-     *            String
-     * @return Object
-     */
-    @Override
-    protected Object createFrom(String value) {
-        return Integer.valueOf(value);
-    }
 
     /**
-     * @param size
-     *            int
-     * @return Object[]
+     * Constructor using a list of defaults.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
+    public IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max,
+                                List<Integer> defaultValues, float theUIOrder) {
+
+        this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
+    }
+
+
     @Override
-    protected Object[] arrayFor(int size) {
-        return new Integer[size];
+    public Class<Integer> type() {
+        return Integer.class;
+    }
+
+
+    @Override
+    protected Integer createFrom(String toParse) {
+        return Integer.valueOf(toParse);
     }
 }

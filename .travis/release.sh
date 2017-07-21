@@ -2,10 +2,10 @@
 set -e
 
 echo "BUILD: $BUILD"
+RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
+echo "RELEASE_VERSION: $RELEASE_VERSION"
 
 if [ "${BUILD}" = "deploy" ]; then
-
-RELEASE_VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 
 # Deploy to ossrh has already been done with the usual build. See build-deploy.sh
 

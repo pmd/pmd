@@ -4,7 +4,14 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.PropertyDescriptorField.DEFAULT_VALUE;
+import static net.sourceforge.pmd.PropertyDescriptorField.DELIMITER;
+import static net.sourceforge.pmd.PropertyDescriptorField.DESCRIPTION;
+import static net.sourceforge.pmd.PropertyDescriptorField.NAME;
+
 import java.util.Map;
+
+import net.sourceforge.pmd.lang.rule.properties.ExpectedFieldsBuilder;
 
 /**
  * Property value descriptor that defines the use &amp; requirements for setting
@@ -12,10 +19,31 @@ import java.util.Map;
  * descriptor instances are static and immutable they provide validation,
  * serialization, and default values for any specific datatypes.
  *
+ * <p>This interface is primarily specialized according to whether the property is
+ * multi-valued or single-valued, see {@link SingleValuePropertyDescriptor} and
+ * {@link MultiValuePropertyDescriptor}.
+ *
+ * <p>Several interfaces further specialize the behaviour of descriptors to accommodate
+ * specific types of descriptors, see {@link NumericPropertyDescriptor} and
+ * {@link EnumeratedPropertyDescriptor}.
+ *
+ * @param <T> type of the property's value. This is a list type for multi-valued properties.
+ *
  * @author Brian Remedios
- * @param <T> type of the property's value
+ * @version Refactored June 2017 (6.0.0)
  */
-public interface PropertyDescriptor<T extends Object> extends Comparable<PropertyDescriptor<?>> {
+public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>> {
+
+    /** Default expected fields. Unmodifiable. */
+    Map<PropertyDescriptorField, Boolean> CORE_EXPECTED_FIELDS
+        = ExpectedFieldsBuilder.instance()
+        .put(NAME, true)
+        .put(DESCRIPTION, true)
+        .put(DEFAULT_VALUE, true)
+        .put(DELIMITER, false)
+        .build();
+
+
     /**
      * The name of the property without spaces as it serves as the key into the
      * property map.
@@ -23,6 +51,7 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      * @return String
      */
     String name();
+
 
     /**
      * Describes the property and the role it plays within the rule it is
@@ -32,12 +61,15 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      */
     String description();
 
+
     /**
-     * Denotes the value datatype.
+     * Denotes the value datatype. For multi value properties, this is not the
+     * List class but the list's component class.
      *
-     * @return Class
+     * @return Class literal of the value type
      */
-    Class<T> type();
+    Class<?> type();
+
 
     /**
      * Returns whether the property is multi-valued, i.e. an array of strings,
@@ -51,6 +83,7 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      */
     boolean isMultiValue();
 
+
     /**
      * Default value to use when the user hasn't specified one or when they wish
      * to revert to a known-good state.
@@ -59,30 +92,24 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      */
     T defaultValue();
 
-    /**
-     * Denotes whether the value is required before the rule can be executed.
-     * Has no meaning for primitive types such as booleans, ints, etc.
-     *
-     * @return boolean
-     */
-    boolean isRequired();
 
     /**
      * Validation function that returns a diagnostic error message for a sample
      * property value. Returns null if the value is acceptable.
      *
-     * @param value
-     *            Object
-     * @return String
+     * @param value The value to check.
+     *
+     * @return A diagnostic message.
      */
-    String errorFor(Object value);
+    String errorFor(T value);
+
 
     /**
      * Denotes the relative order the property field should occupy if we are
      * using an auto-generated UI to display and edit property values. If the
      * value returned has a non-zero fractional part then this is can be used to
      * place adjacent fields on the same row.
-     * 
+     *
      * <p>Example:<br>
      * name -&gt; 0.0 description 1.0 minValue -&gt; 2.0 maxValue -&gt; 2.1
      * </p>
@@ -94,55 +121,40 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      */
     float uiOrder();
 
+
     /**
-     * If the property is multi-valued then return the separate values after
-     * parsing the propertyString provided. If it isn't a multi-valued property
-     * then the value will be returned within an array of size[1].
+     * Returns the value represented by this string.
      *
-     * @param propertyString
-     *            String
-     * @return Object
-     * @throws IllegalArgumentException
-     *             if the given string cannot be parsed
+     * @param propertyString The string to parse
+     *
+     * @return The value represented by the string
+     *
+     * @throws IllegalArgumentException if the given string cannot be parsed
      */
     T valueFrom(String propertyString) throws IllegalArgumentException;
+
 
     /**
      * Formats the object onto a string suitable for storage within the property
      * map.
      *
-     * @param value
-     *            Object
+     * @param value Object
+     *
      * @return String
      */
     String asDelimitedString(T value);
 
-    /**
-     * Returns a set of choice tuples if available, returns null if none are
-     * defined.
-     *
-     * @return Object[][]
-     */
-    Object[][] choices();
 
     /**
      * A convenience method that returns an error string if the rule holds onto
      * a property value that has a problem. Returns null otherwise.
      *
-     * @param rule
-     *            Rule
+     * @param rule Rule
+     *
      * @return String
      */
     String propertyErrorFor(Rule rule);
 
-    /**
-     * Return the character being used to delimit multiple property values
-     * within a single string. You must ensure that this character does not
-     * appear within any rule property values to avoid deserialization errors.
-     *
-     * @return char
-     */
-    char multiValueDelimiter();
 
     /**
      * If the datatype is a String then return the preferred number of rows to
@@ -153,11 +165,24 @@ public interface PropertyDescriptor<T extends Object> extends Comparable<Propert
      */
     int preferredRowCount();
 
+
     /**
      * Returns a map representing all the property attributes of the receiver in
      * string form.
      *
      * @return map
      */
-    Map<String, String> attributeValuesById();
+    Map<PropertyDescriptorField, String> attributeValuesById();
+
+
+    /**
+     * True if this descriptor was defined in the ruleset xml. This precision is
+     * necessary for the {@link RuleSetWriter} to write out the property correctly:
+     * if it was defined externally, then its definition must be written out, otherwise
+     * only its value.
+     *
+     * @return True if the descriptor was defined in xml
+     */
+    boolean isDefinedExternally();
+
 }

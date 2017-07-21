@@ -22,15 +22,16 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
- * 
+ *
  * This rule needs a "xpath" property value in order to function.
  */
 public class XPathRule extends AbstractRule {
 
     public static final StringProperty XPATH_DESCRIPTOR = new StringProperty("xpath", "XPath expression", "", 1.0f);
-    public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = new EnumeratedProperty<>("version",
-            "XPath specification version", new String[] { XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0 },
-            new String[] { XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0 }, 0, 2.0f);
+    public static final EnumeratedProperty<String> VERSION_DESCRIPTOR
+        = new EnumeratedProperty<>("version",
+                                   "XPath specification version", new String[] {XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0},
+                                   new String[] {XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0}, 0, String.class, 2.0f);
 
     private XPathRuleQuery xpathRuleQuery;
 

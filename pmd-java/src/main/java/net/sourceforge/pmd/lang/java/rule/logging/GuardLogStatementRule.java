@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.logging;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -96,8 +95,8 @@ public class GuardLogStatementRule extends AbstractOptimizationRule implements R
     protected void extractProperties() {
         if (guardStmtByLogLevel.isEmpty()) {
 
-            List<String> logLevels = new ArrayList<>(Arrays.asList(super.getProperty(LOG_LEVELS)));
-            List<String> guardMethods = new ArrayList<>(Arrays.asList(super.getProperty(GUARD_METHODS)));
+            List<String> logLevels = new ArrayList<>(super.getProperty(LOG_LEVELS));
+            List<String> guardMethods = new ArrayList<>(super.getProperty(GUARD_METHODS));
 
             if (guardMethods.isEmpty() && !logLevels.isEmpty()) {
                 throw new IllegalArgumentException("Can't specify guardMethods without specifiying logLevels.");

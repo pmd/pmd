@@ -32,7 +32,7 @@ public interface CodeClimateRule extends Rule {
                 "Security", "Style", },
             new String[] { "Bug Risk", "Clarity", "Compatibility", "Complexity", "Duplication", "Performance",
                 "Security", "Style", },
-            new int[] { 7 }, 1.0f);
+            new int[] { 7 }, String.class, 1.0f);
 
     /**
      * Defines the remediation points for this rule. The remediation points are

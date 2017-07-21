@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.dfa.LinkerException;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.dfa.SequenceException;
 import net.sourceforge.pmd.lang.dfa.Structure;
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
@@ -72,11 +73,21 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Linker linker = new Linker(dataFlowHandler, dataFlow.getBraceStack(), dataFlow.getContinueBreakReturnStack());
         try {
             linker.computePaths();
-        } catch (LinkerException e) {
-            e.printStackTrace();
-        } catch (SequenceException e) {
+        } catch (SequenceException | LinkerException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void tryToLog(String tag, NodeType type, Node node) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("pushOnStack " + tag + " " + type + ": line " + node.getBeginLine()
+                + ", column " + node.getBeginColumn());
+        }
+    }
+
+    private void tryToLog(NodeType type, Node node) {
+        tryToLog("", type, node);
     }
 
     @Override
@@ -87,7 +98,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("createNewNode ASTStatementExpression: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
+                + node.getBeginColumn());
         }
         dataFlow.createNewNode(node);
         return super.visit(node, data);
@@ -101,7 +112,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("createNewNode ASTVariableDeclarator: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
+                + node.getBeginColumn());
         }
         dataFlow.createNewNode(node);
         return super.visit(node, data);
@@ -114,70 +125,64 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         }
         Structure dataFlow = (Structure) data;
 
+        String loggerTag = "parent";
+
+        Node parent = node.jjtGetParent();
+
         // TODO what about throw stmts?
-        if (node.jjtGetParent() instanceof ASTIfStatement) {
+        if (parent instanceof ASTIfStatement) {
             dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack parent IF_EXPR: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
-        } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
+            tryToLog(loggerTag, NodeType.IF_EXPR, node);
+        } else if (parent instanceof ASTWhileStatement) {
             dataFlow.createNewNode(node); // START WHILE
             dataFlow.pushOnStack(NodeType.WHILE_EXPR, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack parent WHILE_EXPR: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
-        } else if (node.jjtGetParent() instanceof ASTSwitchStatement) {
+            tryToLog(loggerTag, NodeType.WHILE_EXPR, node);
+        } else if (parent instanceof ASTSwitchStatement) {
             dataFlow.createNewNode(node); // START SWITCH
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack parent SWITCH_START: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
-        } else if (node.jjtGetParent() instanceof ASTForStatement) {
+            tryToLog(loggerTag, NodeType.SWITCH_START, node);
+        } else if (parent instanceof ASTForStatement) {
             dataFlow.createNewNode(node); // FOR EXPR
             dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack parent FOR_EXPR: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
-        } else if (node.jjtGetParent() instanceof ASTDoStatement) {
+            tryToLog(loggerTag, NodeType.FOR_EXPR, node);
+        } else if (parent instanceof ASTDoStatement) {
             dataFlow.createNewNode(node); // DO EXPR
             dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack parent DO_EXPR: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
+            tryToLog(loggerTag, NodeType.DO_EXPR, node);
+        } else if (parent instanceof ASTAssertStatement) {
+            dataFlow.createNewNode(node);
+            dataFlow.pushOnStack(NodeType.ASSERT_STATEMENT, dataFlow.getLast());
+            tryToLog(loggerTag, NodeType.ASSERT_STATEMENT, node);
         }
 
         return super.visit(node, data);
     }
+
 
     @Override
     public Object visit(ASTForInit node, Object data) {
         if (!(data instanceof Structure)) {
             return data;
         }
+
         Structure dataFlow = (Structure) data;
         super.visit(node, data);
+
         dataFlow.pushOnStack(NodeType.FOR_INIT, dataFlow.getLast());
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack FOR_INIT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-        }
+
+        tryToLog(NodeType.FOR_INIT, node);
         this.addForExpressionNode(node, dataFlow);
+
         return data;
     }
+
 
     @Override
     public Object visit(ASTLabeledStatement node, Object data) {
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.LABEL_STATEMENT, dataFlow.getLast());
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest(
-                    "pushOnStack LABEL_STATEMENT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-        }
+        tryToLog(NodeType.LABEL_STATEMENT, node);
         return super.visit(node, data);
     }
 
@@ -190,9 +195,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         this.addForExpressionNode(node, dataFlow);
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.FOR_UPDATE, dataFlow.getLast());
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack FOR_UPDATE: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-        }
+        tryToLog(NodeType.FOR_UPDATE, node);
         return data;
     }
 
@@ -209,17 +212,11 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         if (node.jjtGetParent() instanceof ASTForStatement) {
             this.addForExpressionNode(node, dataFlow);
             dataFlow.pushOnStack(NodeType.FOR_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack FOR_BEFORE_FIRST_STATEMENT: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
+            tryToLog(NodeType.FOR_BEFORE_FIRST_STATEMENT, node);
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
             dataFlow.pushOnStack(NodeType.DO_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
             dataFlow.createNewNode(node.jjtGetParent());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack DO_BEFORE_FIRST_STATEMENT: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
+            tryToLog(NodeType.DO_BEFORE_FIRST_STATEMENT, node);
         }
 
         super.visit(node, data);
@@ -228,40 +225,23 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             ASTIfStatement st = (ASTIfStatement) node.jjtGetParent();
             if (!st.hasElse()) {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, dataFlow.getLast());
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("pushOnStack IF_LAST_STATEMENT_WITHOUT_ELSE: line " + node.getBeginLine()
-                            + ", column " + node.getBeginColumn());
-                }
+                tryToLog(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, node);
             } else if (st.hasElse() && !st.jjtGetChild(1).equals(node)) {
                 dataFlow.pushOnStack(NodeType.ELSE_LAST_STATEMENT, dataFlow.getLast());
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("pushOnStack ELSE_LAST_STATEMENT: line " + node.getBeginLine() + ", column "
-                            + node.getBeginColumn());
-                }
+                tryToLog(NodeType.ELSE_LAST_STATEMENT, node);
             } else {
                 dataFlow.pushOnStack(NodeType.IF_LAST_STATEMENT, dataFlow.getLast());
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("pushOnStack IF_LAST_STATEMENT: line " + node.getBeginLine() + ", column "
-                            + node.getBeginColumn());
-                }
+                tryToLog(NodeType.IF_LAST_STATEMENT, node);
             }
         } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
             dataFlow.pushOnStack(NodeType.WHILE_LAST_STATEMENT, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack WHILE_LAST_STATEMENT: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
+            tryToLog(NodeType.WHILE_LAST_STATEMENT, node);
         } else if (node.jjtGetParent() instanceof ASTForStatement) {
             dataFlow.pushOnStack(NodeType.FOR_END, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack FOR_END: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-            }
+            tryToLog(NodeType.FOR_END, node);
         } else if (node.jjtGetParent() instanceof ASTLabeledStatement) {
             dataFlow.pushOnStack(NodeType.LABEL_LAST_STATEMENT, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack LABEL_LAST_STATEMENT: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
+            tryToLog(NodeType.LABEL_LAST_STATEMENT, node);
         }
         return data;
     }
@@ -274,9 +254,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         super.visit(node, data);
         dataFlow.pushOnStack(NodeType.SWITCH_END, dataFlow.getLast());
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack SWITCH_END: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-        }
+        tryToLog(NodeType.SWITCH_END, node);
         return data;
     }
 
@@ -289,16 +267,10 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         // super.visit(node, data);
         if (node.jjtGetNumChildren() == 0) {
             dataFlow.pushOnStack(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack SWITCH_LAST_DEFAULT_STATEMENT: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
+            tryToLog(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, node);
         } else {
             dataFlow.pushOnStack(NodeType.CASE_LAST_STATEMENT, dataFlow.getLast());
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("pushOnStack CASE_LAST_STATEMENT: line " + node.getBeginLine() + ", column "
-                        + node.getBeginColumn());
-            }
+            tryToLog(NodeType.CASE_LAST_STATEMENT, node);
         }
         return data;
     }
@@ -311,10 +283,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest(
-                    "pushOnStack BREAK_STATEMENT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-        }
+        tryToLog(NodeType.BREAK_STATEMENT, node);
         return super.visit(node, data);
     }
 
@@ -326,10 +295,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("pushOnStack CONTINUE_STATEMENT: line " + node.getBeginLine() + ", column "
-                    + node.getBeginColumn());
-        }
+        tryToLog(NodeType.CONTINUE_STATEMENT, node);
         return super.visit(node, data);
     }
 
@@ -341,10 +307,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest(
-                    "pushOnStack RETURN_STATEMENT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-        }
+        tryToLog(NodeType.RETURN_STATEMENT, node);
         return super.visit(node, data);
     }
 
@@ -356,10 +319,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.THROW_STATEMENT, dataFlow.getLast());
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest(
-                    "pushOnStack THROW_STATEMENT: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-        }
+        tryToLog(NodeType.THROW_STATEMENT, node);
         return super.visit(node, data);
     }
 
@@ -386,27 +346,18 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             if (node instanceof ASTForInit) {
                 dataFlow.createNewNode(node);
                 dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest(
-                            "pushOnStack FOR_EXPR: line " + node.getBeginLine() + ", column " + node.getBeginColumn());
-                }
+                tryToLog(NodeType.FOR_EXPR, node);
             } else if (node instanceof ASTForUpdate) {
                 if (!hasForInitNode) {
                     dataFlow.createNewNode(node);
                     dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("pushOnStack FOR_EXPR: line " + node.getBeginLine() + ", column "
-                                + node.getBeginColumn());
-                    }
+                    tryToLog(NodeType.FOR_EXPR, node);
                 }
             } else if (node instanceof ASTStatement) {
                 if (!hasForInitNode && !hasForUpdateNode) {
                     dataFlow.createNewNode(node);
                     dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("pushOnStack FOR_EXPR: line " + node.getBeginLine() + ", column "
-                                + node.getBeginColumn());
-                    }
+                    tryToLog(NodeType.FOR_EXPR, node);
                 }
             }
         }

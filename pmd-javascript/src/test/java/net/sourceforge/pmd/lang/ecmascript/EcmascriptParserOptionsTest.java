@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
@@ -46,10 +47,10 @@ public class EcmascriptParserOptionsTest {
         rule.setProperty(EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR, false);
         assertFalse(((EcmascriptParserOptions) rule.getParserOptions()).isRecordingLocalJsDocComments());
 
-        rule.setProperty(EcmascriptParserOptions.RHINO_LANGUAGE_VERSION, "default");
+        rule.setProperty(EcmascriptParserOptions.RHINO_LANGUAGE_VERSION, Version.VERSION_DEFAULT);
         assertEquals(EcmascriptParserOptions.Version.VERSION_DEFAULT,
                 ((EcmascriptParserOptions) rule.getParserOptions()).getRhinoLanguageVersion());
-        rule.setProperty(EcmascriptParserOptions.RHINO_LANGUAGE_VERSION, "1.8");
+        rule.setProperty(EcmascriptParserOptions.RHINO_LANGUAGE_VERSION, Version.VERSION_1_8);
         assertEquals(EcmascriptParserOptions.Version.VERSION_1_8,
                 ((EcmascriptParserOptions) rule.getParserOptions()).getRhinoLanguageVersion());
     }
@@ -66,8 +67,8 @@ public class EcmascriptParserOptionsTest {
 
     @Test
     public void testEqualsHashcode() throws Exception {
-        BooleanProperty[] properties = new BooleanProperty[] { EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
-            EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR, };
+        BooleanProperty[] properties = {EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR,
+                                        EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR, };
 
         for (int i = 0; i < properties.length; i++) {
             BooleanProperty property = properties[i];

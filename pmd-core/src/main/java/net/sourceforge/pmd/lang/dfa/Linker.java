@@ -64,10 +64,10 @@ public class Linker {
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine("Checking first braceStack element of type=="
-                        + NodeType.stringFromType(firstStackObject.getType()));
+                        + firstStackObject.getType());
             }
             switch (firstStackObject.getType()) {
-            case NodeType.IF_EXPR:
+            case IF_EXPR:
                 LOGGER.finest("IF_EXPR");
                 int x = sc.getLastIndex() - sc.getFirstIndex();
                 if (x == 2) {
@@ -79,25 +79,25 @@ public class Linker {
                 }
                 break;
 
-            case NodeType.WHILE_EXPR:
+            case WHILE_EXPR:
                 LOGGER.finest("WHILE_EXPR");
                 this.computeWhile(sc.getFirstIndex(), sc.getLastIndex());
                 break;
 
-            case NodeType.SWITCH_START:
+            case SWITCH_START:
                 LOGGER.finest("SWITCH_START");
                 this.computeSwitch(sc.getFirstIndex(), sc.getLastIndex());
                 break;
 
-            case NodeType.FOR_INIT:
-            case NodeType.FOR_EXPR:
-            case NodeType.FOR_UPDATE:
-            case NodeType.FOR_BEFORE_FIRST_STATEMENT:
+            case FOR_INIT:
+            case FOR_EXPR:
+            case FOR_UPDATE:
+            case FOR_BEFORE_FIRST_STATEMENT:
                 LOGGER.finest("FOR_EXPR");
                 this.computeFor(sc.getFirstIndex(), sc.getLastIndex());
                 break;
 
-            case NodeType.DO_BEFORE_FIRST_STATEMENT:
+            case DO_BEFORE_FIRST_STATEMENT:
                 LOGGER.finest("DO_BEFORE_FIRST_STATEMENT");
                 this.computeDo(sc.getFirstIndex(), sc.getLastIndex());
                 break;
@@ -130,11 +130,11 @@ public class Linker {
             DataFlowNode node = stackObject.getDataFlowNode();
 
             switch (stackObject.getType()) {
-            case NodeType.THROW_STATEMENT:
+            case THROW_STATEMENT:
                 // do the same like a return
-            case NodeType.RETURN_STATEMENT:
+            case RETURN_STATEMENT:
                 if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("CBR: " + NodeType.stringFromType(stackObject.getType()));
+                    LOGGER.finest("CBR: " + stackObject.getType());
                 }
                 // remove all children (should contain only one child)
                 node.removePathToChild(node.getChildren().get(0));
@@ -142,7 +142,7 @@ public class Linker {
                 node.addPathToChild(lastNode);
                 continueBreakReturnStack.remove(0);
                 break;
-            case NodeType.BREAK_STATEMENT:
+            case BREAK_STATEMENT:
                 LOGGER.finest("CBR: BREAK_STATEMENT");
                 DataFlowNode last = getNodeToBreakStatement(node);
                 node.removePathToChild(node.getChildren().get(0));
@@ -150,7 +150,7 @@ public class Linker {
                 continueBreakReturnStack.remove(0);
                 break;
 
-            case NodeType.CONTINUE_STATEMENT:
+            case CONTINUE_STATEMENT:
                 LOGGER.finest("CBR: CONTINUE_STATEMENT");
                 // List cList = node.getFlow();
                 /*

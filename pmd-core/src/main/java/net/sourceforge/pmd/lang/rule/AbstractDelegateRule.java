@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.Rule;
@@ -25,12 +26,12 @@ public abstract class AbstractDelegateRule implements Rule {
 
     private Rule rule;
 
-    public void setRule(Rule rule) {
-        this.rule = rule;
-    }
-
     public Rule getRule() {
         return rule;
+    }
+
+    public void setRule(Rule rule) {
+        this.rule = rule;
     }
 
     @Override
@@ -54,18 +55,23 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public void setMaximumLanguageVersion(LanguageVersion maximumlanguageVersion) {
-        rule.setMaximumLanguageVersion(maximumlanguageVersion);
-    }
-
-    @Override
     public LanguageVersion getMaximumLanguageVersion() {
         return rule.getMaximumLanguageVersion();
     }
 
     @Override
+    public void setMaximumLanguageVersion(LanguageVersion maximumlanguageVersion) {
+        rule.setMaximumLanguageVersion(maximumlanguageVersion);
+    }
+
+    @Override
     public boolean isDeprecated() {
         return rule.isDeprecated();
+    }
+
+    @Override
+    public void setDeprecated(boolean deprecated) {
+        rule.setDeprecated(deprecated);
     }
 
     /**
@@ -79,11 +85,6 @@ public abstract class AbstractDelegateRule implements Rule {
     @Override
     public Set<PropertyDescriptor<?>> ignoredProperties() {
         return rule.ignoredProperties();
-    }
-
-    @Override
-    public void setDeprecated(boolean deprecated) {
-        rule.setDeprecated(deprecated);
     }
 
     @Override
@@ -206,6 +207,13 @@ public abstract class AbstractDelegateRule implements Rule {
         rule.setProperty(propertyDescriptor, value);
     }
 
+
+    @Override
+    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
+        rule.setProperty(propertyDescriptor, values);
+    }
+
+
     @Override
     public Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor() {
         return rule.getPropertiesByPropertyDescriptor();
@@ -229,6 +237,16 @@ public abstract class AbstractDelegateRule implements Rule {
     @Override
     public boolean usesTypeResolution() {
         return rule.usesTypeResolution();
+    }
+
+    @Override
+    public void setUsesMetrics() {
+        rule.setUsesMetrics();
+    }
+
+    @Override
+    public boolean usesMetrics() {
+        return rule.usesMetrics();
     }
 
     @Override

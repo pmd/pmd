@@ -66,24 +66,25 @@ public class Structure {
      * flow nodes. The cbrStack contains continue, break, and return nodes.
      * There are 2 Stacks because the have to process differently.
      */
-    public void pushOnStack(int type, DataFlowNode node) {
+    public void pushOnStack(NodeType type, DataFlowNode node) {
         StackObject obj = new StackObject(type, node);
         if (type == NodeType.RETURN_STATEMENT || type == NodeType.BREAK_STATEMENT || type == NodeType.CONTINUE_STATEMENT
-                || type == NodeType.THROW_STATEMENT) {
+            || type == NodeType.THROW_STATEMENT) {
             // ugly solution - stores the type information in two ways
             continueBreakReturnStack.push(obj);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("continueBreakReturnStack: line " + node.getNode().getBeginLine() + ", column "
-                        + node.getNode().getBeginColumn() + " - " + node.toString());
-            }
+            tryToLog("continueBreakReturnStack", node);
         } else {
             braceStack.push(obj);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("braceStack: line " + node.getNode().getBeginLine() + ", column "
-                        + node.getNode().getBeginColumn() + " - " + node.toString());
-            }
+            tryToLog("braceStack", node);
         }
         node.setType(type);
+    }
+
+    protected void tryToLog(String tag, DataFlowNode node) {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest(tag + ": line" + node.getNode().getBeginLine() + ", column "
+                + node.getNode().getBeginColumn() + " - " + node.toString());
+        }
     }
 
     public List<StackObject> getBraceStack() {
@@ -95,12 +96,11 @@ public class Structure {
     }
 
     /**
-     *
      * @return formatted dump of the DFA Structure's
      */
     public String dump() {
         StringBuilder stringDump = new StringBuilder(120).append("Data Flow Analysis Structure:\n")
-                .append("    Edge Nodes (ContinueBraceReturn) :");
+            .append("    Edge Nodes (ContinueBraceReturn) :");
         for (StackObject stackObject : continueBreakReturnStack) {
             stringDump.append("\nCBR => ").append(stackObject.toString());
         }

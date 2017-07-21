@@ -4,85 +4,95 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.FLOAT_PARSER;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
- * Defines a property type that support float property values within an upper
- * and lower boundary.
+ * Multi-valued float property.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class FloatMultiProperty extends AbstractMultiNumericProperty<Float[]> {
+public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FloatMultiProperty>(
-            Float[].class, NUMBER_FIELD_TYPES_BY_KEY) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<List<Float>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Float>(Float.class, NUMBER_FIELD_TYPES_BY_KEY) {
+            @Override
+            public FloatMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById,
+                                                 boolean isDefinedExternally) {
+                String[] minMax = minMaxFrom(valuesById);
+                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
+                List<Float> defaultValues = Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, FLOAT_PARSER);
+                return new FloatMultiProperty(nameIn(valuesById),
+                                              descriptionIn(valuesById),
+                                              FLOAT_PARSER.valueOf(minMax[0]),
+                                              FLOAT_PARSER.valueOf(minMax[1]),
+                                              defaultValues,
+                                              0f,
+                                              isDefinedExternally);
+            }
+        }; // @formatter:on
 
-        @Override
-        public FloatMultiProperty createWith(Map<String, String> valuesById) {
-            String[] minMax = minMaxFrom(valuesById);
-            char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-            Float[] defaultValues = floatsIn(numericDefaultValueIn(valuesById), delimiter);
-            return new FloatMultiProperty(nameIn(valuesById), descriptionIn(valuesById), Float.parseFloat(minMax[0]),
-                    Float.parseFloat(minMax[1]), defaultValues, 0f);
-        }
-    };
 
     /**
-     * Constructor for FloatProperty that configures it to accept multiple
-     * values and any number of defaults.
+     * Constructor using an array of defaults.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param min
-     *            Float
-     * @param max
-     *            Float
-     * @param defaultValues
-     *            Float[]
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param defaultValues  Array of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
-    public FloatMultiProperty(String theName, String theDescription, Float min, Float max, Float[] defaultValues,
-            float theUIOrder) {
-        super(theName, theDescription, min, max, defaultValues, theUIOrder);
+    public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
+                              Float[] defaultValues, float theUIOrder) {
+        this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
     }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
-    @Override
-    public Class<Float[]> type() {
-        return Float[].class;
+
+    /** Master constructor. */
+    private FloatMultiProperty(String theName, String theDescription, Float min, Float max,
+                               List<Float> defaultValues, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, min, max, defaultValues, theUIOrder, isDefinedExternally);
     }
 
+
     /**
-     * Creates an property value of the right type from a raw string.
+     * Constructor using a list of defaults.
      *
-     * @param value
-     *            String
-     * @return Object
+     * @param theName        Name
+     * @param theDescription Description
+     * @param min            Minimum value of the property
+     * @param max            Maximum value of the property
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
      */
+    public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
+                              List<Float> defaultValues, float theUIOrder) {
+        this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
+    }
+
+
     @Override
-    protected Object createFrom(String value) {
+    public Class<Float> type() {
+        return Float.class;
+    }
+
+
+    @Override
+    protected Float createFrom(String value) {
         return Float.valueOf(value);
-    }
-
-    /**
-     * Returns an array of the correct type for the receiver.
-     *
-     * @param size
-     *            int
-     * @return Object[]
-     */
-    @Override
-    protected Object[] arrayFor(int size) {
-        return new Float[size];
     }
 }

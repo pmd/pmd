@@ -5,7 +5,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode {
+import java.util.List;
+
+public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
+
+    private QualifiedName qualifiedName;
+
     public ASTAnnotationTypeDeclaration(int id) {
         super(id);
     }
@@ -15,14 +20,43 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode {
     }
 
     /**
-     * Accept the visitor. *
+     * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     public boolean isNested() {
         return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+            || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+    }
+
+    @Override
+    public QualifiedName getQualifiedName() {
+        if (qualifiedName == null) {
+            if (isNested()) {
+                ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
+                QualifiedName parentQN = parent.getQualifiedName();
+                qualifiedName = QualifiedName.makeNestedClassOf(parentQN, this.getImage());
+                return qualifiedName;
+            }
+
+            qualifiedName = QualifiedName.makeOuterClassOf(this);
+        }
+
+        return qualifiedName;
+    }
+
+    @Override
+    public TypeKind getTypeKind() {
+        return TypeKind.ANNOTATION;
+    }
+
+
+    @Override
+    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTAnnotationTypeBody.class)
+            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 }

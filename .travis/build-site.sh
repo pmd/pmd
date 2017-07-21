@@ -12,25 +12,19 @@ if ! travis_isPush; then
 fi
 
 
+(
+    # Run the build, truncate output due to Travis log limits
 
-export PING_SLEEP=30s
-export BUILD_OUTPUT=/tmp/build-site.out
-export PING_PID_FILE=/tmp/build-site-ping.pid
+    echo -e "\n\nExecuting ./mvnw install..."
+    travis_wait ./mvnw install -DskipTests=true -B -V -q
+    echo "Finished executing ./mvnw install"
 
-source .travis/background-job-funcs.sh
+    echo -e "\n\nExecuting ./mvnw site site:stage...
+    travis_wait 40 ./mvnw site site:stage -DskipTests=true -Psite -B -V -q
+    echo "Finished executing ./mvnw site site:stage..."
+)
 
-# Run the build, redirect output into the file
-./mvnw install -DskipTests=true -B -V >> $BUILD_OUTPUT 2>&1
-./mvnw site site:stage -Psite -B -V >> $BUILD_OUTPUT 2>&1
-
-# The build finished without returning an error so dump a tail of the output
-dump_output
-
-# nicely terminate the ping output loop
-kill_ping
-
-
-# create pmd-doc archive
+echo -e "\n\nCreating pmd-doc archive...\n\n"
 (
     cd target
     mv staging pmd-doc-${VERSION}
@@ -42,8 +36,9 @@ if [[ "$TRAVIS_TAG" != "" || "$VERSION" == *-SNAPSHOT ]]; then
     rsync -avh target/pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
 fi
 
-if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
-    # Uploading snapshot site...
-    rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
-fi
-
+(
+    if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
+        echo -e "\n\nUploading snapshot site...\n\n"
+        travis_wait rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
+    fi
+)

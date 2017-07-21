@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 
 /**
  * Computes the first sequence in a list.
- *
+ * <p>
  * <p>e.g. IF_START 0 WHILE_EXPR 1 WHILE_END 2 IF_END 3</p>
- *
+ * <p>
  * <p>The first sequence is WHILE_EXPR and WHILE_END. It returns always the
  * first inner nested scope.
  * </p>
@@ -22,69 +22,13 @@ import java.util.logging.Logger;
  */
 public class SequenceChecker {
     private static final Logger LOGGER = Logger.getLogger(SequenceChecker.class.getName());
-
-    /*
-     * Element of logical structure of brace nodes.
-     */
-    private static class Status {
-
-        public static final int ROOT = -1;
-
-        private List<Status> nextSteps = new ArrayList<>();
-        // NodeType
-        private int type;
-        private boolean lastStep;
-
-        Status(int type) {
-            this(type, false);
-        }
-
-        Status(int type, boolean lastStep) {
-            this.type = type;
-            this.lastStep = lastStep;
-        }
-
-        public void addStep(Status type) {
-            nextSteps.add(type);
-        }
-
-        /**
-         *
-         * @param type
-         *            candidate
-         * @return valid Status or null if NodeType is not a valid transition
-         *         NodeType
-         */
-        public Status step(int type) {
-            for (int i = 0; i < this.nextSteps.size(); i++) {
-                if (type == nextSteps.get(i).type) {
-                    return nextSteps.get(i);
-                }
-            }
-            return null;
-        }
-
-        public boolean isLastStep() {
-            return this.lastStep;
-        }
-
-        public boolean hasMoreSteps() {
-            return this.nextSteps.size() > 1;
-        }
-
-        @Override
-        public String toString() {
-            return "NodeType=" + NodeType.stringFromType(type) + "(" + type + "), lastStep=" + lastStep;
-        }
-    }
-
     private static Status root;
 
     /**
      * Create State transition map for the control structures
      */
     static {
-        root = new Status(Status.ROOT);
+        root = new Status(NodeType.ROOT);
         Status ifNode = new Status(NodeType.IF_EXPR);
         Status ifSt = new Status(NodeType.IF_LAST_STATEMENT);
         Status ifStWithoutElse = new Status(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, true);
@@ -155,7 +99,6 @@ public class SequenceChecker {
 
     private Status aktStatus;
     private List<StackObject> bracesList;
-
     private int firstIndex = -1;
     private int lastIndex = -1;
 
@@ -188,15 +131,16 @@ public class SequenceChecker {
          */
         int maximumIterations = this.bracesList.size() * this.bracesList.size();
         int l = -1;
-        for (int i = 0; i < this.bracesList.size(); i++) {
+        int i = 0;
+        while (i < this.bracesList.size()) {
             l++;
             StackObject so = bracesList.get(i);
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("Processing bracesList(l,i)=(" + l + "," + i + ") of Type "
-                        + NodeType.stringFromType(so.getType()) + " with State (aktStatus) = " + aktStatus);
+                    + so.getType() + " with State (aktStatus) = " + aktStatus);
                 // LOGGER.finest("StackObject of Type="+so.getType());
                 LOGGER.finest("DataFlowNode @ line " + so.getDataFlowNode().getLine() + " and index="
-                        + so.getDataFlowNode().getIndex());
+                    + so.getDataFlowNode().getIndex());
             }
 
             // Attempt to get to this StackObject's NodeType from the current
@@ -211,6 +155,7 @@ public class SequenceChecker {
                     this.lastIndex = i - 1;
                     LOGGER.finer("aktStatus is NULL (lookAhead): Invalid transition");
                     LOGGER.exiting(this.getClass().getCanonicalName(), "run", false);
+
                     return false;
                 } else if (l > maximumIterations) {
                     // Cope with incorrect bracesList contents
@@ -218,6 +163,7 @@ public class SequenceChecker {
                         LOGGER.severe("aktStatus is NULL: maximum Iterations exceeded, abort " + i);
                     }
                     LOGGER.exiting(this.getClass().getCanonicalName(), "run", false);
+
                     return false;
                 } else {
                     this.aktStatus = root;
@@ -225,9 +171,10 @@ public class SequenceChecker {
                     i--;
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.finest("aktStatus is NULL: Restarting search continue i==" + i + ", firstIndex="
-                                + this.firstIndex);
+                            + this.firstIndex);
                     }
-                    continue;
+
+
                 }
             } else {
                 // This NodeType _is_ a valid transition from the previous State
@@ -236,21 +183,24 @@ public class SequenceChecker {
                     this.lastIndex = i;
                     if (LOGGER.isLoggable(Level.FINEST)) {
                         LOGGER.finest("aktStatus is NOT NULL: lastStep reached and no moreSteps - firstIndex="
-                                + firstIndex + ", lastIndex=" + lastIndex);
+                            + firstIndex + ", lastIndex=" + lastIndex);
                     }
                     LOGGER.exiting(this.getClass().getCanonicalName(), "run", false);
+
                     return false;
                 } else if (aktStatus.isLastStep() && aktStatus.hasMoreSteps()) {
                     lookAhead = true;
                     this.lastIndex = i;
-                    LOGGER.finest("aktStatus is NOT NULL: set lookAhead on");
+                    //       LOGGER.finest("aktStatus is NOT NULL: set lookAhead on");
                 }
             }
+            i++;
         }
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finer("Completed search: firstIndex=" + firstIndex + ", lastIndex=" + lastIndex);
         }
         LOGGER.exiting(this.getClass().getCanonicalName(), "run", this.firstIndex == this.lastIndex);
+
         return this.firstIndex == this.lastIndex;
     }
 
@@ -260,6 +210,61 @@ public class SequenceChecker {
 
     public int getLastIndex() {
         return this.lastIndex;
+    }
+
+    /*
+     * Element of logical structure of brace nodes.
+     */
+    private static class Status {
+
+        //  public static final int ROOT = -1;
+
+        private List<Status> nextSteps = new ArrayList<>();
+        // NodeType
+        private NodeType type;
+        private boolean lastStep;
+
+        Status(NodeType type) {
+            this(type, false);
+        }
+
+        Status(NodeType type, boolean lastStep) {
+            this.type = type;
+            this.lastStep = lastStep;
+        }
+
+        public void addStep(Status type) {
+            nextSteps.add(type);
+        }
+
+        /**
+         * @param type candidate
+         *
+         * @return valid Status or null if NodeType is not a valid transition NodeType
+         */
+        public Status step(NodeType type) {
+
+            for (Status s : nextSteps) {
+                if (type == s.type) {
+                    return s;
+                }
+            }
+
+            return null;
+        }
+
+        public boolean isLastStep() {
+            return this.lastStep;
+        }
+
+        public boolean hasMoreSteps() {
+            return this.nextSteps.size() > 1;
+        }
+
+        @Override
+        public String toString() {
+            return "NodeType=" + type + "(" + type + "), lastStep=" + lastStep;
+        }
     }
 
 }

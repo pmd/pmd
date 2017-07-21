@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -33,8 +32,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
-import net.sourceforge.pmd.lang.rule.properties.factories.PropertyDescriptorUtil;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorUtil;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -266,40 +264,20 @@ public class RuleSetWriter {
         Element propertiesElement = null;
         if (propertyDescriptors != null) {
 
-            for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) { // For
-                // each
-                // provided
-                // PropertyDescriptor
+            for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
+                // For each provided PropertyDescriptor
 
-                if (propertyDescriptor instanceof PropertyDescriptorWrapper) { // Any
-                    // wrapper
-                    // property
-                    // needs
-                    // to
-                    // go
-                    // out
-                    // as
-                    // a
-                    // definition.
+                if (propertyDescriptor.isDefinedExternally()) {
+                    // Any externally defined property needs to go out as a definition.
                     if (propertiesElement == null) {
                         propertiesElement = createPropertiesElement();
                     }
 
-                    Element propertyElement = createPropertyDefinitionElementBR(
-                            ((PropertyDescriptorWrapper<?>) propertyDescriptor).getPropertyDescriptor());
+                    Element propertyElement = createPropertyDefinitionElementBR(propertyDescriptor);
                     propertiesElement.appendChild(propertyElement);
                 } else {
-                    if (propertiesByPropertyDescriptor != null) { // Otherwise,
-                        // any
-                        // property
-                        // which has a
-                        // value
-                        // different
-                        // than the
-                        // default
-                        // needs to go
-                        // out as a
-                        // value.
+                    if (propertiesByPropertyDescriptor != null) {
+                        // Otherwise, any property which has a value different than the default needs to go out as a value.
                         Object defaultValue = propertyDescriptor.defaultValue();
                         Object value = propertiesByPropertyDescriptor.get(propertyDescriptor);
                         if (value != defaultValue && (value == null || !value.equals(defaultValue))) {
@@ -353,44 +331,18 @@ public class RuleSetWriter {
         return propertyElement;
     }
 
-    // private Element createPropertyDefinitionElement(PropertyDescriptor<?>
-    // propertyDescriptor) {
-    // Element propertyElement = createPropertyValueElement(propertyDescriptor,
-    // propertyDescriptor.defaultValue());
-    //
-    // propertyElement.setAttribute("description",
-    // propertyDescriptor.description());
-    // String type =
-    // PropertyDescriptorFactory.getPropertyDescriptorType(propertyDescriptor);
-    // propertyElement.setAttribute("type", type);
-    //
-    // if (propertyDescriptor.isMultiValue()) {
-    // propertyElement.setAttribute("delimiter",
-    // String.valueOf(propertyDescriptor.multiValueDelimiter()));
-    // }
-    //
-    // if (propertyDescriptor instanceof AbstractNumericProperty) {
-    // propertyElement.setAttribute("min",
-    // String.valueOf(((AbstractNumericProperty<?>)
-    // propertyDescriptor).lowerLimit()));
-    // propertyElement.setAttribute("max",
-    // String.valueOf(((AbstractNumericProperty<?>)
-    // propertyDescriptor).upperLimit()));
-    // }
-    //
-    // return propertyElement;
-    // }
 
     private Element createPropertyDefinitionElementBR(PropertyDescriptor<?> propertyDescriptor) {
 
         final Element propertyElement = createPropertyValueElement(propertyDescriptor,
                 propertyDescriptor.defaultValue());
-        propertyElement.setAttribute(PropertyDescriptorFields.TYPE,
-                PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type()));
+        propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName(),
+                                     PropertyDescriptorUtil.typeIdFor(propertyDescriptor.type(),
+                                                                      propertyDescriptor.isMultiValue()));
 
-        Map<String, String> propertyValuesById = propertyDescriptor.attributeValuesById();
-        for (Map.Entry<String, String> entry : propertyValuesById.entrySet()) {
-            propertyElement.setAttribute(entry.getKey(), entry.getValue());
+        Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();
+        for (Map.Entry<PropertyDescriptorField, String> entry : propertyValuesById.entrySet()) {
+            propertyElement.setAttribute(entry.getKey().attributeName(), entry.getValue());
         }
 
         return propertyElement;
