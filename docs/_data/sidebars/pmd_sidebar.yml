@@ -78,6 +78,21 @@ entries:
     - title: Java Rules
       url: /pmd_rules_java.html
       output: web, pdf
+    - title: JavaScript Rules
+      url: /pmd_rules_javascript.html
+      output: web, pdf
+    - title: JSP Rules
+      url: /pmd_rules_jsp.html
+      output: web, pdf
+    - title: PLSQL Rules
+      url: /pmd_rules_plsql.html
+      output: web, pdf
+    - title: Apache Velocity Rules
+      url: /pmd_rules_vm.html
+      output: web, pdf
+    - title: XML and XSL Rules
+      url: /pmd_rules_xml.html
+      output: web, pdf
   - title: Language Specific Documentation
     output: web, pdf
     folderitems:

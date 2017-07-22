@@ -37,7 +37,7 @@ Unzip it into any directory:
     [tom@hal tmp]$
 
 
-Note that the PMD binary distribution file contains both [PMD](running.html) and [CPD](cpd-usage.html).
+Note that the PMD binary distribution file contains both [PMD](#running-pmd-via-command-line) and [CPD](/pmd_userdocs_cpd.html).
 
 
 ## Running PMD via command line
@@ -59,7 +59,7 @@ specific to the utility used.
     .../src/main/java/net/sourceforge/pmd/RuleSetWriter.java:66     Avoid empty catch blocks
     .../src/main/java/net/sourceforge/pmd/RuleSetWriter.java:269    Useless parentheses.
 
-Type "./run.sh pmd -d [filename|jar or zip file containing source code|directory] -f [report format] -R [ruleset file]", i.e:
+Type "./run.sh pmd -d \[filename\|jar or zip file containing source code\|directory] -f \[report format] -R \[ruleset file]", i.e:
 
     /home/user/tmp/pmd-bin-${project.version}/pmd/bin>./run.sh pmd -d /home/user/data/pmd/pmd/test-data/Unused1.java -f xml -R rulesets/java/unusedcode.xml
     <?xml version="1.0"?><pmd>
@@ -76,7 +76,7 @@ Type "./run.sh pmd -d [filename|jar or zip file containing source code|directory
 
 You can find PMD's starter batch file `pmd.bat` in the `bin` subdirectory.
 
-Type "pmd -d [filename|jar or zip file containing source code|directory] -f [report format] -R [ruleset file]", i.e:
+Type "pmd -d \[filename\|jar or zip file containing source code\|directory] -f \[report format] -R \[ruleset file]", i.e:
 
     C:\tmp\pmd-bin-${project.version}\pmd\bin>pmd -d c:\data\pmd\pmd\test-data\Unused1.java -f xml -R rulesets/java/unusedcode.xml
     <?xml version="1.0"?><pmd>
@@ -262,12 +262,13 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 
 ### Supported Languages
 
-*   [java](../pmd-java/rules/index.html)
-*   [ecmascript](../pmd-javascript/rules/index.html) (JavaScript)
-*   [jsp](../pmd-jsp/rules/index.html)
-*   [plsql](../pmd-plsql/rules/index.html)
-*   [vm](../pmd-vm/rules/index.html) (Apache Velocity)
-*   [xml and xsl](../pmd-xml/rules/index.html)
+*   [apex](/pmd_rules_apex.html)
+*   [java](/pmd_rules_java.html)
+*   [ecmascript](/pmd_rules_javascript.html) (JavaScript)
+*   [jsp](/pmd_rules_jsp.html)
+*   [plsql](/pmd_rules_plsql.html)
+*   [vm](/pmd_rules_vm.html) (Apache Velocity)
+*   [xml and xsl](/pmd_rules_xml.html)
 
 
 ### Available Report Formats / Renderers

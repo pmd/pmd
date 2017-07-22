@@ -49,8 +49,3 @@ folder: pmd/userdocs
     to catch web app security problems.  Thanks to Joseph Hemler for the props!
 
 *   <a href="http://www.amazon.com/gp/product/0672325624">Extreme Programming With Ant</a>
-
-## Articles
-
-*   <a href="http://connect.ed-diamond.com/GNU-Linux-Magazine/GLMF-105/Verifier-votre-code-Java-avec-PMD">An introduction
-    to PMD (in French)</a>

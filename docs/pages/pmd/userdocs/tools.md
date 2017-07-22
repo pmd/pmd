@@ -26,28 +26,28 @@ folder: pmd/userdocs
     </tr>
 
     <tr>
-        <td><a href="#BlueJ">BlueJ</a></td>
+        <td><a href="#bluej">BlueJ</a></td>
         <td></td>
         <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
     <tr>
-        <td><a href="#Codacy">Codacy</a></td>
+        <td><a href="#codacy">Codacy</a></td>
         <td></td>
         <td><a class="externalLink" href="https://github.com/codacy/codacy-pmdjava">github: codacy/codacy-pmdjava</a></td>
         <td>Codacy</td>
     </tr>
 
     <tr>
-        <td><a href="#Code_Guide">CodeGuide</a></td>
+        <td><a href="#code-guide">CodeGuide</a></td>
         <td></td>
         <td>N/A</td>
         <td>Austin Moore</td>
     </tr>
 
     <tr>
-        <td><a href="#Eclipse">Eclipse</a></td>
+        <td><a href="#eclipse">Eclipse</a></td>
         <td></td>
         <td><a href="https://github.com/pmd/pmd-eclipse-plugin">github: pmd/pmd-eclipse</a></td>
         <td>Philippe Herlin</td>
@@ -61,14 +61,14 @@ folder: pmd/userdocs
     </tr>
 
     <tr>
-        <td><a href="#Emacs">Emacs</a></td>
+        <td><a href="#emacs">Emacs</a></td>
         <td></td>
         <td><a href="https://github.com/pmd/pmd-emacs/">github: pmd/pmd-emacs</a></td>
         <td>Nascif Abousalh Neto</td>
     </tr>
 
     <tr>
-        <td><a href="#Gel">Gel</a></td>
+        <td><a href="#gel">Gel</a></td>
         <td></td>
         <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-gel/">github: pmd/pmd-misc/pmd-gel</a></td>
         <td>Andrei Lumianski</td>
@@ -82,87 +82,80 @@ folder: pmd/userdocs
     </tr>
 
     <tr>
-        <td><a href="#IDEA">IntelliJ IDEA</a></td>
+        <td><a href="#idea">IntelliJ IDEA</a></td>
         <td></td>
         <td><a href="https://github.com/amitdev/PMD-Intellij">github: amitdev/PMD-Intellij</a></td>
         <td>Amit Dev</td>
     </tr>
 
     <tr>
-        <td><a href="#IDEA_-_QAPlug">IntelliJ IDEA - QAPlug</a></td>
+        <td><a href="#idea---qaplug">IntelliJ IDEA - QAPlug</a></td>
         <td><a href="http://qaplug.com/">http://qaplug.com/</a></td>
         <td>N/A</td>
         <td>Jakub Sławiński</td>
     </tr>
 
     <tr>
-        <td><a href="#JBuilder">JBuilder</a></td>
+        <td><a href="#jbuilder">JBuilder</a></td>
         <td></td>
         <td><a href="https://github.com/pmd/pmd-misc/tree/master/pmd-jbuilder/">github: pmd/pmd-misc/pmd-jbuilder</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
     <tr>
-        <td><a href="#JCreator">JCreator</a></td>
+        <td><a href="#jcreator">JCreator</a></td>
         <td></td>
         <td>N/A</td>
         <td>Brant Gurganus</td>
     </tr>
 
     <tr>
-        <td><a href="#JDeveloper">JDeveloper</a></td>
+        <td><a href="#jdeveloper">JDeveloper</a></td>
         <td></td>
         <td><a href="https://github.com/pmd/pmd-jdeveloper">github: pmd/pmd-jdeveloper</a></td>
         <td><a href="http://develishdevelopment.wordpress.com/">Torsten Kleiber</a></td>
     </tr>
 
     <tr>
-        <td><a href="#JEdit">JEdit</a></td>
+        <td><a href="#jedit">JEdit</a></td>
         <td><a href="http://plugins.jedit.org/plugins/?PMDPlugin">jEdit - PMD Plugin</a></td>
         <td><a href="https://sourceforge.net/p/jedit/PMDPlugin/ci/master/tree/">sourceforge: jedit/PMDPlugin</a></td>
         <td>Jiger Patel, Dale Anson</td>
     </tr>
 
     <tr>
-        <td><a href="#Maven">Maven</a></td>
+        <td><a href="#maven">Maven</a></td>
         <td></td>
         <td>N/A</td>
         <td>N/A</td>
     </tr>
 
     <tr>
-        <td><a href="#Maven_2_and_3">Maven 2 and 3</a></td>
+        <td><a href="#maven-2-and-3">Maven 2 and 3</a></td>
         <td></td>
         <td>N/A</td>
         <td><a href="http://maven.apache.org/plugins/maven-pmd-plugin/">apache.org / maven</a></td>
     </tr>
 
     <tr>
-        <td><a href="#NetBeans">NetBeans</a></td>
+        <td><a href="#netbeans">NetBeans</a></td>
         <td><a href="http://kenai.com/projects/sqe/">SQE</a></td>
         <td><a href="https://github.com/sqe-team/sqe">github: sqe-team/sqe</a></td>
         <td>N/A</td>
     </tr>
 
     <tr>
-        <td><a href="#TextPad">TextPad</a></td>
+        <td><a href="#textpad">TextPad</a></td>
         <td></td>
         <td>N/A</td>
         <td>Jeff Epstein</td>
     </tr>
 
     <tr>
-        <td><a href="#WebLogic_Workshop_8.1.x">WebLogic Workshop 8.1.x</a></td>
+        <td><a href="#weblogic-workshop-81x">WebLogic Workshop 8.1.x</a></td>
         <td></td>
         <td>N/A</td>
         <td>Kevin Conaway</td>
-    </tr>
-
-    <tr>
-        <td><a href="#Codacy">Codacy</a></td>
-        <td></td>
-        <td><a class="externalLink" href="https://github.com/codacy/codacy-pmdjava">github: codacy/codacy-pmdjava</a></td>
-        <td>Codacy</td>
     </tr>
 </table>
 
@@ -426,7 +419,7 @@ To specify a set of official, built-in rulesets to be used set them in the prope
 A clean strategy for customizing which rules to use for a project is to write a ruleset file.
 In this file you can define which rules to use, add custom rules, and
 customizing which rules to include/exclude from official rulesets. More information on
-writing a ruleset can be found [here](../customizing/howtomakearuleset.html).
+writing a ruleset can be found [here](/pmd_userdocs_understanding_rulesets.html).
 
 Add to the root of your Maven project a pmd.xml file which contains the ruleset mentioned in
 the previous paragraph. Add the following property to your project now:
@@ -502,7 +495,7 @@ The value of the 'ruleset' value can either be a relative address, an absolute a
 A clean strategy for customizing which rules to use for a project is to write a ruleset file.
 In this file you can define which rules to use, add custom rules, and
 customizing which rules to include/exclude from official rulesets. More information on
-writing a ruleset can be found [here](../customizing/howtomakearuleset.html).
+writing a ruleset can be found [here](/pmd_userdocs_understanding_rulesets.html).
 Note that if you include other rulesets in your own rulesets, you have to be sure that the plugin
 will be able to resolve those other ruleset references.
 

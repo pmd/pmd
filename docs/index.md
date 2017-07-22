@@ -25,7 +25,7 @@ You can [download everything from here](https://github.com/pmd/pmd/releases).
 
 You can get an overview of all the rules for e.g. Java at the [rulesets index](pmd_rules_java.html) page.
 
-PMD is [integrated](usage/integrations.html) with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.
+PMD is [integrated](pmd_userdocs_tools.html) with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.
 
 
 ## Future Releases

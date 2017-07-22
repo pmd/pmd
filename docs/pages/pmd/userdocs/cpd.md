@@ -25,20 +25,12 @@ Each rewrite made it much faster, and now it can process the JDK 1.4 java.* pack
 (on my workstation, at least).
 
 Note that CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and some more languages. For the
-full list, see below [Supported Languages](#Supported_Languages).
+full list, see below [Supported Languages](#supported-languages).
 
 Your own language is missing?
-See how to add it [here](../customizing/cpd-parser-howto.html).
+See how to add it [here](/pmd_devdocs_adding_new_cpd_language.html).
 
 CPD is included with PMD, which you can download [here](http://sourceforge.net/projects/pmd/files/pmd/).
-Or, if you have [Java Web Start](http://java.sun.com/products/javawebstart/),
-you can [run CPD by clicking here](http://pmd.sourceforge.net/cpd.jnlp).
-
-[Here](./cpdresults.txt) are the duplicates CPD found in the JDK 1.4 source code.
-
-[Here](./cpp_cpdresults.txt) are the duplicates CPD found in the APACHE_2_0_BRANCH branch of Apache
-(just the `httpd-2.0/server/` directory).
-
 
 ## Command line usage
 
