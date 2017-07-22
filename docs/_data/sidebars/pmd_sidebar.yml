@@ -4,7 +4,7 @@
 entries:
 - title: sidebar
   product: PMD Project
-  version: 6.0.0
+  version: "!PMD_VERSION!"
   folders:
 
   - title:
