@@ -36,6 +36,12 @@ entries:
     - title: Best Pratices
       url: /pmd_best_practices.html
       output: web, pdf
+    - title: Copy-Paste Detection
+      url: /pmd_userdocs_cpd.html
+      output: web, pdf
+    - title: Suppressing
+      url: /pmd_userdocs_suppressing.html
+      output: web, pdf
     - title: Tools / Integrations
       url: /pmd_tools.html
       output: web, pdf
@@ -68,6 +74,12 @@ entries:
       output: web, pdf
     - title: Java Rules
       url: /pmd_rules_java.html
+      output: web, pdf
+  - title: Language Specific Documentation
+    output: web, pdf
+    folderitems:
+    - title: JSP Support
+      url: /pmd_languages_jsp.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf
