@@ -28,13 +28,13 @@ entries:
       output: web, pdf
       type: homepage
     - title: Getting Started
-      url: /pmd_getting_started.html
+      url: /pmd_userdocs_getting_started.html
       output: web, pdf
     - title: Understanding Rulesets
-      url: /pmd_understanding_rulesets.html
+      url: /pmd_userdocs_understanding_rulesets.html
       output: web, pdf
     - title: Best Pratices
-      url: /pmd_best_practices.html
+      url: /pmd_userdocs_best_practices.html
       output: web, pdf
     - title: Copy-Paste Detection
       url: /pmd_userdocs_cpd.html
@@ -43,10 +43,10 @@ entries:
       url: /pmd_userdocs_suppressing.html
       output: web, pdf
     - title: Tools / Integrations
-      url: /pmd_tools.html
+      url: /pmd_userdocs_tools.html
       output: web, pdf
     - title: Getting Help
-      url: /pmd_help.html
+      url: /pmd_userdocs_help.html
       output: web, pdf
     - title: PMD in the press
       url: /pmd_userdocs_news.html
@@ -61,7 +61,7 @@ entries:
       url: /license.html
       output: web, pdf
     - title: Credits
-      url: /pmd_credits.html
+      url: /pmd_userdocs_credits.html
       output: web, pdf
     - title: What does 'PMD' mean?
       url: /pmd_userdocs_meaning.html

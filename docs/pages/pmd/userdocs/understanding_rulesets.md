@@ -1,7 +1,7 @@
 ---
 title: Understanding Rulesets
 sidebar: pmd_sidebar
-permalink: pmd_understanding_rulesets.html
+permalink: pmd_userdocs_understanding_rulesets.html
 folder: pmd/userdocs
 ---
 

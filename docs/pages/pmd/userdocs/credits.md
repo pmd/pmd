@@ -1,7 +1,7 @@
 ---
 title: Credits
 sidebar: pmd_sidebar
-permalink: pmd_credits.html
+permalink: pmd_userdocs_credits.html
 folder: pmd/userdocs
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: Tools / Integrations
 sidebar: pmd_sidebar
-permalink: pmd_tools.html
+permalink: pmd_userdocs_tools.html
 folder: pmd/userdocs
 ---
 

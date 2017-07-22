@@ -1,7 +1,7 @@
 ---
 title: Getting Help
 sidebar: pmd_sidebar
-permalink: pmd_help.html
+permalink: pmd_userdocs_help.html
 folder: pmd/userdocs
 ---
 

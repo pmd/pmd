@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-permalink: pmd_getting_started.html
+permalink: pmd_userdocs_getting_started.html
 sidebar: pmd_sidebar
 folder: pmd/userdocs
 ---
