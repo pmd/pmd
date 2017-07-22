@@ -124,7 +124,7 @@ the following template:
 *   Move version/release info from **src/site/markdown/overview/changelog.md** to **src/site/markdown/overview/changelog-old.md**.
 *   Update version/release info in **src/site/markdown/overview/changelog.md**. Use the following template:
 
-
+```
     # PMD Release Notes
 
     ## ????? - ${DEVELOPMENT_VERSION}
@@ -147,6 +147,7 @@ the following template:
     ### API Changes
 
     ### External Contributions
+```
 
 Commit and push
 

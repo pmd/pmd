@@ -190,7 +190,7 @@ Here's how to set up PMD with Omnicore's CodeGuide:
 *   Add the following tool to CodeGuide (Tools->Configure Tools->New):
     *   Name: PMD
     *   Kind: Tool for directories
-    *   Executable: /Applications/pmd-bin-${project.version}/bin/run.sh
+    *   Executable: /Applications/pmd-bin-{{pmd.site.version}}/bin/run.sh
     *   Arguments: pmd -d $DIRECTORY_PATH$ -f emacs $USER_ARGUMENTS$
 
 Now you can right click on a source directory, select the PMD tool and a dialog box will appear.
@@ -286,7 +286,7 @@ Here's how to set it up as an "External Tool":
     *   For the next parameter you'll need to plug in the location of your PMD installation
         and the rulesets you want to use
     *   Parameters:
-        `-cp %CLASSPATH%;c:\pmd\lib\pmd-${project.version}.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$`
+        `-cp %CLASSPATH%;c:\pmd\lib\pmd-{{pmd.site.version}}.jar;c:\pmd\lib\asm-3.2.jar;c:\pmd\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD "$FilePath$" ideaj unusedcode,imports "$Sourcepath$" $FileClass$.method $FileName$`
 
 That's pretty much it. Now you can right click on a source directory and select PMD,
 it'll run recursively on the source files, and the results should
@@ -535,8 +535,8 @@ The [SQE](http://kenai.com/projects/sqe/) project includes PMD integration for N
 
 *   The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed
     into your machine, and exists in `D:\java\jdk\_142\`. This means that `D:\java\jdk\_142\bin\java.exe` exists.
-*   PMD version 5.0 exists in `D:\java\pmd-bin-${project.version}\`.
-    This means that `D:\java\pmd-bin-${project.version}\lib\pmd-${project.version}.jar` (among other jar files
+*   PMD version 5.0 exists in `D:\java\pmd-bin-{{pmd.site.version}}\`.
+    This means that `D:\java\pmd-bin-{{pmd.site.version}}\lib\pmd-{{pmd.site.version}}.jar` (among other jar files
     in the same directory) exist.
 
 **To integrate into TextPad**
@@ -553,7 +553,7 @@ The [SQE](http://kenai.com/projects/sqe/) project includes PMD integration for N
 8.  Expand the **Tools** branch (if not already) by clicking on the '`+`' directly to its left.
 9.  In the expanded list, select **PMD directory**. This changes the right side of this dialog to the "tool" form.
 10. In the "tool" form, enter these parameters:
-    *   **Parameters:**  `-classpath D:\java\pmd-bin-${project.version}\lib\pmd-${project.version}.jar;D:\java\pmd-bin-${project.version}\lib\asm-3.2.jar;D:\java\pmd-bin-${project.version}\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d <i><b>$FileDir</b></i> -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug`
+    *   **Parameters:**  `-classpath D:\java\pmd-bin-{{pmd.site.version}}\lib\pmd-{{pmd.site.version}}.jar;D:\java\pmd-bin-{{pmd.site.version}}\lib\asm-3.2.jar;D:\java\pmd-bin-{{pmd.site.version}}\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d <i><b>$FileDir</b></i> -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug`
     *   **Initial Folder:**  `$FileDir`
     *   **Save all documents first:**  `Checked`
     *   **Capture output:**  `Checked`

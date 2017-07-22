@@ -1,5 +1,8 @@
 repository: pmd/pmd
 
+pmd:
+    version: 6.0.0
+
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
 
@@ -34,7 +37,7 @@ feedback_subject_line: PMD Source Code Analyzer
 feedback_email:
 # used as a contact email for the Feedback link in the top navigation bar
 
-# feedback_disable: true
+feedback_disable: true
 # if you uncomment the previous line, the Feedback link gets removed
 
 # feedback_text: "Need help?"

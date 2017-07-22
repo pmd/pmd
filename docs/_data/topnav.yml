@@ -3,8 +3,6 @@
 topnav:
 - title: Topnav
   items:
-    - title: News
-      url: /news
     - title: Download
       external_url: https://github.com/pmd/pmd/releases/latest
     - title: Fork us on github

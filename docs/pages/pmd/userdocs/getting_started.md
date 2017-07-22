@@ -29,11 +29,11 @@ Download the latest binary distribution from [the github releases page](https://
 
 Unzip it into any directory:
 
-    [tom@hal tmp]$ unzip -q pmd-bin-6.0.0.zip
+    [tom@hal tmp]$ unzip -q pmd-bin-{{site.pmd.version}}.zip
     [tom@hal tmp]$ ls -l
     total 4640
-    drwxrwxr-x    5 tom      tom          4096 Apr 17 16:38 pmd-bin-6.0.0
-    -rw-rw-r--    1 tom      tom       4733312 Jun  9 15:44 pmd-bin-6.0.0.zip
+    drwxrwxr-x    5 tom      tom          4096 Apr 17 16:38 pmd-bin-{{site.pmd.version}}
+    -rw-rw-r--    1 tom      tom       4733312 Jun  9 15:44 pmd-bin-{{site.pmd.version}}.zip
     [tom@hal tmp]$
 
 
@@ -61,7 +61,7 @@ specific to the utility used.
 
 Type "./run.sh pmd -d \[filename\|jar or zip file containing source code\|directory] -f \[report format] -R \[ruleset file]", i.e:
 
-    /home/user/tmp/pmd-bin-${project.version}/pmd/bin>./run.sh pmd -d /home/user/data/pmd/pmd/test-data/Unused1.java -f xml -R rulesets/java/unusedcode.xml
+    /home/user/tmp/pmd-bin-{{site.pmd.version}}/pmd/bin>./run.sh pmd -d /home/user/data/pmd/pmd/test-data/Unused1.java -f xml -R rulesets/java/unusedcode.xml
     <?xml version="1.0"?><pmd>
     <file name="/home/user/data/pmd/pmd/test-data/Unused1.java">
     <violation line="5" rule="UnusedLocalVariable">
@@ -69,7 +69,7 @@ Type "./run.sh pmd -d \[filename\|jar or zip file containing source code\|direct
     </violation>
     </file></pmd>
 
-    /home/user/tmp/pmd-bin-${project.version}/pmd/bin>
+    /home/user/tmp/pmd-bin-{{site.pmd.version}}/pmd/bin>
 
 
 ### Basic usage for Windows
@@ -78,7 +78,7 @@ You can find PMD's starter batch file `pmd.bat` in the `bin` subdirectory.
 
 Type "pmd -d \[filename\|jar or zip file containing source code\|directory] -f \[report format] -R \[ruleset file]", i.e:
 
-    C:\tmp\pmd-bin-${project.version}\pmd\bin>pmd -d c:\data\pmd\pmd\test-data\Unused1.java -f xml -R rulesets/java/unusedcode.xml
+    C:\tmp\pmd-bin-{{site.pmd.version}}<\pmd\bin>pmd -d c:\data\pmd\pmd\test-data\Unused1.java -f xml -R rulesets/java/unusedcode.xml
     <?xml version="1.0"?><pmd>
     <file name="c:\data\pmd\pmd\test-data\Unused1.java">
     <violation line="5" rule="UnusedLocalVariable">
@@ -86,7 +86,7 @@ Type "pmd -d \[filename\|jar or zip file containing source code\|directory] -f \
     </violation>
     </file></pmd>
 
-    C:\tmp\pmd-bin-${project.version}\pmd\bin>
+    C:\tmp\pmd-bin-{{site.pmd.version}}\pmd\bin>
 
 You can pass a file name, a directory name, or a jar or zip file name containing Java source code to PMD.
 
