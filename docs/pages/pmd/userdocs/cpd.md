@@ -1,18 +1,10 @@
 ---
 title: Finding duplicated code
+summary: Or how to find copied and pasted code
 sidebar: pmd_sidebar
 permalink: pmd_userdocs_cpd.html
 folder: pmd/userdocs
 ---
-
-Or how to find copied and pasted code
-
-* [Overview](#Overview)
-* [Command line usage](#Command_line_usage)
-* [Ant task](#Ant_task)
-* [GUI](#GUI)
-* [Suppression](#Suppression)
-
 
 ## Overview
 
@@ -443,9 +435,9 @@ For Linux:
 
     ./run.sh cpdgui
 
-Here's a [screenshot](../images/screenshot_cpd.png) of CPD after running on the JDK 8 java.lang package:
+Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
-![CPD Screenshot after running on the JDK 8 java.lang package](../images/screenshot_cpd.png)
+![CPD Screenshot after running on the JDK 8 java.lang package](/images/userdocs/screenshot_cpd.png)
 
 
 ## Suppression

@@ -45,6 +45,9 @@ entries:
     - title: Tools / Integrations
       url: /pmd_userdocs_tools.html
       output: web, pdf
+    - title: FAQ
+      url: /pmd_userdocs_faq.html
+      output: web, pdf
     - title: Getting Help
       url: /pmd_userdocs_help.html
       output: web, pdf
