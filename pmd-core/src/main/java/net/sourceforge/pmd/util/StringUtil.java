@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,7 +32,9 @@ public final class StringUtil {
      * @param prefixes
      *
      * @return boolean
+     * @deprecated {@see StringUtils#startsWithAny(CharSequence, CharSequence...)}
      */
+    @Deprecated
     public static boolean startsWithAny(String text, String... prefixes) {
 
         for (String prefix : prefixes) {
@@ -89,7 +92,9 @@ public final class StringUtil {
      * @param value String
      *
      * @return boolean
+     * @deprecated {@see StringUtils#isNotBlank(CharSequence)}
      */
+    @Deprecated
     public static boolean isNotEmpty(String value) {
         return !isEmpty(value);
     }
@@ -103,7 +108,9 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
+     * @deprecated {@see StringUtils#isBlank(CharSequence)}
      */
+    @Deprecated
     public static boolean isEmpty(String value) {
         return StringUtils.isBlank(value);
     }
@@ -115,7 +122,9 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return True if the argument is null or the empty string
+     * @deprecated {@see StringUtils#isEmpty(CharSequence)}
      */
+    @Deprecated
     public static boolean isMissing(String value) {
         return StringUtils.isEmpty(value);
     }
@@ -130,6 +139,7 @@ public final class StringUtil {
      *
      * @return boolean
      */
+    @Deprecated
     public static boolean areSemanticEquals(String a, String b) {
 
         if (a == null) {
@@ -149,7 +159,9 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
+     * @deprecated {@see StringUtils#replace(String, String, String)}
      */
+    @Deprecated
     public static String replaceString(final String original, final String oldString, final String newString) {
         int index = original.indexOf(oldString);
         if (index < 0) {
@@ -235,7 +247,9 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
+     * @deprecated {@see StringUtils#replace(String, String, String)}
      */
+    @Deprecated
     public static String replaceString(final String original, char oldChar, final String newString) {
         int index = original.indexOf(oldChar);
         if (index < 0) {
@@ -262,13 +276,13 @@ public final class StringUtil {
      * and serves as a replacement for String.split() for JDK1.3 that doesn't
      * have it.
      *
-     * FIXME - we're on JDK 1.4 now, can we replace this with String.split?
-     *
      * @param source    String
      * @param delimiter char
      *
      * @return String[]
+     * @deprecated {@see StringUtils#split(String, char)}
      */
+    @Deprecated
     public static String[] substringsOf(String source, char delimiter) {
 
         if (source == null || source.length() == 0) {
@@ -314,7 +328,9 @@ public final class StringUtil {
      * @param separator char
      *
      * @return String[]
+     * @deprecated {@see StringUtils#split(String, String)}
      */
+    @Deprecated
     public static String[] substringsOf(String str, String separator) {
 
         if (str == null || str.length() == 0) {
@@ -346,7 +362,9 @@ public final class StringUtil {
      * @param sb        StringBuffer
      * @param iter      Iterator
      * @param separator String
+     * @deprecated {@see StringUtils#join(Iterator, String)}
      */
+    @Deprecated
     public static void asStringOn(StringBuffer sb, Iterator<?> iter, String separator) {
 
         if (!iter.hasNext()) {
@@ -369,7 +387,9 @@ public final class StringUtil {
      * @param sb        StringBuilder
      * @param items     Object[]
      * @param separator String
+     * @deprecated {@see StringUtils#join(Iterable, String)}
      */
+    @Deprecated
     public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
 
         if (items == null || items.length == 0) {
@@ -479,12 +499,14 @@ public final class StringUtil {
      * @param length The desired minimum length of the resulting padded String
      *
      * @return The resulting left padded String
+     * @deprecated {@see StringUtils#leftPad(String, int)}
      */
+    @Deprecated
     public static String lpad(String s, int length) {
         String res = s;
         if (length - s.length() > 0) {
             char[] arr = new char[length - s.length()];
-            java.util.Arrays.fill(arr, ' ');
+            Arrays.fill(arr, ' ');
             res = new StringBuilder(length).append(arr).append(s).toString();
         }
         return res;
