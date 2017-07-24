@@ -279,18 +279,6 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param listener
      *            the listener
-     * @deprecated Use {@link #addListener(ThreadSafeReportListener)}
-     */
-    @Deprecated
-    public void addListener(ReportListener listener) {
-        listeners.add(new SynchronizedReportListener(listener));
-    }
-
-    /**
-     * Registers a report listener
-     *
-     * @param listener
-     *            the listener
      */
     public void addListener(ThreadSafeReportListener listener) {
         listeners.add(listener);

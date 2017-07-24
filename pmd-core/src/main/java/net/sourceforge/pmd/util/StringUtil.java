@@ -19,13 +19,9 @@ import org.apache.commons.lang3.StringUtils;
 public final class StringUtil {
 
     private static final String[] EMPTY_STRINGS = new String[0];
-    private static final boolean SUPPORTS_UTF8 = "yes"
-        .equals(System.getProperty("net.sourceforge.pmd.supportUTF8", "no"));
-
 
     private StringUtil() {
     }
-
 
     /**
      * Return whether the non-null text arg starts with any of the prefix
@@ -173,22 +169,6 @@ public final class StringUtil {
         }
     }
 
-
-    /**
-     * Appends to a StringBuilder the String src where non-ASCII and XML special
-     * chars are escaped.
-     *
-     * @param buf The destination XML stream
-     * @param src The String to append to the stream
-     *
-     * @deprecated use {@link #appendXmlEscaped(StringBuilder, String, boolean)} instead
-     */
-    @Deprecated
-    public static void appendXmlEscaped(StringBuilder buf, String src) {
-        appendXmlEscaped(buf, src, SUPPORTS_UTF8);
-    }
-
-
     /**
      * @param buf
      * @param src
@@ -248,22 +228,6 @@ public final class StringUtil {
         s = s.replace("\t", "\\t");
         return s;
     }
-
-
-    /**
-     * @param string String
-     *
-     * @return String
-     *
-     * @deprecated Use StringEscapeUtils#escapeHtml4 instead
-     */
-    @Deprecated
-    public static String htmlEncode(String string) {
-        String encoded = replaceString(string, '&', "&amp;");
-        encoded = replaceString(encoded, '<', "&lt;");
-        return replaceString(encoded, '>', "&gt;");
-    }
-
 
     /**
      * @param original  String
