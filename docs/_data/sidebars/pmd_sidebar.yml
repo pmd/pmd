@@ -1,0 +1,152 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and
+# provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  product: PMD Project
+  version: "!PMD_VERSION!"
+  folders:
+
+  - title:
+    output: pdf
+    type: frontmatter
+    folderitems:
+    - title:
+      url: /titlepage
+      output: pdf
+      type: frontmatter
+    - title:
+      url: /tocpage
+      output: pdf
+      type: frontmatter
+
+  - title: User Documentation
+    output: web, pdf
+    folderitems:
+    - title: Introduction
+      url: /index.html
+      output: web, pdf
+      type: homepage
+    - title: Getting Started
+      url: /pmd_userdocs_getting_started.html
+      output: web, pdf
+    - title: Understanding Rulesets
+      url: /pmd_userdocs_understanding_rulesets.html
+      output: web, pdf
+    - title: Best Pratices
+      url: /pmd_userdocs_best_practices.html
+      output: web, pdf
+    - title: Copy-Paste Detection
+      url: /pmd_userdocs_cpd.html
+      output: web, pdf
+    - title: Suppressing
+      url: /pmd_userdocs_suppressing.html
+      output: web, pdf
+    - title: Tools / Integrations
+      url: /pmd_userdocs_tools.html
+      output: web, pdf
+    - title: FAQ
+      url: /pmd_userdocs_faq.html
+      output: web, pdf
+    - title: Getting Help
+      url: /pmd_userdocs_help.html
+      output: web, pdf
+    - title: PMD in the press
+      url: /pmd_userdocs_news.html
+      output: web, pdf
+    - title: Products/books related to PMD
+      url: /pmd_userdocs_products.html
+      output: web, pdf
+    - title: Similar Projects
+      url: /pmd_userdocs_similarprojects.html
+      output: web, pdf
+    - title: License
+      url: /license.html
+      output: web, pdf
+    - title: Credits
+      url: /pmd_userdocs_credits.html
+      output: web, pdf
+    - title: What does 'PMD' mean?
+      url: /pmd_userdocs_meaning.html
+      output: web, pdf
+  - title: Rule Reference
+    output: web, pdf
+    folderitems:
+    - title: Apex Rules
+      url: /pmd_rules_apex.html
+      output: web, pdf
+    - title: Java Rules
+      url: /pmd_rules_java.html
+      output: web, pdf
+    - title: JavaScript Rules
+      url: /pmd_rules_javascript.html
+      output: web, pdf
+    - title: JSP Rules
+      url: /pmd_rules_jsp.html
+      output: web, pdf
+    - title: PLSQL Rules
+      url: /pmd_rules_plsql.html
+      output: web, pdf
+    - title: Apache Velocity Rules
+      url: /pmd_rules_vm.html
+      output: web, pdf
+    - title: XML and XSL Rules
+      url: /pmd_rules_xml.html
+      output: web, pdf
+  - title: Language Specific Documentation
+    output: web, pdf
+    folderitems:
+    - title: JSP Support
+      url: /pmd_languages_jsp.html
+      output: web, pdf
+  - title: Developer Documentation
+    output: web, pdf
+    folderitems:
+    - title: Code Style
+      url: /pmd_devdocs_codestyle.html
+      output: web, pdf
+    - title: Setting up your IDE
+      url: /pmd_devdocs_setting_up_ide.html
+      output: web, pdf
+    - title: Pull Requests
+      url: /pmd_devdocs_pull_requests.html
+      output: web, pdf
+    - title: Building PMD from source
+      url: /pmd_devdocs_building.html
+      output: web, pdf
+    - title: Testing / Test Framework
+      url: /pmd_devdocs_testing.html
+      output: web, pdf
+    - title: Releasing
+      url: /pmd_devdocs_releasing.html
+      output: web, pdf
+    - title: Architecture
+      url: /pmd_devdocs_architecture.html
+      output: web, pdf
+    - title: Roadmap
+      url: /pmd_devdocs_roadmap.html
+      output: web, pdf
+    - title: How PMD Works
+      url: /pmd_devdocs_how_pmd_works.html
+      output: web, pdf
+    - title: Writing a Rule
+      url: /pmd_devdocs_writing_pmd_rules.html
+      output: web, pdf
+    - title: Writing XPath Rules
+      url: /pmd_devdocs_writing_xpath_rules.html
+      output: web, pdf
+    - title: Making Rulesets
+      url: /pmd_devdocs_making_rulesets.html
+      output: web, pdf
+    - title: Rule Guidelines
+      url: /pmd_devdocs_rule_guidelines.html
+      output: web, pdf
+    - title: Info for Developers
+      url: /pmd_devdocs_info_for_developers.html
+      output: web, pdf
+    - title: Adding a New Language
+      url: /pmd_devdocs_adding_new_language.html
+      output: web, pdf
+    - title: Adding a New CPD Language
+      url: /pmd_devdocs_adding_new_cpd_language.html
+      output: web, pdf
