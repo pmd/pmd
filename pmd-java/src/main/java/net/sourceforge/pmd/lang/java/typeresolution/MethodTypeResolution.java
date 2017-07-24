@@ -285,8 +285,9 @@ public final class MethodTypeResolution {
         } else if (second.isAbstract()) {
             return first; // first isn't abstract, second one is
         } else {
-            throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
-                                                    + first.toString() + "\n" + second.toString());
+            return null; // TODO: once shadowing and overriding methods is done, add exception back
+            // throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
+            //                                        + first.toString() + "\n" + second.toString());
         }
     }
 
