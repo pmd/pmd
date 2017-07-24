@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.metrics;
+package net.sourceforge.pmd.lang.java.metrics.metrics;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.java.metrics.MetricsHook;
@@ -11,22 +11,25 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 /**
  * @author Clément Fournier
  */
+public class AllMetricsTest extends SimpleAggregatorTst {
 
-public class MetricsRulesTest extends SimpleAggregatorTst {
 
-    private static final String RULESET = "java-metrics";
+    private static final String RULESET = "rulesets/java/metrics_test.xml";
 
 
     @Override
     protected Rule reinitializeRule(Rule rule) {
         MetricsHook.reset();
-        return super.reinitializeRule(rule);
+        return rule;
     }
 
 
     @Override
     public void setUp() {
-        addRule(RULESET, "CyclomaticComplexity");
-        addRule(RULESET, "NcssCount");
+        addRule(RULESET, "CycloTest");
+        addRule(RULESET, "NcssTest");
+        addRule(RULESET, "WmcTest");
+        addRule(RULESET, "LocTest");
     }
+
 }
