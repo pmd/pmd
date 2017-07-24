@@ -850,6 +850,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <groupId>com.github.tomakehurst</groupId>
                 <artifactId>wiremock</artifactId>
                 <version>1.57</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-lang</artifactId>
+                        <groupId>commons-lang</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
