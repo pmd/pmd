@@ -247,7 +247,7 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
-     * @deprecated {@see StringUtils#replace(String, String, String)}
+     * @deprecated {@see StringUtils#replace(String, String, String)} or {@see StringUtils#replaceChars(String, char, char)}
      */
     @Deprecated
     public static String replaceString(final String original, char oldChar, final String newString) {
