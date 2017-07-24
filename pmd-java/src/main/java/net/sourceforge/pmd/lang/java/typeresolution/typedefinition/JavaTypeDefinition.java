@@ -167,6 +167,7 @@ public class JavaTypeDefinition implements TypeDefinition {
         return forClass(Object.class);
     }
 
+    // TODO: are generics okay like this?
     public JavaTypeDefinition getComponentType() {
         Class<?> componentType = getType().getComponentType();
 
@@ -177,11 +178,41 @@ public class JavaTypeDefinition implements TypeDefinition {
         return forClass(componentType);
     }
 
+    public boolean isClassOrInterface() {
+        return !clazz.isEnum() && !clazz.isPrimitive() && !clazz.isAnnotation() && !clazz.isArray();
+    }
+
+    public boolean isNullType() {
+        return false;
+    }
+
+    public boolean isPrimitive() {
+        return clazz.isPrimitive();
+    }
+    
+    public boolean equivalent(JavaTypeDefinition def) {
+        // TODO: JavaTypeDefinition generic equality
+        return clazz.equals(def.clazz) && getTypeParameterCount() == def.getTypeParameterCount();
+    }
+
+    public boolean hasSameErasureAs(JavaTypeDefinition def) {
+        return clazz == def.clazz;
+    }
+
+    public int getTypeParameterCount() {
+        return clazz.getTypeParameters().length;
+    }
+
+    public boolean isArrayType() {
+        return clazz.isArray();
+    }
+
     @Override
     public String toString() {
         return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
                 .append(", genericArgs=").append(genericArgs)
                 .append(", isGeneric=").append(isGeneric)
                 .append(']').toString();
+
     }
 }
