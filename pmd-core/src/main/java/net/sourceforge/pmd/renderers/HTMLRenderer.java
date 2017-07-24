@@ -10,12 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Renderer to basic HTML format.
@@ -132,7 +132,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
 
             String infoUrl = rv.getRule().getExternalInfoUrl();
-            if (StringUtil.isNotEmpty(infoUrl)) {
+            if (StringUtils.isNotBlank(infoUrl)) {
                 d = "<a href=\"" + infoUrl + "\">" + d + "</a>";
             }
             buf.append("<td width=\"*\">" + d + "</td>" + PMD.EOL);
@@ -204,7 +204,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     }
 
     private String maybeWrap(String filename, String line) {
-        if (StringUtil.isEmpty(linkPrefix)) {
+        if (StringUtils.isBlank(linkPrefix)) {
             return filename;
         }
         String newFileName = filename;

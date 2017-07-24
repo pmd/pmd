@@ -21,8 +21,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.util.StringUtil;
-
 /**
  * Basic implementation of a property descriptor factory.
  *
@@ -183,7 +181,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
      * @return An array containing the labels
      */
     protected static String[] labelsIn(Map<PropertyDescriptorField, String> valuesById) {
-        return StringUtil.substringsOf(valuesById.get(PropertyDescriptorField.LABELS),
+        return StringUtils.split(valuesById.get(PropertyDescriptorField.LABELS),
                                        MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
     }
 
@@ -287,7 +285,7 @@ public abstract class AbstractPropertyDescriptorFactory<T> implements PropertyDe
         if (StringUtils.isBlank(names)) {
             return null;
         }
-        return StringUtil.substringsOf(names, delimiter);
+        return StringUtils.split(names, delimiter);
     }
 
 

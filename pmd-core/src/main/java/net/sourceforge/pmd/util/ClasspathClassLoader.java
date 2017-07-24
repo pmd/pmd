@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
@@ -90,11 +91,9 @@ public class ClasspathClassLoader extends URLClassLoader {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName());
-        sb.append("[[");
-        StringUtil.asStringOn(sb, getURLs(), ":");
-        sb.append("] parent: ").append(getParent()).append(']');
-
-        return sb.toString();
+        return new StringBuilder(getClass().getSimpleName())
+                .append("[[")
+                .append(StringUtils.join(getURLs(), ":"))
+                .append("] parent: ").append(getParent()).append(']').toString();
     }
 }

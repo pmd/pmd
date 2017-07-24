@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 
 public final class CommentUtil {
 
@@ -47,7 +47,7 @@ public final class CommentUtil {
             return null;
         }
 
-        if (StringUtil.isNotEmpty(text.substring(position, endPos))) {
+        if (StringUtils.isNotBlank(text.substring(position, endPos))) {
             return text.substring(position, endPos).trim();
         }
 
@@ -58,7 +58,7 @@ public final class CommentUtil {
         // try next line
         int nextEndPos = text.indexOf('\n', endPos + 1);
 
-        if (StringUtil.isNotEmpty(text.substring(endPos, nextEndPos))) {
+        if (StringUtils.isNotBlank(text.substring(endPos, nextEndPos))) {
             return text.substring(endPos, nextEndPos).trim();
         }
 
@@ -136,7 +136,7 @@ public final class CommentUtil {
 
         int firstNonEmpty = 0;
         for (; firstNonEmpty < lines.size(); firstNonEmpty++) {
-            if (StringUtil.isNotEmpty(lines.get(firstNonEmpty))) {
+            if (StringUtils.isNotBlank(lines.get(firstNonEmpty))) {
                 break;
             }
         }
@@ -148,7 +148,7 @@ public final class CommentUtil {
 
         int lastNonEmpty = lines.size() - 1;
         for (; lastNonEmpty > 0; lastNonEmpty--) {
-            if (StringUtil.isNotEmpty(lines.get(lastNonEmpty))) {
+            if (StringUtils.isNotBlank(lines.get(lastNonEmpty))) {
                 break;
             }
         }

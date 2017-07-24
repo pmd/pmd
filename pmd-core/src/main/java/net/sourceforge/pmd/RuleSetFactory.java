@@ -498,7 +498,7 @@ public class RuleSetFactory {
 
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
-        if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
+        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
@@ -560,7 +560,7 @@ public class RuleSetFactory {
         }
 
         String since = ruleElement.getAttribute("since");
-        if (StringUtil.isNotEmpty(since)) {
+        if (StringUtils.isNotBlank(since)) {
             rule.setSince(since);
         }
         rule.setMessage(ruleElement.getAttribute(MESSAGE));
@@ -600,7 +600,7 @@ public class RuleSetFactory {
             }
 
         }
-        if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
+        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 || rule.getPriority().compareTo(minimumPriority) <= 0) {
             ruleSetBuilder.addRule(rule);
         }
@@ -633,7 +633,7 @@ public class RuleSetFactory {
 
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
-        if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
+        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
@@ -717,7 +717,7 @@ public class RuleSetFactory {
             }
         }
 
-        if (StringUtil.isNotEmpty(ruleSetReferenceId.getRuleName())
+        if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
                 || referencedRule.getPriority().compareTo(minimumPriority) <= 0) {
             if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
                 ruleSetBuilder.addRuleReplaceIfExists(ruleReference);

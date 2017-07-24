@@ -14,8 +14,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.util.ClassUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Parses a value from a string.
@@ -92,7 +93,7 @@ public interface ValueParser<U> {
     ValueParser<Class> CLASS_PARSER = new ValueParser<Class>() {
         @Override
         public Class valueOf(String value) throws IllegalArgumentException {
-            if (StringUtil.isEmpty(value)) {
+            if (StringUtils.isBlank(value)) {
                 return null;
             }
 
@@ -169,7 +170,7 @@ public interface ValueParser<U> {
             }
 
             String methodName = methodNameAndArgTypes.substring(delimPos0 + 1, delimPos1);
-            if (StringUtil.isEmpty(methodName)) {
+            if (StringUtils.isBlank(methodName)) {
                 return null;
             } // missing method name?
 
@@ -179,11 +180,11 @@ public interface ValueParser<U> {
             } // error!
 
             String argTypesStr = methodNameAndArgTypes.substring(delimPos1 + 1, delimPos2);
-            if (StringUtil.isEmpty(argTypesStr)) {
+            if (StringUtils.isBlank(argTypesStr)) {
                 return ClassUtil.methodFor(type, methodName, ClassUtil.EMPTY_CLASS_ARRAY);
             } // no arg(s)
 
-            String[] argTypeNames = StringUtil.substringsOf(argTypesStr, methodArgDelimiter);
+            String[] argTypeNames = StringUtils.split(argTypesStr, methodArgDelimiter);
             Class<?>[] argTypes = new Class[argTypeNames.length];
             for (int i = 0; i < argTypes.length; i++) {
                 argTypes[i] = typeFor(argTypeNames[i]);
@@ -251,7 +252,7 @@ public interface ValueParser<U> {
          * @return A list of values
          */
         public static <U> List<U> parsePrimitives(String toParse, char delimiter, ValueParser<U> extractor) {
-            String[] values = StringUtil.substringsOf(toParse, delimiter);
+            String[] values = StringUtils.split(toParse, delimiter);
             List<U> result = new ArrayList<>();
             for (String s : values) {
                 result.add(extractor.valueOf(s));

@@ -14,6 +14,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -30,7 +31,7 @@ public final class IOUtil {
 
     public static Writer createWriter(String reportFile) {
         try {
-            return StringUtil.isEmpty(reportFile) ? createWriter() : new BufferedWriter(new FileWriter(reportFile));
+            return StringUtils.isBlank(reportFile) ? createWriter() : new BufferedWriter(new FileWriter(reportFile));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

@@ -14,8 +14,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PropertyDescriptorField;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * @author Clément Fournier
@@ -170,8 +171,7 @@ public abstract class PackagedPropertyModule<T> {
 
 
     public String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
-        String[] packageNames = StringUtil.substringsOf(params.get(LEGAL_PACKAGES), PACKAGE_NAME_DELIMITER);
-        return packageNames;
+        return StringUtils.split(params.get(LEGAL_PACKAGES), PACKAGE_NAME_DELIMITER);
     }
 
 }
