@@ -74,8 +74,8 @@ public class VBHTMLRendererTest extends AbstractRendererTst {
                 + PMD.EOL + "#TableHeader { background-color: #003366; }" + PMD.EOL
                 + "#RowColor1 { background-color: #eeeeee; }" + PMD.EOL + "#RowColor2 { background-color: white; }"
                 + PMD.EOL
-                + "--></style><body><center><br><table border=\"0\" width=\"80%\"><tr id=TableHeader><td><font class=title>&nbsp;Problems found</font></td></tr><tr id=RowColor2><td><font class=body>"
-                + error + "\"</font></td></tr></table></center></body></html>" + PMD.EOL;
+                + "--></style><body><center><br><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;Problems found</font></td></tr><tr id=RowColor2><td><font class=body>"
+                + error.getFile() + "</font></td><td><font class=body>" + error.getMsg() + "</font></td></tr></table></center></body></html>" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

@@ -42,7 +42,7 @@ public class Report implements Iterable<RuleViolation> {
     private final Set<Metric> metrics = new HashSet<>();
     private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
     private List<ProcessingError> errors;
-    private List<RuleConfigurationError> configErrors;
+    private List<ConfigurationError> configErrors;
     private Map<Integer, String> linesToSuppress = new HashMap<>();
     private long start;
     private long end;
@@ -99,19 +99,19 @@ public class Report implements Iterable<RuleViolation> {
     /**
      * Represents a configuration error.
      */
-    public static class RuleConfigurationError {
+    public static class ConfigurationError {
         private final Rule rule;
         private final String issue;
 
         /**
-         * Creates a new configuration error.
+         * Creates a new configuration error for a specific rule.
          *
          * @param theRule
          *            the rule which is configured wrongly
          * @param theIssue
          *            the reason, why the configuration is wrong
          */
-        public RuleConfigurationError(Rule theRule, String theIssue) {
+        public ConfigurationError(Rule theRule, String theIssue) {
             rule = theRule;
             issue = theIssue;
         }
@@ -347,7 +347,7 @@ public class Report implements Iterable<RuleViolation> {
      * @param error
      *            the error to add
      */
-    public void addConfigError(RuleConfigurationError error) {
+    public void addConfigError(ConfigurationError error) {
         if (configErrors == null) {
             configErrors = new ArrayList<>();
         }
@@ -380,6 +380,10 @@ public class Report implements Iterable<RuleViolation> {
         Iterator<ProcessingError> i = r.errors();
         while (i.hasNext()) {
             addError(i.next());
+        }
+        Iterator<ConfigurationError> ce = r.configErrors();
+        while (ce.hasNext()) {
+            addConfigError(ce.next());
         }
         Iterator<Metric> m = r.metrics();
         while (m.hasNext()) {
@@ -479,8 +483,8 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @return the iterator
      */
-    public Iterator<RuleConfigurationError> configErrors() {
-        return configErrors == null ? EmptyIterator.<RuleConfigurationError>instance() : configErrors.iterator();
+    public Iterator<ConfigurationError> configErrors() {
+        return configErrors == null ? EmptyIterator.<ConfigurationError>instance() : configErrors.iterator();
     }
 
     /**
