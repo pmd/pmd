@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.typeresolution.typeinterference;
+package net.sourceforge.pmd.lang.java.typeresolution.typeinference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public enum InferenceRuleType {
                 // If S and T are proper types, the constraint reduces to true if S is the same as T (§4.3.4), and false
                 // otherwise.
                 if (val.isLeftProper() && val.isRightProper()) {
-                    if (val.leftProper().equals(val.rightProper())) {
+                    if (val.leftProper().equivalent(val.rightProper())) {
                         return newConstraints;
                     } else {
                         return null;

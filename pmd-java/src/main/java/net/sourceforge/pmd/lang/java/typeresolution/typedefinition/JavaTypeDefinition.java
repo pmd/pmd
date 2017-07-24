@@ -189,9 +189,8 @@ public class JavaTypeDefinition implements TypeDefinition {
     public boolean isPrimitive() {
         return clazz.isPrimitive();
     }
-
-    // not an override
-    public boolean equals(JavaTypeDefinition def) {
+    
+    public boolean equivalent(JavaTypeDefinition def) {
         // TODO: JavaTypeDefinition generic equality
         return clazz.equals(def.clazz) && getTypeParameterCount() == def.getTypeParameterCount();
     }
