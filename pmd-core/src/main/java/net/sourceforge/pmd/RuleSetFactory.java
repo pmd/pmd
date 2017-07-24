@@ -441,9 +441,6 @@ public class RuleSetFactory {
      */
     private void parseRuleSetReferenceNode(RuleSetReferenceId ruleSetReferenceId, RuleSetBuilder ruleSetBuilder,
             Element ruleElement, String ref) throws RuleSetNotFoundException {
-        RuleSetReference ruleSetReference = new RuleSetReference();
-        ruleSetReference.setAllRules(true);
-        ruleSetReference.setRuleSetFileName(ref);
         String priority = null;
         NodeList childNodes = ruleElement.getChildNodes();
         Set<String> excludedRulesCheck = new HashSet<>();
@@ -452,12 +449,12 @@ public class RuleSetFactory {
             if (isElementNode(child, "exclude")) {
                 Element excludeElement = (Element) child;
                 String excludedRuleName = excludeElement.getAttribute("name");
-                ruleSetReference.addExclude(excludedRuleName);
                 excludedRulesCheck.add(excludedRuleName);
             } else if (isElementNode(child, PRIORITY)) {
                 priority = parseTextNode(child).trim();
             }
         }
+        final RuleSetReference ruleSetReference = new RuleSetReference(ref, true, excludedRulesCheck);
 
         RuleSetFactory ruleSetFactory = new RuleSetFactory(this, warnDeprecated);
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(RuleSetReferenceId.parse(ref).get(0));
@@ -679,9 +676,7 @@ public class RuleSetFactory {
             }
         }
 
-        RuleSetReference ruleSetReference = new RuleSetReference();
-        ruleSetReference.setAllRules(false);
-        ruleSetReference.setRuleSetFileName(otherRuleSetReferenceId.getRuleSetFileName());
+        RuleSetReference ruleSetReference = new RuleSetReference(otherRuleSetReferenceId.getRuleSetFileName(), false);
 
         RuleReference ruleReference = new RuleReference();
         ruleReference.setRuleSetReference(ruleSetReference);

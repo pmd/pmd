@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -206,8 +206,7 @@ public class RuleSet implements ChecksumAware {
             if (rule instanceof RuleReference) {
                 ruleReference = (RuleReference) rule;
             } else {
-                final RuleSetReference ruleSetReference = new RuleSetReference();
-                ruleSetReference.setRuleSetFileName(ruleSetFileName);
+                final RuleSetReference ruleSetReference = new RuleSetReference(ruleSetFileName);
                 ruleReference = new RuleReference();
                 ruleReference.setRule(rule);
                 ruleReference.setRuleSetReference(ruleSetReference);
@@ -266,11 +265,13 @@ public class RuleSet implements ChecksumAware {
                 throw new RuntimeException(
                         "Adding a rule by reference is not allowed with an empty rule set file name.");
             }
-            final RuleSetReference ruleSetReference = new RuleSetReference(ruleSet.getFileName());
-            ruleSetReference.setAllRules(allRules);
-            if (excludes != null) {
-                ruleSetReference.setExcludes(new HashSet<>(Arrays.asList(excludes)));
+            final RuleSetReference ruleSetReference;
+            if (excludes == null) {
+                ruleSetReference = new RuleSetReference(ruleSet.getFileName(), allRules);
+            } else {
+                ruleSetReference = new RuleSetReference(ruleSet.getFileName(), allRules, new LinkedHashSet<>(Arrays.asList(excludes)));
             }
+
             for (final Rule rule : ruleSet.getRules()) {
                 final RuleReference ruleReference = new RuleReference(rule, ruleSetReference);
                 rules.add(ruleReference);

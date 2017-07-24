@@ -23,7 +23,7 @@ public class RuleReferenceTest {
     @Test
     public void testRuleSetReference() {
         RuleReference ruleReference = new RuleReference();
-        RuleSetReference ruleSetReference = new RuleSetReference();
+        RuleSetReference ruleSetReference = new RuleSetReference("somename");
         ruleReference.setRuleSetReference(ruleSetReference);
         assertEquals("Not same rule set reference", ruleSetReference, ruleReference.getRuleSetReference());
     }

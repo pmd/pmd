@@ -4,50 +4,43 @@
 
 package net.sourceforge.pmd;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
  * This class represents a reference to RuleSet.
  */
-// TODO : Make this class immutable
 public class RuleSetReference {
-    private String ruleSetFileName;
-    private boolean allRules;
-    private Set<String> excludes = new LinkedHashSet<>(0);
+    private final String ruleSetFileName;
+    private final boolean allRules;
+    private final Set<String> excludes;
 
-    public RuleSetReference() {
+    public RuleSetReference(final String theFilename, final boolean allRules, final Set<String> excludes) {
+        ruleSetFileName = theFilename;
+        this.allRules = allRules;
+        this.excludes = Collections.unmodifiableSet(new LinkedHashSet<>(excludes));
     }
 
-    public RuleSetReference(String theFilename) {
+    public RuleSetReference(final String theFilename, final boolean allRules) {
         ruleSetFileName = theFilename;
+        this.allRules = allRules;
+        this.excludes = Collections.<String>emptySet();
+    }
+
+    public RuleSetReference(final String theFilename) {
+        this(theFilename, false);
     }
 
     public String getRuleSetFileName() {
         return ruleSetFileName;
     }
 
-    public void setRuleSetFileName(String ruleSetFileName) {
-        this.ruleSetFileName = ruleSetFileName;
-    }
-
     public boolean isAllRules() {
         return allRules;
     }
 
-    public void setAllRules(boolean allRules) {
-        this.allRules = allRules;
-    }
-
     public Set<String> getExcludes() {
         return excludes;
-    }
-
-    public void setExcludes(Set<String> excludes) {
-        this.excludes = excludes;
-    }
-
-    public void addExclude(String name) {
-        this.excludes.add(name);
     }
 }
