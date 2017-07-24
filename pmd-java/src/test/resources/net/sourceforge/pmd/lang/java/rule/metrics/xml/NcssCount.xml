@@ -1,25 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
+
     <code-fragment id="full-example">
         <![CDATA[
-          public class Foo {
+          package com
+                     .company
+                             .money;
+
+          import com
+                     .company
+                             .money.Bar;
+          import com.company.Carrot;
+
+          public class Foo extends Bar {
             int y, z, t;
             String q;
 
             {
               bar();
               int x;
-              switch (x) {
+              switch
+                (x) {
               case 1: foo(); break;
               case 2:
-              case 3: bar(); break;
+              case 3: bar();
+                      break;
               default: break;
               }
             }
 
-            public void foo() {}
+            public Foo() {
+              this(2);
+            }
 
-            public static void main(String args[]) {
+            public Foo(int z) {
+
+              Random r = new Random();
+              label: for (int j = -12; i < z; i++) {
+                theNonsense: for (int k = -20; k < 20; k += j) {
+                  if (r.nextInt() == 42) {
+                    System
+                      .out
+                      .println("Bye");
+                    break label;
+                  } else if (k > 12) {
+                    continue theNonsense;
+                  }
+                }
+              }
+
+              super(z);
+            }
+
+            public void foo() {
+              int x = 0;
+              synchronized (x) {
+                x++;
+              }
+
+              do {
+                if (x == 0) {
+                  synchronized (x) {
+                    x++;
+                  }
+                } else if (x == 1) {
+                  x = 0;
+                } else {
+                  System.out.println("Bonjour");
+                  throw new ScaryException("Surprise!");
+                }
+              } while (x != 2);
+            }
+
+            public static void main(String args[]) throws RadioactiveException {
               String k, l, m;
 
               bar();
@@ -47,6 +100,8 @@
                 x++;
               } catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
+              } catch (ThemAll pokemon) {
+                pokemon.train();
               } finally {
                 // Do nothing
               }
@@ -64,17 +119,34 @@
     </code-fragment>
 
     <test-code>
-        <description>Full example</description>
-        <expected-problems>2</expected-problems>
+        <description>Full example - Standard version</description>
+        <rule-property name="classReportLevel">60</rule-property>
+        <expected-problems>4</expected-problems>
         <expected-messages>
-            <message>The class 'Foo' has a NCSS line count of 35 (Highest = 18).</message>
-            <message>The method 'main(String)' has a NCSS line count of 18.</message>
+            <message>The class 'Foo' has a NCSS line count of 65 (Highest = 20).</message>
+            <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
+            <message>The method 'foo()' has a NCSS line count of 14.</message>
+            <message>The method 'main(String)' has a NCSS line count of 20.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
 
     <test-code>
-        <description>short</description>
+        <description>Full example - JavaNcss version</description>
+        <rule-property name="classReportLevel">60</rule-property>
+        <rule-property name="ncssVersion">javaNcss</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a NCSS line count of 68 (Highest = 20).</message>
+            <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
+            <message>The method 'foo()' has a NCSS line count of 14.</message>
+            <message>The method 'main(String)' has a NCSS line count of 20.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Short method</description>
         <rule-property name="classReportLevel">13</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -87,7 +159,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>lots of comments</description>
+        <description>Lots of comments</description>
         <rule-property name="classReportLevel">13</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -108,46 +180,36 @@ public class Foo {
      ]]></code>
     </test-code>
 
-    <code-fragment id="long method"><![CDATA[
+    <code-fragment id="complicated-method"><![CDATA[
 public class Foo {
-    public static void main(String args[]) {
-     //nothing to see here
-     //nothing to see here
-     //nothing to see here
-     //nothing to see here
-     bar();
-     bar();
-     bar();
-     bar();
-     bar();
-     bar();
-     //nothing to see here
-     //nothing to see here
-     //nothing to see here
-     //nothing to see here
-     foo();
-     foo();
-     foo();
-     foo();
-     foo();
-     foo();
+  public static void main(String args[]) {
+    Random r = new Random();
+    label: for (int j = -12; i < z; i++) {
+      theNonsense: for (int k = -20; k < 20; k += j) {
+        if (r.nextInt() == 42) {
+          System.out.println("Bye");
+          break label;
+        } else if (k > 12) {
+          continue theNonsense;
+        }
+      }
     }
+  }
 }
      ]]></code-fragment>
 
     <test-code>
-        <!-- Classes are reported if one of their methods are reported (even if their level is very high) -->
-        <description>long method</description>
-        <rule-property name="methodReportLevel">13</rule-property>
+        <description>Test high class report level</description>
+        <rule-property name="methodReportLevel">10</rule-property>
         <rule-property name="classReportLevel">999</rule-property>
-        <expected-problems>2</expected-problems>
-        <code-ref id="long method"/>
+        <expected-problems>1</expected-problems>
+        <code-ref id="complicated-method"/>
     </test-code>
 
     <test-code>
-        <description>long method - changed reportLevel</description>
+        <description>Test high method report Level</description>
         <rule-property name="methodReportLevel">15</rule-property>
         <expected-problems>0</expected-problems>
-        <code-ref id="long method"/>
+        <code-ref id="complicated-method"/>
     </test-code>
 </test-data>

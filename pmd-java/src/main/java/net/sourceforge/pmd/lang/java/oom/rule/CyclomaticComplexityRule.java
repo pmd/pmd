@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.oom.api.Metric.Version;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.oom.api.OperationMetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
-import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric;
+import net.sourceforge.pmd.lang.java.oom.metrics.CycloMetric.CycloVersion;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
@@ -45,7 +45,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     static {
         VERSION_MAP = new HashMap<>();
         VERSION_MAP.put("standard", Version.STANDARD);
-        VERSION_MAP.put("ignoreBooleanPaths", CycloMetric.Version.IGNORE_BOOLEAN_PATHS);
+        VERSION_MAP.put("ignoreBooleanPaths", CycloVersion.IGNORE_BOOLEAN_PATHS);
     }
 
     private static final EnumeratedProperty<MetricVersion> CYCLO_VERSION_DESCRIPTOR = new EnumeratedProperty<>(

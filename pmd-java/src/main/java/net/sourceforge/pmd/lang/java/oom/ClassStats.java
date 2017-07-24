@@ -11,14 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.oom.api.ClassMetric;
 import net.sourceforge.pmd.lang.java.oom.api.MetricKey;
 import net.sourceforge.pmd.lang.java.oom.api.MetricVersion;
-import net.sourceforge.pmd.lang.java.oom.api.OperationMetric;
 import net.sourceforge.pmd.lang.java.oom.api.ResultOption;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.oom.signature.FieldSignature;
@@ -149,6 +147,59 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
 
 
     /**
+     * Computes the value of a metric for a class.
+     *
+     * @param key     The class metric for which to find a memoized result
+     * @param node    The AST node of the class
+     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
+     * @param version Version of the metric
+     *
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
+     */
+    /* default */ double compute(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, boolean force,
+                                 MetricVersion version) {
+
+        ParameterizedMetricKey paramKey = ParameterizedMetricKey.getInstance(key, version);
+        // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
+        Double prev = memo.get(paramKey);
+        if (!force && prev != null) {
+            return prev;
+        }
+
+        double val = key.getCalculator().computeFor(node, version);
+        memo.put(paramKey, val);
+
+        return val;
+    }
+
+
+    /**
+     * Computes the value of a metric for an operation.
+     *
+     * @param key     The operation metric for which to find a memoized result
+     * @param node    The AST node of the operation
+     * @param name    The name of the operation
+     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
+     * @param version Version of the metric
+     *
+     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
+     */
+    /* default */ double compute(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
+                                 String name, boolean force, MetricVersion version) {
+
+        // TODO:cf the operation signature might be built many times, consider storing it in the node
+        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
+
+        if (sigMap == null) {
+            return Double.NaN;
+        }
+
+        OperationStats stats = sigMap.get(name);
+        return stats == null ? Double.NaN : stats.compute(key, node, force, version);
+    }
+
+
+    /**
      * Computes an aggregate result using a ResultOption.
      *
      * @param key     The class metric to compute
@@ -159,14 +210,14 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
      *
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
-    /* default */ double computeWithResultOption(MetricKey<OperationMetric> key, ASTAnyTypeDeclaration node,
+    /* default */ double computeWithResultOption(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
                                                  boolean force, MetricVersion version, ResultOption option) {
 
         List<ASTMethodOrConstructorDeclaration> ops = findOperations(node, false);
 
         List<Double> values = new ArrayList<>();
         for (ASTMethodOrConstructorDeclaration op : ops) {
-            if (key.getCalculator().supports(op)) {
+            if (key.supports(op)) {
                 double val = this.compute(key, op, op.getQualifiedName().getOperation(), force, version);
                 if (val != Double.NaN) {
                     values.add(val);
@@ -205,44 +256,14 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
             return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
         }
 
-        List<ASTClassOrInterfaceBodyDeclaration> outerDecls
-            = node.jjtGetChild(0).findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
-
-
         List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
 
-        for (ASTClassOrInterfaceBodyDeclaration decl : outerDecls) {
-            if (decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
+        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
+            if (decl.jjtGetNumChildren() > 0 && decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
                 operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
             }
         }
         return operations;
-    }
-
-
-    /**
-     * Computes the value of a metric for an operation.
-     *
-     * @param key     The operation metric for which to find a memoized result
-     * @param node    The AST node of the operation
-     * @param name    The name of the operation
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version Version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(MetricKey<OperationMetric> key, ASTMethodOrConstructorDeclaration node,
-                                 String name, boolean force, MetricVersion version) {
-
-        // TODO:cf the operation signature might be built many times, consider storing it in the node
-        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
-
-        if (sigMap == null) {
-            return Double.NaN;
-        }
-
-        OperationStats stats = sigMap.get(name);
-        return stats == null ? Double.NaN : stats.compute(key, node, force, version);
     }
 
 
@@ -269,33 +290,4 @@ import net.sourceforge.pmd.lang.java.oom.signature.OperationSignature;
     private static double average(List<Double> values) {
         return sum(values) / values.size();
     }
-
-
-    /**
-     * Computes the value of a metric for a class.
-     *
-     * @param key     The class metric for which to find a memoized result
-     * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version Version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(MetricKey<ClassMetric> key, ASTAnyTypeDeclaration node, boolean force,
-                                 MetricVersion version) {
-
-        ParameterizedMetricKey paramKey = ParameterizedMetricKey.getInstance(key, version);
-        // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
-        Double prev = memo.get(paramKey);
-        if (!force && prev != null) {
-            return prev;
-        }
-
-        ClassMetric metric = key.getCalculator();
-        double val = metric.computeFor(node, version);
-        memo.put(paramKey, val);
-
-        return val;
-    }
-
 }

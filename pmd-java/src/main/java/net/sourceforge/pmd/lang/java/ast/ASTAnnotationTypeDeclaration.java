@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
 public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
     private QualifiedName qualifiedName;
@@ -20,6 +22,7 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode imp
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -48,5 +51,12 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode imp
     @Override
     public TypeKind getTypeKind() {
         return TypeKind.ANNOTATION;
+    }
+
+
+    @Override
+    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTAnnotationTypeBody.class)
+            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 }

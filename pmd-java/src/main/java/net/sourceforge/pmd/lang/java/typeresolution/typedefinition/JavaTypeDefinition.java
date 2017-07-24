@@ -206,4 +206,13 @@ public class JavaTypeDefinition implements TypeDefinition {
     public boolean isArrayType() {
         return clazz.isArray();
     }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
+                .append(", genericArgs=").append(genericArgs)
+                .append(", isGeneric=").append(isGeneric)
+                .append(']').toString();
+
+    }
 }

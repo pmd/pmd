@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.oom.api;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 /**
- * Key identifying a metric.
+ * Key identifying a metric. Such keys <i>must</i> implement the hashCode method. Enums are well fitted to serve as
+ * metric keys.
  *
- * @param <T> Type of the metric to identify (ClassMetric or OperationMetric).
+ * @param <N> Type of nodes the metric can be computed on
  */
-public interface MetricKey<T extends Metric> {
+public interface MetricKey<N extends Node> {
 
     /**
      * Returns the name of the metric.
@@ -24,6 +27,17 @@ public interface MetricKey<T extends Metric> {
      *
      * @return The calculator
      */
-    T getCalculator();
+    Metric<N> getCalculator();
+
+
+    /**
+     * Returns true if the metric held by this key can be computed on this node.
+     *
+     * @param node The node to test
+     *
+     * @return Whether or not the metric can be computed on this node
+     */
+    boolean supports(N node);
+
 
 }
