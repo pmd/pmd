@@ -176,4 +176,12 @@ public class JavaTypeDefinition implements TypeDefinition {
 
         return forClass(componentType);
     }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
+                .append(", genericArgs=").append(genericArgs)
+                .append(", isGeneric=").append(isGeneric)
+                .append(']').toString();
+    }
 }

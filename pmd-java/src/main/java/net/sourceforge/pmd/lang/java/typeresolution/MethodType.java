@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * This is really just a POJO.
  */
-
 public class MethodType {
     private final JavaTypeDefinition returnType;
     private final List<JavaTypeDefinition> argTypes;
@@ -53,12 +52,21 @@ public class MethodType {
     public boolean isAbstract() {
         return Modifier.isAbstract(method.getModifiers());
     }
-    
+
     public JavaTypeDefinition getArgTypeIncludingVararg(int index) {
         if (index < argTypes.size() - 1) {
             return argTypes.get(index);
         } else {
             return getVarargComponentType();
         }
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("MethodType [method=").append(method)
+                .append(", returnType=").append(returnType)
+                .append(", argTypes=").append(argTypes)
+                .append(']')
+                .toString();
     }
 }
