@@ -9,9 +9,9 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.metrics.metrics.visitors.DefaultNcssVisitor;
 import net.sourceforge.pmd.lang.java.metrics.metrics.visitors.JavaNcssVisitor;
+import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 
 /**
  * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent to counting

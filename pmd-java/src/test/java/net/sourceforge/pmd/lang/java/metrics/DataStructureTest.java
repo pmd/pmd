@@ -28,9 +28,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.metrics.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.metrics.AbstractJavaOperationMetric;
@@ -39,6 +36,9 @@ import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
+import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
+import net.sourceforge.pmd.lang.metrics.api.MetricKey;
+import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 
 /**
  * Tests functionality of the whole data structure (PackageStats, ClassStats, OperationStats). The behaviour of the

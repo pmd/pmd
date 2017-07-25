@@ -6,10 +6,10 @@ package net.sourceforge.pmd.lang.java.metrics.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 import net.sourceforge.pmd.lang.java.metrics.metrics.CycloMetric.CycloVersion;
+import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 /**
  * Weighed Method Count. It is the sum of the statical complexity of all operations of a class. We use

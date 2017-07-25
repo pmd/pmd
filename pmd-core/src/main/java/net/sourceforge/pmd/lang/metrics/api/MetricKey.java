@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.metrics.api;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.metrics.api.Metric;
 
 /**
  * Key identifying a metric. Such keys <i>must</i> implement the hashCode method. Enums are well fitted to serve as

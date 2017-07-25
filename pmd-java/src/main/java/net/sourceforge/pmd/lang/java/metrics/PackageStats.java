@@ -10,11 +10,11 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.api.ResultOption;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 
 
 /**

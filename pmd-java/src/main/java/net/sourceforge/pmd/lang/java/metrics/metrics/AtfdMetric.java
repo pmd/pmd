@@ -9,10 +9,10 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.Signature.Visibility;
+import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 
 /**
  * Access to Foreign Data. Quantifies the number of foreign fields accessed directly or via accessors.

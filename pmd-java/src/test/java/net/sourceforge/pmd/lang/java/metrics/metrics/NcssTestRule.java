@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.metrics.metrics;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.metrics.NcssMetric.NcssVersion;
+import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 
 /**
  * @author Clément Fournier
