@@ -32,7 +32,7 @@ CPD will therefore have less false positives and false negatives.
 #### Java Type Resolution
 
 As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph)'s work on type resolution for Java continues.
-For this release he has extended support for method calls.
+For this release he has extended support for method calls for both instance and static methods.
 
 Method shadowing and overloading are supported, as are varargs. However, the selection of the target method upon the presence
 of generics and type inference is still work in progress. Expect it in forecoming releases.
@@ -95,4 +95,5 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 *   [#501](https://github.com/pmd/pmd/pull/501): \[java] Add support for most specific vararg method type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#502](https://github.com/pmd/pmd/pull/502): \[java] Add support for static field type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#505](https://github.com/pmd/pmd/pull/505): \[java] Followup on metrics - [Clément Fournier](https://github.com/oowekyala)
+*   [#514](https://github.com/pmd/pmd/pull/514): \[java] Add static method type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 
