@@ -75,6 +75,7 @@ import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodMostSpecific;
 import net.sourceforge.pmd.typeresolution.testdata.MethodPotentialApplicability;
 import net.sourceforge.pmd.typeresolution.testdata.MethodSecondPhase;
+import net.sourceforge.pmd.typeresolution.testdata.MethodStaticAccess;
 import net.sourceforge.pmd.typeresolution.testdata.MethodThirdPhase;
 import net.sourceforge.pmd.typeresolution.testdata.NestedAnonymousClass;
 import net.sourceforge.pmd.typeresolution.testdata.Operators;
@@ -83,6 +84,7 @@ import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
@@ -1169,15 +1171,15 @@ public class ClassTypeResolverTest {
         assertEquals(Long.class, expressions.get(index).getType());
         assertEquals(Long.class, getChildType(expressions.get(index++), 0));
 
-        // StaticFields.staticPrimitive = 10;
+        // StaticMembers.staticPrimitive = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields.staticPrimitive = 10;
+        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers.staticPrimitive = 10;
         assertEquals(Integer.TYPE, expressions.get(index).getType());
         assertEquals(Integer.TYPE, getChildType(expressions.get(index++), 0));
 
-        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticFields
+        // net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers
         //       .staticGeneric.generic.second = new Long(10);
         assertEquals(Long.class, expressions.get(index).getType());
         assertEquals(Long.class, getChildType(expressions.get(index++), 0));
@@ -1393,6 +1395,40 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
+    @Test
+    public void testMethodStaticAccess() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(MethodStaticAccess.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+
+        // int a = primitiveStaticMethod();
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // StaticMembers b = staticInstanceMethod();
+        assertEquals(StaticMembers.class, expressions.get(index).getType());
+        assertEquals(StaticMembers.class, getChildType(expressions.get(index), 0));
+        assertEquals(StaticMembers.class, getChildType(expressions.get(index++), 1));
+
+        // int c = StaticMembers.primitiveStaticMethod();
+        assertEquals(int.class, expressions.get(index).getType());
+        assertEquals(int.class, getChildType(expressions.get(index), 0));
+        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+
+        // String c = MethodStaticAccess.Nested.primitiveStaticMethod();
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index), 0));
+        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
 
 
 
