@@ -12,7 +12,7 @@
     <rule name="CyclomaticComplexity"
           message="The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
           since="1.03"
-          class="net.sourceforge.pmd.lang.java.oom.rule.CyclomaticComplexityRule"
+          class="net.sourceforge.pmd.lang.java.metrics.rule.CyclomaticComplexityRule"
           metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity">
         <description>
@@ -70,7 +70,7 @@ public class Foo {		// This has a Cyclomatic Complexity = 12
     <rule name="NcssCount"
           message="The {0} ''{1}'' has a NCSS line count of {2}."
           since="3.9"
-          class="net.sourceforge.pmd.lang.java.oom.rule.NcssCountRule"
+          class="net.sourceforge.pmd.lang.java.metrics.rule.NcssCountRule"
           metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssTypeCount">
         <description>

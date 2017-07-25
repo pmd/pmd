@@ -11,25 +11,25 @@
 
     <rule name="CycloTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.oom.metrics.CycloTestRule"
+          class="net.sourceforge.pmd.lang.java.metrics.impl.CycloTestRule"
           metrics="true">
     </rule>
 
     <rule name="NcssTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.oom.metrics.NcssTestRule"
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NcssTestRule"
           metrics="true">
     </rule>
 
     <rule name="WmcTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.oom.metrics.WmcTestRule"
+          class="net.sourceforge.pmd.lang.java.metrics.impl.WmcTestRule"
           metrics="true">
     </rule>
 
     <rule name="LocTest"
           message = "''{0}'' has value {1}."
-          class="net.sourceforge.pmd.lang.java.oom.metrics.LocTestRule"
+          class="net.sourceforge.pmd.lang.java.metrics.impl.LocTestRule"
           metrics="true">
     </rule>
 
