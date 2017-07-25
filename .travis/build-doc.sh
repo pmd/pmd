@@ -19,10 +19,20 @@ export JEKYLL_VERSION=3.5
 docker run --rm \
   --volume=$PWD:/srv/jekyll \
   -it jekyll/jekyll:$JEKYLL_VERSION \
-  jekyll build 
+  jekyll build
 
 # create pmd-doc archive
 echo -e "\n\nCreating pmd-doc archive...\n\n"
+
+echo "ls -la:"
+ls -la
+echo "umask:"
+umask
+echo "id:"
+id
+echo
+
+
 mv _site pmd-doc-${VERSION}
 zip -qr pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
 
