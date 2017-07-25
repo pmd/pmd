@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.java.metrics.api;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.metrics.AtfdMetric.AtfdClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.metrics.CycloMetric.CycloClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.metrics.LocMetric.LocClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.metrics.NcssMetric.NcssClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.metrics.WmcMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.WmcMetric;
 import net.sourceforge.pmd.lang.metrics.api.Metric;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 
@@ -21,7 +21,7 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
     /**
      * Access to Foreign Data.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.metrics.AtfdMetric
+     * @see net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric
      */
     ATFD(new AtfdClassMetric()),
 
@@ -35,21 +35,21 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
     /**
      * Cyclomatic complexity.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.metrics.CycloMetric
+     * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
      */
     CYCLO(new CycloClassMetric()),
 
     /**
      * Non Commenting Source Statements.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.metrics.NcssMetric
+     * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
      */
     NCSS(new NcssClassMetric()),
 
     /**
      * Lines of Code.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.metrics.LocMetric
+     * @see net.sourceforge.pmd.lang.java.metrics.impl.LocMetric
      */
     LOC(new LocClassMetric());
 

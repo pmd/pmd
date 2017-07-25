@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.java.metrics.api;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.metrics.AtfdMetric.AtfdOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.metrics.CycloMetric.CycloOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.metrics.LocMetric.LocOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.metrics.NcssMetric.NcssOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOperationMetric;
 import net.sourceforge.pmd.lang.metrics.api.Metric;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 
@@ -20,28 +20,28 @@ public enum JavaOperationMetricKey implements MetricKey<ASTMethodOrConstructorDe
     /**
      * Access to Foreign Data.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.metrics.AtfdMetric
+     * @see net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric
      */
     ATFD(new AtfdOperationMetric()),
 
     /**
      * Cyclomatic complexity.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.metrics.CycloMetric
+     * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
      */
     CYCLO(new CycloOperationMetric()),
 
     /**
      * Non Commenting Source Statements.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.metrics.NcssMetric
+     * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
      */
     NCSS(new NcssOperationMetric()),
 
     /**
      * Lines of Code.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.metrics.LocMetric
+     * @see net.sourceforge.pmd.lang.java.metrics.impl.LocMetric
      */
     LOC(new LocOperationMetric());
 

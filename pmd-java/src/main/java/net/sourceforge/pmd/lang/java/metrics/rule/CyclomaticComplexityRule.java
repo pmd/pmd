@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.metrics.CycloMetric.CycloVersion;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloVersion;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
