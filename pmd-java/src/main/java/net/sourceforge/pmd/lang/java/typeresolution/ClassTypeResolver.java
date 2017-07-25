@@ -412,6 +412,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         JavaTypeDefinition previousType;
 
         if (node.getType() != null) { // static field or method
+            // node.getType() has been set by the call to searchNodeNameForClass above
+            // node.getType() will have the value equal to the Class found by that method
             previousType = JavaTypeDefinition.forClass(node.getType());
         } else { // non-static field or method
             if (dotSplitImage.length == 1 && astArguments != null) { // method
@@ -498,6 +500,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         List<MethodType> foundMethods = new ArrayList<>();
 
         // TODO: member methods must not be looked at in the code below
+        // TODO: add support for properly dealing with shadowing
         List<JavaTypeDefinition> explicitImports = staticNamesToClasses.get(methodName);
 
         if (explicitImports != null) {
