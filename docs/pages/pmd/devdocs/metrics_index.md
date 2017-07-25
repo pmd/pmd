@@ -43,7 +43,8 @@ control flow statement in itself.
 ### Versions
 
 * Version `CycloVersion#IGNORE_BOOLEAN_PATHS`: Boolean operators are not counted, nor are empty
-  fall-through cases in `switch` statements.
+  fall-through cases in `switch` statements. You can use this version to get results 
+  similar to those of the old `StdCyclomaticComplexityRule`, which is to be replaced.
  
  
 ## Lines of Code (LoC)
@@ -63,8 +64,8 @@ Simply counts the number of lines of code the operation or class takes up in the
 ### Description
 
 Number of statements in a class or operation. That's roughly equivalent to counting the number of semicolons and 
-opening braces in the program. Comments and blank lines are ignored, and so are split statements (e.g. `int\n a;` counts
- a single statement). 
+opening braces in the program. Comments and blank lines are ignored, and statements spread on multiple lines count as
+ only one (e.g. `int\n a;` counts a single statement). 
 
 The standard version of the metric is based off JavaNCSS's version  \[[JavaNcss](#JavaNcss)\]:
 
@@ -74,7 +75,10 @@ The standard version of the metric is based off JavaNCSS's version  \[[JavaNcss]
 variables  declared on the same line (e.g. `int a, b, c;`) as a single statement. 
 * Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, interface, enum, annotation),  
 and method and field declarations \[[Sonarqube](#Sonarqube)\].
-* Contrary to JavaNCSS, but as Sonarqube, we do not count package declaration and import declarations as statements.
+* Contrary to JavaNCSS, but as Sonarqube, we do not count package declaration and import declarations as statements. 
+This makes it easier to compare nested classes to outer classes. Besides, it makes for class metric results that 
+actually represent the size of the class and not of the file. If you don't like that behaviour, use the `JAVANCSS` 
+version.
 
 
 ### Versions
