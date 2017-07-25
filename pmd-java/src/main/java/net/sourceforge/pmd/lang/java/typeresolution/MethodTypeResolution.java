@@ -150,8 +150,8 @@ public final class MethodTypeResolution {
 
                 // try each arguments if it's method convertible
                 for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
-                    if (!isMethodConvertble(methodType.getParameterTypes().get(argIndex),
-                                            (ASTExpression) argList.jjtGetChild(argIndex))) {
+                    if (!isMethodConvertible(methodType.getParameterTypes().get(argIndex),
+                                             (ASTExpression) argList.jjtGetChild(argIndex))) {
                         methodIsApplicable = false;
                         break;
                     }
@@ -197,7 +197,7 @@ public final class MethodTypeResolution {
                     JavaTypeDefinition parameterType = argIndex < methodParameters.size() - 1
                             ? methodParameters.get(argIndex) : varargComponentType;
 
-                    if (!isMethodConvertble(parameterType, (ASTExpression) argList.jjtGetChild(argIndex))) {
+                    if (!isMethodConvertible(parameterType, (ASTExpression) argList.jjtGetChild(argIndex))) {
                         methodIsApplicable = false;
                         break;
                     }
@@ -224,7 +224,7 @@ public final class MethodTypeResolution {
      */
     public static JavaTypeDefinition getBestMethodReturnType(List<MethodType> methods, ASTArgumentList arguments,
                                                              List<JavaTypeDefinition> typeArgs) {
-        
+
         List<MethodType> selectedMethods = selectMethodsFirstPhase(methods, arguments, typeArgs);
         if (!selectedMethods.isEmpty()) {
             return selectMostSpecificMethod(selectedMethods).getReturnType();
@@ -285,8 +285,9 @@ public final class MethodTypeResolution {
         } else if (second.isAbstract()) {
             return first; // first isn't abstract, second one is
         } else {
-            throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
-                                                    + first.toString() + "\n" + second.toString());
+            return null; // TODO: once shadowing and overriding methods is done, add exception back
+            // throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
+            //                                        + first.toString() + "\n" + second.toString());
         }
     }
 
@@ -435,7 +436,7 @@ public final class MethodTypeResolution {
         return method.getParameterTypes().length;
     }
 
-    public static boolean isMethodConvertble(JavaTypeDefinition parameter, ASTExpression argument) {
+    public static boolean isMethodConvertible(JavaTypeDefinition parameter, ASTExpression argument) {
         return isMethodConvertible(parameter, argument.getTypeDefinition());
     }
 
@@ -509,5 +510,13 @@ public final class MethodTypeResolution {
         }
 
         return false;
+    }
+
+    public static JavaTypeDefinition boxPrimitive(JavaTypeDefinition def) {
+        if (!def.isPrimitive()) {
+            return null;
+        }
+
+        return JavaTypeDefinition.forClass(BOXED_PRIMITIVE_SUBTYPE_ORDER.get(PRIMITIVE_SUBTYPE_ORDER.indexOf(def.getType())));
     }
 }

@@ -1,0 +1,16 @@
+{% if page.sidebar == "pmd_sidebar" %}
+{% assign sidebar = site.data.sidebars.pmd_sidebar.entries %}
+
+{% else %}
+{% assign sidebar = site.data.sidebars.pmd_sidebar.entries %}
+{% endif %}
+
+
+
+{% comment %}
+sidebar configuration for print files
+{% endcomment %}
+
+{% if site.product == "pmd" %}
+{% assign sidebar_pdf = site.data.sidebars.pmd_sidebar.entries %}
+{% endif %}
