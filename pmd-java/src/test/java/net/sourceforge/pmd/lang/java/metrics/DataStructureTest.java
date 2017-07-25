@@ -41,7 +41,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 
 /**
- * Tests functionality of the whole data structure (JavaPackageStats, JavaClassStats, JavaOperationStats). The behaviour of the
+ * Tests functionality of the whole data structure (PackageStats, ClassStats, OperationStats). The behaviour of the
  * structure is very encapsulated, so the API to test is restricted per class.
  *
  * @author Clément Fournier
@@ -50,12 +50,12 @@ public class DataStructureTest extends ParserTst {
 
     MetricKey<ASTAnyTypeDeclaration> classMetricKey = JavaClassMetricKey.of(new RandomClassMetric(), null);
     MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = JavaOperationMetricKey.of(new RandomOperationMetric(), null);
-    private JavaPackageStats pack;
+    private PackageStats pack;
 
 
     @Before
     public void setUp() {
-        pack = new JavaPackageStats();
+        pack = new PackageStats();
     }
 
 
@@ -83,7 +83,7 @@ public class DataStructureTest extends ParserTst {
 
         assertFalse(pack.hasMatchingSig(qname, new OperationSigMask()));
 
-        JavaClassStats clazz = pack.getClassStats(qname, true);
+        ClassStats clazz = pack.getClassStats(qname, true);
         clazz.addOperation("foo()", signature);
         assertTrue(pack.hasMatchingSig(qname, new OperationSigMask()));
     }
@@ -102,7 +102,7 @@ public class DataStructureTest extends ParserTst {
 
         assertFalse(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
 
-        JavaClassStats clazz = pack.getClassStats(qname, true);
+        ClassStats clazz = pack.getClassStats(qname, true);
         clazz.addField(fieldName, signature);
         assertTrue(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
     }
@@ -135,7 +135,7 @@ public class DataStructureTest extends ParserTst {
     }
 
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
-        final JavaPackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
+        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
 
         final List<Integer> result = new ArrayList<>();
 

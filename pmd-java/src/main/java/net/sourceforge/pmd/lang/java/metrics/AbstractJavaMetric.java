@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.metrics.api.Metric;
 
 /**
  * Base class for metrics. Metric objects encapsulate the computational logic required to compute a metric from a
- * JavaPackageStats and node. They're stateless.
+ * PackageStats and node. They're stateless.
  *
  * @param <N> Type of node the metric can be computed on
  *
@@ -37,7 +37,7 @@ public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
      *
      * @return The toplevel package stats (singleton contained within {@link JavaMetrics}).
      */
-    protected static JavaPackageStats getTopLevelPackageStats() {
+    protected static PackageStats getTopLevelPackageStats() {
         return JavaMetrics.getTopLevelPackageStats();
     }
 

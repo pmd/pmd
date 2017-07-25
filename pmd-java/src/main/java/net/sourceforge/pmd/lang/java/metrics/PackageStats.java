@@ -22,18 +22,18 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
  * project and stores information about the classes and subpackages it contains.
  *
  * @author Clément Fournier
- * @see JavaClassStats
+ * @see ClassStats
  */
-public final class JavaPackageStats {
+public final class PackageStats {
 
-    private final Map<String, JavaPackageStats> subPackages = new HashMap<>();
-    private final Map<String, JavaClassStats> classes = new HashMap<>();
+    private final Map<String, PackageStats> subPackages = new HashMap<>();
+    private final Map<String, ClassStats> classes = new HashMap<>();
 
 
     /**
      * Default constructor.
      */
-    /* default */ JavaPackageStats() {
+    /* default */ PackageStats() {
 
     }
 
@@ -57,23 +57,23 @@ public final class JavaPackageStats {
      * @return True if the signature of the operation designated by the qualified name is covered by the mask
      */
     public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
-        JavaClassStats clazz = getClassStats(qname, false);
+        ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
     }
 
 
     /**
-     * Gets the JavaClassStats corresponding to the named resource. The class can be nested. If the
+     * Gets the ClassStats corresponding to the named resource. The class can be nested. If the
      * createIfNotFound parameter is set, the method also creates the hierarchy if it doesn't exist.
      *
      * @param qname            The qualified name of the class
      * @param createIfNotFound Create hierarchy if missing
      *
-     * @return The new JavaClassStats, or the one that was found. Can return null only if createIfNotFound is unset
+     * @return The new ClassStats, or the one that was found. Can return null only if createIfNotFound is unset
      */
-    /* default */ JavaClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
-        JavaPackageStats container = getSubPackage(qname, createIfNotFound);
+    /* default */ ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
+        PackageStats container = getSubPackage(qname, createIfNotFound);
 
         if (container == null) {
             return null;
@@ -81,10 +81,10 @@ public final class JavaPackageStats {
 
         String topClassName = qname.getClasses()[0];
         if (createIfNotFound && classes.get(topClassName) == null) {
-            classes.put(topClassName, new JavaClassStats());
+            classes.put(topClassName, new ClassStats());
         }
 
-        JavaClassStats next = classes.get(topClassName);
+        ClassStats next = classes.get(topClassName);
 
         if (next == null) {
             return null;
@@ -93,7 +93,7 @@ public final class JavaPackageStats {
         String[] nameClasses = qname.getClasses();
 
         for (int i = 1; i < nameClasses.length && next != null; i++) {
-            // Delegate search for nested classes to JavaClassStats
+            // Delegate search for nested classes to ClassStats
             next = next.getNestedClassStats(nameClasses[i], createIfNotFound);
         }
 
@@ -102,25 +102,25 @@ public final class JavaPackageStats {
 
 
     /**
-     * Returns the deepest JavaPackageStats that contains the named resource. If the second parameter is
-     * set, creates the missing JavaPackageStats along the way.
+     * Returns the deepest PackageStats that contains the named resource. If the second parameter is
+     * set, creates the missing PackageStats along the way.
      *
      * @param qname            The qualified name of the resource
      * @param createIfNotFound If set to true, the hierarch is created if non existent
      *
      * @return The deepest package that contains this resource. Can only return null if createIfNotFound is unset
      */
-    private JavaPackageStats getSubPackage(QualifiedName qname, boolean createIfNotFound) {
+    private PackageStats getSubPackage(QualifiedName qname, boolean createIfNotFound) {
         if (qname.getPackages() == null) {
             return this; // the toplevel
         }
 
         String[] packagePath = qname.getPackages();
-        JavaPackageStats next = this;
+        PackageStats next = this;
 
         for (int i = 0; i < packagePath.length && next != null; i++) {
             if (createIfNotFound && next.subPackages.get(packagePath[i]) == null) {
-                next.subPackages.put(packagePath[i], new JavaPackageStats());
+                next.subPackages.put(packagePath[i], new PackageStats());
             }
 
             next = next.subPackages.get(packagePath[i]);
@@ -141,7 +141,7 @@ public final class JavaPackageStats {
      * @return True if the signature of the field is covered by the mask
      */
     public boolean hasMatchingSig(QualifiedName qname, String fieldName, FieldSigMask sigMask) {
-        JavaClassStats clazz = getClassStats(qname, false);
+        ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
     }
@@ -159,7 +159,7 @@ public final class JavaPackageStats {
      */
     /* default */ double compute(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, boolean force,
                                  MetricVersion version) {
-        JavaClassStats container = getClassStats(node.getQualifiedName(), false);
+        ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
                                  : container.compute(key, node, force, version);
@@ -179,7 +179,7 @@ public final class JavaPackageStats {
     /* default */ double compute(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
                                  boolean force, MetricVersion version) {
         QualifiedName qname = node.getQualifiedName();
-        JavaClassStats container = getClassStats(qname, false);
+        ClassStats container = getClassStats(qname, false);
 
         return container == null ? Double.NaN
                                  : container.compute(key, node, qname.getOperation(), force, version);
@@ -199,7 +199,7 @@ public final class JavaPackageStats {
      */
     /* default */ double computeWithResultOption(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
                                                  boolean force, MetricVersion version, ResultOption option) {
-        JavaClassStats container = getClassStats(node.getQualifiedName(), false);
+        ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
                                  : container.computeWithResultOption(key, node, force, version, option);

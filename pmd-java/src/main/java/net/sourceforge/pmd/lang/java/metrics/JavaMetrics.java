@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  */
 public final class JavaMetrics {
 
-    private static final JavaPackageStats TOP_LEVEL_PACKAGE = new JavaPackageStats();
+    private static final PackageStats TOP_LEVEL_PACKAGE = new PackageStats();
 
 
     private JavaMetrics() { // Cannot be instantiated
@@ -33,7 +33,7 @@ public final class JavaMetrics {
      *
      * @return The top level package stats
      */
-    /* default */ static JavaPackageStats getTopLevelPackageStats() {
+    /* default */ static PackageStats getTopLevelPackageStats() {
         return TOP_LEVEL_PACKAGE;
     }
 

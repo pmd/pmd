@@ -18,13 +18,13 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
  *
  * @author Clément Fournier
  */
-/* default */ class JavaOperationStats {
+/* default */ class OperationStats {
 
     private final String name;
     private final Map<ParameterizedMetricKey, Double> memo = new HashMap<>();
 
 
-    /* default */ JavaOperationStats(String name) {
+    /* default */ OperationStats(String name) {
         this.name = name;
     }
 
@@ -67,7 +67,7 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
             return false;
         }
 
-        JavaOperationStats stats = (JavaOperationStats) o;
+        OperationStats stats = (OperationStats) o;
 
         return name != null ? name.equals(stats.name) : stats.name == null;
     }
