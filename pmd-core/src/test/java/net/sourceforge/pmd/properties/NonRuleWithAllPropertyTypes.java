@@ -91,7 +91,7 @@ public class NonRuleWithAllPropertyTypes extends AbstractRule {
 
 
     public static final EnumeratedMultiProperty<Class> MULTI_ENUM_TYPE = new EnumeratedMultiProperty<>("multiEnumType", "Multiple enumerated choices", ENUM_MAPPINGS,
-                                                                                                       Arrays.<Class>asList(String.class,  Object.class), Class.class, 5.0f);
+                                                                                                       Arrays.<Class>asList(String.class, Object.class), Class.class, 5.0f);
 
     private static final Method STRING_LENGTH = ClassUtil.methodFor(String.class, "length", ClassUtil.EMPTY_CLASS_ARRAY);
 
