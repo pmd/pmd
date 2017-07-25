@@ -47,7 +47,7 @@ public class JavaMetricsVisitorTest {
     public void testOperationsAreThere() {
         ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
 
-        final JavaPackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
+        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
 
         final OperationSigMask opMask = new OperationSigMask();
 
@@ -67,7 +67,7 @@ public class JavaMetricsVisitorTest {
         parseAndVisitForClass15(MetricsVisitorTestData.class);
 
 
-        final JavaPackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
+        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
 
         final FieldSigMask fieldSigMask = new FieldSigMask();
 
@@ -90,7 +90,7 @@ public class JavaMetricsVisitorTest {
     public void testStaticOperationsSig() {
         parseAndVisitForClass15(MetricsVisitorTestData.class);
 
-        final JavaPackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
+        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
 
         final OperationSigMask operationSigMask = new OperationSigMask();
         operationSigMask.restrictRolesTo(Role.STATIC);

@@ -14,19 +14,19 @@ import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 
 /**
- * Visitor for the metrics framework, that fills a {@link JavaPackageStats} object with the
+ * Visitor for the metrics framework, that fills a {@link PackageStats} object with the
  * signatures of operations and fields it encounters.
  *
  * @author Clément Fournier
  */
 class JavaMetricsVisitor extends JavaParserVisitorReducedAdapter {
 
-    private Stack<JavaClassStats> stack = new Stack<>();
+    private Stack<ClassStats> stack = new Stack<>();
 
 
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
-        stack.push(((JavaPackageStats) data).getClassStats(node.getQualifiedName(), true));
+        stack.push(((PackageStats) data).getClassStats(node.getQualifiedName(), true));
         super.visit(node, data);
         stack.pop();
 

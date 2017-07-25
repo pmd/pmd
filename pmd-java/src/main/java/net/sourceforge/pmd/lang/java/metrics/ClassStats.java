@@ -27,18 +27,18 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 /**
  * Statistics about a class, enum, interface, or annotation. Gathers information about the contained members and their
  * signatures. This class does not provide methods to operate directly on its nested classes, but only on itself. To
- * operate on a nested class, retrieve the correct JavaClassStats with
- * {@link JavaPackageStats#getClassStats(QualifiedName, boolean)} then use the methods of JavaClassStats.
+ * operate on a nested class, retrieve the correct ClassStats with
+ * {@link PackageStats#getClassStats(QualifiedName, boolean)} then use the methods of ClassStats.
  *
  * <p>Note that at this level, entities of the data structure do not manipulate QualifiedNames anymore, only Strings.
  *
  * @author Clément Fournier
  */
-/* default */ class JavaClassStats {
+/* default */ class ClassStats {
 
-    private Map<OperationSignature, Map<String, JavaOperationStats>> operations = new HashMap<>();
+    private Map<OperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
     private Map<FieldSignature, Set<String>> fields = new HashMap<>();
-    private Map<String, JavaClassStats> nestedClasses = new HashMap<>();
+    private Map<String, ClassStats> nestedClasses = new HashMap<>();
 
     private Map<ParameterizedMetricKey, Double> memo = new HashMap<>();
 
@@ -49,13 +49,13 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 
 
     /**
-     * Finds a JavaClassStats in the direct children of this class. This can only be a directly nested class, for example
+     * Finds a ClassStats in the direct children of this class. This can only be a directly nested class, for example
      * in the following snippet, A can get B and B can get C but A cannot get C without asking B.
      * <pre>
      * {@code
-     * class MyClass { // JavaClassStats A
-     *   class MyNested { // JavaClassStats B
-     *     class MyDeeplyNested { // JavaClassStats C
+     * class MyClass { // ClassStats A
+     *   class MyNested { // ClassStats B
+     *     class MyDeeplyNested { // ClassStats C
      *     }
      *   }
      * }
@@ -63,13 +63,13 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
      * </pre>
      *
      * @param className        Name of the nested class
-     * @param createIfNotFound Create the requested JavaClassStats if missing
+     * @param createIfNotFound Create the requested ClassStats if missing
      *
-     * @return The new JavaClassStats or the one that was found. Can return null if createIfNotFound is unset
+     * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is unset
      */
-    /* default */ JavaClassStats getNestedClassStats(String className, boolean createIfNotFound) {
+    /* default */ ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
         if (createIfNotFound && !nestedClasses.containsKey(className)) {
-            nestedClasses.put(className, new JavaClassStats());
+            nestedClasses.put(className, new ClassStats());
         }
         return nestedClasses.get(className);
     }
@@ -83,9 +83,9 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
      */
     /* default */ void addOperation(String name, OperationSignature sig) {
         if (!operations.containsKey(sig)) {
-            operations.put(sig, new HashMap<String, JavaOperationStats>());
+            operations.put(sig, new HashMap<String, OperationStats>());
         }
-        operations.get(sig).put(name, new JavaOperationStats(name));
+        operations.get(sig).put(name, new OperationStats(name));
     }
 
 
@@ -189,13 +189,13 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
                                  String name, boolean force, MetricVersion version) {
 
         // TODO:cf the operation signature might be built many times, consider storing it in the node
-        Map<String, JavaOperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
+        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
 
         if (sigMap == null) {
             return Double.NaN;
         }
 
-        JavaOperationStats stats = sigMap.get(name);
+        OperationStats stats = sigMap.get(name);
         return stats == null ? Double.NaN : stats.compute(key, node, force, version);
     }
 
