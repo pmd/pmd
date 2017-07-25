@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.EnumeratedPropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
 import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.modules.EnumeratedPropertyModule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -21,6 +21,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @param <E> The type of the values
  *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E>
@@ -42,26 +43,45 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
             }
         }; // @formatter:on
 
-    private final Map<String, E> choicesByLabel;
-    private final Map<E, String> labelsByChoice;
-    private final Class<E> valueType;
+    private final EnumeratedPropertyModule<E> module;
 
 
     /**
-     * Constructor using arrays to define the label-value mappings. The correct construction of the property depends
-     * on the correct ordering of the arrays.
+     * Constructor using arrays to define the label-value mappings. The correct construction of the property depends on
+     * the correct ordering of the arrays.
      *
      * @param theName        Name
      * @param theDescription Description
      * @param theLabels      Labels of the choices
      * @param theChoices     Values that can be chosen
-     * @param choiceIndices  The indices of the default values.
+     * @param choiceIndices  Indices of the default values
+     * @param valueType      Type of the values
      * @param theUIOrder     UI order
+     *
+     * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
+     * 7.0.0
      */
+    @Deprecated
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
                                    int[] choiceIndices, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
              selection(choiceIndices, theChoices), valueType, theUIOrder, false);
+    }
+
+
+    /**
+     * Constructor using a map to define the label-value mappings. The default values are specified with a list.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param choices        Map of labels to values
+     * @param defaultValues  List of default values
+     * @param valueType      Type of the values
+     * @param theUIOrder     UI order
+     */
+    public EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
+                                   List<E> defaultValues, Class<E> valueType, float theUIOrder) {
+        this(theName, theDescription, choices, defaultValues, valueType, theUIOrder, false);
     }
 
 
@@ -70,11 +90,51 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
                                     boolean isDefinedExternally) {
         super(theName, theDescription, defaultValues, theUIOrder, isDefinedExternally);
 
-        checkDefaults(defaultValues, choices);
+        module = new EnumeratedPropertyModule<>(choices, valueType);
+        checkDefaults(defaultValues);
+    }
 
-        this.valueType = valueType;
-        choicesByLabel = Collections.unmodifiableMap(choices);
-        labelsByChoice = Collections.unmodifiableMap(CollectionUtil.invertedMapFrom(choicesByLabel));
+
+    @Override
+    public Map<String, E> mappings() {
+        return module.getChoicesByLabel(); // unmodifiable
+    }
+
+
+    @Override
+    public Class<E> type() {
+        return module.getValueType();
+    }
+
+
+    @Override
+    public String errorFor(List<E> values) {
+        for (E value : values) {
+            String error = module.errorFor(value);
+            if (error != null) {
+                return error;
+            }
+        }
+        return null;
+    }
+
+
+    @Override
+    protected E createFrom(String toParse) {
+        return module.choiceFrom(toParse);
+    }
+
+
+    @Override
+    public String asString(E item) {
+        return module.getLabelsByChoice().get(item);
+    }
+
+
+    private void checkDefaults(List<E> defaults) {
+        for (E elt : defaults) {
+            module.checkValue(elt);
+        }
     }
 
 
@@ -88,79 +148,5 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
         }
         return selected;
     }
-
-
-    private static <E> void checkDefaults(List<E> defaults, Map<String, E> choices) {
-        for (E elt : defaults) {
-            if (!choices.containsValue(elt)) {
-                throw new IllegalArgumentException("Invalid default value: no mapping to this value");
-            }
-        }
-    }
-
-
-    /**
-     * Constructor using a map to define the label-value mappings. The default values are specified with a list.
-     *
-     * @param theName        Name
-     * @param theDescription Description
-     * @param choices        Map of labels to values
-     * @param defaultValues  List of default values
-     * @param theUIOrder     UI order
-     */
-    public EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
-                                   List<E> defaultValues, Class<E> valueType, float theUIOrder) {
-        this(theName, theDescription, choices, defaultValues, valueType, theUIOrder, false);
-    }
-
-
-    @Override
-    public Map<String, E> mappings() {
-        return choicesByLabel; // unmodifiable
-    }
-
-
-    @Override
-    public Class<E> type() {
-        return valueType;
-    }
-
-
-    @Override
-    public String errorFor(List<E> values) {
-        for (E value : values) {
-            if (!labelsByChoice.containsKey(value)) {
-                return nonLegalValueMsgFor(value);
-            }
-        }
-        return null;
-    }
-
-
-    private String nonLegalValueMsgFor(E value) {
-        return value + " is not a legal value";
-    }
-
-
-    @Override
-    protected E createFrom(String toParse) {
-        return choiceFrom(toParse);
-    }
-
-
-    private E choiceFrom(String label) {
-        E result = choicesByLabel.get(label);
-        if (label == null || result == null) {
-            throw new IllegalArgumentException(label);
-        }
-        return result;
-    }
-
-
-    @Override
-    public String asString(E item) {
-        return labelsByChoice.get(item);
-    }
-
 
 }

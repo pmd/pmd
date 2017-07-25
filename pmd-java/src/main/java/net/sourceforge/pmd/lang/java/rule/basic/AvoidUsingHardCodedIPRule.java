@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.basic;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,9 +23,21 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     public static final String IPV6 = "IPv6";
     public static final String IPV4_MAPPED_IPV6 = "IPv4 mapped IPv6";
 
+    private static final Map<String, String> ADDRESSES_TO_CHECK;
+
+    static {
+        Map<String, String> tmp = new HashMap<>();
+        tmp.put(IPV4, IPV4);
+        tmp.put(IPV6, IPV6);
+        tmp.put(IPV4_MAPPED_IPV6, IPV4_MAPPED_IPV6);
+        ADDRESSES_TO_CHECK = Collections.unmodifiableMap(tmp);
+    }
+
+
     public static final EnumeratedMultiProperty<String> CHECK_ADDRESS_TYPES_DESCRIPTOR = new EnumeratedMultiProperty<>(
-            "checkAddressTypes", "Check for IP address types.", new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 },
-            new String[] { IPV4, IPV6, IPV4_MAPPED_IPV6 }, new int[] { 0, 1, 2 }, String.class, 2.0f);
+        "checkAddressTypes", "Check for IP address types.", ADDRESSES_TO_CHECK,
+        Arrays.asList(IPV4, IPV6, IPV4_MAPPED_IPV6),
+        String.class, 2.0f);
 
     // Provides 4 capture groups that can be used for additional validation
     protected static final String IPV4_REGEXP = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";

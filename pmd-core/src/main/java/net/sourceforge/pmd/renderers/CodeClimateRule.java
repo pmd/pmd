@@ -6,6 +6,11 @@ package net.sourceforge.pmd.renderers;
 
 import static net.sourceforge.pmd.renderers.CodeClimateRenderer.REMEDIATION_POINTS_DEFAULT;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
@@ -17,6 +22,40 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  * two code climate properties "categories" and "remediation multiplier".
  */
 public interface CodeClimateRule extends Rule {
+
+    /** Represent a CodeClimate category. */
+    enum CodeClimateCategory {
+        BUG_RISK("Bug Risk"),
+        CLARITY("Clarity"),
+        COMPATIBILITY("Compatibility"),
+        COMPLEXITY("Complexity"),
+        DUPLICATION("Duplication"),
+        PERFORMANCE("Performance"),
+        SECURITY("Security"),
+        STYLE("Style");
+
+        private String name;
+
+        CodeClimateCategory(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        /** Makes a map to define the categories for use in the descriptor. */
+        private static Map<String, String> categoryMap() {
+            Map<String, String> result = new HashMap<>();
+            for (CodeClimateCategory cat : values()) {
+                result.put(cat.name, cat.name);
+            }
+            return result;
+        }
+    }
+
+
     /**
      * Defines the code climate categories for which this rule will find
      * violations. Possible categories are: Bug Risk, Clarity, Compatibility,
@@ -26,13 +65,12 @@ public interface CodeClimateRule extends Rule {
      *      "https://github.com/codeclimate/spec/blob/master/SPEC.md#categories">Code
      *      Climate Spec</a>
      */
-    EnumeratedMultiProperty<String> CODECLIMATE_CATEGORIES = new EnumeratedMultiProperty<>("cc_categories",
-            "Code Climate Categories",
-            new String[] { "Bug Risk", "Clarity", "Compatibility", "Complexity", "Duplication", "Performance",
-                "Security", "Style", },
-            new String[] { "Bug Risk", "Clarity", "Compatibility", "Complexity", "Duplication", "Performance",
-                "Security", "Style", },
-            new int[] { 7 }, String.class, 1.0f);
+    EnumeratedMultiProperty<String> CODECLIMATE_CATEGORIES // better would be to use CodeClimateCategory as values but might break the API
+        = new EnumeratedMultiProperty<>("cc_categories",
+                                        "Code Climate Categories",
+                                        CodeClimateCategory.categoryMap(),
+                                        Collections.singletonList(CodeClimateCategory.STYLE.name),
+                                        String.class, 1.0f);
 
     /**
      * Defines the remediation points for this rule. The remediation points are
