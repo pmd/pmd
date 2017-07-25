@@ -11,7 +11,7 @@ if ! travis_isPush; then
     exit 0
 fi
 
-cd docs
+pushd docs
 
 # run jekyll
 echo -e "\n\nBuilding documentation using jekyll...\n\n"
@@ -27,11 +27,13 @@ zip -qr pmd-doc-${VERSION}.zip pmd-doc-${VERSION}/
 # Uploading pmd doc distribution to sourceforge
 if [[ "$TRAVIS_TAG" != "" || "$VERSION" == *-SNAPSHOT ]]; then
     echo -e "\n\nUploading pmd-doc archive to sourceforge...\n\n"
-    rsync -avh target/pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
+    rsync -avh pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
 fi
 
 # rsync site to pmd.sourceforge.net/snapshot
 if [[ "$VERSION" == *-SNAPSHOT && "$TRAVIS_BRANCH" == "master" ]]; then
     echo -e "\n\nUploading snapshot site...\n\n"
-    travis_wait rsync -ah --stats --delete target/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
+    travis_wait rsync -ah --stats --delete pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
 fi
+
+popd
