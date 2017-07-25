@@ -58,7 +58,8 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
      * @param theDescription Description
      * @param theLabels      Labels of the choices
      * @param theChoices     Values that can be chosen
-     * @param defaultIndex   The index of the default value.
+     * @param defaultIndex   The index of the default value
+     * @param valueType      Type of the values
      * @param theUIOrder     UI order
      *
      * @deprecated will be removed in 7.0.0. Use {@link #EnumeratedProperty(String, String, Map, Object, Class, float)}
@@ -71,12 +72,24 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
     }
 
 
-    private EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
-                               E defaultValue, Class<E> valueType, float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
-
-        module = new EnumeratedPropertyModule<>(labelsToChoices, valueType);
-        module.checkValue(defaultValue);
+    /**
+     * Constructor using arrays to define the label-value mappings. The correct construction of the property depends on
+     * the correct ordering of the arrays.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param theLabels      Labels of the choices
+     * @param theChoices     Values that can be chosen
+     * @param defaultIndex   Index of the default value
+     * @param theUIOrder     UI order
+     *
+     * @deprecated will be removed in 7.0.0. Use {@link #EnumeratedProperty(String, String, Map, Object, Class, float)}
+     */
+    @Deprecated
+    public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
+                              int defaultIndex, float theUIOrder) {
+        this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
+             theChoices[defaultIndex], null, theUIOrder, false);
     }
 
 
@@ -87,11 +100,22 @@ public final class EnumeratedProperty<E> extends AbstractSingleValueProperty<E>
      * @param theDescription  Description
      * @param labelsToChoices Map of labels to values
      * @param defaultValue    Default value
+     * @param valueType       Type of the values
      * @param theUIOrder      UI order
      */
     public EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
                               E defaultValue, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, labelsToChoices, defaultValue, valueType, theUIOrder, false);
+    }
+
+
+    /** Master constructor. */
+    private EnumeratedProperty(String theName, String theDescription, Map<String, E> labelsToChoices,
+                               E defaultValue, Class<E> valueType, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValue, theUIOrder, isDefinedExternally);
+
+        module = new EnumeratedPropertyModule<>(labelsToChoices, valueType);
+        module.checkValue(defaultValue);
     }
 
 

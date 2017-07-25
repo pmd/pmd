@@ -70,6 +70,28 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
 
 
     /**
+     * Constructor using arrays to define the label-value mappings. The correct construction of the property depends on
+     * the correct ordering of the arrays.
+     *
+     * @param theName        Name
+     * @param theDescription Description
+     * @param theLabels      Labels of the choices
+     * @param theChoices     Values that can be chosen
+     * @param choiceIndices  Indices of the default values
+     * @param theUIOrder     UI order
+     *
+     * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
+     * 7.0.0
+     */
+    @Deprecated
+    public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
+                                   int[] choiceIndices, float theUIOrder) {
+        this(theName, theDescription, CollectionUtil.mapFrom(theLabels, theChoices),
+             selection(choiceIndices, theChoices), null, theUIOrder, false);
+    }
+
+
+    /**
      * Constructor using a map to define the label-value mappings. The default values are specified with a list.
      *
      * @param theName        Name
