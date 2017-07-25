@@ -14,12 +14,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
@@ -54,7 +56,7 @@ public class RuleSetFactoryTest {
     public void testExtendedReferences() throws Exception {
         InputStream in = ResourceLoader.loadResourceAsStream("net/sourceforge/pmd/rulesets/reference-ruleset.xml",
                 this.getClass().getClassLoader());
-        Assert.assertNotNull("Test ruleset not found - can't continue with test!", in);
+        assertNotNull("Test ruleset not found - can't continue with test!", in);
         in.close();
 
         RuleSetFactory rsf = new RuleSetFactory();
@@ -167,64 +169,67 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testStringMultiPropertyDefaultDelimiter() throws Exception {
-        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
-                + "     <rule name=\"myRule\" message=\"Do not place to this package. Move to \n"
-                + "{0} package/s instead.\" \n" + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" "
-                + "language=\"dummy\">\n" + "         <description>Please move your class to the right folder(rest \n"
-                + "folder)</description>\n" + "         <priority>2</priority>\n" + "         <properties>\n"
-                + "             <property name=\"packageRegEx\" value=\"com.aptsssss|com.abc\" \n"
-                + "type=\"String[]\" description=\"valid packages\"/>\n" + "         </properties>" + "</rule>"
-                + "</ruleset>");
-        PropertyDescriptor<?> prop = r.getPropertyDescriptor("packageRegEx");
-        String[] values = (String[]) r.getProperty(prop);
-        Assert.assertArrayEquals(new String[] { "com.aptsssss", "com.abc" }, values);
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ruleset name=\"the ruleset\">\n  <description>Desc</description>\n"
+                                   + "     <rule name=\"myRule\" message=\"Do not place to this package. Move to \n{0} package/s instead.\" \n"
+                                   + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">\n"
+                                   + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
+                                   + "         <priority>2</priority>\n         <properties>\n             <property name=\"packageRegEx\""
+                                   + " value=\"com.aptsssss|com.abc\" \ntype=\"List&lt;String&gt;\" "
+                                   + "description=\"valid packages\"/>\n         </properties></rule></ruleset>");
+        PropertyDescriptor<List<String>> prop = (PropertyDescriptor<List<String>>) r.getPropertyDescriptor("packageRegEx");
+        List<String> values = r.getProperty(prop);
+        assertEquals(Arrays.asList("com.aptsssss", "com.abc"), values);
     }
 
     @Test
     public void testStringMultiPropertyDelimiter() throws Exception {
-        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
-                + "     <rule name=\"myRule\" message=\"Do not place to this package. Move to \n"
-                + "{0} package/s instead.\" \n" + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" "
-                + "language=\"dummy\">\n" + "         <description>Please move your class to the right folder(rest \n"
-                + "folder)</description>\n" + "         <priority>2</priority>\n" + "         <properties>\n"
-                + "             <property name=\"packageRegEx\" value=\"com.aptsssss,com.abc\" \n"
-                + "type=\"String[]\" delimiter=\",\" description=\"valid packages\"/>\n" + "         </properties>"
-                + "</rule>" + "</ruleset>");
-        PropertyDescriptor<?> prop = r.getPropertyDescriptor("packageRegEx");
-        String[] values = (String[]) r.getProperty(prop);
-        Assert.assertArrayEquals(new String[] { "com.aptsssss", "com.abc" }, values);
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n "
+                                   + " <description>ruleset desc</description>\n     "
+                                   + "<rule name=\"myRule\" message=\"Do not place to this package. Move to \n{0} package/s"
+                                   + " instead.\" \n" + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">\n"
+                                   + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
+                                   + "         <priority>2</priority>\n         <properties>\n             <property name=\"packageRegEx\""
+                                   + " value=\"com.aptsssss,com.abc\" \ntype=\"List&lt;String&gt;\" delimiter=\",\" "
+                                   + "description=\"valid packages\"/>\n"
+                                   + "         </properties></rule>" + "</ruleset>");
+        PropertyDescriptor<List<String>> prop = (PropertyDescriptor<List<String>>) r.getPropertyDescriptor("packageRegEx");
+        List<String> values = r.getProperty(prop);
+        assertEquals(Arrays.asList("com.aptsssss", "com.abc"), values);
     }
 
     @Test
     public void testRuleSetWithDeprecatedRule() throws Exception {
-        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"ruleset\">\n"
+                + "  <description>ruleset desc</description>\n"
                 + "     <rule deprecated=\"true\" ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\"/>"
                 + "</ruleset>");
-        Assert.assertEquals(1, rs.getRules().size());
+        assertEquals(1, rs.getRules().size());
         Rule rule = rs.getRuleByName("DummyBasicMockRule");
-        Assert.assertNotNull(rule);
+        assertNotNull(rule);
     }
 
     @Test
     public void testRuleSetWithDeprecatedButRenamedRule() throws Exception {
-        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
                 + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
                 + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
                 + "         <description>d</description>\n" + "         <priority>2</priority>\n" + "     </rule>"
                 + "</ruleset>");
-        Assert.assertEquals(1, rs.getRules().size());
+        assertEquals(1, rs.getRules().size());
         Rule rule = rs.getRuleByName("NewName");
-        Assert.assertNotNull(rule);
-        Assert.assertNull(rs.getRuleByName("OldName"));
+        assertNotNull(rule);
+        assertNull(rs.getRuleByName("OldName"));
     }
 
     @Test
     public void testRuleSetReferencesADeprecatedRenamedRule() throws Exception {
-        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset>\n"
+        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
                 + "     <rule ref=\"rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule\"/>" + "</ruleset>");
-        Assert.assertEquals(1, rs.getRules().size());
+        assertEquals(1, rs.getRules().size());
         Rule rule = rs.getRuleByName("OldNameOfDummyBasicMockRule");
-        Assert.assertNotNull(rule);
+        assertNotNull(rule);
     }
 
     @Test
@@ -603,7 +608,7 @@ public class RuleSetFactoryTest {
                         + "  </rule>\n" + "</ruleset>\n");
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
         RuleSet ruleset = ruleSetFactory.createRuleSet(ref1);
-        Assert.assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
+        assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
 
         RuleSetReferenceId ref2 = createRuleSetReferenceId(
                 "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
@@ -615,7 +620,7 @@ public class RuleSetFactoryTest {
                         + "  </rule>\n" + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n" + "</ruleset>\n");
         RuleSetFactory ruleSetFactory2 = new RuleSetFactory();
         RuleSet ruleset2 = ruleSetFactory2.createRuleSet(ref2);
-        Assert.assertNotNull(ruleset2.getRuleByName("DummyBasicMockRule"));
+        assertNotNull(ruleset2.getRuleByName("DummyBasicMockRule"));
 
         RuleSetReferenceId ref3 = createRuleSetReferenceId(
                 "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
@@ -627,7 +632,40 @@ public class RuleSetFactoryTest {
                         + "    <exclude name=\"DummyBasicMockRule\"/>\n" + "  </rule>\n" + "</ruleset>\n");
         RuleSetFactory ruleSetFactory3 = new RuleSetFactory();
         RuleSet ruleset3 = ruleSetFactory3.createRuleSet(ref3);
-        Assert.assertNotNull(ruleset3.getRuleByName("DummyBasicMockRule"));
+        assertNotNull(ruleset3.getRuleByName("DummyBasicMockRule"));
+    }
+
+    @org.junit.Rule
+    public JavaUtilLoggingRule logging = new JavaUtilLoggingRule(RuleSetFactory.class.getName());
+
+    @Test
+    public void testMissingRuleSetNameIsWarning() throws Exception {
+        RuleSetReferenceId ref = createRuleSetReferenceId(
+                "<?xml version=\"1.0\"?>\n" + "<ruleset \n"
+                        + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                        + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                        + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n"
+                        + "  <description>Custom ruleset for tests</description>\n"
+                        + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
+                        + "  </ruleset>\n");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.createRuleSet(ref);
+
+        assertTrue(logging.getLog().contains("RuleSet name is missing."));
+    }
+
+    @Test
+    public void testMissingRuleSetDescriptionIsWarning() throws Exception {
+        RuleSetReferenceId ref = createRuleSetReferenceId(
+                "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
+                        + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                        + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                        + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd\">\n"
+                        + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
+                        + "  </ruleset>\n");
+        RuleSetFactory ruleSetFactory = new RuleSetFactory();
+        ruleSetFactory.createRuleSet(ref);
+        assertTrue(logging.getLog().contains("RuleSet description is missing."));
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>" + PMD.EOL

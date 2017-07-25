@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.cpp;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.cpp.ast.CppParserTokenManager;
 
 /**
@@ -23,7 +22,7 @@ public class CppTokenManager implements TokenManager {
      *            the source code
      */
     public CppTokenManager(Reader source) {
-        tokenManager = new CppParserTokenManager(new SimpleCharStream(new ContinuationReader(source)));
+        tokenManager = new CppParserTokenManager(new CppCharStream(source));
     }
 
     public Object getNextToken() {

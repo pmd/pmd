@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.coupling;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * The loose package coupling Rule can be used to ensure coupling outside of a
@@ -65,7 +63,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
         // Sort the restricted packages in reverse order. This will ensure the
         // child packages are in the list before their parent packages.
-        this.restrictedPackages = new ArrayList<>(Arrays.asList(super.getProperty(PACKAGES_DESCRIPTOR)));
+        this.restrictedPackages = new ArrayList<>(super.getProperty(PACKAGES_DESCRIPTOR));
         Collections.sort(restrictedPackages, Collections.reverseOrder());
 
         return data;
@@ -132,8 +130,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
     public boolean checksNothing() {
 
-        return CollectionUtil.isEmpty(getProperty(PACKAGES_DESCRIPTOR))
-                && CollectionUtil.isEmpty(getProperty(CLASSES_DESCRIPTOR));
+        return getProperty(PACKAGES_DESCRIPTOR).isEmpty() && getProperty(CLASSES_DESCRIPTOR).isEmpty();
     }
 
     /**

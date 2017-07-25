@@ -4,48 +4,70 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.List;
+import java.util.Map;
+
+import net.sourceforge.pmd.NumericPropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.modules.NumericPropertyModule;
+
 /**
+ * Base class for multi-valued numeric properties.
+ *
+ * @param <T> The type of number
  *
  * @author Brian Remedios
- * @param <T>
+ * @version Refactored June 2017 (6.0.0)
  */
-public abstract class AbstractMultiNumericProperty<T> extends AbstractNumericProperty<T> {
+/* default */ abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
+    implements NumericPropertyDescriptor<List<T>> {
+
+    private final NumericPropertyModule<T> module;
+
 
     /**
-     * Constructor for AbstractMultiNumericProperty.
+     * Constructor for a multi-valued numeric property using a list of defaults.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param lower
-     *            Number
-     * @param upper
-     *            Number
-     * @param theDefault
-     *            T
-     * @param theUIOrder
-     *            float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param lower          Minimum value of the property
+     * @param upper          Maximum value of the property
+     * @param theDefault     List of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if lower > upper, or one of them is null, or one of the defaults is not between
+     *                                  the bounds
      */
-    protected AbstractMultiNumericProperty(String theName, String theDescription, Number lower, Number upper,
-            T theDefault, float theUIOrder) {
-        super(theName, theDescription, lower, upper, theDefault, theUIOrder);
+    AbstractMultiNumericProperty(String theName, String theDescription, T lower, T upper, List<T> theDefault,
+                                 float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
+
+        module = new NumericPropertyModule<>(lower, upper);
     }
 
-    /**
-     * @return boolean
-     * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-     */
+
     @Override
-    public boolean isMultiValue() {
-        return true;
+    protected String valueErrorFor(T value) {
+        return module.valueErrorFor(value);
     }
 
-    /**
-     * @return String
-     */
+
     @Override
-    protected String defaultAsString() {
-        return asDelimitedString(defaultValue());
+    public Number lowerLimit() {
+        return module.getLowerLimit();
     }
+
+
+    @Override
+    public Number upperLimit() {
+        return module.getUpperLimit();
+    }
+
+
+    @Override
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
+        super.addAttributesTo(attributes);
+        module.addAttributesTo(attributes);
+    }
+
 }

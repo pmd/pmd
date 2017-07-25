@@ -332,6 +332,7 @@ public class BaseConsoleTest extends UART {
         <description>#330 NPE accessing local field / method with this.XXX</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.junit.Test;
 public class Foo {
     @Test
     public void testName() {
@@ -391,6 +392,26 @@ public class FooTest {
 
         Mockito.verify(bar, Mockito.times(1)).actuallyDoTask();
     }
+}]]></code>
+    </test-code>
+    <test-code>
+        <description>#465 NullPointerException when dealing with @SuppressWarnings</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+public class FooTest {
+
+  @SuppressWarnings("deprecation")
+  private static Foo foo = new Foo();
+
+  @Test
+  public void testFoo() {
+    assertEquals("doesn't matter", "doesn't matter");
+  }
+
 }]]></code>
     </test-code>
 </test-data>

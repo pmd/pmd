@@ -5,11 +5,12 @@
 package net.sourceforge.pmd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -27,6 +28,7 @@ public abstract class AbstractPropertySource implements PropertySource {
     /** The values for each property. */
     protected Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<>();
 
+
     /**
      * Creates a copied list of the property descriptors and returns it.
      *
@@ -35,6 +37,7 @@ public abstract class AbstractPropertySource implements PropertySource {
     protected List<PropertyDescriptor<?>> copyPropertyDescriptors() {
         return new ArrayList<>(propertyDescriptors);
     }
+
 
     /**
      * Creates a copied map of the values of the properties and returns it.
@@ -45,17 +48,13 @@ public abstract class AbstractPropertySource implements PropertySource {
         return new HashMap<>(propertyValuesByDescriptor);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public Set<PropertyDescriptor<?>> ignoredProperties() {
         return Collections.emptySet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         // Check to ensure the property does not already exist.
@@ -70,6 +69,7 @@ public abstract class AbstractPropertySource implements PropertySource {
         Collections.sort(propertyDescriptors);
     }
 
+
     /**
      * Gets the name of the property source. This is e.g. the rule name or the
      * report name.
@@ -78,9 +78,7 @@ public abstract class AbstractPropertySource implements PropertySource {
      */
     public abstract String getName();
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public PropertyDescriptor<?> getPropertyDescriptor(String name) {
         for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
@@ -91,9 +89,7 @@ public abstract class AbstractPropertySource implements PropertySource {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
 
@@ -104,17 +100,13 @@ public abstract class AbstractPropertySource implements PropertySource {
         return propertyValuesByDescriptor.containsKey(descriptor);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public List<PropertyDescriptor<?>> getPropertyDescriptors() {
         return propertyDescriptors;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public <T> T getProperty(PropertyDescriptor<T> propertyDescriptor) {
         checkValidPropertyDescriptor(propertyDescriptor);
@@ -127,25 +119,39 @@ public abstract class AbstractPropertySource implements PropertySource {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
         checkValidPropertyDescriptor(propertyDescriptor);
-        propertyValuesByDescriptor.put(propertyDescriptor, value);
-    }
+        if (value instanceof List) {
+            propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList((List) value));
 
-    private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
-        if (!propertyDescriptors.contains(propertyDescriptor)) {
-            throw new IllegalArgumentException(
-                    "Property descriptor not defined for Rule " + getName() + ": " + propertyDescriptor);
+        } else {
+            propertyValuesByDescriptor.put(propertyDescriptor, value);
         }
     }
 
+
+    @Override
+    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
+        checkValidPropertyDescriptor(propertyDescriptor);
+        propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(values)));
+    }
+
+
     /**
-     * {@inheritDoc}
+     * Checks whether this property descriptor is defined for this property source.
+     *
+     * @param propertyDescriptor The property descriptor to check
      */
+    private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
+        if (!propertyDescriptors.contains(propertyDescriptor)) {
+            throw new IllegalArgumentException(
+                "Property descriptor not defined for Rule " + getName() + ": " + propertyDescriptor);
+        }
+    }
+
+
     @Override
     public Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor() {
         if (propertyDescriptors.isEmpty()) {
@@ -166,9 +172,7 @@ public abstract class AbstractPropertySource implements PropertySource {
         return propertiesByPropertyDescriptor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public boolean usesDefaultValues() {
 
@@ -177,10 +181,7 @@ public abstract class AbstractPropertySource implements PropertySource {
             return true;
         }
 
-        Iterator<Map.Entry<PropertyDescriptor<?>, Object>> iter = valuesByProperty.entrySet().iterator();
-
-        while (iter.hasNext()) {
-            Map.Entry<PropertyDescriptor<?>, Object> entry = iter.next();
+        for (Entry<PropertyDescriptor<?>, Object> entry : valuesByProperty.entrySet()) {
             if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
                 return false;
             }
@@ -189,17 +190,13 @@ public abstract class AbstractPropertySource implements PropertySource {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void useDefaultValueFor(PropertyDescriptor<?> desc) {
         propertyValuesByDescriptor.remove(desc);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public String dysfunctionReason() {
         return null;

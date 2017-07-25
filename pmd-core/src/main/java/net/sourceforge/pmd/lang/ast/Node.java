@@ -12,10 +12,11 @@ import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
-/* All AST nodes must implement this interface.  It provides basic
-   machinery for constructing the parent and child relationships
-   between nodes. */
-
+/**
+ * All AST nodes must implement this interface. It provides basic
+ * machinery for constructing the parent and child relationships
+ * between nodes.
+ */
 public interface Node {
 
     /**
@@ -29,16 +30,29 @@ public interface Node {
      */
     void jjtClose();
 
+
     /**
-     * This pair of methods are used to inform the node of its parent.
+     * Sets the parent of this node.
+     *
+     * @param parent The parent
      */
     void jjtSetParent(Node parent);
 
+
+    /**
+     * Returns the parent of this node.
+     *
+     * @return The parent of the node
+     */
     Node jjtGetParent();
+
 
     /**
      * This method tells the node to add its argument to the node's list of
      * children.
+     *
+     * @param child The child to add
+     * @param index The index to which the child will be added
      */
     void jjtAddChild(Node child, int index);
 
@@ -51,6 +65,12 @@ public interface Node {
      */
     void jjtSetChildIndex(int index);
 
+
+    /**
+     * Gets the index of this node in the children of its parent.
+     *
+     * @return The index of the node
+     */
     int jjtGetChildIndex();
 
     /**
@@ -90,14 +110,45 @@ public interface Node {
 
     boolean isFindBoundary();
 
+
+    /**
+     * Returns the n-th parent or null if there are not {@code n} ancestors
+     *
+     * @param n how many ancestors to iterate over.
+     *
+     * @return the n-th parent or null.
+     *
+     * @throws IllegalArgumentException if {@code n} is negative or zero.
+     */
     Node getNthParent(int n);
 
+
+    /**
+     * Traverses up the tree to find the first parent instance of type
+     * parentType or one of its subclasses.
+     *
+     * @param parentType Class literal of the type you want to find
+     * @param <T>        The type you want to find
+     *
+     * @return Node of type parentType. Returns null if none found.
+     */
     <T> T getFirstParentOfType(Class<T> parentType);
 
+
+    /**
+     * Traverses up the tree to find all of the parent instances of type
+     * parentType or one of its subclasses.
+     *
+     * @param parentType Class literal of the type you want to find
+     * @param <T>        The type you want to find
+     *
+     * @return List of parentType instances found.
+     */
     <T> List<T> getParentsOfType(Class<T> parentType);
 
     /**
-     * Traverses the children to find all the instances of type childType.
+     * Traverses the children to find all the instances of type childType or
+     * one of its subclasses.
      *
      * @see #findDescendantsOfType(Class) if traversal of the entire tree is
      *      needed.

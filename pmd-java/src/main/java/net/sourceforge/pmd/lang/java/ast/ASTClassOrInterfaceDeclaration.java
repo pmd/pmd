@@ -5,9 +5,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
+import java.util.List;
+
+public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
     private boolean isInterface;
+    private QualifiedName qualifiedName;
 
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
@@ -32,7 +35,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
 
     public boolean isNested() {
         return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+            || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
 
     public boolean isInterface() {
@@ -41,5 +44,33 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
 
     public void setInterface() {
         this.isInterface = true;
+    }
+
+    @Override
+    public QualifiedName getQualifiedName() {
+        if (qualifiedName == null) {
+            if (isNested()) {
+                ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                QualifiedName parentQN = parent.getQualifiedName();
+                qualifiedName = QualifiedName.makeNestedClassOf(parentQN, this.getImage());
+                return qualifiedName;
+            }
+
+            qualifiedName = QualifiedName.makeOuterClassOf(this);
+        }
+
+        return qualifiedName;
+    }
+
+    @Override
+    public TypeKind getTypeKind() {
+        return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;
+    }
+
+
+    @Override
+    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTClassOrInterfaceBody.class)
+            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
     }
 }

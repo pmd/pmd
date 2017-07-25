@@ -4,7 +4,7 @@ keywords: java
 tags: [getting_started]
 sidebar: pmd_sidebar
 permalink: index.html
-summary: Welcome to PMD, an OpenSource project for analyzing source code.
+summary: Welcome to PMD, an extensible cross-language static code analyzer.
 ---
 
 ![PMD Logo](images/pmd-logo-big.png)
@@ -21,14 +21,12 @@ PMD scans source code in Java and other languages and looks for potential proble
 
 ## Download
 
-You can [download everything from here](https://sourceforge.net/projects/pmd/files/5.7.0/), and you can get an overview of all the rules for e.g. Java at the [rulesets index](pmd_rules_java.html) page.
+You can [download everything from here](https://github.com/pmd/pmd/releases).
 
-PMD is [integrated](usage/integrations.html) with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.
+You can get an overview of all the rules for e.g. Java at the [rulesets index](pmd_rules_java.html) page.
 
-## Release Notes
+PMD is [integrated](pmd_userdocs_tools.html) with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.
 
-*   See [What’s new in PMD 5.7.0](2017-05-20-release-notes-5-7-0.html)
-*   Older versions: [Old Release Notes](tag_release_notes.html)
 
 ## Future Releases
 

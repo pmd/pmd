@@ -155,6 +155,18 @@ public class SourceCodeProcessor {
         }
     }
 
+    private void usesMetrics(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets,
+                                    Language language) {
+
+        if (ruleSets.usesMetrics(language)) {
+            long start = System.nanoTime();
+            languageVersion.getLanguageVersionHandler().getMetricsVisitorFacade()
+                    .start(rootNode);
+            long end = System.nanoTime();
+            Benchmarker.mark(Benchmark.MetricsVisitor, end - start, 0);
+        }
+    }
+
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
         LanguageVersion languageVersion = ctx.getLanguageVersion();
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
@@ -165,6 +177,7 @@ public class SourceCodeProcessor {
         Language language = languageVersion.getLanguage();
         usesDFA(languageVersion, rootNode, ruleSets, language);
         usesTypeResolution(languageVersion, rootNode, ruleSets, language);
+        usesMetrics(languageVersion, rootNode, ruleSets, language);
 
         List<Node> acus = Collections.singletonList(rootNode);
         ruleSets.apply(acus, ctx, language);

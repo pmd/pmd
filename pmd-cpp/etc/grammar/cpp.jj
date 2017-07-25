@@ -288,6 +288,7 @@ TOKEN :
 | < FALSETOK: "false" >
 | < THROW: "throw" >
 | < AT: "@" >
+| < FINALLY: "finally" >
 }
 
 TOKEN [IGNORE_CASE] :
@@ -324,6 +325,12 @@ TOKEN :
 
 | <  RSTRING : "R\"(" ( ~[")"] | ( ")" ~["\""] ) )* ")\"" >
 }
+
+TOKEN :
+{
+  < ID : ["$", "a"-"z","A"-"Z", "_"] (["a"-"z","A"-"Z","0"-"9","_","$"])* >
+}
+
 
 void translation_unit() :
 {}
@@ -1560,11 +1567,5 @@ void exception_list() :
 {
    type_name() ( "," type_name())*
 }
-
-TOKEN :
-{
-  <  ID : ["$", "a"-"z","A"-"Z", "_"] (["a"-"z","A"-"Z","0"-"9","_","$"])* >
-}
-
 
 /*end*/

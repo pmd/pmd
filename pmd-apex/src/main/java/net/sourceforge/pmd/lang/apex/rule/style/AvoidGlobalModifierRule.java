@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class AvoidGlobalModifierRule extends AbstractApexRule {
 
     public AvoidGlobalModifierRule() {
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Style" });
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

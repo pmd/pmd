@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+
+<ruleset name="Metrics temporary ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+
+    <description>
+        These are rules which use the Metrics Framework to calculate metrics.
+    </description>
+
+    <rule name="CyclomaticComplexity"
+          message="The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
+          since="1.03"
+          class="net.sourceforge.pmd.lang.java.oom.rule.CyclomaticComplexityRule"
+          metrics="true"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity">
+        <description>
+            <![CDATA[
+Complexity directly affects maintenance costs is determined by the number of decision points in a method
+plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
+Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+high complexity, and 11+ is very high complexity.
+		]]>
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {		// This has a Cyclomatic Complexity = 12
+1   public void example()  {
+2       if (a == b)  {
+3           if (a1 == b1) {
+                fiddle();
+4           } else if a2 == b2) {
+                fiddle();
+            }  else {
+                fiddle();
+            }
+5       } else if (c == d) {
+6           while (c == d) {
+                fiddle();
+            }
+7        } else if (e == f) {
+8           for (int n = 0; n < h; n++) {
+                fiddle();
+            }
+        } else{
+            switch (z) {
+9               case 1:
+                    fiddle();
+                    break;
+10              case 2:
+                    fiddle();
+                    break;
+11              case 3:
+                    fiddle();
+                    break;
+12              default:
+                    fiddle();
+                    break;
+            }
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <!-- TODO -->
+    <rule name="NcssCount"
+          message="The {0} ''{1}'' has a NCSS line count of {2}."
+          since="3.9"
+          class="net.sourceforge.pmd.lang.java.oom.rule.NcssCountRule"
+          metrics="true"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssTypeCount">
+        <description>
+            This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+            of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
+            lines of code that are split are counted as one.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo extends Bar {
+ public Foo() {
+ //this class only has 4 NCSS lines
+     super();
+
+
+
+
+
+      super.foo();
+ }
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

@@ -42,7 +42,7 @@ public class SourceCode {
                 c = code.get();
             }
             if (c != null) {
-                return c.subList(startLine, endLine);
+                return c.subList(startLine - 1, endLine);
             }
             return load(startLine, endLine);
         }
@@ -71,7 +71,7 @@ public class SourceCode {
                 List<String> lines = new ArrayList<>(linesToRead);
 
                 // Skip lines until we reach the start point
-                for (int i = 0; i < startLine; i++) {
+                for (int i = 0; i < startLine - 1; i++) {
                     reader.readLine();
                 }
 
@@ -195,7 +195,7 @@ public class SourceCode {
     }
 
     public String getSlice(int startLine, int endLine) {
-        List<String> lines = cl.getCodeSlice(startLine - 1, endLine);
+        List<String> lines = cl.getCodeSlice(startLine, endLine);
 
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {

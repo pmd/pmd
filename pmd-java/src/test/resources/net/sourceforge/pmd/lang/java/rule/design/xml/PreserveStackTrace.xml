@@ -515,4 +515,25 @@ public class Bug {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#422 False positive when using builder pattern</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class Bug {
+    void test() throws IOException {
+        try {
+            // do something
+        } catch (final IOException e) {
+            throw uncheckedException(ErrorCodeCommon.DIRECTORY_NOT_FOUND)
+                    .withField("dirname", dirname)
+                    .causedBy(e)
+                    .build();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

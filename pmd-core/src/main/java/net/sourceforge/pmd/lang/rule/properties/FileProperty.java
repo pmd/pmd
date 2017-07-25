@@ -8,43 +8,58 @@ import java.io.File;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * Property taking a File object as its value.
  *
  * @author Brian Remedios
+ * @version Refactored June 2017 (6.0.0)
  */
-public class FileProperty extends AbstractProperty<File> {
+public final class FileProperty extends AbstractSingleValueProperty<File> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<FileProperty>(
-            File.class) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<File> FACTORY // @formatter:off
+        = new SingleValuePropertyDescriptorFactory<File>(File.class) {
+            @Override
+            public FileProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                return new FileProperty(nameIn(valuesById),
+                                        descriptionIn(valuesById),
+                                        null,
+                                        0f,
+                                        isDefinedExternally);
+            }
+        }; // @formatter:on
 
-        @Override
-        public FileProperty createWith(Map<String, String> valuesById) {
-            return new FileProperty(nameIn(valuesById), descriptionIn(valuesById), null, 0f);
-        }
-    };
 
+    /**
+     * Constructor for file property.
+     *
+     * @param theName        Name of the property
+     * @param theDescription Description
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     */
     public FileProperty(String theName, String theDescription, File theDefault, float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
+        super(theName, theDescription, theDefault, theUIOrder, false);
     }
+
+
+    /** Master constructor. */
+    private FileProperty(String theName, String theDescription, File theDefault, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
+    }
+
 
     @Override
     public Class<File> type() {
         return File.class;
     }
 
-    @Override
-    public File valueFrom(String propertyString) throws IllegalArgumentException {
 
+    @Override
+    public File createFrom(String propertyString) {
         return StringUtil.isEmpty(propertyString) ? null : new File(propertyString);
     }
-
-    @Override
-    protected String defaultAsString() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

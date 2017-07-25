@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.apex.rule.style;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 
+import java.util.List;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
@@ -17,21 +19,20 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 public class VariableNamingConventionsRule extends AbstractApexRule {
 
     private boolean checkMembers;
     private boolean checkLocals;
     private boolean checkParameters;
-    private String[] staticPrefixes;
-    private String[] staticSuffixes;
-    private String[] memberPrefixes;
-    private String[] memberSuffixes;
-    private String[] localPrefixes;
-    private String[] localSuffixes;
-    private String[] parameterPrefixes;
-    private String[] parameterSuffixes;
+    private List<String> staticPrefixes;
+    private List<String> staticSuffixes;
+    private List<String> memberPrefixes;
+    private List<String> memberSuffixes;
+    private List<String> localPrefixes;
+    private List<String> localSuffixes;
+    private List<String> parameterPrefixes;
+    private List<String> parameterSuffixes;
 
     private static final BooleanProperty CHECK_MEMBERS_DESCRIPTOR = new BooleanProperty("checkMembers",
             "Check member variables", true, 1.0f);
@@ -79,7 +80,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         definePropertyDescriptor(PARAMETER_PREFIXES_DESCRIPTOR);
         definePropertyDescriptor(PARAMETER_SUFFIXES_DESCRIPTOR);
 
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Style" });
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
         // Note: x10 as Apex has not automatic refactoring
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 5);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
@@ -139,7 +140,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         return checkName(parameterPrefixes, parameterSuffixes, node, false, isFinal, data);
     }
 
-    private Object checkName(String[] prefixes, String[] suffixes, ApexNode<?> node, boolean isStatic, boolean isFinal,
+    private Object checkName(List<String> prefixes, List<String> suffixes, ApexNode<?> node, boolean isStatic, boolean isFinal,
             Object data) {
 
         String varName = node.getImage();
@@ -174,15 +175,15 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         return data;
     }
 
-    private String normalizeVariableName(String varName, String[] prefixes, String[] suffixes) {
+    private String normalizeVariableName(String varName, List<String> prefixes, List<String> suffixes) {
         return stripSuffix(stripPrefix(varName, prefixes), suffixes);
     }
 
-    private String stripSuffix(String varName, String[] suffixes) {
+    private String stripSuffix(String varName, List<String> suffixes) {
         if (suffixes != null) {
-            for (int i = 0; i < suffixes.length; i++) {
-                if (varName.endsWith(suffixes[i])) {
-                    varName = varName.substring(0, varName.length() - suffixes[i].length());
+            for (String suffix : suffixes) {
+                if (varName.endsWith(suffix)) {
+                    varName = varName.substring(0, varName.length() - suffix.length());
                     break;
                 }
             }
@@ -190,11 +191,11 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         return varName;
     }
 
-    private String stripPrefix(String varName, String[] prefixes) {
+    private String stripPrefix(String varName, List<String> prefixes) {
         if (prefixes != null) {
-            for (int i = 0; i < prefixes.length; i++) {
-                if (varName.startsWith(prefixes[i])) {
-                    return varName.substring(prefixes[i].length());
+            for (String prefix : prefixes) {
+                if (varName.startsWith(prefix)) {
+                    return varName.substring(prefix.length());
                 }
             }
         }
@@ -205,8 +206,8 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
 
         for (PropertyDescriptor<?> desc : getPropertyDescriptors()) {
             if (desc instanceof StringMultiProperty) {
-                String[] values = getProperty((StringMultiProperty) desc);
-                if (CollectionUtil.isNotEmpty(values)) {
+                List<String> values = getProperty((StringMultiProperty) desc);
+                if (!values.isEmpty()) {
                     return true;
                 }
             }

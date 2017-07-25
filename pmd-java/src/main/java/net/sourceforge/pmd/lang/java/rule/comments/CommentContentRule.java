@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
-import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -32,11 +31,11 @@ public class CommentContentRule extends AbstractCommentRule {
 
     private boolean caseSensitive;
     private boolean wordsAreRegex;
-    private String[] originalBadWords;
-    private String[] currentBadWords;
+    private List<String> originalBadWords;
+    private List<String> currentBadWords;
 
     // FIXME need some better defaults (or none?)
-    private static final String[] BAD_WORDS = new String[] { "idiot", "jerk" };
+    private static final String[] BAD_WORDS = {"idiot", "jerk" };
 
     public static final BooleanProperty WORDS_ARE_REGEX_DESCRIPTOR = new BooleanProperty("wordsAreRegex",
             "Use regular expressions", false, 1.0f);
@@ -72,19 +71,21 @@ public class CommentContentRule extends AbstractCommentRule {
         if (caseSensitive) {
             currentBadWords = originalBadWords;
         } else {
-            currentBadWords = new String[originalBadWords.length];
-            for (int i = 0; i < currentBadWords.length; i++) {
-                currentBadWords[i] = originalBadWords[i].toUpperCase();
+            currentBadWords = new ArrayList<>();
+            for (String badWord : originalBadWords) {
+                currentBadWords.add(badWord.toUpperCase());
             }
         }
     }
 
     @Override
     public Set<PropertyDescriptor<?>> ignoredProperties() {
-        return getProperty(WORDS_ARE_REGEX_DESCRIPTOR) ? NON_REGEX_PROPERTIES : Collections.EMPTY_SET;
+        return getProperty(WORDS_ARE_REGEX_DESCRIPTOR) ? NON_REGEX_PROPERTIES
+                                                       : Collections.<PropertyDescriptor<?>>emptySet();
     }
 
     /**
+     * .
      * @see Rule#end(RuleContext)
      */
     @Override
@@ -94,7 +95,7 @@ public class CommentContentRule extends AbstractCommentRule {
 
     private List<String> illegalTermsIn(Comment comment) {
 
-        if (currentBadWords.length == 0) {
+        if (currentBadWords.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -109,9 +110,9 @@ public class CommentContentRule extends AbstractCommentRule {
 
         List<String> foundWords = new ArrayList<>();
 
-        for (int i = 0; i < currentBadWords.length; i++) {
-            if (commentText.indexOf(currentBadWords[i]) >= 0) {
-                foundWords.add(originalBadWords[i]);
+        for (int i = 0; i < currentBadWords.size(); i++) {
+            if (commentText.contains(currentBadWords.get(i))) {
+                foundWords.add(originalBadWords.get(i));
             }
         }
 
@@ -154,8 +155,8 @@ public class CommentContentRule extends AbstractCommentRule {
     }
 
     public boolean hasDissallowedTerms() {
-        String[] terms = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
-        return CollectionUtil.isNotEmpty(terms);
+        List<String> terms = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
+        return !terms.isEmpty();
     }
 
     /**

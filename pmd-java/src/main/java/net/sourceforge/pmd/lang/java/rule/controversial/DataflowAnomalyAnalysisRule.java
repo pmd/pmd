@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.controversial;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -88,10 +87,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
         Map<String, Usage> usagesByVarName = new HashMap<>();
 
-        Iterator<DataFlowNode> pathIterator = path.iterator();
-        while (pathIterator.hasNext()) {
-            // iterate all nodes in this path
-            DataFlowNode inode = pathIterator.next();
+        for (DataFlowNode inode : path) {
             if (inode.getVariableAccess() != null) {
                 // iterate all variables of this node
                 for (VariableAccess va : inode.getVariableAccess()) {

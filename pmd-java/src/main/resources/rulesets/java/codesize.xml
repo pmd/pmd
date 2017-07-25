@@ -148,7 +148,8 @@ public class Foo {
     			since="1.03"
       		message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
 	      	class="net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule"
-	      	externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity">
+	      	externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity"
+	      	deprecated="true">
    <description>
    		<![CDATA[
 Complexity directly affects maintenance costs is determined by the number of decision points in a method 
@@ -204,7 +205,8 @@ public class Foo {		// This has a Cyclomatic Complexity = 12
           since="5.1.2"
           message = "The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
           class="net.sourceforge.pmd.lang.java.rule.codesize.StdCyclomaticComplexityRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#StdCyclomaticComplexity">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#StdCyclomaticComplexity"
+          deprecated="true">
    <description>
       <![CDATA[
 Complexity directly affects maintenance costs is determined by the number of decision points in a method 
@@ -260,7 +262,8 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
           since="5.1.2"
           message = "The {0} ''{1}'' has a Modified Cyclomatic Complexity of {2}."
           class="net.sourceforge.pmd.lang.java.rule.codesize.ModifiedCyclomaticComplexityRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ModifiedCyclomaticComplexity">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#ModifiedCyclomaticComplexity"
+          deprecated="true">
    <description>
       <![CDATA[
 Complexity directly affects maintenance costs is determined by the number of decision points in a method 

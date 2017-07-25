@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+
+    <code-fragment id="full-example">
+        <![CDATA[
+        public class Complicated {
+
+          public void exception() {
+            try {
+              int k = 0;
+              k++;
+            } catch (IOException ioe) {
+              ioe.printStackTrace();
+              throw new Exception("surprise", ioe);
+            } catch (Exception e) {
+              // do nothing
+            }
+          }
+
+
+          public void example() {
+            int x = 0, y = 1, z = 2, t = 2;
+            boolean a = false, b = true, c = false, d = true;
+
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = a ? z : b ? y : x;
+              } else {
+                x = 2;
+              }
+            } else if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            } else if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            } else if (b) {
+              do {
+                x++;
+                y--;
+              } while (b);
+            } else {
+              switch (x) {
+              case 1:
+                x = 2;
+                break;
+
+              case 2:
+              case 3:
+                x = 2;
+                break;
+
+              default:
+                x = 2;
+                break;
+              }
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Complicated method - Standard</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'.Complicated' has value 13 highest 21.</message>
+            <message>'.Complicated#exception()' has value 4.</message>
+            <message>'.Complicated#example()' has value 21.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Complicated method - Ignore boolean path version</description>
+        <expected-problems>3</expected-problems>
+        <rule-property name="metricVersion">ignoreBooleanPaths</rule-property>
+        <expected-messages>
+            <message>'.Complicated' has value 10 highest 14.</message>
+            <message>'.Complicated#exception()' has value 4.</message>
+            <message>'.Complicated#example()' has value 14.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Empty methods should count 1</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo#foo()' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+              void foo() {}
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Empty class should count 0</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo' has value 0 highest 0.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            class Foo {
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
+    <code-fragment id="constructor-violation">
+        <![CDATA[
+        public class Test {
+          public Test() {
+            if (a == 1) {
+              if (b == 2) {
+                System.out.println("b");
+              } else if (b == 1) {
+              }
+            } else {
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods
+        </description>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Test#Test()' has value 4.</message>
+        </expected-messages>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+
+
+    <code-fragment id="fallthroughSwitch">
+        <![CDATA[
+        class Foo {
+          void bar(){}
+          void foo() {
+            int x=0;
+            switch (x) {
+            case 1:
+            case 2: foo(); break;
+            default: bar(); break;
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count empty switch labels too</description>
+        <rule-property name="reportClasses">false</rule-property>
+        <rule-property name="reportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo#foo()' has value 3.</message>
+        </expected-messages>
+        <code-ref id="fallthroughSwitch"/>
+    </test-code>
+
+    <code-fragment id="manyBooleanOps">
+        <![CDATA[
+        class Foo {
+          void foo(){
+            int x=0, y=1;
+            boolean a, b;
+
+            if (x > 2 || y < 4) {
+              while (x++ < 10 && !(y++ < 0));
+            } else if (a && b || x < 4) {
+              return;
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count boolean paths</description>
+        <expected-problems>1</expected-problems>
+        <rule-property name="reportClasses">false</rule-property>
+        <expected-messages>
+            <message>'.Foo#foo()' has value 8.</message>
+        </expected-messages>
+        <code-ref id="manyBooleanOps"/>
+    </test-code>
+
+    <test-code>
+        <description>Interfaces are not supported</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            interface Koo {
+              void bar();
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Avoid division by 0 when averaging a metric over no operations</description>
+        <rule-property name="reportLevel">-1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>'.Foo' has value NaN.</expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo { }
+            ]]>
+        </code>
+    </test-code>
+
+</test-data>

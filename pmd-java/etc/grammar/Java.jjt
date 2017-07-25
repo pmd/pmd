@@ -1,4 +1,8 @@
 /**
+ * Add support for new Java 8 annotation locations.
+ * Bugs #414, #415, #417
+ * @Snap252 06/2017
+ *====================================================================
  * Allow empty statements (";") between package, import
  * and type declarations.
  * Bug #378
@@ -1416,7 +1420,7 @@ void TypeParameter():
 void TypeBound():
 {}
 {
-   "extends" ClassOrInterfaceType() ( "&" ClassOrInterfaceType() )*
+   "extends" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() ( "&" (Annotation() {checkForBadTypeAnnotations();})* ClassOrInterfaceType() )*
 }
 
 void ClassOrInterfaceBody():
@@ -1435,8 +1439,8 @@ void ClassOrInterfaceBodyDeclaration():
     | LOOKAHEAD(3) EnumDeclaration(modifiers)
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
     | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
-    | MethodDeclaration(modifiers)
-    | AnnotationTypeDeclaration(modifiers)
+    | LOOKAHEAD(2) MethodDeclaration(modifiers)
+    | LOOKAHEAD(2) AnnotationTypeDeclaration(modifiers)
   )
 |
   ";"
@@ -1488,7 +1492,7 @@ void MethodDeclaration(int modifiers) :
 {jjtThis.setModifiers(modifiers);}
 {
   [ TypeParameters() ]
-  ResultType() MethodDeclarator() [ "throws" NameList() ]
+  (Annotation() {checkForBadTypeAnnotations();})* ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }
 
@@ -1564,9 +1568,9 @@ void Type():
 void ReferenceType():
 {}
 {
-   PrimitiveType() ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
+   PrimitiveType() (Annotation() {checkForBadTypeAnnotations();})* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })+
   |
-   ( ClassOrInterfaceType() ) ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
+   ( ClassOrInterfaceType()) (Annotation() {checkForBadTypeAnnotations();})* ( LOOKAHEAD(2) "[" "]" { jjtThis.bumpArrayDepth(); })*
 }
 
 void ClassOrInterfaceType():
@@ -1593,17 +1597,13 @@ void TypeArguments():
 void TypeArgument():
 {}
 {
-   (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
- |
-   "?" [ WildcardBounds() ]
+   (Annotation() {checkForBadTypeAnnotations();})* (ReferenceType() | "?" [ WildcardBounds() ])
 }
 
 void WildcardBounds():
 {}
 {
-   "extends" (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
- |
-   "super" (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
+   ("extends" | "super") (Annotation() {checkForBadTypeAnnotations();})* ReferenceType()
 }
 
 void PrimitiveType() :
@@ -1941,8 +1941,9 @@ void AllocationExpression():
 void ArrayDimsAndInits() :
 {}
 {
+
   LOOKAHEAD(2)
-  ( LOOKAHEAD(2) "[" Expression() "]" )+ ( LOOKAHEAD(2) "[" "]" )*
+  ( LOOKAHEAD(2) (Annotation() {checkForBadTypeAnnotations();})* "[" Expression() "]" )+ ( LOOKAHEAD(2) "[" "]" )*
 |
   ( "[" "]" )+ ArrayInitializer()
 }

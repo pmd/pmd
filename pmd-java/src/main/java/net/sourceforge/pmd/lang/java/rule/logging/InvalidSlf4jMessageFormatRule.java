@@ -70,23 +70,9 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         // find the arguments
         final List<ASTExpression> argumentList = parentNode.getFirstChildOfType(ASTPrimarySuffix.class)
                 .getFirstDescendantOfType(ASTArgumentList.class).findChildrenOfType(ASTExpression.class);
-        final List<ASTPrimaryExpression> params = new ArrayList<ASTPrimaryExpression>(argumentList.size());
 
-        for (final ASTExpression astExpression : argumentList) {
-            ASTPrimaryExpression primaryExpression = astExpression.getFirstChildOfType(ASTPrimaryExpression.class);
-            if (primaryExpression != null) {
-                params.add(primaryExpression);
-            }
-        }
-
-        if (params.isEmpty()) {
-            // no params we could analyze
-            return super.visit(node, data);
-        }
-
-        final ASTPrimaryExpression messageParam = params.get(0);
         // remove the message parameter
-        params.remove(0);
+        final ASTPrimaryExpression messageParam = argumentList.remove(0).getFirstDescendantOfType(ASTPrimaryExpression.class);
         final int expectedArguments = expectedArguments(messageParam);
 
         if (expectedArguments == 0) {
@@ -97,14 +83,14 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
         // Remove throwable param, since it is shown separately.
         // But only, if it is not used as a placeholder argument
-        if (params.size() > expectedArguments) {
-            removeThrowableParam(params);
+        if (argumentList.size() > expectedArguments) {
+            removeThrowableParam(argumentList);
         }
 
-        if (params.size() < expectedArguments) {
-            addViolationWithMessage(data, node, "Missing arguments," + getExpectedMessage(params, expectedArguments));
-        } else if (params.size() > expectedArguments) {
-            addViolationWithMessage(data, node, "Too many arguments," + getExpectedMessage(params, expectedArguments));
+        if (argumentList.size() < expectedArguments) {
+            addViolationWithMessage(data, node, "Missing arguments," + getExpectedMessage(argumentList, expectedArguments));
+        } else if (argumentList.size() > expectedArguments) {
+            addViolationWithMessage(data, node, "Too many arguments," + getExpectedMessage(argumentList, expectedArguments));
         }
 
         return super.visit(node, data);
@@ -146,21 +132,20 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         return false;
     }
 
-    private void removeThrowableParam(final List<ASTPrimaryExpression> params) {
+    private void removeThrowableParam(final List<ASTExpression> params) {
         // Throwable parameters are the last one in the list, if any.
         if (params.isEmpty()) {
             return;
         }
         int lastIndex = params.size() - 1;
-        ASTPrimaryExpression last = params.get(lastIndex);
+        ASTPrimaryExpression last = params.get(lastIndex).getFirstDescendantOfType(ASTPrimaryExpression.class);
 
         if (isNewThrowable(last) || hasTypeThrowable(last) || isReferencingThrowable(last)) {
             params.remove(lastIndex);
-            return;
         }
     }
 
-    private String getExpectedMessage(final List<ASTPrimaryExpression> params, final int expectedArguments) {
+    private String getExpectedMessage(final List<ASTExpression> params, final int expectedArguments) {
         return " expected " + expectedArguments + (expectedArguments > 1 ? " arguments " : " argument ") + "but have "
                 + params.size();
     }

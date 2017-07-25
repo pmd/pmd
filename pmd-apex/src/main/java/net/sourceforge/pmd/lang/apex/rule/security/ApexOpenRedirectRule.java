@@ -37,7 +37,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
 
     public ApexOpenRedirectRule() {
         super.addRuleChainVisit(ASTUserClass.class);
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

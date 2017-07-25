@@ -43,10 +43,11 @@ public class EcmascriptParserOptions extends ParserOptions {
         }
     }
 
-    private static final String[] VERSION_LABELS = new String[] { Version.VERSION_DEFAULT.getLabel(),
-        Version.VERSION_1_0.getLabel(), Version.VERSION_1_1.getLabel(), Version.VERSION_1_2.getLabel(),
-        Version.VERSION_1_3.getLabel(), Version.VERSION_1_4.getLabel(), Version.VERSION_1_5.getLabel(),
-        Version.VERSION_1_6.getLabel(), Version.VERSION_1_7.getLabel(), Version.VERSION_1_8.getLabel(), };
+    private static final String[] VERSION_LABELS = {Version.VERSION_DEFAULT.getLabel(),
+                                                    Version.VERSION_1_0.getLabel(), Version.VERSION_1_1.getLabel(), Version.VERSION_1_2.getLabel(),
+                                                    Version.VERSION_1_3.getLabel(), Version.VERSION_1_4.getLabel(), Version.VERSION_1_5.getLabel(),
+                                                    Version.VERSION_1_6.getLabel(), Version.VERSION_1_7.getLabel(),
+                                                    Version.VERSION_1_8.getLabel(), };
 
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
@@ -58,24 +59,22 @@ public class EcmascriptParserOptions extends ParserOptions {
     public static final EnumeratedProperty<Version> RHINO_LANGUAGE_VERSION = new EnumeratedProperty<>(
             "rhinoLanguageVersion",
             "Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.", VERSION_LABELS,
-            Version.values(), 0, 5.0f);
+            Version.values(), 0, Version.class, 5.0f);
 
     private boolean recordingComments;
     private boolean recordingLocalJsDocComments;
     private Version rhinoLanguageVersion;
 
     public EcmascriptParserOptions() {
-        this.recordingComments = RECORDING_COMMENTS_DESCRIPTOR.defaultValue().booleanValue();
-        this.recordingLocalJsDocComments = RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR.defaultValue().booleanValue();
-        this.rhinoLanguageVersion = (Version) RHINO_LANGUAGE_VERSION
-                .valueFrom((String) RHINO_LANGUAGE_VERSION.defaultValue());
+        this.recordingComments = RECORDING_COMMENTS_DESCRIPTOR.defaultValue();
+        this.recordingLocalJsDocComments = RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR.defaultValue();
+        this.rhinoLanguageVersion = RHINO_LANGUAGE_VERSION.defaultValue();
     }
 
     public EcmascriptParserOptions(Rule rule) {
         this.recordingComments = rule.getProperty(RECORDING_COMMENTS_DESCRIPTOR);
         this.recordingLocalJsDocComments = rule.getProperty(RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
-        this.rhinoLanguageVersion = (Version) RHINO_LANGUAGE_VERSION
-                .valueFrom((String) rule.getProperty(RHINO_LANGUAGE_VERSION));
+        this.rhinoLanguageVersion = rule.getProperty(RHINO_LANGUAGE_VERSION);
     }
 
     public boolean isRecordingComments() {

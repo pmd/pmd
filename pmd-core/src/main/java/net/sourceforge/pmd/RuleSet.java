@@ -12,8 +12,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
@@ -23,7 +26,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;
 
@@ -38,6 +40,8 @@ public class RuleSet implements ChecksumAware {
 
     private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
     private static final String MISSING_RULE = "Missing rule";
+    private static final String MISSING_RULESET_DESCRIPTION = "RuleSet description must not be null";
+    private static final String MISSING_RULESET_NAME = "RuleSet name must not be null";
 
     private final long checksum;
 
@@ -64,8 +68,8 @@ public class RuleSet implements ChecksumAware {
     private RuleSet(final RuleSetBuilder builder) {
         checksum = builder.checksum;
         fileName = builder.fileName;
-        name = builder.name;
-        description = builder.description;
+        name = Objects.requireNonNull(builder.name, MISSING_RULESET_NAME);
+        description = Objects.requireNonNull(builder.description, MISSING_RULESET_DESCRIPTION);
         // TODO: ideally, the rules would be unmodifiable, too. But removeDysfunctionalRules might change the rules.
         rules = builder.rules;
         excludePatterns = Collections.unmodifiableList(builder.excludePatterns);
@@ -76,8 +80,8 @@ public class RuleSet implements ChecksumAware {
     }
 
     /* package */ static class RuleSetBuilder {
-        public String description = "";
-        public String name = "";
+        public String description;
+        public String name;
         public String fileName;
         private final List<Rule> rules = new ArrayList<>();
         private final List<String> excludePatterns = new ArrayList<>(0);
@@ -176,7 +180,7 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addRuleByReference(final String ruleSetFileName, final Rule rule) {
-            if (StringUtil.isEmpty(ruleSetFileName)) {
+            if (StringUtils.isBlank(ruleSetFileName)) {
                 throw new RuntimeException(
                         "Adding a rule by reference is not allowed with an empty rule set file name.");
             }
@@ -243,7 +247,7 @@ public class RuleSet implements ChecksumAware {
          */
         public RuleSetBuilder addRuleSetByReference(final RuleSet ruleSet, final boolean allRules,
                 final String... excludes) {
-            if (StringUtil.isEmpty(ruleSet.getFileName())) {
+            if (StringUtils.isBlank(ruleSet.getFileName())) {
                 throw new RuntimeException(
                         "Adding a rule by reference is not allowed with an empty rule set file name.");
             }
@@ -347,13 +351,17 @@ public class RuleSet implements ChecksumAware {
         }
 
         public RuleSetBuilder withName(final String name) {
-            this.name = name;
+            this.name = Objects.requireNonNull(name, MISSING_RULESET_NAME);
             return this;
         }
 
         public RuleSetBuilder withDescription(final String description) {
-            this.description = description;
+            this.description = Objects.requireNonNull(description, MISSING_RULESET_DESCRIPTION);
             return this;
+        }
+
+        public boolean hasDescription() {
+            return this.description != null;
         }
 
         public String getName() {
@@ -383,22 +391,6 @@ public class RuleSet implements ChecksumAware {
         return rules;
     }
 
-    /**
-     * Does any Rule for the given Language use the DFA layer?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses the DFA layer,
-     *         <code>false</code> otherwise.
-     */
-    public boolean usesDFA(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.usesDFA()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Returns the first Rule found with the given name (case-sensitive).
@@ -563,6 +555,23 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
+     * Does any Rule for the given Language use the DFA layer?
+     *
+     * @param language
+     *            The Language.
+     * @return <code>true</code> if a Rule for the Language uses the DFA layer,
+     *         <code>false</code> otherwise.
+     */
+    public boolean usesDFA(Language language) {
+        for (Rule r : rules) {
+            if (r.getLanguage().equals(language) && r.usesDFA()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Does any Rule for the given Language use Type Resolution?
      *
      * @param language
@@ -573,6 +582,22 @@ public class RuleSet implements ChecksumAware {
     public boolean usesTypeResolution(Language language) {
         for (Rule r : rules) {
             if (r.getLanguage().equals(language) && r.usesTypeResolution()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Does any Rule for the given Language use the Metrics Framework?
+     *
+     * @param language The Language.
+     * @return <code>true</code> if a Rule for the Language uses the Metrics
+     * Framework, <code>false</code> otherwise.
+     */
+    public boolean usesMetrics(Language language) {
+        for (Rule r : rules) {
+            if (r.getLanguage().equals(language) && r.usesMetrics()) {
                 return true;
             }
         }

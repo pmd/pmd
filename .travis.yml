@@ -1,5 +1,6 @@
-sudo: false
-
+sudo: required
+services:
+  - docker
 addons:
   apt:
     packages:
@@ -23,15 +24,19 @@ env:
   - secure: "JIhuqaI0i+zvuqqXiQBHpuKr7AQ8jfk6Gbr8Qgiq4yJtdEWXZGxnAT9BmlbjkgT7ABXvLgxf2CIdUOMo1yYfBlxQL/y5+e89jaVpYF3tvNAzYQ1e12VzQRsd/jDb7qvm7tw3rDHEn3dSEot7Q6KbPcL6WzWJINVMCCmOgvq9gKHgE6Y5q5EgZ5rxiXyuO27ndzcbxaor4PIaiSzHO9+AJQ7p2zDLP+kG4nKVTBX0l9VoKiYFhIpIhpbigi3jyLDMDRiWpwTWZC6P8/RXfZg/lc5ADOuM2DM8oXPpZuqOa/g31LWQOSCuEnQ1G16vbLgipSPpgAc7jYWD5cywhG9dLkiKaZDh5x0meLM2RoAgz6eAnQfTTqJ68OM9o9yXjubEedsNpNRAr9/DXMd+fbh10W2vbvL5HCNB3lic3anehhR9le7PLuEKxg654wXt3KM2PZGVWbotIyBK0CvGzqGkppvwT23QdDDqSdkWuGQIhGQ0xBOdYkwebycxP5wwPUmObG+mymQ1Be2BXvmghttsiJdKlt4CVSYOJUMus6kU32G95hdTgKblsX4J1Of2i1nYsjyMKh3k945tqXwQrIsxOOQug0oIkz24zlLaOaQcorWtJ6Y1HPaZKpVIFUEF0y8Uq/O4oB2bOYC6WDUQfpj7nRG6xbi+BeBS84m1ttCEk4g="
   matrix:
   - BUILD=deploy
-  - BUILD=site
+  - BUILD=doc
   - BUILD=sonar
+  - BUILD=coveralls
+
+matrix:
+  fast_finish: true
 
 before_install:
   - bash .travis/setup-secrets.sh
   - bash .travis/configure-maven.sh
 install: true
 before_script: true
-script: bash .travis/build-$BUILD.sh
+script: source .travis/build-$BUILD.sh
 after_success: true
 
 

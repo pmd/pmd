@@ -50,7 +50,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private final Set<String> urlParameterStrings = new HashSet<>();
 
     public ApexXSSFromURLParamRule() {
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

@@ -40,6 +40,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private RulePriority priority = RulePriority.LOW;
     private boolean usesDFA;
     private boolean usesTypeResolution;
+    private boolean usesMetrics;
     private List<String> ruleChainVisits = new ArrayList<>();
 
     public AbstractRule() {
@@ -65,6 +66,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         otherRule.propertyValuesByDescriptor = copyPropertyValues();
         otherRule.usesDFA = usesDFA;
         otherRule.usesTypeResolution = usesTypeResolution;
+        otherRule.usesMetrics = usesMetrics;
         otherRule.ruleChainVisits = copyRuleChainVisits();
     }
 
@@ -333,6 +335,23 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
     /**
+     * @see Rule#setUsesMetrics()
+     */
+    @Override
+    public void setUsesMetrics() {
+        usesMetrics = true;
+    }
+
+    /**
+     * @see Rule#usesMetrics()
+     */
+    @Override
+    public boolean usesMetrics() {
+        return usesMetrics;
+    }
+
+
+    /**
      * @see Rule#usesRuleChain()
      */
     @Override
@@ -387,7 +406,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolation(Object data, Node node) {
         RuleContext ruleContext = (RuleContext) data;
@@ -397,17 +416,17 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolation(Object data, Node node, String arg) {
         RuleContext ruleContext = (RuleContext) data;
         ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(ruleContext,
-                this, node, this.getMessage(), new Object[] { arg });
+                this, node, this.getMessage(), new Object[]{arg});
     }
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolation(Object data, Node node, Object[] args) {
         RuleContext ruleContext = (RuleContext) data;
@@ -417,7 +436,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolationWithMessage(Object data, Node node, String message) {
         RuleContext ruleContext = (RuleContext) data;
@@ -427,7 +446,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolationWithMessage(Object data, Node node, String message, int beginLine, int endLine) {
         RuleContext ruleContext = (RuleContext) data;
@@ -437,7 +456,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     /**
      * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String,
-     *      Object[])
+     * Object[])
      */
     public void addViolationWithMessage(Object data, Node node, String message, Object[] args) {
         RuleContext ruleContext = (RuleContext) data;

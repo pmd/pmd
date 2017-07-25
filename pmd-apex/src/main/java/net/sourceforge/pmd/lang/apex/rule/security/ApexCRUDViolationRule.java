@@ -90,7 +90,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
 
     public ApexCRUDViolationRule() {
-        setProperty(CODECLIMATE_CATEGORIES, new String[] { "Security" });
+        setProperty(CODECLIMATE_CATEGORIES, "Security");
         setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
         setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }

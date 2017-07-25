@@ -4,116 +4,74 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
-import static net.sourceforge.pmd.PropertyDescriptorFields.MAX;
-import static net.sourceforge.pmd.PropertyDescriptorFields.MIN;
-
 import java.util.Map;
 
 import net.sourceforge.pmd.NumericPropertyDescriptor;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.modules.NumericPropertyModule;
 
 /**
  * Maintains a pair of boundary limit values between which all values managed by
  * the subclasses must fit.
  *
+ * @param <T> The type of value.
+ *
  * @author Brian Remedios
- * @param <T>
+ * @version Refactored June 2017 (6.0.0)
  */
-public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T>
-        implements NumericPropertyDescriptor<T> {
+/* default */ abstract class AbstractNumericProperty<T extends Number> extends AbstractSingleValueProperty<T>
+    implements NumericPropertyDescriptor<T> {
 
-    private Number lowerLimit;
-    private Number upperLimit;
 
-    public static final Map<String, Boolean> NUMBER_FIELD_TYPES_BY_KEY = BasicPropertyDescriptorFactory
-            .expectedFieldTypesWith(new String[] { MIN, MAX }, new Boolean[] { Boolean.TRUE, Boolean.TRUE });
+    private final NumericPropertyModule<T> module;
+
 
     /**
+     * Constructor for a single-valued numeric property.
      *
-     * @param theName
-     * @param theDescription
-     * @param lower
-     * @param upper
-     * @param theDefault
-     * @param theUIOrder
-     * @throws IllegalArgumentException
+     * @param theName        Name
+     * @param theDescription Description
+     * @param lower          Minimum value of the property
+     * @param upper          Maximum value of the property
+     * @param theDefault     List of defaults
+     * @param theUIOrder     UI order
+     *
+     * @throws IllegalArgumentException if lower > upper, or one of them is null, or the default is not between the
+     *                                  bounds
      */
-    protected AbstractNumericProperty(String theName, String theDescription, Number lower, Number upper, T theDefault,
-            float theUIOrder) {
-        super(theName, theDescription, theDefault, theUIOrder);
+    protected AbstractNumericProperty(String theName, String theDescription, T lower, T upper, T theDefault,
+                                      float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
-        if (lower.doubleValue() > upper.doubleValue()) {
-            throw new IllegalArgumentException("Lower limit cannot be greater than the upper limit");
-        }
+        module = new NumericPropertyModule<>(lower, upper);
 
-        lowerLimit = lower;
-        upperLimit = upper;
+
     }
 
-    /**
-     * Returns the minimum value that instances of the property can have
-     *
-     * @return The minimum value.
-     * @see net.sourceforge.pmd.NumericPropertyDescriptor#lowerLimit()
-     */
+
+    @Override
+    protected String valueErrorFor(T value) {
+        return module.valueErrorFor(value);
+    }
+
+
     @Override
     public Number lowerLimit() {
-        return lowerLimit;
+        return module.getLowerLimit();
     }
 
-    /**
-     * @return String
-     */
-    @Override
-    protected String defaultAsString() {
-        return defaultValue().toString();
-    }
 
-    /**
-     * Returns the maximum value that instances of the property can have
-     *
-     * @return The maximum value.
-     * @see net.sourceforge.pmd.NumericPropertyDescriptor#upperLimit()
-     */
     @Override
     public Number upperLimit() {
-        return upperLimit;
+        return module.getUpperLimit();
     }
 
-    /**
-     * @return String
-     */
-    public String rangeString() {
-        StringBuilder sb = new StringBuilder().append('(').append(lowerLimit).append(" -> ").append(upperLimit)
-                .append(')');
-        return sb.toString();
-    }
-
-    /**
-     * Returns a string describing any error the value may have when
-     * characterized by the receiver.
-     *
-     * @param value
-     *            Object
-     * @return String
-     */
-    @Override
-    protected String valueErrorFor(Object value) {
-
-        double number = ((Number) value).doubleValue();
-
-        if (number > upperLimit.doubleValue() || number < lowerLimit.doubleValue()) {
-            return value + " is out of range " + rangeString();
-        }
-
-        return null;
-    }
 
     @Override
-    protected void addAttributesTo(Map<String, String> attributes) {
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
         super.addAttributesTo(attributes);
-
-        attributes.put(MIN, lowerLimit.toString());
-        attributes.put(MAX, upperLimit.toString());
+        module.addAttributesTo(attributes);
     }
+
+
 }

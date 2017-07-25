@@ -49,4 +49,17 @@ public class EmptyTryBlock3 {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#432 false positive for empty try-with-resource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class X {
+	void method() {
+		try (ClientResponse response = execute(() -> target.request(mediaTypes).delete(), DELETE, new ExpectedResponse(status, required))) {
+			// false positive
+		}
+	}
+}
+     ]]></code>
+    </test-code>
 </test-data>

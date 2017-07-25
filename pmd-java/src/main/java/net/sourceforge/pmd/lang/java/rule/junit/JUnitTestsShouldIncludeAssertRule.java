@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
@@ -81,7 +80,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
 
         for (NameDeclaration decl : decls.keySet()) {
             Node parent = decl.getNode().jjtGetParent().jjtGetParent().jjtGetParent();
-            if (parent.hasDescendantOfType(ASTAnnotation.class)
+            if (parent.hasDescendantOfType(ASTMarkerAnnotation.class)
                     && parent.getFirstChildOfType(ASTFieldDeclaration.class) != null) {
                 String annot = parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage();
                 if (!"Rule".equals(annot) && !"org.junit.Rule".equals(annot)) {

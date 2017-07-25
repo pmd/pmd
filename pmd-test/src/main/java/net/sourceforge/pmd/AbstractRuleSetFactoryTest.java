@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -212,6 +211,7 @@ public abstract class AbstractRuleSetFactoryTest {
         for (String fileName : ruleSetFileNames) {
             testRuleSet(fileName);
         }
+
     }
 
     // Gets all test PMD Ruleset XML files
@@ -397,8 +397,7 @@ public abstract class AbstractRuleSetFactoryTest {
             Rule rule2 = ((List<Rule>) ruleSet2.getRules()).get(i);
 
             assertFalse(message + ", Different RuleReference",
-                    rule1 instanceof RuleReference && !(rule2 instanceof RuleReference)
-                            || !(rule1 instanceof RuleReference) && rule2 instanceof RuleReference);
+                        rule1 instanceof RuleReference != rule2 instanceof RuleReference);
 
             if (rule1 instanceof RuleReference) {
                 RuleReference ruleReference1 = (RuleReference) rule1;
