@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.NpathMetric;
 import net.sourceforge.pmd.lang.metrics.api.Metric;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 
@@ -43,7 +44,18 @@ public enum JavaOperationMetricKey implements MetricKey<ASTMethodOrConstructorDe
      *
      * @see net.sourceforge.pmd.lang.java.metrics.impl.LocMetric
      */
-    LOC(new LocOperationMetric());
+    LOC(new LocOperationMetric()),
+
+
+    /**
+     * N-path complexity.
+     *
+     * @see NpathMetric
+     */
+    NPATH(new NpathMetric());
+
+
+
 
     private final JavaOperationMetric calculator;
 
