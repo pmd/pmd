@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.metrics.visitors;
+package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  * Default visitor for the calculation of Ncss.
  *
  * @author Clément Fournier
- * @see net.sourceforge.pmd.lang.java.metrics.metrics.NcssMetric
+ * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
  */
 public class DefaultNcssVisitor extends JavaParserVisitorAdapter {
 
