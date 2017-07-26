@@ -21,12 +21,12 @@ Complexity directly affects maintenance costs is determined by the number of dec
 plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
-		]]>
+    ]]>
         </description>
         <priority>3</priority>
         <example>
             <![CDATA[
-public class Foo {		// This has a Cyclomatic Complexity = 12
+public class Foo {    // This has a Cyclomatic Complexity = 12
 1   public void example()  {
 2       if (a == b)  {
 3           if (a1 == b1) {
@@ -109,33 +109,33 @@ public class Foo extends Bar {
         <priority>3</priority>
         <example>
             <![CDATA[
-void bar() {	  // This is something more complex than it needs to be,
-	if (y) {	    // it should be broken down into smaller methods or functions
-		for (j = 0; j < m; j++) {
-			if (j > r) {
-				doSomething();
-				while (f < 5 ) {
-					anotherThing();
-					f -= 27;
-					}
-				} else {
-					tryThis();
-				}
-			}
-		}
-		if ( r - n > 45) {
-		   while (doMagic()) {
-		      findRabbits();
-		   }
-		}
-		try {
-			doSomethingDangerous();
-		} catch (Exception ex) {
-			makeAmends();
-		} finally {
-			dontDoItAgain();
-		}
-	}
+void bar() {    // This is something more complex than it needs to be,
+  if (y) {      // it should be broken down into smaller methods or functions
+    for (j = 0; j < m; j++) {
+      if (j > r) {
+        doSomething();
+        while (f < 5 ) {
+          anotherThing();
+          f -= 27;
+          }
+        } else {
+          tryThis();
+        }
+      }
+    }
+    if ( r - n > 45) {
+       while (doMagic()) {
+          findRabbits();
+       }
+    }
+    try {
+      doSomethingDangerous();
+    } catch (Exception ex) {
+      makeAmends();
+    } finally {
+      dontDoItAgain();
+    }
+  }
 }
 
  ]]>

@@ -131,7 +131,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
                     if (val == null) {
                         continue;
                     }
-                    ASTPrimarySuffix foo = se.getFirstDescendantOfType(ASTPrimarySuffix.class);
+                    ASTPrimarySuffix foo = e.getFirstDescendantOfType(ASTPrimarySuffix.class);
                     if (foo != null && foo.isArrayDereference()) {
                         continue;
                     }

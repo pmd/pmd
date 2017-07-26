@@ -1,6 +1,5 @@
-sudo: required
-services:
-  - docker
+dist: trusty
+sudo: false
 addons:
   apt:
     packages:
