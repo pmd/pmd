@@ -9,6 +9,8 @@ import net.sourceforge.pmd.lang.java.metrics.MetricsHook;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 /**
+ * Executes the metrics testing rules.
+ *
  * @author Clément Fournier
  */
 public class AllMetricsTest extends SimpleAggregatorTst {
@@ -26,10 +28,10 @@ public class AllMetricsTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-    //    addRule(RULESET, "CycloTest");
-    //    addRule(RULESET, "NcssTest");
-    //    addRule(RULESET, "WmcTest");
-    //    addRule(RULESET, "LocTest");
+        addRule(RULESET, "CycloTest");
+        addRule(RULESET, "NcssTest");
+        addRule(RULESET, "WmcTest");
+        addRule(RULESET, "LocTest");
         addRule(RULESET, "NPathTest");
     }
 

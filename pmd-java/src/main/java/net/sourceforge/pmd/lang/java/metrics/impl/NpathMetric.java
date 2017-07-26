@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
  */
 public class NpathMetric extends AbstractJavaOperationMetric {
 
-
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
         return (Integer) node.jjtAccept(new DefaultNpathVisitor(), null);

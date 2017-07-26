@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 
 /**
@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
  * @author Clément Fournier
  * @author Jason Bennett
  */
-public class DefaultNpathVisitor extends JavaParserVisitorAdapter {
+public class DefaultNpathVisitor extends JavaParserVisitorReducedAdapter {
 
     /* Multiplies the complexity of the children of this node. */
     private int multiplyChildrenComplexities(JavaNode node, Object data) {
@@ -58,7 +58,7 @@ public class DefaultNpathVisitor extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         return multiplyChildrenComplexities(node, data);
     }
 
