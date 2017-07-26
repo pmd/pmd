@@ -115,7 +115,7 @@ public enum JavaOperationMetricKey implements MetricKey<ASTMethodOrConstructorDe
 
             @Override
             public int hashCode() {
-                return metric.hashCode() * 31 + name.hashCode();
+                return (metric != null ? metric.hashCode() * 31 : 0) + (name != null ? name.hashCode() : 0);
             }
 
         };
