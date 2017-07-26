@@ -53,10 +53,8 @@ public class FieldAccessGenericSimple extends GenericSuperClassA<Long> {
     }
 
     public class Nested extends GenericSuperClassA<Long> {
-        //T outterParameterField;
         void foo() {
             fieldA = new Long(0);
-            //outterParameterField = null;
         }
     }
 }

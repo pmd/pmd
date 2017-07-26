@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getApplicableMethods;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
-import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isGeneric;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
 
 import java.lang.reflect.Field;
@@ -437,7 +436,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             // Carry over the type from the declaration
             Class<?> nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getType();
             // FIXME : generic classes and class with generic super types could have the wrong type assigned here
-            if (nodeType != null && !isGeneric(nodeType)) {
+            if (nodeType != null) {
                 node.setType(nodeType);
                 return super.visit(node, data);
             }
