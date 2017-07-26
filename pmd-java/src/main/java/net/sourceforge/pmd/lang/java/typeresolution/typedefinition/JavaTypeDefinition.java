@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -95,13 +96,33 @@ public class JavaTypeDefinition implements TypeDefinition {
         return !genericArgs.isEmpty();
     }
 
+    private int getGenericTypeIndex(TypeVariable<?>[] typeParameters, final String parameterName) {
+        for (int i = 0; i < typeParameters.length; i++) {
+            if (typeParameters[i].getName().equals(parameterName)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private JavaTypeDefinition getGenericType(final String parameterName, Method method,
+                                              List<JavaTypeDefinition> methodTypeArgumens) {
+        if (method != null && methodTypeArgumens != null) {
+            int paramIndex = getGenericTypeIndex(method.getTypeParameters(), parameterName);
+            if (paramIndex != -1) {
+                return methodTypeArgumens.get(paramIndex);
+            }
+        }
+
+        return getGenericType(parameterName);
+    }
+
     public JavaTypeDefinition getGenericType(final String parameterName) {
         for (JavaTypeDefinition currTypeDef = this; currTypeDef != null; currTypeDef = currTypeDef.enclosingClass) {
-            final TypeVariable<?>[] typeParameters = currTypeDef.clazz.getTypeParameters();
-            for (int i = 0; i < typeParameters.length; i++) {
-                if (typeParameters[i].getName().equals(parameterName)) {
-                    return currTypeDef.getGenericType(i);
-                }
+            int paramIndex = getGenericTypeIndex(currTypeDef.clazz.getTypeParameters(), parameterName);
+            if (paramIndex != -1) {
+                return currTypeDef.getGenericType(paramIndex);
             }
         }
 
@@ -144,6 +165,11 @@ public class JavaTypeDefinition implements TypeDefinition {
     }
 
     public JavaTypeDefinition resolveTypeDefinition(final Type type) {
+        return resolveTypeDefinition(type, null, null);
+    }
+
+    public JavaTypeDefinition resolveTypeDefinition(final Type type, Method method,
+                                                    List<JavaTypeDefinition> methodTypeArgs) {
         if (type == null) {
             // Without more info, this is all we can tell...
             return forClass(Object.class);
@@ -158,17 +184,17 @@ public class JavaTypeDefinition implements TypeDefinition {
             final Type[] typeArguments = parameterizedType.getActualTypeArguments();
             final JavaTypeDefinition[] genericBounds = new JavaTypeDefinition[typeArguments.length];
             for (int i = 0; i < typeArguments.length; i++) {
-                genericBounds[i] = resolveTypeDefinition(typeArguments[i]);
+                genericBounds[i] = resolveTypeDefinition(typeArguments[i], method, methodTypeArgs);
             }
 
             // TODO : is this cast safe?
             return forClass((Class<?>) parameterizedType.getRawType(), genericBounds);
         } else if (type instanceof TypeVariable) {
-            return getGenericType(((TypeVariable<?>) type).getName());
+            return getGenericType(((TypeVariable<?>) type).getName(), method, methodTypeArgs);
         } else if (type instanceof WildcardType) {
             final Type[] wildcardUpperBounds = ((WildcardType) type).getUpperBounds();
             if (wildcardUpperBounds.length != 0) { // upper bound wildcard
-                return resolveTypeDefinition(wildcardUpperBounds[0]);
+                return resolveTypeDefinition(wildcardUpperBounds[0], method, methodTypeArgs);
             } else { // lower bound wildcard
                 return forClass(Object.class);
             }
