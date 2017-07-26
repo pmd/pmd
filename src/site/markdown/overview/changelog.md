@@ -71,6 +71,8 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
     *   [#487](https://github.com/pmd/pmd/pull/487): \[java] Fix typeresolution for anonymous extending object
 *   java-controversial
     *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
+*   java-sunsecure
+    *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive
 *   java-unnecessarycode
     *   [#412](https://github.com/pmd/pmd/issues/412): \[java] java-unnecessarycode/UnnecessaryFinalModifier missing cases
 
