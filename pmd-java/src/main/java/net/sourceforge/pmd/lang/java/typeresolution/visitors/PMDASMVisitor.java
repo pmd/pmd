@@ -24,7 +24,12 @@ public class PMDASMVisitor extends ClassVisitor {
 
     private String outerName;
 
-    private Map<String, String> packages = new HashMap<>();
+    private Map<String, String> packages = new HashMap() {
+        @Override
+        public Object put(Object key, Object value) {
+            return super.put(key, value);
+        }
+    };
 
     private AnnotationVisitor annotationVisitor = new PMDAnnotationVisitor(this);
 
@@ -316,7 +321,7 @@ public class PMDASMVisitor extends ClassVisitor {
 
         @Override
         public void visitInnerClassType(String name) {
-            parent.parseClassName(name);
+            // parent.parseClassName(name);
         }
 
         @Override
