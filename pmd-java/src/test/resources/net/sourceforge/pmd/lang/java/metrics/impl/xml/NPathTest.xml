@@ -5,7 +5,7 @@
 public class Foo {
   public static void bar() {
     boolean a, b = true;
-    try { // 2 * 2 + 2
+    try { // total 6
       if (true) { // 2
         List buz = new ArrayList();
       }
@@ -211,6 +211,29 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>Ensure switch has same complexity as equivalent ifs</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo#bar()' has value 7.</message>
+        </expected-messages>
+        <code><![CDATA[
+        class Foo {
+          void bar() {
+            boolean a, b;
+            int j = 23;
+            if (j == 1 || j == 2) {
+            } else if (j == 3) {
+              j = 5;
+            } else if (j == 4) {
+              if (b && a) { bar(); }
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
         <description>Boolean operators</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
@@ -227,8 +250,7 @@ public class Foo {
 
 
     <code-fragment id="bug3484404"><![CDATA[
-class Bar
-{
+class Bar {
   public void x(boolean x, boolean y) {
     z((x ? 1 : 2), (y ? 3 : 4));
   }
@@ -252,6 +274,30 @@ class Bar
             <message>'.Bar#z(int, int)' has value 1.</message>
         </expected-messages>
         <code-ref id="bug3484404"/>
+    </test-code>
+
+
+    <test-code>
+        <description>NPath supports constructors</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo#Foo()' has value 7.</message>
+        </expected-messages>
+        <code><![CDATA[
+        class Foo {
+          Foo() {
+            boolean a, b;
+            int j = 23;
+            switch(j) {
+              case 1:
+              case 2: break;
+              case 3: j = 5; break;
+              case 4: if (b && a) { bar(); } break;
+              default: break;
+            }
+          }
+        }
+        ]]></code>
     </test-code>
 
 </test-data>

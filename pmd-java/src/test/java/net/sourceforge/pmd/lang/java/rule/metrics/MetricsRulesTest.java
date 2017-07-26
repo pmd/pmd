@@ -11,7 +11,6 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 /**
  * @author Clément Fournier
  */
-
 public class MetricsRulesTest extends SimpleAggregatorTst {
 
     private static final String RULESET = "java-metrics";
@@ -26,8 +25,8 @@ public class MetricsRulesTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-//        addRule(RULESET, "CyclomaticComplexity");
-//        addRule(RULESET, "NcssCount");
+        addRule(RULESET, "CyclomaticComplexity");
+        addRule(RULESET, "NcssCount");
         addRule(RULESET, "NPathComplexity");
     }
 }

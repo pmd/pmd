@@ -13,6 +13,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
+ * Simple n-path complexity rule.
+ *
  * @author Clément Fournier
  */
 public class NPathComplexityRule extends AbstractJavaMetricsRule {
@@ -48,5 +50,4 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
         return data;
     }
-
 }
