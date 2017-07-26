@@ -3,40 +3,46 @@
 
     <code-fragment id="full-example"><![CDATA[
 public class Foo {
-  public static int bar() {
-    try{
-      if (true) {
+  public static void bar() {
+    boolean a, b = true;
+    try { // 2 * 2 + 2
+      if (true) { // 2
         List buz = new ArrayList();
       }
-      for(int i = 0; i < 19; i++) {
+
+      for(int i = 0; i < 19; i++) { // 2
         List buz = new ArrayList();
       }
-      int j = 0;
-      if (true) {
-        j = 10;
-      }
-      while (j++ < 20) {
-        List buz = new ArrayList();
-      }
-      if (true) {
-        j = 21;
-      }
-      if(false) {
-        j = 0;
-      }
-      do {
-        List buz = new ArrayList();
-      } while (j++ < 30);
     } catch(Exception e) {
-      if (true) {
+      if (true) { // 2
         e.printStackTrace();
       }
     }
 
-    if (true) {
-      return 1;
-    } else {
-      return 2;
+    int j = 0;
+    if (true || a && b) { // 4
+      j = 10;
+      return;
+    }
+
+    while (j++ < 20) { // 2
+      List buz = new ArrayList();
+    }
+
+    switch(j) { // 7
+      case 1:
+      case 2: break;
+      case 3: j = 5; break;
+      case 4: if (b && a) { bar(); } break;
+      default: break;
+    }
+
+    do { // 3
+        List buz = new ArrayList();
+    } while (a && j++ < 30);
+
+    if (b) { // 2
+      return;
     }
   }
 }
@@ -47,7 +53,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'.Foo#bar()' has value 10.</message>
+            <message>'.Foo#bar()' has value 2016.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -130,17 +136,11 @@ public class Foo {
         class Foo {
           void bar() {
             boolean a, b;
-            if (a) {
+            if (a) {}
+            else {}
 
-            } else {
-
-            }
-
-            if (b) {
-
-            } else {
-
-            }
+            if (b) {}
+            else {}
           }
         }
         ]]></code>
@@ -156,15 +156,10 @@ public class Foo {
         class Foo {
           void bar() {
             boolean a, b;
-            if (a) {
+            if (a) {}
+            else {}
 
-            } else {
-
-            }
-
-            if (b) {
-
-            }
+            if (b) {}
           }
         }
         ]]></code>
@@ -180,95 +175,81 @@ public class Foo {
         class Foo {
           void bar() {
             boolean a, b;
-            if (a) { // 3
-              if (b) {
+            if (a) {
+              if (b) {}
+            } else {}
 
-              }
-            } else {
-
-            }
-
-            if (b) { // times two
-
-            } else {
-
-            }
+            if (b) {}
+            else {}
           }
         }
         ]]></code>
     </test-code>
 
 
-
     <test-code>
-        <description>ok</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
- public static void bar() {
-  if (true) {List buz = new ArrayList();}
- }
-}
-     ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>fail, with minimum</description>
-        <rule-property name="reportLevel">1</rule-property>
+        <description>Full switch</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has value 2</message>
+            <message>'.Foo#bar()' has value 7.</message>
         </expected-messages>
         <code><![CDATA[
-public class Foo {
- public static void bar() {
-  if (true) {List buz = new ArrayList();}
- }
-}
-     ]]></code>
+        class Foo {
+          void bar() {
+            boolean a, b;
+            int j = 23;
+            switch(j) {
+              case 1:
+              case 2: break;
+              case 3: j = 5; break;
+              case 4: if (b && a) { bar(); } break;
+              default: break;
+            }
+          }
+        }
+        ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Boolean operators</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'.Foo#bar()' has value 4.</message>
+        </expected-messages>
+        <code><![CDATA[
+        class Foo {
+          void bar() {
+            if (a && b || c);
+          }
+        }
+        ]]></code>
+    </test-code>
 
 
     <code-fragment id="bug3484404"><![CDATA[
 class Bar
 {
-    public void x(boolean x, boolean y)
-    {
-        z(
-            (x ? 1 : 2),
-            (y ? 3 : 4)
-        );
-    }
+  public void x(boolean x, boolean y) {
+    z((x ? 1 : 2), (y ? 3 : 4));
+  }
 
-    public int y(boolean x, boolean y)
-    {
-        return z(
-            (x ? 1 : 2),
-            (y ? 3 : 4)
-        );
-    }
+  public int y(boolean x, boolean y) {
+    return z((x ? 1 : 2), (y ? 3 : 4));
+  }
 
-    public int z(int x, int y)
-    {
-        return x + y;
-    }
+  public int z(int x, int y) {
+    return x + y;
+  }
 }
     ]]></code-fragment>
 
     <test-code>
         <description>test case for bug 3484404 (Invalid NPath calculation in return statement)</description>
-        <expected-problems>0</expected-problems>
-        <code-ref id="bug3484404"/>
-    </test-code>
-
-    <test-code>
-        <description>test case for bug 3484404 (Invalid NPath calculation in return statement) with minimum 25
-        </description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>The method x() has an NPath complexity of 25</message>
-            <message>The method y() has an NPath complexity of 25</message>
+            <message>'.Bar#x(boolean, boolean)' has value 25.</message>
+            <message>'.Bar#y(boolean, boolean)' has value 25.</message>
+            <message>'.Bar#z(int, int)' has value 1.</message>
         </expected-messages>
         <code-ref id="bug3484404"/>
     </test-code>

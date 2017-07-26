@@ -12,132 +12,183 @@ import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 
 /**
- * Visitor for the default n-path complexity version. It takes a root {@link NpathDataNode} as data.
+ * Visitor for the default n-path complexity version.
  *
  * @author Clément Fournier
+ * @author Jason Bennett
  */
 public class DefaultNpathVisitor extends JavaParserVisitorAdapter {
 
+    /* Multiplies the complexity of the children of this node. */
+    private int multiplyChildrenComplexities(JavaNode node, Object data) {
+        int product = 1;
+
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            JavaNode n = (JavaNode) node.jjtGetChild(i);
+            product *= (Integer) n.jjtAccept(this, data);
+        }
+
+        return product;
+    }
+
+
+    /* Sums the complexity of the children of the node. */
+    private int sumChildrenComplexities(JavaNode node, Object data) {
+        int sum = 0;
+
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            JavaNode n = (JavaNode) node.jjtGetChild(i);
+            sum += (Integer) n.jjtAccept(this, data);
+        }
+
+        return sum;
+    }
+
+
+    @Override
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        return multiplyChildrenComplexities(node, data);
+    }
+
+
+    @Override
+    public Object visit(JavaNode node, Object data) {
+        return multiplyChildrenComplexities(node, data);
+    }
+
+
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        int boolComplexity = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        // (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
-        NpathDataNode n = ((NpathDataNode) data).addAndGetChild(boolComplexity);
-        super.visit(node, n);
-        return n.parent;
+        List<JavaNode> statementChildren = new ArrayList<>();
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            if (node.jjtGetChild(i) instanceof ASTStatement) {
+                statementChildren.add((JavaNode) node.jjtGetChild(i));
+            }
+        }
+
+        // add path for not taking if
+        int complexity = node.hasElse() ? 0 : 1;
+
+        for (JavaNode element : statementChildren) {
+            complexity += (Integer) element.jjtAccept(this, data);
+        }
+
+        int boolCompIf = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        return boolCompIf + complexity;
     }
 
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
-        int boolComplexity = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        // (npath of while + bool_comp of while + 1) * npath of next
 
-        NpathDataNode n = ((NpathDataNode) data).addAndGetChild(boolComplexity);
-        super.visit(node, n);
-        return n.parent;
-    }
+        int boolCompWhile = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
+        int nPathWhile = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
-    @Override
-    public Object visit(ASTForStatement node, Object data) {
-        int boolComplexity = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        NpathDataNode n = ((NpathDataNode) data).addAndGetChild(boolComplexity);
-        super.visit(node, n);
-        return n.parent;
+        return boolCompWhile + nPathWhile + 1;
     }
 
 
     @Override
     public Object visit(ASTDoStatement node, Object data) {
-        int boolComplexity = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        // (npath of do + bool_comp of do + 1) * npath of next
 
-        NpathDataNode n = ((NpathDataNode) data).addAndGetChild(boolComplexity);
-        super.visit(node, n);
-        return n.parent;
+        int boolCompDo = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+
+        int nPathDo = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
+
+        return boolCompDo + nPathDo + 1;
     }
 
 
     @Override
-    public Object visit(ASTConditionalExpression node, Object data) {
-        int boolComplexity = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+    public Object visit(ASTForStatement node, Object data) {
+        // (npath of for + bool_comp of for + 1) * npath of next
 
-        NpathDataNode n = ((NpathDataNode) data).addAndGetChild(boolComplexity);
-        super.visit(node, n);
-        return n.parent;
+        int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+
+        int nPathFor = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
+
+        return boolCompFor + nPathFor + 1;
     }
 
 
     @Override
-    public Object visit(ASTTryStatement node, Object data) {
-        int boolComplexity = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+    public Object visit(ASTReturnStatement node, Object data) {
+        // return statements are valued at 1, or the value of the boolean expression
 
-        NpathDataNode n = ((NpathDataNode) data).addAndGetChild(boolComplexity);
-        super.visit(node, n);
-        return n.parent;
+        ASTExpression expr = node.getFirstChildOfType(ASTExpression.class);
+
+        if (expr == null) {
+            return 1;
+        }
+
+        int boolCompReturn = CycloMetric.booleanExpressionComplexity(expr);
+        int conditionalExpressionComplexity = multiplyChildrenComplexities(expr, data);
+
+        if (conditionalExpressionComplexity > 1) {
+            boolCompReturn += conditionalExpressionComplexity;
+        }
+
+        return (boolCompReturn > 0) ? boolCompReturn : 1;
     }
 
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
-        int boolComplexity = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        // bool_comp of switch + sum(npath(case_range))
 
-        NpathDataNode n = ((NpathDataNode) data).addAndGetChild(boolComplexity);
-        super.visit(node, n);
-        return n.parent;
+        int boolCompSwitch = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+
+        int npath = 0;
+        int caseRange = 0;
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            JavaNode n = (JavaNode) node.jjtGetChild(i);
+
+            // Fall-through labels count as 1 for complexity
+            if (n instanceof ASTSwitchLabel) {
+                npath += caseRange;
+                caseRange = 1;
+            } else {
+                Integer complexity = (Integer) n.jjtAccept(this, data);
+                caseRange *= complexity;
+            }
+        }
+        // add in npath of last label
+        npath += caseRange;
+        return boolCompSwitch + npath;
     }
 
 
-    /**
-     * Heap structure used as the data of the visitor. Every node corresponds to a control flow statement. A control
-     * flow statement nested inside another is represented by a node that's a children of the other.
-     *
-     * <p>The complexity of a node is given by multiplying the complexities of its children plus 1. The complexity of a
-     * leaf is the boolean complexity of the guard condition of the statement. The root node bears the complexity of the
-     * method.
-     */
-    public static class NpathDataNode {
-
-        private List<NpathDataNode> children = new ArrayList<>();
-        private NpathDataNode parent;
-
-        private int booleanComplexity;
+    @Override
+    public Object visit(ASTConditionalExpression node, Object data) {
+        return node.isTernary() ? sumChildrenComplexities(node, data) + 2 : 1;
+    }
 
 
-        /** Creates a root node. */
-        public NpathDataNode() {
-
-        }
-
-
-        private NpathDataNode(int booleanComplexity, NpathDataNode parent) {
-            this.booleanComplexity = booleanComplexity;
-            this.parent = parent;
-        }
-
-
-        NpathDataNode addAndGetChild(int booleanComplexity) {
-            NpathDataNode newChild = new NpathDataNode(booleanComplexity, this);
-            children.add(newChild);
-            return newChild;
-        }
-
-
-        /** Gets the complexity of this node. */
-        public int getComplexity() {
-            int complexity = 1 + booleanComplexity;
-            for (NpathDataNode child : children) {
-                complexity *= child.getComplexity();
-            }
-
-            return complexity;
-        }
+    @Override
+    public Object visit(ASTTryStatement node, Object data) {
+        /*
+         * This scenario was not addressed by the original paper. Based on the
+         * principles outlined in the paper, as well as the Checkstyle NPath
+         * implementation, this code will add the complexity of the try to the
+         * complexities of the catch and finally blocks.
+         */
+        return sumChildrenComplexities(node, data);
     }
 }

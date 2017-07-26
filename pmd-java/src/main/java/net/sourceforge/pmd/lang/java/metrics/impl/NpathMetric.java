@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import static net.sourceforge.pmd.lang.java.metrics.impl.visitors.DefaultNpathVisitor.NpathDataNode;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.DefaultNpathVisitor;
@@ -21,7 +20,6 @@ public class NpathMetric extends AbstractJavaOperationMetric {
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-        NpathDataNode root = (NpathDataNode) node.jjtAccept(new DefaultNpathVisitor(), new NpathDataNode());
-        return root.getComplexity();
+        return (Integer) node.jjtAccept(new DefaultNpathVisitor(), null);
     }
 }
