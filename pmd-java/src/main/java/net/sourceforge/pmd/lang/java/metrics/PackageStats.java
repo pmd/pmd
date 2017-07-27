@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 
 /**
- * Statistics about a package. This recursive data structure mirrors the package structure of the analysed
- * project and stores information about the classes and subpackages it contains.
+ * Statistics about a package. This recursive data structure mirrors the package structure of the analysed project and
+ * stores information about the classes and subpackages it contains.
  *
  * @author Clément Fournier
  * @see ClassStats
@@ -48,8 +48,7 @@ public final class PackageStats {
 
 
     /**
-     * Returns true if the signature of the operation designated by the qualified name is covered by
-     * the mask.
+     * Returns true if the signature of the operation designated by the qualified name is covered by the mask.
      *
      * @param qname   The operation to test
      * @param sigMask The signature mask to use
@@ -64,8 +63,8 @@ public final class PackageStats {
 
 
     /**
-     * Gets the ClassStats corresponding to the named resource. The class can be nested. If the
-     * createIfNotFound parameter is set, the method also creates the hierarchy if it doesn't exist.
+     * Gets the ClassStats corresponding to the named resource. The class can be nested. If the createIfNotFound
+     * parameter is set, the method also creates the hierarchy if it doesn't exist.
      *
      * @param qname            The qualified name of the class
      * @param createIfNotFound Create hierarchy if missing
@@ -102,8 +101,8 @@ public final class PackageStats {
 
 
     /**
-     * Returns the deepest PackageStats that contains the named resource. If the second parameter is
-     * set, creates the missing PackageStats along the way.
+     * Returns the deepest PackageStats that contains the named resource. If the second parameter is set, creates the
+     * missing PackageStats along the way.
      *
      * @param qname            The qualified name of the resource
      * @param createIfNotFound If set to true, the hierarch is created if non existent
@@ -131,8 +130,8 @@ public final class PackageStats {
 
 
     /**
-     * Returns true if the signature of the field designated by its name and the qualified name of its class is
-     * covered by the mask.
+     * Returns true if the signature of the field designated by its name and the qualified name of its class is covered
+     * by the mask.
      *
      * @param qname     The class of the field
      * @param fieldName The name of the field
@@ -162,7 +161,7 @@ public final class PackageStats {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
-                                 : container.compute(key, node, force, version);
+                                 : MetricsComputer.INSTANCE.compute(key, node, force, version, container);
     }
 
 
@@ -180,9 +179,10 @@ public final class PackageStats {
                                  boolean force, MetricVersion version) {
         QualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
+        OperationStats memoizer = container == null ? null : container.getOperationStats(qname.getOperation(), node);
 
-        return container == null ? Double.NaN
-                                 : container.compute(key, node, qname.getOperation(), force, version);
+        return memoizer == null ? Double.NaN
+                                : MetricsComputer.INSTANCE.compute(key, node, force, version, memoizer);
     }
 
 
@@ -202,6 +202,7 @@ public final class PackageStats {
         ClassStats container = getClassStats(node.getQualifiedName(), false);
 
         return container == null ? Double.NaN
-                                 : container.computeWithResultOption(key, node, force, version, option);
+                                 : MetricsComputer.INSTANCE.computeWithResultOption(key, node, force, version,
+                                                                                    option, container);
     }
 }
