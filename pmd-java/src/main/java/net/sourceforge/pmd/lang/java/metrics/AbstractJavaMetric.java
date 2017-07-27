@@ -9,7 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.metrics.api.Metric;
 
 
@@ -23,8 +23,8 @@ import net.sourceforge.pmd.lang.metrics.api.Metric;
  */
 public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
 
-    protected List<QualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
-        List<QualifiedName> result = new ArrayList<>();
+    protected List<JavaQualifiedName> findAllCalls(ASTMethodOrConstructorDeclaration node) {
+        List<JavaQualifiedName> result = new ArrayList<>();
         // TODO:cf findAllCalls
         // Needs TypeRes
         // Find the qualified names of all methods called in that method's block

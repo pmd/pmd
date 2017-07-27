@@ -8,7 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.Signature.Visibility;
@@ -31,9 +31,9 @@ public final class AtfdMetric {
             targetOps.restrictVisibilitiesTo(Visibility.PUBLIC);
             targetOps.restrictRolesTo(Role.GETTER_OR_SETTER);
 
-            List<QualifiedName> callQNames = findAllCalls(node);
+            List<JavaQualifiedName> callQNames = findAllCalls(node);
             int foreignCalls = 0;
-            for (QualifiedName name : callQNames) {
+            for (JavaQualifiedName name : callQNames) {
                 if (getTopLevelPackageStats().hasMatchingSig(name, targetOps)) {
                     foreignCalls++;
                 }

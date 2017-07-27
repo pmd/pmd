@@ -8,11 +8,13 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.ast.QualifiedName;
+
 /**
  * Represents Qualified Names for use within PackageStats.
  * TODO:cf make unit tests once the visitor is working to ensure new implementations won't break it
  */
-public final class QualifiedName {
+public final class JavaQualifiedName implements QualifiedName {
 
     /**
      * Pattern specifying the format.
@@ -25,7 +27,7 @@ public final class QualifiedName {
     private String[] classes = new String[1];
     private String operation = null;
 
-    private QualifiedName() {
+    private JavaQualifiedName() {
 
     }
 
@@ -36,9 +38,9 @@ public final class QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static QualifiedName makeOperationOf(ASTMethodDeclaration node) {
-        QualifiedName parentQname = node.getFirstParentOfType(ASTAnyTypeDeclaration.class)
-                                        .getQualifiedName();
+    /* default */ static JavaQualifiedName makeOperationOf(ASTMethodDeclaration node) {
+        JavaQualifiedName parentQname = node.getFirstParentOfType(ASTAnyTypeDeclaration.class)
+                                            .getQualifiedName();
 
         return makeOperationOf(parentQname,
                                node.getMethodName(),
@@ -53,7 +55,7 @@ public final class QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static QualifiedName makeOperationOf(ASTConstructorDeclaration node) {
+    /* default */ static JavaQualifiedName makeOperationOf(ASTConstructorDeclaration node) {
         ASTClassOrInterfaceDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 
         return makeOperationOf(parent.getQualifiedName(),
@@ -63,8 +65,8 @@ public final class QualifiedName {
 
 
     /** Factorises the functionality of makeOperationof() */
-    private static QualifiedName makeOperationOf(QualifiedName parent, String opName, ASTFormalParameters params) {
-        QualifiedName qname = new QualifiedName();
+    private static JavaQualifiedName makeOperationOf(JavaQualifiedName parent, String opName, ASTFormalParameters params) {
+        JavaQualifiedName qname = new JavaQualifiedName();
 
         qname.packages = parent.packages;
         qname.classes = parent.classes;
@@ -82,8 +84,8 @@ public final class QualifiedName {
      *
      * @return The qualified name of the nested class
      */
-    /* default */ static QualifiedName makeNestedClassOf(QualifiedName parent, String className) {
-        QualifiedName qname = new QualifiedName();
+    /* default */ static JavaQualifiedName makeNestedClassOf(JavaQualifiedName parent, String className) {
+        JavaQualifiedName qname = new JavaQualifiedName();
         qname.packages = parent.packages;
         if (parent.classes[0] != null) {
             qname.classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
@@ -102,11 +104,11 @@ public final class QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static QualifiedName makeOuterClassOf(ASTAnyTypeDeclaration node) {
+    /* default */ static JavaQualifiedName makeOuterClassOf(ASTAnyTypeDeclaration node) {
         ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
                                         .getFirstChildOfType(ASTPackageDeclaration.class);
 
-        QualifiedName qname = new QualifiedName();
+        JavaQualifiedName qname = new JavaQualifiedName();
         qname.packages = pkg == null ? null : pkg.getPackageNameImage().split("\\.");
         qname.classes[0] = node.getImage();
 
@@ -115,13 +117,13 @@ public final class QualifiedName {
 
 
     // Might be useful with type resolution
-    public static QualifiedName makeClassOf(Class<?> clazz) {
+    public static JavaQualifiedName makeClassOf(Class<?> clazz) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Parses a qualified name given in the format defined for this implementation. The format
-     * is specified by a regex pattern (see {@link QualifiedName#FORMAT}). Examples:
+     * is specified by a regex pattern (see {@link JavaQualifiedName#FORMAT}). Examples:
      *
      * <p>{@code com.company.MyClass$Nested#myMethod(String, int)}
      * <ul>
@@ -140,8 +142,8 @@ public final class QualifiedName {
      *
      * @return A qualified name instance corresponding to the parsed string.
      */
-    public static QualifiedName parseName(String name) {
-        QualifiedName qname = new QualifiedName();
+    public static JavaQualifiedName parseName(String name) {
+        JavaQualifiedName qname = new JavaQualifiedName();
 
         Matcher matcher = FORMAT.matcher(name);
 
@@ -221,7 +223,7 @@ public final class QualifiedName {
             return false;
         }
 
-        QualifiedName that = (QualifiedName) o;
+        JavaQualifiedName that = (JavaQualifiedName) o;
 
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         if (!Arrays.equals(packages, that.packages)) {

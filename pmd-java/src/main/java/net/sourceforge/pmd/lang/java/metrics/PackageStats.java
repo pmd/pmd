@@ -9,7 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
@@ -56,7 +56,7 @@ public final class PackageStats {
      *
      * @return True if the signature of the operation designated by the qualified name is covered by the mask
      */
-    public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
+    public boolean hasMatchingSig(JavaQualifiedName qname, OperationSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
@@ -72,7 +72,7 @@ public final class PackageStats {
      *
      * @return The new OperationStat, or the one that was found. Can return null only if createIfNotFound is unset
      */
-    OperationStats getOperationStats(QualifiedName qname, OperationSignature sig, boolean createIfNotFound) {
+    OperationStats getOperationStats(JavaQualifiedName qname, OperationSignature sig, boolean createIfNotFound) {
         ClassStats container = getClassStats(qname, createIfNotFound);
 
         if (container == null || !qname.isOperation()) {
@@ -101,7 +101,7 @@ public final class PackageStats {
      *
      * @return The new ClassStats, or the one that was found. Can return null only if createIfNotFound is unset
      */
-    /* default */ ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
+    /* default */ ClassStats getClassStats(JavaQualifiedName qname, boolean createIfNotFound) {
         PackageStats container = getSubPackage(qname, createIfNotFound);
 
         if (container == null) {
@@ -139,7 +139,7 @@ public final class PackageStats {
      *
      * @return The deepest package that contains this resource. Can only return null if createIfNotFound is unset
      */
-    private PackageStats getSubPackage(QualifiedName qname, boolean createIfNotFound) {
+    private PackageStats getSubPackage(JavaQualifiedName qname, boolean createIfNotFound) {
         if (qname.getPackages() == null) {
             return this; // the toplevel
         }
@@ -169,7 +169,7 @@ public final class PackageStats {
      *
      * @return True if the signature of the field is covered by the mask
      */
-    public boolean hasMatchingSig(QualifiedName qname, String fieldName, FieldSigMask sigMask) {
+    public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, FieldSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
@@ -207,7 +207,7 @@ public final class PackageStats {
      */
     /* default */ double compute(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
                                  boolean force, MetricVersion version) {
-        QualifiedName qname = node.getQualifiedName();
+        JavaQualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
         OperationStats memoizer = container == null ? null : container.getOperationStats(qname.getOperation(),
                                                                                          OperationSignature.buildFor(node));

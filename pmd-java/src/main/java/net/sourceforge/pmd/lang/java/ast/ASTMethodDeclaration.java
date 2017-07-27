@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod, ASTMethodOrConstructorDeclaration {
 
-    private QualifiedName qualifiedName;
+    private JavaQualifiedName qualifiedName;
 
     public ASTMethodDeclaration(int id) {
         super(id);
@@ -113,9 +113,9 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
     }
 
     @Override
-    public QualifiedName getQualifiedName() {
+    public JavaQualifiedName getQualifiedName() {
         if (qualifiedName == null) {
-            qualifiedName = QualifiedName.makeOperationOf(this);
+            qualifiedName = JavaQualifiedName.makeOperationOf(this);
         }
         return qualifiedName;
     }

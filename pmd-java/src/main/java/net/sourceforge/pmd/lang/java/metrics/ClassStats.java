@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
@@ -20,7 +20,8 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
  * signatures, and memoizes the results of the class metrics computed on the corresponding node.
  *
  * <p>This class does not provide methods to operate directly on its nested classes, but only on itself. To operate on a
- * nested class, retrieve the correct ClassStats with {@link PackageStats#getClassStats(QualifiedName, boolean)} then
+ * nested class, retrieve the correct ClassStats with {@link PackageStats#getClassStats(JavaQualifiedName, boolean)}
+ * then
  * use the methods of ClassStats. Note that at this level, entities of the data structure do not manipulate
  * QualifiedNames anymore, only Strings.
  *

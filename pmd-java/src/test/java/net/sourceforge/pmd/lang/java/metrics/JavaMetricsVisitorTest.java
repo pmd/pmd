@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature.Role;
@@ -71,7 +71,7 @@ public class JavaMetricsVisitorTest {
 
         final FieldSigMask fieldSigMask = new FieldSigMask();
 
-        QualifiedName clazz = QualifiedName.parseName("net.sourceforge.pmd.lang.java"
+        JavaQualifiedName clazz = JavaQualifiedName.parseName("net.sourceforge.pmd.lang.java"
                                                           + ".metrics.testdata"
                                                           + ".MetricsVisitorTestData");
         String[] fieldNames = {"x", "y", "z", "t"};
@@ -95,7 +95,7 @@ public class JavaMetricsVisitorTest {
         final OperationSigMask operationSigMask = new OperationSigMask();
         operationSigMask.restrictRolesTo(Role.STATIC);
 
-        QualifiedName q1 = QualifiedName.parseName("net.sourceforge.pmd.lang.java"
+        JavaQualifiedName q1 = JavaQualifiedName.parseName("net.sourceforge.pmd.lang.java"
                                                        + ".metrics.testdata"
                                                        + ".MetricsVisitorTestData#mystatic1()");
 

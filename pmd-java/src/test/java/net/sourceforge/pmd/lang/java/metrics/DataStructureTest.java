@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
@@ -61,7 +61,7 @@ public class DataStructureTest extends ParserTst {
 
     @Test
     public void testAddClass() {
-        QualifiedName qname = QualifiedName.parseName("org.foo.Boo");
+        JavaQualifiedName qname = JavaQualifiedName.parseName("org.foo.Boo");
 
         assertNull(pack.getClassStats(qname, false));
         assertNotNull(pack.getClassStats(qname, true));
@@ -78,7 +78,7 @@ public class DataStructureTest extends ParserTst {
 
         ASTMethodOrConstructorDeclaration node = getOrderedNodes(ASTMethodDeclaration.class, TEST).get(0);
 
-        QualifiedName qname = node.getQualifiedName();
+        JavaQualifiedName qname = node.getQualifiedName();
         OperationSignature signature = OperationSignature.buildFor(node);
 
         assertFalse(pack.hasMatchingSig(qname, new OperationSigMask()));
@@ -96,7 +96,7 @@ public class DataStructureTest extends ParserTst {
 
         ASTFieldDeclaration node = getOrderedNodes(ASTFieldDeclaration.class, TEST).get(0);
 
-        QualifiedName qname = QualifiedName.parseName("org.foo.Boo");
+        JavaQualifiedName qname = JavaQualifiedName.parseName("org.foo.Boo");
         String fieldName = "bar";
         FieldSignature signature = FieldSignature.buildFor(node);
 

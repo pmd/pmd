@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
-    private QualifiedName qualifiedName;
+    private JavaQualifiedName qualifiedName;
 
     public ASTAnnotationTypeDeclaration(int id) {
         super(id);
@@ -33,16 +33,16 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode imp
     }
 
     @Override
-    public QualifiedName getQualifiedName() {
+    public JavaQualifiedName getQualifiedName() {
         if (qualifiedName == null) {
             if (isNested()) {
                 ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
-                QualifiedName parentQN = parent.getQualifiedName();
-                qualifiedName = QualifiedName.makeNestedClassOf(parentQN, this.getImage());
+                JavaQualifiedName parentQN = parent.getQualifiedName();
+                qualifiedName = JavaQualifiedName.makeNestedClassOf(parentQN, this.getImage());
                 return qualifiedName;
             }
 
-            qualifiedName = QualifiedName.makeOuterClassOf(this);
+            qualifiedName = JavaQualifiedName.makeOuterClassOf(this);
         }
 
         return qualifiedName;

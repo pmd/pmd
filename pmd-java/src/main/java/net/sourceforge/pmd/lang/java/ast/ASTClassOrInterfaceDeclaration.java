@@ -10,7 +10,7 @@ import java.util.List;
 public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
 
     private boolean isInterface;
-    private QualifiedName qualifiedName;
+    private JavaQualifiedName qualifiedName;
 
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
@@ -47,16 +47,16 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
     }
 
     @Override
-    public QualifiedName getQualifiedName() {
+    public JavaQualifiedName getQualifiedName() {
         if (qualifiedName == null) {
             if (isNested()) {
                 ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-                QualifiedName parentQN = parent.getQualifiedName();
-                qualifiedName = QualifiedName.makeNestedClassOf(parentQN, this.getImage());
+                JavaQualifiedName parentQN = parent.getQualifiedName();
+                qualifiedName = JavaQualifiedName.makeNestedClassOf(parentQN, this.getImage());
                 return qualifiedName;
             }
 
-            qualifiedName = QualifiedName.makeOuterClassOf(this);
+            qualifiedName = JavaQualifiedName.makeOuterClassOf(this);
         }
 
         return qualifiedName;

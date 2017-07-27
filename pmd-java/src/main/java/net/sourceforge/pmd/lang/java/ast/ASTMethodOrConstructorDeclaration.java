@@ -7,6 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * @author Clément Fournier
  */
-public interface ASTMethodOrConstructorDeclaration extends QualifiableNode, AccessNode, JavaNode {
+public interface ASTMethodOrConstructorDeclaration extends JavaQualifiableNode, AccessNode, JavaNode {
 
 }
