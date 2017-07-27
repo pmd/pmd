@@ -11,9 +11,9 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 
 /**
  * Statistics about a class, enum, interface, or annotation. Stores information about the contained members and their
@@ -29,8 +29,8 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
  */
 /* default */ class ClassStats extends Memoizer {
 
-    private Map<OperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
-    private Map<FieldSignature, Set<String>> fields = new HashMap<>();
+    private Map<JavaOperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
+    private Map<JavaFieldSignature, Set<String>> fields = new HashMap<>();
     private Map<String, ClassStats> nestedClasses = new HashMap<>();
 
     // References to the hierarchy
@@ -77,7 +77,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
     }
 
 
-    OperationStats getOperationStats(String operationName, OperationSignature sig) {
+    OperationStats getOperationStats(String operationName, JavaOperationSignature sig) {
         if (sig == null) {
             return getOperationStats(operationName);
         }
@@ -96,7 +96,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
      *
      * @return The newly created operation stats
      */
-    /* default */ OperationStats addOperation(String name, OperationSignature sig) {
+    /* default */ OperationStats addOperation(String name, JavaOperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashMap<String, OperationStats>());
         }
@@ -112,7 +112,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
      * @param name The name of the field
      * @param sig  The signature of the field
      */
-    /* default */ void addField(String name, FieldSignature sig) {
+    /* default */ void addField(String name, JavaFieldSignature sig) {
         if (!fields.containsKey(sig)) {
             fields.put(sig, new HashSet<String>());
         }
@@ -131,7 +131,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
      */
     /* default */ boolean hasMatchingSig(String name, OperationSigMask mask) {
         // Indexing on signatures optimises this type of request
-        for (OperationSignature sig : operations.keySet()) {
+        for (JavaOperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
                 if (operations.get(sig).containsKey(name)) {
                     return true;
@@ -152,7 +152,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
      * otherwise
      */
     /* default */ boolean hasMatchingSig(String name, FieldSigMask mask) {
-        for (FieldSignature sig : fields.keySet()) {
+        for (JavaFieldSignature sig : fields.keySet()) {
             if (mask.covers(sig)) {
                 if (fields.get(sig).contains(name)) {
                     return true;

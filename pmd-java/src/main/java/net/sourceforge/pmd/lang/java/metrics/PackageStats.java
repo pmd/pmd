@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.api.ResultOption;
@@ -72,7 +72,7 @@ public final class PackageStats {
      *
      * @return The new OperationStat, or the one that was found. Can return null only if createIfNotFound is unset
      */
-    OperationStats getOperationStats(JavaQualifiedName qname, OperationSignature sig, boolean createIfNotFound) {
+    OperationStats getOperationStats(JavaQualifiedName qname, JavaOperationSignature sig, boolean createIfNotFound) {
         ClassStats container = getClassStats(qname, createIfNotFound);
 
         if (container == null || !qname.isOperation()) {
@@ -210,7 +210,7 @@ public final class PackageStats {
         JavaQualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
         OperationStats memoizer = container == null ? null : container.getOperationStats(qname.getOperation(),
-                                                                                         OperationSignature.buildFor(node));
+                                                                                         node.getSignature());
 
         return memoizer == null ? Double.NaN
                                 : MetricsComputer.INSTANCE.compute(key, node, force, version, memoizer);

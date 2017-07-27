@@ -15,10 +15,10 @@ import java.util.Set;
  *
  * @author Clément Fournier
  */
-public abstract class SigMask<T extends Signature> {
+public abstract class SigMask<T extends JavaSignature> {
 
     /** Visibility mask. */
-    private Set<Signature.Visibility> visMask = new HashSet<>();
+    private Set<JavaSignature.Visibility> visMask = new HashSet<>();
 
 
     public SigMask() {
@@ -30,7 +30,7 @@ public abstract class SigMask<T extends Signature> {
      * Sets the mask to cover all visibilities.
      */
     public void coverAllVisibilities() {
-        visMask.addAll(Arrays.asList(Signature.Visibility.values()));
+        visMask.addAll(Arrays.asList(JavaSignature.Visibility.values()));
     }
 
 
@@ -39,7 +39,7 @@ public abstract class SigMask<T extends Signature> {
      *
      * @param visibilities The visibilities to cover
      */
-    public void restrictVisibilitiesTo(Signature.Visibility... visibilities) {
+    public void restrictVisibilitiesTo(JavaSignature.Visibility... visibilities) {
         visMask.clear();
         visMask.addAll(Arrays.asList(visibilities));
     }
@@ -50,7 +50,7 @@ public abstract class SigMask<T extends Signature> {
      *
      * @param visibilities The visibilities to forbid
      */
-    public void forbid(Signature.Visibility... visibilities) {
+    public void forbid(JavaSignature.Visibility... visibilities) {
         visMask.removeAll(Arrays.asList(visibilities));
     }
 

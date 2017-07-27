@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature.Role;
-import net.sourceforge.pmd.lang.java.metrics.signature.Signature.Visibility;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 
 /**

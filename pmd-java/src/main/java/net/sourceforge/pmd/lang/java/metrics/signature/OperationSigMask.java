@@ -13,9 +13,9 @@ import java.util.Set;
  *
  * @author Clément Fournier
  */
-public final class OperationSigMask extends SigMask<OperationSignature> {
+public final class OperationSigMask extends SigMask<JavaOperationSignature> {
 
-    private Set<OperationSignature.Role> roleMask = new HashSet<>();
+    private Set<JavaOperationSignature.Role> roleMask = new HashSet<>();
     private boolean coverAbstract = false;
 
 
@@ -29,7 +29,7 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
      * Sets the mask to cover all roles.
      */
     public void coverAllRoles() {
-        roleMask.addAll(Arrays.asList(OperationSignature.Role.values()));
+        roleMask.addAll(Arrays.asList(JavaOperationSignature.Role.values()));
     }
 
 
@@ -38,7 +38,7 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
      *
      * @param roles The roles to cover
      */
-    public void restrictRolesTo(OperationSignature.Role... roles) {
+    public void restrictRolesTo(JavaOperationSignature.Role... roles) {
         roleMask.clear();
         roleMask.addAll(Arrays.asList(roles));
     }
@@ -49,7 +49,7 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
      *
      * @param roles The roles to forbid
      */
-    public void forbid(OperationSignature.Role... roles) {
+    public void forbid(JavaOperationSignature.Role... roles) {
         roleMask.removeAll(Arrays.asList(roles));
     }
 
@@ -65,7 +65,7 @@ public final class OperationSigMask extends SigMask<OperationSignature> {
 
 
     @Override
-    public boolean covers(OperationSignature sig) {
+    public boolean covers(JavaOperationSignature sig) {
         return super.covers(sig) && roleMask.contains(sig.role) && (coverAbstract
             || !sig.isAbstract);
     }

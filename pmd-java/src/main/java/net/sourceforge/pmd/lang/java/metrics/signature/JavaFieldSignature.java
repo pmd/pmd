@@ -8,21 +8,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.metrics.signature.Signature;
 
 /**
  * Signature for a field.
  *
  * @author Clément Fournier
  */
-public final class FieldSignature extends Signature {
+public final class JavaFieldSignature extends JavaSignature implements Signature<ASTFieldDeclaration> {
 
-    private static final Map<Integer, FieldSignature> POOL = new HashMap<>();
+    private static final Map<Integer, JavaFieldSignature> POOL = new HashMap<>();
 
     public final boolean isStatic;
     public final boolean isFinal;
 
 
-    private FieldSignature(Visibility visibility, boolean isStatic, boolean isFinal) {
+    private JavaFieldSignature(Visibility visibility, boolean isStatic, boolean isFinal) {
         super(visibility);
         this.isStatic = isStatic;
         this.isFinal = isFinal;
@@ -54,10 +55,10 @@ public final class FieldSignature extends Signature {
      *
      * @return The signature of the field
      */
-    public static FieldSignature buildFor(ASTFieldDeclaration node) {
+    public static JavaFieldSignature buildFor(ASTFieldDeclaration node) {
         int code = code(Visibility.get(node), node.isStatic(), node.isFinal());
         if (!POOL.containsKey(code)) {
-            POOL.put(code, new FieldSignature(Visibility.get(node), node.isStatic(), node.isFinal()));
+            POOL.put(code, new JavaFieldSignature(Visibility.get(node), node.isStatic(), node.isFinal()));
         }
         return POOL.get(code);
     }

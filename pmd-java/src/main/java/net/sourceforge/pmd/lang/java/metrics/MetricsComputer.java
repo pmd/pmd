@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
@@ -25,6 +25,9 @@ public class MetricsComputer {
 
     static final MetricsComputer INSTANCE = new MetricsComputer();
 
+    private MetricsComputer() {
+
+    }
 
     /**
      * Computes the value of a metric for a class and stores the result in the ClassStats object.
@@ -101,7 +104,7 @@ public class MetricsComputer {
         for (ASTMethodOrConstructorDeclaration op : ops) {
             if (key.supports(op)) {
                 OperationStats opStats = stats.getOperationStats(op.getQualifiedName().getOperation(),
-                                                                 OperationSignature.buildFor(op));
+                                                                 op.getSignature());
                 double val = this.compute(key, op, force, version, opStats);
                 if (val != Double.NaN) {
                     values.add(val);

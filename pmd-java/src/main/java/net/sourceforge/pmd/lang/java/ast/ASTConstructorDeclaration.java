@@ -5,10 +5,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
+
 public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements ASTMethodOrConstructorDeclaration {
 
     private boolean containsComment;
     private JavaQualifiedName qualifiedName;
+    private JavaOperationSignature signature;
 
     public ASTConstructorDeclaration(int id) {
         super(id);
@@ -48,5 +51,13 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
             qualifiedName = JavaQualifiedName.makeOperationOf(this);
         }
         return qualifiedName;
+    }
+
+    @Override
+    public JavaOperationSignature getSignature() {
+        if (signature == null) {
+            signature = JavaOperationSignature.buildFor(this);
+        }
+        return signature;
     }
 }

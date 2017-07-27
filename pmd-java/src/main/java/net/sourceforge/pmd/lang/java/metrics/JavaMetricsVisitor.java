@@ -10,8 +10,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 
 /**
  * Visitor for the metrics framework, that fills a {@link PackageStats} object with the
@@ -36,14 +34,14 @@ class JavaMetricsVisitor extends JavaParserVisitorReducedAdapter {
 
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-        stack.peek().addOperation(node.getQualifiedName().getOperation(), OperationSignature.buildFor(node));
+        stack.peek().addOperation(node.getQualifiedName().getOperation(), node.getSignature());
         return super.visit(node, data);
     }
 
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        stack.peek().addField(node.getVariableName(), FieldSignature.buildFor(node));
+        stack.peek().addField(node.getVariableName(), node.getSignature());
         return data; // end recursion
     }
 

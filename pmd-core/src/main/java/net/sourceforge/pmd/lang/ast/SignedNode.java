@@ -5,20 +5,22 @@
 package net.sourceforge.pmd.lang.ast;
 
 
+import net.sourceforge.pmd.lang.metrics.signature.Signature;
+
 /**
  * Nodes that can be described by a signature.
  *
- * @param <T> The type of the signature
+ * @param <N> The type of node
  *
  * @author Clément Fournier
  */
-public interface SignedNode<T> extends Node {
+public interface SignedNode<N> extends Node {
 
     /**
      * Gets the signature of this node.
      *
      * @return The signature
      */
-    T getSignature();
+    Signature<? super N> getSignature();
 
 }

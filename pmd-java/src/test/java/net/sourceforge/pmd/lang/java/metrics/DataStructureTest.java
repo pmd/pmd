@@ -32,9 +32,9 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
@@ -79,7 +79,7 @@ public class DataStructureTest extends ParserTst {
         ASTMethodOrConstructorDeclaration node = getOrderedNodes(ASTMethodDeclaration.class, TEST).get(0);
 
         JavaQualifiedName qname = node.getQualifiedName();
-        OperationSignature signature = OperationSignature.buildFor(node);
+        JavaOperationSignature signature = JavaOperationSignature.buildFor(node);
 
         assertFalse(pack.hasMatchingSig(qname, new OperationSigMask()));
 
@@ -98,7 +98,7 @@ public class DataStructureTest extends ParserTst {
 
         JavaQualifiedName qname = JavaQualifiedName.parseName("org.foo.Boo");
         String fieldName = "bar";
-        FieldSignature signature = FieldSignature.buildFor(node);
+        JavaFieldSignature signature = JavaFieldSignature.buildFor(node);
 
         assertFalse(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
 

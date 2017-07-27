@@ -7,18 +7,23 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 
 public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod, ASTMethodOrConstructorDeclaration {
 
     private JavaQualifiedName qualifiedName;
+    private JavaOperationSignature signature;
+
 
     public ASTMethodDeclaration(int id) {
         super(id);
     }
 
+
     public ASTMethodDeclaration(JavaParser p, int id) {
         super(p, id);
     }
+
 
     /**
      * Accept the visitor. *
@@ -27,6 +32,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
 
     /**
      * Gets the name of the method.
@@ -41,17 +47,21 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         return null;
     }
 
+
     public String getName() {
         return getMethodName();
     }
+
 
     public boolean isSyntacticallyPublic() {
         return super.isPublic();
     }
 
+
     public boolean isSyntacticallyAbstract() {
         return super.isAbstract();
     }
+
 
     @Override
     public boolean isPublic() {
@@ -61,6 +71,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         return super.isPublic();
     }
 
+
     @Override
     public boolean isAbstract() {
         if (isInterfaceMember()) {
@@ -69,18 +80,22 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         return super.isAbstract();
     }
 
+
     public boolean isInterfaceMember() {
         ASTClassOrInterfaceDeclaration clz = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         return clz != null && clz.isInterface();
     }
 
+
     public boolean isVoid() {
         return getResultType().isVoid();
     }
 
+
     public ASTResultType getResultType() {
         return getFirstChildOfType(ASTResultType.class);
     }
+
 
     public ASTBlock getBlock() {
         for (int i = 0; i < jjtGetNumChildren(); i++) {
@@ -91,6 +106,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         }
         return null;
     }
+
 
     public ASTNameList getThrows() {
         int declaratorIndex = -1;
@@ -112,11 +128,21 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
         return null;
     }
 
+
     @Override
     public JavaQualifiedName getQualifiedName() {
         if (qualifiedName == null) {
             qualifiedName = JavaQualifiedName.makeOperationOf(this);
         }
         return qualifiedName;
+    }
+
+
+    @Override
+    public JavaOperationSignature getSignature() {
+        if (signature == null) {
+            signature = JavaOperationSignature.buildFor(this);
+        }
+        return signature;
     }
 }
