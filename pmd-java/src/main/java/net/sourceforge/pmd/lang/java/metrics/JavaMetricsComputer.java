@@ -10,7 +10,6 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
@@ -21,11 +20,11 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  *
  * @author Clément Fournier
  */
-public class MetricsComputer {
+public class JavaMetricsComputer {
 
-    static final MetricsComputer INSTANCE = new MetricsComputer();
+    static final JavaMetricsComputer INSTANCE = new JavaMetricsComputer();
 
-    private MetricsComputer() {
+    private JavaMetricsComputer() {
 
     }
 

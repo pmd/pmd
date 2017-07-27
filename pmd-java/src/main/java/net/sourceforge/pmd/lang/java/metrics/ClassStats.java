@@ -21,8 +21,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
  *
  * <p>This class does not provide methods to operate directly on its nested classes, but only on itself. To operate on a
  * nested class, retrieve the correct ClassStats with {@link PackageStats#getClassStats(JavaQualifiedName, boolean)}
- * then
- * use the methods of ClassStats. Note that at this level, entities of the data structure do not manipulate
+ * then use the methods of ClassStats. Note that at this level, entities of the data structure do not manipulate
  * QualifiedNames anymore, only Strings.
  *
  * @author Clément Fournier

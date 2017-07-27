@@ -33,8 +33,8 @@ import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
@@ -48,8 +48,8 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
  */
 public class DataStructureTest extends ParserTst {
 
-    MetricKey<ASTAnyTypeDeclaration> classMetricKey = JavaClassMetricKey.of(new RandomClassMetric(), null);
-    MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = JavaOperationMetricKey.of(new RandomOperationMetric(), null);
+    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = JavaClassMetricKey.of(new RandomClassMetric(), null);
+    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = JavaOperationMetricKey.of(new RandomOperationMetric(), null);
     private PackageStats pack;
 
 
@@ -142,14 +142,16 @@ public class DataStructureTest extends ParserTst {
         acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                result.add((int) toplevel.compute(opMetricKey, node, force, Version.STANDARD));
+                OperationStats op = toplevel.getOperationStats(node.getQualifiedName(), node.getSignature(), false);
+                result.add((int) JavaMetricsComputer.INSTANCE.compute(opMetricKey, node, force, Version.STANDARD, op));
                 return super.visit(node, data);
             }
 
 
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                result.add((int) toplevel.compute(classMetricKey, node, force, Version.STANDARD));
+                ClassStats clazz = toplevel.getClassStats(node.getQualifiedName(), false);
+                result.add((int) JavaMetricsComputer.INSTANCE.compute(classMetricKey, node, force, Version.STANDARD, clazz));
                 return super.visit(node, data);
             }
         }, null);

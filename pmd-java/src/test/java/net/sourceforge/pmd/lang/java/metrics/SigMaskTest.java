@@ -19,10 +19,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
-import net.sourceforge.pmd.lang.java.metrics.signature.SigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
+import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.SigMask;
 
 /**
  * @author Clément Fournier

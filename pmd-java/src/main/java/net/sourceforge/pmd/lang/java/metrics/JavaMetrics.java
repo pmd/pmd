@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  */
 public final class JavaMetrics {
 
-    private static final PackageStats TOP_LEVEL_PACKAGE = new PackageStats();
+    private static final JavaMetricsFacade FACADE = new JavaMetricsFacade();
 
 
     private JavaMetrics() { // Cannot be instantiated
@@ -33,14 +33,14 @@ public final class JavaMetrics {
      *
      * @return The top level package stats
      */
-    /* default */ static PackageStats getTopLevelPackageStats() {
-        return TOP_LEVEL_PACKAGE;
+    static PackageStats getTopLevelPackageStats() {
+        return FACADE.getTopLevelPackageStats();
     }
 
 
-    /** Sets whether computations are forced or not. Used for tests. */
-    /* default */ static void reset() {
-        TOP_LEVEL_PACKAGE.reset();
+    /** Resets the entire data structure. Used for tests. */
+    static void reset() {
+        FACADE.reset();
     }
 
 
@@ -53,7 +53,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
     public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node) {
-        return get(key, node, Version.STANDARD);
+        return FACADE.computeForType(key, node, Version.STANDARD);
     }
 
 
@@ -68,14 +68,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
     public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version) {
-  
-        if (!key.supports(node)) {
-            return Double.NaN;
-        }
-
-        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeVersion);
+        return FACADE.computeForType(key, node, version);
     }
 
 
@@ -88,7 +81,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node) {
-        return get(key, node, Version.STANDARD);
+        return FACADE.computeForOperation(key, node, Version.STANDARD);
     }
 
 
@@ -102,14 +95,7 @@ public final class JavaMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-
-        if (!key.supports(node)) {
-            return Double.NaN;
-        }
-
-        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-
-        return TOP_LEVEL_PACKAGE.compute(key, node, false, safeVersion);
+        return FACADE.computeForOperation(key, node, version);
     }
 
 
@@ -125,13 +111,13 @@ public final class JavaMetrics {
      * {@code null}
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, ResultOption option) {
-        return get(key, node, Version.STANDARD, option);
+        return FACADE.computeWithResultOption(key, node, Version.STANDARD, option);
     }
 
 
     /**
-     * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The
-     * type of operation is specified by the {@link ResultOption} parameter.
+     * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The type
+     * of operation is specified by the {@link ResultOption} parameter.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
@@ -143,10 +129,7 @@ public final class JavaMetrics {
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version,
                              ResultOption option) {
-
-        MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-        return option == null ? Double.NaN
-                              : TOP_LEVEL_PACKAGE.computeWithResultOption(key, node, false, safeVersion, option);
+        return FACADE.computeWithResultOption(key, node, version, option);
     }
 
 }

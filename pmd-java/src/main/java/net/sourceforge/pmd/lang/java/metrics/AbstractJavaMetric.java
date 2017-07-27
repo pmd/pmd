@@ -33,9 +33,9 @@ public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
 
 
     /**
-     * Gives access to the toplevel package stats to metrics without having to pass them as a parameter to metrics.
+     * Gives access to the toplevel package stats to metrics.
      *
-     * @return The toplevel package stats (singleton contained within {@link JavaMetrics}).
+     * @return The toplevel package stats (singleton contained within {@link JavaMetricsFacade}).
      */
     protected static PackageStats getTopLevelPackageStats() {
         return JavaMetrics.getTopLevelPackageStats();

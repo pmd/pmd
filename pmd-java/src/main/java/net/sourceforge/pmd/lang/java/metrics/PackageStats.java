@@ -7,15 +7,10 @@ package net.sourceforge.pmd.lang.java.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 
 /**
@@ -45,21 +40,6 @@ public final class PackageStats {
     /* default */ void reset() {
         subPackages.clear();
         classes.clear();
-    }
-
-
-    /**
-     * Returns true if the signature of the operation designated by the qualified name is covered by the mask.
-     *
-     * @param qname   The operation to test
-     * @param sigMask The signature mask to use
-     *
-     * @return True if the signature of the operation designated by the qualified name is covered by the mask
-     */
-    public boolean hasMatchingSig(JavaQualifiedName qname, OperationSigMask sigMask) {
-        ClassStats clazz = getClassStats(qname, false);
-
-        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
     }
 
 
@@ -158,6 +138,19 @@ public final class PackageStats {
         return next;
     }
 
+    /**
+     * Returns true if the signature of the operation designated by the qualified name is covered by the mask.
+     *
+     * @param qname   The operation to test
+     * @param sigMask The signature mask to use
+     *
+     * @return True if the signature of the operation designated by the qualified name is covered by the mask
+     */
+    public boolean hasMatchingSig(JavaQualifiedName qname, OperationSigMask sigMask) {
+        ClassStats clazz = getClassStats(qname, false);
+
+        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
+    }
 
     /**
      * Returns true if the signature of the field designated by its name and the qualified name of its class is covered
@@ -173,67 +166,5 @@ public final class PackageStats {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
-    }
-
-
-    /**
-     * Computes the value of a metric on a class.
-     *
-     * @param key     The class metric to compute
-     * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, boolean force,
-                                 MetricVersion version) {
-        ClassStats container = getClassStats(node.getQualifiedName(), false);
-
-        return container == null ? Double.NaN
-                                 : MetricsComputer.INSTANCE.compute(key, node, force, version, container);
-    }
-
-
-    /**
-     * Computes the value of a metric for an operation.
-     *
-     * @param key     The operation metric for which to find a memoized result
-     * @param node    The AST node of the operation
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
-                                 boolean force, MetricVersion version) {
-        JavaQualifiedName qname = node.getQualifiedName();
-        ClassStats container = getClassStats(qname, false);
-        OperationStats memoizer = container == null ? null : container.getOperationStats(qname.getOperation(),
-                                                                                         node.getSignature());
-
-        return memoizer == null ? Double.NaN
-                                : MetricsComputer.INSTANCE.compute(key, node, force, version, memoizer);
-    }
-
-
-    /**
-     * Computes an aggregate result using a ResultOption.
-     *
-     * @param key     The class metric to compute
-     * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
-     * @param option  The type of result to compute
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double computeWithResultOption(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
-                                                 boolean force, MetricVersion version, ResultOption option) {
-        ClassStats container = getClassStats(node.getQualifiedName(), false);
-
-        return container == null ? Double.NaN
-                                 : MetricsComputer.INSTANCE.computeWithResultOption(key, node, force, version,
-                                                                                    option, container);
     }
 }
