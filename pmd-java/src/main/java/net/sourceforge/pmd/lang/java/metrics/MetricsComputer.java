@@ -10,6 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
@@ -99,7 +100,8 @@ public class MetricsComputer {
         List<Double> values = new ArrayList<>();
         for (ASTMethodOrConstructorDeclaration op : ops) {
             if (key.supports(op)) {
-                OperationStats opStats = stats.getOperationStats(op.getQualifiedName().getOperation(), op);
+                OperationStats opStats = stats.getOperationStats(op.getQualifiedName().getOperation(),
+                                                                 OperationSignature.buildFor(op));
                 double val = this.compute(key, op, force, version, opStats);
                 if (val != Double.NaN) {
                     values.add(val);

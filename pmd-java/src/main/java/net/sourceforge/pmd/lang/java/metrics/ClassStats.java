@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
@@ -77,14 +76,14 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
     }
 
 
-    OperationStats getOperationStats(String operationName, ASTMethodOrConstructorDeclaration node) {
-        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
-
-        if (sigMap == null) {
-            return null;
+    OperationStats getOperationStats(String operationName, OperationSignature sig) {
+        if (sig == null) {
+            return getOperationStats(operationName);
         }
 
-        return sigMap.get(operationName);
+        Map<String, OperationStats> sigMap = operations.get(sig);
+
+        return sigMap == null ? null : sigMap.get(operationName);
     }
 
 
@@ -93,12 +92,16 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
      *
      * @param name The name of the operation
      * @param sig  The signature of the operation
+     *
+     * @return The newly created operation stats
      */
-    /* default */ void addOperation(String name, OperationSignature sig) {
+    /* default */ OperationStats addOperation(String name, OperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashMap<String, OperationStats>());
         }
-        operations.get(sig).put(name, new OperationStats(name));
+        OperationStats newOp = new OperationStats(name);
+        operations.get(sig).put(name, newOp);
+        return newOp;
     }
 
 

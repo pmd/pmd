@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.api.ResultOption;
@@ -63,6 +64,35 @@ public final class PackageStats {
 
 
     /**
+     * Gets the OperationStats corresponding to the qualified name.
+     *
+     * @param qname            The qualified name of the operation to fetch
+     * @param sig              The signature of the operation, which must be non-null if createIfNotFound is set
+     * @param createIfNotFound Create an OperationStats if missing
+     *
+     * @return The new OperationStat, or the one that was found. Can return null only if createIfNotFound is unset
+     */
+    OperationStats getOperationStats(QualifiedName qname, OperationSignature sig, boolean createIfNotFound) {
+        ClassStats container = getClassStats(qname, createIfNotFound);
+
+        if (container == null || !qname.isOperation()) {
+            return null;
+        }
+
+        OperationStats target = container.getOperationStats(qname.getOperation(), sig);
+
+        if (target == null && createIfNotFound) {
+            if (sig == null) {
+                throw new IllegalArgumentException("Cannot add an operation with a null signature");
+            }
+            target = container.addOperation(qname.getOperation(), sig);
+        }
+
+        return target;
+    }
+
+
+    /**
      * Gets the ClassStats corresponding to the named resource. The class can be nested. If the createIfNotFound
      * parameter is set, the method also creates the hierarchy if it doesn't exist.
      *
@@ -105,7 +135,7 @@ public final class PackageStats {
      * missing PackageStats along the way.
      *
      * @param qname            The qualified name of the resource
-     * @param createIfNotFound If set to true, the hierarch is created if non existent
+     * @param createIfNotFound If set to true, the hierarch is created if missing
      *
      * @return The deepest package that contains this resource. Can only return null if createIfNotFound is unset
      */
@@ -179,7 +209,8 @@ public final class PackageStats {
                                  boolean force, MetricVersion version) {
         QualifiedName qname = node.getQualifiedName();
         ClassStats container = getClassStats(qname, false);
-        OperationStats memoizer = container == null ? null : container.getOperationStats(qname.getOperation(), node);
+        OperationStats memoizer = container == null ? null : container.getOperationStats(qname.getOperation(),
+                                                                                         OperationSignature.buildFor(node));
 
         return memoizer == null ? Double.NaN
                                 : MetricsComputer.INSTANCE.compute(key, node, force, version, memoizer);
