@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -73,17 +72,12 @@ public class DefaultNpathVisitor extends JavaParserVisitorReducedAdapter {
     public Object visit(ASTIfStatement node, Object data) {
         // (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
-        List<JavaNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i) instanceof ASTStatement) {
-                statementChildren.add((JavaNode) node.jjtGetChild(i));
-            }
-        }
+        List<ASTStatement> statementChildren = node.findChildrenOfType(ASTStatement.class);
 
         // add path for not taking if
         int complexity = node.hasElse() ? 0 : 1;
 
-        for (JavaNode element : statementChildren) {
+        for (ASTStatement element : statementChildren) {
             complexity += (Integer) element.jjtAccept(this, data);
         }
 
