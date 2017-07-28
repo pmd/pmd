@@ -9,11 +9,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
+import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
 
 /**
  * Statistics about a class, enum, interface, or annotation. Stores information about the contained members and their
@@ -26,7 +28,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
  *
  * @author Clément Fournier
  */
-/* default */ class ClassStats extends Memoizer {
+/* default */ class ClassStats extends MetricMemoizer<ASTAnyTypeDeclaration> {
 
     private Map<JavaOperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
     private Map<JavaFieldSignature, Set<String>> fields = new HashMap<>();

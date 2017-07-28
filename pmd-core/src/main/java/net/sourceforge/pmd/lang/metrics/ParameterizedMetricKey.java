@@ -16,18 +16,18 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
  *
  * @author Clément Fournier
  */
-public final class ParameterizedMetricKey {
+public final class ParameterizedMetricKey<N extends Node> {
 
-    private static final Map<Integer, ParameterizedMetricKey> POOL = new HashMap<>();
+    private static final Map<Integer, ParameterizedMetricKey<?>> POOL = new HashMap<>();
 
     /** The metric key. */
-    public final MetricKey<? extends Node> key;
+    public final MetricKey<N> key;
     /** The version of the metric. */
     public final MetricVersion version;
 
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey<? extends Node> key, MetricVersion version) {
+    private ParameterizedMetricKey(MetricKey<N> key, MetricVersion version) {
         this.key = key;
         this.version = version;
     }
@@ -57,13 +57,22 @@ public final class ParameterizedMetricKey {
     }
 
 
-    /** Builds a parameterized metric key. */
-    public static ParameterizedMetricKey getInstance(MetricKey<? extends Node> key, MetricVersion version) {
+    /**
+     * Builds a parameterized metric key.
+     *
+     * @param key     The key
+     * @param version The version
+     * @param <N>     The type of node of the metrickey
+     *
+     * @return An instance of parameterized metric key corresponding to the parameters
+     */
+    @SuppressWarnings("unchecked")
+    public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricVersion version) {
         int code = code(key, version);
-        ParameterizedMetricKey paramKey = POOL.get(code);
-        if (paramKey == null) {
-            POOL.put(code, new ParameterizedMetricKey(key, version));
+        if (!POOL.containsKey(code)) {
+            POOL.put(code, new ParameterizedMetricKey<>(key, version));
         }
-        return POOL.get(code);
+
+        return (ParameterizedMetricKey<N>) POOL.get(code);
     }
 }

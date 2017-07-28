@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
+
 /**
  * Statistics for an operation. Keeps a map of all memoized metrics results.
  *
  * @author Clément Fournier
  */
-class OperationStats extends Memoizer {
+class OperationStats extends MetricMemoizer<ASTMethodOrConstructorDeclaration> {
 
     private final String name;
 

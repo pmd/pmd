@@ -143,7 +143,7 @@ public class DataStructureTest extends ParserTst {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
                 OperationStats op = toplevel.getOperationStats(node.getQualifiedName(), node.getSignature(), false);
-                result.add((int) JavaMetricsComputer.INSTANCE.compute(opMetricKey, node, force, Version.STANDARD, op));
+                result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force, Version.STANDARD, op));
                 return super.visit(node, data);
             }
 
@@ -151,7 +151,7 @@ public class DataStructureTest extends ParserTst {
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
                 ClassStats clazz = toplevel.getClassStats(node.getQualifiedName(), false);
-                result.add((int) JavaMetricsComputer.INSTANCE.compute(classMetricKey, node, force, Version.STANDARD, clazz));
+                result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force, Version.STANDARD, clazz));
                 return super.visit(node, data);
             }
         }, null);

@@ -7,10 +7,15 @@ package net.sourceforge.pmd.lang.java.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
+import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
+import net.sourceforge.pmd.lang.metrics.ProjectMirror;
 
 
 /**
@@ -20,10 +25,11 @@ import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
  * @author Clément Fournier
  * @see ClassStats
  */
-public final class PackageStats {
+public final class PackageStats implements ProjectMirror<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
 
     private final Map<String, PackageStats> subPackages = new HashMap<>();
     private final Map<String, ClassStats> classes = new HashMap<>();
+
 
 
     /**
@@ -138,6 +144,7 @@ public final class PackageStats {
         return next;
     }
 
+
     /**
      * Returns true if the signature of the operation designated by the qualified name is covered by the mask.
      *
@@ -151,6 +158,7 @@ public final class PackageStats {
 
         return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
     }
+
 
     /**
      * Returns true if the signature of the field designated by its name and the qualified name of its class is covered
@@ -166,5 +174,17 @@ public final class PackageStats {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
+    }
+
+
+    @Override
+    public MetricMemoizer<ASTMethodOrConstructorDeclaration> getOperationStats(QualifiedName qname) {
+        return getOperationStats((JavaQualifiedName) qname, null, false);
+    }
+
+
+    @Override
+    public MetricMemoizer<ASTAnyTypeDeclaration> getClassStats(QualifiedName qname) {
+        return getClassStats((JavaQualifiedName) qname, false);
     }
 }

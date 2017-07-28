@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 /**
- * Facade of the Java metrics framework.
+ * Inner façade of the Java metrics framework. The static façade delegates to an instance of this class.
  *
  * @author Clément Fournier
  */
@@ -48,7 +48,9 @@ class JavaMetricsFacade {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
-    public double computeForType(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version) {
+    double computeForType(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version) {
+
+        checkKeyNotNull(key);
 
         if (!key.supports(node)) {
             return Double.NaN;
@@ -58,7 +60,7 @@ class JavaMetricsFacade {
         ClassStats memoizer = topLevelPackageStats.getClassStats(node.getQualifiedName(), false);
 
         return memoizer == null ? Double.NaN
-                                : JavaMetricsComputer.INSTANCE.compute(key, node, false, safeVersion, memoizer);
+                                : JavaMetricsComputer.INSTANCE.computeForType(key, node, false, safeVersion, memoizer);
     }
 
 
@@ -71,8 +73,10 @@ class JavaMetricsFacade {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
-    public double computeForOperation(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
-                                      MetricVersion version) {
+    double computeForOperation(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
+                               MetricVersion version) {
+
+        checkKeyNotNull(key);
 
         if (!key.supports(node)) {
             return Double.NaN;
@@ -86,7 +90,8 @@ class JavaMetricsFacade {
                                                     : container.getOperationStats(qname.getOperation(), node.getSignature());
 
         return memoizer == null ? Double.NaN
-                                : JavaMetricsComputer.INSTANCE.compute(key, node, false, safeVersion, memoizer);
+                                : JavaMetricsComputer.INSTANCE.computeForOperation(key, node, false, safeVersion,
+                                                                                   memoizer);
 
     }
 
@@ -103,18 +108,25 @@ class JavaMetricsFacade {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
      * {@code null}
      */
-    public double computeWithResultOption(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
-                                          MetricVersion version, ResultOption option) {
+    double computeWithResultOption(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
+                                   MetricVersion version, ResultOption option) {
+
+        checkKeyNotNull(key);
 
         if (option == null) {
             throw new IllegalArgumentException("The result option may not be null");
         }
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-        ClassStats memoizer = topLevelPackageStats.getClassStats(node.getQualifiedName(), false);
 
-        return memoizer == null ? Double.NaN
-                                : JavaMetricsComputer.INSTANCE.computeWithResultOption(key, node, false, safeVersion,
-                                                                                       option, memoizer);
+        return JavaMetricsComputer.INSTANCE.computeWithResultOption(key, node, false, safeVersion,
+                                                                    option, topLevelPackageStats);
+    }
+
+
+    private void checkKeyNotNull(MetricKey<?> key) {
+        if (key == null) {
+            throw new IllegalArgumentException("The metric key may not be null");
+        }
     }
 }
