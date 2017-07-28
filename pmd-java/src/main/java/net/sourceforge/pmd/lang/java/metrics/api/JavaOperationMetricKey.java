@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.metrics.api;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOperationMetric;
@@ -109,7 +111,9 @@ public enum JavaOperationMetricKey implements MetricKey<ASTMethodOrConstructorDe
 
             @Override
             public boolean equals(Object obj) {
-                return obj == this;
+                return obj != null && getClass() == obj.getClass()
+                    && Objects.equals(name(), getClass().cast(obj).name())
+                    && Objects.equals(getCalculator(), getClass().cast(obj).getCalculator());
             }
 
 
