@@ -244,9 +244,9 @@ public class RuleDocGenerator {
                         lines.add("|----|-------------|-----------|");
                         for (PropertyDescriptor<?> propertyDescriptor : rule.getPropertyDescriptors()) {
                             lines.add("|" + propertyDescriptor.name()
-                            + "|" + (propertyDescriptor.defaultValue() != null ? String.valueOf(propertyDescriptor.defaultValue()) : "")
-                            + "|" + propertyDescriptor.description()
-                            + "|");
+                                + "|" + (propertyDescriptor.defaultValue() != null ? String.valueOf(propertyDescriptor.defaultValue()) : "")
+                                + "|" + propertyDescriptor.description()
+                                + "|");
                         }
                         lines.add("");
                     }
@@ -269,7 +269,7 @@ public class RuleDocGenerator {
      */
     private static String getRuleSetSourceFilepath(RuleSet ruleset) throws IOException {
         Path root = FileSystems.getDefault().getPath("..").toAbsolutePath().normalize();
-        final String rulesetFilename =  FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()));
+        final String rulesetFilename = FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()));
         final List<Path> foundPathResult = new LinkedList<>();
 
         Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
