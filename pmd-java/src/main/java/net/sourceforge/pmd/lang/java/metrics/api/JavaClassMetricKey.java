@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.metrics.api;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloClassMetric;
@@ -101,7 +103,20 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
             public boolean supports(ASTAnyTypeDeclaration node) {
                 return metric.supports(node);
             }
+
+
+            @Override
+            public boolean equals(Object obj) {
+                return obj != null && getClass() == obj.getClass()
+                    && Objects.equals(name(), getClass().cast(obj).name())
+                    && Objects.equals(getCalculator(), getClass().cast(obj).getCalculator());
+            }
+
+
+            @Override
+            public int hashCode() {
+                return (metric != null ? metric.hashCode() * 31 : 0) + (name != null ? name.hashCode() : 0);
+            }
         };
     }
-
 }

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
 
 /**
@@ -29,7 +30,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
     public Object visit(ASTIfStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompIf = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompIf = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         ((MutableInt) data).add(boolCompIf);
         return data;
     }
@@ -39,8 +40,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
     public Object visit(ASTForStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompFor = NPathComplexityRule
-            .sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
+        int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
         ((MutableInt) data).add(boolCompFor);
         return data;
     }
@@ -50,7 +50,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
     public Object visit(ASTDoStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompDo = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompDo = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         ((MutableInt) data).add(boolCompDo);
         return data;
     }
@@ -60,7 +60,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
     public Object visit(ASTSwitchStatement node, Object data) {
         super.visit((JavaNode) node, data); // skip the superclass' treatment
 
-        int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompSwitch = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         ((MutableInt) data).add(boolCompSwitch);
         return data;
     }
@@ -80,7 +80,7 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
     public Object visit(ASTWhileStatement node, Object data) {
         super.visit(node, data);
 
-        int boolCompWhile = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+        int boolCompWhile = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
         ((MutableInt) data).add(boolCompWhile);
         return data;
     }
