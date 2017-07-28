@@ -4,9 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
+import java.util.List;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
@@ -38,6 +43,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  * fall-through cases in {@code switch} statements are not counted as well.
  *
  * <p>References:
+ *
  * <ul>
  * <li> [1] Lanza, Object-Oriented Metrics in Practice, 2005.
  * <li> [2] McCabe, A Complexity Measure, in Proceedings of the 2nd ICSE (1976).
@@ -49,7 +55,42 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  */
 public final class CycloMetric {
 
+    private CycloMetric() {
+
+    }
+
     // TODO:cf Cyclo should develop factorized boolean operators to count them
+
+
+    /**
+     * Evaluates the number of paths through a boolean expression. This is the total number of {@code &&} and {@code ||}
+     * operators appearing in the expression. This is used in the calculation of cyclomatic and n-path complexity.
+     *
+     * @param expr Expression to analyse
+     *
+     * @return The number of paths through the expression
+     */
+    public static int booleanExpressionComplexity(ASTExpression expr) {
+        if (expr == null) {
+            return 0;
+        }
+
+        List<ASTConditionalAndExpression> andNodes = expr.findDescendantsOfType(ASTConditionalAndExpression.class);
+        List<ASTConditionalOrExpression> orNodes = expr.findDescendantsOfType(ASTConditionalOrExpression.class);
+
+        int complexity = 0;
+
+        for (ASTConditionalOrExpression element : orNodes) {
+            complexity += element.jjtGetNumChildren() - 1;
+        }
+
+        for (ASTConditionalAndExpression element : andNodes) {
+            complexity += element.jjtGetNumChildren() - 1;
+        }
+
+        return complexity;
+    }
+
 
     /** Variants of CYCLO. */
     public enum CycloVersion implements MetricVersion {
@@ -78,4 +119,5 @@ public final class CycloMetric {
             return 1 + JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, version, ResultOption.AVERAGE);
         }
     }
+
 }
