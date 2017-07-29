@@ -31,7 +31,6 @@ public final class PackageStats implements ProjectMirror<ASTAnyTypeDeclaration, 
     private final Map<String, ClassStats> classes = new HashMap<>();
 
 
-
     /**
      * Default constructor.
      */

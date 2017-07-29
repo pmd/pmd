@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.metrics.api;
 
 /**
  * Options to calculate a result aggregated on the operations of a class. ResultOptions allow us to return the sum, or
- * average, or the highest value of the metric computed on the operations of a class. They help to reduce the
- * need for custom implementations of those calculations in rules. Thus, they greatly reduce the amount of code
- * required to produce detailed violation reports for classes.
+ * average, or the highest value of the metric computed on the operations of a class. They help to reduce the need for
+ * custom implementations of those calculations in rules. Thus, they greatly reduce the amount of code required to
+ * produce detailed violation reports for classes.
  *
  * @author Clément Fournier
  */

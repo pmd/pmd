@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
+import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
 
 /**
  * Statistics about a class, enum, interface, or annotation. Stores information about the contained members and their
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
  *
  * @author Clément Fournier
  */
-/* default */ class ClassStats extends MetricMemoizer<ASTAnyTypeDeclaration> {
+/* default */ class ClassStats extends AbstractMetricMemoizer<ASTAnyTypeDeclaration> {
 
     private Map<JavaOperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
     private Map<JavaFieldSignature, Set<String>> fields = new HashMap<>();

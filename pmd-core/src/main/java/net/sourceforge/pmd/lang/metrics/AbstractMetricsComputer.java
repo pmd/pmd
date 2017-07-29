@@ -21,19 +21,10 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractMetricsComputer<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
+public abstract class AbstractMetricsComputer<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode>
+    implements MetricsComputer<T, O> {
 
-    /**
-     * Computes the value of a metric for a class and stores the result in the ClassStats object.
-     *
-     * @param key      The class metric to compute
-     * @param node     The AST node of the class
-     * @param force    Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version  The version of the metric to compute
-     * @param memoizer The object memoizing the results
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
+    @Override
     public double computeForType(MetricKey<T> key, T node, boolean force,
                                  MetricVersion version, MetricMemoizer<T> memoizer) {
 
@@ -51,17 +42,7 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
     }
 
 
-    /**
-     * Computes the value of a metric for an operation and stores the result in the OperationStats object.
-     *
-     * @param key      The operation metric to compute
-     * @param node     The AST node of the operation
-     * @param force    Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version  The version of the metric to compute
-     * @param memoizer The object memoizing the results
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
+    @Override
     public double computeForOperation(MetricKey<O> key, O node, boolean force,
                                       MetricVersion version, MetricMemoizer<O> memoizer) {
 
@@ -77,18 +58,7 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
     }
 
 
-    /**
-     * Computes an aggregate result using a ResultOption.
-     *
-     * @param key     The class metric to compute
-     * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
-     * @param option  The type of result to compute
-     * @param stats   The ClassStats storing info about the class
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
+    @Override
     public double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricVersion version,
                                           ResultOption option, ProjectMirror<T, O> stats) {
 

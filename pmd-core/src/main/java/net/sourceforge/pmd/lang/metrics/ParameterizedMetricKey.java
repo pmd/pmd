@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 /**
  * Represents a key parameterized with its version. Used to index memoization maps.
  *
+ * @param <N> Type of node on which the memoized metric can be computed
+ *
  * @author Clément Fournier
  */
 public final class ParameterizedMetricKey<N extends Node> {

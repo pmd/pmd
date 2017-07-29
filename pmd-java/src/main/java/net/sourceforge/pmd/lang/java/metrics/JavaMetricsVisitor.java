@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 
 /**
- * Visitor for the metrics framework, that fills a {@link PackageStats} object with the
- * signatures of operations and fields it encounters.
+ * Visitor for the metrics framework, that fills a {@link PackageStats} object with the signatures of operations and
+ * fields it encounters.
  *
  * @author Clément Fournier
  */
