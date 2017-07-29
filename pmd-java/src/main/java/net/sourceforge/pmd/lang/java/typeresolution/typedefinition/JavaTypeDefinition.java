@@ -21,6 +21,7 @@ public class JavaTypeDefinition implements TypeDefinition {
     private final Class<?> clazz;
     private final List<JavaTypeDefinition> genericArgs;
     private final boolean isGeneric;
+    private final JavaTypeDefinition enclosingClass;
 
     private JavaTypeDefinition(final Class<?> clazz) {
         this.clazz = clazz;
@@ -45,6 +46,8 @@ public class JavaTypeDefinition implements TypeDefinition {
         } else {
             this.genericArgs = Collections.emptyList();
         }
+
+        enclosingClass = forClass(clazz.getEnclosingClass());
     }
 
     public static JavaTypeDefinition forClass(final Class<?> clazz) {
@@ -93,15 +96,23 @@ public class JavaTypeDefinition implements TypeDefinition {
     }
 
     public JavaTypeDefinition getGenericType(final String parameterName) {
-        final TypeVariable<?>[] typeParameters = clazz.getTypeParameters();
-        for (int i = 0; i < typeParameters.length; i++) {
-            if (typeParameters[i].getName().equals(parameterName)) {
-                return getGenericType(i);
+        for (JavaTypeDefinition currTypeDef = this; currTypeDef != null; currTypeDef = currTypeDef.enclosingClass) {
+            final TypeVariable<?>[] typeParameters = currTypeDef.clazz.getTypeParameters();
+            for (int i = 0; i < typeParameters.length; i++) {
+                if (typeParameters[i].getName().equals(parameterName)) {
+                    return currTypeDef.getGenericType(i);
+                }
             }
         }
 
-        throw new IllegalArgumentException("No generic parameter by name " + parameterName
-                                                   + " on class " + clazz.getSimpleName());
+        // throw because we could not find parameterName
+        StringBuilder builder = new StringBuilder("No generic parameter by name ").append(parameterName);
+        for (JavaTypeDefinition currTypeDef = this; currTypeDef != null; currTypeDef = currTypeDef.enclosingClass) {
+            builder.append("\n on class ");
+            builder.append(clazz.getSimpleName());
+        }
+
+        throw new IllegalArgumentException(builder.toString());
     }
 
     public JavaTypeDefinition getGenericType(final int index) {
@@ -189,7 +200,7 @@ public class JavaTypeDefinition implements TypeDefinition {
     public boolean isPrimitive() {
         return clazz.isPrimitive();
     }
-    
+
     public boolean equivalent(JavaTypeDefinition def) {
         // TODO: JavaTypeDefinition generic equality
         return clazz.equals(def.clazz) && getTypeParameterCount() == def.getTypeParameterCount();

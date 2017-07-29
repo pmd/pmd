@@ -605,4 +605,24 @@ public final class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#527 [java] Lombok getter annotation on enum is not recognized correctly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+
+@Getter
+public enum Foo {
+    BAR(1);
+
+    private final int number;
+
+    Foo(final int number) {
+        this.number = number;
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

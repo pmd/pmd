@@ -316,7 +316,7 @@ public class PMDASMVisitor extends ClassVisitor {
 
         @Override
         public void visitInnerClassType(String name) {
-            parent.parseClassName(name);
+            // parent.parseClassName(name);
         }
 
         @Override

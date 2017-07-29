@@ -60,6 +60,7 @@ import net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccess;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericBounds;
+import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericNested;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericParameter;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericRaw;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessGenericSimple;
@@ -204,7 +205,7 @@ public class ClassTypeResolverTest {
         Assert.assertTrue(Converter.class.isAssignableFrom(child.getType()));
         Assert.assertSame(String.class, child.getTypeDefinition().getGenericType(0).getType());
     }
-    
+
     @Test
     public void testAnoymousExtendingObject() throws Exception {
         Node acu = parseAndTypeResolveForClass(AnoymousExtendingObject.class, "1.8");
@@ -968,7 +969,6 @@ public class ClassTypeResolverTest {
                 acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
                 AbstractJavaTypeNode.class);
 
-
         int index = 0;
 
         // genericField.first = "";
@@ -1148,6 +1148,28 @@ public class ClassTypeResolverTest {
         // this.field.first = "";
         assertEquals(String.class, expressions.get(index).getType());
         assertEquals(String.class, getChildType(expressions.get(index++), 2));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testFieldAccessGenericNested() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(FieldAccessGenericNested.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//StatementExpression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // n.field = null;
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
+
+        // n.generic.first = null;
+        assertEquals(String.class, expressions.get(index).getType());
+        assertEquals(String.class, getChildType(expressions.get(index++), 0));
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
@@ -1429,7 +1451,6 @@ public class ClassTypeResolverTest {
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
     }
-
 
 
     private Class<?> getChildType(Node node, int childIndex) {
