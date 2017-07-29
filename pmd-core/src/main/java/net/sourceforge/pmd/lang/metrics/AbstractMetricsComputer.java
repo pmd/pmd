@@ -9,9 +9,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 /**
  * Base class for metrics computers. These objects compute a metric and memoize it.

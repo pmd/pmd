@@ -9,8 +9,8 @@ import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOperationMetric;
-import net.sourceforge.pmd.lang.metrics.api.Metric;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
+import net.sourceforge.pmd.lang.metrics.Metric;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 /**
  * Keys identifying standard operation metrics.

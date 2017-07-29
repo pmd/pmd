@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 
 /**
  * Represents a key parameterized with its version. Used to index memoization maps.

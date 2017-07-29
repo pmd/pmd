@@ -37,9 +37,9 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
-import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.Metric.Version;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
 /**
  * Tests functionality of the whole data structure (PackageStats, ClassStats, OperationStats). The behaviour of the

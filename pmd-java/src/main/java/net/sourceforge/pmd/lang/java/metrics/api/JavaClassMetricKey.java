@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.WmcMetric;
-import net.sourceforge.pmd.lang.metrics.api.Metric;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
+import net.sourceforge.pmd.lang.metrics.Metric;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 /**
  * Keys identifying standard class metrics.

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.metrics.signature.Signature;
+import net.sourceforge.pmd.lang.metrics.Signature;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**

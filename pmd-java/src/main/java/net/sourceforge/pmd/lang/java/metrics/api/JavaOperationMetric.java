@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics.api;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.metrics.api.Metric;
+import net.sourceforge.pmd.lang.metrics.Metric;
 
 /**
  * Metric that can be computed on an operation.

@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.metrics.api.Metric;
+import net.sourceforge.pmd.lang.metrics.Metric;
 
 
 /**

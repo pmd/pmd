@@ -2,9 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.metrics.api;
+package net.sourceforge.pmd.lang.metrics;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.metrics.Metric;
 
 /**
  * Key identifying a metric. Such keys <i>must</i> implement the hashCode method. Enums are well fitted to serve as
