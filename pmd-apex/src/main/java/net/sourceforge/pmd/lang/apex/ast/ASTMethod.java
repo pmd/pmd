@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
+import net.sourceforge.pmd.lang.ast.SignedNode;
+import net.sourceforge.pmd.lang.metrics.Signature;
+
 import apex.jorje.semantic.ast.member.Method;
 
-public class ASTMethod extends AbstractApexNode<Method> {
+public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode, SignedNode<ASTMethod> {
 
     public ASTMethod(Method method) {
         super(method);
@@ -39,5 +43,17 @@ public class ASTMethod extends AbstractApexNode<Method> {
         }
 
         return super.getEndColumn();
+    }
+
+
+    @Override
+    public ApexQualifiedName getQualifiedName() {
+        return ApexQualifiedName.ofMethod(this);
+    }
+
+
+    @Override
+    public ApexOperationSignature getSignature() {
+        return ApexOperationSignature.of(this);
     }
 }
