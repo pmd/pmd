@@ -16,7 +16,7 @@ public class JavaMetricsVisitorFacade extends JavaParserVisitorAdapter {
 
     public void initializeWith(ASTCompilationUnit rootNode) {
         JavaMetricsVisitor visitor = new JavaMetricsVisitor();
-        rootNode.jjtAccept(visitor, JavaMetrics.getJavaProjectMirror());
+        rootNode.jjtAccept(visitor, JavaMetrics.getTopLevelPackageStats());
     }
 
 }

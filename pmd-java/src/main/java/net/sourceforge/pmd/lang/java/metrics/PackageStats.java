@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
  * @author Clément Fournier
  * @see ClassStats
  */
-public final class PackageStats implements JavaProjectMirror {
+public final class PackageStats implements JavaProjectMirror, JavaSignatureMatcher {
 
     private final Map<String, PackageStats> subPackages = new HashMap<>();
     private final Map<String, ClassStats> classes = new HashMap<>();

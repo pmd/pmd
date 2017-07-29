@@ -136,7 +136,7 @@ public class DataStructureTest extends ParserTst {
     }
 
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
-        final JavaProjectMirror toplevel = JavaMetrics.getJavaProjectMirror();
+        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
 
         final List<Integer> result = new ArrayList<>();
 

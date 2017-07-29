@@ -33,12 +33,12 @@ public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
 
 
     /**
-     * Gives access to the project mirror to metrics. They can use it to perform signature matching.
+     * Gives access to a signature matcher to metrics. They can use it to perform signature matching.
      *
-     * @return The project mirror (singleton contained within {@link JavaMetricsFacade}).
+     * @return A signature matcher
      */
-    protected static JavaProjectMirror getJavaProjectMirror() {
-        return JavaMetrics.getJavaProjectMirror();
+    protected static JavaSignatureMatcher getSignatureMatcher() {
+        return JavaMetrics.getTopLevelPackageStats();
     }
 
 }

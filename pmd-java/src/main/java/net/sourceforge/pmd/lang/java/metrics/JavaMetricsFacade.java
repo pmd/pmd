@@ -26,7 +26,7 @@ class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, AST
 
 
     @Override
-    public JavaProjectMirror getLanguageSpecificProjectMirror() {
+    public PackageStats getLanguageSpecificProjectMirror() {
         return topLevelPackageStats;
     }
 

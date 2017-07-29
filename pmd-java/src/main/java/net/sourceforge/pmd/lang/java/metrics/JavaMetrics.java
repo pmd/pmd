@@ -33,7 +33,7 @@ public final class JavaMetrics {
      *
      * @return The project mirror
      */
-    static JavaProjectMirror getJavaProjectMirror() {
+    static PackageStats getTopLevelPackageStats() {
         return FACADE.getLanguageSpecificProjectMirror();
     }
 
