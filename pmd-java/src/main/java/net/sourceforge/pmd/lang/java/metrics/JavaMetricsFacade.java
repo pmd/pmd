@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsFacade;
 import net.sourceforge.pmd.lang.metrics.MetricsComputer;
-import net.sourceforge.pmd.lang.metrics.ProjectMirror;
 
 /**
  * Inner façade of the Java metrics framework. The static façade delegates to an instance of this class.
@@ -20,19 +19,15 @@ class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, AST
     private final PackageStats topLevelPackageStats = new PackageStats();
 
 
-    /**
-     * Returns the top level package statistics.
-     *
-     * @return The top level package stats
-     */
-    PackageStats getTopLevelPackageStats() {
-        return topLevelPackageStats;
-    }
-
-
     /** Resets the entire data structure. Used for tests. */
     void reset() {
         topLevelPackageStats.reset();
+    }
+
+
+    @Override
+    public JavaProjectMirror getLanguageSpecificProjectMirror() {
+        return topLevelPackageStats;
     }
 
 
@@ -41,9 +36,4 @@ class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, AST
         return JavaMetricsComputer.INSTANCE;
     }
 
-
-    @Override
-    protected ProjectMirror<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> getLanguageSpecificMirror() {
-        return topLevelPackageStats;
-    }
 }

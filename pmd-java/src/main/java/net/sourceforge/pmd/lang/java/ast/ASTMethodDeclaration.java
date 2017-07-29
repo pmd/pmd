@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAGraphMethod, ASTMethodOrConstructorDeclaration {
 
     private JavaQualifiedName qualifiedName;
-    private JavaOperationSignature signature;
 
 
     public ASTMethodDeclaration(int id) {
@@ -128,9 +127,6 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode implements DFAG
 
     @Override
     public JavaOperationSignature getSignature() {
-        if (signature == null) {
-            signature = JavaOperationSignature.buildFor(this);
-        }
-        return signature;
+        return JavaOperationSignature.buildFor(this);
     }
 }

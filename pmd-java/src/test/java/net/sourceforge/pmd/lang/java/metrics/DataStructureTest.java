@@ -36,6 +36,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
+import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
 import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
@@ -135,14 +136,14 @@ public class DataStructureTest extends ParserTst {
     }
 
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
-        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
+        final JavaProjectMirror toplevel = JavaMetrics.getJavaProjectMirror();
 
         final List<Integer> result = new ArrayList<>();
 
         acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                OperationStats op = toplevel.getOperationStats(node.getQualifiedName(), node.getSignature(), false);
+                MetricMemoizer<ASTMethodOrConstructorDeclaration> op = toplevel.getOperationStats(node.getQualifiedName());
                 result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force, Version.STANDARD, op));
                 return super.visit(node, data);
             }
@@ -150,7 +151,7 @@ public class DataStructureTest extends ParserTst {
 
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                ClassStats clazz = toplevel.getClassStats(node.getQualifiedName(), false);
+                MetricMemoizer<ASTAnyTypeDeclaration> clazz = toplevel.getClassStats(node.getQualifiedName());
                 result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force, Version.STANDARD, clazz));
                 return super.visit(node, data);
             }

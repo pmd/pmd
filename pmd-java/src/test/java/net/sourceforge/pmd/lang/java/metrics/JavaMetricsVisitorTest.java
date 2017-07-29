@@ -39,7 +39,7 @@ public class JavaMetricsVisitorTest {
 
     @Test
     public void testPackageStatsNotNull() {
-        assertNotNull(JavaMetrics.getTopLevelPackageStats());
+        assertNotNull(JavaMetrics.getJavaProjectMirror());
     }
 
 
@@ -47,7 +47,7 @@ public class JavaMetricsVisitorTest {
     public void testOperationsAreThere() {
         ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
 
-        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
+        final JavaProjectMirror toplevel = JavaMetrics.getJavaProjectMirror();
 
         final OperationSigMask opMask = new OperationSigMask();
 
@@ -67,7 +67,7 @@ public class JavaMetricsVisitorTest {
         parseAndVisitForClass15(MetricsVisitorTestData.class);
 
 
-        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
+        final JavaProjectMirror toplevel = JavaMetrics.getJavaProjectMirror();
 
         final FieldSigMask fieldSigMask = new FieldSigMask();
 
@@ -90,7 +90,7 @@ public class JavaMetricsVisitorTest {
     public void testStaticOperationsSig() {
         parseAndVisitForClass15(MetricsVisitorTestData.class);
 
-        final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();
+        final JavaProjectMirror toplevel = JavaMetrics.getJavaProjectMirror();
 
         final OperationSigMask operationSigMask = new OperationSigMask();
         operationSigMask.restrictRolesTo(Role.STATIC);

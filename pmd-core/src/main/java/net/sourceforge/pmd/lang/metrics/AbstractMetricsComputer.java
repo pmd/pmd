@@ -90,7 +90,8 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
 
 
     /**
-     * Finds the declaration nodes of all methods or constructors that are declared inside a class.
+     * Finds the declaration nodes of all methods or constructors that are declared inside a class. This is language
+     * specific, as it depends on the AST.
      *
      * @param node The class in which to look for.
      *

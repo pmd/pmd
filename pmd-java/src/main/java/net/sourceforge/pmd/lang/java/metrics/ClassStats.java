@@ -67,7 +67,7 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
     }
 
 
-    OperationStats getOperationStats(String operationName) {
+    private OperationStats getOperationStats(String operationName) {
         for (Map<String, OperationStats> map : operations.values()) {
             OperationStats stats = map.get(operationName);
             if (stats != null) {
@@ -78,6 +78,14 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
     }
 
 
+    /**
+     * Returns the correct operation stats. A non-null signature speeds up the search.
+     *
+     * @param operationName The operation to look for
+     * @param sig           The signature, which can be null
+     *
+     * @return The operation stats corresponding to the parameters
+     */
     OperationStats getOperationStats(String operationName, JavaOperationSignature sig) {
         if (sig == null) {
             return getOperationStats(operationName);

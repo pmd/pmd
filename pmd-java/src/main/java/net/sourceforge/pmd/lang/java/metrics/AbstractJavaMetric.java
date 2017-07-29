@@ -33,12 +33,12 @@ public abstract class AbstractJavaMetric<N extends Node> implements Metric<N> {
 
 
     /**
-     * Gives access to the toplevel package stats to metrics.
+     * Gives access to the project mirror to metrics. They can use it to perform signature matching.
      *
-     * @return The toplevel package stats (singleton contained within {@link JavaMetricsFacade}).
+     * @return The project mirror (singleton contained within {@link JavaMetricsFacade}).
      */
-    protected static PackageStats getTopLevelPackageStats() {
-        return JavaMetrics.getTopLevelPackageStats();
+    protected static JavaProjectMirror getJavaProjectMirror() {
+        return JavaMetrics.getJavaProjectMirror();
     }
 
 }

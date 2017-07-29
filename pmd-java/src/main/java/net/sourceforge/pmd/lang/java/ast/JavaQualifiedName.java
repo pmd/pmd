@@ -11,8 +11,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 /**
- * Represents Qualified Names for use within PackageStats.
- * TODO:cf make unit tests once the visitor is working to ensure new implementations won't break it
+ * Represents Qualified Names for use within the java project mirror.
  */
 public final class JavaQualifiedName implements QualifiedName {
 
@@ -199,17 +198,22 @@ public final class JavaQualifiedName implements QualifiedName {
         return operation != null;
     }
 
-    /** Returns the packages. @return The packages. */
+
+    /**
+     * Returns the packages. This is specific to Java's package structure.
+     *
+     * @return The packages.
+     */
     public String[] getPackages() {
         return packages;
     }
 
-    /** Returns the classes. @return The classes. */
+    @Override
     public String[] getClasses() {
         return classes;
     }
 
-    /** Returns the operation string. @return The operation string. */
+    @Override
     public String getOperation() {
         return operation;
     }

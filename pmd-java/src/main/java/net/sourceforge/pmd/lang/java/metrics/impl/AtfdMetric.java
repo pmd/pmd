@@ -34,7 +34,7 @@ public final class AtfdMetric {
             List<JavaQualifiedName> callQNames = findAllCalls(node);
             int foreignCalls = 0;
             for (JavaQualifiedName name : callQNames) {
-                if (getTopLevelPackageStats().hasMatchingSig(name, targetOps)) {
+                if (getJavaProjectMirror().hasMatchingSig(name, targetOps)) {
                     foreignCalls++;
                 }
             }

@@ -23,10 +23,20 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
 
 
+    /**
+     * Gets the language specific metrics computer.
+     *
+     * @return The metrics computer
+     */
     protected abstract MetricsComputer<T, O> getLanguageSpecificComputer();
 
 
-    protected abstract ProjectMirror<T, O> getLanguageSpecificMirror();
+    /**
+     * Gets the language-specific project mirror.
+     *
+     * @return The project mirror
+     */
+    protected abstract ProjectMirror<T, O> getLanguageSpecificProjectMirror();
 
 
     /**
@@ -48,7 +58,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         }
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-        MetricMemoizer<T> memoizer = getLanguageSpecificMirror().getClassStats(node.getQualifiedName());
+        MetricMemoizer<T> memoizer = getLanguageSpecificProjectMirror().getClassStats(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForType(key, node, false, safeVersion, memoizer);
@@ -74,7 +84,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         }
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-        MetricMemoizer<O> memoizer = getLanguageSpecificMirror().getOperationStats(node.getQualifiedName());
+        MetricMemoizer<O> memoizer = getLanguageSpecificProjectMirror().getOperationStats(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForOperation(key, node, false,
@@ -107,7 +117,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
 
         return getLanguageSpecificComputer().computeWithResultOption(key, node, false, safeVersion,
-                                                                     option, getLanguageSpecificMirror());
+                                                                     option, getLanguageSpecificProjectMirror());
     }
 
 

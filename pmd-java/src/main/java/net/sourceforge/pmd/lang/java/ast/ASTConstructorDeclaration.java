@@ -11,7 +11,6 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
 
     private boolean containsComment;
     private JavaQualifiedName qualifiedName;
-    private JavaOperationSignature signature;
 
     public ASTConstructorDeclaration(int id) {
         super(id);
@@ -55,9 +54,6 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
 
     @Override
     public JavaOperationSignature getSignature() {
-        if (signature == null) {
-            signature = JavaOperationSignature.buildFor(this);
-        }
-        return signature;
+        return JavaOperationSignature.buildFor(this);
     }
 }

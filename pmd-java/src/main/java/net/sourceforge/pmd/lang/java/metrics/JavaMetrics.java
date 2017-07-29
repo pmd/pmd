@@ -29,12 +29,12 @@ public final class JavaMetrics {
 
 
     /**
-     * Returns the top level package stats.
+     * Returns the project mirror of the analysed project.
      *
-     * @return The top level package stats
+     * @return The project mirror
      */
-    static PackageStats getTopLevelPackageStats() {
-        return FACADE.getTopLevelPackageStats();
+    static JavaProjectMirror getJavaProjectMirror() {
+        return FACADE.getLanguageSpecificProjectMirror();
     }
 
 

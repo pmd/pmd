@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
-import net.sourceforge.pmd.lang.metrics.ProjectMirror;
 
 
 /**
@@ -25,7 +24,7 @@ import net.sourceforge.pmd.lang.metrics.ProjectMirror;
  * @author Clément Fournier
  * @see ClassStats
  */
-public final class PackageStats implements ProjectMirror<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
+public final class PackageStats implements JavaProjectMirror {
 
     private final Map<String, PackageStats> subPackages = new HashMap<>();
     private final Map<String, ClassStats> classes = new HashMap<>();
@@ -144,14 +143,7 @@ public final class PackageStats implements ProjectMirror<ASTAnyTypeDeclaration, 
     }
 
 
-    /**
-     * Returns true if the signature of the operation designated by the qualified name is covered by the mask.
-     *
-     * @param qname   The operation to test
-     * @param sigMask The signature mask to use
-     *
-     * @return True if the signature of the operation designated by the qualified name is covered by the mask
-     */
+    @Override
     public boolean hasMatchingSig(JavaQualifiedName qname, OperationSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
@@ -159,16 +151,7 @@ public final class PackageStats implements ProjectMirror<ASTAnyTypeDeclaration, 
     }
 
 
-    /**
-     * Returns true if the signature of the field designated by its name and the qualified name of its class is covered
-     * by the mask.
-     *
-     * @param qname     The class of the field
-     * @param fieldName The name of the field
-     * @param sigMask   The signature mask to use
-     *
-     * @return True if the signature of the field is covered by the mask
-     */
+    @Override
     public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, FieldSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
