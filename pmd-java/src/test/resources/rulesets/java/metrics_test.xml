@@ -33,4 +33,10 @@
           metrics="true">
     </rule>
 
+    <rule name="NPathTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NPathTestRule"
+          metrics="true">
+    </rule>
+
 </ruleset>

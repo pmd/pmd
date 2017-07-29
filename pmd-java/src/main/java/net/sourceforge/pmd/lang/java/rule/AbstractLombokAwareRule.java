@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 
@@ -55,6 +56,12 @@ public class AbstractLombokAwareRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        classHasLombokAnnotation = hasLombokAnnotation(node);
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTEnumDeclaration node, Object data) {
         classHasLombokAnnotation = hasLombokAnnotation(node);
         return super.visit(node, data);
     }

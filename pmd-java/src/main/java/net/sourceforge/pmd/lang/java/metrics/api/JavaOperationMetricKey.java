@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.metrics.api;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.NpathMetric;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
@@ -43,7 +46,18 @@ public enum JavaOperationMetricKey implements MetricKey<ASTMethodOrConstructorDe
      *
      * @see net.sourceforge.pmd.lang.java.metrics.impl.LocMetric
      */
-    LOC(new LocOperationMetric());
+    LOC(new LocOperationMetric()),
+
+
+    /**
+     * N-path complexity.
+     *
+     * @see NpathMetric
+     */
+    NPATH(new NpathMetric());
+
+
+
 
     private final JavaOperationMetric calculator;
 
@@ -93,6 +107,21 @@ public enum JavaOperationMetricKey implements MetricKey<ASTMethodOrConstructorDe
             public boolean supports(ASTMethodOrConstructorDeclaration node) {
                 return metric.supports(node);
             }
+
+
+            @Override
+            public boolean equals(Object obj) {
+                return obj != null && getClass() == obj.getClass()
+                    && Objects.equals(name(), getClass().cast(obj).name())
+                    && Objects.equals(getCalculator(), getClass().cast(obj).getCalculator());
+            }
+
+
+            @Override
+            public int hashCode() {
+                return (metric != null ? metric.hashCode() * 31 : 0) + (name != null ? name.hashCode() : 0);
+            }
+
         };
     }
 
