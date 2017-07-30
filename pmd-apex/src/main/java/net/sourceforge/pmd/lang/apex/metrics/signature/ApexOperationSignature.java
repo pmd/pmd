@@ -4,15 +4,45 @@
 
 package net.sourceforge.pmd.lang.apex.metrics.signature;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.metrics.Signature;
 
 /**
  * @author Clément Fournier
  */
-public class ApexOperationSignature implements Signature<ASTMethod> {
+public final class ApexOperationSignature extends ApexSignature implements Signature<ASTMethod> {
 
-    private String foo;
+    private static final Map<Integer, ApexOperationSignature> POOL = new HashMap<>();
+
+
+    /**
+     * Create a signature using its visibility.
+     *
+     * @param visibility The visibility
+     */
+    private ApexOperationSignature(Visibility visibility) {
+        super(visibility);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return code(visibility);
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this;
+    }
+
+
+    private static int code(Visibility visibility) {
+        return visibility.hashCode();
+    }
 
 
     /**
@@ -23,7 +53,13 @@ public class ApexOperationSignature implements Signature<ASTMethod> {
      * @return The signature of the node
      */
     public static ApexOperationSignature of(ASTMethod node) {
-        return null;
+        Visibility visibility = Visibility.get(node);
+        int code = code(visibility);
+        if (!POOL.containsKey(code)) {
+            POOL.put(code, new ApexOperationSignature(visibility));
+        }
+        return POOL.get(code);
     }
+
 
 }
