@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.java.metrics.signature;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
+
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
 
 /**
  * Generic signature mask.
@@ -18,12 +20,7 @@ import java.util.Set;
 public abstract class SigMask<T extends JavaSignature> {
 
     /** Visibility mask. */
-    private Set<JavaSignature.Visibility> visMask = new HashSet<>();
-
-
-    public SigMask() {
-        coverAllVisibilities();
-    }
+    private Set<JavaSignature.Visibility> visMask = EnumSet.allOf(Visibility.class);
 
 
     /**

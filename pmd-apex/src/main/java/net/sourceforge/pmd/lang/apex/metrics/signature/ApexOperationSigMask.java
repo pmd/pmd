@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.metrics.signature;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexSignature.Visibility;
@@ -14,7 +15,12 @@ import net.sourceforge.pmd.lang.apex.metrics.signature.ApexSignature.Visibility;
  */
 public class ApexOperationSigMask {
 
-    private Set<Visibility> visMask;
+    private Set<Visibility> visMask = EnumSet.allOf(Visibility.class);
+
+
+    public ApexOperationSigMask() {
+        coverAllVisibilities();
+    }
 
 
     /**
