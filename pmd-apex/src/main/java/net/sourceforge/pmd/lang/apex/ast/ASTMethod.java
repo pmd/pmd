@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.metrics.Signature;
 
 import apex.jorje.semantic.ast.member.Method;
 

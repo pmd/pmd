@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
  * @author Clément Fournier
  */
 public enum ApexClassMetricKey implements MetricKey<ASTUserClass> {
-    ;
+    DUMMY(null);
 
 
     private final ApexClassMetric calculator;

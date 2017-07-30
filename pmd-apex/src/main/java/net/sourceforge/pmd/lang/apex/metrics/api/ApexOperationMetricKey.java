@@ -11,7 +11,8 @@ import net.sourceforge.pmd.lang.metrics.MetricKey;
  * @author Clément Fournier
  */
 public enum ApexOperationMetricKey implements MetricKey<ASTMethod> {
-    ;
+    DUMMY(null);
+
 
     private final ApexOperationMetric calculator;
 

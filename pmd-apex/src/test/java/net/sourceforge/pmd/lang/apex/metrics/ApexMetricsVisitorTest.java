@@ -91,7 +91,7 @@ public class ApexMetricsVisitorTest extends ApexParserTest {
     }
 
 
-    private static ApexNode<Compilation> parseAndVisitForString(String source) {
+    static ApexNode<Compilation> parseAndVisitForString(String source) {
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(ApexLanguageModule.NAME)
                                                                         .getDefaultVersion().getLanguageVersionHandler();
         ApexNode<Compilation> acu = ApexParserTestHelpers.parse(source);
