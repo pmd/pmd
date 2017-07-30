@@ -25,6 +25,12 @@ public class ApexProjectMirror implements ProjectMirror<ASTUserClass, ASTMethod>
     private final Map<ApexQualifiedName, ApexClassStats> classes = new HashMap<>();
 
 
+    void reset() {
+        operations.clear();
+        classes.clear();
+    }
+
+
     ApexOperationStats addOperation(ApexQualifiedName qname, ApexOperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashMap<>());

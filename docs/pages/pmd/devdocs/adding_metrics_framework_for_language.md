@@ -36,9 +36,10 @@ a singleton.
 your `MetricsComputer`. It backs the real end user façade, and handles user provided parameters before delegating to 
 your `MetricsComputer`.
 * Create the static façade of your framework. This one has an instance of your `MetricsFaçade` object and delegates 
-static methods to that instance. It should be able to give back
+static methods to that instance.
 * If you want to implement signature matching, create an `AbstractMetric` class, which gives access to a 
-`SignatureMatcher` to your metrics. 
+`SignatureMatcher` to your metrics. Typically, your implementation of `ProjectMirror` implements a 
+custom `SignatureMatcher` interface, and your façade can give back its instance of the project mirror.
 * Create classes `AbstractOperationMetric` and `AbstractClassMetric`. These must implement `Metric<T>` and 
 `Metric<O>`, respectively. They typically provide defaults for the `supports` method of each metric. 
 * Create enums `ClassMetricKey` and `OperationMetricKey`. These must implement `MetricKey<T>` and `MetricKey<O>`. The
