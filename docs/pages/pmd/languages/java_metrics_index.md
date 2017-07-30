@@ -4,8 +4,8 @@ tags: [customizing]
 summary: "Index of the code metrics available out of the box to Java rule developers."
 last_updated: July 20, 2017
 sidebar: pmd_sidebar
-permalink: pmd_devdocs_metrics_index.html
-folder: pmd/devdocs
+permalink: pmd_java_metrics_index.html
+folder: pmd/languages
 toc:
   minimumHeaders: 8
 ---
@@ -39,6 +39,34 @@ conditional expression (`?:`) \[[Sonarqube](#Sonarqube)\]. Notice switch cases c
 * +1 for every boolean operator (`&&`, `||`) in the guard condition of a control flow statement. That's because
 Java has short-circuit evaluation semantics for boolean operators, which makes every boolean operator kind of a
 control flow statement in itself.
+
+### Code examples
+
+```java
+class Foo {
+  void baseCyclo() { // Cyclo = 1
+    highCyclo();
+  }
+  void highCyclo() { // Cyclo = 
+    int x = 0, y = 2;
+    boolean a = false, b = true;
+    
+    if (a && (y == 1 ? b : true)) {
+      if (y == x) {
+        while (true) {
+          if (x++ < 20) {
+            break;
+          }
+        }
+      } else if (y == t && !d) {
+        x = a ? y : x;
+      } else {
+        x = 2;
+      }
+    }  
+  }     
+}
+```
  
 ### Versions
 
