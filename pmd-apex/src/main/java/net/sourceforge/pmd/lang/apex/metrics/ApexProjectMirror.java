@@ -10,6 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexQualifiedName;
+import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
@@ -18,23 +19,40 @@ import net.sourceforge.pmd.lang.metrics.ProjectMirror;
 /**
  * @author Clément Fournier
  */
-public class ApexProjectMirror implements ProjectMirror<ASTUserClass, ASTMethod> {
+public class ApexProjectMirror implements ProjectMirror<ASTUserClass, ASTMethod>, ApexSignatureMatcher {
 
     private final Map<ApexOperationSignature, Map<ApexQualifiedName, ApexOperationStats>> operations = new HashMap<>();
     private final Map<ApexQualifiedName, ApexClassStats> classes = new HashMap<>();
 
 
-    void addOperation(ApexQualifiedName qname, ApexOperationSignature sig) {
+    ApexOperationStats addOperation(ApexQualifiedName qname, ApexOperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashMap<>());
         }
 
-        operations.get(sig).put(qname, new ApexOperationStats());
+        ApexOperationStats stats = new ApexOperationStats();
+        operations.get(sig).put(qname, stats);
+        return stats;
     }
 
 
-    void addClass(ApexQualifiedName qname) {
-        classes.put(qname, new ApexClassStats());
+    ApexClassStats addClass(ApexQualifiedName qname) {
+        ApexClassStats stats = new ApexClassStats();
+        classes.put(qname, stats);
+        return stats;
+    }
+
+
+    @Override
+    public boolean hasMatchingSig(ApexQualifiedName qname, ApexOperationSigMask mask) {
+        for (ApexOperationSignature sig : operations.keySet()) {
+            if (mask.covers(sig)) {
+                if (operations.get(sig).containsKey(qname)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
