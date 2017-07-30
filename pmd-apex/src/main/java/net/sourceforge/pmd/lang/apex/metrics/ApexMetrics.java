@@ -29,7 +29,7 @@ public final class ApexMetrics {
      *
      * @return The project mirror
      */
-    static ApexProjectMirror getTopLevelPackageStats() {
+    static ApexProjectMirror getApexProjectMirror() {
         return FACADE.getLanguageSpecificProjectMirror();
     }
 

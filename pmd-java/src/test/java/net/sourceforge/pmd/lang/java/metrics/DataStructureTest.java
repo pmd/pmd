@@ -19,6 +19,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.MetricKeyUtil;
 import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -49,8 +50,8 @@ import net.sourceforge.pmd.lang.metrics.MetricVersion;
  */
 public class DataStructureTest extends ParserTst {
 
-    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = JavaClassMetricKey.of(new RandomClassMetric(), null);
-    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = JavaOperationMetricKey.of(new RandomOperationMetric(), null);
+    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(new RandomClassMetric(), null);
+    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = MetricKeyUtil.of(new RandomOperationMetric(), null);
     private PackageStats pack;
 
 

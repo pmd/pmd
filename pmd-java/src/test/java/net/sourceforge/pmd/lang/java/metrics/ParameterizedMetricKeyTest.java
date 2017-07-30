@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.MetricKeyUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
@@ -73,7 +74,7 @@ public class ParameterizedMetricKeyTest {
     @Test
     public void testAdHocMetricKey() {
 
-        MetricKey<ASTAnyTypeDeclaration> adHocKey = JavaClassMetricKey.of(null, "metric");
+        MetricKey<ASTAnyTypeDeclaration> adHocKey = MetricKeyUtil.of(null, "metric");
 
         MetricVersion adHocVersion = new MetricVersion() {
             @Override
