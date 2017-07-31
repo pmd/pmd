@@ -141,8 +141,8 @@ public class RuleDocGenerator {
 
             for (RuleSet ruleset : entry.getValue()) {
                 lines.add("## " + ruleset.getName());
-                
-                for (Rule rule : ruleset.getRules()) {
+
+                for (Rule rule : getSortedRules(ruleset)) {
                     String link = RULESET_INDEX_PERMALINK_PATTERN
                             .replace("${language.tersename}", languageTersename)
                             .replace("${ruleset.name}", getRuleSetFilename(ruleset));
@@ -218,15 +218,7 @@ public class RuleDocGenerator {
                 lines.add("editmepath: ../" + getRuleSetSourceFilepath(ruleset));
                 lines.add("---");
 
-                List<Rule> sortedRules = new ArrayList<>(ruleset.getRules());
-                Collections.sort(sortedRules, new Comparator<Rule>() {
-                    @Override
-                    public int compare(Rule o1, Rule o2) {
-                        return o1.getName().compareToIgnoreCase(o2.getName());
-                    }
-                });
-
-                for (Rule rule : sortedRules) {
+                for (Rule rule : getSortedRules(ruleset)) {
                     lines.add("## " + rule.getName());
                     if (rule.getSince() != null) {
                         lines.add("**Since:** " + rule.getSince());
@@ -274,6 +266,17 @@ public class RuleDocGenerator {
                 System.out.println("Generated " + path);
             }
         }
+    }
+
+    private List<Rule> getSortedRules(RuleSet ruleset) {
+        List<Rule> sortedRules = new ArrayList<>(ruleset.getRules());
+        Collections.sort(sortedRules, new Comparator<Rule>() {
+            @Override
+            public int compare(Rule o1, Rule o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+        return sortedRules;
     }
 
     /**
