@@ -33,6 +33,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class RuleDocGenerator {
     private static final String LANGUAGE_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}.md";
@@ -216,8 +217,16 @@ public class RuleDocGenerator {
                 lines.add("sidebaractiveurl: /" + LANGUAGE_INDEX_PERMALINK_PATTERN.replace("${language.tersename}", languageTersename));
                 lines.add("editmepath: ../" + getRuleSetSourceFilepath(ruleset));
                 lines.add("---");
-                
-                for (Rule rule : ruleset.getRules()) {
+
+                List<Rule> sortedRules = new ArrayList<>(ruleset.getRules());
+                Collections.sort(sortedRules, new Comparator<Rule>() {
+                    @Override
+                    public int compare(Rule o1, Rule o2) {
+                        return o1.getName().compareToIgnoreCase(o2.getName());
+                    }
+                });
+
+                for (Rule rule : sortedRules) {
                     lines.add("## " + rule.getName());
                     if (rule.getSince() != null) {
                         lines.add("**Since:** " + rule.getSince());
@@ -237,12 +246,20 @@ public class RuleDocGenerator {
                             lines.add("");
                         }
                     }
-                    if (!rule.getPropertyDescriptors().isEmpty()) {
+
+                    List<PropertyDescriptor<?>> properties = new ArrayList<>(rule.getPropertyDescriptors());
+                    // filter out standard properties
+                    properties.remove(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
+                    properties.remove(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
+                    properties.remove(XPathRule.XPATH_DESCRIPTOR);
+                    properties.remove(XPathRule.VERSION_DESCRIPTOR);
+
+                    if (!properties.isEmpty()) {
                         lines.add("**This rule has the following properties:**");
                         lines.add("");
                         lines.add("|Name|Default Value|Description|");
                         lines.add("|----|-------------|-----------|");
-                        for (PropertyDescriptor<?> propertyDescriptor : rule.getPropertyDescriptors()) {
+                        for (PropertyDescriptor<?> propertyDescriptor : properties) {
                             lines.add("|" + propertyDescriptor.name()
                                 + "|" + (propertyDescriptor.defaultValue() != null ? String.valueOf(propertyDescriptor.defaultValue()) : "")
                                 + "|" + propertyDescriptor.description()
