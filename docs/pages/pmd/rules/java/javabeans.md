@@ -36,8 +36,6 @@ private int getMoreFoo(){
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |prefix||A variable prefix to skip, i.e., m_|
 
 ## MissingSerialVersionUID
@@ -55,13 +53,4 @@ public class Foo implements java.io.Serializable {
  // i.e., public static final long serialVersionUID = 4328743;
 }
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 

@@ -6,28 +6,6 @@ folder: pmd/rules/xsl
 sidebaractiveurl: /pmd_rules_xsl.html
 editmepath: ../pmd-xml/src/main/resources/rulesets/xsl/xpath.xml
 ---
-## UseConcatOnce
-**Since:** 5.0
-
-**Priority:** Medium (3)
-
-The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
-
-**Example(s):**
-```
-<xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
- <xsl:variable name="var" select="concat("Welcome","to you ",$name))">
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
 ## AvoidAxisNavigation
 **Since:** 5.0
 
@@ -44,9 +22,18 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 |checkSelfDescendantAbreviation|false|descendant::self abreviation, '//', will also trigger this rule.|
+
+## UseConcatOnce
+**Since:** 5.0
+
+**Priority:** Medium (3)
+
+The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
+
+**Example(s):**
+```
+<xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
+ <xsl:variable name="var" select="concat("Welcome","to you ",$name))">
+```
 

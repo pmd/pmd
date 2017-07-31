@@ -6,32 +6,6 @@ folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/sunsecure.xml
 ---
-## MethodReturnsInternalArray
-**Since:** 2.2
-
-**Priority:** Medium (3)
-
-Exposing internal arrays to the caller violates object encapsulation since elements can be 
-removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
-
-**Example(s):**
-```
-public class SecureSystem {
-  UserData [] ud;
-  public UserData [] getUserData() {
-      // Don't return directly the internal array, return a copy
-      return ud;
-  }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
 ## ArrayIsStoredDirectly
 **Since:** 2.2
 
@@ -51,10 +25,22 @@ public class Foo {
 }
 ```
 
-**This rule has the following properties:**
+## MethodReturnsInternalArray
+**Since:** 2.2
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+**Priority:** Medium (3)
+
+Exposing internal arrays to the caller violates object encapsulation since elements can be 
+removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
+
+**Example(s):**
+```
+public class SecureSystem {
+  UserData [] ud;
+  public UserData [] getUserData() {
+      // Don't return directly the internal array, return a copy
+      return ud;
+  }
+}
+```
 

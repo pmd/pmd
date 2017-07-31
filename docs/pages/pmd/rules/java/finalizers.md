@@ -6,6 +6,22 @@ folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/finalizers.xml
 ---
+## AvoidCallingFinalize
+**Since:** 3.0
+
+**Priority:** Medium (3)
+
+The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
+that there are no more references to the object. It should not be invoked by application logic.
+
+**Example(s):**
+```
+void foo() {
+	Bar b = new Bar();
+	b.finalize();
+}
+```
+
 ## EmptyFinalizer
 **Since:** 1.5
 
@@ -20,14 +36,20 @@ public class Foo {
 }
 ```
 
-**This rule has the following properties:**
+## FinalizeDoesNotCallSuperFinalize
+**Since:** 1.5
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
+**Priority:** Medium (3)
+
+If the finalize() is implemented, its last action should be to call super.finalize.
+
+**Example(s):**
+```
+protected void finalize() {
+	something();
+	// neglected to call super.finalize()
+}
+```
 
 ## FinalizeOnlyCallsSuperFinalize
 **Since:** 1.5
@@ -42,15 +64,6 @@ protected void finalize() {
 	super.finalize();
 }
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 
 ## FinalizeOverloaded
 **Since:** 1.5
@@ -69,39 +82,6 @@ public class Foo {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## FinalizeDoesNotCallSuperFinalize
-**Since:** 1.5
-
-**Priority:** Medium (3)
-
-If the finalize() is implemented, its last action should be to call super.finalize.
-
-**Example(s):**
-```
-protected void finalize() {
-	something();
-	// neglected to call super.finalize()
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
 ## FinalizeShouldBeProtected
 **Since:** 1.1
 
@@ -116,36 +96,4 @@ public void finalize() {
 	// do something
 }
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## AvoidCallingFinalize
-**Since:** 3.0
-
-**Priority:** Medium (3)
-
-The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
-that there are no more references to the object. It should not be invoked by application logic.
-
-**Example(s):**
-```
-void foo() {
-	Bar b = new Bar();
-	b.finalize();
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 

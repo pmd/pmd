@@ -6,27 +6,6 @@ folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/imports.xml
 ---
-## DuplicateImports
-**Since:** 0.5
-
-**Priority:** Medium Low (4)
-
-Duplicate or overlapping import statements should be avoided.
-
-**Example(s):**
-```
-import java.lang.String;
-import java.lang.*;
-public class Foo {}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
 ## DontImportJavaLang
 **Since:** 0.5
 
@@ -47,33 +26,19 @@ import java.lang.*;	// this is bad
 public class Foo {}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## UnusedImports
-**Since:** 1.0
+## DuplicateImports
+**Since:** 0.5
 
 **Priority:** Medium Low (4)
 
-Avoid the use of unused import statements to prevent unwanted dependencies.
+Duplicate or overlapping import statements should be avoided.
 
 **Example(s):**
 ```
-// this is bad
-import java.io.File;
+import java.lang.String;
+import java.lang.*;
 public class Foo {}
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 
 ## ImportFromSamePackage
 **Since:** 1.02
@@ -91,13 +56,6 @@ package foo;
  
  public class Bar{}
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 
 ## TooManyStaticImports
 **Since:** 4.1
@@ -122,10 +80,6 @@ import static Yoko; // Too much !
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 |maximumStaticImports|4|All static imports can be disallowed by setting this to 0|
 
 ## UnnecessaryFullyQualifiedName
@@ -146,10 +100,17 @@ public class Foo {
 }
 ```
 
-**This rule has the following properties:**
+## UnusedImports
+**Since:** 1.0
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+**Priority:** Medium Low (4)
+
+Avoid the use of unused import statements to prevent unwanted dependencies.
+
+**Example(s):**
+```
+// this is bad
+import java.io.File;
+public class Foo {}
+```
 

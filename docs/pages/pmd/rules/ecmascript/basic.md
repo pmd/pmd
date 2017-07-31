@@ -31,10 +31,6 @@ function getX() {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 |allowIf|false|Allow assignment within the conditional expression of an if statement|
 |allowFor|false|Allow assignment within the conditional expression of a for statement|
 |allowWhile|false|Allow assignment within the conditional expression of a while statement|
@@ -42,25 +38,21 @@ function getX() {
 |allowTernaryResults|false|Allow assignment within the result expressions of a ternary operator|
 |allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|
 
-## UnreachableCode
-**Since:** 5.0
+## AvoidTrailingComma
+**Since:** 5.1
 
 **Priority:** High (1)
 
-A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
-will never execute.  This is a bug, or extremely poor style.
+This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
 
 **Example(s):**
 ```
-// Ok
-function foo() {
-   return 1;
-}
-// Bad
-function bar() {
-   var x = 1;
-   return x;
-   x = 2;
+function(arg) {
+    var obj1 = { a : 1 }; // Ok
+    var arr1 = [ 1, 2 ]; // Ok
+
+    var obj2 = { a : 1, }; // Syntax error in some browsers!
+    var arr2 = [ 1, 2, ]; // Length 2 or 3 depending on the browser!
 }
 ```
 
@@ -68,38 +60,8 @@ function bar() {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## InnaccurateNumericLiteral
-**Since:** 5.0
-
-**Priority:** Medium High (2)
-
-The numeric literal will have at different value at runtime, which can happen if you provide too much
-precision in a floating point number.  This may result in numeric calculations being in error.
-
-**Example(s):**
-```
-var a = 9; // Ok
-var b = 999999999999999; // Ok
-var c = 999999999999999999999; // Not good
-var w = 1.12e-4; // Ok
-var x = 1.12; // Ok
-var y = 1.1234567890123; // Ok
-var z = 1.12345678901234567; // Not good
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
+|allowObjectLiteral|false|Allow a trailing comma within an object literal|
+|allowArrayLiteral|false|Allow a trailing comma within an array literal|
 
 ## ConsistentReturn
 **Since:** 5.0
@@ -133,11 +95,75 @@ function bar() {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |rhinoLanguageVersion|VERSION_DEFAULT|Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.|
 |recordingLocalJsDocComments|true|Specifies that JsDoc comments are produced in the AST.|
 |recordingComments|true|Specifies that comments are produced in the AST.|
+
+## EqualComparison
+**Since:** 5.0
+
+**Priority:** Medium (3)
+
+Using == in condition may lead to unexpected results, as the variables are automatically casted to be of the
+      same type. The === operator avoids the casting.
+
+**Example(s):**
+```
+// Ok
+if (someVar === true) {
+  ...
+}
+// Ok
+if (someVar !== 3) {
+  ...
+}
+// Bad
+if (someVar == true) {
+  ...
+}
+// Bad
+if (someVar != 3) {
+  ...
+}
+```
+
+## GlobalVariable
+**Since:** 5.0
+
+**Priority:** High (1)
+
+This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
+Global variables can lead to side-effects that are hard to debug.
+
+**Example(s):**
+```
+function(arg) {
+    notDeclaredVariable = 1; // this will create a global variable and trigger the rule
+
+    var someVar = 1; // this is a local variable, that's ok
+
+    window.otherGlobal = 2; // this will not trigger the rule, although it is a global variable.
+}
+```
+
+## InnaccurateNumericLiteral
+**Since:** 5.0
+
+**Priority:** Medium High (2)
+
+The numeric literal will have at different value at runtime, which can happen if you provide too much
+precision in a floating point number.  This may result in numeric calculations being in error.
+
+**Example(s):**
+```
+var a = 9; // Ok
+var b = 999999999999999; // Ok
+var c = 999999999999999999999; // Not good
+var w = 1.12e-4; // Ok
+var x = 1.12; // Ok
+var y = 1.1234567890123; // Ok
+var z = 1.12345678901234567; // Not good
+```
 
 ## ScopeForInVariable
 **Since:** 5.0
@@ -181,108 +207,27 @@ function bar() {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## EqualComparison
-**Since:** 5.0
-
-**Priority:** Medium (3)
-
-Using == in condition may lead to unexpected results, as the variables are automatically casted to be of the
-      same type. The === operator avoids the casting.
-
-**Example(s):**
-```
-// Ok
-if (someVar === true) {
-  ...
-}
-// Ok
-if (someVar !== 3) {
-  ...
-}
-// Bad
-if (someVar == true) {
-  ...
-}
-// Bad
-if (someVar != 3) {
-  ...
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## GlobalVariable
+## UnreachableCode
 **Since:** 5.0
 
 **Priority:** High (1)
 
-This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
-Global variables can lead to side-effects that are hard to debug.
+A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
+will never execute.  This is a bug, or extremely poor style.
 
 **Example(s):**
 ```
-function(arg) {
-    notDeclaredVariable = 1; // this will create a global variable and trigger the rule
-
-    var someVar = 1; // this is a local variable, that's ok
-
-    window.otherGlobal = 2; // this will not trigger the rule, although it is a global variable.
+// Ok
+function foo() {
+   return 1;
+}
+// Bad
+function bar() {
+   var x = 1;
+   return x;
+   x = 2;
 }
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## AvoidTrailingComma
-**Since:** 5.1
-
-**Priority:** High (1)
-
-This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
-
-**Example(s):**
-```
-function(arg) {
-    var obj1 = { a : 1 }; // Ok
-    var arr1 = [ 1, 2 ]; // Ok
-
-    var obj2 = { a : 1, }; // Syntax error in some browsers!
-    var arr2 = [ 1, 2, ]; // Length 2 or 3 depending on the browser!
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-|allowObjectLiteral|false|Allow a trailing comma within an object literal|
-|allowArrayLiteral|false|Allow a trailing comma within an array literal|
 
 ## UseBaseWithParseInt
 **Since:** 5.0.1
@@ -295,13 +240,4 @@ TODO
 ```
 parseInt("10",base);
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 

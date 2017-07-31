@@ -17,9 +17,14 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |problemDepth|3|The if statement depth reporting threshold|
+
+## AvoidReassigningParameters
+**Since:** 5.1
+
+**Priority:** Medium High (2)
+
+Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
 
 ## CollapsibleIfStatements
 **Since:** 5.1
@@ -28,12 +33,19 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 
 Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
 
-**This rule has the following properties:**
+## EmptyForeachStmt
+**Since:** 5.1
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+**Priority:** Medium High (2)
+
+Empty foreach statements should be deleted.
+
+## EmptyIfStmt
+**Since:** 5.1
+
+**Priority:** Medium High (2)
+
+Empty if statements should be deleted.
 
 ## ExcessiveTemplateLength
 **Since:** 5.1
@@ -46,67 +58,9 @@ The template is too long. It should be broken up into smaller pieces.
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
-
-## AvoidReassigningParameters
-**Since:** 5.1
-
-**Priority:** Medium High (2)
-
-Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## EmptyIfStmt
-**Since:** 5.1
-
-**Priority:** Medium High (2)
-
-Empty if statements should be deleted.
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## EmptyForeachStmt
-**Since:** 5.1
-
-**Priority:** Medium High (2)
-
-Empty foreach statements should be deleted.
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## UnusedMacroParameter
-**Since:** 5.1
-
-**Priority:** Medium High (2)
-
-Avoid unused macro parameters. They should be deleted.
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 
 ## NoInlineJavaScript
 **Since:** 5.1
@@ -115,13 +69,6 @@ Avoid unused macro parameters. They should be deleted.
 
 Avoid inline JavaScript. Import .js files instead.
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
 ## NoInlineStyles
 **Since:** 5.1
 
@@ -129,12 +76,10 @@ Avoid inline JavaScript. Import .js files instead.
 
 Avoid inline styles. Use css classes instead.
 
-**This rule has the following properties:**
+## UnusedMacroParameter
+**Since:** 5.1
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
+**Priority:** Medium High (2)
+
+Avoid unused macro parameters. They should be deleted.
 

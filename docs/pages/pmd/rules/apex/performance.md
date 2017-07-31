@@ -6,34 +6,6 @@ folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/performance.xml
 ---
-## AvoidSoqlInLoops
-**Since:** 5.5.0
-
-**Priority:** Medium (3)
-
-New objects created within loops should be checked to see if they can created outside them and reused.
-
-**Example(s):**
-```
-public class Something {
-	public static void main( String as[] ) {  
-		for (Integer i = 0; i < 10; i++) {
-			List<Account> accounts = [SELECT Id FROM Account];
-		}
-	}
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-
 ## AvoidDmlStatementsInLoops
 **Since:** 5.5.0
 
@@ -58,8 +30,32 @@ public class Something {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+## AvoidSoqlInLoops
+**Since:** 5.5.0
+
+**Priority:** Medium (3)
+
+New objects created within loops should be checked to see if they can created outside them and reused.
+
+**Example(s):**
+```
+public class Something {
+	public static void main( String as[] ) {  
+		for (Integer i = 0; i < 10; i++) {
+			List<Account> accounts = [SELECT Id FROM Account];
+		}
+	}
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|

@@ -6,66 +6,6 @@ folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-jakarta-commons.xml
 ---
-## UseCorrectExceptionLogging
-**Since:** 3.2
-
-**Priority:** Medium (3)
-
-To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
-
-**Example(s):**
-```
-public class Main {
-   private static final Log _LOG = LogFactory.getLog( Main.class );
-   void bar() {
-     try {
-     } catch( Exception e ) {
-      _LOG.error( e ); //Wrong!
-     } catch( OtherException oe ) {
-      _LOG.error( oe.getMessage(), oe ); //Correct
-     }
-   }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## ProperLogger
-**Since:** 3.3
-
-**Priority:** Medium (3)
-
-A logger should normally be defined private static final and be associated with the correct class.
-Private final Log log; is also allowed for rare cases where loggers need to be passed around,
-with the restriction that the logger needs to be passed into the constructor.
-
-**Example(s):**
-```
-public class Foo {
-
-   private static final Log LOG = LogFactory.getLog(Foo.class);	   // proper way
-
-   protected Log LOG = LogFactory.getLog(Testclass.class);			// wrong approach
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-|staticLoggerName|LOG|Name of the static Logger variable|
-
 ## GuardDebugLogging
 **Since:** 4.3
 
@@ -103,8 +43,6 @@ public class Test {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |guardsMethods|[]|method use to guard the log statement|
 |logLevels|[]|LogLevels to guard|
 
@@ -127,8 +65,53 @@ otherwise skip the associate String creation and manipulation.
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |guardsMethods|[]|method use to guard the log statement|
 |logLevels|[]|LogLevels to guard|
+
+## ProperLogger
+**Since:** 3.3
+
+**Priority:** Medium (3)
+
+A logger should normally be defined private static final and be associated with the correct class.
+Private final Log log; is also allowed for rare cases where loggers need to be passed around,
+with the restriction that the logger needs to be passed into the constructor.
+
+**Example(s):**
+```
+public class Foo {
+
+   private static final Log LOG = LogFactory.getLog(Foo.class);	   // proper way
+
+   protected Log LOG = LogFactory.getLog(Testclass.class);			// wrong approach
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|staticLoggerName|LOG|Name of the static Logger variable|
+
+## UseCorrectExceptionLogging
+**Since:** 3.2
+
+**Priority:** Medium (3)
+
+To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
+
+**Example(s):**
+```
+public class Main {
+   private static final Log _LOG = LogFactory.getLog( Main.class );
+   void bar() {
+     try {
+     } catch( Exception e ) {
+      _LOG.error( e ); //Wrong!
+     } catch( OtherException oe ) {
+      _LOG.error( oe.getMessage(), oe ); //Correct
+     }
+   }
+}
+```
 

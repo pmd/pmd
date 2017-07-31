@@ -31,8 +31,6 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
@@ -61,8 +59,6 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|

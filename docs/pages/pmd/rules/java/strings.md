@@ -6,6 +6,22 @@ folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/strings.xml
 ---
+## AppendCharacterWithChar
+**Since:** 3.5
+
+**Priority:** Medium (3)
+
+Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.
+
+**Example(s):**
+```
+StringBuffer sb = new StringBuffer();
+sb.append("a");		 // avoid this
+
+StringBuffer sb = new StringBuffer();
+sb.append('a');		// use this instead
+```
+
 ## AvoidDuplicateLiterals
 **Since:** 1.0
 
@@ -28,8 +44,6 @@ private void bar() {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |exceptionfile||File containing strings to skip (one string per line), only used if ignore list is not set|
 |separator|,|Ignore list separator|
 |exceptionList||Strings to ignore|
@@ -37,139 +51,20 @@ private void bar() {
 |minimumLength|3|Minimum string length to check|
 |skipAnnotations|false|Skip literals within annotations|
 
-## StringInstantiation
-**Since:** 1.0
-
-**Priority:** Medium High (2)
-
-Avoid instantiating String objects; this is usually unnecessary since they are immutable and can be safely shared.
-
-**Example(s):**
-```
-private String bar = new String("bar"); // just do a String bar = "bar";
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## StringToString
-**Since:** 1.0
+## AvoidStringBufferField
+**Since:** 4.2
 
 **Priority:** Medium (3)
 
-Avoid calling toString() on objects already known to be string instances; this is unnecessary.
+StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks
+if held within objects with long lifetimes.
 
 **Example(s):**
 ```
-private String baz() {
-    String bar = "howdy";
-    return bar.toString();
+public class Foo {
+	private StringBuffer buffer;	// potential memory leak as an instance variable;
 }
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## InefficientStringBuffering
-**Since:** 3.4
-
-**Priority:** Medium (3)
-
-Avoid concatenating non-literals in a StringBuffer constructor or append() since intermediate buffers will
-need to be be created and destroyed by the JVM.
-
-**Example(s):**
-```
-// Avoid this, two buffers are actually being created here
-StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
-    
-    // do this instead
-StringBuffer sb = new StringBuffer("tmp = ");
-sb.append(System.getProperty("java.io.tmpdir"));
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## UnnecessaryCaseChange
-**Since:** 3.3
-
-**Priority:** Medium (3)
-
-Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
-
-**Example(s):**
-```
-boolean answer1 = buz.toUpperCase().equals("baz");	 		// should be buz.equalsIgnoreCase("baz")
-    
-boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");	 // another unnecessary toUpperCase()
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## UseStringBufferLength
-**Since:** 3.4
-
-**Priority:** Medium (3)
-
-Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
-or StringBuffer.toString().length() == ...
-
-**Example(s):**
-```
-StringBuffer sb = new StringBuffer();
-    
-if (sb.toString().equals("")) {}	    // inefficient 
-    
-if (sb.length() == 0) {}	    		// preferred
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## AppendCharacterWithChar
-**Since:** 3.5
-
-**Priority:** Medium (3)
-
-Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.
-
-**Example(s):**
-```
-StringBuffer sb = new StringBuffer();
-sb.append("a");		 // avoid this
-
-StringBuffer sb = new StringBuffer();
-sb.append('a');		// use this instead
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 
 ## ConsecutiveAppendsShouldReuse
 **Since:** 5.1
@@ -192,13 +87,6 @@ StringBuffer buf = new StringBuffer();
 buf.append("Hello").append(foo).append("World"); // good
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
 ## ConsecutiveLiteralAppends
 **Since:** 3.5
 
@@ -217,32 +105,7 @@ buf.append("Hello World");        				 // good
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |threshold|1|Max consecutive appends|
-
-## UseIndexOfChar
-**Since:** 3.5
-
-**Priority:** Medium (3)
-
-Use String.indexOf(char) when checking for the index of a single character; it executes faster.
-
-**Example(s):**
-```
-String s = "hello world";
-  // avoid this
-if (s.indexOf("d") {}
-  // instead do this
-if (s.indexOf('d') {}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 
 ## InefficientEmptyStringCheck
 **Since:** 3.6
@@ -264,12 +127,23 @@ public void bar(String string) {
 }
 ```
 
-**This rule has the following properties:**
+## InefficientStringBuffering
+**Since:** 3.4
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+**Priority:** Medium (3)
+
+Avoid concatenating non-literals in a StringBuffer constructor or append() since intermediate buffers will
+need to be be created and destroyed by the JVM.
+
+**Example(s):**
+```
+// Avoid this, two buffers are actually being created here
+StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
+    
+    // do this instead
+StringBuffer sb = new StringBuffer("tmp = ");
+sb.append(System.getProperty("java.io.tmpdir"));
+```
 
 ## InsufficientStringBufferDeclaration
 **Since:** 3.6
@@ -290,37 +164,6 @@ bad.append("This is a long string that will exceed the default 16 characters");
 StringBuffer good = new StringBuffer(41);
 good.append("This is a long string, which is pre-sized");
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## UselessStringValueOf
-**Since:** 3.8
-
-**Priority:** Medium (3)
-
-No need to call String.valueOf to append to a string; just use the valueOf() argument directly.
-
-**Example(s):**
-```
-public String convert(int i) {
-	String s;
-	s = "a" + String.valueOf(i);	// not required
-	s = "a" + i; 					// preferred approach
-	return s;
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 
 ## StringBufferInstantiationWithChar
 **Since:** 3.9
@@ -354,14 +197,46 @@ StringBuffer  sb3 = new StringBuffer("c");
 StringBuilder sb4 = new StringBuilder("c");
 ```
 
-**This rule has the following properties:**
+## StringInstantiation
+**Since:** 1.0
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
+**Priority:** Medium High (2)
+
+Avoid instantiating String objects; this is usually unnecessary since they are immutable and can be safely shared.
+
+**Example(s):**
+```
+private String bar = new String("bar"); // just do a String bar = "bar";
+```
+
+## StringToString
+**Since:** 1.0
+
+**Priority:** Medium (3)
+
+Avoid calling toString() on objects already known to be string instances; this is unnecessary.
+
+**Example(s):**
+```
+private String baz() {
+    String bar = "howdy";
+    return bar.toString();
+}
+```
+
+## UnnecessaryCaseChange
+**Since:** 3.3
+
+**Priority:** Medium (3)
+
+Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
+
+**Example(s):**
+```
+boolean answer1 = buz.toUpperCase().equals("baz");	 		// should be buz.equalsIgnoreCase("baz")
+    
+boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");	 // another unnecessary toUpperCase()
+```
 
 ## UseEqualsToCompareStrings
 **Since:** 4.1
@@ -380,36 +255,53 @@ public boolean test(String s) {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## AvoidStringBufferField
-**Since:** 4.2
+## UseIndexOfChar
+**Since:** 3.5
 
 **Priority:** Medium (3)
 
-StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks
-if held within objects with long lifetimes.
+Use String.indexOf(char) when checking for the index of a single character; it executes faster.
 
 **Example(s):**
 ```
-public class Foo {
-	private StringBuffer buffer;	// potential memory leak as an instance variable;
+String s = "hello world";
+  // avoid this
+if (s.indexOf("d") {}
+  // instead do this
+if (s.indexOf('d') {}
+```
+
+## UselessStringValueOf
+**Since:** 3.8
+
+**Priority:** Medium (3)
+
+No need to call String.valueOf to append to a string; just use the valueOf() argument directly.
+
+**Example(s):**
+```
+public String convert(int i) {
+	String s;
+	s = "a" + String.valueOf(i);	// not required
+	s = "a" + i; 					// preferred approach
+	return s;
 }
 ```
 
-**This rule has the following properties:**
+## UseStringBufferLength
+**Since:** 3.4
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
+**Priority:** Medium (3)
+
+Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
+or StringBuffer.toString().length() == ...
+
+**Example(s):**
+```
+StringBuffer sb = new StringBuffer();
+    
+if (sb.toString().equals("")) {}	    // inefficient 
+    
+if (sb.length() == 0) {}	    		// preferred
+```
 

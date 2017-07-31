@@ -6,139 +6,6 @@ folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/security.xml
 ---
-## ApexSharingViolations
-**Since:** 5.5.3
-
-**Priority:** Medium (3)
-
-Detect classes declared without explicit sharing mode if DML methods are used. This
-forces the developer to take access restrictions into account before modifying objects.
-
-**Example(s):**
-```
-public without sharing class Foo {
-// DML operation here
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-
-## ApexOpenRedirect
-**Since:** 5.5.3
-
-**Priority:** Medium (3)
-
-Checks against redirects to user-controlled locations. This prevents attackers from
-redirecting users to phishing sites.
-
-**Example(s):**
-```
-public without sharing class Foo {
-    String unsafeLocation = ApexPage.getCurrentPage().getParameters.get('url_param');
-    PageReference page() {
-       return new PageReference(unsafeLocation);
-    }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-
-## ApexInsecureEndpoint
-**Since:** 5.5.3
-
-**Priority:** Medium (3)
-
-Checks against accessing endpoints under plain **http**. You should always use
-**https** for security.
-
-**Example(s):**
-```
-public without sharing class Foo {
-    void foo() {
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint('http://localhost:com');
-    }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-
-## ApexXSSFromURLParam
-**Since:** 5.5.3
-
-**Priority:** Medium (3)
-
-Makes sure that all values obtained from URL parameters are properly escaped / sanitized
-to avoid XSS attacks.
-
-**Example(s):**
-```
-public without sharing class Foo {
-    String unescapedstring = ApexPage.getCurrentPage().getParameters.get('url_param');
-    String usedLater = unescapedstring;
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-
-## ApexXSSFromEscapeFalse
-**Since:** 5.5.3
-
-**Priority:** Medium (3)
-
-Reports on calls to `addError` with disabled escaping. The message passed to `addError`
-will be displayed directly to the user in the UI, making it prime ground for XSS
-attacks if unescaped.
-
-**Example(s):**
-```
-public without sharing class Foo {
-    Trigger.new[0].addError(vulnerableHTMLGoesHere, false);
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-
 ## ApexBadCrypto
 **Since:** 5.5.3
 
@@ -161,65 +28,6 @@ public without sharing class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-
-## ApexCSRF
-**Since:** 5.5.3
-
-**Priority:** Medium (3)
-
-Check to avoid making DML operations in Apex class constructor/init method. This prevents
-modification of the database just by accessing a page.
-
-**Example(s):**
-```
-public class Foo {
-    public init() {
-        insert data;
-    }
-
-    public Foo() {
-        insert data;
-    }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-
-## ApexSOQLInjection
-**Since:** 5.5.3
-
-**Priority:** Medium (3)
-
-Detects the usage of untrusted / unescaped variables in DML queries.
-
-**Example(s):**
-```
-public class Foo {
-    public void test1(String t1) {
-        Database.query('SELECT Id FROM Account' + t1);
-    }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
@@ -255,8 +63,35 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+## ApexCSRF
+**Since:** 5.5.3
+
+**Priority:** Medium (3)
+
+Check to avoid making DML operations in Apex class constructor/init method. This prevents
+modification of the database just by accessing a page.
+
+**Example(s):**
+```
+public class Foo {
+    public init() {
+        insert data;
+    }
+
+    public Foo() {
+        insert data;
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
@@ -288,8 +123,105 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+## ApexInsecureEndpoint
+**Since:** 5.5.3
+
+**Priority:** Medium (3)
+
+Checks against accessing endpoints under plain **http**. You should always use
+**https** for security.
+
+**Example(s):**
+```
+public without sharing class Foo {
+    void foo() {
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('http://localhost:com');
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+## ApexOpenRedirect
+**Since:** 5.5.3
+
+**Priority:** Medium (3)
+
+Checks against redirects to user-controlled locations. This prevents attackers from
+redirecting users to phishing sites.
+
+**Example(s):**
+```
+public without sharing class Foo {
+    String unsafeLocation = ApexPage.getCurrentPage().getParameters.get('url_param');
+    PageReference page() {
+       return new PageReference(unsafeLocation);
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+## ApexSharingViolations
+**Since:** 5.5.3
+
+**Priority:** Medium (3)
+
+Detect classes declared without explicit sharing mode if DML methods are used. This
+forces the developer to take access restrictions into account before modifying objects.
+
+**Example(s):**
+```
+public without sharing class Foo {
+// DML operation here
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+## ApexSOQLInjection
+**Since:** 5.5.3
+
+**Priority:** Medium (3)
+
+Detects the usage of untrusted / unescaped variables in DML queries.
+
+**Example(s):**
+```
+public class Foo {
+    public void test1(String t1) {
+        Database.query('SELECT Id FROM Account' + t1);
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
@@ -328,8 +260,54 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+## ApexXSSFromEscapeFalse
+**Since:** 5.5.3
+
+**Priority:** Medium (3)
+
+Reports on calls to `addError` with disabled escaping. The message passed to `addError`
+will be displayed directly to the user in the UI, making it prime ground for XSS
+attacks if unescaped.
+
+**Example(s):**
+```
+public without sharing class Foo {
+    Trigger.new[0].addError(vulnerableHTMLGoesHere, false);
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+
+## ApexXSSFromURLParam
+**Since:** 5.5.3
+
+**Priority:** Medium (3)
+
+Makes sure that all values obtained from URL parameters are properly escaped / sanitized
+to avoid XSS attacks.
+
+**Example(s):**
+```
+public without sharing class Foo {
+    String unescapedstring = ApexPage.getCurrentPage().getParameters.get('url_param');
+    String usedLater = unescapedstring;
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|

@@ -6,6 +6,30 @@ folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/dates.xml
 ---
+## TO_DATE_TO_CHAR
+**Since:** 5.1
+
+**Priority:** Medium (3)
+
+TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
+
+**Example(s):**
+```
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+ 
+-- Take single parameter, relyimg on current default NLS date format 
+FUNCTION strip_time (p_date IN DATE) RETURN DATE
+IS
+BEGIN
+   RETURN TO_DATE(TO_CHAR(p_date)); 
+END strip_time ;
+
+
+END date_utilities ;
+/
+```
+
 ## TO_DATEWithoutDateFormat
 **Since:** 5.1
 
@@ -43,48 +67,6 @@ END date_utilities ;
 /
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## TO_DATE_TO_CHAR
-**Since:** 5.1
-
-**Priority:** Medium (3)
-
-TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
-
-**Example(s):**
-```
-CREATE OR REPLACE PACKAGE BODY date_utilities
-IS
- 
--- Take single parameter, relyimg on current default NLS date format 
-FUNCTION strip_time (p_date IN DATE) RETURN DATE
-IS
-BEGIN
-   RETURN TO_DATE(TO_CHAR(p_date)); 
-END strip_time ;
-
-
-END date_utilities ;
-/
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
 ## TO_TIMESTAMPWithoutDateFormat
 **Since:** 5.1
 
@@ -121,13 +103,4 @@ END to_timestamp_three_parameters ;
 END date_utilities ;
 /
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 

@@ -18,12 +18,3 @@ An XML CDATA section begins with a <!CDATA[ marker, which has only one [, and en
 An extra [ looks like &lt;!CDATA[[]]&gt;, and an extra ] looks like &lt;!CDATA[]]]&gt;.
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-

@@ -38,8 +38,6 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |threshold|20|Unique type reporting threshold|
 
 ## ExcessiveImports
@@ -65,72 +63,9 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
-
-## LooseCoupling
-**Since:** 0.7
-
-**Priority:** Medium (3)
-
-The use of implementation types as object references limits your ability to use alternate
-implementations in the future as requirements change. Whenever available, referencing objects 
-by their interface types provides much more flexibility.
-
-**Example(s):**
-```
-// sub-optimal approach
-private ArrayList list = new ArrayList();
-
-public HashSet getFoo() {
-	return new HashSet();
-}
-
-	// preferred approach
-private List list = new ArrayList();
-
-public Set getFoo() {
-	return new HashSet();
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## LoosePackageCoupling
-**Since:** 5.0
-
-**Priority:** Medium (3)
-
-Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
-except when using one of the configured allowed classes.
-
-**Example(s):**
-```
-package some.package;
-
-import some.other.package.subpackage.subsubpackage.DontUseThisClass;
-
-public class Bar {
-   DontUseThisClass boo = new DontUseThisClass();
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|classes|[]|Allowed classes|
-|packages|[]|Restricted packages|
 
 ## LawOfDemeter
 **Since:** 5.0
@@ -169,10 +104,55 @@ public class Foo {
 }
 ```
 
+## LooseCoupling
+**Since:** 0.7
+
+**Priority:** Medium (3)
+
+The use of implementation types as object references limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, referencing objects 
+by their interface types provides much more flexibility.
+
+**Example(s):**
+```
+// sub-optimal approach
+private ArrayList list = new ArrayList();
+
+public HashSet getFoo() {
+	return new HashSet();
+}
+
+	// preferred approach
+private List list = new ArrayList();
+
+public Set getFoo() {
+	return new HashSet();
+}
+```
+
+## LoosePackageCoupling
+**Since:** 5.0
+
+**Priority:** Medium (3)
+
+Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
+except when using one of the configured allowed classes.
+
+**Example(s):**
+```
+package some.package;
+
+import some.other.package.subpackage.subsubpackage.DontUseThisClass;
+
+public class Bar {
+   DontUseThisClass boo = new DontUseThisClass();
+}
+```
+
 **This rule has the following properties:**
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+|classes|[]|Allowed classes|
+|packages|[]|Restricted packages|
 

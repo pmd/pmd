@@ -6,279 +6,6 @@ folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/codesize.xml
 ---
-## NPathComplexity
-**Since:** 5.1
-
-**Priority:** Medium (3)
-
-The NPath complexity of a method is the number of acyclic execution paths through that method.
-A threshold of 200 is generally considered the point where measures should be taken to reduce 
-complexity and increase readability.
-
-**Example(s):**
-```
-CREATE OR REPLACE
-PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,
-	if (y) THEN	-- it should be broken down into smaller methods or functions
-		for j IN 0 .. j-1 LOOP
-			if (j > r) THEN
-				doSomething;
-				while (f < 5 ) LOOP
-					anotherThing;
-					f := f - 27;
-					END LOOP;
-			else
-					tryThis();
-			END IF;
-		END LOOP;
-	END IF;
-	if ( r - n > 45) THEN
-		while (doMagic) LOOP
-			findRabbits;
-		END LOOP;
-	END IF;
-	BEGIN
-		doSomethingDangerous();
-	EXCEPTION WHEN FooException THEN
-		makeAmends;
-		BEGIN
-			dontDoItAgain;
-		EXCEPTION
-		WHEN OTHERS THEN
-				log_problem;
-		END;
-	END;
-END;
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
-
-## ExcessiveMethodLength
-**Since:** 5.1
-
-**Priority:** Medium (3)
-
-When methods are excessively long this usually indicates that the method is doing more than its
-name/signature might suggest. They also become challenging for others to digest since excessive 
-scrolling causes readers to lose focus.
-Try to reduce the method length by creating helper methods and removing any copy/pasted code.
-
-**Example(s):**
-```
-CREATE OR REPLACE
-PROCEDURE doSomething BEGIN
-	DBMS_OUTPUT.PUT_LINE("Hello world!");
-	DBMS_OUTPUT.PUT_LINE("Hello world!");
-		-- 98 copies omitted for brevity.
-END;
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
-
-## ExcessiveParameterList
-**Since:** 5.1
-
-**Priority:** Medium (3)
-
-Methods with numerous parameters are a challenge to maintain, especially if most of them share the
-same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
-
-**Example(s):**
-```
-CREATE OR REPLACE
-PROCEDURE addPerson(		-- too many arguments liable to be mixed up
-	birthYear pls_integer, birthMonth pls_integer, birthDate pls_integer, height pls_integer, weight pls_integer, ssn pls_integer) {
-
-	. . . .
-END ADDPERSON;
- 
-CREATE OR REPLACE
-PROCEDURE addPerson(		-- preferred approach
-	birthdate DATE, measurements BodyMeasurements , ssn INTEGER) BEGIN
-
-	. . . .
-END;
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
-
-## ExcessiveObjectLength
-**Since:** 5.1
-
-**Priority:** Medium (3)
-
-Excessive object line lengths are usually indications that the object may be burdened with excessive 
-responsibilities that could be provided by other objects. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
-
-**Example(s):**
-```
-CREATE OR REPLACE
-PACKAGE BODY Foo AS
-	PROCEDURE bar1 IS BEGIN
-    -- 1000 lines of code
-	END bar1;
-	PROCEDURE bar2 IS BEGIN
-    -- 1000 lines of code
-	END bar2;
-    PROCEDURE bar3 IS BEGIN
-    -- 1000 lines of code
-	END bar3;
-	
-	
-    PROCEDURE barN IS BEGIN
-    -- 1000 lines of code
-	END barn;
-END;
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
-
-## ExcessiveTypeLength
-**Since:** 5.1
-
-**Priority:** Medium (3)
-
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
-responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
-
-**Example(s):**
-```
-CREATE OR REPLACE
-TYPE BODY Foo AS
-	 MEMBER PROCEDURE bar1 IS BEGIN
-    -- 1000 lines of code
-	END bar1;
-	 MEMBER PROCEDURE bar2 IS BEGIN
-    -- 1000 lines of code
-	END bar2;
-     MEMBER PROCEDURE bar3 IS BEGIN
-    -- 1000 lines of code
-	END bar3;
-	
-	
-     MEMBER PROCEDURE barN IS BEGIN
-    -- 1000 lines of code
-	END barn;
-END;
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
-
-## ExcessivePackageBodyLength
-**Since:** 5.1
-
-**Priority:** Medium (3)
-
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
-responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
-
-**Example(s):**
-```
-CREATE OR REPLACE
-PACKAGE BODY Foo AS
-	PROCEDURE bar1 IS BEGIN
-    -- 1000 lines of code
-	END bar1;
-	PROCEDURE bar2 IS BEGIN
-    -- 1000 lines of code
-	END bar2;
-    PROCEDURE bar3 IS BEGIN
-    -- 1000 lines of code
-	END bar3;
-	
-	
-    PROCEDURE barN IS BEGIN
-    -- 1000 lines of code
-	END barn;
-END;
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
-
-## ExcessivePackageSpecificationLength
-**Since:** 5.1
-
-**Priority:** Medium (3)
-
-Excessive class file lengths are usually indications that the class may be burdened with excessive 
-responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
-
-**Example(s):**
-```
-CREATE OR REPLACE
-PACKAGE Foo AS
-	PROCEDURE bar1 ;
-	PROCEDURE bar2 ;
-        PROCEDURE bar3 ;
-	
-    ..
-	
-        PROCEDURE barN ;
-END;
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|sigma||Sigma value|
-
 ## CyclomaticComplexity
 **Since:** 5.1
 
@@ -411,38 +138,215 @@ END;
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |showMethodsComplexity|true|Add method average violations to the report|
 |showClassesComplexity|true|Add class average violations to the report|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
-## TooManyFields
+## ExcessiveMethodLength
 **Since:** 5.1
 
 **Priority:** Medium (3)
 
-Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
-possibly through grouping related fields in new objects.  For example, a class with individual 
-city/state/zip fields could park them within a single Address field.
+When methods are excessively long this usually indicates that the method is doing more than its
+name/signature might suggest. They also become challenging for others to digest since excessive 
+scrolling causes readers to lose focus.
+Try to reduce the method length by creating helper methods and removing any copy/pasted code.
 
 **Example(s):**
 ```
-CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
-    C_CHAR_A CONSTANT CHAR(1 CHAR) := 'A';
-    C_CHAR_B CONSTANT CHAR(1 CHAR) := 'B';
-    ...
-    C_CHAR_Z CONSTANT CHAR(1 CHAR) := 'Z';
-END pkg_too_many_fields;
+CREATE OR REPLACE
+PROCEDURE doSomething BEGIN
+	DBMS_OUTPUT.PUT_LINE("Hello world!");
+	DBMS_OUTPUT.PUT_LINE("Hello world!");
+		-- 98 copies omitted for brevity.
+END;
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|maxfields|15|Max allowable fields|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+## ExcessiveObjectLength
+**Since:** 5.1
+
+**Priority:** Medium (3)
+
+Excessive object line lengths are usually indications that the object may be burdened with excessive 
+responsibilities that could be provided by other objects. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+
+**Example(s):**
+```
+CREATE OR REPLACE
+PACKAGE BODY Foo AS
+	PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+    PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+    PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+## ExcessivePackageBodyLength
+**Since:** 5.1
+
+**Priority:** Medium (3)
+
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+
+**Example(s):**
+```
+CREATE OR REPLACE
+PACKAGE BODY Foo AS
+	PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+    PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+    PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+## ExcessivePackageSpecificationLength
+**Since:** 5.1
+
+**Priority:** Medium (3)
+
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+
+**Example(s):**
+```
+CREATE OR REPLACE
+PACKAGE Foo AS
+	PROCEDURE bar1 ;
+	PROCEDURE bar2 ;
+        PROCEDURE bar3 ;
+	
+    ..
+	
+        PROCEDURE barN ;
+END;
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+## ExcessiveParameterList
+**Since:** 5.1
+
+**Priority:** Medium (3)
+
+Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+
+**Example(s):**
+```
+CREATE OR REPLACE
+PROCEDURE addPerson(		-- too many arguments liable to be mixed up
+	birthYear pls_integer, birthMonth pls_integer, birthDate pls_integer, height pls_integer, weight pls_integer, ssn pls_integer) {
+
+	. . . .
+END ADDPERSON;
+ 
+CREATE OR REPLACE
+PROCEDURE addPerson(		-- preferred approach
+	birthdate DATE, measurements BodyMeasurements , ssn INTEGER) BEGIN
+
+	. . . .
+END;
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+## ExcessiveTypeLength
+**Since:** 5.1
+
+**Priority:** Medium (3)
+
+Excessive class file lengths are usually indications that the class may be burdened with excessive 
+responsibilities that could be provided by external classes or functions. In breaking these methods
+apart the code becomes more managable and ripe for reuse.
+
+**Example(s):**
+```
+CREATE OR REPLACE
+TYPE BODY Foo AS
+	 MEMBER PROCEDURE bar1 IS BEGIN
+    -- 1000 lines of code
+	END bar1;
+	 MEMBER PROCEDURE bar2 IS BEGIN
+    -- 1000 lines of code
+	END bar2;
+     MEMBER PROCEDURE bar3 IS BEGIN
+    -- 1000 lines of code
+	END bar3;
+	
+	
+     MEMBER PROCEDURE barN IS BEGIN
+    -- 1000 lines of code
+	END barn;
+END;
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
 
 ## NcssMethodCount
 **Since:** 5.1
@@ -467,8 +371,6 @@ END;
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
@@ -498,11 +400,87 @@ CREATE OR REPLACE PACKAGE pkg_
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |sigma||Sigma value|
+
+## NPathComplexity
+**Since:** 5.1
+
+**Priority:** Medium (3)
+
+The NPath complexity of a method is the number of acyclic execution paths through that method.
+A threshold of 200 is generally considered the point where measures should be taken to reduce 
+complexity and increase readability.
+
+**Example(s):**
+```
+CREATE OR REPLACE
+PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,
+	if (y) THEN	-- it should be broken down into smaller methods or functions
+		for j IN 0 .. j-1 LOOP
+			if (j > r) THEN
+				doSomething;
+				while (f < 5 ) LOOP
+					anotherThing;
+					f := f - 27;
+					END LOOP;
+			else
+					tryThis();
+			END IF;
+		END LOOP;
+	END IF;
+	if ( r - n > 45) THEN
+		while (doMagic) LOOP
+			findRabbits;
+		END LOOP;
+	END IF;
+	BEGIN
+		doSomethingDangerous();
+	EXCEPTION WHEN FooException THEN
+		makeAmends;
+		BEGIN
+			dontDoItAgain;
+		EXCEPTION
+		WHEN OTHERS THEN
+				log_problem;
+		END;
+	END;
+END;
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|sigma||Sigma value|
+
+## TooManyFields
+**Since:** 5.1
+
+**Priority:** Medium (3)
+
+Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
+possibly through grouping related fields in new objects.  For example, a class with individual 
+city/state/zip fields could park them within a single Address field.
+
+**Example(s):**
+```
+CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
+    C_CHAR_A CONSTANT CHAR(1 CHAR) := 'A';
+    C_CHAR_B CONSTANT CHAR(1 CHAR) := 'B';
+    ...
+    C_CHAR_Z CONSTANT CHAR(1 CHAR) := 'Z';
+END pkg_too_many_fields;
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|maxfields|15|Max allowable fields|
 
 ## TooManyMethods
 **Since:** 5.1
@@ -516,9 +494,5 @@ have more fine grained objects.
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 |maxmethods|1|The method count reporting threshold|
 

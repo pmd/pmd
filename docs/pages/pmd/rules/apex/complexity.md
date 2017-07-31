@@ -32,45 +32,10 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |problemDepth|3|The if statement depth reporting threshold|
-
-## ExcessiveParameterList
-**Since:** 5.5.0
-
-**Priority:** Medium (3)
-
-Methods with numerous parameters are a challenge to maintain, especially if most of them share the
-same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
-
-**Example(s):**
-```
-// too many arguments liable to be mixed up
-public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
-	...
-}
-// preferred approach 
-public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
-	...
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
 
 ## ExcessiveClassLength
 **Since:** 5.5.0
@@ -103,8 +68,108 @@ public class Foo {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+|sigma||Sigma value|
+
+## ExcessiveParameterList
+**Since:** 5.5.0
+
+**Priority:** Medium (3)
+
+Methods with numerous parameters are a challenge to maintain, especially if most of them share the
+same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+
+**Example(s):**
+```
+// too many arguments liable to be mixed up
+public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
+	...
+}
+// preferred approach 
+public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
+	...
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+|sigma||Sigma value|
+
+## ExcessivePublicCount
+**Since:** 5.5.0
+
+**Priority:** Medium (3)
+
+Classes with large numbers of public methods and attributes require disproportionate testing efforts
+since combinational side effects grow rapidly and increase risk. Refactoring these classes into
+smaller ones not only increases testability and reliability but also allows new variations to be
+developed easily.
+
+**Example(s):**
+```
+public class Foo {
+	public String value;
+	public Bar something;
+	public Variable var;
+	// [... more more public attributes ...]
+	
+	public void doWork() {}
+	public void doMoreWork() {}
+	public void doWorkAgain() {}
+	// [... more more public methods ...]
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|topscore||Top score value|
+|minimum||Minimum reporting threshold|
+|cc_categories|[Style]|Code Climate Categories|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
+|cc_block_highlighting|false|Code Climate Block Highlighting|
+|sigma||Sigma value|
+
+## NcssConstructorCount
+**Since:** 5.5.0
+
+**Priority:** Medium (3)
+
+This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
+of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
+lines of code that are split are counted as one.
+
+**Example(s):**
+```
+public class Foo extends Bar {
+	//this constructor only has 1 NCSS lines
+	public Foo() {
+		super();
+		
+		
+		
+		
+		super.foo();
+	}
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |cc_categories|[Style]|Code Climate Categories|
@@ -139,8 +204,6 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |cc_categories|[Style]|Code Climate Categories|
@@ -177,45 +240,6 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
-
-## NcssConstructorCount
-**Since:** 5.5.0
-
-**Priority:** Medium (3)
-
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-
-**Example(s):**
-```
-public class Foo extends Bar {
-	//this constructor only has 1 NCSS lines
-	public Foo() {
-		super();
-		
-		
-		
-		
-		super.foo();
-	}
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |topscore||Top score value|
 |minimum||Minimum reporting threshold|
 |cc_categories|[Style]|Code Climate Categories|
@@ -278,8 +302,6 @@ high complexity, and 11+ is very high complexity.
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |showMethodsComplexity|true|Add method average violations to the report|
 |showClassesComplexity|true|Add class average violations to the report|
 |cc_categories|[Style]|Code Climate Categories|
@@ -318,48 +340,8 @@ public class Person {
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 |cc_categories|[Style]|Code Climate Categories|
 |cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 |maxfields|15|Max allowable fields|
-
-## ExcessivePublicCount
-**Since:** 5.5.0
-
-**Priority:** Medium (3)
-
-Classes with large numbers of public methods and attributes require disproportionate testing efforts
-since combinational side effects grow rapidly and increase risk. Refactoring these classes into
-smaller ones not only increases testability and reliability but also allows new variations to be
-developed easily.
-
-**Example(s):**
-```
-public class Foo {
-	public String value;
-	public Bar something;
-	public Variable var;
-	// [... more more public attributes ...]
-	
-	public void doWork() {}
-	public void doMoreWork() {}
-	public void doWorkAgain() {}
-	// [... more more public methods ...]
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|topscore||Top score value|
-|minimum||Minimum reporting threshold|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
-|sigma||Sigma value|
 

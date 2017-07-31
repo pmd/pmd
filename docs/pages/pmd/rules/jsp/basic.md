@@ -6,6 +6,128 @@ folder: pmd/rules/jsp
 sidebaractiveurl: /pmd_rules_jsp.html
 editmepath: ../pmd-jsp/src/main/resources/rulesets/jsp/basic.xml
 ---
+## DuplicateJspImports
+**Since:** 3.7
+
+**Priority:** Medium (3)
+
+Avoid duplicate import statements inside JSP's.
+
+**Example(s):**
+```
+<%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
+```
+
+## IframeMissingSrcAttribute
+**Since:** 3.6
+
+**Priority:** Medium High (2)
+
+IFrames which are missing a src element can cause security information popups in IE if you are accessing the page
+through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
+
+**Example(s):**
+```
+<HTML><title>bad example><BODY>
+<iframe></iframe>
+</BODY> </HTML>
+
+<HTML><title>good example><BODY>
+<iframe src="foo"></iframe>
+</BODY> </HTML>
+```
+
+## JspEncoding
+**Since:** 4.0
+
+**Priority:** Medium (3)
+
+A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
+
+**Example(s):**
+```
+Most browsers should be able to interpret the following headers:
+                
+                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+                    
+                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+```
+
+## NoClassAttribute
+**Since:** 3.6
+
+**Priority:** Medium High (2)
+
+Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
+
+**Example(s):**
+```
+<HTML> <BODY>
+<P class="MajorHeading">Some text</P>
+</BODY> </HTML>
+```
+
+## NoHtmlComments
+**Since:** 3.6
+
+**Priority:** Medium High (2)
+
+In a production system, HTML comments increase the payload
+			between the application server to the client, and serve
+			little other purpose. Consider switching to JSP comments.
+
+**Example(s):**
+```
+<HTML><title>bad example><BODY>
+<!-- HTML comment -->
+</BODY> </HTML>
+
+<HTML><title>good example><BODY>
+<%-- JSP comment --%>
+</BODY> </HTML>
+```
+
+## NoInlineScript
+**Since:** 4.0
+
+**Priority:** Medium (3)
+
+Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the "script" element.
+Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
+
+**Example(s):**
+```
+Most browsers should be able to interpret the following headers:
+                
+                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+                    
+                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+```
+
+## NoInlineStyleInformation
+**Since:** 3.6
+
+**Priority:** Medium (3)
+
+Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT> tags, or attributes like "align='center'".
+
+**Example(s):**
+```
+<html><body><p align='center'><b>text</b></p></body></html>
+```
+
+## NoJspForward
+**Since:** 3.6
+
+**Priority:** Medium (3)
+
+Do not do a forward from within a JSP file.
+
+**Example(s):**
+```
+<jsp:forward page='UnderConstruction.jsp'/>
+```
+
 ## NoLongScripts
 **Since:** 3.6
 
@@ -38,15 +160,6 @@ onload=calcDays;
 </HTML>
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
 ## NoScriptlets
 **Since:** 3.6
 
@@ -68,205 +181,6 @@ response.setHeader("Pragma", "No-cache");
 </HTML>
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## NoInlineStyleInformation
-**Since:** 3.6
-
-**Priority:** Medium (3)
-
-Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT> tags, or attributes like "align='center'".
-
-**Example(s):**
-```
-<html><body><p align='center'><b>text</b></p></body></html>
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## NoClassAttribute
-**Since:** 3.6
-
-**Priority:** Medium High (2)
-
-Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
-
-**Example(s):**
-```
-<HTML> <BODY>
-<P class="MajorHeading">Some text</P>
-</BODY> </HTML>
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## NoJspForward
-**Since:** 3.6
-
-**Priority:** Medium (3)
-
-Do not do a forward from within a JSP file.
-
-**Example(s):**
-```
-<jsp:forward page='UnderConstruction.jsp'/>
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## IframeMissingSrcAttribute
-**Since:** 3.6
-
-**Priority:** Medium High (2)
-
-IFrames which are missing a src element can cause security information popups in IE if you are accessing the page
-through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
-
-**Example(s):**
-```
-<HTML><title>bad example><BODY>
-<iframe></iframe>
-</BODY> </HTML>
-
-<HTML><title>good example><BODY>
-<iframe src="foo"></iframe>
-</BODY> </HTML>
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## NoHtmlComments
-**Since:** 3.6
-
-**Priority:** Medium High (2)
-
-In a production system, HTML comments increase the payload
-			between the application server to the client, and serve
-			little other purpose. Consider switching to JSP comments.
-
-**Example(s):**
-```
-<HTML><title>bad example><BODY>
-<!-- HTML comment -->
-</BODY> </HTML>
-
-<HTML><title>good example><BODY>
-<%-- JSP comment --%>
-</BODY> </HTML>
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## DuplicateJspImports
-**Since:** 3.7
-
-**Priority:** Medium (3)
-
-Avoid duplicate import statements inside JSP's.
-
-**Example(s):**
-```
-<%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## JspEncoding
-**Since:** 4.0
-
-**Priority:** Medium (3)
-
-A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
-
-**Example(s):**
-```
-Most browsers should be able to interpret the following headers:
-                
-                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-                    
-                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## NoInlineScript
-**Since:** 4.0
-
-**Priority:** Medium (3)
-
-Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the "script" element.
-Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
-
-**Example(s):**
-```
-Most browsers should be able to interpret the following headers:
-                
-                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-                    
-                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
 ## NoUnsanitizedJSPExpression
 **Since:** 5.1.4
 
@@ -283,11 +197,4 @@ ${expression}                    <!-- don't use this -->
 ${fn:escapeXml(expression)}      <!-- instead, escape it -->
 <c:out value="${expression}" />  <!-- or use c:out -->
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 

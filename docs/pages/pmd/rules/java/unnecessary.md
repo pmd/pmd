@@ -23,37 +23,6 @@ public String convert(int x) {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
-## UnnecessaryReturn
-**Since:** 1.3
-
-**Priority:** Medium (3)
-
-Avoid the use of unnecessary return statements.
-
-**Example(s):**
-```
-public class Foo {
-  public void bar() {
-    int x = 42;
-    return;
-  }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-
 ## UnnecessaryFinalModifier
 **Since:** 3.0
 
@@ -73,76 +42,55 @@ public final class Foo {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## UselessOverridingMethod
-**Since:** 3.3
+## UnnecessaryModifier
+**Since:** 1.02
 
 **Priority:** Medium (3)
 
-The overriding method merely calls the same method defined in a superclass.
+Fields in interfaces and annotations are automatically `public static final`, and methods are `public abstract`.
+Classes, interfaces or annotations nested in an interface or annotation are automatically `public static`
+(all nested interfaces and annotations are automatically static).
+Nested enums are automatically `static`.
+For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
 
 **Example(s):**
 ```
-public void foo(String bar) {
-  super.foo(bar);      // why bother overriding?
+public @interface Annotation {
+  public abstract void bar(); 		// both abstract and public are ignored by the compiler
+  public static final int X = 0; 	// public, static, and final all ignored
+  public static class Bar {} 		// public, static ignored
+  public static interface Baz {} 	// ditto
 }
-
-public String foo() {
-	return super.foo();  // why bother overriding?
+public interface Foo {
+  public abstract void bar(); 		// both abstract and public are ignored by the compiler
+  public static final int X = 0; 	// public, static, and final all ignored
+  public static class Bar {} 		// public, static ignored
+  public static interface Baz {} 	// ditto
 }
-
-@Id
-public Long getId() {
-  return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|ignoreAnnotations|false|Ignore annotations|
-
-## UselessOperationOnImmutable
-**Since:** 3.5
-
-**Priority:** Medium (3)
-
-An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
-since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
-
-**Example(s):**
-```
-import java.math.*;
-
-class Test {
-  void method1() {
-    BigDecimal bd=new BigDecimal(10);
-    bd.add(new BigDecimal(5)); 		// this will trigger the rule
-  }
-  void method2() {
-    BigDecimal bd=new BigDecimal(10);
-    bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+public class Bar {
+  public static interface Baz {} // static ignored
+  public static enum FoorBar { // static ignored
+    FOO;
   }
 }
 ```
 
-**This rule has the following properties:**
+## UnnecessaryReturn
+**Since:** 1.3
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+**Priority:** Medium (3)
+
+Avoid the use of unnecessary return statements.
+
+**Example(s):**
+```
+public class Foo {
+  public void bar() {
+    int x = 42;
+    return;
+  }
+}
+```
 
 ## UnusedNullCheckInEquals
 **Since:** 3.5
@@ -190,14 +138,58 @@ public class Test {
 }
 ```
 
+## UselessOperationOnImmutable
+**Since:** 3.5
+
+**Priority:** Medium (3)
+
+An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
+since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
+
+**Example(s):**
+```
+import java.math.*;
+
+class Test {
+  void method1() {
+    BigDecimal bd=new BigDecimal(10);
+    bd.add(new BigDecimal(5)); 		// this will trigger the rule
+  }
+  void method2() {
+    BigDecimal bd=new BigDecimal(10);
+    bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+  }
+}
+```
+
+## UselessOverridingMethod
+**Since:** 3.3
+
+**Priority:** Medium (3)
+
+The overriding method merely calls the same method defined in a superclass.
+
+**Example(s):**
+```
+public void foo(String bar) {
+  super.foo(bar);      // why bother overriding?
+}
+
+public String foo() {
+	return super.foo();  // why bother overriding?
+}
+
+@Id
+public Long getId() {
+  return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
+}
+```
+
 **This rule has the following properties:**
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
+|ignoreAnnotations|false|Ignore annotations|
 
 ## UselessParentheses
 **Since:** 5.0
@@ -220,15 +212,6 @@ public class Foo {
 
 }
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 
 ## UselessQualifiedThis
 **Since:** 5.4.0
@@ -264,53 +247,4 @@ public class Foo {
     }
 }
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## UnnecessaryModifier
-**Since:** 1.02
-
-**Priority:** Medium (3)
-
-Fields in interfaces and annotations are automatically `public static final`, and methods are `public abstract`.
-Classes, interfaces or annotations nested in an interface or annotation are automatically `public static`
-(all nested interfaces and annotations are automatically static).
-Nested enums are automatically `static`.
-For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
-
-**Example(s):**
-```
-public @interface Annotation {
-  public abstract void bar(); 		// both abstract and public are ignored by the compiler
-  public static final int X = 0; 	// public, static, and final all ignored
-  public static class Bar {} 		// public, static ignored
-  public static interface Baz {} 	// ditto
-}
-public interface Foo {
-  public abstract void bar(); 		// both abstract and public are ignored by the compiler
-  public static final int X = 0; 	// public, static, and final all ignored
-  public static class Bar {} 		// public, static ignored
-  public static interface Baz {} 	// ditto
-}
-public class Bar {
-  public static interface Baz {} // static ignored
-  public static enum FoorBar { // static ignored
-    FOO;
-  }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 

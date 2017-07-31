@@ -6,33 +6,24 @@ folder: pmd/rules/ecmascript
 sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/braces.xml
 ---
-## IfStmtsMustUseBraces
+## ForLoopsMustUseBraces
 **Since:** 5.0
 
 **Priority:** Medium (3)
 
-Avoid using if statements without using curly braces.
+Avoid using 'for' statements without using curly braces.
 
 **Example(s):**
 ```
 // Ok
-if (foo) {
-   x++;
+for (var i = 0; i < 42; i++) {
+   foo();
 }
 
 // Bad
-if (foo)
-   x++;
+for (var i = 0; i < 42; i++)
+   foo();
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 
 ## IfElseStmtsMustUseBraces
 **Since:** 5.0
@@ -57,14 +48,24 @@ else
    y++;
 ```
 
-**This rule has the following properties:**
+## IfStmtsMustUseBraces
+**Since:** 5.0
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
+**Priority:** Medium (3)
+
+Avoid using if statements without using curly braces.
+
+**Example(s):**
+```
+// Ok
+if (foo) {
+   x++;
+}
+
+// Bad
+if (foo)
+   x++;
+```
 
 ## WhileLoopsMustUseBraces
 **Since:** 5.0
@@ -84,41 +85,4 @@ while (true) {
 while (true)
    x++;
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## ForLoopsMustUseBraces
-**Since:** 5.0
-
-**Priority:** Medium (3)
-
-Avoid using 'for' statements without using curly braces.
-
-**Example(s):**
-```
-// Ok
-for (var i = 0; i < 42; i++) {
-   foo();
-}
-
-// Bad
-for (var i = 0; i < 42; i++)
-   foo();
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
 

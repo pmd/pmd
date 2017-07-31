@@ -6,29 +6,61 @@ folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-java.xml
 ---
-## MoreThanOneLogger
-**Since:** 2.0
+## AvoidPrintStackTrace
+**Since:** 3.2
 
-**Priority:** Medium High (2)
+**Priority:** Medium (3)
 
-Normally only one logger is used in each class.
+Avoid printStackTrace(); use a logger call instead.
 
 **Example(s):**
 ```
-public class Foo {
-    Logger log = Logger.getLogger(Foo.class.getName());
-    // It is very rare to see two loggers on a class, normally
-    // log information is multiplexed by levels
-    Logger log2= Logger.getLogger(Foo.class.getName());
+class Foo {
+  void bar() {
+    try {
+     // do something
+    } catch (Exception e) {
+     e.printStackTrace();
+     }
+   }
 }
+```
+
+## GuardLogStatementJavaUtil
+**Since:** 5.1.0
+
+**Priority:** Medium High (2)
+
+Whenever using a log level, one should check if the loglevel is actually enabled, or
+otherwise skip the associate String creation and manipulation.
+
+**Example(s):**
+```
+// Add this for performance
+	if (log.isLoggable(Level.FINE)) { ...
+ 	    log.fine("log something" + " and " + "concat strings");
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
+|guardsMethods|[]|method use to guard the log statement|
+|logLevels|[]|LogLevels to guard|
+
+## InvalidSlf4jMessageFormat
+**Since:** 5.5.0
+
+**Priority:** Low (5)
+
+Check for messages in slf4j loggers with non matching number of arguments and placeholders.
+
+**Example(s):**
+```
+LOGGER.error("forget the arg {}");
+LOGGER.error("too many args {}", "arg1", "arg2");
+LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.
+```
 
 ## LoggerIsNotStaticFinal
 **Since:** 2.0
@@ -46,14 +78,22 @@ public class Foo{
 }
 ```
 
-**This rule has the following properties:**
+## MoreThanOneLogger
+**Since:** 2.0
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
+**Priority:** Medium High (2)
+
+Normally only one logger is used in each class.
+
+**Example(s):**
+```
+public class Foo {
+    Logger log = Logger.getLogger(Foo.class.getName());
+    // It is very rare to see two loggers on a class, normally
+    // log information is multiplexed by levels
+    Logger log2= Logger.getLogger(Foo.class.getName());
+}
+```
 
 ## SystemPrintln
 **Since:** 2.1
@@ -75,87 +115,4 @@ class Foo{
     }
 }
 ```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## AvoidPrintStackTrace
-**Since:** 3.2
-
-**Priority:** Medium (3)
-
-Avoid printStackTrace(); use a logger call instead.
-
-**Example(s):**
-```
-class Foo {
-  void bar() {
-    try {
-     // do something
-    } catch (Exception e) {
-     e.printStackTrace();
-     }
-   }
-}
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|version|1.0|XPath specification version|
-|xpath||XPath expression|
-
-## GuardLogStatementJavaUtil
-**Since:** 5.1.0
-
-**Priority:** Medium High (2)
-
-Whenever using a log level, one should check if the loglevel is actually enabled, or
-otherwise skip the associate String creation and manipulation.
-
-**Example(s):**
-```
-// Add this for performance
-	if (log.isLoggable(Level.FINE)) { ...
- 	    log.fine("log something" + " and " + "concat strings");
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
-|guardsMethods|[]|method use to guard the log statement|
-|logLevels|[]|LogLevels to guard|
-
-## InvalidSlf4jMessageFormat
-**Since:** 5.5.0
-
-**Priority:** Low (5)
-
-Check for messages in slf4j loggers with non matching number of arguments and placeholders.
-
-**Example(s):**
-```
-LOGGER.error("forget the arg {}");
-LOGGER.error("too many args {}", "arg1", "arg2");
-LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.
-```
-
-**This rule has the following properties:**
-
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|violationSuppressRegex||Suppress violations with messages matching a regular expression|
-|violationSuppressXPath||Suppress violations on nodes which match a given relative XPath expression.|
 
