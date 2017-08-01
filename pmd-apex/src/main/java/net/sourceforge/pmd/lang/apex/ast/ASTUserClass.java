@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserClass;
 
-public class ASTUserClass extends ApexRootNode<UserClass> implements ApexQualifiableNode {
+public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClassOrInterface<UserClass> {
 
     private ApexQualifiedName qname;
 
@@ -52,5 +52,11 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ApexQualifi
         }
 
         return qname;
+    }
+
+
+    @Override
+    public TypeKind getTypeKind() {
+        return TypeKind.CLASS;
     }
 }

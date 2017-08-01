@@ -110,14 +110,14 @@ public class ApexQualifiedName implements QualifiedName {
     }
 
 
-    static ApexQualifiedName ofOuterClass(ASTUserClass astUserClass) {
-        String ns = astUserClass.node.getDefiningType().getNamespace().toString();
+    static ApexQualifiedName ofOuterClass(ASTUserClassOrInterface astUserClass) {
+        String ns = astUserClass.getNode().getDefiningType().getNamespace().toString();
         String[] classes = {astUserClass.getImage()};
         return new ApexQualifiedName(ns, classes, null);
     }
 
 
-    static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClass astUserClass) {
+    static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClassOrInterface astUserClass) {
 
         String[] classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
         classes[classes.length - 1] = astUserClass.getImage();
@@ -148,7 +148,7 @@ public class ApexQualifiedName implements QualifiedName {
 
 
     static ApexQualifiedName ofMethod(ASTMethod node) {
-        ApexQualifiedName parent = node.getFirstParentOfType(ASTUserClass.class).getQualifiedName();
+        ApexQualifiedName parent = node.getFirstParentOfType(ASTUserClassOrInterface.class).getQualifiedName();
 
 
         return new ApexQualifiedName(parent.nameSpace, parent.classes, getOperationString(node));

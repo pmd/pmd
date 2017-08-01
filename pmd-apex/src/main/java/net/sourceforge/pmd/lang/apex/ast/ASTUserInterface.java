@@ -9,7 +9,9 @@ import java.lang.reflect.Field;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserInterface;
 
-public class ASTUserInterface extends ApexRootNode<UserInterface> {
+public class ASTUserInterface extends ApexRootNode<UserInterface> implements ASTUserClassOrInterface<UserInterface> {
+
+    private ApexQualifiedName qname;
 
     public ASTUserInterface(UserInterface userInterface) {
         super(userInterface);
@@ -30,5 +32,28 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> {
             e.printStackTrace();
         }
         return super.getImage();
+    }
+
+
+    @Override
+    public TypeKind getTypeKind() {
+        return TypeKind.INTERFACE;
+    }
+
+
+    @Override
+    public ApexQualifiedName getQualifiedName() {
+        if (qname == null) {
+
+            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+
+            if (parent != null) {
+                qname = ApexQualifiedName.ofNestedClass(parent.getQualifiedName(), this);
+            } else {
+                qname = ApexQualifiedName.ofOuterClass(this);
+            }
+        }
+
+        return qname;
     }
 }
