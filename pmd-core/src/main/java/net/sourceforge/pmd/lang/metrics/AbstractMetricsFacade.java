@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.metrics;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
-import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.metrics.Metric.Version;
 
 /**
@@ -17,7 +16,7 @@ import net.sourceforge.pmd.lang.metrics.Metric.Version;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
+public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends QualifiableNode> {
 
 
     /**

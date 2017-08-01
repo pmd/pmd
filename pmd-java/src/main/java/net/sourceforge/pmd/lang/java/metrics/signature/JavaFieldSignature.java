@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.metrics.Signature;
  *
  * @author Clément Fournier
  */
-public final class JavaFieldSignature extends JavaSignature implements Signature<ASTFieldDeclaration> {
+public final class JavaFieldSignature extends JavaSignature<ASTFieldDeclaration> {
 
     private static final Map<Integer, JavaFieldSignature> POOL = new HashMap<>();
 

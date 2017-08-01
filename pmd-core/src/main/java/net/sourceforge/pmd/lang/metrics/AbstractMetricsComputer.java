@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
-import net.sourceforge.pmd.lang.ast.SignedNode;
 
 /**
  * Base class for metrics computers. These objects compute a metric and memoize it.
@@ -18,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.SignedNode;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractMetricsComputer<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode>
+public abstract class AbstractMetricsComputer<T extends QualifiableNode, O extends QualifiableNode>
     implements MetricsComputer<T, O> {
 
     @Override

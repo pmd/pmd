@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.SignedNode;
  *
  * @author Clément Fournier
  */
-public interface MetricsComputer<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
+public interface MetricsComputer<T extends QualifiableNode, O extends QualifiableNode> {
 
 
     /**

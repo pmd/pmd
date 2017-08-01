@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Ro
  *
  * @author Clément Fournier
  */
-public final class OperationSigMask extends SigMask<JavaOperationSignature> {
+public final class OperationSigMask extends JavaSigMask<JavaOperationSignature> {
 
     private Set<JavaOperationSignature.Role> roleMask = EnumSet.allOf(Role.class);
     private boolean coverAbstract = false;

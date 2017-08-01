@@ -156,3 +156,7 @@ entries:
     - title: Adding a New CPD Language
       url: /pmd_devdocs_adding_new_cpd_language.html
       output: web, pdf
+    - title: Adding metrics support to a language
+      url: /pmd_devdocs_adding_metrics_support_to_language.html
+      output: web, pdf
+

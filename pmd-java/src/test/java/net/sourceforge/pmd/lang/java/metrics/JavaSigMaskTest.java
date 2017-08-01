@@ -22,12 +22,12 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.SigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaSigMask;
 
 /**
  * @author Clément Fournier
  */
-public class SigMaskTest extends ParserTst {
+public class JavaSigMaskTest extends ParserTst {
 
     private static final String TEST_FIELDS = "class Bzaz{"
         + "public String x;"
@@ -80,7 +80,7 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testEmptyOperationMask() {
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST_OPERATIONS);
-        SigMask<JavaOperationSignature> mask = new OperationSigMask();
+        JavaSigMask<JavaOperationSignature> mask = new OperationSigMask();
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isAbstract()) {
@@ -97,7 +97,7 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testEmptyFieldMask() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
-        SigMask<JavaFieldSignature> mask = new FieldSigMask();
+        JavaSigMask<JavaFieldSignature> mask = new FieldSigMask();
 
         for (ASTFieldDeclaration node : nodes) {
             assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));

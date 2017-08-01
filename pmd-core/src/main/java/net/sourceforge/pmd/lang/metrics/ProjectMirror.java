@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.metrics;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.ast.QualifiedName;
-import net.sourceforge.pmd.lang.ast.SignedNode;
 
 /**
  * Object storing the statistics and memoizers of the analysed project, like PackageStats for Java. These are the entry
@@ -28,7 +27,7 @@ import net.sourceforge.pmd.lang.ast.SignedNode;
  *
  * @author Clément Fournier
  */
-public interface ProjectMirror<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
+public interface ProjectMirror<T extends QualifiableNode, O extends QualifiableNode> {
 
     /**
      * Gets the operation metric memoizer corresponding to the qualified name.
