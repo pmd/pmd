@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.metrics;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
@@ -48,7 +49,7 @@ public final class ApexMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
-    public static double get(MetricKey<ASTUserClass> key, ASTUserClass node) {
+    public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node) {
         return FACADE.computeForType(key, node, Version.STANDARD);
     }
 
@@ -63,7 +64,7 @@ public final class ApexMetrics {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
      */
-    public static double get(MetricKey<ASTUserClass> key, ASTUserClass node, MetricVersion version) {
+    public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node, MetricVersion version) {
         return FACADE.computeForType(key, node, version);
     }
 
@@ -106,7 +107,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<ASTMethod> key, ASTUserClass node, ResultOption option) {
+    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, ResultOption option) {
         return FACADE.computeWithResultOption(key, node, Version.STANDARD, option);
     }
 
@@ -123,7 +124,7 @@ public final class ApexMetrics {
      * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<ASTMethod> key, ASTUserClass node, MetricVersion version,
+    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, MetricVersion version,
                              ResultOption option) {
         return FACADE.computeWithResultOption(key, node, version, option);
     }

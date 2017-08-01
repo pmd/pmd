@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexQualifiedName;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.metrics.ProjectMirror;
 /**
  * @author Clément Fournier
  */
-public class ApexProjectMirror implements ProjectMirror<ASTUserClass, ASTMethod>, ApexSignatureMatcher {
+public class ApexProjectMirror implements ProjectMirror<ASTUserClassOrInterface<?>, ASTMethod>, ApexSignatureMatcher {
 
     private final Map<ApexOperationSignature, Map<ApexQualifiedName, ApexOperationStats>> operations = new HashMap<>();
     private final Map<ApexQualifiedName, ApexClassStats> classes = new HashMap<>();
@@ -75,7 +75,7 @@ public class ApexProjectMirror implements ProjectMirror<ASTUserClass, ASTMethod>
 
 
     @Override
-    public MetricMemoizer<ASTUserClass> getClassStats(QualifiedName qname) {
+    public MetricMemoizer<ASTUserClassOrInterface<?>> getClassStats(QualifiedName qname) {
         return classes.get(qname);
     }
 

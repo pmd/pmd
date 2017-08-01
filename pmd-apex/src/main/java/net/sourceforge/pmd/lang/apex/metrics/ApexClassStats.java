@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.metrics;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
 
 /**
  * @author Clément Fournier
  */
-public class ApexClassStats extends AbstractMetricMemoizer<ASTUserClass> {
+public class ApexClassStats extends AbstractMetricMemoizer<ASTUserClassOrInterface<?>> {
 }

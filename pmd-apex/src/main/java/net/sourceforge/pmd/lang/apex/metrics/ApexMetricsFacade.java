@@ -5,14 +5,14 @@
 package net.sourceforge.pmd.lang.apex.metrics;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsFacade;
 import net.sourceforge.pmd.lang.metrics.MetricsComputer;
 
 /**
  * @author Clément Fournier
  */
-public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClass, ASTMethod> {
+public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClassOrInterface<?>, ASTMethod> {
 
     private final ApexProjectMirror projectMirror = new ApexProjectMirror();
 
@@ -24,7 +24,7 @@ public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClass, ASTMe
 
 
     @Override
-    protected MetricsComputer<ASTUserClass, ASTMethod> getLanguageSpecificComputer() {
+    protected MetricsComputer<ASTUserClassOrInterface<?>, ASTMethod> getLanguageSpecificComputer() {
         return ApexMetricsComputer.INSTANCE;
     }
 
