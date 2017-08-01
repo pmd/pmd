@@ -139,28 +139,36 @@ public class Report implements Iterable<RuleViolation> {
      * Represents a processing error, such as a parse error.
      */
     public static class ProcessingError {
-        private final String msg;
+        private final Throwable error;
         private final String file;
 
         /**
          * Creates a new processing error
          *
-         * @param msg
-         *            the error message
+         * @param error
+         *            the error
          * @param file
          *            the file during which the error occurred
          */
-        public ProcessingError(String msg, String file) {
-            this.msg = msg;
+        public ProcessingError(Throwable error, String file) {
+            this.error = error;
             this.file = file;
         }
 
         public String getMsg() {
-            return msg;
+            if (error != null) {
+                return error.getMessage();
+            } else {
+                return null;
+            }
         }
 
         public String getFile() {
             return file;
+        }
+
+        public Throwable getError() {
+            return error;
         }
     }
 

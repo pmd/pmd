@@ -57,7 +57,7 @@ public class PmdRunnable implements Callable<Report> {
     private void addError(Report report, Exception e, String errorMessage) {
         // unexpected exception: log and stop executor service
         LOG.log(Level.FINE, errorMessage, e);
-        report.addError(new Report.ProcessingError(e.getMessage(), fileName));
+        report.addError(new Report.ProcessingError(e, fileName));
     }
 
     @Override
