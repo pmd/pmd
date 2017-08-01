@@ -7,8 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 public class ApexParserVisitorAdapter implements ApexParserVisitor {
     @Override
     public Object visit(ApexNode<?> node, Object data) {
-        node.childrenAccept(this, data);
-        return null;
+        return node.childrenAccept(this, data);
     }
 
     @Override
