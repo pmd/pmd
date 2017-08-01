@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Clément Fournier
  */
-public interface ASTAnyTypeDeclaration extends QualifiableNode, AccessNode, JavaNode {
+public interface ASTAnyTypeDeclaration extends JavaQualifiableNode, AccessNode, JavaNode {
 
     /**
      * Finds the type kind of this declaration.

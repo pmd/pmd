@@ -26,16 +26,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
+import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
 import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.api.MetricKey;
 import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
@@ -48,8 +49,8 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
  */
 public class DataStructureTest extends ParserTst {
 
-    MetricKey<ASTAnyTypeDeclaration> classMetricKey = JavaClassMetricKey.of(new RandomClassMetric(), null);
-    MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = JavaOperationMetricKey.of(new RandomOperationMetric(), null);
+    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = JavaClassMetricKey.of(new RandomClassMetric(), null);
+    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = JavaOperationMetricKey.of(new RandomOperationMetric(), null);
     private PackageStats pack;
 
 
@@ -61,7 +62,7 @@ public class DataStructureTest extends ParserTst {
 
     @Test
     public void testAddClass() {
-        QualifiedName qname = QualifiedName.parseName("org.foo.Boo");
+        JavaQualifiedName qname = JavaQualifiedName.parseName("org.foo.Boo");
 
         assertNull(pack.getClassStats(qname, false));
         assertNotNull(pack.getClassStats(qname, true));
@@ -78,8 +79,8 @@ public class DataStructureTest extends ParserTst {
 
         ASTMethodOrConstructorDeclaration node = getOrderedNodes(ASTMethodDeclaration.class, TEST).get(0);
 
-        QualifiedName qname = node.getQualifiedName();
-        OperationSignature signature = OperationSignature.buildFor(node);
+        JavaQualifiedName qname = node.getQualifiedName();
+        JavaOperationSignature signature = JavaOperationSignature.buildFor(node);
 
         assertFalse(pack.hasMatchingSig(qname, new OperationSigMask()));
 
@@ -96,9 +97,9 @@ public class DataStructureTest extends ParserTst {
 
         ASTFieldDeclaration node = getOrderedNodes(ASTFieldDeclaration.class, TEST).get(0);
 
-        QualifiedName qname = QualifiedName.parseName("org.foo.Boo");
+        JavaQualifiedName qname = JavaQualifiedName.parseName("org.foo.Boo");
         String fieldName = "bar";
-        FieldSignature signature = FieldSignature.buildFor(node);
+        JavaFieldSignature signature = JavaFieldSignature.buildFor(node);
 
         assertFalse(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
 
@@ -142,14 +143,16 @@ public class DataStructureTest extends ParserTst {
         acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                result.add((int) toplevel.compute(opMetricKey, node, force, Version.STANDARD));
+                MetricMemoizer<ASTMethodOrConstructorDeclaration> op = toplevel.getOperationStats(node.getQualifiedName());
+                result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force, Version.STANDARD, op));
                 return super.visit(node, data);
             }
 
 
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
-                result.add((int) toplevel.compute(classMetricKey, node, force, Version.STANDARD));
+                MetricMemoizer<ASTAnyTypeDeclaration> clazz = toplevel.getClassStats(node.getQualifiedName());
+                result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force, Version.STANDARD, clazz));
                 return super.visit(node, data);
             }
         }, null);

@@ -38,11 +38,13 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
     private static final Map<String, MetricVersion> VERSION_MAP;
 
+
     static {
         VERSION_MAP = new HashMap<>();
         VERSION_MAP.put("standard", Metric.Version.STANDARD);
         VERSION_MAP.put("javaNcss", NcssVersion.JAVANCSS);
     }
+
 
     private static final EnumeratedProperty<MetricVersion> NCSS_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
         "ncssVersion", "Choose a variant of Ncss or the standard",

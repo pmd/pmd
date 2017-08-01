@@ -42,11 +42,13 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     private static final Map<String, MetricVersion> VERSION_MAP;
 
+
     static {
         VERSION_MAP = new HashMap<>();
         VERSION_MAP.put("standard", Version.STANDARD);
         VERSION_MAP.put("ignoreBooleanPaths", CycloVersion.IGNORE_BOOLEAN_PATHS);
     }
+
 
     private static final EnumeratedProperty<MetricVersion> CYCLO_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
         "cycloVersion", "Choose a variant of Cyclo or the standard",

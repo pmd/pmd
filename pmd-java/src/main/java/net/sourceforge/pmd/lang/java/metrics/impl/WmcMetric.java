@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 /**
- * Weighed Method Count. It is the sum of the statical complexity of all operations of a class. We use
- * {@link CycloMetric} to quantify the complexity of a metric. [1]
+ * Weighed Method Count. It is the sum of the statical complexity of all operations of a class. We use {@link
+ * CycloMetric} to quantify the complexity of a metric. [1]
  *
  * <p>The versions that can be used of this metric are defined in {@link CycloVersion}. They have the effect of using
  * that version of Cyclo to calculate Wmc.

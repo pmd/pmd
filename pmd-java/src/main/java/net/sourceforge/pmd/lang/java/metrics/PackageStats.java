@@ -7,24 +7,24 @@ package net.sourceforge.pmd.lang.java.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
+import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
 
 
 /**
- * Statistics about a package. This recursive data structure mirrors the package structure of the analysed
- * project and stores information about the classes and subpackages it contains.
+ * Statistics about a package. This recursive data structure mirrors the package structure of the analysed project and
+ * stores information about the classes and subpackages it contains.
  *
  * @author Clément Fournier
  * @see ClassStats
  */
-public final class PackageStats {
+public final class PackageStats implements JavaProjectMirror, JavaSignatureMatcher {
 
     private final Map<String, PackageStats> subPackages = new HashMap<>();
     private final Map<String, ClassStats> classes = new HashMap<>();
@@ -48,31 +48,44 @@ public final class PackageStats {
 
 
     /**
-     * Returns true if the signature of the operation designated by the qualified name is covered by
-     * the mask.
+     * Gets the OperationStats corresponding to the qualified name.
      *
-     * @param qname   The operation to test
-     * @param sigMask The signature mask to use
+     * @param qname            The qualified name of the operation to fetch
+     * @param sig              The signature of the operation, which must be non-null if createIfNotFound is set
+     * @param createIfNotFound Create an OperationStats if missing
      *
-     * @return True if the signature of the operation designated by the qualified name is covered by the mask
+     * @return The new OperationStat, or the one that was found. Can return null only if createIfNotFound is unset
      */
-    public boolean hasMatchingSig(QualifiedName qname, OperationSigMask sigMask) {
-        ClassStats clazz = getClassStats(qname, false);
+    OperationStats getOperationStats(JavaQualifiedName qname, JavaOperationSignature sig, boolean createIfNotFound) {
+        ClassStats container = getClassStats(qname, createIfNotFound);
 
-        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
+        if (container == null || !qname.isOperation()) {
+            return null;
+        }
+
+        OperationStats target = container.getOperationStats(qname.getOperation(), sig);
+
+        if (target == null && createIfNotFound) {
+            if (sig == null) {
+                throw new IllegalArgumentException("Cannot add an operation with a null signature");
+            }
+            target = container.addOperation(qname.getOperation(), sig);
+        }
+
+        return target;
     }
 
 
     /**
-     * Gets the ClassStats corresponding to the named resource. The class can be nested. If the
-     * createIfNotFound parameter is set, the method also creates the hierarchy if it doesn't exist.
+     * Gets the ClassStats corresponding to the named resource. The class can be nested. If the createIfNotFound
+     * parameter is set, the method also creates the hierarchy if it doesn't exist.
      *
      * @param qname            The qualified name of the class
      * @param createIfNotFound Create hierarchy if missing
      *
      * @return The new ClassStats, or the one that was found. Can return null only if createIfNotFound is unset
      */
-    /* default */ ClassStats getClassStats(QualifiedName qname, boolean createIfNotFound) {
+    /* default */ ClassStats getClassStats(JavaQualifiedName qname, boolean createIfNotFound) {
         PackageStats container = getSubPackage(qname, createIfNotFound);
 
         if (container == null) {
@@ -102,15 +115,15 @@ public final class PackageStats {
 
 
     /**
-     * Returns the deepest PackageStats that contains the named resource. If the second parameter is
-     * set, creates the missing PackageStats along the way.
+     * Returns the deepest PackageStats that contains the named resource. If the second parameter is set, creates the
+     * missing PackageStats along the way.
      *
      * @param qname            The qualified name of the resource
-     * @param createIfNotFound If set to true, the hierarch is created if non existent
+     * @param createIfNotFound If set to true, the hierarch is created if missing
      *
      * @return The deepest package that contains this resource. Can only return null if createIfNotFound is unset
      */
-    private PackageStats getSubPackage(QualifiedName qname, boolean createIfNotFound) {
+    private PackageStats getSubPackage(JavaQualifiedName qname, boolean createIfNotFound) {
         if (qname.getPackages() == null) {
             return this; // the toplevel
         }
@@ -130,78 +143,30 @@ public final class PackageStats {
     }
 
 
-    /**
-     * Returns true if the signature of the field designated by its name and the qualified name of its class is
-     * covered by the mask.
-     *
-     * @param qname     The class of the field
-     * @param fieldName The name of the field
-     * @param sigMask   The signature mask to use
-     *
-     * @return True if the signature of the field is covered by the mask
-     */
-    public boolean hasMatchingSig(QualifiedName qname, String fieldName, FieldSigMask sigMask) {
+    @Override
+    public boolean hasMatchingSig(JavaQualifiedName qname, OperationSigMask sigMask) {
+        ClassStats clazz = getClassStats(qname, false);
+
+        return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
+    }
+
+
+    @Override
+    public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, FieldSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
     }
 
 
-    /**
-     * Computes the value of a metric on a class.
-     *
-     * @param key     The class metric to compute
-     * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, boolean force,
-                                 MetricVersion version) {
-        ClassStats container = getClassStats(node.getQualifiedName(), false);
-
-        return container == null ? Double.NaN
-                                 : container.compute(key, node, force, version);
+    @Override
+    public MetricMemoizer<ASTMethodOrConstructorDeclaration> getOperationStats(QualifiedName qname) {
+        return getOperationStats((JavaQualifiedName) qname, null, false);
     }
 
 
-    /**
-     * Computes the value of a metric for an operation.
-     *
-     * @param key     The operation metric for which to find a memoized result
-     * @param node    The AST node of the operation
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
-                                 boolean force, MetricVersion version) {
-        QualifiedName qname = node.getQualifiedName();
-        ClassStats container = getClassStats(qname, false);
-
-        return container == null ? Double.NaN
-                                 : container.compute(key, node, qname.getOperation(), force, version);
-    }
-
-
-    /**
-     * Computes an aggregate result using a ResultOption.
-     *
-     * @param key     The class metric to compute
-     * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
-     * @param option  The type of result to compute
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double computeWithResultOption(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
-                                                 boolean force, MetricVersion version, ResultOption option) {
-        ClassStats container = getClassStats(node.getQualifiedName(), false);
-
-        return container == null ? Double.NaN
-                                 : container.computeWithResultOption(key, node, force, version, option);
+    @Override
+    public MetricMemoizer<ASTAnyTypeDeclaration> getClassStats(QualifiedName qname) {
+        return getClassStats((JavaQualifiedName) qname, false);
     }
 }
