@@ -29,6 +29,13 @@ public abstract class ApexSignature {
         PRIVATE, PUBLIC, PROTECTED, GLOBAL;
 
 
+        /**
+         * Finds out the visibility of a method node.
+         *
+         * @param method The method node
+         *
+         * @return The visibility of the method
+         */
         public static Visibility get(ASTMethod method) {
             ASTModifierNode modifierNode = method.getFirstChildOfType(ASTModifierNode.class);
             if (modifierNode.isPublic()) {

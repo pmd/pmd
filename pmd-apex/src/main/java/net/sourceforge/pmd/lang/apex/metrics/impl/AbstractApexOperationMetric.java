@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.metrics.impl;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.metrics.AbstractApexMetric;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetric;
 
@@ -15,6 +16,7 @@ public abstract class AbstractApexOperationMetric extends AbstractApexMetric imp
 
     @Override
     public boolean supports(ASTMethod node) {
-        return true;
+        return !node.getImage().matches("(<clinit>|<init>|clone)")
+            && !node.getFirstChildOfType(ASTModifierNode.class).isAbstract();
     }
 }

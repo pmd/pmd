@@ -5,13 +5,14 @@
 package net.sourceforge.pmd.lang.apex.metrics.api;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 /**
  * @author Clément Fournier
  */
 public enum ApexOperationMetricKey implements MetricKey<ASTMethod> {
-    DUMMY(null);
+    CYCLO(new CycloMetric());
 
 
     private final ApexOperationMetric calculator;

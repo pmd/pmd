@@ -17,6 +17,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.MetricKeyUtil;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
 import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexClassMetric;
@@ -75,7 +76,7 @@ public class ApexProjectMirrorTest {
                                      + "\t\t\t'}';\n"
                                      + "\t}"
                                      + "}");
-    private MetricKey<ASTUserClass> classMetricKey = MetricKeyUtil.of(new RandomClassMetric(), null);
+    private MetricKey<ASTUserClassOrInterface<?>> classMetricKey = MetricKeyUtil.of(new RandomClassMetric(), null);
     private MetricKey<ASTMethod> opMetricKey = MetricKeyUtil.of(new RandomOperationMetric(), null);
 
 
@@ -121,7 +122,7 @@ public class ApexProjectMirrorTest {
 
             @Override
             public Object visit(ASTUserClass node, Object data) {
-                MetricMemoizer<ASTUserClass> clazz = toplevel.getClassStats(node.getQualifiedName());
+                MetricMemoizer<ASTUserClassOrInterface<?>> clazz = toplevel.getClassStats(node.getQualifiedName());
                 result.add((int) ApexMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force, Version.STANDARD, clazz));
                 return super.visit(node, data);
             }
@@ -148,7 +149,7 @@ public class ApexProjectMirrorTest {
 
 
         @Override
-        public double computeFor(ASTUserClass node, MetricVersion version) {
+        public double computeFor(ASTUserClassOrInterface<?> node, MetricVersion version) {
             return random.nextInt();
         }
     }

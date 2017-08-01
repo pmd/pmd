@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.metrics.impl;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface.TypeKind;
 import net.sourceforge.pmd.lang.apex.metrics.AbstractApexMetric;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetric;
 
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetric;
 public abstract class AbstractApexClassMetric extends AbstractApexMetric implements ApexClassMetric {
 
     @Override
-    public boolean supports(ASTUserClass node) {
-        return true;
+    public boolean supports(ASTUserClassOrInterface<?> node) {
+        return node.getTypeKind() == TypeKind.CLASS;
     }
 }
