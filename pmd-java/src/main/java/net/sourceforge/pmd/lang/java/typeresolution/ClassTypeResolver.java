@@ -450,8 +450,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
             if (i == dotSplitImage.length - 1 && astArguments != null) { // method
                 List<MethodType> methods = getApplicableMethods(previousType, dotSplitImage[i],
-                                                                new ArrayList<JavaTypeDefinition>(), methodArgsArity,
-                                                                accessingClass);
+                                                                Collections.<JavaTypeDefinition>emptyList(),
+                                                                methodArgsArity, accessingClass);
 
                 previousType = getBestMethodReturnType(methods, astArgumentList, null);
             } else { // field
