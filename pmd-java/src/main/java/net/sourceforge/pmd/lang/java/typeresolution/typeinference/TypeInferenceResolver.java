@@ -8,13 +8,86 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.Inferen
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public final class TypeInferenceResolver {
 
     private TypeInferenceResolver() {
 
+    }
+
+    public static Map<Variable, Set<Variable>> getVariableDependencies(List<Bound> bounds) {
+        Set<Variable> variables = getMentionedVariables(bounds);
+        Map<Variable, Set<Variable>> dependencies = new HashMap<>();
+
+        for (Variable mentionedVariable : variables) {
+            Set<Variable> set = new HashSet<>();
+            // An inference variable α depends on the resolution of itself.
+            set.add(mentionedVariable);
+
+            dependencies.put(mentionedVariable, set);
+        }
+
+        // produce initial dependencies
+        for (Bound bound : bounds) {
+            // Given a bound of one of the following forms, where T is either an inference variable β or a type that
+            // mentions β:
+
+            if (bound.leftVariable() != null && bound.rightHasMentionedVariable()) {
+                if (bound.ruleType == EQUALITY || bound.ruleType() == SUBTYPE) {
+                    // α = T
+                    // α <: T
+                    dependencies.get(bound.leftVariable()).add(bound.getRightMentionedVariable());
+                }
+            } else if (bound.leftHasMentionedVariable() && bound.rightVariable() != null) {
+                if (bound.ruleType == EQUALITY || bound.ruleType() == SUBTYPE) {
+                    // T = α
+                    // T <: α
+                    dependencies.get(bound.getLeftMentionedVariable()).add(bound.rightVariable());
+                }
+            }
+
+            // If α appears on the left-hand side of another bound of the form G<..., α, ...> = capture(G<...>), then
+            // β depends on the resolution of α. Otherwise, α depends on the resolution of β. TODO
+
+            // An inference variable α appearing on the left-hand side of a bound of the form G<..., α, ...> =
+            // capture(G<...>) depends on the resolution of every other inference variable mentioned in this bound
+            // (on both sides of the = sign). TODO
+        }
+
+
+        // An inference variable α depends on the resolution of an inference variable β if there exists an inference
+        // variable γ such that α depends on the resolution of γ and γ depends on the resolution of β.
+
+        for(int i = 0; i < variables.size(); ++i) { // do this n times, where n is the count of variables
+            for (Map.Entry<Variable, Set<Variable>> entry : dependencies.entrySet()) {
+                // take the Variable's dependency list
+                for(Variable variable : entry.getValue()) {
+                    // add those variable's dependencies
+                    entry.getValue().addAll(dependencies.get(variable));
+                }
+            }
+        }
+
+        return dependencies;
+    }
+
+    /**
+     * @return a set of variables mentioned by the bounds
+     */
+    public static Set<Variable> getMentionedVariables(List<Bound> bounds) {
+        Set<Variable> result = new HashSet<>();
+
+        for (Bound bound : bounds) {
+            bound.addVariablesToSet(result);
+        }
+
+        return result;
     }
 
     /**
