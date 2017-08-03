@@ -18,10 +18,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.metrics.SigMask;
 
 /**
