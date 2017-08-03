@@ -6,13 +6,14 @@ package net.sourceforge.pmd.lang.java.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.metrics.ProjectMirror;
+import net.sourceforge.pmd.lang.metrics.ProjectMemoizer;
 
 /**
  * Shorthand for a project mirror parameterized with Java-specific node types.
  *
  * @author Clément Fournier
  */
-interface JavaProjectMirror extends ProjectMirror<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
+
+interface JavaProjectMemoizer extends ProjectMemoizer<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
 
 }

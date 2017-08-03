@@ -86,7 +86,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
             if (classSize >= classReportLevel) {
                 String[] messageParams = {node.getTypeKind().name().toLowerCase(),
                                           node.getImage(),
-                                          classSize + " (Highest = " + classHighest + ")", };
+                                          classSize + " (Highest = " + classHighest + ")",};
 
                 addViolation(data, node, messageParams);
             }
@@ -101,7 +101,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
         int methodSize = (int) JavaMetrics.get(JavaOperationMetricKey.NCSS, node, ncssVersion);
         if (methodSize >= methodReportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                                   node.getQualifiedName().getOperation(), "" + methodSize, });
+                                                   node.getQualifiedName().getOperation(), "" + methodSize,});
         }
 
         return data;

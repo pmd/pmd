@@ -34,7 +34,7 @@ public final class JavaMetrics {
      * @return The project mirror
      */
     static PackageStats getTopLevelPackageStats() {
-        return FACADE.getLanguageSpecificProjectMirror();
+        return FACADE.getLanguageSpecificProjectMemoizer();
     }
 
 
