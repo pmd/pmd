@@ -158,4 +158,26 @@ public class CommentDefaultAccessModifier {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#536 Constructor with default access modifier should trigger</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Foo() {}
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#536 Enum constructor with implicit private modifier should not trigger</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Bar {
+    ONE, TWO;
+    
+    Bar() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>
