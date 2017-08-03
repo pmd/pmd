@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.metrics.signature;
 
+import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.metrics.Signature;
 
 /**
  * Generic signature. This class is extended by classes specific to operations and fields.
  *
  * @author Clément Fournier
  */
-public abstract class JavaSignature {
+public abstract class JavaSignature<N extends SignedNode<N>> implements Signature<N> {
 
     /** Visibility. */
     public final Visibility visibility;

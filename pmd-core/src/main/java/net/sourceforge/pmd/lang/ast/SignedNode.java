@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 
-import net.sourceforge.pmd.lang.metrics.signature.Signature;
+import net.sourceforge.pmd.lang.metrics.Signature;
 
 /**
  * Nodes that can be described by a signature.

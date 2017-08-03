@@ -33,4 +33,21 @@ public interface QualifiedName {
      */
     String[] getClasses();
 
+
+    /**
+     * Returns true if the resource addressed by this qualified name is a class.
+     *
+     * @return true if the resource addressed by this qualified name is a class.
+     */
+    boolean isClass();
+
+
+    /**
+     * Returns true if the resource addressed by this qualified name is an operation.
+     *
+     * @return true if the resource addressed by this qualified name is an operation.
+     */
+    boolean isOperation();
+
+
 }

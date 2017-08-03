@@ -7,11 +7,7 @@ package net.sourceforge.pmd.lang.metrics;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
-import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
+import net.sourceforge.pmd.lang.metrics.Metric.Version;
 
 /**
  * Base class for a façade that can compute metrics for types, operations and compute aggregate results with a result
@@ -22,7 +18,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
+public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends QualifiableNode> {
 
 
     /**

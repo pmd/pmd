@@ -6,9 +6,6 @@ package net.sourceforge.pmd.lang.metrics;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 /**
  * Basic interface for metrics computers that can compute metrics for types, operations and compute aggregate results
@@ -20,7 +17,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  *
  * @author Clément Fournier
  */
-public interface MetricsComputer<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
+public interface MetricsComputer<T extends QualifiableNode, O extends QualifiableNode> {
 
 
     /**

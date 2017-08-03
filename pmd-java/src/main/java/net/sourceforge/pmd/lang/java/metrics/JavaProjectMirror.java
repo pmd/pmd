@@ -13,5 +13,6 @@ import net.sourceforge.pmd.lang.metrics.ProjectMirror;
  *
  * @author Clément Fournier
  */
-public interface JavaProjectMirror extends ProjectMirror<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
+interface JavaProjectMirror extends ProjectMirror<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
+
 }
