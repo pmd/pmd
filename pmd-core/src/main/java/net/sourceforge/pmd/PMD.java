@@ -188,7 +188,7 @@ public class PMD {
         Report report = Report.createReport(ctx, fileName);
 
         for (Rule rule : brokenRules) {
-            report.addConfigError(new Report.RuleConfigurationError(rule, rule.dysfunctionReason()));
+            report.addConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
         }
 
         return report;

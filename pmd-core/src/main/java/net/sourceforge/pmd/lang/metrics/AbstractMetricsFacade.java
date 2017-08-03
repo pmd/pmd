@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.metrics.Metric.Version;
 
@@ -47,7 +49,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
      */
     public double computeForType(MetricKey<T> key, T node, MetricVersion version) {
 
-        checkKeyNotNull(key);
+        Objects.requireNonNull(key, "The metric key must not be null");
 
         if (!key.supports(node)) {
             return Double.NaN;
@@ -73,7 +75,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
     public double computeForOperation(MetricKey<O> key, O node,
                                       MetricVersion version) {
 
-        checkKeyNotNull(key);
+        Objects.requireNonNull(key, "The metric key must not be null");
 
         if (!key.supports(node)) {
             return Double.NaN;
@@ -104,23 +106,12 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
     public double computeWithResultOption(MetricKey<O> key, T node,
                                           MetricVersion version, ResultOption option) {
 
-        checkKeyNotNull(key);
-
-        if (option == null) {
-            throw new IllegalArgumentException("The result option may not be null");
-        }
+        Objects.requireNonNull(key, "The metric key must not be null");
+        Objects.requireNonNull(option, "The result option must not be null");
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
 
         return getLanguageSpecificComputer().computeWithResultOption(key, node, false, safeVersion,
                                                                      option, getLanguageSpecificProjectMirror());
     }
-
-
-    private void checkKeyNotNull(MetricKey<?> key) {
-        if (key == null) {
-            throw new IllegalArgumentException("The metric key may not be null");
-        }
-    }
-
 }

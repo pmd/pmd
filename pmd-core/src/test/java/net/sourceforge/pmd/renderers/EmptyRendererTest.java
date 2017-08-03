@@ -6,8 +6,6 @@ package net.sourceforge.pmd.renderers;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.Report.ProcessingError;
-
 public class EmptyRendererTest extends AbstractRendererTst {
 
     @Override
@@ -34,11 +32,6 @@ public class EmptyRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "";
-    }
-
-    @Override
-    public String getExpectedError(ProcessingError error) {
         return "";
     }
 }

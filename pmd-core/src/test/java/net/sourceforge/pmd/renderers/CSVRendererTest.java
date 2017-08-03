@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
 public class CSVRendererTest extends AbstractRendererTst {
@@ -16,24 +17,33 @@ public class CSVRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL
+        return getHeader()
                 + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
     @Override
     public String getExpectedEmpty() {
-        return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL;
+        return getHeader();
     }
 
     @Override
     public String getExpectedMultiple() {
-        return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL
+        return getHeader()
                 + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL
                 + "\"2\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
     @Override
     public String getExpectedError(ProcessingError error) {
+        return getHeader();
+    }
+    
+    @Override
+    public String getExpectedError(ConfigurationError error) {
+        return getHeader();
+    }
+    
+    private String getHeader() {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL;
     }
 

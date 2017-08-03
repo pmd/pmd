@@ -11,8 +11,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 public final class MethodTypeResolution {
@@ -314,14 +318,14 @@ public final class MethodTypeResolution {
         // search the class
         for (Method method : contextClass.getDeclaredMethods()) {
             if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
-                if (isGeneric(method)) {
-                    // TODO: do generic methods
-                    // this disables invocations which could match generic methods
+                if (isGeneric(method) && typeArguments.size() == 0) {
+                    // TODO: do generic implicit methods
+                    // this disables invocations which could match generic methods and have no explicit type args
                     result.clear();
                     return result;
                 }
 
-                result.add(getTypeDefOfMethod(context, method));
+                result.add(getTypeDefOfMethod(context, method, typeArguments));
             }
         }
 
@@ -341,13 +345,14 @@ public final class MethodTypeResolution {
     }
 
 
-    public static MethodType getTypeDefOfMethod(JavaTypeDefinition context, Method method) {
-        JavaTypeDefinition returnType = context.resolveTypeDefinition(method.getGenericReturnType());
+    public static MethodType getTypeDefOfMethod(JavaTypeDefinition context, Method method,
+                                                List<JavaTypeDefinition> typeArguments) {
+        JavaTypeDefinition returnType = context.resolveTypeDefinition(method.getGenericReturnType(),
+                                                                      method, typeArguments);
         List<JavaTypeDefinition> argTypes = new ArrayList<>();
 
-        // search typeArgs vs
         for (Type argType : method.getGenericParameterTypes()) {
-            argTypes.add(context.resolveTypeDefinition(argType));
+            argTypes.add(context.resolveTypeDefinition(argType, method, typeArguments));
         }
 
         return new MethodType(returnType, argTypes, method);
@@ -518,5 +523,25 @@ public final class MethodTypeResolution {
         }
 
         return JavaTypeDefinition.forClass(BOXED_PRIMITIVE_SUBTYPE_ORDER.get(PRIMITIVE_SUBTYPE_ORDER.indexOf(def.getType())));
+    }
+
+    public static List<JavaTypeDefinition> getMethodExplicitTypeArugments(Node node) {
+        ASTMemberSelector memberSelector = node.getFirstChildOfType(ASTMemberSelector.class);
+        if (memberSelector == null) {
+            return Collections.emptyList(); // empty list
+        }
+
+        ASTTypeArguments typeArguments = memberSelector.getFirstChildOfType(ASTTypeArguments.class);
+        if (typeArguments == null) {
+            return Collections.emptyList(); // empty list
+        }
+
+        List<JavaTypeDefinition> result = new ArrayList<>();
+
+        for (int childIndex = 0; childIndex < typeArguments.jjtGetNumChildren(); ++childIndex) {
+            result.add(((TypeNode) typeArguments.jjtGetChild(childIndex)).getTypeDefinition());
+        }
+
+        return result;
     }
 }

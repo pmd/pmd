@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
 public class PapariTextRendererTest extends AbstractRendererTst {
@@ -56,7 +57,14 @@ public class PapariTextRendererTest extends AbstractRendererTst {
     @Override
     public String getExpectedError(ProcessingError error) {
         return PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + "    err:  Error" + PMD.EOL + PMD.EOL
-                + "* errors:   0" + PMD.EOL + "* warnings: 0" + PMD.EOL;
+                + "* errors:   1" + PMD.EOL + "* warnings: 0" + PMD.EOL;
+    }
+
+    @Override
+    public String getExpectedError(ConfigurationError error) {
+        return PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + "* rule: Foo" + PMD.EOL
+                + "    err:  a configuration error" + PMD.EOL + PMD.EOL
+                + "* errors:   1" + PMD.EOL + "* warnings: 0" + PMD.EOL;
     }
 
     public static junit.framework.Test suite() {

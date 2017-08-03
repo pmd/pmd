@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
 public class TextRendererTest extends AbstractRendererTst {
@@ -32,5 +33,10 @@ public class TextRendererTest extends AbstractRendererTst {
     @Override
     public String getExpectedError(ProcessingError error) {
         return "file\t-\tError" + PMD.EOL;
+    }
+
+    @Override
+    public String getExpectedError(ConfigurationError error) {
+        return "Foo\t-\ta configuration error" + PMD.EOL;
     }
 }
