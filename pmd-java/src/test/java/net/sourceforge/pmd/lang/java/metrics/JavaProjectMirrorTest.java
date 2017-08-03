@@ -30,10 +30,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.metrics.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
@@ -81,11 +81,11 @@ public class JavaProjectMirrorTest extends ParserTst {
         JavaQualifiedName qname = node.getQualifiedName();
         JavaOperationSignature signature = JavaOperationSignature.buildFor(node);
 
-        assertFalse(pack.hasMatchingSig(qname, new OperationSigMask()));
+        assertFalse(pack.hasMatchingSig(qname, new JavaOperationSigMask()));
 
         ClassStats clazz = pack.getClassStats(qname, true);
         clazz.addOperation("foo()", signature);
-        assertTrue(pack.hasMatchingSig(qname, new OperationSigMask()));
+        assertTrue(pack.hasMatchingSig(qname, new JavaOperationSigMask()));
     }
 
 
@@ -100,11 +100,11 @@ public class JavaProjectMirrorTest extends ParserTst {
         String fieldName = "bar";
         JavaFieldSignature signature = JavaFieldSignature.buildFor(node);
 
-        assertFalse(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
+        assertFalse(pack.hasMatchingSig(qname, fieldName, new JavaFieldSigMask()));
 
         ClassStats clazz = pack.getClassStats(qname, true);
         clazz.addField(fieldName, signature);
-        assertTrue(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
+        assertTrue(pack.hasMatchingSig(qname, fieldName, new JavaFieldSigMask()));
     }
 
 

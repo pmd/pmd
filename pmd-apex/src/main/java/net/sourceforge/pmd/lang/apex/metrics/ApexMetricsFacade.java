@@ -30,7 +30,7 @@ public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClassOrInter
 
 
     @Override
-    protected ApexProjectMirror getLanguageSpecificProjectMirror() {
+    protected ApexProjectMirror getLanguageSpecificProjectMemoizer() {
         return projectMirror;
     }
 }

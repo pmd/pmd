@@ -14,12 +14,12 @@ import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
-import net.sourceforge.pmd.lang.metrics.ProjectMirror;
+import net.sourceforge.pmd.lang.metrics.ProjectMemoizer;
 
 /**
  * @author Clément Fournier
  */
-public class ApexProjectMirror implements ProjectMirror<ASTUserClassOrInterface<?>, ASTMethod>, ApexSignatureMatcher {
+public class ApexProjectMirror implements ProjectMemoizer<ASTUserClassOrInterface<?>, ASTMethod>, ApexSignatureMatcher {
 
     private final Map<ApexOperationSignature, Map<ApexQualifiedName, ApexOperationStats>> operations = new HashMap<>();
     private final Map<ApexQualifiedName, ApexClassStats> classes = new HashMap<>();

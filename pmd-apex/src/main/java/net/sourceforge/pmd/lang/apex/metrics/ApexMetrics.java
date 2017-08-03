@@ -31,7 +31,7 @@ public final class ApexMetrics {
      * @return The project mirror
      */
     static ApexProjectMirror getApexProjectMirror() {
-        return FACADE.getLanguageSpecificProjectMirror();
+        return FACADE.getLanguageSpecificProjectMemoizer();
     }
 
 

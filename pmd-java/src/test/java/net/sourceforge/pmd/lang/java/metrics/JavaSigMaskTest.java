@@ -18,16 +18,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
-<<<<<<< HEAD:pmd-java/src/test/java/net/sourceforge/pmd/lang/java/metrics/JavaSigMaskTest.java
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaSigMask;
-=======
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.metrics.SigMask;
->>>>>>> metrics-abstraction:pmd-java/src/test/java/net/sourceforge/pmd/lang/java/metrics/SigMaskTest.java
 
 /**
  * @author Clément Fournier
@@ -79,17 +74,14 @@ public class JavaSigMaskTest extends ParserTst {
         + "abstract void setZ(int x);"
         + "}";
 
+
     /**
      * Ensure any non-abstract method is covered by a newly created mask.
      */
     @Test
     public void testEmptyOperationMask() {
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST_OPERATIONS);
-<<<<<<< HEAD:pmd-java/src/test/java/net/sourceforge/pmd/lang/java/metrics/JavaSigMaskTest.java
-        JavaSigMask<JavaOperationSignature> mask = new OperationSigMask();
-=======
         SigMask<JavaOperationSignature> mask = new JavaOperationSigMask();
->>>>>>> metrics-abstraction:pmd-java/src/test/java/net/sourceforge/pmd/lang/java/metrics/SigMaskTest.java
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isAbstract()) {
@@ -100,22 +92,20 @@ public class JavaSigMaskTest extends ParserTst {
         }
     }
 
+
     /**
      * Ensure any field is covered by a newly created mask.
      */
     @Test
     public void testEmptyFieldMask() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
-<<<<<<< HEAD:pmd-java/src/test/java/net/sourceforge/pmd/lang/java/metrics/JavaSigMaskTest.java
-        JavaSigMask<JavaFieldSignature> mask = new FieldSigMask();
-=======
         SigMask<JavaFieldSignature> mask = new JavaFieldSigMask();
->>>>>>> metrics-abstraction:pmd-java/src/test/java/net/sourceforge/pmd/lang/java/metrics/SigMaskTest.java
 
         for (ASTFieldDeclaration node : nodes) {
             assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
         }
     }
+
 
     @Test
     public void testFinalFields() {
@@ -132,6 +122,7 @@ public class JavaSigMaskTest extends ParserTst {
         }
     }
 
+
     @Test
     public void testStaticFields() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
@@ -146,6 +137,7 @@ public class JavaSigMaskTest extends ParserTst {
             }
         }
     }
+
 
     @Test
     public void testFieldvisibility() {
@@ -191,7 +183,7 @@ public class JavaSigMaskTest extends ParserTst {
                 assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
-        
+
     }
 
 
@@ -243,6 +235,7 @@ public class JavaSigMaskTest extends ParserTst {
             }
         }
     }
+
 
     @Test
     public void testOperationRoles() {
