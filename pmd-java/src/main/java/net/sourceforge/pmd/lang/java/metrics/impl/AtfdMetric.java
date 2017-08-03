@@ -9,9 +9,9 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
 /**
@@ -27,7 +27,7 @@ public final class AtfdMetric {
         @Override // TODO:cf
         public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
 
-            OperationSigMask targetOps = new OperationSigMask();
+            JavaOperationSigMask targetOps = new JavaOperationSigMask();
             targetOps.restrictVisibilitiesTo(Visibility.PUBLIC);
             targetOps.restrictRolesTo(Role.GETTER_OR_SETTER);
 

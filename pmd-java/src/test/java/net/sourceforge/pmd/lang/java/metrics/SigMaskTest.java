@@ -16,13 +16,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.SigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.metrics.SigMask;
 
 /**
  * @author Clément Fournier
@@ -80,7 +80,7 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testEmptyOperationMask() {
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST_OPERATIONS);
-        SigMask<JavaOperationSignature> mask = new OperationSigMask();
+        SigMask<JavaOperationSignature> mask = new JavaOperationSigMask();
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isAbstract()) {
@@ -97,7 +97,7 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testEmptyFieldMask() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
-        SigMask<JavaFieldSignature> mask = new FieldSigMask();
+        SigMask<JavaFieldSignature> mask = new JavaFieldSigMask();
 
         for (ASTFieldDeclaration node : nodes) {
             assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
@@ -107,7 +107,7 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testFinalFields() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
-        FieldSigMask mask = new FieldSigMask();
+        JavaFieldSigMask mask = new JavaFieldSigMask();
         mask.coverFinal(false);
 
         for (ASTFieldDeclaration node : nodes) {
@@ -122,7 +122,7 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testStaticFields() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
-        FieldSigMask mask = new FieldSigMask();
+        JavaFieldSigMask mask = new JavaFieldSigMask();
         mask.coverStatic(false);
 
         for (ASTFieldDeclaration node : nodes) {
@@ -137,7 +137,7 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testFieldvisibility() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
-        FieldSigMask mask = new FieldSigMask();
+        JavaFieldSigMask mask = new JavaFieldSigMask();
 
         mask.restrictVisibilitiesTo(Visibility.PUBLIC);
 
@@ -187,7 +187,7 @@ public class SigMaskTest extends ParserTst {
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class,
                                                                         TEST_OPERATIONS);
 
-        OperationSigMask mask = new OperationSigMask();
+        JavaOperationSigMask mask = new JavaOperationSigMask();
         mask.coverAbstract(true);
 
         mask.restrictVisibilitiesTo(Visibility.PUBLIC);
@@ -235,7 +235,7 @@ public class SigMaskTest extends ParserTst {
     public void testOperationRoles() {
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class,
                                                                         TEST_OPERATIONS);
-        OperationSigMask mask = new OperationSigMask();
+        JavaOperationSigMask mask = new JavaOperationSigMask();
         mask.restrictRolesTo(Role.STATIC);
         mask.coverAbstract(true);
 

@@ -9,13 +9,13 @@ package net.sourceforge.pmd.lang.java.metrics.signature;
  *
  * @author Clément Fournier
  */
-public final class FieldSigMask extends JavaSigMask<JavaFieldSignature> {
+public final class JavaFieldSigMask extends JavaSigMask<JavaFieldSignature> {
 
     private boolean coverFinal = true;
     private boolean coverStatic = true;
 
 
-    public FieldSigMask() {
+    public JavaFieldSigMask() {
         super();
     }
 

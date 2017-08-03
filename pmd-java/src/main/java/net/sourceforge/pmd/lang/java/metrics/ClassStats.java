@@ -11,10 +11,10 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
 
 /**
@@ -138,7 +138,7 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
      * @return True if the class declares an operation by the name given which is covered by the signature mask, false
      * otherwise
      */
-    /* default */ boolean hasMatchingSig(String name, OperationSigMask mask) {
+    /* default */ boolean hasMatchingSig(String name, JavaOperationSigMask mask) {
         // Indexing on signatures optimises this type of request
         for (JavaOperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
@@ -160,7 +160,7 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
      * @return True if the class declares a field by the name given which is covered by the signature mask, false
      * otherwise
      */
-    /* default */ boolean hasMatchingSig(String name, FieldSigMask mask) {
+    /* default */ boolean hasMatchingSig(String name, JavaFieldSigMask mask) {
         for (JavaFieldSignature sig : fields.keySet()) {
             if (mask.covers(sig)) {
                 if (fields.get(sig).contains(name)) {

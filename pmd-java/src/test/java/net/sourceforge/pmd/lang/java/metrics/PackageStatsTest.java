@@ -19,6 +19,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.MetricKeyUtil;
 import net.sourceforge.pmd.lang.java.ParserTst;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -27,30 +28,27 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
+import net.sourceforge.pmd.lang.metrics.Metric.Version;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
-import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
 /**
- * Tests functionality of the whole data structure (PackageStats, ClassStats, OperationStats). The behaviour of the
- * structure is very encapsulated, so the API to test is restricted per class.
+ * Tests functionality of PackageStats, so both its ProjectMemoizer and JavaSignatureMatcher interfaces.
  *
  * @author Clément Fournier
  */
-public class DataStructureTest extends ParserTst {
+public class PackageStatsTest extends ParserTst {
 
-    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = JavaClassMetricKey.of(new RandomClassMetric(), null);
-    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = JavaOperationMetricKey.of(new RandomOperationMetric(), null);
+    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(new RandomClassMetric(), null);
+    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = MetricKeyUtil.of(new RandomOperationMetric(), null);
     private PackageStats pack;
 
 
@@ -82,11 +80,11 @@ public class DataStructureTest extends ParserTst {
         JavaQualifiedName qname = node.getQualifiedName();
         JavaOperationSignature signature = JavaOperationSignature.buildFor(node);
 
-        assertFalse(pack.hasMatchingSig(qname, new OperationSigMask()));
+        assertFalse(pack.hasMatchingSig(qname, new JavaOperationSigMask()));
 
         ClassStats clazz = pack.getClassStats(qname, true);
         clazz.addOperation("foo()", signature);
-        assertTrue(pack.hasMatchingSig(qname, new OperationSigMask()));
+        assertTrue(pack.hasMatchingSig(qname, new JavaOperationSigMask()));
     }
 
 
@@ -101,11 +99,11 @@ public class DataStructureTest extends ParserTst {
         String fieldName = "bar";
         JavaFieldSignature signature = JavaFieldSignature.buildFor(node);
 
-        assertFalse(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
+        assertFalse(pack.hasMatchingSig(qname, fieldName, new JavaFieldSigMask()));
 
         ClassStats clazz = pack.getClassStats(qname, true);
         clazz.addField(fieldName, signature);
-        assertTrue(pack.hasMatchingSig(qname, fieldName, new FieldSigMask()));
+        assertTrue(pack.hasMatchingSig(qname, fieldName, new JavaFieldSigMask()));
     }
 
 
@@ -119,7 +117,7 @@ public class DataStructureTest extends ParserTst {
         assertEquals(expected, real);
     }
 
-  
+
     @Test
     public void forceMemoizationTest() {
         ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
@@ -134,6 +132,7 @@ public class DataStructureTest extends ParserTst {
             assertNotEquals(reference.get(i), real.get(i));
         }
     }
+
 
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
         final PackageStats toplevel = JavaMetrics.getTopLevelPackageStats();

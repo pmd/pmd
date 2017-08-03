@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 
 /**
  * Gathers the methods that the Java project mirror should make available to metrics during the computation.
@@ -23,7 +23,7 @@ public interface JavaSignatureMatcher {
      *
      * @return True if the signature of the operation designated by the qualified name is covered by the mask
      */
-    boolean hasMatchingSig(JavaQualifiedName qname, OperationSigMask sigMask);
+    boolean hasMatchingSig(JavaQualifiedName qname, JavaOperationSigMask sigMask);
 
 
     /**
@@ -36,7 +36,7 @@ public interface JavaSignatureMatcher {
      *
      * @return True if the signature of the field is covered by the mask
      */
-    boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, FieldSigMask sigMask);
+    boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, JavaFieldSigMask sigMask);
 
 
 }

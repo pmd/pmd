@@ -8,9 +8,8 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 /**
- * Object storing the statistics and memoizers of the analysed project, like PackageStats for Java. These are the entry
- * point for signature matching requests. If retrieving eg an operation stats is expensive, consider implementing a
- * cache.
+ * Object storing the memoizers of the analysed project, like PackageStats for Java. If retrieving eg an operation stats
+ * is expensive, consider implementing a cache.
  *
  * <p>Language specific implementations should implement some signature matching utilities for metrics to use. The
  * details of how the mirror and its subcomponents are built must be kept out of the interfaces and visible only to the
@@ -27,7 +26,7 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
  *
  * @author Clément Fournier
  */
-public interface ProjectMirror<T extends QualifiableNode, O extends QualifiableNode> {
+public interface ProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> {
 
     /**
      * Gets the operation metric memoizer corresponding to the qualified name.

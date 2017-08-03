@@ -11,9 +11,9 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
 
 
@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
  * @author Clément Fournier
  * @see ClassStats
  */
-public final class PackageStats implements JavaProjectMirror, JavaSignatureMatcher {
+public final class PackageStats implements JavaProjectMemoizer, JavaSignatureMatcher {
 
     private final Map<String, PackageStats> subPackages = new HashMap<>();
     private final Map<String, ClassStats> classes = new HashMap<>();
@@ -144,7 +144,7 @@ public final class PackageStats implements JavaProjectMirror, JavaSignatureMatch
 
 
     @Override
-    public boolean hasMatchingSig(JavaQualifiedName qname, OperationSigMask sigMask) {
+    public boolean hasMatchingSig(JavaQualifiedName qname, JavaOperationSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(qname.getOperation(), sigMask);
@@ -152,7 +152,7 @@ public final class PackageStats implements JavaProjectMirror, JavaSignatureMatch
 
 
     @Override
-    public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, FieldSigMask sigMask) {
+    public boolean hasMatchingSig(JavaQualifiedName qname, String fieldName, JavaFieldSigMask sigMask) {
         ClassStats clazz = getClassStats(qname, false);
 
         return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);

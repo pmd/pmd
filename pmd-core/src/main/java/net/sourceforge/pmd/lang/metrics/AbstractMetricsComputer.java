@@ -56,7 +56,7 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
 
     @Override
     public double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricVersion version,
-                                          ResultOption option, ProjectMirror<T, O> stats) {
+                                          ResultOption option, ProjectMemoizer<T, O> stats) {
 
         List<O> ops = findOperations(node);
 

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.metrics.Signature;
 
 /**
  * Signature for a field.
