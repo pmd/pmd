@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.metrics.SigMask;
 /**
  * @author Clément Fournier
  */
-public class JavaSigMaskTest extends ParserTst {
+public class SigMaskTest extends ParserTst {
 
     private static final String TEST_FIELDS = "class Bzaz{"
         + "public String x;"

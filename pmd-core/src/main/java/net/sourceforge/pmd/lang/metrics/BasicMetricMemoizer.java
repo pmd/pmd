@@ -10,13 +10,13 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * Base class for metric memoizers.
+ * Basic implementation of a metric memoizer.
  *
  * @param <N> Type of node on which the memoized metric can be computed
  *
  * @author Clément Fournier
  */
-public abstract class AbstractMetricMemoizer<N extends Node> implements MetricMemoizer<N> {
+public class BasicMetricMemoizer<N extends Node> implements MetricMemoizer<N> {
 
 
     private final Map<ParameterizedMetricKey<N>, Double> memo = new HashMap<>();

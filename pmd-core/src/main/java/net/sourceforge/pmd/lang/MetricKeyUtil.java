@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 /**
+ * Holds the key creation method until we move it to the MetricKey interface.
+ *
  * @author Clément Fournier
  */
 public class MetricKeyUtil {

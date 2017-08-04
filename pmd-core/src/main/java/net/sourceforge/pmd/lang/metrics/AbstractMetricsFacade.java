@@ -30,9 +30,9 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
 
 
     /**
-     * Gets the language-specific project mirror.
+     * Gets the language-specific project memoizer.
      *
-     * @return The project mirror
+     * @return The project memoizer
      */
     protected abstract ProjectMemoizer<T, O> getLanguageSpecificProjectMemoizer();
 
@@ -56,7 +56,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         }
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-        MetricMemoizer<T> memoizer = getLanguageSpecificProjectMemoizer().getClassStats(node.getQualifiedName());
+        MetricMemoizer<T> memoizer = getLanguageSpecificProjectMemoizer().getClassMemoizer(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForType(key, node, false, safeVersion, memoizer);
@@ -82,7 +82,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         }
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-        MetricMemoizer<O> memoizer = getLanguageSpecificProjectMemoizer().getOperationStats(node.getQualifiedName());
+        MetricMemoizer<O> memoizer = getLanguageSpecificProjectMemoizer().getOperationMemoizer(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForOperation(key, node, false,

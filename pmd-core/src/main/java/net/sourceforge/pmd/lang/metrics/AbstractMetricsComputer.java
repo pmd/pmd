@@ -63,7 +63,7 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
         List<Double> values = new ArrayList<>();
         for (O op : ops) {
             if (key.supports(op)) {
-                MetricMemoizer<O> opStats = stats.getOperationStats(op.getQualifiedName());
+                MetricMemoizer<O> opStats = stats.getOperationMemoizer(op.getQualifiedName());
                 double val = this.computeForOperation(key, op, force, version, opStats);
                 if (val != Double.NaN) {
                     values.add(val);

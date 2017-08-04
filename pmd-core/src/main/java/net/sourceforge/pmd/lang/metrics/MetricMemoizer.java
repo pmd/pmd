@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.metrics;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * Objects capable of memoizing metrics for a specific type of node, see eg ClassStats in the Java framework.
+ * Objects capable of memoizing metrics for a specific type of node. A default implementation is provided, see {@link
+ * BasicMetricMemoizer}.
  *
  * @param <N> Type of node on which the memoized metric can be computed
  *
