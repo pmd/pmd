@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
 
 /**
- * Computes a metric. This relieves ClassStats and OperationStats from that responsibility.
+ * Computes a metric.
  *
  * @author Clément Fournier
  */

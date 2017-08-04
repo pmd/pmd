@@ -10,14 +10,12 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 
 
 /**
  * Statistics about a package. This recursive data structure mirrors the package structure of the analysed project and
- * stores information about the classes and subpackages it contains.
- *
- * This object provides signature matching utilities.
+ * stores information about the classes and subpackages it contains. This object provides signature matching
+ * utilities to metrics.
  *
  * @author Clément Fournier
  * @see ClassStats
@@ -42,35 +40,6 @@ public final class PackageStats implements JavaSignatureMatcher {
     /* default */ void reset() {
         subPackages.clear();
         classes.clear();
-    }
-
-
-    /**
-     * Gets the OperationStats corresponding to the qualified name.
-     *
-     * @param qname            The qualified name of the operation to fetch
-     * @param sig              The signature of the operation, which must be non-null if createIfNotFound is set
-     * @param createIfNotFound Create an OperationStats if missing
-     *
-     * @return The new OperationStat, or the one that was found. Can return null only if createIfNotFound is unset
-     */
-    OperationStats getOperationStats(JavaQualifiedName qname, JavaOperationSignature sig, boolean createIfNotFound) {
-        ClassStats container = getClassStats(qname, createIfNotFound);
-
-        if (container == null || !qname.isOperation()) {
-            return null;
-        }
-
-        OperationStats target = container.getOperationStats(qname.getOperation(), sig);
-
-        if (target == null && createIfNotFound) {
-            if (sig == null) {
-                throw new IllegalArgumentException("Cannot add an operation with a null signature");
-            }
-            target = container.addOperation(qname.getOperation(), sig);
-        }
-
-        return target;
     }
 
 

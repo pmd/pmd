@@ -24,6 +24,12 @@ public class BasicProjectMemoizer<T extends QualifiableNode, O extends Qualifiab
     private Map<QualifiedName, MetricMemoizer<T>> classes = new HashMap<>();
     private Map<QualifiedName, MetricMemoizer<O>> operations = new HashMap<>();
 
+    /** Clears all memoizers. Used for tests. */
+    public void reset() {
+        classes.clear();
+        operations.clear();
+    }
+
 
     @Override
     public void addClassMemoizer(QualifiedName qname) {

@@ -23,6 +23,7 @@ class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, AST
     /** Resets the entire data structure. Used for tests. */
     void reset() {
         topLevelPackageStats.reset();
+        memoizer.reset();
     }
 
 

@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
  */
 /* default */ class ClassStats {
 
-    private Map<JavaOperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
+    private Map<JavaOperationSignature, Set<String>> operations = new HashMap<>();
     private Map<JavaFieldSignature, Set<String>> fields = new HashMap<>();
     private Map<String, ClassStats> nestedClasses = new HashMap<>();
 
@@ -65,51 +65,17 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
     }
 
 
-    private OperationStats getOperationStats(String operationName) {
-        for (Map<String, OperationStats> map : operations.values()) {
-            OperationStats stats = map.get(operationName);
-            if (stats != null) {
-                return stats;
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * Returns the correct operation stats. A non-null signature speeds up the search.
-     *
-     * @param operationName The operation to look for
-     * @param sig           The signature, which can be null
-     *
-     * @return The operation stats corresponding to the parameters
-     */
-    OperationStats getOperationStats(String operationName, JavaOperationSignature sig) {
-        if (sig == null) {
-            return getOperationStats(operationName);
-        }
-
-        Map<String, OperationStats> sigMap = operations.get(sig);
-
-        return sigMap == null ? null : sigMap.get(operationName);
-    }
-
-
     /**
      * Adds an operation to the class.
      *
      * @param name The name of the operation
      * @param sig  The signature of the operation
-     *
-     * @return The newly created operation stats
      */
-    /* default */ OperationStats addOperation(String name, JavaOperationSignature sig) {
+    /* default */ void addOperation(String name, JavaOperationSignature sig) {
         if (!operations.containsKey(sig)) {
-            operations.put(sig, new HashMap<String, OperationStats>());
+            operations.put(sig, new HashSet<String>());
         }
-        OperationStats newOp = new OperationStats(name);
-        operations.get(sig).put(name, newOp);
-        return newOp;
+        operations.get(sig).add(name);
     }
 
 
@@ -140,7 +106,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
         // Indexing on signatures optimises this type of request
         for (JavaOperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
-                if (operations.get(sig).containsKey(name)) {
+                if (operations.get(sig).contains(name)) {
                     return true;
                 }
             }
@@ -166,7 +132,6 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
                 }
             }
         }
-
         return false;
     }
 
