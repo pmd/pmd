@@ -5,12 +5,11 @@
 package net.sourceforge.pmd.lang.apex.metrics;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
+import net.sourceforge.pmd.lang.metrics.BasicProjectMemoizer;
 
 /**
- * Apex operation stats.
- *
  * @author Clément Fournier
  */
-public class ApexOperationStats extends AbstractMetricMemoizer<ASTMethod> {
+class ApexProjectMemoizer extends BasicProjectMemoizer<ASTUserClassOrInterface<?>, ASTMethod> {
 }

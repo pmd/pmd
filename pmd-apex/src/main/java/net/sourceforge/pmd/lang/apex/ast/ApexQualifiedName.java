@@ -20,7 +20,7 @@ import apex.jorje.semantic.symbol.type.TypeInfo;
  */
 public class ApexQualifiedName implements QualifiedName {
 
-    private static final Pattern FORMAT = Pattern.compile("(\\w+)__(\\w+)(.(\\w+))?(#(\\w+))?");
+    private static final Pattern FORMAT = Pattern.compile("(\\w+)__(\\w+)(.(\\w+))?(#(\\w+))?"); // TODO
 
     private final String nameSpace;
     private final String[] classes;
@@ -34,13 +34,13 @@ public class ApexQualifiedName implements QualifiedName {
     }
 
 
-    @Override
+
     public String getOperation() {
         return operation;
     }
 
 
-    @Override
+
     public String[] getClasses() {
         return Arrays.copyOf(classes, classes.length);
     }
@@ -86,8 +86,13 @@ public class ApexQualifiedName implements QualifiedName {
     }
 
 
-    public static ApexQualifiedName ofString(String toParse) {
-        return null;
+    @Override
+    public ApexQualifiedName getClassName() {
+        if (isClass()) {
+            return this;
+        }
+
+        return new ApexQualifiedName(this.nameSpace, this.classes, null);
     }
 
 
@@ -107,6 +112,11 @@ public class ApexQualifiedName implements QualifiedName {
             && Objects.equals(operation, ((ApexQualifiedName) obj).operation)
             && Objects.equals(nameSpace, ((ApexQualifiedName) obj).nameSpace);
 
+    }
+
+
+    public static ApexQualifiedName ofString(String toParse) {
+        return null;
     }
 
 
@@ -149,7 +159,6 @@ public class ApexQualifiedName implements QualifiedName {
 
     static ApexQualifiedName ofMethod(ASTMethod node) {
         ApexQualifiedName parent = node.getFirstParentOfType(ASTUserClassOrInterface.class).getQualifiedName();
-
 
         return new ApexQualifiedName(parent.nameSpace, parent.classes, getOperationString(node));
     }

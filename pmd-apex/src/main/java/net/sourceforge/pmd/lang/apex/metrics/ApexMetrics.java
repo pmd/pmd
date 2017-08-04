@@ -26,12 +26,12 @@ public final class ApexMetrics {
 
 
     /**
-     * Returns the project mirror of the analysed project.
+     * Returns the underlying facade.
      *
-     * @return The project mirror
+     * @return The facade
      */
-    static ApexProjectMirror getApexProjectMirror() {
-        return FACADE.getLanguageSpecificProjectMemoizer();
+    public static ApexMetricsFacade getFacade() {
+        return FACADE;
     }
 
 

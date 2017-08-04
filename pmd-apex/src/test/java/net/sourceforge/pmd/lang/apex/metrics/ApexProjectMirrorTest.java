@@ -107,14 +107,14 @@ public class ApexProjectMirrorTest {
 
 
     private List<Integer> visitWith(ApexNode<Compilation> acu, final boolean force) {
-        final ApexProjectMirror toplevel = ApexMetrics.getApexProjectMirror();
+        final ApexProjectMemoizer toplevel = ApexMetrics.getFacade().getLanguageSpecificProjectMemoizer();
 
         final List<Integer> result = new ArrayList<>();
 
         acu.jjtAccept(new ApexParserVisitorAdapter() {
             @Override
             public Object visit(ASTMethod node, Object data) {
-                MetricMemoizer<ASTMethod> op = toplevel.getOperationStats(node.getQualifiedName());
+                MetricMemoizer<ASTMethod> op = toplevel.getOperationMemoizer(node.getQualifiedName());
                 result.add((int) ApexMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force, Version.STANDARD, op));
                 return super.visit(node, data);
             }
@@ -122,7 +122,7 @@ public class ApexProjectMirrorTest {
 
             @Override
             public Object visit(ASTUserClass node, Object data) {
-                MetricMemoizer<ASTUserClassOrInterface<?>> clazz = toplevel.getClassStats(node.getQualifiedName());
+                MetricMemoizer<ASTUserClassOrInterface<?>> clazz = toplevel.getClassMemoizer(node.getQualifiedName());
                 result.add((int) ApexMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force, Version.STANDARD, clazz));
                 return super.visit(node, data);
             }

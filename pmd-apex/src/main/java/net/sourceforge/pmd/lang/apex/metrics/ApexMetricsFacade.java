@@ -15,11 +15,23 @@ import net.sourceforge.pmd.lang.metrics.MetricsComputer;
 public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClassOrInterface<?>, ASTMethod> {
 
     private final ApexProjectMirror projectMirror = new ApexProjectMirror();
+    private final ApexProjectMemoizer memoizer = new ApexProjectMemoizer();
 
 
     /** Resets the entire project mirror. Used for tests. */
     void reset() {
         projectMirror.reset();
+        memoizer.reset();
+    }
+
+
+    /**
+     * Gets the project mirror.
+     *
+     * @return The project mirror
+     */
+    public ApexProjectMirror getProjectMirror() {
+        return projectMirror;
     }
 
 
@@ -30,7 +42,7 @@ public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClassOrInter
 
 
     @Override
-    protected ApexProjectMirror getLanguageSpecificProjectMemoizer() {
-        return projectMirror;
+    protected ApexProjectMemoizer getLanguageSpecificProjectMemoizer() {
+        return memoizer;
     }
 }

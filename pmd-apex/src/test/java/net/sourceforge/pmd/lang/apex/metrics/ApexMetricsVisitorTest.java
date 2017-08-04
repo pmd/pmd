@@ -28,7 +28,7 @@ public class ApexMetricsVisitorTest extends ApexParserTest {
 
     @Test
     public void testProjectMirrorNotNull() {
-        assertNotNull(ApexMetrics.getApexProjectMirror());
+        assertNotNull(ApexMetrics.getFacade().getProjectMirror());
     }
 
 
@@ -76,7 +76,7 @@ public class ApexMetricsVisitorTest extends ApexParserTest {
                                                                + "\t}"
                                                                + "}");
 
-        final ApexSignatureMatcher toplevel = ApexMetrics.getApexProjectMirror();
+        final ApexSignatureMatcher toplevel = ApexMetrics.getFacade().getProjectMirror();
 
         final ApexOperationSigMask opMask = new ApexOperationSigMask();
 
@@ -84,7 +84,10 @@ public class ApexMetricsVisitorTest extends ApexParserTest {
         acu.jjtAccept(new ApexParserVisitorAdapter() {
             @Override
             public Object visit(ASTMethod node, Object data) {
-                assertTrue(toplevel.hasMatchingSig(node.getQualifiedName(), opMask));
+                if (!node.getImage().matches("(<clinit>|<init>|clone)")) {
+                    assertTrue(toplevel.hasMatchingSig(node.getQualifiedName(), opMask));
+                }
+
                 return data;
             }
         }, null);

@@ -7,76 +7,40 @@ package net.sourceforge.pmd.lang.apex.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexQualifiedName;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
-import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
-import net.sourceforge.pmd.lang.ast.QualifiedName;
-import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
-import net.sourceforge.pmd.lang.metrics.ProjectMemoizer;
 
 /**
  * @author Clément Fournier
  */
-public class ApexProjectMirror implements ProjectMemoizer<ASTUserClassOrInterface<?>, ASTMethod>, ApexSignatureMatcher {
+public class ApexProjectMirror implements ApexSignatureMatcher {
 
-    private final Map<ApexOperationSignature, Map<ApexQualifiedName, ApexOperationStats>> operations = new HashMap<>();
     private final Map<ApexQualifiedName, ApexClassStats> classes = new HashMap<>();
 
 
     void reset() {
-        operations.clear();
         classes.clear();
     }
 
 
-    ApexOperationStats addOperation(ApexQualifiedName qname, ApexOperationSignature sig) {
-        if (!operations.containsKey(sig)) {
-            operations.put(sig, new HashMap<>());
+    ApexClassStats getClassStats(ApexQualifiedName qname, boolean createIfNotFound) {
+        ApexQualifiedName className = qname.getClassName();
+        if (createIfNotFound && !classes.containsKey(className)) {
+            classes.put(className, new ApexClassStats());
         }
-
-        ApexOperationStats stats = new ApexOperationStats();
-        operations.get(sig).put(qname, stats);
-        return stats;
-    }
-
-
-    ApexClassStats addClass(ApexQualifiedName qname) {
-        ApexClassStats stats = new ApexClassStats();
-        classes.put(qname, stats);
-        return stats;
+        return classes.get(className);
     }
 
 
     @Override
     public boolean hasMatchingSig(ApexQualifiedName qname, ApexOperationSigMask mask) {
-        for (ApexOperationSignature sig : operations.keySet()) {
-            if (mask.covers(sig)) {
-                if (operations.get(sig).containsKey(qname)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        ApexClassStats classStats = getClassStats(qname, false);
+
+        return classStats != null && classStats.hasMatchingSig(qname.getOperation(), mask);
+
     }
 
 
-    @Override
-    public MetricMemoizer<ASTMethod> getOperationStats(QualifiedName qname) {
-        for (Map<ApexQualifiedName, ApexOperationStats> map : operations.values()) {
-            ApexOperationStats stats = map.get(qname);
-            if (stats != null) {
-                return stats;
-            }
-        }
-        return null;
-    }
 
-
-    @Override
-    public MetricMemoizer<ASTUserClassOrInterface<?>> getClassStats(QualifiedName qname) {
-        return classes.get(qname);
-    }
 
 }

@@ -4,11 +4,39 @@
 
 package net.sourceforge.pmd.lang.apex.metrics;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
-import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
+import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 
 /**
  * @author Clément Fournier
  */
-public class ApexClassStats extends AbstractMetricMemoizer<ASTUserClassOrInterface<?>> {
+class ApexClassStats {
+
+    private Map<ApexOperationSignature, Set<String>> operations = new HashMap<>();
+
+
+    void addOperation(String name, ApexOperationSignature sig) {
+        if (!operations.containsKey(sig)) {
+            operations.put(sig, new HashSet<>());
+        }
+        operations.get(sig).add(name);
+    }
+
+
+    public boolean hasMatchingSig(String operation, ApexOperationSigMask mask) {
+        for (Entry<ApexOperationSignature, Set<String>> entry : operations.entrySet()) {
+            if (mask.covers(entry.getKey())) {
+                if (entry.getValue().contains(operation)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

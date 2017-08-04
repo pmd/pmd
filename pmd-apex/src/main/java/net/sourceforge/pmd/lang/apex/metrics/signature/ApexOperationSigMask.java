@@ -19,7 +19,6 @@ public class ApexOperationSigMask {
 
 
     public ApexOperationSigMask() {
-        coverAllVisibilities();
     }
 
 

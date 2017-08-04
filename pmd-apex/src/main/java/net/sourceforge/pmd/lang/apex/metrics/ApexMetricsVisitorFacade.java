@@ -14,8 +14,10 @@ public class ApexMetricsVisitorFacade extends ApexParserVisitorAdapter {
 
 
     public void initializeWith(ApexNode<?> rootNode) {
-        ApexMetricsVisitor visitor = new ApexMetricsVisitor();
-        rootNode.jjtAccept(visitor, ApexMetrics.getApexProjectMirror());
+        ApexMetricsFacade facade = ApexMetrics.getFacade();
+        ApexMetricsVisitor visitor = new ApexMetricsVisitor(facade.getLanguageSpecificProjectMemoizer(),
+                                                            facade.getProjectMirror());
+        rootNode.jjtAccept(visitor, null);
     }
 
 }

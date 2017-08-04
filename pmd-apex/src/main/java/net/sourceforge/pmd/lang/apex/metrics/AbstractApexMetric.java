@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.apex.metrics;
 public class AbstractApexMetric {
 
     protected ApexSignatureMatcher getSignatureMatcher() {
-        return ApexMetrics.getApexProjectMirror();
+        return ApexMetrics.getFacade().getProjectMirror();
     }
 
 }
