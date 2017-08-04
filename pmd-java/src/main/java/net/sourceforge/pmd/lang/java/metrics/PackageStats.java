@@ -7,24 +7,22 @@ package net.sourceforge.pmd.lang.java.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.ast.QualifiedName;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
 
 
 /**
  * Statistics about a package. This recursive data structure mirrors the package structure of the analysed project and
  * stores information about the classes and subpackages it contains.
  *
+ * This object provides signature matching utilities.
+ *
  * @author Clément Fournier
  * @see ClassStats
  */
-public final class PackageStats implements JavaProjectMemoizer, JavaSignatureMatcher {
+public final class PackageStats implements JavaSignatureMatcher {
 
     private final Map<String, PackageStats> subPackages = new HashMap<>();
     private final Map<String, ClassStats> classes = new HashMap<>();
@@ -158,15 +156,4 @@ public final class PackageStats implements JavaProjectMemoizer, JavaSignatureMat
         return clazz != null && clazz.hasMatchingSig(fieldName, sigMask);
     }
 
-
-    @Override
-    public MetricMemoizer<ASTMethodOrConstructorDeclaration> getOperationStats(QualifiedName qname) {
-        return getOperationStats((JavaQualifiedName) qname, null, false);
-    }
-
-
-    @Override
-    public MetricMemoizer<ASTAnyTypeDeclaration> getClassStats(QualifiedName qname) {
-        return getClassStats((JavaQualifiedName) qname, false);
-    }
 }

@@ -29,12 +29,12 @@ public final class JavaMetrics {
 
 
     /**
-     * Returns the project mirror of the analysed project.
+     * Returns the underlying façade.
      *
-     * @return The project mirror
+     * @return The underlying façade instance
      */
-    static PackageStats getTopLevelPackageStats() {
-        return FACADE.getLanguageSpecificProjectMemoizer();
+    static JavaMetricsFacade getFacade() {
+        return FACADE;
     }
 
 

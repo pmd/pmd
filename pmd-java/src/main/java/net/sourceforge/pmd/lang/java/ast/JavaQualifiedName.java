@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 /**
- * Represents Qualified Names for use within the java project mirror.
+ * Represents Qualified Names for use within the java metrics framework.
  */
 public final class JavaQualifiedName implements QualifiedName {
 

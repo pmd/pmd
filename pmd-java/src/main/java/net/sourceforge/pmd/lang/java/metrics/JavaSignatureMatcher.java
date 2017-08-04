@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 
 /**
- * Gathers the methods that the Java project mirror should make available to metrics during the computation.
+ * Gathers the methods that PackageStats should make available to metrics during the computation.
  *
  * @author Clément Fournier
  */

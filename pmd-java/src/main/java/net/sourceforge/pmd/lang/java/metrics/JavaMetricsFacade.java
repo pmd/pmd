@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.metrics.MetricsComputer;
 class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
 
     private final PackageStats topLevelPackageStats = new PackageStats();
+    private final JavaProjectMemoizer memoizer = new JavaProjectMemoizer();
 
 
     /** Resets the entire data structure. Used for tests. */
@@ -25,9 +26,19 @@ class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, AST
     }
 
 
-    @Override
-    public PackageStats getLanguageSpecificProjectMemoizer() {
+    /**
+     * Gets the top level package stats of this façade.
+     *
+     * @return The top level package stats
+     */
+    PackageStats getTopLevelPackageStats() {
         return topLevelPackageStats;
+    }
+
+
+    @Override
+    public JavaProjectMemoizer getLanguageSpecificProjectMemoizer() {
+        return memoizer;
     }
 
 
