@@ -47,7 +47,7 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
     @Override
     public JavaQualifiedName getQualifiedName() {
         if (qualifiedName == null) {
-            qualifiedName = JavaQualifiedName.makeOperationOf(this);
+            qualifiedName = JavaQualifiedName.ofOperation(this);
         }
         return qualifiedName;
     }

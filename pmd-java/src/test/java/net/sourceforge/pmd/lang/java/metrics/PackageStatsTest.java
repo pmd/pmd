@@ -40,7 +40,7 @@ public class PackageStatsTest extends ParserTst {
 
     @Test
     public void testAddClass() {
-        JavaQualifiedName qname = JavaQualifiedName.parseName("org.foo.Boo");
+        JavaQualifiedName qname = JavaQualifiedName.ofString("org.foo.Boo");
 
         assertNull(pack.getClassStats(qname, false));
         assertNotNull(pack.getClassStats(qname, true));
@@ -75,7 +75,7 @@ public class PackageStatsTest extends ParserTst {
 
         ASTFieldDeclaration node = getOrderedNodes(ASTFieldDeclaration.class, TEST).get(0);
 
-        JavaQualifiedName qname = JavaQualifiedName.parseName("org.foo.Boo");
+        JavaQualifiedName qname = JavaQualifiedName.ofString("org.foo.Boo");
         String fieldName = "bar";
         JavaFieldSignature signature = JavaFieldSignature.buildFor(node);
 

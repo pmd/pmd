@@ -37,13 +37,13 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static JavaQualifiedName makeOperationOf(ASTMethodDeclaration node) {
+    /* default */ static JavaQualifiedName ofOperation(ASTMethodDeclaration node) {
         JavaQualifiedName parentQname = node.getFirstParentOfType(ASTAnyTypeDeclaration.class)
                                             .getQualifiedName();
 
-        return makeOperationOf(parentQname,
-                               node.getMethodName(),
-                               node.getFirstDescendantOfType(ASTFormalParameters.class));
+        return ofOperation(parentQname,
+                           node.getMethodName(),
+                           node.getFirstDescendantOfType(ASTFormalParameters.class));
     }
 
 
@@ -54,17 +54,17 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static JavaQualifiedName makeOperationOf(ASTConstructorDeclaration node) {
+    /* default */ static JavaQualifiedName ofOperation(ASTConstructorDeclaration node) {
         ASTClassOrInterfaceDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 
-        return makeOperationOf(parent.getQualifiedName(),
-                               parent.getImage(),
-                               node.getFirstDescendantOfType(ASTFormalParameters.class));
+        return ofOperation(parent.getQualifiedName(),
+                           parent.getImage(),
+                           node.getFirstDescendantOfType(ASTFormalParameters.class));
     }
 
 
     /** Factorises the functionality of makeOperationof() */
-    private static JavaQualifiedName makeOperationOf(JavaQualifiedName parent, String opName, ASTFormalParameters params) {
+    private static JavaQualifiedName ofOperation(JavaQualifiedName parent, String opName, ASTFormalParameters params) {
         JavaQualifiedName qname = new JavaQualifiedName();
 
         qname.packages = parent.packages;
@@ -83,7 +83,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The qualified name of the nested class
      */
-    /* default */ static JavaQualifiedName makeNestedClassOf(JavaQualifiedName parent, String className) {
+    /* default */ static JavaQualifiedName ofNestedClass(JavaQualifiedName parent, String className) {
         JavaQualifiedName qname = new JavaQualifiedName();
         qname.packages = parent.packages;
         if (parent.classes[0] != null) {
@@ -103,7 +103,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return The qualified name of the node
      */
-    /* default */ static JavaQualifiedName makeOuterClassOf(ASTAnyTypeDeclaration node) {
+    /* default */ static JavaQualifiedName ofOuterClass(ASTAnyTypeDeclaration node) {
         ASTPackageDeclaration pkg = node.getFirstParentOfType(ASTCompilationUnit.class)
                                         .getFirstChildOfType(ASTPackageDeclaration.class);
 
@@ -116,7 +116,7 @@ public final class JavaQualifiedName implements QualifiedName {
 
 
     // Might be useful with type resolution
-    public static JavaQualifiedName makeClassOf(Class<?> clazz) {
+    public static JavaQualifiedName ofClass(Class<?> clazz) {
         throw new UnsupportedOperationException();
     }
 
@@ -141,7 +141,7 @@ public final class JavaQualifiedName implements QualifiedName {
      *
      * @return A qualified name instance corresponding to the parsed string.
      */
-    public static JavaQualifiedName parseName(String name) {
+    public static JavaQualifiedName ofString(String name) {
         JavaQualifiedName qname = new JavaQualifiedName();
 
         Matcher matcher = FORMAT.matcher(name);
@@ -180,10 +180,12 @@ public final class JavaQualifiedName implements QualifiedName {
         return sb.toString();
     }
 
+
     @Override
     public boolean isClass() {
         return classes[0] != null && operation == null;
     }
+
 
     @Override
     public boolean isOperation() {
@@ -200,15 +202,40 @@ public final class JavaQualifiedName implements QualifiedName {
         return packages;
     }
 
-    @Override
+
+    /**
+     * Returns the class specific part of the name. It identifies a class in the namespace it's declared in. If the
+     * class is nested inside another, then the array returned contains all enclosing classes in order.
+     *
+     * @return The class names array.
+     */
     public String[] getClasses() {
         return classes;
     }
 
-    @Override
+
+    /**
+     * Returns the operation specific part of the name. It identifies an operation in its namespace.
+     *
+     * @return The operation string.
+     */
     public String getOperation() {
         return operation;
     }
+
+
+    @Override
+    public JavaQualifiedName getClassName() {
+        if (isClass()) {
+            return this;
+        }
+
+        JavaQualifiedName qname = new JavaQualifiedName();
+        qname.classes = this.classes;
+        qname.packages = this.packages;
+        return qname;
+    }
+
 
     @Override
     public boolean equals(Object o) {

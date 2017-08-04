@@ -52,11 +52,11 @@ public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode i
             if (isNested()) {
                 ASTClassOrInterfaceDeclaration parent = this.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
                 JavaQualifiedName parentQN = parent.getQualifiedName();
-                qualifiedName = JavaQualifiedName.makeNestedClassOf(parentQN, this.getImage());
+                qualifiedName = JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
                 return qualifiedName;
             }
 
-            qualifiedName = JavaQualifiedName.makeOuterClassOf(this);
+            qualifiedName = JavaQualifiedName.ofOuterClass(this);
         }
 
         return qualifiedName;

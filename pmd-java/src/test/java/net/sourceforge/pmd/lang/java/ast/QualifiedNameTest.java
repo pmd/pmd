@@ -218,8 +218,8 @@ public class QualifiedNameTest extends ParserTst {
 
     @Test
     public void testParseClass() {
-        JavaQualifiedName outer = JavaQualifiedName.parseName("foo.bar.Bzaz");
-        JavaQualifiedName nested = JavaQualifiedName.parseName("foo.bar.Bzaz$Bolg");
+        JavaQualifiedName outer = JavaQualifiedName.ofString("foo.bar.Bzaz");
+        JavaQualifiedName nested = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg");
 
         assertEquals(1, outer.getClasses().length);
         assertEquals("Bzaz", outer.getClasses()[0]);
@@ -232,8 +232,8 @@ public class QualifiedNameTest extends ParserTst {
 
     @Test
     public void testParsePackages() {
-        JavaQualifiedName packs = JavaQualifiedName.parseName("foo.bar.Bzaz$Bolg");
-        JavaQualifiedName nopacks = JavaQualifiedName.parseName(".Bzaz");
+        JavaQualifiedName packs = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg");
+        JavaQualifiedName nopacks = JavaQualifiedName.ofString(".Bzaz");
 
         assertNotNull(packs.getPackages());
         assertEquals("foo", packs.getPackages()[0]);
@@ -244,8 +244,8 @@ public class QualifiedNameTest extends ParserTst {
 
     @Test
     public void testParseOperation() {
-        JavaQualifiedName noparams = JavaQualifiedName.parseName("foo.bar.Bzaz$Bolg#bar()");
-        JavaQualifiedName params = JavaQualifiedName.parseName("foo.bar.Bzaz#bar(String, int)");
+        JavaQualifiedName noparams = JavaQualifiedName.ofString("foo.bar.Bzaz$Bolg#bar()");
+        JavaQualifiedName params = JavaQualifiedName.ofString("foo.bar.Bzaz#bar(String, int)");
 
         assertEquals("bar()", noparams.getOperation());
         assertEquals("bar(String, int)", params.getOperation());
@@ -253,12 +253,12 @@ public class QualifiedNameTest extends ParserTst {
 
     @Test
     public void testParseMalformed() {
-        assertNull(JavaQualifiedName.parseName(".foo.bar.Bzaz"));
-        assertNull(JavaQualifiedName.parseName("foo.bar."));
-        assertNull(JavaQualifiedName.parseName("foo.bar.Bzaz#foo"));
-        assertNull(JavaQualifiedName.parseName("foo.bar.Bzaz()"));
-        assertNull(JavaQualifiedName.parseName("foo.bar.Bzaz#foo(String,)"));
-        assertNull(JavaQualifiedName.parseName("foo.bar.Bzaz#foo(String , int)"));
+        assertNull(JavaQualifiedName.ofString(".foo.bar.Bzaz"));
+        assertNull(JavaQualifiedName.ofString("foo.bar."));
+        assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo"));
+        assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz()"));
+        assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo(String,)"));
+        assertNull(JavaQualifiedName.ofString("foo.bar.Bzaz#foo(String , int)"));
     }
 
 

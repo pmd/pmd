@@ -71,7 +71,7 @@ public class JavaMetricsVisitorTest {
 
         final JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
 
-        JavaQualifiedName clazz = JavaQualifiedName.parseName("net.sourceforge.pmd.lang.java"
+        JavaQualifiedName clazz = JavaQualifiedName.ofString("net.sourceforge.pmd.lang.java"
                                                                   + ".metrics.testdata"
                                                                   + ".MetricsVisitorTestData");
         String[] fieldNames = {"x", "y", "z", "t"};
@@ -95,7 +95,7 @@ public class JavaMetricsVisitorTest {
         final JavaOperationSigMask operationSigMask = new JavaOperationSigMask();
         operationSigMask.restrictRolesTo(Role.STATIC);
 
-        JavaQualifiedName q1 = JavaQualifiedName.parseName("net.sourceforge.pmd.lang.java"
+        JavaQualifiedName q1 = JavaQualifiedName.ofString("net.sourceforge.pmd.lang.java"
                                                                + ".metrics.testdata"
                                                                + ".MetricsVisitorTestData#mystatic1()");
 

@@ -15,7 +15,7 @@ x = {a : 1, b : 2};
         <description><![CDATA[
 Bad, object literals
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 x = {a : 1,};
 x = {a : 1, b : 2,}; 
@@ -26,7 +26,7 @@ x = {a : 1, b : 2,};
         <description><![CDATA[
 Bad, object literals, multi-line nested
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 x = {
 	a : 1,
@@ -44,7 +44,7 @@ x = {
         <description><![CDATA[
 Bad, object literals, compressed nested
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 x={a:1,b:{c:{d:{},},},};
      ]]></code>
@@ -79,7 +79,7 @@ x = [1, 2];
         <description><![CDATA[
 Bad, array literals
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 x = [,];
 x = [1,];
@@ -91,7 +91,7 @@ x = [1,2,];
         <description><![CDATA[
 Bad, array literals, multi-line nested
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 x = [1,
     [2,
@@ -107,7 +107,7 @@ x = [1,
         <description><![CDATA[
 Bad, array literals, compressed nested
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 x=[1,[2,[3,[4,],],],];
      ]]></code>

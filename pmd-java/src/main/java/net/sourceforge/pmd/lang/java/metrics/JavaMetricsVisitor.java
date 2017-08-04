@@ -22,10 +22,10 @@ class JavaMetricsVisitor extends JavaParserVisitorReducedAdapter {
 
     private final Stack<ClassStats> stack = new Stack<>();
     private final PackageStats toplevel;
-    private final ProjectMemoizer<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> memoizer;
+    private final JavaProjectMemoizer memoizer;
 
 
-    JavaMetricsVisitor(PackageStats toplevel, ProjectMemoizer<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> memoizer) {
+    JavaMetricsVisitor(PackageStats toplevel, JavaProjectMemoizer memoizer) {
         this.toplevel = toplevel;
         this.memoizer = memoizer;
     }

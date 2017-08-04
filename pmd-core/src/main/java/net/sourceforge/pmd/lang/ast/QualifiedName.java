@@ -18,20 +18,12 @@ public interface QualifiedName {
 
 
     /**
-     * Returns the operation specific part of the name. It identifies an operation in its namespace.
+     * Returns the qualified name of the class the resource is located in. If this instance addresses a class, returns
+     * this instance.
      *
-     * @return The operation string.
+     * @return The qualified name of the class
      */
-    String getOperation();
-
-
-    /**
-     * Returns the class specific part of the name. It identifies a class in the namespace it's declared in. If the
-     * class is nested inside another, then the array returned contains all enclosing classes in order.
-     *
-     * @return The class names array.
-     */
-    String[] getClasses();
+    QualifiedName getClassName();
 
 
     /**
