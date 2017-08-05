@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 
 /**
+ * Stores info about a class.
+ *
  * @author Clément Fournier
  */
 class ApexClassStats {

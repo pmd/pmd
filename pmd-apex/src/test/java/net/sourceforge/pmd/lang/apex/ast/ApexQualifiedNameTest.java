@@ -59,10 +59,10 @@ public class ApexQualifiedNameTest {
     public void testMethodWithArguments() {
         ApexNode<Compilation> root = ApexParserTestHelpers.parse("public class Foo { String foo(String h, Foo g) {}}");
         ApexQualifiedName qname = root.getFirstDescendantOfType(ASTMethod.class).getQualifiedName();
-        assertEquals("__Foo#foo(String,LFoo;)", qname.toString());
+        assertEquals("__Foo#foo(String,Foo)", qname.toString());
         assertEquals(1, qname.getClasses().length);
         assertNotNull(qname.getNameSpace());
-        assertEquals("foo(String,LFoo;)", qname.getOperation());
+        assertEquals("foo(String,Foo)", qname.getOperation());
     }
 
 

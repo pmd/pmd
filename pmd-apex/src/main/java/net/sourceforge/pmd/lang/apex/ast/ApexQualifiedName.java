@@ -116,7 +116,7 @@ public class ApexQualifiedName implements QualifiedName {
 
 
     public static ApexQualifiedName ofString(String toParse) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 
@@ -146,7 +146,7 @@ public class ApexQualifiedName implements QualifiedName {
             sb.append(paramTypes.get(0).getApexName());
 
             for (int i = 1; i < paramTypes.size(); i++) {
-                sb.append(",").append(paramTypes.get(i).getTypeSignature());
+                sb.append(",").append(paramTypes.get(i).getApexName());
             }
 
         }

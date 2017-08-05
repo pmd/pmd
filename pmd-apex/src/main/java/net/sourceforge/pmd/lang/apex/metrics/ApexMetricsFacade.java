@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricsFacade;
 import net.sourceforge.pmd.lang.metrics.MetricsComputer;
 
 /**
+ * Backs the static façade.
  * @author Clément Fournier
  */
 public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClassOrInterface<?>, ASTMethod> {

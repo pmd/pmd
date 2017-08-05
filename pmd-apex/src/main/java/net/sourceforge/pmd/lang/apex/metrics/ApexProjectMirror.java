@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.apex.ast.ApexQualifiedName;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSigMask;
 
 /**
+ * Equivalent to PackageStats in the java framework.
+ *
  * @author Clément Fournier
  */
 public class ApexProjectMirror implements ApexSignatureMatcher {
@@ -39,8 +41,6 @@ public class ApexProjectMirror implements ApexSignatureMatcher {
         return classStats != null && classStats.hasMatchingSig(qname.getOperation(), mask);
 
     }
-
-
 
 
 }

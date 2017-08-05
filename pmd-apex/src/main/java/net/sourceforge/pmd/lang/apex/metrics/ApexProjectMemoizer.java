@@ -9,6 +9,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.BasicProjectMemoizer;
 
 /**
+ * Memoizer for Apex metrics.
+ *
  * @author Clément Fournier
  */
 class ApexProjectMemoizer extends BasicProjectMemoizer<ASTUserClassOrInterface<?>, ASTMethod> {

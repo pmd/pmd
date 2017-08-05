@@ -17,7 +17,8 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
- * Cyclomatic complexity rule using metrics.
+ * Cyclomatic complexity rule using metrics. Uses Wmc to report classes (the Java rule will be updated as well in an
+ * upcoming PR)
  *
  * @author Clément Fournier
  */

@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
 
 /**
+ * Computes metrics for the Apex framework.
  * @author Clément Fournier
  */
 public class ApexMetricsComputer extends AbstractMetricsComputer<ASTUserClassOrInterface<?>, ASTMethod> {

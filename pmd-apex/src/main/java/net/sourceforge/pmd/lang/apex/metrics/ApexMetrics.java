@@ -13,6 +13,8 @@ import net.sourceforge.pmd.lang.metrics.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
+ * User-bound façade of the Apex metrics framework.
+ *
  * @author Clément Fournier
  */
 public final class ApexMetrics {

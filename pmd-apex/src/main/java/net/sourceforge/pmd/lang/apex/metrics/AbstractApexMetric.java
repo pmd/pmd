@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.apex.metrics;
 
 /**
+ * Base class for all Apex metrics.
+ *
  * @author Clément Fournier
  */
 public class AbstractApexMetric {
