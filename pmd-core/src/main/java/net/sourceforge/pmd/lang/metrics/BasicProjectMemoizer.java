@@ -19,7 +19,8 @@ import net.sourceforge.pmd.lang.ast.QualifiedName;
  *
  * @author Clément Fournier
  */
-public class BasicProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> implements ProjectMemoizer<T, O> {
+public abstract class BasicProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> implements
+    ProjectMemoizer<T, O> {
 
     private Map<QualifiedName, MetricMemoizer<T>> classes = new HashMap<>();
     private Map<QualifiedName, MetricMemoizer<O>> operations = new HashMap<>();
