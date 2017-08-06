@@ -14,7 +14,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.MetricKeyUtil;
+import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
