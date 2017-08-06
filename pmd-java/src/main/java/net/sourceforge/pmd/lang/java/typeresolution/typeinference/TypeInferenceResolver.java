@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution.typeinference;
 
+import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.EQUALITY;
@@ -24,6 +25,38 @@ public final class TypeInferenceResolver {
 
     private TypeInferenceResolver() {
 
+    }
+
+    public static Set<Class<?>> getErasedCandidateSet(List<Set<Class<?>>> erasedSuperTypeSets) {
+        Set<Class<?>> result = new HashSet<>();
+
+        if (!erasedSuperTypeSets.isEmpty()) {
+            result.addAll(erasedSuperTypeSets.get(0));
+        }
+
+        for (Set<Class<?>> superTypeSet : erasedSuperTypeSets) {
+            result.retainAll(superTypeSet);
+        }
+
+        return result;
+    }
+
+    public static Set<Class<?>> getMinimalErasedCandidateSet(Set<Class<?>> erasedSet) {
+        Set<Class<?>> result = new HashSet<>();
+
+        outter:
+        for (Class<?> candidate : erasedSet) {
+            for (Class<?> erasedSetMember : erasedSet) {
+                if (candidate != erasedSetMember
+                        && MethodTypeResolution.isSubtypeable(candidate, erasedSetMember)) {
+                    continue outter; // skip candidate from result set
+                }
+            }
+
+            result.add(candidate);
+        }
+
+        return result;
     }
 
     /**

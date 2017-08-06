@@ -12,8 +12,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -278,7 +280,7 @@ public class TypeInferenceTest {
     @Test
     public void testIncorporationSubtypeAndSubtype() {
         List<Constraint> result;
-        
+
         // ### Original rule 4. : S <: α and α <: T imply ‹S <: T›
         result = incorporationResult(new Bound(s, alpha, EQUALITY), new Bound(alpha, t, SUBTYPE));
         assertEquals(result.size(), 1);
@@ -289,6 +291,29 @@ public class TypeInferenceTest {
         assertEquals(result.size(), 1);
         testBoundOrConstraint(result.get(0), s, t, SUBTYPE, Constraint.class);
 
+    }
+
+    @Test
+    public void testErasedCandidateSet() {
+        List<Set<Class<?>>> superTypeSets = new ArrayList<>();
+        superTypeSets.add(JavaTypeDefinition.forClass(List.class).getErasedSuperTypeSet());
+        superTypeSets.add(JavaTypeDefinition.forClass(Set.class).getErasedSuperTypeSet());
+
+        Set<Class<?>> erasedCandidate = TypeInferenceResolver.getErasedCandidateSet(superTypeSets);
+
+        assertEquals(erasedCandidate.size(), 3);
+        assertTrue(erasedCandidate.contains(Object.class));
+        assertTrue(erasedCandidate.contains(Collection.class));
+        assertTrue(erasedCandidate.contains(Iterable.class));
+    }
+
+    @Test
+    public void testMinimalErasedCandidateSet() {
+        Set<Class<?>> minimalSet = TypeInferenceResolver.getMinimalErasedCandidateSet(
+                JavaTypeDefinition.forClass(List.class).getErasedSuperTypeSet());
+
+        assertEquals(minimalSet.size(), 1);
+        assertTrue(minimalSet.contains(List.class));
     }
 
     private List<Constraint> incorporationResult(Bound firstBound, Bound secondBound) {
