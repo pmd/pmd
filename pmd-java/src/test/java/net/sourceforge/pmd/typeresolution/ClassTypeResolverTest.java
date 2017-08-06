@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
@@ -16,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.JavaTypeDefinitionEquals;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 
@@ -1470,6 +1472,34 @@ public class ClassTypeResolverTest {
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
+    }
+
+    @Test
+    public void testJavaTypeDefinitionEquals() {
+        JavaTypeDefinition a = JavaTypeDefinition.forClass(Integer.class);
+        JavaTypeDefinition b = JavaTypeDefinition.forClass(Integer.class);
+
+        // test non-generic types
+        assertEquals(a, b);
+        assertNotEquals(a, null);
+
+        // test generic arg equality
+        b = JavaTypeDefinition.forClass(List.class, a);
+        a = JavaTypeDefinition.forClass(List.class, a);
+
+        assertEquals(a, b);
+        a = JavaTypeDefinition.forClass(List.class, JavaTypeDefinition.forClass(String.class));
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+
+
+        // test raw vs proper, proper vs raw
+        a = JavaTypeDefinition.forClass(JavaTypeDefinitionEquals.class);
+        b = JavaTypeDefinition.forClass(JavaTypeDefinitionEquals.class,
+                                        JavaTypeDefinition.forClass(List.class, a));
+        assertEquals(a, b);
+        assertEquals(b, a);
+
     }
 
 
