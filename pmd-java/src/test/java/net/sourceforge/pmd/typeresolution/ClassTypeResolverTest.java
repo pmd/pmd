@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.typeresolution;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
@@ -13,8 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.JavaTypeDefinitionEquals;
@@ -1499,8 +1503,35 @@ public class ClassTypeResolverTest {
                                         JavaTypeDefinition.forClass(List.class, a));
         assertEquals(a, b);
         assertEquals(b, a);
-
     }
+
+    @Test
+    public void testJavaTypeDefinitionGetSuperTypeSet() {
+        JavaTypeDefinition originalTypeDef = JavaTypeDefinition.forClass(List.class,
+                                                                  JavaTypeDefinition.forClass(Integer.class));
+        Set<JavaTypeDefinition> set = originalTypeDef.getSuperTypeSet();
+
+        assertEquals(set.size(), 4);
+        assertTrue(set.contains(JavaTypeDefinition.forClass(Object.class)));
+        assertTrue(set.contains(originalTypeDef));
+        assertTrue(set.contains(JavaTypeDefinition.forClass(Collection.class,
+                                                            JavaTypeDefinition.forClass(Integer.class))));
+        assertTrue(set.contains(JavaTypeDefinition.forClass(Iterable.class,
+                                                            JavaTypeDefinition.forClass(Integer.class))));
+    }
+
+    @Test
+    public void testJavaTypeDefinitionGetErasedSuperTypeSet() {
+        JavaTypeDefinition originalTypeDef = JavaTypeDefinition.forClass(List.class,
+                                                                         JavaTypeDefinition.forClass(Integer.class));
+        Set<Class<?>> set = originalTypeDef.getErasedSuperTypeSet();
+        assertEquals(set.size(), 4);
+        assertTrue(set.contains(Object.class));
+        assertTrue(set.contains(Collection.class));
+        assertTrue(set.contains(Iterable.class));
+        assertTrue(set.contains(List.class));
+    }
+
 
 
     private Class<?> getChildType(Node node, int childIndex) {

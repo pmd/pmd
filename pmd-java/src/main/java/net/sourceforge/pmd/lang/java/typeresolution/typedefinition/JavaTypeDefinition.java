@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class JavaTypeDefinition implements TypeDefinition {
     // contains TypeDefs where only the clazz field is used
@@ -295,5 +297,43 @@ public class JavaTypeDefinition implements TypeDefinition {
     @Override
     public int hashCode() {
         return clazz.hashCode();
+    }
+
+    public Set<JavaTypeDefinition> getSuperTypeSet() {
+        return getSuperTypeSet(new HashSet<JavaTypeDefinition>());
+    }
+
+    private Set<JavaTypeDefinition> getSuperTypeSet(Set<JavaTypeDefinition> destinationSet) {
+        destinationSet.add(this);
+
+        if (this.clazz != Object.class) {
+
+            resolveTypeDefinition(clazz.getGenericSuperclass()).getSuperTypeSet(destinationSet);
+
+            for (Type type : clazz.getGenericInterfaces()) {
+                resolveTypeDefinition(type).getSuperTypeSet(destinationSet);
+            }
+        }
+
+        return destinationSet;
+    }
+
+    public Set<Class<?>> getErasedSuperTypeSet() {
+        Set<Class<?>> result = new HashSet<>();
+        result.add(Object.class);
+        return getErasedSuperTypeSet(this.clazz, result);
+    }
+
+    private static Set<Class<?>> getErasedSuperTypeSet(Class<?> clazz, Set<Class<?>> destinationSet) {
+        if (clazz != null) {
+            destinationSet.add(clazz);
+            getErasedSuperTypeSet(clazz.getSuperclass(), destinationSet);
+
+            for(Class<?> interfaceType : clazz.getInterfaces()) {
+                getErasedSuperTypeSet(interfaceType, destinationSet);
+            }
+        }
+
+        return destinationSet;
     }
 }
