@@ -25,7 +25,7 @@ public class ApexQualifiedNameTest {
         ApexNode<Compilation> root = ApexParserTestHelpers.parse("public class Foo {}");
 
         ApexQualifiedName qname = ASTUserClass.class.cast(root).getQualifiedName();
-        assertEquals("__Foo", qname.toString());
+        assertEquals("c__Foo", qname.toString());
         assertEquals(1, qname.getClasses().length);
         assertNotNull(qname.getNameSpace());
         assertNull(qname.getOperation());
@@ -37,7 +37,7 @@ public class ApexQualifiedNameTest {
         ApexNode<Compilation> root = ApexParserTestHelpers.parse("public class Foo { class Bar {}}");
 
         ApexQualifiedName qname = root.getFirstDescendantOfType(ASTUserClass.class).getQualifiedName();
-        assertEquals("__Foo.Bar", qname.toString());
+        assertEquals("c__Foo.Bar", qname.toString());
         assertEquals(2, qname.getClasses().length);
         assertNotNull(qname.getNameSpace());
         assertNull(qname.getOperation());
@@ -48,7 +48,7 @@ public class ApexQualifiedNameTest {
     public void testSimpleMethod() {
         ApexNode<Compilation> root = ApexParserTestHelpers.parse("public class Foo { String foo() {}}");
         ApexQualifiedName qname = root.getFirstDescendantOfType(ASTMethod.class).getQualifiedName();
-        assertEquals("__Foo#foo()", qname.toString());
+        assertEquals("c__Foo#foo()", qname.toString());
         assertEquals(1, qname.getClasses().length);
         assertNotNull(qname.getNameSpace());
         assertEquals("foo()", qname.getOperation());
@@ -59,7 +59,7 @@ public class ApexQualifiedNameTest {
     public void testMethodWithArguments() {
         ApexNode<Compilation> root = ApexParserTestHelpers.parse("public class Foo { String foo(String h, Foo g) {}}");
         ApexQualifiedName qname = root.getFirstDescendantOfType(ASTMethod.class).getQualifiedName();
-        assertEquals("__Foo#foo(String,Foo)", qname.toString());
+        assertEquals("c__Foo#foo(String,Foo)", qname.toString());
         assertEquals(1, qname.getClasses().length);
         assertNotNull(qname.getNameSpace());
         assertEquals("foo(String,Foo)", qname.getOperation());

@@ -18,6 +18,11 @@
           public void example() {
             int x = 0, y = 1, z = 2, t = 2;
             boolean a = false, b = true, c = false, d = true;
+
+            for (String s : list) {
+              x++;
+            }
+
             if (a && b || b && d) {
               if (y == z) {
                 x = 2;
@@ -49,8 +54,8 @@
         <description>Complicated method - Standard</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'__Complicated#exception()' has value 4.</message>
-            <message>'__Complicated#example()' has value 17.</message>
+            <message>'c__Complicated#exception()' has value 4.</message>
+            <message>'c__Complicated#example()' has value 18.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -61,7 +66,7 @@
         <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'__Foo#foo()' has value 1.</message>
+            <message>'c__Foo#foo()' has value 1.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -93,7 +98,7 @@
         <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'__Test#Test()' has value 4.</message>
+            <message>'c__Test#Test()' has value 4.</message>
         </expected-messages>
         <code-ref id="constructor-violation"/>
     </test-code>
@@ -119,7 +124,7 @@
         <expected-problems>1</expected-problems>
         <rule-property name="reportClasses">false</rule-property>
         <expected-messages>
-            <message>'__Foo#foo()' has value 8.</message>
+            <message>'c__Foo#foo()' has value 8.</message>
         </expected-messages>
         <code-ref id="manyBooleanOps"/>
     </test-code>
@@ -128,7 +133,7 @@
         <description>Ternary expression counts 1 + boolean complexity</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'__Foo#bar()' has value 3.</message>
+            <message>'c__Foo#bar()' has value 3.</message>
         </expected-messages>
         <code>
             <![CDATA[

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 import apex.jorje.semantic.symbol.type.TypeInfo;
@@ -123,7 +125,7 @@ public class ApexQualifiedName implements QualifiedName {
     static ApexQualifiedName ofOuterClass(ASTUserClassOrInterface astUserClass) {
         String ns = astUserClass.getNode().getDefiningType().getNamespace().toString();
         String[] classes = {astUserClass.getImage()};
-        return new ApexQualifiedName(ns, classes, null);
+        return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, classes, null);
     }
 
 

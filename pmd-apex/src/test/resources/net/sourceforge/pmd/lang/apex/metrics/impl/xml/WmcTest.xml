@@ -42,7 +42,7 @@
         <description>Complicated class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'__Complicated' has value 16.</message>
+            <message>'c__Complicated' has value 16.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -51,7 +51,7 @@
         <description>Empty classes count 0</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'__Foo' has value 0.</message>
+            <message>'c__Foo' has value 0.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -65,7 +65,7 @@
         <description>Abstract classes and enums are supported</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'__Foo' has value 2.</message>
+            <message>'c__Foo' has value 2.</message>
         </expected-messages>
         <code>
             <![CDATA[

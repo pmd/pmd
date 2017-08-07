@@ -74,7 +74,6 @@ public class SigMaskTest extends ParserTst {
         + "abstract void setZ(int x);"
         + "}";
 
-
     /**
      * Ensure any non-abstract method is covered by a newly created mask.
      */
@@ -92,7 +91,6 @@ public class SigMaskTest extends ParserTst {
         }
     }
 
-
     /**
      * Ensure any field is covered by a newly created mask.
      */
@@ -105,7 +103,6 @@ public class SigMaskTest extends ParserTst {
             assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
         }
     }
-
 
     @Test
     public void testFinalFields() {
@@ -122,7 +119,6 @@ public class SigMaskTest extends ParserTst {
         }
     }
 
-
     @Test
     public void testStaticFields() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
@@ -137,7 +133,6 @@ public class SigMaskTest extends ParserTst {
             }
         }
     }
-
 
     @Test
     public void testFieldvisibility() {
@@ -183,7 +178,7 @@ public class SigMaskTest extends ParserTst {
                 assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
-
+        
     }
 
 
@@ -235,7 +230,6 @@ public class SigMaskTest extends ParserTst {
             }
         }
     }
-
 
     @Test
     public void testOperationRoles() {
