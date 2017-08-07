@@ -91,9 +91,8 @@ public class StandardCycloVisitor extends CycloPathUnawareOperationVisitor {
         super.visit(node, data);
 
         if (node.isTernary()) {
-            int boolCompTern = NPathComplexityRule
-                .sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-            ((MutableInt) data).add(boolCompTern);
+            int boolCompTern = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+            ((MutableInt) data).add(1 + boolCompTern);
         }
         return data;
     }

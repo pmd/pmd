@@ -10,7 +10,7 @@
     </description>
 
     <rule name="CyclomaticComplexity"
-          message="The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
+          message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
           since="1.03"
           class="net.sourceforge.pmd.lang.java.metrics.rule.CyclomaticComplexityRule"
           metrics="true"

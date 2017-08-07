@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.api;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.NpathMetric;
@@ -27,9 +27,9 @@ public enum JavaOperationMetricKey implements MetricKey<ASTMethodOrConstructorDe
     /**
      * Cyclomatic complexity.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
+     * @see CycloMetric
      */
-    CYCLO(new CycloOperationMetric()),
+    CYCLO(new CycloMetric()),
 
     /**
      * Non Commenting Source Statements.

@@ -66,21 +66,19 @@
 
     <test-code>
         <description>Complicated method - Standard</description>
-        <expected-problems>3</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'.Complicated' has value 13 highest 21.</message>
             <message>'.Complicated#exception()' has value 4.</message>
-            <message>'.Complicated#example()' has value 21.</message>
+            <message>'.Complicated#example()' has value 23.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
 
     <test-code>
         <description>Complicated method - Ignore boolean path version</description>
-        <expected-problems>3</expected-problems>
+        <expected-problems>2</expected-problems>
         <rule-property name="metricVersion">ignoreBooleanPaths</rule-property>
         <expected-messages>
-            <message>'.Complicated' has value 10 highest 14.</message>
             <message>'.Complicated#exception()' has value 4.</message>
             <message>'.Complicated#example()' has value 14.</message>
         </expected-messages>
@@ -103,21 +101,6 @@
         </code>
     </test-code>
 
-    <test-code>
-        <description>Empty class should count 0</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>'.Foo' has value 0 highest 0.</message>
-        </expected-messages>
-        <code>
-            <![CDATA[
-            class Foo {
-            }
-            ]]>
-        </code>
-    </test-code>
-
-
     <code-fragment id="constructor-violation">
         <![CDATA[
         public class Test {
@@ -135,8 +118,7 @@
     </code-fragment>
 
     <test-code>
-        <description>#984 Cyclomatic complexity should treat constructors like methods
-        </description>
+        <description>#984 Cyclomatic complexity should treat constructors like methods</description>
         <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
@@ -201,25 +183,19 @@
     </test-code>
 
     <test-code>
-        <description>Interfaces are not supported</description>
-        <expected-problems>0</expected-problems>
-        <code>
-            <![CDATA[
-            interface Koo {
-              void bar();
-            }
-            ]]>
-        </code>
-    </test-code>
-
-    <test-code>
-        <description>Avoid division by 0 when averaging a metric over no operations</description>
-        <rule-property name="reportLevel">-1</rule-property>
+        <description>Ternary expression counts 1 + boolean complexity</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>'.Foo' has value NaN.</expected-messages>
+        <expected-messages>
+            <message>'.Foo#bar()' has value 3.</message>
+        </expected-messages>
         <code>
             <![CDATA[
-            public class Foo { }
+            class Foo {
+              void bar() {
+                boolean a, b;
+                boolean c = (a || b) ? a : b;
+              }
+            }
             ]]>
         </code>
     </test-code>
