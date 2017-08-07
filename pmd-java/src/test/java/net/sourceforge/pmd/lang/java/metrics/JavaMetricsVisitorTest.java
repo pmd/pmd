@@ -22,10 +22,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolverTest;
 
@@ -39,7 +39,7 @@ public class JavaMetricsVisitorTest {
 
     @Test
     public void testPackageStatsNotNull() {
-        assertNotNull(JavaMetrics.getTopLevelPackageStats());
+        assertNotNull(JavaMetrics.getFacade().getTopLevelPackageStats());
     }
 
 
@@ -47,9 +47,9 @@ public class JavaMetricsVisitorTest {
     public void testOperationsAreThere() {
         ASTCompilationUnit acu = parseAndVisitForClass15(MetricsVisitorTestData.class);
 
-        final JavaSignatureMatcher toplevel = JavaMetrics.getTopLevelPackageStats();
+        final JavaSignatureMatcher toplevel = JavaMetrics.getFacade().getTopLevelPackageStats();
 
-        final OperationSigMask opMask = new OperationSigMask();
+        final JavaOperationSigMask opMask = new JavaOperationSigMask();
 
         // We could parse qnames from string but probably simpler to do that
         acu.jjtAccept(new JavaParserVisitorAdapter() {
@@ -67,13 +67,13 @@ public class JavaMetricsVisitorTest {
         parseAndVisitForClass15(MetricsVisitorTestData.class);
 
 
-        final JavaSignatureMatcher toplevel = JavaMetrics.getTopLevelPackageStats();
+        final JavaSignatureMatcher toplevel = JavaMetrics.getFacade().getTopLevelPackageStats();
 
-        final FieldSigMask fieldSigMask = new FieldSigMask();
+        final JavaFieldSigMask fieldSigMask = new JavaFieldSigMask();
 
-        JavaQualifiedName clazz = JavaQualifiedName.parseName("net.sourceforge.pmd.lang.java"
-                                                          + ".metrics.testdata"
-                                                          + ".MetricsVisitorTestData");
+        JavaQualifiedName clazz = JavaQualifiedName.ofString("net.sourceforge.pmd.lang.java"
+                                                                  + ".metrics.testdata"
+                                                                  + ".MetricsVisitorTestData");
         String[] fieldNames = {"x", "y", "z", "t"};
         Visibility[] visibilities = {Visibility.PUBLIC, Visibility.PRIVATE, Visibility.PROTECTED, Visibility.PACKAGE};
 
@@ -90,14 +90,14 @@ public class JavaMetricsVisitorTest {
     public void testStaticOperationsSig() {
         parseAndVisitForClass15(MetricsVisitorTestData.class);
 
-        final JavaSignatureMatcher toplevel = JavaMetrics.getTopLevelPackageStats();
+        final JavaSignatureMatcher toplevel = JavaMetrics.getFacade().getTopLevelPackageStats();
 
-        final OperationSigMask operationSigMask = new OperationSigMask();
+        final JavaOperationSigMask operationSigMask = new JavaOperationSigMask();
         operationSigMask.restrictRolesTo(Role.STATIC);
 
-        JavaQualifiedName q1 = JavaQualifiedName.parseName("net.sourceforge.pmd.lang.java"
-                                                       + ".metrics.testdata"
-                                                       + ".MetricsVisitorTestData#mystatic1()");
+        JavaQualifiedName q1 = JavaQualifiedName.ofString("net.sourceforge.pmd.lang.java"
+                                                               + ".metrics.testdata"
+                                                               + ".MetricsVisitorTestData#mystatic1()");
 
         assertTrue(toplevel.hasMatchingSig(q1, operationSigMask));
 
@@ -108,9 +108,11 @@ public class JavaMetricsVisitorTest {
     }
 
 
-    /* default */ static ASTCompilationUnit parseAndVisitForClass15(Class<?> clazz) {
+    /* default */
+    static ASTCompilationUnit parseAndVisitForClass15(Class<?> clazz) {
         return parseAndVisitForClass(clazz, "1.5");
     }
+
 
     // Note: If you're using Eclipse or some other IDE to run this test, you
     // _must_ have the src/test/java folder in
@@ -132,6 +134,7 @@ public class JavaMetricsVisitorTest {
         }
         return parseAndVisitForString(source, version);
     }
+
 
     private static ASTCompilationUnit parseAndVisitForString(String source, String version) {
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)

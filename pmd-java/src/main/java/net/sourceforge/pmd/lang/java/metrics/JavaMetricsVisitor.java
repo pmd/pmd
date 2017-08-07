@@ -19,12 +19,22 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
  */
 class JavaMetricsVisitor extends JavaParserVisitorReducedAdapter {
 
-    private Stack<ClassStats> stack = new Stack<>();
+    private final Stack<ClassStats> stack = new Stack<>();
+    private final PackageStats toplevel;
+    private final JavaProjectMemoizer memoizer;
+
+
+    JavaMetricsVisitor(PackageStats toplevel, JavaProjectMemoizer memoizer) {
+        this.toplevel = toplevel;
+        this.memoizer = memoizer;
+    }
 
 
     @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
-        stack.push(((PackageStats) data).getClassStats(node.getQualifiedName(), true));
+        memoizer.addClassMemoizer(node.getQualifiedName());
+
+        stack.push(toplevel.getClassStats(node.getQualifiedName(), true));
         super.visit(node, data);
         stack.pop();
 
@@ -34,6 +44,8 @@ class JavaMetricsVisitor extends JavaParserVisitorReducedAdapter {
 
     @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+        memoizer.addOperationMemoizer(node.getQualifiedName());
+
         stack.peek().addOperation(node.getQualifiedName().getOperation(), node.getSignature());
         return super.visit(node, data);
     }

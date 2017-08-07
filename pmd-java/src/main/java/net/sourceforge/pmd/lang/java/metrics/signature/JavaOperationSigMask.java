@@ -5,24 +5,20 @@
 package net.sourceforge.pmd.lang.java.metrics.signature;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
+
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
 
 /**
  * Signature mask for an operation. Newly created masks cover any operation that is not abstract.
  *
  * @author Clément Fournier
  */
-public final class OperationSigMask extends SigMask<JavaOperationSignature> {
+public final class JavaOperationSigMask extends JavaSigMask<JavaOperationSignature> {
 
-    private Set<JavaOperationSignature.Role> roleMask = new HashSet<>();
+    private Set<JavaOperationSignature.Role> roleMask = EnumSet.allOf(Role.class);
     private boolean coverAbstract = false;
-
-
-    public OperationSigMask() {
-        super();
-        coverAllRoles();
-    }
 
 
     /**

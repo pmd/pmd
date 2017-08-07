@@ -5,14 +5,10 @@
 package net.sourceforge.pmd.lang.metrics;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
-import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 /**
  * Basic interface for metrics computers that can compute metrics for types, operations and compute aggregate results
- * with a result option. Computers should typically be separated from the storage units (ProjectMirror) to split
+ * with a result option. Computers should typically be separated from the storage units (ProjectMemoizer) to split
  * responsibilities.
  *
  * @param <T> Type of type declaration nodes of the language
@@ -20,7 +16,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  *
  * @author Clément Fournier
  */
-public interface MetricsComputer<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
+public interface MetricsComputer<T extends QualifiableNode, O extends QualifiableNode> {
 
 
     /**
@@ -66,7 +62,7 @@ public interface MetricsComputer<T extends QualifiableNode, O extends SignedNode
      * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
      */
     double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricVersion version,
-                                   ResultOption option, ProjectMirror<T, O> stats);
+                                   ResultOption option, ProjectMemoizer<T, O> stats);
 
 
 }

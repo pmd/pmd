@@ -2,12 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.metrics.api;
+package net.sourceforge.pmd.lang.metrics;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * Umbrella marker interface for metrics.
+ * Object computing a metric on a node. Metric objects are be stateless, which means that instances of the same
+ * metric are all equal.
  *
  * @param <N> Type of nodes the metric can be computed on
  *

@@ -8,14 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.metrics.signature.Signature;
 
 /**
  * Signature for a field.
  *
  * @author Clément Fournier
  */
-public final class JavaFieldSignature extends JavaSignature implements Signature<ASTFieldDeclaration> {
+public final class JavaFieldSignature extends JavaSignature<ASTFieldDeclaration> {
 
     private static final Map<Integer, JavaFieldSignature> POOL = new HashMap<>();
 
