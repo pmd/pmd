@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.metrics.signature.Signature;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
@@ -26,8 +25,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * @author Clément Fournier
  */
-public final class JavaOperationSignature extends JavaSignature
-    implements Signature<ASTMethodOrConstructorDeclaration> {
+public final class JavaOperationSignature extends JavaSignature<ASTMethodOrConstructorDeclaration> {
 
     private static final Map<Integer, JavaOperationSignature> POOL = new HashMap<>();
     public final Role role;

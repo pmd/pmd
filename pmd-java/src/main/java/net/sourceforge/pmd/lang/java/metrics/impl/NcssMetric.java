@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.DefaultNcssVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.JavaNcssVisitor;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
 /**
  * Non Commenting Source Statements. Similar to LOC but only counts statements, which is roughly equivalent to counting

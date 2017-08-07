@@ -7,11 +7,7 @@ package net.sourceforge.pmd.lang.metrics;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
-import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.metrics.api.Metric.Version;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
+import net.sourceforge.pmd.lang.metrics.Metric.Version;
 
 /**
  * Base class for a façade that can compute metrics for types, operations and compute aggregate results with a result
@@ -22,7 +18,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode> {
+public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends QualifiableNode> {
 
 
     /**
@@ -34,11 +30,11 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
 
 
     /**
-     * Gets the language-specific project mirror.
+     * Gets the language-specific project memoizer.
      *
-     * @return The project mirror
+     * @return The project memoizer
      */
-    protected abstract ProjectMirror<T, O> getLanguageSpecificProjectMirror();
+    protected abstract ProjectMemoizer<T, O> getLanguageSpecificProjectMemoizer();
 
 
     /**
@@ -60,7 +56,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         }
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-        MetricMemoizer<T> memoizer = getLanguageSpecificProjectMirror().getClassStats(node.getQualifiedName());
+        MetricMemoizer<T> memoizer = getLanguageSpecificProjectMemoizer().getClassMemoizer(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForType(key, node, false, safeVersion, memoizer);
@@ -86,7 +82,7 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         }
 
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
-        MetricMemoizer<O> memoizer = getLanguageSpecificProjectMirror().getOperationStats(node.getQualifiedName());
+        MetricMemoizer<O> memoizer = getLanguageSpecificProjectMemoizer().getOperationMemoizer(node.getQualifiedName());
 
         return memoizer == null ? Double.NaN
                                 : getLanguageSpecificComputer().computeForOperation(key, node, false,
@@ -116,6 +112,6 @@ public abstract class AbstractMetricsFacade<T extends QualifiableNode, O extends
         MetricVersion safeVersion = (version == null) ? Version.STANDARD : version;
 
         return getLanguageSpecificComputer().computeWithResultOption(key, node, false, safeVersion,
-                                                                     option, getLanguageSpecificProjectMirror());
+                                                                     option, getLanguageSpecificProjectMemoizer());
     }
 }

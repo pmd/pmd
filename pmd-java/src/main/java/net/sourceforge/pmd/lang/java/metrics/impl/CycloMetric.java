@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathUnawareOperationVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.StandardCycloVisitor;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
+import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
  * McCabe's Cyclomatic Complexity. Number of independent paths through a block of code [1, 2]. Formally, given that the

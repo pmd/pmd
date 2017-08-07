@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
-import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 /**
  * Base class for metrics computers. These objects compute a metric and memoize it.
@@ -21,7 +17,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
  *
  * @author Clément Fournier
  */
-public abstract class AbstractMetricsComputer<T extends QualifiableNode, O extends SignedNode<O> & QualifiableNode>
+public abstract class AbstractMetricsComputer<T extends QualifiableNode, O extends QualifiableNode>
     implements MetricsComputer<T, O> {
 
     @Override
@@ -60,14 +56,14 @@ public abstract class AbstractMetricsComputer<T extends QualifiableNode, O exten
 
     @Override
     public double computeWithResultOption(MetricKey<O> key, T node, boolean force, MetricVersion version,
-                                          ResultOption option, ProjectMirror<T, O> stats) {
+                                          ResultOption option, ProjectMemoizer<T, O> stats) {
 
         List<O> ops = findOperations(node);
 
         List<Double> values = new ArrayList<>();
         for (O op : ops) {
             if (key.supports(op)) {
-                MetricMemoizer<O> opStats = stats.getOperationStats(op.getQualifiedName());
+                MetricMemoizer<O> opStats = stats.getOperationMemoizer(op.getQualifiedName());
                 double val = this.computeForOperation(key, op, force, version, opStats);
                 if (val != Double.NaN) {
                     values.add(val);

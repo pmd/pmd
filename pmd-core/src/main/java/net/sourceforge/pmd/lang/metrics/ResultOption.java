@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.metrics.api;
+package net.sourceforge.pmd.lang.metrics;
 
 /**
  * Options to calculate a result aggregated on the operations of a class. ResultOptions allow us to return the sum, or

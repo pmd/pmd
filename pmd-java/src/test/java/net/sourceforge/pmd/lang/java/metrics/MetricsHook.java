@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 /**
- * Provides a hook into package-private methods of {@code oom}.
+ * Provides a hook into package-private methods of {@code java.metrics}.
  *
  * @author Clément Fournier
  */

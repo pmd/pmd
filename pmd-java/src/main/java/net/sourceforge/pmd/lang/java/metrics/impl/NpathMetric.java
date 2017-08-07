@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.DefaultNpathVisitor;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
 /**
  * NPath complexity is a measurement of the acyclic execution paths through a function. See Nejmeh, Communications of
@@ -21,4 +21,5 @@ public class NpathMetric extends AbstractJavaOperationMetric {
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
         return (Integer) node.jjtAccept(new DefaultNpathVisitor(), null);
     }
+
 }

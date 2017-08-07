@@ -5,8 +5,11 @@
 package net.sourceforge.pmd.lang.java.metrics.signature;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
+
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
+import net.sourceforge.pmd.lang.metrics.SigMask;
 
 /**
  * Generic signature mask.
@@ -15,15 +18,10 @@ import java.util.Set;
  *
  * @author Clément Fournier
  */
-public abstract class SigMask<T extends JavaSignature> {
+public abstract class JavaSigMask<T extends JavaSignature<?>> implements SigMask<T> {
 
     /** Visibility mask. */
-    private Set<JavaSignature.Visibility> visMask = new HashSet<>();
-
-
-    public SigMask() {
-        coverAllVisibilities();
-    }
+    private Set<JavaSignature.Visibility> visMask = EnumSet.allOf(Visibility.class);
 
 
     /**
@@ -55,13 +53,7 @@ public abstract class SigMask<T extends JavaSignature> {
     }
 
 
-    /**
-     * Returns true if the parameter is covered by this mask.
-     *
-     * @param sig The signature to test.
-     *
-     * @return True if the parameter is covered by this mask
-     */
+    @Override
     public boolean covers(T sig) {
         return visMask.contains(sig.visibility);
     }

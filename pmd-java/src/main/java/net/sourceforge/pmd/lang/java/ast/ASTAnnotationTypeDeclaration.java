@@ -38,11 +38,11 @@ public class ASTAnnotationTypeDeclaration extends AbstractJavaAccessTypeNode imp
             if (isNested()) {
                 ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
                 JavaQualifiedName parentQN = parent.getQualifiedName();
-                qualifiedName = JavaQualifiedName.makeNestedClassOf(parentQN, this.getImage());
+                qualifiedName = JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
                 return qualifiedName;
             }
 
-            qualifiedName = JavaQualifiedName.makeOuterClassOf(this);
+            qualifiedName = JavaQualifiedName.ofOuterClass(this);
         }
 
         return qualifiedName;
