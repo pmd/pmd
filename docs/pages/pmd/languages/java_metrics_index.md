@@ -44,22 +44,23 @@ control flow statement in itself.
 
 ```java
 class Foo {
-  void baseCyclo() { // Cyclo = 1
+  void baseCyclo() {                // Cyclo = 1
     highCyclo();
   }
-  void highCyclo() { // Cyclo = 
+  
+  void highCyclo() {                // Cyclo = 10
     int x = 0, y = 2;
     boolean a = false, b = true;
     
-    if (a && (y == 1 ? b : true)) {
-      if (y == x) {
-        while (true) {
-          if (x++ < 20) {
-            break;
+    if (a && (y == 1 ? b : true)) { // +3
+      if (y == x) {                 // +1
+        while (true) {              // +1
+          if (x++ < 20) {           // +1
+            break;                  // +1
           }
         }
-      } else if (y == t && !d) {
-        x = a ? y : x;
+      } else if (y == t && !d) {    // +2
+        x = a ? y : x;              // +1
       } else {
         x = 2;
       }
@@ -67,7 +68,6 @@ class Foo {
   }     
 }
 ```
- 
 ### Versions
 
 * Version `CycloVersion#IGNORE_BOOLEAN_PATHS`: Boolean operators are not counted, nor are empty
@@ -107,6 +107,36 @@ and method and field declarations \[[Sonarqube](#Sonarqube)\].
 This makes it easier to compare nested classes to outer classes. Besides, it makes for class metric results that 
 actually represent the size of the class and not of the file. If you don't like that behaviour, use the `JAVANCSS` 
 version.
+
+### Code example
+```java
+import java.util.Collections;       // +0
+import java.io.IOException;         // +0
+
+class Foo {                         // +1, total Ncss = 12
+  
+  public void bigMethod()           // +1
+      throws IOException {     
+    int x = 0, y = 2;               // +1
+    boolean a = false, b = true;    // +1
+    
+    if (a || b) {                   // +1
+      try {                         // +1
+        do {                        // +1
+          x += 2;                   // +1
+        } while (x < 12);
+          
+        System.exit(0);             // +1
+      } catch (IOException ioe) {   // +1
+        throw new PatheticFailException(ioe); // +1
+      }
+    } else {
+      assert false;                 // +1
+    }
+  }     
+}
+```
+
 
 
 ### Versions
