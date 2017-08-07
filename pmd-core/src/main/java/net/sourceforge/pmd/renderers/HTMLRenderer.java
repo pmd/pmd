@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.util.StringUtil;
@@ -71,6 +72,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         if (showSuppressedViolations) {
             glomSuppressions(writer, suppressed);
         }
+        glomConfigurationErrors(writer, configErrors);
     }
 
     /**
@@ -106,6 +108,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         if (showSuppressedViolations) {
             glomSuppressions(writer, suppressed);
         }
+        glomConfigurationErrors(writer, configErrors);
         writer.write("</body></html>" + PMD.EOL);
     }
 
@@ -197,6 +200,34 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("<td align=\"center\">" + (sv.suppressedByNOPMD() ? "NOPMD" : "Annotation") + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + (sv.getUserMessage() == null ? "" : sv.getUserMessage()) + "</td>"
                     + PMD.EOL);
+            buf.append("</tr>" + PMD.EOL);
+            writer.write(buf.toString());
+        }
+        writer.write("</table>");
+    }
+    
+    private void glomConfigurationErrors(final Writer writer, final List<ConfigurationError> configErrors) throws IOException {
+        if (configErrors.isEmpty()) {
+            return;
+        }
+
+        writer.write("<hr/>");
+        writer.write("<center><h3>Configuration errors</h3></center>");
+        writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL
+                + "<th>Rule</th><th>Problem</th></tr>" + PMD.EOL);
+
+        StringBuilder buf = new StringBuilder(500);
+        boolean colorize = true;
+        for (Report.ConfigurationError ce : configErrors) {
+            buf.setLength(0);
+            buf.append("<tr");
+            if (colorize) {
+                buf.append(" bgcolor=\"lightgrey\"");
+            }
+            colorize = !colorize;
+            buf.append("> " + PMD.EOL);
+            buf.append("<td>" + ce.rule().getName() + "</td>" + PMD.EOL);
+            buf.append("<td>" + ce.issue() + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
             writer.write(buf.toString());
         }

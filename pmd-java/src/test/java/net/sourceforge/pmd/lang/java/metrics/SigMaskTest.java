@@ -17,12 +17,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature.Role;
 import net.sourceforge.pmd.lang.java.metrics.signature.SigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.Signature.Visibility;
 
 /**
  * @author Clément Fournier
@@ -80,13 +80,13 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testEmptyOperationMask() {
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST_OPERATIONS);
-        SigMask<OperationSignature> mask = new OperationSigMask();
+        SigMask<JavaOperationSignature> mask = new OperationSigMask();
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isAbstract()) {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
     }
@@ -97,10 +97,10 @@ public class SigMaskTest extends ParserTst {
     @Test
     public void testEmptyFieldMask() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
-        SigMask<FieldSignature> mask = new FieldSigMask();
+        SigMask<JavaFieldSignature> mask = new FieldSigMask();
 
         for (ASTFieldDeclaration node : nodes) {
-            assertTrue(mask.covers(FieldSignature.buildFor(node)));
+            assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
         }
     }
 
@@ -112,9 +112,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTFieldDeclaration node : nodes) {
             if (node.isFinal()) {
-                assertFalse(mask.covers(FieldSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             } else {
-                assertTrue(mask.covers(FieldSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
     }
@@ -127,9 +127,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTFieldDeclaration node : nodes) {
             if (node.isStatic()) {
-                assertFalse(mask.covers(FieldSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             } else {
-                assertTrue(mask.covers(FieldSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
     }
@@ -143,9 +143,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTFieldDeclaration node : nodes) {
             if (node.isPublic()) {
-                assertTrue(mask.covers(FieldSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(FieldSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
 
@@ -153,9 +153,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTFieldDeclaration node : nodes) {
             if (node.isPrivate()) {
-                assertTrue(mask.covers(FieldSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(FieldSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
 
@@ -163,9 +163,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTFieldDeclaration node : nodes) {
             if (node.isPackagePrivate()) {
-                assertTrue(mask.covers(FieldSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(FieldSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
 
@@ -173,9 +173,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTFieldDeclaration node : nodes) {
             if (node.isProtected()) {
-                assertTrue(mask.covers(FieldSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaFieldSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(FieldSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
         
@@ -194,9 +194,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isPublic()) {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
 
@@ -204,9 +204,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isPrivate()) {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
 
@@ -214,9 +214,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isPackagePrivate()) {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
 
@@ -224,9 +224,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isProtected()) {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
     }
@@ -241,9 +241,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isStatic()) {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
 
@@ -251,9 +251,9 @@ public class SigMaskTest extends ParserTst {
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node instanceof ASTConstructorDeclaration) {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
 
@@ -262,9 +262,9 @@ public class SigMaskTest extends ParserTst {
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node instanceof ASTMethodDeclaration
                 && ((ASTMethodDeclaration) node).getMethodName().matches("(get|set).*")) {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
 
@@ -274,9 +274,9 @@ public class SigMaskTest extends ParserTst {
             if (node instanceof ASTMethodDeclaration
                 && !node.isStatic()
                 && !((ASTMethodDeclaration) node).getMethodName().matches("(get|set).*")) {
-                assertTrue(mask.covers(OperationSignature.buildFor(node)));
+                assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
-                assertFalse(mask.covers(OperationSignature.buildFor(node)));
+                assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
             }
         }
 

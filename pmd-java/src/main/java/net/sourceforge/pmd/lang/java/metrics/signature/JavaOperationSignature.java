@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.metrics.signature.Signature;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 /**
@@ -25,14 +26,15 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *
  * @author Clément Fournier
  */
-public final class OperationSignature extends Signature {
+public final class JavaOperationSignature extends JavaSignature
+    implements Signature<ASTMethodOrConstructorDeclaration> {
 
-    private static final Map<Integer, OperationSignature> POOL = new HashMap<>();
+    private static final Map<Integer, JavaOperationSignature> POOL = new HashMap<>();
     public final Role role;
     public final boolean isAbstract;
 
 
-    private OperationSignature(Visibility visibility, Role role, boolean isAbstract) {
+    private JavaOperationSignature(Visibility visibility, Role role, boolean isAbstract) {
         super(visibility);
         this.role = role;
         this.isAbstract = isAbstract;
@@ -64,10 +66,10 @@ public final class OperationSignature extends Signature {
      *
      * @return The signature of the parameter
      */
-    public static OperationSignature buildFor(ASTMethodOrConstructorDeclaration node) {
+    public static JavaOperationSignature buildFor(ASTMethodOrConstructorDeclaration node) {
         int code = code(Visibility.get(node), Role.get(node), node.isAbstract());
         if (!POOL.containsKey(code)) {
-            POOL.put(code, new OperationSignature(Visibility.get(node), Role.get(node), node.isAbstract()));
+            POOL.put(code, new JavaOperationSignature(Visibility.get(node), Role.get(node), node.isAbstract()));
         }
         return POOL.get(code);
     }

@@ -12,6 +12,7 @@ This is a major release.
     *   [Revamped Apex CPD](#Revamped_Apex_CPD)
     *   [Java Type Resolution](#Java_Type_Resolution)
     *   [Metrics Framework](#Metrics_Framework)
+    *   [Configuration Error Reporting](#Configuration_Error_Reporting)
     *   [Modified Rules](#Modified_Rules)
     *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
@@ -47,6 +48,25 @@ on the new metrics framework for object-oriented metrics.
 There are already a couple of metrics (e.g. ATFD, WMC, Cyclo, LoC) implemented. More metrics are planned.
 Based on those metrics, rules like "GodClass" detection can be implemented more easily.
 
+#### Configuration Error Reporting
+
+For a long time reports have been notified of configuration errors on rules, but they have remained hidden.
+On a push to make these more evident to users, and help them get the best results out of PMD, we have started
+to include them on the reports.
+
+So far, only reports that include processing errors are showing configuration errors. In other words, the report formats
+providing configuration error reporting are:
+
+*   csv
+*   html
+*   summaryhtml
+*   text
+*   textcolor
+*   vbhtml
+*   xml
+
+As we move forward we will be able to detect and report more configuration errors (ie: incomplete `auxclasspath`)
+and include them to such reports.
 
 #### Modified Rules
 
@@ -106,7 +126,10 @@ Based on those metrics, rules like "GodClass" detection can be implemented more 
 *   [#514](https://github.com/pmd/pmd/pull/514): \[java] Add static method type resolution - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#517](https://github.com/pmd/pmd/pull/517): \[doc] Metrics documentation - [Clément Fournier](https://github.com/oowekyala)
 *   [#523](https://github.com/pmd/pmd/pull/523): \[java] Npath complexity metric and rule - [Clément Fournier](https://github.com/oowekyala)
+*   [#524](https://github.com/pmd/pmd/pull/524): \[java] Add support for explicit type arguments with method invocation - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#525](https://github.com/pmd/pmd/pull/525): \[core] Fix line ending and not ignored files issues - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#528](https://github.com/pmd/pmd/pull/528): \[core] Fix typo - [Ayoub Kaanich](https://github.com/kayoub5)
 *   [#530](https://github.com/pmd/pmd/pull/530): \[java] Fix issue #527: Lombok getter annotation on enum is not recognized correctly - [Clément Fournier](https://github.com/oowekyala)
+*   [#535](https://github.com/pmd/pmd/pull/535): \[apex] Fix broken Apex visitor adapter - [Clément Fournier](https://github.com/oowekyala)
+*   [#529](https://github.com/pmd/pmd/pull/529): \[java] Abstracted the Java metrics framework - [Clément Fournier](https://github.com/oowekyala)
 

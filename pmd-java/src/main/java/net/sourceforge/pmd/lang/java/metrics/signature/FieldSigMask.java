@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.metrics.signature;
  *
  * @author Clément Fournier
  */
-public final class FieldSigMask extends SigMask<FieldSignature> {
+public final class FieldSigMask extends SigMask<JavaFieldSignature> {
 
     private boolean coverFinal = true;
     private boolean coverStatic = true;
@@ -33,7 +33,7 @@ public final class FieldSigMask extends SigMask<FieldSignature> {
 
 
     @Override
-    public boolean covers(FieldSignature sig) {
+    public boolean covers(JavaFieldSignature sig) {
         return super.covers(sig) && (coverFinal || !sig.isFinal) && (coverStatic || !sig.isStatic);
     }
 }

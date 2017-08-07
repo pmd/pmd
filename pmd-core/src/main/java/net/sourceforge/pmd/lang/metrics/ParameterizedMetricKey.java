@@ -14,20 +14,22 @@ import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
 /**
  * Represents a key parameterized with its version. Used to index memoization maps.
  *
+ * @param <N> Type of node on which the memoized metric can be computed
+ *
  * @author Clément Fournier
  */
-public final class ParameterizedMetricKey {
+public final class ParameterizedMetricKey<N extends Node> {
 
-    private static final Map<Integer, ParameterizedMetricKey> POOL = new HashMap<>();
+    private static final Map<ParameterizedMetricKey<?>, ParameterizedMetricKey<?>> POOL = new HashMap<>();
 
     /** The metric key. */
-    public final MetricKey<? extends Node> key;
+    public final MetricKey<N> key;
     /** The version of the metric. */
     public final MetricVersion version;
 
 
     /** Used internally by the pooler. */
-    private ParameterizedMetricKey(MetricKey<? extends Node> key, MetricVersion version) {
+    private ParameterizedMetricKey(MetricKey<N> key, MetricVersion version) {
         this.key = key;
         this.version = version;
     }
@@ -41,29 +43,35 @@ public final class ParameterizedMetricKey {
 
     @Override
     public boolean equals(Object o) {
-        return this == o;
+        return o instanceof ParameterizedMetricKey
+            && ((ParameterizedMetricKey) o).key.equals(key)
+            && ((ParameterizedMetricKey) o).version.equals(version);
     }
 
 
     @Override
     public int hashCode() {
-        return code(key, version);
-    }
-
-
-    /** Used by the pooler. */
-    private static int code(MetricKey key, MetricVersion version) {
         return 31 * key.hashCode() + version.hashCode();
     }
 
 
-    /** Builds a parameterized metric key. */
-    public static ParameterizedMetricKey getInstance(MetricKey<? extends Node> key, MetricVersion version) {
-        int code = code(key, version);
-        ParameterizedMetricKey paramKey = POOL.get(code);
-        if (paramKey == null) {
-            POOL.put(code, new ParameterizedMetricKey(key, version));
+    /**
+     * Builds a parameterized metric key.
+     *
+     * @param key     The key
+     * @param version The version
+     * @param <N>     The type of node of the metrickey
+     *
+     * @return An instance of parameterized metric key corresponding to the parameters
+     */
+    public static <N extends Node> ParameterizedMetricKey<N> getInstance(MetricKey<N> key, MetricVersion version) {
+        ParameterizedMetricKey<N> tmp = new ParameterizedMetricKey<>(key, version);
+        if (!POOL.containsKey(tmp)) {
+            POOL.put(tmp, tmp);
         }
-        return POOL.get(code);
+
+        @SuppressWarnings("unchecked")
+        ParameterizedMetricKey<N> result = (ParameterizedMetricKey<N>) POOL.get(tmp);
+        return result;
     }
 }

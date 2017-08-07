@@ -2,14 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast;
+package net.sourceforge.pmd.lang.ast;
 
 /**
  * Nodes that can be described with a qualified name.
  *
  * @author Clément Fournier
  */
-public interface QualifiableNode {
+public interface QualifiableNode extends Node {
 
     /**
      * Returns a qualified name for this node.

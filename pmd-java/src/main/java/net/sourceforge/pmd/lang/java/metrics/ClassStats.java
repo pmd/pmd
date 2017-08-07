@@ -4,43 +4,35 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.QualifiedName;
+import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
 import net.sourceforge.pmd.lang.java.metrics.signature.FieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 import net.sourceforge.pmd.lang.java.metrics.signature.OperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
-import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricKey;
-import net.sourceforge.pmd.lang.metrics.api.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.api.ResultOption;
+import net.sourceforge.pmd.lang.metrics.AbstractMetricMemoizer;
 
 /**
- * Statistics about a class, enum, interface, or annotation. Gathers information about the contained members and their
- * signatures. This class does not provide methods to operate directly on its nested classes, but only on itself. To
- * operate on a nested class, retrieve the correct ClassStats with
- * {@link PackageStats#getClassStats(QualifiedName, boolean)} then use the methods of ClassStats.
+ * Statistics about a class, enum, interface, or annotation. Stores information about the contained members and their
+ * signatures, and memoizes the results of the class metrics computed on the corresponding node.
  *
- * <p>Note that at this level, entities of the data structure do not manipulate QualifiedNames anymore, only Strings.
+ * <p>This class does not provide methods to operate directly on its nested classes, but only on itself. To operate on a
+ * nested class, retrieve the correct ClassStats with {@link PackageStats#getClassStats(JavaQualifiedName, boolean)}
+ * then use the methods of ClassStats. Note that at this level, entities of the data structure do not manipulate
+ * QualifiedNames anymore, only Strings.
  *
  * @author Clément Fournier
  */
-/* default */ class ClassStats {
+/* default */ class ClassStats extends AbstractMetricMemoizer<ASTAnyTypeDeclaration> {
 
-    private Map<OperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
-    private Map<FieldSignature, Set<String>> fields = new HashMap<>();
+    private Map<JavaOperationSignature, Map<String, OperationStats>> operations = new HashMap<>();
+    private Map<JavaFieldSignature, Set<String>> fields = new HashMap<>();
     private Map<String, ClassStats> nestedClasses = new HashMap<>();
-
-    private Map<ParameterizedMetricKey, Double> memo = new HashMap<>();
 
     // References to the hierarchy
     // TODO:cf useful?
@@ -49,8 +41,8 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
 
 
     /**
-     * Finds a ClassStats in the direct children of this class. This can only be a directly nested class, for example
-     * in the following snippet, A can get B and B can get C but A cannot get C without asking B.
+     * Finds a ClassStats in the direct children of this class. This can only be a directly nested class, for example in
+     * the following snippet, A can get B and B can get C but A cannot get C without asking B.
      * <pre>
      * {@code
      * class MyClass { // ClassStats A
@@ -75,17 +67,51 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
     }
 
 
+    private OperationStats getOperationStats(String operationName) {
+        for (Map<String, OperationStats> map : operations.values()) {
+            OperationStats stats = map.get(operationName);
+            if (stats != null) {
+                return stats;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Returns the correct operation stats. A non-null signature speeds up the search.
+     *
+     * @param operationName The operation to look for
+     * @param sig           The signature, which can be null
+     *
+     * @return The operation stats corresponding to the parameters
+     */
+    OperationStats getOperationStats(String operationName, JavaOperationSignature sig) {
+        if (sig == null) {
+            return getOperationStats(operationName);
+        }
+
+        Map<String, OperationStats> sigMap = operations.get(sig);
+
+        return sigMap == null ? null : sigMap.get(operationName);
+    }
+
+
     /**
      * Adds an operation to the class.
      *
      * @param name The name of the operation
      * @param sig  The signature of the operation
+     *
+     * @return The newly created operation stats
      */
-    /* default */ void addOperation(String name, OperationSignature sig) {
+    /* default */ OperationStats addOperation(String name, JavaOperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashMap<String, OperationStats>());
         }
-        operations.get(sig).put(name, new OperationStats(name));
+        OperationStats newOp = new OperationStats(name);
+        operations.get(sig).put(name, newOp);
+        return newOp;
     }
 
 
@@ -95,7 +121,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
      * @param name The name of the field
      * @param sig  The signature of the field
      */
-    /* default */ void addField(String name, FieldSignature sig) {
+    /* default */ void addField(String name, JavaFieldSignature sig) {
         if (!fields.containsKey(sig)) {
             fields.put(sig, new HashSet<String>());
         }
@@ -114,7 +140,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
      */
     /* default */ boolean hasMatchingSig(String name, OperationSigMask mask) {
         // Indexing on signatures optimises this type of request
-        for (OperationSignature sig : operations.keySet()) {
+        for (JavaOperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
                 if (operations.get(sig).containsKey(name)) {
                     return true;
@@ -135,7 +161,7 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
      * otherwise
      */
     /* default */ boolean hasMatchingSig(String name, FieldSigMask mask) {
-        for (FieldSignature sig : fields.keySet()) {
+        for (JavaFieldSignature sig : fields.keySet()) {
             if (mask.covers(sig)) {
                 if (fields.get(sig).contains(name)) {
                     return true;
@@ -146,149 +172,4 @@ import net.sourceforge.pmd.lang.metrics.api.ResultOption;
         return false;
     }
 
-
-    /**
-     * Computes the value of a metric for a class.
-     *
-     * @param key     The class metric for which to find a memoized result
-     * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version Version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, boolean force,
-                                 MetricVersion version) {
-
-        ParameterizedMetricKey paramKey = ParameterizedMetricKey.getInstance(key, version);
-        // if memo.get(key) == null then the metric has never been computed. NaN is a valid value.
-        Double prev = memo.get(paramKey);
-        if (!force && prev != null) {
-            return prev;
-        }
-
-        double val = key.getCalculator().computeFor(node, version);
-        memo.put(paramKey, val);
-
-        return val;
-    }
-
-
-    /**
-     * Computes the value of a metric for an operation.
-     *
-     * @param key     The operation metric for which to find a memoized result
-     * @param node    The AST node of the operation
-     * @param name    The name of the operation
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version Version of the metric
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double compute(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
-                                 String name, boolean force, MetricVersion version) {
-
-        // TODO:cf the operation signature might be built many times, consider storing it in the node
-        Map<String, OperationStats> sigMap = operations.get(OperationSignature.buildFor(node));
-
-        if (sigMap == null) {
-            return Double.NaN;
-        }
-
-        OperationStats stats = sigMap.get(name);
-        return stats == null ? Double.NaN : stats.compute(key, node, force, version);
-    }
-
-
-    /**
-     * Computes an aggregate result using a ResultOption.
-     *
-     * @param key     The class metric to compute
-     * @param node    The AST node of the class
-     * @param force   Force the recomputation; if unset, we'll first check for a memoized result
-     * @param version The version of the metric
-     * @param option  The type of result to compute
-     *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
-     */
-    /* default */ double computeWithResultOption(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
-                                                 boolean force, MetricVersion version, ResultOption option) {
-
-        List<ASTMethodOrConstructorDeclaration> ops = findOperations(node, false);
-
-        List<Double> values = new ArrayList<>();
-        for (ASTMethodOrConstructorDeclaration op : ops) {
-            if (key.supports(op)) {
-                double val = this.compute(key, op, op.getQualifiedName().getOperation(), force, version);
-                if (val != Double.NaN) {
-                    values.add(val);
-                }
-            }
-        }
-
-        // FUTURE use streams to do that when we upgrade the compiler to 1.8
-        switch (option) {
-        case SUM:
-            return sum(values);
-        case HIGHEST:
-            return highest(values);
-        case AVERAGE:
-            return average(values);
-        default:
-            return Double.NaN;
-        }
-    }
-
-
-    /**
-     * Finds the declaration nodes of all methods or constructors that are declared inside a class.
-     *
-     * @param node          The class in which to look for.
-     * @param includeNested Include operations found in nested classes?
-     *
-     * @return The list of all operations declared inside the specified class.
-     *
-     * TODO:cf this one is computed every time
-     */
-    private static List<ASTMethodOrConstructorDeclaration> findOperations(ASTAnyTypeDeclaration node,
-                                                                          boolean includeNested) {
-
-        if (includeNested) {
-            return node.findDescendantsOfType(ASTMethodOrConstructorDeclaration.class);
-        }
-
-        List<ASTMethodOrConstructorDeclaration> operations = new ArrayList<>();
-
-        for (ASTAnyTypeBodyDeclaration decl : node.getDeclarations()) {
-            if (decl.jjtGetNumChildren() > 0 && decl.jjtGetChild(0) instanceof ASTMethodOrConstructorDeclaration) {
-                operations.add((ASTMethodOrConstructorDeclaration) decl.jjtGetChild(0));
-            }
-        }
-        return operations;
-    }
-
-
-    private static double sum(List<Double> values) {
-        double sum = 0;
-        for (double val : values) {
-            sum += val;
-        }
-        return sum;
-    }
-
-
-    private static double highest(List<Double> values) {
-        double highest = Double.NEGATIVE_INFINITY;
-        for (double val : values) {
-            if (val > highest) {
-                highest = val;
-            }
-        }
-        return highest == Double.NEGATIVE_INFINITY ? 0 : highest;
-    }
-
-
-    private static double average(List<Double> values) {
-        return sum(values) / values.size();
-    }
 }

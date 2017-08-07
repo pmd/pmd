@@ -22,17 +22,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.metrics.signature.FieldSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.OperationSignature.Role;
-import net.sourceforge.pmd.lang.java.metrics.signature.Signature;
-import net.sourceforge.pmd.lang.java.metrics.signature.Signature.Visibility;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.java.metrics.testdata.GetterDetection;
 import net.sourceforge.pmd.lang.java.metrics.testdata.SetterDetection;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolverTest;
 
 /**
- * Test class for {@link Signature} and its subclasses.
+ * Test class for {@link JavaSignature} and its subclasses.
  *
  * @author Clément Fournier
  */
@@ -56,10 +56,10 @@ public class SignatureTest extends ParserTst {
 
         List<ASTMethodOrConstructorDeclaration> operationDeclarations = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
         List<ASTFieldDeclaration> fieldDeclarations = getOrderedNodes(ASTFieldDeclaration.class, TEST);
-        List<Signature> sigs = new ArrayList<>();
+        List<JavaSignature> sigs = new ArrayList<>();
 
         for (ASTMethodOrConstructorDeclaration node : operationDeclarations) {
-            sigs.add(OperationSignature.buildFor(node));
+            sigs.add(JavaOperationSignature.buildFor(node));
         }
 
         // operations
@@ -70,7 +70,7 @@ public class SignatureTest extends ParserTst {
 
         sigs.clear();
         for (ASTFieldDeclaration node : fieldDeclarations) {
-            sigs.add(FieldSignature.buildFor(node));
+            sigs.add(JavaFieldSignature.buildFor(node));
         }
 
         // fields
@@ -91,10 +91,10 @@ public class SignatureTest extends ParserTst {
 
 
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
-        List<OperationSignature> sigs = new ArrayList<>();
+        List<JavaOperationSignature> sigs = new ArrayList<>();
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
-            sigs.add(OperationSignature.buildFor(node));
+            sigs.add(JavaOperationSignature.buildFor(node));
         }
 
         assertEquals(Role.STATIC, sigs.get(0).role);
@@ -142,10 +142,10 @@ public class SignatureTest extends ParserTst {
 
 
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
-        List<OperationSignature> sigs = new ArrayList<>();
+        List<JavaOperationSignature> sigs = new ArrayList<>();
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
-            sigs.add(OperationSignature.buildFor(node));
+            sigs.add(JavaOperationSignature.buildFor(node));
         }
 
 
@@ -167,10 +167,10 @@ public class SignatureTest extends ParserTst {
             + "}";
 
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST);
-        List<FieldSignature> sigs = new ArrayList<>();
+        List<JavaFieldSignature> sigs = new ArrayList<>();
 
         for (ASTFieldDeclaration node : nodes) {
-            sigs.add(FieldSignature.buildFor(node));
+            sigs.add(JavaFieldSignature.buildFor(node));
         }
 
         assertFalse(sigs.get(0).isFinal);
@@ -191,10 +191,10 @@ public class SignatureTest extends ParserTst {
             + "}";
 
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST);
-        List<FieldSignature> sigs = new ArrayList<>();
+        List<JavaFieldSignature> sigs = new ArrayList<>();
 
         for (ASTFieldDeclaration node : nodes) {
-            sigs.add(FieldSignature.buildFor(node));
+            sigs.add(JavaFieldSignature.buildFor(node));
         }
 
         assertFalse(sigs.get(0).isStatic);
@@ -221,12 +221,12 @@ public class SignatureTest extends ParserTst {
         List<ASTMethodOrConstructorDeclaration> nodes = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST);
         List<ASTMethodOrConstructorDeclaration> nodes2 = getOrderedNodes(ASTMethodOrConstructorDeclaration.class, TEST2);
 
-        List<OperationSignature> sigs = new ArrayList<>();
-        List<OperationSignature> sigs2 = new ArrayList<>();
+        List<JavaOperationSignature> sigs = new ArrayList<>();
+        List<JavaOperationSignature> sigs2 = new ArrayList<>();
 
         for (int i = 0; i < sigs.size(); i++) {
-            sigs.add(OperationSignature.buildFor(nodes.get(i)));
-            sigs2.add(OperationSignature.buildFor(nodes2.get(i)));
+            sigs.add(JavaOperationSignature.buildFor(nodes.get(i)));
+            sigs2.add(JavaOperationSignature.buildFor(nodes2.get(i)));
 
         }
 
@@ -255,12 +255,12 @@ public class SignatureTest extends ParserTst {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST);
         List<ASTFieldDeclaration> nodes2 = getOrderedNodes(ASTFieldDeclaration.class, TEST2);
 
-        List<FieldSignature> sigs = new ArrayList<>();
-        List<FieldSignature> sigs2 = new ArrayList<>();
+        List<JavaFieldSignature> sigs = new ArrayList<>();
+        List<JavaFieldSignature> sigs2 = new ArrayList<>();
 
         for (int i = 0; i < sigs.size(); i++) {
-            sigs.add(FieldSignature.buildFor(nodes.get(i)));
-            sigs2.add(FieldSignature.buildFor(nodes2.get(i)));
+            sigs.add(JavaFieldSignature.buildFor(nodes.get(i)));
+            sigs2.add(JavaFieldSignature.buildFor(nodes2.get(i)));
 
         }
 

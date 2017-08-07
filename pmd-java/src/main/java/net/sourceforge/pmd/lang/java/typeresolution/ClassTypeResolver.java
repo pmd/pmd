@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getApplicableMethods;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
+import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getMethodExplicitTypeArugments;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
 
 import java.lang.reflect.Field;
@@ -448,7 +449,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
 
             if (i == dotSplitImage.length - 1 && astArguments != null) { // method
-                List<MethodType> methods = getApplicableMethods(previousType, dotSplitImage[i], null,
+                List<MethodType> methods = getApplicableMethods(previousType, dotSplitImage[i],
+                                                                Collections.<JavaTypeDefinition>emptyList(),
                                                                 methodArgsArity, accessingClass);
 
                 previousType = getBestMethodReturnType(methods, astArgumentList, null);
@@ -882,23 +884,29 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
                 } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
                     currentChild.setTypeDefinition(previousChild.getTypeDefinition());
-                } else if (previousChild != null && previousChild.getType() != null
-                        && currentChild.getImage() != null) {
+                } else if (previousChild != null && previousChild.getType() != null) {
+                    String currentChildImage = currentChild.getImage();
+                    if (currentChildImage == null) {
+                        // this.<Something>foo(); <Something>foo would be in a Suffix and would have a null image
+                        currentChildImage = currentChild.jjtGetLastToken().toString();
+                    }
 
                     ASTArguments astArguments = nextChild != null
                             ? nextChild.getFirstChildOfType(ASTArguments.class) : null;
-                    ASTArgumentList astArgumentList = getArgumentList(astArguments);
-                    int methodArgsArity = getArgumentListArity(astArgumentList);
 
                     if (astArguments != null) { // method
+                        ASTArgumentList astArgumentList = getArgumentList(astArguments);
+                        int methodArgsArity = getArgumentListArity(astArgumentList);
+                        List<JavaTypeDefinition> typeArguments = getMethodExplicitTypeArugments(currentChild);
+
                         List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
-                                                                        currentChild.getImage(),
-                                                                        null, methodArgsArity, accessingClass);
+                                                                        currentChildImage,
+                                                                        typeArguments, methodArgsArity, accessingClass);
 
                         currentChild.setTypeDefinition(getBestMethodReturnType(methods, astArgumentList, null));
                     } else { // field
                         currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
-                                                                    currentChild.getImage(), accessingClass));
+                                                                    currentChildImage, accessingClass));
                     }
                 }
             }

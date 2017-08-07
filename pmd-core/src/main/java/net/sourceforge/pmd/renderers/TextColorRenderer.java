@@ -112,7 +112,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
      */
     @Override
     public void end() throws IOException {
-        StringBuffer buf = new StringBuffer(500);
+        StringBuilder buf = new StringBuilder(500);
         buf.append(PMD.EOL);
         initializeColorsIfSupported();
         String lastFile = null;
@@ -160,10 +160,20 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             buf.append(this.green + "    err:  " + this.cyan + error.getMsg() + this.colorReset + PMD.EOL + PMD.EOL);
             writer.write(buf.toString());
         }
+        
+        for (Iterator<Report.ConfigurationError> i = report.configErrors(); i.hasNext();) {
+            buf.setLength(0);
+            numberOfErrors++;
+            Report.ConfigurationError error = i.next();
+            buf.append(this.redBold + "*" + this.colorReset + " rule: " + this.whiteBold
+                    + error.rule().getName() + this.colorReset + PMD.EOL);
+            buf.append(this.green + "    err:  " + this.cyan + error.issue() + this.colorReset + PMD.EOL + PMD.EOL);
+            writer.write(buf.toString());
+        }
 
         // adding error message count, if any
         if (numberOfErrors > 0) {
-            writer.write(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfWarnings
+            writer.write(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfErrors
                     + this.colorReset + PMD.EOL);
         }
         writer.write(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings

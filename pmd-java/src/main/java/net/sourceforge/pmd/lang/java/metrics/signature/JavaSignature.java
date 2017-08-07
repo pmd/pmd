@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
  *
  * @author Clément Fournier
  */
-public abstract class Signature {
+public abstract class JavaSignature {
 
     /** Visibility. */
     public final Visibility visibility;
@@ -22,7 +22,7 @@ public abstract class Signature {
      *
      * @param visibility The visibility of the signature
      */
-    protected Signature(Visibility visibility) {
+    protected JavaSignature(Visibility visibility) {
         this.visibility = visibility;
     }
 
