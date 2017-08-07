@@ -160,11 +160,11 @@ class Bar {
 
     <test-code>
         <description>test case for bug 3484404 (Invalid NPath calculation in return statement)</description>
-        <rule-property name="reportLevel">5</rule-property>
+        <rule-property name="reportLevel">4</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>The method 'x(boolean, boolean)' has an NPath complexity of 25</message>
-            <message>The method 'y(boolean, boolean)' has an NPath complexity of 25</message>
+            <message>The method 'x(boolean, boolean)' has an NPath complexity of 4</message>
+            <message>The method 'y(boolean, boolean)' has an NPath complexity of 4</message>
         </expected-messages>
         <code-ref id="bug3484404"/>
     </test-code>

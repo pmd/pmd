@@ -171,7 +171,16 @@ public class DefaultNpathVisitor extends JavaParserVisitorReducedAdapter {
 
     @Override
     public Object visit(ASTConditionalExpression node, Object data) {
-        return node.isTernary() ? sumChildrenComplexities(node, data) + 2 : 1;
+        // bool comp of guard clause + complexity of last two children (= total - 1)
+
+        if (node.isTernary()) {
+            ASTExpression wrapper = new ASTExpression(Integer.MAX_VALUE);
+            wrapper.jjtAddChild(node.jjtGetChild(0), 0);
+            int boolCompTernary = CycloMetric.booleanExpressionComplexity(wrapper);
+
+            return boolCompTernary + sumChildrenComplexities(node, data) - 1;
+        }
+        return 1;
     }
 
 
