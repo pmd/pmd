@@ -18,27 +18,27 @@ toc:
 ### Description
 
 
-## Cyclomatic Complexity (CYCLO)
+## Cyclomatic Complexity (CYCLO) 
 
-*Operation metric.* Can be calculated on any non-abstract method.
+*Operation metric.* Can be calculated on any non-abstract operation.
 
 ### Description
 
 Number of independent paths through a block of code \[[Lanza05](#Lanza05)\]. 
 Formally, given that the control flow graph of the block has n vertices, e edges and p connected components, the 
-Cyclomatic complexity of the block is given by `CYCLO = e - n + 2p` \[[McCabe76](#McCabe76)\]. In practice it can be 
+cyclomatic complexity of the block is given by `CYCLO = e - n + 2p` \[[McCabe76](#McCabe76)\]. In practice it can be 
 calculated by counting control flow statements following the standard rules given below.
 
 The standard version of the metric complies with McCabe's original definition:
 
 * Methods have a base complexity of 1.
 * +1 for every control flow statement (`if`, `case`, `catch`, `throw`, `do`, `while`, `for`, `break`, `continue`) and 
-conditional expression (`?:`) \[[Sonarqube](#Sonarqube)\]. Notice switch cases count as one, but not the switch itself: the point is that
- a switch should have the same complexity value as the equivalent series of `if` statements.
+  conditional expression (`?:`) \[[Sonarqube](#Sonarqube)\]. Notice switch cases count as one, but not the switch 
+  itself: the point is that a switch should have the same complexity value as the equivalent series of `if` statements.
 * `else`, `finally` and `default` don't count;
 * +1 for every boolean operator (`&&`, `||`) in the guard condition of a control flow statement. That's because
-Java has short-circuit evaluation semantics for boolean operators, which makes every boolean operator kind of a
-control flow statement in itself.
+  Java has short-circuit evaluation semantics for boolean operators, which makes every boolean operator kind of a 
+  control flow statement in itself.
 
 ### Code examples
 
@@ -82,7 +82,7 @@ class Foo {
 ### Description
 
 Simply counts the number of lines of code the operation or class takes up in the source. This metric doesn't discount
- comments or blank lines.
+comments or blank lines. See also [NCSS](#non-commenting-source-statements-ncss).
 
 
 ## Non-commenting source statements (NCSS)
@@ -98,15 +98,15 @@ opening braces in the program. Comments and blank lines are ignored, and stateme
 The standard version of the metric is based off JavaNCSS's version  \[[JavaNcss](#JavaNcss)\]:
 
 * +1 for any of the following statements: `if`, `else`, `while`, `do`, `for`, `switch`, `break`, `continue`, `return`, 
-`throw`, `synchronized`, `catch`, `finally`.
+  `throw`, `synchronized`, `catch`, `finally`.
 * +1 for each assignment, variable declaration (except `for` loop initializers) or statement expression. We count 
-variables  declared on the same line (e.g. `int a, b, c;`) as a single statement. 
+  variables  declared on the same line (e.g. `int a, b, c;`) as a single statement. 
 * Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, interface, enum, annotation),  
-and method and field declarations \[[Sonarqube](#Sonarqube)\].
+  and method and field declarations \[[Sonarqube](#Sonarqube)\].
 * Contrary to JavaNCSS, but as Sonarqube, we do not count package declaration and import declarations as statements. 
-This makes it easier to compare nested classes to outer classes. Besides, it makes for class metric results that 
-actually represent the size of the class and not of the file. If you don't like that behaviour, use the `JAVANCSS` 
-version.
+  This makes it easier to compare nested classes to outer classes. Besides, it makes for class metric results that 
+  actually represent the size of the class and not of the file. If you don't like that behaviour, use the `JAVANCSS` 
+  version.
 
 ### Code example
 ```java
@@ -138,12 +138,60 @@ class Foo {                         // +1, total Ncss = 12
 ```
 
 
-
 ### Versions
 
 * Version `NcssVersion#JAVANCSS`: Import and package statements are counted as well. This version fully complies with
  JavaNCSS.
- 
+
+## NPath complexity (NPath)
+
+*Operation metric.* Can be computed on any non-abstract operation.
+
+### Description
+
+Number of acyclic execution paths through a piece of code. This is related to cyclomatic complexity, but the two 
+metrics don't count the same thing: NPath counts the number of distinct *full* paths from the beginning to the end of 
+the method, while Cyclo only counts the number of decision points. NPath is not computed as simply as Cyclo. With 
+NPath, two decision points appearing sequentially have their complexity multiplied. For example:
+```java
+void fun(boolean a, boolean b, boolean c) { // NPath = 6
+    
+  // block #0
+  
+  if (a) {
+    // block #1
+  } else {
+    // block #2
+  }
+  
+  // block #3
+  
+  if (b) {
+    // block #4
+  } else if (c) {
+    // block #5  
+  }
+  
+  // block #6
+}
+```
+After block 0, the control flow can either execute block 1 or 2 before jumping to block 3. From block three, the 
+control flow will again have the choice between blocks 4 and 5 before jumping to block 6. The first `if` offers two 
+choices, the second offers 3, so the cyclomatic complexity of this method is 2 + 3 = 5. NPath, however, sees 2 * 3 = 
+6 full paths from the beginning to the end.
+
+The fact that NPath multiplies the complexity of statements makes it grow exponentially: 10 `if` - `else` statements in 
+a row would give an NPath of 1024, while Cyclo would evaluate to 20.
+
+Methods with an NPath complexity over 200 are generally considered too complex.
+
+We compute NPath recursively, with the following set of rules:
+* A block has a base complexity of 1
+* The complexity of `for`, `do` and `while` statements is 1 + the complexity of its block + the complexity of its 
+  guard condition
+* The complexity of an `if` statement is 1 + the complexity of its guard condition + 
+
+
  
 ## Weighted Method Count (WMC)
 
