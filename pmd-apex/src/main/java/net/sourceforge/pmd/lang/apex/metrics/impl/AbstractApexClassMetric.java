@@ -10,6 +10,8 @@ import net.sourceforge.pmd.lang.apex.metrics.AbstractApexMetric;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetric;
 
 /**
+ * Base class for Apex metrics.
+ *
  * @author Clément Fournier
  */
 public abstract class AbstractApexClassMetric extends AbstractApexMetric implements ApexClassMetric {

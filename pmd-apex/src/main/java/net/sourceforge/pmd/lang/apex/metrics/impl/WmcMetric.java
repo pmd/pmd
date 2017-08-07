@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.metrics.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 /**
+ * See the doc for the Java metric.
+ *
  * @author Clément Fournier
  */
 public class WmcMetric extends AbstractApexClassMetric {

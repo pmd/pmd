@@ -29,8 +29,16 @@ public class CycloMetric extends AbstractApexOperationMetric {
     public double computeFor(ASTMethod node, MetricVersion version) {
         return ((MutableInt) node.jjtAccept(new StandardCycloVisitor(), new MutableInt(1))).doubleValue();
     }
+    
 
-
+    /**
+     * Computes the number of control flow paths through that expression, which is the number of {@code ||} and {@code
+     * &&} operators. Used both by Npath and Cyclo.
+     *
+     * @param expression Boolean expression
+     *
+     * @return The complexity of the expression
+     */
     public static int booleanExpressionComplexity(ASTStandardCondition expression) {
         Set<ASTBooleanExpression> subs = new HashSet<>(expression.findDescendantsOfType(ASTBooleanExpression.class));
         int complexity = 0;
