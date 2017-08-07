@@ -30,10 +30,10 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     private static final IntegerProperty CLASS_LEVEL_DESCRIPTOR = new IntegerProperty(
-        "classReportLevel", "Total class complexity reporting threshold", 1, 200, 40, 1.0f);
+        "classReportLevel", "Total class complexity reporting threshold", 1, 600, 80, 1.0f);
 
     private static final IntegerProperty METHOD_LEVEL_DESCRIPTOR = new IntegerProperty(
-        "methodReportLevel", "Cyclomatic complexity reporting threshold", 1, 30, 10, 1.0f);
+        "methodReportLevel", "Cyclomatic complexity reporting threshold", 1, 50, 10, 1.0f);
 
     private static final Map<String, MetricVersion> VERSION_MAP;
 
