@@ -16,51 +16,46 @@
           metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity">
         <description>
-            <![CDATA[
-Complexity directly affects maintenance costs is determined by the number of decision points in a method
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.
-Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
-high complexity, and 11+ is very high complexity.
-    ]]>
+            The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
+            in a single method makes its behaviour hard to read and change.
+
+            Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
+            plus one for the method entry. Decision points are places where the control flow jumps to another place in the
+            program. As such, they include all control flow statements, such as `if`, `while`, `for`, and `case`. For more
+            details on the calculation, see the documentation of the [Cyclo metric](/pmd_java_metrics_index.html#cyclomatic-complexity-cyclo).
+
+            Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
+            high complexity, and 11+ is very high complexity.
+
+            Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
+            into subcomponents.
         </description>
         <priority>3</priority>
         <example>
             <![CDATA[
-public class Foo {    // This has a Cyclomatic Complexity = 12
-1   public void example()  {
-2       if (a == b)  {
-3           if (a1 == b1) {
-                fiddle();
-4           } else if a2 == b2) {
-                fiddle();
-            }  else {
-                fiddle();
-            }
-5       } else if (c == d) {
-6           while (c == d) {
-                fiddle();
-            }
-7        } else if (e == f) {
-8           for (int n = 0; n < h; n++) {
-                fiddle();
-            }
-        } else{
-            switch (z) {
-9               case 1:
-                    fiddle();
-                    break;
-10              case 2:
-                    fiddle();
-                    break;
-11              case 3:
-                    fiddle();
-                    break;
-12              default:
-                    fiddle();
-                    break;
-            }
+class Foo {
+  void baseCyclo() {                // Cyclo = 1
+    highCyclo();
+  }
+
+  void highCyclo() {                // Cyclo = 10: reported!
+    int x = 0, y = 2;
+    boolean a = false, b = true;
+
+    if (a && (y == 1 ? b : true)) { // +3
+      if (y == x) {                 // +1
+        while (true) {              // +1
+          if (x++ < 20) {           // +1
+            break;                  // +1
+          }
         }
+      } else if (y == t && !d) {    // +2
+        x = a ? y : x;              // +1
+      } else {
+        x = 2;
+      }
     }
+  }
 }
 ]]>
         </example>
@@ -71,24 +66,38 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
           since="3.9"
           class="net.sourceforge.pmd.lang.java.metrics.rule.NcssCountRule"
           metrics="true"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssTypeCount">
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssCount">
         <description>
-            This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-            of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
-            lines of code that are split are counted as one.
+            This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
+            of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual
+            statements. For more details on the calculation, see the documentation ofthe[NCSSmetric](/pmd_java_metrics_index.html#non-commenting-source-statements-ncss).
         </description>
         <priority>3</priority>
         <example>
             <![CDATA[
-public class Foo extends Bar {
-  public Foo() { //this class only has 4 NCSS lines
-    super();
+import java.util.Collections;       // +0
+import java.io.IOException;         // +0
 
+class Foo {                         // +1, total Ncss = 12
 
+  public void bigMethod()           // +1
+      throws IOException {
+    int x = 0, y = 2;               // +1
+    boolean a = false, b = true;    // +1
 
+    if (a || b) {                   // +1
+      try {                         // +1
+        do {                        // +1
+          x += 2;                   // +1
+        } while (x < 12);
 
-
-    super.foo();
+        System.exit(0);             // +1
+      } catch (IOException ioe) {   // +1
+        throw new PatheticFailException(ioe); // +1
+      }
+    } else {
+      assert false;                 // +1
+    }
   }
 }
 ]]>
@@ -103,6 +112,11 @@ public class Foo extends Bar {
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NPathComplexity">
         <description>
             The NPath complexity of a method is the number of acyclic execution paths through that method.
+            While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
+            full paths from the beginning to the end oftheblock of the method. That metric grows exponentially, as
+            it multiplies the complexity of statements inthe same block. For more details on the calculation, see the
+            documentation of the [NPath metric](/pmd_java_metrics_index.html#npath-complexity-npath).
+
             A threshold of 200 is generally considered the point where measures should be taken to reduce
             complexity and increase readability.
         </description>
