@@ -152,7 +152,31 @@ class Foo {                         // +1, total Ncss = 12
 Number of acyclic execution paths through a piece of code. This is related to cyclomatic complexity, but the two 
 metrics don't count the same thing: NPath counts the number of distinct *full* paths from the beginning to the end of 
 the method, while Cyclo only counts the number of decision points. NPath is not computed as simply as Cyclo. With 
-NPath, two decision points appearing sequentially have their complexity multiplied. For example:
+NPath, two decision points appearing sequentially have their complexity multiplied. 
+
+The fact that NPath multiplies the complexity of statements makes it grow exponentially: 10 `if` - `else` statements in 
+a row would give an NPath of 1024, while Cyclo would evaluate to 20. Methods with an NPath complexity over 200 are 
+generally considered too complex.
+
+We compute NPath recursively, with the following set of rules:
+* An empty block has a complexity of 1.
+* The complexity of a block is the product of the NPath complexity of its statements, calculated as follows:
+  * The complexity of `for`, `do` and `while` statements is 1, plus the complexity of the block, plus the complexity of 
+    the guard condition.
+  * The complexity of a cascading `if` statement (`if .. else if ..`) is the number of `if` statements in the chain, 
+    plus the complexity of their guard condition, plus the complexity of the unguarded `else` block (or 1 if there is 
+    none).
+  * The complexity of a `switch` statement is the number of cases, plus the complexity of each `case` block. It's 
+    equivalent to the complexity of the equivalent cascade of `if` statements.
+  * The complexity of a ternary expression (`?:`) is the complexity of the guard condition, plus the 
+    complexity of both expressions. It's equivalent to the complexity of the equivalent `if .. else` construct.
+  * The complexity of a `try .. catch` statement is the complexity of the `try` block, plus the complexity of each 
+    catch block.
+  * The complexity of a `return` statement is the complexity of the expression (or 1 if there is none).
+  * All other statements have a complexity of 1 and are discarded from the product.
+   
+### Code example
+
 ```java
 void fun(boolean a, boolean b, boolean c) { // NPath = 6
     
@@ -176,22 +200,9 @@ void fun(boolean a, boolean b, boolean c) { // NPath = 6
 }
 ```
 After block 0, the control flow can either execute block 1 or 2 before jumping to block 3. From block three, the 
-control flow will again have the choice between blocks 4 and 5 before jumping to block 6. The first `if` offers two 
+control flow will again have the choice between blocks 4 and 5 before jumping to block 6. The first `if` offers 2 
 choices, the second offers 3, so the cyclomatic complexity of this method is 2 + 3 = 5. NPath, however, sees 2 * 3 = 
 6 full paths from the beginning to the end.
-
-The fact that NPath multiplies the complexity of statements makes it grow exponentially: 10 `if` - `else` statements in 
-a row would give an NPath of 1024, while Cyclo would evaluate to 20.
-
-Methods with an NPath complexity over 200 are generally considered too complex.
-
-We compute NPath recursively, with the following set of rules:
-* A block has a base complexity of 1
-* The complexity of `for`, `do` and `while` statements is 1 + the complexity of its block + the complexity of its 
-  guard condition
-* The complexity of an `if` statement is 1 + the complexity of its guard condition + 
-
-
  
 ## Weighted Method Count (WMC)
 
