@@ -13,6 +13,7 @@ This is a major release.
     *   [Java Type Resolution](#Java_Type_Resolution)
     *   [Metrics Framework](#Metrics_Framework)
     *   [Configuration Error Reporting](#Configuration_Error_Reporting)
+    *   [Java Symbol Table](#Java_Symbol_Table)
     *   [Modified Rules](#Modified_Rules)
     *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
@@ -79,6 +80,13 @@ and include them to such reports.
 *   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
     long time ago to `UseUtilityClass`.
 
+
+#### Java Symbol Table
+
+*   A [bug in symbol table](https://github.com/pmd/pmd/pull/549/commits/0958621ca884a8002012fc7738308c8dfc24b97c) prevented
+    the symbol table analysis to properly match primitive arrays types. The issue [affected the `java-unsedcode/UnusedPrivateMethod`](https://github.com/pmd/pmd/issues/521)
+    rule, but other rules may now produce improved results as consequence of this fix.
+
 ### Fixed Issues
 
 *   apex
@@ -95,6 +103,8 @@ and include them to such reports.
     *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
 *   java-sunsecure
     *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive
+*   java-unusedcode
+    *   [#521](https://github.com/pmd/pmd/issues/521): \[java] UnusedPrivateMethod returns false positives with primitive data type in map argument
 *   java-unnecessarycode
     *   [#412](https://github.com/pmd/pmd/issues/412): \[java] java-unnecessarycode/UnnecessaryFinalModifier missing cases
 
