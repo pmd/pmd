@@ -23,11 +23,11 @@ public class ASTType extends AbstractJavaTypeNode {
     }
 
     public String getTypeImage() {
-        ASTPrimitiveType prim = getFirstDescendantOfType(ASTPrimitiveType.class);
-        if (prim != null) {
-            return prim.getImage();
+        ASTClassOrInterfaceType refType = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+        if (refType != null) {
+            return refType.getImage();
         }
-        return getFirstDescendantOfType(ASTClassOrInterfaceType.class).getImage();
+        return getFirstDescendantOfType(ASTPrimitiveType.class).getImage();
     }
 
     public int getArrayDepth() {

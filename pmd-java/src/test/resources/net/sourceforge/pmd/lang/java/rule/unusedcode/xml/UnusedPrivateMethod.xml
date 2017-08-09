@@ -1531,4 +1531,22 @@ public class Something {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#521 UnusedPrivateMethod returns false positives with primitive data type in map argument</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          public Foo() {
+            Map<String, double[]> map = new LinkedHashMap<>();
+            addToMap(map);
+          }
+
+          private void addToMap(Map<String, double[]> map) {
+            map.put("foo", new double[]{0., 1.});
+          }
+        }
+        ]]></code>
+    </test-code>
+
 </test-data>
