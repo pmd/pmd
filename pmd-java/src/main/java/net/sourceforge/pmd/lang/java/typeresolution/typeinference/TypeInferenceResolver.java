@@ -23,19 +23,120 @@ import java.util.Set;
 
 public final class TypeInferenceResolver {
 
+    public static class ResolutionFailed extends RuntimeException {
+
+    }
+
     private TypeInferenceResolver() {
 
     }
 
-    public static Set<Class<?>> getErasedCandidateSet(List<Set<Class<?>>> erasedSuperTypeSets) {
-        Set<Class<?>> result = new HashSet<>();
-
-        if (!erasedSuperTypeSets.isEmpty()) {
-            result.addAll(erasedSuperTypeSets.get(0));
+    public static JavaTypeDefinition lub(List<JavaTypeDefinition> types) {
+        for (JavaTypeDefinition type : types) {
+            if (type.isArrayType()) {
+                // TODO: add support for array types
+                return JavaTypeDefinition.forClass(Object.class);
+            }
         }
 
-        for (Set<Class<?>> superTypeSet : erasedSuperTypeSets) {
-            result.retainAll(superTypeSet);
+        Set<Class<?>> erasedCandidateSet = getErasedCandidateSet(types);
+        Set<Class<?>> minimalSet = getMinimalErasedCandidateSet(erasedCandidateSet);
+
+        List<JavaTypeDefinition> candidates = new ArrayList<>();
+
+        for (Class<?> erasedSupertype : minimalSet) {
+            JavaTypeDefinition lci = types.get(0).getAsSuper(erasedSupertype);
+
+            for (JavaTypeDefinition type : types) {
+                if (lci == null) {
+                    throw new ResolutionFailed();
+                }
+
+                lci = intersect(lci, type.getAsSuper(erasedSupertype));
+            }
+
+            candidates.add(lci);
+        }
+
+        if (candidates.isEmpty()) {
+            throw new ResolutionFailed();
+        }
+
+        JavaTypeDefinition result = candidates.get(0);
+
+        for (JavaTypeDefinition candidate : candidates) {
+            if (containsType(candidate, result)) {
+                result = candidate;
+            } else if (!containsType(result, candidate)) { // TODO: add support for compound types
+                throw new ResolutionFailed();
+            }
+        }
+
+        return result;
+    }
+
+    private static JavaTypeDefinition intersect(JavaTypeDefinition first, JavaTypeDefinition second) {
+        if (first.equals(second)) { // two types equal
+            return first;
+        } else if (first.getType() == second.getType()) {
+            if (!first.isRawType() && !second.isRawType()) { // are generic
+                return merge(first, second);
+            } else { // one of them is raw
+                return JavaTypeDefinition.forClass(first.getType());
+            }
+        }
+
+        throw new ResolutionFailed();
+    }
+
+    /**
+     * @return true, if parameter contains argument
+     */
+    public static boolean containsType(JavaTypeDefinition parameter, JavaTypeDefinition argument) {
+        if (!MethodTypeResolution.isSubtypeable(parameter, argument)) {
+            return false; // class can't be converted even with unchecked conversion
+        }
+
+        // TODO: wildcards, checking generic arguments properly
+        if (parameter.equals(argument)) {
+            // we don't care about List<String> is assigable to Collection<String> or Collection<? extends Object>
+            return true; // we don't yet care about wildcards like, List<String> is assignable to List<? extends Object>
+        } else {
+            return false;
+        }
+    }
+
+    public static JavaTypeDefinition merge(JavaTypeDefinition first, JavaTypeDefinition second) {
+        if (first.getType() != second.getType()) {
+            throw new IllegalStateException("Must be called with typedefinitions of the same class");
+        }
+
+        JavaTypeDefinition[] mergedGeneric = new JavaTypeDefinition[first.getTypeParameterCount()];
+
+        for (int i = 0; i < first.getTypeParameterCount(); ++i) {
+            if (containsType(first.getGenericType(i), second.getGenericType(i))) {
+                mergedGeneric[i] = first.getGenericType(i);
+            } else if (containsType(second.getGenericType(i), first.getGenericType(i))) {
+                mergedGeneric[i] = second.getGenericType(i);
+            } else {
+                return JavaTypeDefinition.forClass(Object.class);
+                // TODO: Generic types of the same class can be merged like so:
+                // List<Integer> List<Double> -> List<? extends Number> but we don't have wildcards yet
+            }
+        }
+
+        return JavaTypeDefinition.forClass(first.getType(), mergedGeneric);
+    }
+
+    public static Set<Class<?>> getErasedCandidateSet(List<JavaTypeDefinition> erasedSuperTypeSets) {
+        Set<Class<?>> result = null;
+
+        if (!erasedSuperTypeSets.isEmpty()) {
+            result = erasedSuperTypeSets.get(0).getErasedSuperTypeSet();
+        }
+
+        for (int i = 1; i < erasedSuperTypeSets.size(); ++i) {
+            result.retainAll(erasedSuperTypeSets.get(i).getErasedSuperTypeSet());
         }
 
         return result;

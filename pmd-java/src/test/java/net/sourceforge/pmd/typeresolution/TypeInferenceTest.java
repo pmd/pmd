@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tools.ant.taskdefs.Java;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -295,11 +296,11 @@ public class TypeInferenceTest {
 
     @Test
     public void testErasedCandidateSet() {
-        List<Set<Class<?>>> superTypeSets = new ArrayList<>();
-        superTypeSets.add(JavaTypeDefinition.forClass(List.class).getErasedSuperTypeSet());
-        superTypeSets.add(JavaTypeDefinition.forClass(Set.class).getErasedSuperTypeSet());
+        List<JavaTypeDefinition> types = new ArrayList<>();
+        types.add(JavaTypeDefinition.forClass(List.class));
+        types.add(JavaTypeDefinition.forClass(Set.class));
 
-        Set<Class<?>> erasedCandidate = TypeInferenceResolver.getErasedCandidateSet(superTypeSets);
+        Set<Class<?>> erasedCandidate = TypeInferenceResolver.getErasedCandidateSet(types);
 
         assertEquals(erasedCandidate.size(), 3);
         assertTrue(erasedCandidate.contains(Object.class));
@@ -314,6 +315,15 @@ public class TypeInferenceTest {
 
         assertEquals(minimalSet.size(), 1);
         assertTrue(minimalSet.contains(List.class));
+    }
+
+    @Test
+    public void testLeastUpperBound() {
+        List<JavaTypeDefinition> lowerBounds = new ArrayList<>();
+        lowerBounds.add(JavaTypeDefinition.forClass(String.class));
+        lowerBounds.add(JavaTypeDefinition.forClass(.class));
+
+        JavaTypeDefinition result = TypeInferenceResolver.lub(lowerBounds);
     }
 
     private List<Constraint> incorporationResult(Bound firstBound, Bound secondBound) {

@@ -336,4 +336,21 @@ public class JavaTypeDefinition implements TypeDefinition {
 
         return destinationSet;
     }
+
+    /**
+     * @return true if clazz is generic and had not been parameterized
+     */
+    public boolean isRawType() {
+        return isGeneric() && CLASS_TYPE_DEF_CACHE.containsKey(getType());
+    }
+
+    public JavaTypeDefinition getAsSuper(Class<?> superClazz) {
+        for(JavaTypeDefinition superTypeDef : getSuperTypeSet()) {
+            if(superTypeDef.clazz == superClazz) {
+                return superTypeDef;
+            }
+        }
+
+        return null;
+    }
 }
