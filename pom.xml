@@ -861,6 +861,11 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <artifactId>system-rules</artifactId>
                 <version>1.8.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>13.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
