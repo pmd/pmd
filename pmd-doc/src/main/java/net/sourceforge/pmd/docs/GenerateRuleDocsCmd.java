@@ -8,6 +8,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
 public class GenerateRuleDocsCmd {
+    private GenerateRuleDocsCmd() {
+        // Utility class
+    }
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
