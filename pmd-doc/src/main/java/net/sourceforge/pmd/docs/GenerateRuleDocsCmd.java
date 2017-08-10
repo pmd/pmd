@@ -5,15 +5,16 @@
 package net.sourceforge.pmd.docs;
 
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
-import org.junit.Test;
+public class GenerateRuleDocsCmd {
 
-public class GenerateRuleDocsTest {
-    @Test
-    public void generateDocs() {
+    public static void main(String[] args) {
         long start = System.currentTimeMillis();
         RuleDocGenerator generator = new RuleDocGenerator();
-        generator.generate(FileSystems.getDefault().getPath("..").toAbsolutePath().normalize());
+        Path output = FileSystems.getDefault().getPath(args[0]).resolve("..").toAbsolutePath().normalize();
+        System.out.println("Generating docs into " + output);
+        generator.generate(output);
         System.out.println("Generated docs in " + (System.currentTimeMillis() - start) + " ms");
     }
 }

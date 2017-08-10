@@ -6,7 +6,6 @@ package net.sourceforge.pmd.docs;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -287,8 +286,7 @@ public class RuleDocGenerator {
      * @return
      * @throws IOException
      */
-    private static String getRuleSetSourceFilepath(RuleSet ruleset) throws IOException {
-        Path root = FileSystems.getDefault().getPath("..").toAbsolutePath().normalize();
+    private String getRuleSetSourceFilepath(RuleSet ruleset) throws IOException {
         final String rulesetFilename = FilenameUtils.normalize(StringUtils.chomp(ruleset.getFileName()));
         final List<Path> foundPathResult = new LinkedList<>();
 
