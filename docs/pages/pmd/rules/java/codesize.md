@@ -8,6 +8,8 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/codesize.xml
 ---
 ## CyclomaticComplexity
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** 1.03
 
 **Priority:** Medium (3)
@@ -203,6 +205,8 @@ public class Foo {
 |sigma||Sigma value|
 
 ## ModifiedCyclomaticComplexity
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** 5.1.2
 
@@ -420,6 +424,8 @@ void bar() {	// this is something more complex than it needs to be,
 |sigma||Sigma value|
 
 ## StdCyclomaticComplexity
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
 **Since:** 5.1.2
 
