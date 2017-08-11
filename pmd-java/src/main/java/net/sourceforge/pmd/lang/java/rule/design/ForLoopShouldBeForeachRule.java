@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jaxen.JaxenException;
 
@@ -39,8 +40,12 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        VariableNameDeclaration index = getIndexVarDeclaration(init, update);
-        if (index == null || !"int".equals(index.getTypeImage())) {
+        Entry<VariableNameDeclaration, List<NameOccurrence>> indexDecl = getIndexVarDeclaration(init, update);
+        List<NameOccurrence> occurrences = indexDecl.getValue();
+
+
+        VariableNameDeclaration index = indexDecl.getKey();
+        if (index == null || occurrences == null || !"int".equals(index.getTypeImage())) {
             return super.visit(node, data);
         }
 
@@ -52,20 +57,13 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-
-        List<NameOccurrence> occurrences = guardCondition.getScope().getDeclarations(VariableNameDeclaration.class).get(index);
-
-        if (occurrences == null) {
-            return super.visit(node, data);
-        }
-
-        VariableNameDeclaration iterableDeclaration = findDeclaration(iterableName, node.getScope());
+        VariableNameDeclaration iterableDeclaration = findDeclaration(iterableName, node.getScope()).getKey();
 
         if (iterableDeclaration == null) {
             return super.visit(node, data);
         }
 
-        if (iterableDeclaration.isArray() && loopOverArrayCanBeReplaced(node)) {
+        if (iterableDeclaration.isArray() && loopOverArrayCanBeReplaced(node, occurrences, iterableDeclaration)) {
             addViolation(data, node);
         } else if ("List".equals(iterableDeclaration.getTypeImage())
             && loopOverListCanBeReplaced(node, occurrences, iterableDeclaration)) {
@@ -77,29 +75,30 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
 
 
     /* Finds the declaration of the index variable to find its name occurrences */
-    private VariableNameDeclaration getIndexVarDeclaration(ASTForInit init, ASTForUpdate update) {
+    private Entry<VariableNameDeclaration, List<NameOccurrence>> getIndexVarDeclaration(ASTForInit init, ASTForUpdate update) {
         if (init == null) {
             return guessIndexVarFromUpdate(update);
         }
 
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = init.getScope().getDeclarations(VariableNameDeclaration.class);
-        VariableNameDeclaration theIterator = null;
+        Entry<VariableNameDeclaration, List<NameOccurrence>> indexVarAndOccurrences = null;
 
-        for (VariableNameDeclaration decl : decls.keySet()) {
-            ASTForInit declInit = decl.getNode().getFirstParentOfType(ASTForInit.class);
+        for (Entry<VariableNameDeclaration, List<NameOccurrence>> e : decls.entrySet()) {
+
+            ASTForInit declInit = e.getKey().getNode().getFirstParentOfType(ASTForInit.class);
             if (declInit == init) {
-                theIterator = decl;
+                indexVarAndOccurrences = e;
                 break;
             }
         }
 
-        return theIterator;
+        return indexVarAndOccurrences;
 
     }
 
 
     /** Does a best guess to find the index variable, gives up if the update has several statements */
-    private VariableNameDeclaration guessIndexVarFromUpdate(ASTForUpdate update) {
+    private Entry<VariableNameDeclaration, List<NameOccurrence>> guessIndexVarFromUpdate(ASTForUpdate update) {
 
         Node name;
         try {
@@ -181,8 +180,44 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
     }
 
 
-    private boolean loopOverArrayCanBeReplaced(ASTForStatement node) {
-        // TODO
+    private boolean loopOverArrayCanBeReplaced(ASTForStatement stmt, List<NameOccurrence> occurrences,
+                                               VariableNameDeclaration arrayDeclaration) {
+        String arrayName = arrayDeclaration.getName();
+
+
+        for (NameOccurrence occ : occurrences) {
+
+            if (occ.getLocation().getFirstParentOfType(ASTForUpdate.class) == null
+                && occ.getLocation().getFirstParentOfType(ASTExpression.class)
+                != stmt.getFirstChildOfType(ASTExpression.class)
+                && !occurenceIsArrayAccess(occ, arrayName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    private boolean occurenceIsArrayAccess(NameOccurrence occ, String arrayName) {
+        if (occ.getLocation() instanceof ASTName) {
+            ASTPrimarySuffix suffix = occ.getLocation().getFirstParentOfType(ASTPrimarySuffix.class);
+
+            if (suffix == null || !suffix.isArrayDereference()) {
+                return false;
+            }
+
+            Node prefix = suffix.jjtGetParent().jjtGetChild(0);
+
+            if (!(prefix instanceof ASTPrimaryPrefix) && prefix.jjtGetNumChildren() != 1
+                && !(prefix.jjtGetChild(0) instanceof ASTName)) {
+                return false;
+            }
+
+            String varImage = prefix.jjtGetChild(0).getImage();
+
+            return (arrayName).equals(varImage);
+
+        }
         return false;
     }
 
@@ -232,13 +267,13 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
     }
 
 
-    private VariableNameDeclaration findDeclaration(String varName, Scope innermost) {
+    private Entry<VariableNameDeclaration, List<NameOccurrence>> findDeclaration(String varName, Scope innermost) {
         Scope currentScope = innermost;
 
         while (currentScope != null) {
-            for (VariableNameDeclaration decl : currentScope.getDeclarations(VariableNameDeclaration.class).keySet()) {
-                if (decl.getImage().equals(varName)) {
-                    return decl;
+            for (Entry<VariableNameDeclaration, List<NameOccurrence>> e : currentScope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
+                if (e.getKey().getName().equals(varName)) {
+                    return e;
                 }
             }
             currentScope = currentScope.getParent();

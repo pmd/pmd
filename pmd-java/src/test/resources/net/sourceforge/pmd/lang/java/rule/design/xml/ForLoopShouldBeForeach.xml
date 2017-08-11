@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
+
+
     <test-code>
         <description>Positive with list</description>
         <expected-problems>1</expected-problems>
@@ -27,7 +29,7 @@
         }
         ]]></code>
     </test-code>
--
+
     <test-code>
         <description>Usage of index var outside get</description>
         <expected-problems>0</expected-problems>
@@ -88,10 +90,10 @@
         ]]></code>
     </test-code>
 
+
     <test-code>
         <description>Index var initialized outside for init</description>
-        <!-- TODO -> violation? maybe it's not even in the scope of this rule -> create AvoidEmptyForInit? -->
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
         public class MyClass {
           void loop(List<String> l) {
@@ -105,5 +107,48 @@
     </test-code>
 
 
+    <test-code>
+        <description>Array positives</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          protected static final char[] filter(char[] chars, char removeChar) {
+            int count = 0;
+            for (int i = 0; i < chars.length; i++) {
+              if (chars[i] == removeChar) {
+                count++;
+              }
+            }
+
+            char[] results = new char[chars.length - count];
+
+            int index = 0;
+            for (int i = 0; i < chars.length; i++) {
+              if (chars[i] != removeChar) {
+                results[index++] = chars[i];
+              }
+            }
+            return results;
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider iterators</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          void loop() {
+            for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
+              DataFlowNode inode = i.next();
+              if (inode.getVariableAccess() == null) {
+                continue;
+              }
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
 
 </test-data>
