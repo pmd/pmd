@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/braces.xml
 ---
 ## ForLoopsMustUseBraces
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/braces.xml
 Avoid using 'for' statements without using curly braces.
 
 **Example(s):**
+
 ```
 // Ok
 for (var i = 0; i < 42; i++) {
@@ -26,6 +28,7 @@ for (var i = 0; i < 42; i++)
 ```
 
 ## IfElseStmtsMustUseBraces
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -33,6 +36,7 @@ for (var i = 0; i < 42; i++)
 Avoid using if..else statements without using curly braces.
 
 **Example(s):**
+
 ```
 // Ok
 if (foo) {
@@ -49,6 +53,7 @@ else
 ```
 
 ## IfStmtsMustUseBraces
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -56,6 +61,7 @@ else
 Avoid using if statements without using curly braces.
 
 **Example(s):**
+
 ```
 // Ok
 if (foo) {
@@ -68,6 +74,7 @@ if (foo)
 ```
 
 ## WhileLoopsMustUseBraces
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -75,6 +82,7 @@ if (foo)
 Avoid using 'while' statements without using curly braces.
 
 **Example(s):**
+
 ```
 // Ok
 while (true) {

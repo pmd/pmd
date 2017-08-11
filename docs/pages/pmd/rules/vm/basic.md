@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_vm.html
 editmepath: ../pmd-vm/src/main/resources/rulesets/vm/basic.xml
 ---
 ## AvoidDeeplyNestedIfStmts
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -20,6 +21,7 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 |problemDepth|3|The if statement depth reporting threshold|
 
 ## AvoidReassigningParameters
+
 **Since:** 5.1
 
 **Priority:** Medium High (2)
@@ -27,6 +29,7 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
 
 ## CollapsibleIfStatements
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -34,6 +37,7 @@ Reassigning values to incoming parameters is not recommended.  Use temporary loc
 Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
 
 ## EmptyForeachStmt
+
 **Since:** 5.1
 
 **Priority:** Medium High (2)
@@ -41,6 +45,7 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
 Empty foreach statements should be deleted.
 
 ## EmptyIfStmt
+
 **Since:** 5.1
 
 **Priority:** Medium High (2)
@@ -48,6 +53,7 @@ Empty foreach statements should be deleted.
 Empty if statements should be deleted.
 
 ## ExcessiveTemplateLength
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -63,6 +69,7 @@ The template is too long. It should be broken up into smaller pieces.
 |sigma||Sigma value|
 
 ## NoInlineJavaScript
+
 **Since:** 5.1
 
 **Priority:** Medium High (2)
@@ -70,6 +77,7 @@ The template is too long. It should be broken up into smaller pieces.
 Avoid inline JavaScript. Import .js files instead.
 
 ## NoInlineStyles
+
 **Since:** 5.1
 
 **Priority:** Medium High (2)
@@ -77,6 +85,7 @@ Avoid inline JavaScript. Import .js files instead.
 Avoid inline styles. Use css classes instead.
 
 ## UnusedMacroParameter
+
 **Since:** 5.1
 
 **Priority:** Medium High (2)

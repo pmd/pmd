@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/performance.xml
 ---
 ## AvoidDmlStatementsInLoops
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-apex/src/main/resources/rulesets/apex/performance.xml
 Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch up the data into a list and invoke your DML once on that list of data outside the loop.
 
 **Example(s):**
+
 ```
 public class Something {
 	public void foo() {  
@@ -35,6 +37,7 @@ public class Something {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## AvoidSoqlInLoops
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -42,6 +45,7 @@ public class Something {
 New objects created within loops should be checked to see if they can created outside them and reused.
 
 **Example(s):**
+
 ```
 public class Something {
 	public static void main( String as[] ) {  

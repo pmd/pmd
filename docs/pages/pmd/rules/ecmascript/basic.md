@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_ecmascript.html
 editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/basic.xml
 ---
 ## AssignmentInOperand
+
 **Since:** 5.0
 
 **Priority:** Medium High (2)
@@ -15,6 +16,7 @@ Avoid assignments in operands; this can make code more complicated and harder to
 indicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.
 
 **Example(s):**
+
 ```
 var x = 2;
 // Bad
@@ -39,6 +41,7 @@ function getX() {
 |allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|
 
 ## AvoidTrailingComma
+
 **Since:** 5.1
 
 **Priority:** High (1)
@@ -46,6 +49,7 @@ function getX() {
 This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
 
 **Example(s):**
+
 ```
 function(arg) {
     var obj1 = { a : 1 }; // Ok
@@ -64,6 +68,7 @@ function(arg) {
 |allowArrayLiteral|false|Allow a trailing comma within an array literal|
 
 ## ConsistentReturn
+
 **Since:** 5.0
 
 **Priority:** Medium High (2)
@@ -73,6 +78,7 @@ However, when a function does use returns they should all have a value, or all w
 usage is likely a bug, or at best poor style.
 
 **Example(s):**
+
 ```
 // Ok
 function foo() {
@@ -100,6 +106,7 @@ function bar() {
 |recordingComments|true|Specifies that comments are produced in the AST.|
 
 ## EqualComparison
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -108,6 +115,7 @@ Using == in condition may lead to unexpected results, as the variables are autom
       same type. The === operator avoids the casting.
 
 **Example(s):**
+
 ```
 // Ok
 if (someVar === true) {
@@ -128,6 +136,7 @@ if (someVar != 3) {
 ```
 
 ## GlobalVariable
+
 **Since:** 5.0
 
 **Priority:** High (1)
@@ -136,6 +145,7 @@ This rule helps to avoid using accidently global variables by simply missing the
 Global variables can lead to side-effects that are hard to debug.
 
 **Example(s):**
+
 ```
 function(arg) {
     notDeclaredVariable = 1; // this will create a global variable and trigger the rule
@@ -147,6 +157,7 @@ function(arg) {
 ```
 
 ## InnaccurateNumericLiteral
+
 **Since:** 5.0
 
 **Priority:** Medium High (2)
@@ -155,6 +166,7 @@ The numeric literal will have at different value at runtime, which can happen if
 precision in a floating point number.  This may result in numeric calculations being in error.
 
 **Example(s):**
+
 ```
 var a = 9; // Ok
 var b = 999999999999999; // Ok
@@ -166,6 +178,7 @@ var z = 1.12345678901234567; // Not good
 ```
 
 ## ScopeForInVariable
+
 **Since:** 5.0
 
 **Priority:** High (1)
@@ -178,6 +191,7 @@ the for-in loop will be gone.  Since the for-in variable name is most likely int
 is better to explicitly scope the variable name to the nearest enclosing scope with 'var'.
 
 **Example(s):**
+
 ```
 // Ok
 function foo() {
@@ -208,6 +222,7 @@ function bar() {
 ```
 
 ## UnreachableCode
+
 **Since:** 5.0
 
 **Priority:** High (1)
@@ -216,6 +231,7 @@ A 'return', 'break', 'continue', or 'throw' statement should be the last in a bl
 will never execute.  This is a bug, or extremely poor style.
 
 **Example(s):**
+
 ```
 // Ok
 function foo() {
@@ -230,6 +246,7 @@ function bar() {
 ```
 
 ## UseBaseWithParseInt
+
 **Since:** 5.0.1
 
 **Priority:** High (1)
@@ -237,6 +254,7 @@ function bar() {
 TODO
 
 **Example(s):**
+
 ```
 parseInt("10",base);
 ```

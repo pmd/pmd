@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/sunsecure.xml
 ---
 ## ArrayIsStoredDirectly
+
 **Since:** 2.2
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ Constructors and methods receiving arrays should clone objects and store the cop
 This prevents future changes from the user from affecting the original array.
 
 **Example(s):**
+
 ```
 public class Foo {
   private String [] x;
@@ -26,6 +28,7 @@ public class Foo {
 ```
 
 ## MethodReturnsInternalArray
+
 **Since:** 2.2
 
 **Priority:** Medium (3)
@@ -34,6 +37,7 @@ Exposing internal arrays to the caller violates object encapsulation since eleme
 removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
 
 **Example(s):**
+
 ```
 public class SecureSystem {
   UserData [] ud;

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-jakarta-commons.xml
 ---
 ## GuardDebugLogging
+
 **Since:** 4.3
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ When log messages are composed by concatenating strings, the whole section shoul
             by a isDebugEnabled() check to avoid performance and memory issues.
 
 **Example(s):**
+
 ```
 public class Test {
     private static final Log __log = LogFactory.getLog(Test.class);
@@ -47,6 +49,7 @@ public class Test {
 |logLevels|[]|LogLevels to guard|
 
 ## GuardLogStatement
+
 **Since:** 5.1.0
 
 **Priority:** Medium High (2)
@@ -55,6 +58,7 @@ Whenever using a log level, one should check if the loglevel is actually enabled
 otherwise skip the associate String creation and manipulation.
 
 **Example(s):**
+
 ```
 // Add this for performance
     if (log.isDebugEnabled() { ...
@@ -69,6 +73,7 @@ otherwise skip the associate String creation and manipulation.
 |logLevels|[]|LogLevels to guard|
 
 ## ProperLogger
+
 **Since:** 3.3
 
 **Priority:** Medium (3)
@@ -78,6 +83,7 @@ Private final Log log; is also allowed for rare cases where loggers need to be p
 with the restriction that the logger needs to be passed into the constructor.
 
 **Example(s):**
+
 ```
 public class Foo {
 
@@ -94,6 +100,7 @@ public class Foo {
 |staticLoggerName|LOG|Name of the static Logger variable|
 
 ## UseCorrectExceptionLogging
+
 **Since:** 3.2
 
 **Priority:** Medium (3)
@@ -101,6 +108,7 @@ public class Foo {
 To make sure the full stacktrace is printed out, use the logging statement with two arguments: a String and a Throwable.
 
 **Example(s):**
+
 ```
 public class Main {
    private static final Log _LOG = LogFactory.getLog( Main.class );

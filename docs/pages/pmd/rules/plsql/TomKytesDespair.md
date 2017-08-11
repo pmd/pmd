@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/TomKytesDespair.xml
 ---
 ## TomKytesDespair
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/TomKytesDespair.xml
 "WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE PACKAGE BODY update_planned_hrs
 IS

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/android.xml
 ---
 ## CallSuperFirst
+
 **Since:** 4.2.5
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/android.xml
 Super should be called at the start of the method
 
 **Example(s):**
+
 ```
 public class DummyActivity extends Activity {
 	public void onCreate(Bundle bundle) {
@@ -24,6 +26,7 @@ public class DummyActivity extends Activity {
 ```
 
 ## CallSuperLast
+
 **Since:** 4.2.5
 
 **Priority:** Medium (3)
@@ -31,6 +34,7 @@ public class DummyActivity extends Activity {
 Super should be called at the end of the method
 
 **Example(s):**
+
 ```
 public class DummyActivity extends Activity {
 	public void onPause() {
@@ -41,6 +45,7 @@ public class DummyActivity extends Activity {
 ```
 
 ## DoNotHardCodeSDCard
+
 **Since:** 4.2.6
 
 **Priority:** Medium (3)
@@ -48,6 +53,7 @@ public class DummyActivity extends Activity {
 Use Environment.getExternalStorageDirectory() instead of "/sdcard"
 
 **Example(s):**
+
 ```
 public class MyActivity extends Activity {
 	protected void foo() {

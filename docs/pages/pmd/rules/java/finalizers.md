@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/finalizers.xml
 ---
 ## AvoidCallingFinalize
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ The method Object.finalize() is called by the garbage collector on an object whe
 that there are no more references to the object. It should not be invoked by application logic.
 
 **Example(s):**
+
 ```
 void foo() {
 	Bar b = new Bar();
@@ -23,6 +25,7 @@ void foo() {
 ```
 
 ## EmptyFinalizer
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -30,6 +33,7 @@ void foo() {
 Empty finalize methods serve no purpose and should be removed.
 
 **Example(s):**
+
 ```
 public class Foo {
    protected void finalize() {}
@@ -37,6 +41,7 @@ public class Foo {
 ```
 
 ## FinalizeDoesNotCallSuperFinalize
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -44,6 +49,7 @@ public class Foo {
 If the finalize() is implemented, its last action should be to call super.finalize.
 
 **Example(s):**
+
 ```
 protected void finalize() {
 	something();
@@ -52,6 +58,7 @@ protected void finalize() {
 ```
 
 ## FinalizeOnlyCallsSuperFinalize
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -59,6 +66,7 @@ protected void finalize() {
 If the finalize() is implemented, it should do something besides just calling super.finalize().
 
 **Example(s):**
+
 ```
 protected void finalize() {
 	super.finalize();
@@ -66,6 +74,7 @@ protected void finalize() {
 ```
 
 ## FinalizeOverloaded
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -74,6 +83,7 @@ Methods named finalize() should not have parameters.  It is confusing and most l
 overload Object.finalize(). It will not be called by the VM.
 
 **Example(s):**
+
 ```
 public class Foo {
    // this is confusing and probably a bug
@@ -83,6 +93,7 @@ public class Foo {
 ```
 
 ## FinalizeShouldBeProtected
+
 **Since:** 1.1
 
 **Priority:** Medium (3)
@@ -91,6 +102,7 @@ When overriding the finalize(), the new method should be set as protected.  If m
 other classes may invoke it at inappropriate times.
 
 **Example(s):**
+
 ```
 public void finalize() {
 	// do something

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/migrating.xml
 ---
 ## AvoidAssertAsIdentifier
+
 **Since:** 3.4
 
 **Priority:** Medium High (2)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/migrating.xml
 Use of the term 'assert' will conflict with newer versions of Java since it is a reserved word.
 
 **Example(s):**
+
 ```
 public class A {
 	public  class foo {
@@ -23,6 +25,7 @@ public class A {
 ```
 
 ## AvoidEnumAsIdentifier
+
 **Since:** 3.4
 
 **Priority:** Medium High (2)
@@ -30,6 +33,7 @@ public class A {
 Use of the term 'enum' will conflict with newer versions of Java since it is a reserved word.
 
 **Example(s):**
+
 ```
 public class A {
 	public  class foo {
@@ -39,6 +43,7 @@ public class A {
 ```
 
 ## ByteInstantiation
+
 **Since:** 4.0
 
 **Priority:** Medium High (2)
@@ -47,6 +52,7 @@ Calling new Byte() causes memory allocation that can be avoided by the static By
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 
 **Example(s):**
+
 ```
 public class Foo {
 	private Byte i = new Byte(0); // change to Byte i =	Byte.valueOf(0);
@@ -54,6 +60,7 @@ public class Foo {
 ```
 
 ## IntegerInstantiation
+
 **Since:** 3.5
 
 **Priority:** Medium High (2)
@@ -62,6 +69,7 @@ Calling new Integer() causes memory allocation that can be avoided by the static
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 
 **Example(s):**
+
 ```
 public class Foo {
 	private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
@@ -69,6 +77,7 @@ public class Foo {
 ```
 
 ## JUnit4SuitesShouldUseSuiteAnnotation
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -77,6 +86,7 @@ In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites 
 through the @RunWith(Suite.class) annotation.
 
 **Example(s):**
+
 ```
 public class BadExample extends TestCase{
 
@@ -92,6 +102,7 @@ public class GoodTest {
 ```
 
 ## JUnit4TestShouldUseAfterAnnotation
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -100,6 +111,7 @@ In JUnit 3, the tearDown method was used to clean up all data entities required 
 JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test
 
 **Example(s):**
+
 ```
 public class MyTest {
     public void tearDown() {
@@ -114,6 +126,7 @@ public class MyTest2 {
 ```
 
 ## JUnit4TestShouldUseBeforeAnnotation
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -122,6 +135,7 @@ In JUnit 3, the setUp method was used to set up all data entities required in ru
 JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests
 
 **Example(s):**
+
 ```
 public class MyTest {
     public void setUp() {
@@ -136,6 +150,7 @@ public class MyTest2 {
 ```
 
 ## JUnit4TestShouldUseTestAnnotation
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -144,6 +159,7 @@ In JUnit 3, the framework executed all methods which started with the word test 
 In JUnit 4, only methods annotated with the @Test annotation are executed.
 
 **Example(s):**
+
 ```
 public class MyTest {
     public void testBad() {
@@ -158,6 +174,7 @@ public class MyTest {
 ```
 
 ## JUnitUseExpected
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -165,6 +182,7 @@ public class MyTest {
 In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.
 
 **Example(s):**
+
 ```
 public class MyTest {
 	@Test
@@ -184,6 +202,7 @@ public class MyTest {
 ```
 
 ## LongInstantiation
+
 **Since:** 4.0
 
 **Priority:** Medium High (2)
@@ -192,6 +211,7 @@ Calling new Long() causes memory allocation that can be avoided by the static Lo
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 
 **Example(s):**
+
 ```
 public class Foo {
 	private Long i = new Long(0); // change to Long i = Long.valueOf(0);
@@ -199,6 +219,7 @@ public class Foo {
 ```
 
 ## ReplaceEnumerationWithIterator
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -206,6 +227,7 @@ public class Foo {
 Consider replacing Enumeration usages with the newer java.util.Iterator
 
 **Example(s):**
+
 ```
 public class Foo implements Enumeration {
     private int x = 42;
@@ -219,6 +241,7 @@ public class Foo implements Enumeration {
 ```
 
 ## ReplaceHashtableWithMap
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -226,6 +249,7 @@ public class Foo implements Enumeration {
 Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.
 
 **Example(s):**
+
 ```
 public class Foo {
 	void bar() {
@@ -235,6 +259,7 @@ public class Foo {
 ```
 
 ## ReplaceVectorWithList
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -242,6 +267,7 @@ public class Foo {
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
 
 **Example(s):**
+
 ```
 public class Foo {
  void bar() {
@@ -251,6 +277,7 @@ public class Foo {
 ```
 
 ## ShortInstantiation
+
 **Since:** 4.0
 
 **Priority:** Medium High (2)
@@ -259,6 +286,7 @@ Calling new Short() causes memory allocation that can be avoided by the static S
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
 
 **Example(s):**
+
 ```
 public class Foo {
 	private Short i = new Short(0); // change to Short i = Short.valueOf(0);

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/coupling.xml
 ---
 ## CouplingBetweenObjects
+
 **Since:** 1.04
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ This rule counts the number of unique attributes, local variables, and return ty
 A number higher than the specified threshold can indicate a high degree of coupling.
 
 **Example(s):**
+
 ```
 import com.Blah;
 import org.Bar;
@@ -41,6 +43,7 @@ public class Foo {
 |threshold|20|Unique type reporting threshold|
 
 ## ExcessiveImports
+
 **Since:** 1.04
 
 **Priority:** Medium (3)
@@ -50,6 +53,7 @@ counts the number of unique imports and reports a violation if the count is abov
 user-specified threshold.
 
 **Example(s):**
+
 ```
 import blah.blah.Baz;
 import blah.blah.Bif;
@@ -68,6 +72,7 @@ public class Foo {
 |sigma||Sigma value|
 
 ## LawOfDemeter
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -80,6 +85,7 @@ http://www.ccs.neu.edu/home/lieber/LoD.html;
 http://en.wikipedia.org/wiki/Law_of_Demeter
 
 **Example(s):**
+
 ```
 public class Foo {
     /**
@@ -105,6 +111,7 @@ public class Foo {
 ```
 
 ## LooseCoupling
+
 **Since:** 0.7
 
 **Priority:** Medium (3)
@@ -114,6 +121,7 @@ implementations in the future as requirements change. Whenever available, refere
 by their interface types provides much more flexibility.
 
 **Example(s):**
+
 ```
 // sub-optimal approach
 private ArrayList list = new ArrayList();
@@ -131,6 +139,7 @@ public Set getFoo() {
 ```
 
 ## LoosePackageCoupling
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -139,6 +148,7 @@ Avoid using classes from the configured package hierarchy outside of the package
 except when using one of the configured allowed classes.
 
 **Example(s):**
+
 ```
 package some.package;
 

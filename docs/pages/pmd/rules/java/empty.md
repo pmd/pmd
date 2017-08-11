@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/empty.xml
 ---
 ## EmptyCatchBlock
+
 **Since:** 0.1
 
 **Priority:** Medium (3)
@@ -16,6 +17,7 @@ In most circumstances, this swallows an exception which should either be acted o
 or reported.
 
 **Example(s):**
+
 ```
 public void doSomething() {
   try {
@@ -34,6 +36,7 @@ public void doSomething() {
 |allowExceptionNameRegex|^$|Empty blocks catching exceptions with names matching this regular expression will be skipped|
 
 ## EmptyFinallyBlock
+
 **Since:** 0.4
 
 **Priority:** Medium (3)
@@ -41,6 +44,7 @@ public void doSomething() {
 Empty finally blocks serve no purpose and should be removed.
 
 **Example(s):**
+
 ```
 public class Foo {
  public void bar() {
@@ -54,6 +58,7 @@ public class Foo {
 ```
 
 ## EmptyIfStmt
+
 **Since:** 0.1
 
 **Priority:** Medium (3)
@@ -61,6 +66,7 @@ public class Foo {
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
 
 **Example(s):**
+
 ```
 public class Foo {
  void bar(int x) {
@@ -72,6 +78,7 @@ public class Foo {
 ```
 
 ## EmptyInitializer
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -79,6 +86,7 @@ public class Foo {
 Empty initializers serve no purpose and should be removed.
 
 **Example(s):**
+
 ```
 public class Foo {
 
@@ -90,6 +98,7 @@ public class Foo {
 ```
 
 ## EmptyStatementBlock
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -97,6 +106,7 @@ public class Foo {
 Empty block statements serve no purpose and should be removed.
 
 **Example(s):**
+
 ```
 public class Foo {
 
@@ -111,6 +121,7 @@ public class Foo {
 ```
 
 ## EmptyStatementNotInLoop
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -120,6 +131,7 @@ or 'while' loop is probably a bug.  It could also be a double semicolon, which h
 and should be removed.
 
 **Example(s):**
+
 ```
 public void doit() {
       // this is probably not what you meant to do
@@ -130,6 +142,7 @@ public void doit() {
 ```
 
 ## EmptyStaticInitializer
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -137,6 +150,7 @@ public void doit() {
 An empty static initializer serve no purpose and should be removed.
 
 **Example(s):**
+
 ```
 public class Foo {
 	static {
@@ -146,6 +160,7 @@ public class Foo {
 ```
 
 ## EmptySwitchStatements
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -153,6 +168,7 @@ public class Foo {
 Empty switch statements serve no purpose and should be removed.
 
 **Example(s):**
+
 ```
 public void bar() {
 	int x = 2;
@@ -164,6 +180,7 @@ public void bar() {
 ```
 
 ## EmptySynchronizedBlock
+
 **Since:** 1.3
 
 **Priority:** Medium (3)
@@ -171,6 +188,7 @@ public void bar() {
 Empty synchronized blocks serve no purpose and should be removed.
 
 **Example(s):**
+
 ```
 public class Foo {
  public void bar() {
@@ -182,6 +200,7 @@ public class Foo {
 ```
 
 ## EmptyTryBlock
+
 **Since:** 0.4
 
 **Priority:** Medium (3)
@@ -189,6 +208,7 @@ public class Foo {
 Avoid empty try blocks - what's the point?
 
 **Example(s):**
+
 ```
 public class Foo {
  public void bar() {
@@ -201,6 +221,7 @@ public class Foo {
 ```
 
 ## EmptyWhileStmt
+
 **Since:** 0.2
 
 **Priority:** Medium (3)
@@ -210,6 +231,7 @@ If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
 **Example(s):**
+
 ```
 void bar(int a, int b) {
 	while (a == b) {

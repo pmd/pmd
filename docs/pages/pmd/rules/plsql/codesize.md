@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/codesize.xml
 ---
 ## CyclomaticComplexity
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -17,6 +18,7 @@ Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate c
 high complexity, and 11+ is very high complexity.
 
 **Example(s):**
+
 ```
 -- Cyclomatic Complexity of 25 
 CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS 
@@ -143,6 +145,7 @@ END;
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
 ## ExcessiveMethodLength
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -153,6 +156,7 @@ scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE
 PROCEDURE doSomething BEGIN
@@ -171,6 +175,7 @@ END;
 |sigma||Sigma value|
 
 ## ExcessiveObjectLength
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -180,6 +185,7 @@ responsibilities that could be provided by other objects. In breaking these meth
 apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE
 PACKAGE BODY Foo AS
@@ -209,6 +215,7 @@ END;
 |sigma||Sigma value|
 
 ## ExcessivePackageBodyLength
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -218,6 +225,7 @@ responsibilities that could be provided by external classes or functions. In bre
 apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE
 PACKAGE BODY Foo AS
@@ -247,6 +255,7 @@ END;
 |sigma||Sigma value|
 
 ## ExcessivePackageSpecificationLength
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -256,6 +265,7 @@ responsibilities that could be provided by external classes or functions. In bre
 apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE
 PACKAGE Foo AS
@@ -278,6 +288,7 @@ END;
 |sigma||Sigma value|
 
 ## ExcessiveParameterList
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -286,6 +297,7 @@ Methods with numerous parameters are a challenge to maintain, especially if most
 same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE
 PROCEDURE addPerson(		-- too many arguments liable to be mixed up
@@ -311,6 +323,7 @@ END;
 |sigma||Sigma value|
 
 ## ExcessiveTypeLength
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -320,6 +333,7 @@ responsibilities that could be provided by external classes or functions. In bre
 apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE
 TYPE BODY Foo AS
@@ -349,6 +363,7 @@ END;
 |sigma||Sigma value|
 
 ## NcssMethodCount
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -358,6 +373,7 @@ of code for a given method. NCSS ignores comments, and counts actual statements.
 lines of code that are split are counted as one.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE PACKAGE BODY AS
  FUNCTION methd RETURN INTEGER IS
@@ -376,6 +392,7 @@ END;
 |sigma||Sigma value|
 
 ## NcssObjectCount
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -385,6 +402,7 @@ of code for a given Oracle object. NCSS ignores comments, and counts actual stat
 lines of code that are split are counted as one.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE PACKAGE pkg_
  PROCEDURE Foo IS
@@ -405,6 +423,7 @@ CREATE OR REPLACE PACKAGE pkg_
 |sigma||Sigma value|
 
 ## NPathComplexity
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -414,6 +433,7 @@ A threshold of 200 is generally considered the point where measures should be ta
 complexity and increase readability.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE
 PROCEDURE bar AS BEGIN	-- this is something more complex than it needs to be,
@@ -458,6 +478,7 @@ END;
 |sigma||Sigma value|
 
 ## TooManyFields
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -467,6 +488,7 @@ possibly through grouping related fields in new objects.  For example, a class w
 city/state/zip fields could park them within a single Address field.
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
     C_CHAR_A CONSTANT CHAR(1 CHAR) := 'A';
@@ -483,6 +505,7 @@ END pkg_too_many_fields;
 |maxfields|15|Max allowable fields|
 
 ## TooManyMethods
+
 **Since:** 5.1
 
 **Priority:** Medium (3)

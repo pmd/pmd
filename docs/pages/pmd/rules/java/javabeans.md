@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/javabeans.xml
 ---
 ## BeanMembersShouldSerialize
+
 **Since:** 1.1
 
 **Priority:** Medium (3)
@@ -17,6 +18,7 @@ variables as transient is the safest and easiest modification. Accessor methods 
 naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
 
 **Example(s):**
+
 ```
 private transient int someFoo;  // good, it's transient
 private static int otherFoo;    // also OK
@@ -39,6 +41,7 @@ private int getMoreFoo(){
 |prefix||A variable prefix to skip, i.e., m_|
 
 ## MissingSerialVersionUID
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -46,6 +49,7 @@ private int getMoreFoo(){
 Serializable classes should provide a serialVersionUID field.
 
 **Example(s):**
+
 ```
 public class Foo implements java.io.Serializable {
  String name;

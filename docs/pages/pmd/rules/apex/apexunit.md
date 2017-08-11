@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/apexunit.xml
 ---
 ## ApexUnitTestClassShouldHaveAsserts
+
 **Since:** 5.5.1
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ Apex unit tests should include at least one assertion.  This makes the tests mor
             with messages provide the developer a clearer idea of what the test does.
 
 **Example(s):**
+
 ```
 @isTest
 public class Foo {
@@ -36,6 +38,7 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexUnitTestShouldNotUseSeeAllDataTrue
+
 **Since:** 5.5.1
 
 **Priority:** Medium (3)
@@ -43,6 +46,7 @@ public class Foo {
 Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
 
 **Example(s):**
+
 ```
 @isTest(seeAllData = true)
 public class Foo {

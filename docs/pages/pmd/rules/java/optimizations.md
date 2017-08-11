@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/optimizations.xml
 ---
 ## AddEmptyString
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -15,12 +16,14 @@ The conversion of literals to strings by concatenating them with empty strings i
 It is much better to use one of the type-specific toString() methods instead.
 
 **Example(s):**
+
 ```
 String s = "" + 123; 				// inefficient 
 String t = Integer.toString(456); 	// preferred approach
 ```
 
 ## AvoidArrayLoops
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -28,6 +31,7 @@ String t = Integer.toString(456); 	// preferred approach
 Instead of manually copying data between two arrays, use the efficient System.arraycopy method instead.
 
 **Example(s):**
+
 ```
 public class Test {
   public void bar() {
@@ -48,6 +52,7 @@ public class Test {
 ```
 
 ## AvoidInstantiatingObjectsInLoops
+
 **Since:** 2.2
 
 **Priority:** Medium (3)
@@ -55,6 +60,7 @@ public class Test {
 New objects created within loops should be checked to see if they can created outside them and reused.
 
 **Example(s):**
+
 ```
 public class Something {
 	public static void main( String as[] ) {  
@@ -66,6 +72,7 @@ public class Something {
 ```
 
 ## LocalVariableCouldBeFinal
+
 **Since:** 2.2
 
 **Priority:** Medium (3)
@@ -73,6 +80,7 @@ public class Something {
 A local variable assigned only once can be declared final.
 
 **Example(s):**
+
 ```
 public class Bar {
 	public void foo () {
@@ -83,6 +91,7 @@ public class Bar {
 ```
 
 ## MethodArgumentCouldBeFinal
+
 **Since:** 2.2
 
 **Priority:** Medium (3)
@@ -90,6 +99,7 @@ public class Bar {
 A method argument that is never re-assigned within the method can be declared final.
 
 **Example(s):**
+
 ```
 public void foo1 (String param) {	// do stuff with param never assigning it
   
@@ -101,6 +111,7 @@ public void foo2 (final String param) {	// better, do stuff with param never ass
 ```
 
 ## PrematureDeclaration
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -108,6 +119,7 @@ public void foo2 (final String param) {	// better, do stuff with param never ass
 Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn't use it that also has the ability to return or throw an exception.
 
 **Example(s):**
+
 ```
 public int getLength(String[] strings) {
   
@@ -124,6 +136,7 @@ public int getLength(String[] strings) {
 ```
 
 ## RedundantFieldInitializer
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -132,6 +145,7 @@ Java will initialize fields with known default values so any explicit initializa
 is redundant and results in a larger class file (approximately three additional bytecode instructions per field).
 
 **Example(s):**
+
 ```
 public class C {
 	boolean b	= false;	// examples of redundant initializers
@@ -155,6 +169,7 @@ public class C {
 ```
 
 ## SimplifyStartsWith
+
 **Since:** 3.1
 
 **Priority:** Medium (3)
@@ -163,6 +178,7 @@ Since it passes in a literal of length 1, calls to (string).startsWith can be re
 at the expense of some readability.
 
 **Example(s):**
+
 ```
 public class Foo {
 
@@ -177,6 +193,7 @@ public class Foo {
 ```
 
 ## UnnecessaryWrapperObjectCreation
+
 **Since:** 3.8
 
 **Priority:** Medium (3)
@@ -186,6 +203,7 @@ just to create the primitive forms. Using these avoids the cost of creating obje
 garbage-collected later.
 
 **Example(s):**
+
 ```
 public int convert(String s) {
   int i, i2;
@@ -204,6 +222,7 @@ public int convert(String s) {
 ```
 
 ## UseArrayListInsteadOfVector
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -211,6 +230,7 @@ public int convert(String s) {
 ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
 
 **Example(s):**
+
 ```
 public class SimpleTest extends TestCase {
 	public void testX() {
@@ -221,6 +241,7 @@ public class SimpleTest extends TestCase {
 ```
 
 ## UseArraysAsList
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -229,6 +250,7 @@ The java.util.Arrays class has a "asList" method that should be used when you wa
 an array of objects. It is faster than executing a loop to copy all the elements of the array one by one.
 
 **Example(s):**
+
 ```
 public class Test {
   public void foo(Integer[] ints) {
@@ -245,6 +267,7 @@ public class Test {
 ```
 
 ## UseStringBufferForStringAppends
+
 **Since:** 3.1
 
 **Priority:** Medium (3)
@@ -254,6 +277,7 @@ If a non-trivial number of these concatenations are being used then the explicit
 threadsafe StringBuffer is recommended to avoid this.
 
 **Example(s):**
+
 ```
 public class Foo {
   void bar() {

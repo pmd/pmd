@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/braces.xml
 ---
 ## ForLoopsMustUseBraces
+
 **Since:** 0.7
 
 **Priority:** Medium (3)
@@ -16,12 +17,14 @@ indentation is lost then it becomes difficult to separate the code being control
 from the rest.
 
 **Example(s):**
+
 ```
 for (int i = 0; i < 42; i++)
    foo();
 ```
 
 ## IfElseStmtsMustUseBraces
+
 **Since:** 0.2
 
 **Priority:** Medium (3)
@@ -31,6 +34,7 @@ or indentation is lost then it becomes difficult to separate the code being cont
 from the rest.
 
 **Example(s):**
+
 ```
 // this is OK
 if (foo) x++;
@@ -43,6 +47,7 @@ if (foo)
 ```
 
 ## IfStmtsMustUseBraces
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -52,6 +57,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **Example(s):**
+
 ```
 if (foo)	// not recommended
 	x++;
@@ -62,6 +68,7 @@ if (foo) {	// preferred approach
 ```
 
 ## WhileLoopsMustUseBraces
+
 **Since:** 0.7
 
 **Priority:** Medium (3)
@@ -71,6 +78,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **Example(s):**
+
 ```
 while (true)	// not recommended
       x++;

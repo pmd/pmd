@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/security.xml
 ---
 ## ApexBadCrypto
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ The rule makes sure you are using randomly generated IVs and keys for `Crypto` c
 Hard-wiring these values greatly compromises the security of encrypted data.
 
 **Example(s):**
+
 ```
 public without sharing class Foo {
     Blob hardCodedIV = Blob.valueOf('Hardcoded IV 123');
@@ -33,6 +35,7 @@ public without sharing class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexCRUDViolation
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -42,6 +45,7 @@ Since Apex runs in system mode not having proper permissions checks results in e
 privilege and may produce runtime errors. This check forces you to handle such scenarios.
 
 **Example(s):**
+
 ```
 public class Foo {
     public Contact foo(String status, String ID) {
@@ -68,6 +72,7 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexCSRF
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -76,6 +81,7 @@ Check to avoid making DML operations in Apex class constructor/init method. This
 modification of the database just by accessing a page.
 
 **Example(s):**
+
 ```
 public class Foo {
     public init() {
@@ -97,6 +103,7 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexDangerousMethods
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -111,6 +118,7 @@ opens the door to several attacks and requires manual validation, which is unrel
 of private data.
 
 **Example(s):**
+
 ```
 public class Foo {
     public Foo() {
@@ -128,6 +136,7 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexInsecureEndpoint
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -136,6 +145,7 @@ Checks against accessing endpoints under plain **http**. You should always use
 **https** for security.
 
 **Example(s):**
+
 ```
 public without sharing class Foo {
     void foo() {
@@ -154,6 +164,7 @@ public without sharing class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexOpenRedirect
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -162,6 +173,7 @@ Checks against redirects to user-controlled locations. This prevents attackers f
 redirecting users to phishing sites.
 
 **Example(s):**
+
 ```
 public without sharing class Foo {
     String unsafeLocation = ApexPage.getCurrentPage().getParameters.get('url_param');
@@ -180,6 +192,7 @@ public without sharing class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexSharingViolations
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -188,6 +201,7 @@ Detect classes declared without explicit sharing mode if DML methods are used. T
 forces the developer to take access restrictions into account before modifying objects.
 
 **Example(s):**
+
 ```
 public without sharing class Foo {
 // DML operation here
@@ -203,6 +217,7 @@ public without sharing class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexSOQLInjection
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -210,6 +225,7 @@ public without sharing class Foo {
 Detects the usage of untrusted / unescaped variables in DML queries.
 
 **Example(s):**
+
 ```
 public class Foo {
     public void test1(String t1) {
@@ -227,6 +243,7 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexSuggestUsingNamedCred
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -246,6 +263,7 @@ Instead, you should use *Named Credentials* and a callout endpoint.
 For more information, you can check [this](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_named_credentials.htm)
 
 **Example(s):**
+
 ```
 public class Foo {
     public void foo(String username, String password) {
@@ -265,6 +283,7 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexXSSFromEscapeFalse
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -274,6 +293,7 @@ will be displayed directly to the user in the UI, making it prime ground for XSS
 attacks if unescaped.
 
 **Example(s):**
+
 ```
 public without sharing class Foo {
     Trigger.new[0].addError(vulnerableHTMLGoesHere, false);
@@ -289,6 +309,7 @@ public without sharing class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ApexXSSFromURLParam
+
 **Since:** 5.5.3
 
 **Priority:** Medium (3)
@@ -297,6 +318,7 @@ Makes sure that all values obtained from URL parameters are properly escaped / s
 to avoid XSS attacks.
 
 **Example(s):**
+
 ```
 public without sharing class Foo {
     String unescapedstring = ApexPage.getCurrentPage().getParameters.get('url_param');

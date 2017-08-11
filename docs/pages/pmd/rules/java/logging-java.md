@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-java.xml
 ---
 ## AvoidPrintStackTrace
+
 **Since:** 3.2
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-java.xml
 Avoid printStackTrace(); use a logger call instead.
 
 **Example(s):**
+
 ```
 class Foo {
   void bar() {
@@ -27,6 +29,7 @@ class Foo {
 ```
 
 ## GuardLogStatementJavaUtil
+
 **Since:** 5.1.0
 
 **Priority:** Medium High (2)
@@ -35,6 +38,7 @@ Whenever using a log level, one should check if the loglevel is actually enabled
 otherwise skip the associate String creation and manipulation.
 
 **Example(s):**
+
 ```
 // Add this for performance
 	if (log.isLoggable(Level.FINE)) { ...
@@ -49,6 +53,7 @@ otherwise skip the associate String creation and manipulation.
 |logLevels|[]|LogLevels to guard|
 
 ## InvalidSlf4jMessageFormat
+
 **Since:** 5.5.0
 
 **Priority:** Low (5)
@@ -56,6 +61,7 @@ otherwise skip the associate String creation and manipulation.
 Check for messages in slf4j loggers with non matching number of arguments and placeholders.
 
 **Example(s):**
+
 ```
 LOGGER.error("forget the arg {}");
 LOGGER.error("too many args {}", "arg1", "arg2");
@@ -63,6 +69,7 @@ LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The except
 ```
 
 ## LoggerIsNotStaticFinal
+
 **Since:** 2.0
 
 **Priority:** Medium High (2)
@@ -70,6 +77,7 @@ LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The except
 In most cases, the Logger reference can be declared as static and final.
 
 **Example(s):**
+
 ```
 public class Foo{
     Logger log = Logger.getLogger(Foo.class.getName());					// not recommended
@@ -79,6 +87,7 @@ public class Foo{
 ```
 
 ## MoreThanOneLogger
+
 **Since:** 2.0
 
 **Priority:** Medium High (2)
@@ -86,6 +95,7 @@ public class Foo{
 Normally only one logger is used in each class.
 
 **Example(s):**
+
 ```
 public class Foo {
     Logger log = Logger.getLogger(Foo.class.getName());
@@ -96,6 +106,7 @@ public class Foo {
 ```
 
 ## SystemPrintln
+
 **Since:** 2.1
 
 **Priority:** Medium High (2)
@@ -105,6 +116,7 @@ the codebase even in production code. By using a logger one can enable/disable t
 will (and by priority) and avoid clogging the Standard out log.
 
 **Example(s):**
+
 ```
 class Foo{
     Logger log = Logger.getLogger(Foo.class.getName());

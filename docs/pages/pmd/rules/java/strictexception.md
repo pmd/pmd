@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/strictexception.xml
 ---
 ## AvoidCatchingGenericException
+
 **Since:** 4.2.6
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/strictexception.xml
 Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block
 
 **Example(s):**
+
 ```
 package com.igate.primitive;
     
@@ -34,6 +36,7 @@ public class PrimitiveType {
 ```
 
 ## AvoidCatchingNPE
+
 **Since:** 1.8
 
 **Priority:** Medium (3)
@@ -42,6 +45,7 @@ Code should never throw NullPointerExceptions under normal circumstances.  A cat
 original error, causing other, more subtle problems later on.
 
 **Example(s):**
+
 ```
 public class Foo {
   void bar() {
@@ -54,6 +58,7 @@ public class Foo {
 ```
 
 ## AvoidCatchingThrowable
+
 **Since:** 1.2
 
 **Priority:** Medium (3)
@@ -62,6 +67,7 @@ Catching Throwable errors is not recommended since its scope is very broad. It i
 OutOfMemoryError that should be exposed and managed separately.
 
 **Example(s):**
+
 ```
 public void bar() {
 	try {
@@ -73,6 +79,7 @@ public void bar() {
 ```
 
 ## AvoidLosingExceptionInformation
+
 **Since:** 4.2.6
 
 **Priority:** Medium High (2)
@@ -81,6 +88,7 @@ Statements in a catch block that invoke accessors on the exception without using
 only add to code size.  Either remove the invocation, or use the return result.
 
 **Example(s):**
+
 ```
 public void bar() {
 	try {
@@ -92,6 +100,7 @@ public void bar() {
 ```
 
 ## AvoidRethrowingException
+
 **Since:** 3.8
 
 **Priority:** Medium (3)
@@ -99,6 +108,7 @@ public void bar() {
 Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
 
 **Example(s):**
+
 ```
 public void bar() {
     try {
@@ -110,6 +120,7 @@ public void bar() {
 ```
 
 ## AvoidThrowingNewInstanceOfSameException
+
 **Since:** 4.2.5
 
 **Priority:** Medium (3)
@@ -118,6 +129,7 @@ Catch blocks that merely rethrow a caught exception wrapped inside a new instanc
 code size and runtime complexity.
 
 **Example(s):**
+
 ```
 public void bar() {
       try {
@@ -130,6 +142,7 @@ public void bar() {
 ```
 
 ## AvoidThrowingNullPointerException
+
 **Since:** 1.8
 
 **Priority:** High (1)
@@ -139,6 +152,7 @@ virtual machine threw it. Consider using an IllegalArgumentException instead; th
 clearly seen as a programmer-initiated exception.
 
 **Example(s):**
+
 ```
 public class Foo {
   void bar() {
@@ -148,6 +162,7 @@ public class Foo {
 ```
 
 ## AvoidThrowingRawExceptionTypes
+
 **Since:** 1.8
 
 **Priority:** High (1)
@@ -156,6 +171,7 @@ Avoid throwing certain exception types. Rather than throw a raw RuntimeException
 Exception, or Error, use a subclassed exception or error instead.
 
 **Example(s):**
+
 ```
 public class Foo {
   public void bar() throws Exception {
@@ -165,6 +181,7 @@ public class Foo {
 ```
 
 ## DoNotExtendJavaLangError
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -172,11 +189,13 @@ public class Foo {
 Errors are system exceptions. Do not extend them.
 
 **Example(s):**
+
 ```
 public class Foo extends Error { }
 ```
 
 ## DoNotThrowExceptionInFinally
+
 **Since:** 4.2
 
 **Priority:** Medium Low (4)
@@ -186,6 +205,7 @@ or code defects.
 Note: This is a PMD implementation of the Lint4j rule "A throw in a finally block"
 
 **Example(s):**
+
 ```
 public class Foo {
 	public void bar() {
@@ -202,6 +222,7 @@ public class Foo {
 ```
 
 ## ExceptionAsFlowControl
+
 **Since:** 1.8
 
 **Priority:** Medium (3)
@@ -210,6 +231,7 @@ Using Exceptions as form of flow control is not recommended as they obscure true
 Either add the necessary validation or use an alternate control structure.
 
 **Example(s):**
+
 ```
 public void bar() {
     try {
@@ -225,6 +247,7 @@ public void bar() {
 ```
 
 ## SignatureDeclareThrowsException
+
 **Since:** 1.2
 
 **Priority:** Medium (3)
@@ -233,6 +256,7 @@ Methods that declare the generic Exception as a possible throwable are not very 
 failure modes are unclear. Use a class derived from RuntimeException or a more specific checked exception.
 
 **Example(s):**
+
 ```
 public void foo() throws Exception {
 }

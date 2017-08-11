@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/dates.xml
 ---
 ## TO_DATE_TO_CHAR
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/dates.xml
 TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE PACKAGE BODY date_utilities
 IS
@@ -31,6 +33,7 @@ END date_utilities ;
 ```
 
 ## TO_DATEWithoutDateFormat
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -38,6 +41,7 @@ END date_utilities ;
 TO_DATE without date format- use TO_DATE(expression, date-format)
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE PACKAGE BODY date_utilities
 IS
@@ -68,6 +72,7 @@ END date_utilities ;
 ```
 
 ## TO_TIMESTAMPWithoutDateFormat
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -75,6 +80,7 @@ END date_utilities ;
 TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
 
 **Example(s):**
+
 ```
 CREATE OR REPLACE PACKAGE BODY date_utilities
 IS

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/strings.xml
 ---
 ## AppendCharacterWithChar
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/strings.xml
 Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.
 
 **Example(s):**
+
 ```
 StringBuffer sb = new StringBuffer();
 sb.append("a");		 // avoid this
@@ -23,6 +25,7 @@ sb.append('a');		// use this instead
 ```
 
 ## AvoidDuplicateLiterals
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -30,6 +33,7 @@ sb.append('a');		// use this instead
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
 
 **Example(s):**
+
 ```
 private void bar() {
      buz("Howdy");
@@ -52,6 +56,7 @@ private void bar() {
 |skipAnnotations|false|Skip literals within annotations|
 
 ## AvoidStringBufferField
+
 **Since:** 4.2
 
 **Priority:** Medium (3)
@@ -60,6 +65,7 @@ StringBuffers/StringBuilders can grow considerably, and so may become a source o
 if held within objects with long lifetimes.
 
 **Example(s):**
+
 ```
 public class Foo {
 	private StringBuffer buffer;	// potential memory leak as an instance variable;
@@ -67,6 +73,7 @@ public class Foo {
 ```
 
 ## ConsecutiveAppendsShouldReuse
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -75,6 +82,7 @@ Consecutive calls to StringBuffer/StringBuilder .append should be chained, reusi
 by producing a smaller bytecode, reducing overhead and improving inlining. A complete analysis can be found [here](https://github.com/pmd/pmd/issues/202#issuecomment-274349067)
 
 **Example(s):**
+
 ```
 String foo = " ";
 
@@ -88,6 +96,7 @@ buf.append("Hello").append(foo).append("World"); // good
 ```
 
 ## ConsecutiveLiteralAppends
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -95,6 +104,7 @@ buf.append("Hello").append(foo).append("World"); // good
 Consecutively calling StringBuffer/StringBuilder.append with String literals
 
 **Example(s):**
+
 ```
 StringBuffer buf = new StringBuffer();
 buf.append("Hello").append(" ").append("World"); // poor
@@ -108,6 +118,7 @@ buf.append("Hello World");        				 // good
 |threshold|1|Max consecutive appends|
 
 ## InefficientEmptyStringCheck
+
 **Since:** 3.6
 
 **Priority:** Medium (3)
@@ -119,6 +130,7 @@ false if a non-whitespace character is found. You can refer to Apache's StringUt
 or Spring's StringUtils#hasText (in the Springs framework) for existing implementations.
 
 **Example(s):**
+
 ```
 public void bar(String string) {
 	if (string != null && string.trim().size() > 0) {
@@ -128,6 +140,7 @@ public void bar(String string) {
 ```
 
 ## InefficientStringBuffering
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -136,6 +149,7 @@ Avoid concatenating non-literals in a StringBuffer constructor or append() since
 need to be be created and destroyed by the JVM.
 
 **Example(s):**
+
 ```
 // Avoid this, two buffers are actually being created here
 StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
@@ -146,6 +160,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
 ```
 
 ## InsufficientStringBufferDeclaration
+
 **Since:** 3.6
 
 **Priority:** Medium (3)
@@ -157,6 +172,7 @@ StringBuffer/StringBuilder constructor initializes the object to 16 characters. 
 is assumed if the length of the constructor can not be determined.
 
 **Example(s):**
+
 ```
 StringBuffer bad = new StringBuffer();
 bad.append("This is a long string that will exceed the default 16 characters");
@@ -166,6 +182,7 @@ good.append("This is a long string, which is pre-sized");
 ```
 
 ## StringBufferInstantiationWithChar
+
 **Since:** 3.9
 
 **Priority:** Medium Low (4)
@@ -186,6 +203,7 @@ new StringBuilder('C')	 //  chr(C) = 67
 new StringBuilder("A")   //  1 + 16 = 17
 
 **Example(s):**
+
 ```
 // misleading instantiation, these buffers
 	// are actually sized to 99 characters long
@@ -198,6 +216,7 @@ StringBuilder sb4 = new StringBuilder("c");
 ```
 
 ## StringInstantiation
+
 **Since:** 1.0
 
 **Priority:** Medium High (2)
@@ -205,11 +224,13 @@ StringBuilder sb4 = new StringBuilder("c");
 Avoid instantiating String objects; this is usually unnecessary since they are immutable and can be safely shared.
 
 **Example(s):**
+
 ```
 private String bar = new String("bar"); // just do a String bar = "bar";
 ```
 
 ## StringToString
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -217,6 +238,7 @@ private String bar = new String("bar"); // just do a String bar = "bar";
 Avoid calling toString() on objects already known to be string instances; this is unnecessary.
 
 **Example(s):**
+
 ```
 private String baz() {
     String bar = "howdy";
@@ -225,6 +247,7 @@ private String baz() {
 ```
 
 ## UnnecessaryCaseChange
+
 **Since:** 3.3
 
 **Priority:** Medium (3)
@@ -232,6 +255,7 @@ private String baz() {
 Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
 
 **Example(s):**
+
 ```
 boolean answer1 = buz.toUpperCase().equals("baz");	 		// should be buz.equalsIgnoreCase("baz")
     
@@ -239,6 +263,7 @@ boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");	 // another unneces
 ```
 
 ## UseEqualsToCompareStrings
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -247,6 +272,7 @@ Using '==' or '!=' to compare strings only works if intern version is used on bo
 Use the equals() method instead.
 
 **Example(s):**
+
 ```
 public boolean test(String s) {
     if (s == "one") return true; 		// unreliable
@@ -256,6 +282,7 @@ public boolean test(String s) {
 ```
 
 ## UseIndexOfChar
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -263,6 +290,7 @@ public boolean test(String s) {
 Use String.indexOf(char) when checking for the index of a single character; it executes faster.
 
 **Example(s):**
+
 ```
 String s = "hello world";
   // avoid this
@@ -272,6 +300,7 @@ if (s.indexOf('d') {}
 ```
 
 ## UselessStringValueOf
+
 **Since:** 3.8
 
 **Priority:** Medium (3)
@@ -279,6 +308,7 @@ if (s.indexOf('d') {}
 No need to call String.valueOf to append to a string; just use the valueOf() argument directly.
 
 **Example(s):**
+
 ```
 public String convert(int i) {
 	String s;
@@ -289,6 +319,7 @@ public String convert(int i) {
 ```
 
 ## UseStringBufferLength
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -297,6 +328,7 @@ Use StringBuffer.length() to determine StringBuffer length rather than using Str
 or StringBuffer.toString().length() == ...
 
 **Example(s):**
+
 ```
 StringBuffer sb = new StringBuffer();
     

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/basic.xml
 ---
 ## AvoidBranchingStatementAsLastInLoop
+
 **Since:** 5.0
 
 **Priority:** Medium High (2)
@@ -15,6 +16,7 @@ Using a branching statement as the last part of a loop may be a bug, and/or is c
 Ensure that the usage is not a bug, or consider using another approach.
 
 **Example(s):**
+
 ```
 // unusual use of branching statement in a loop
 for (int i = 0; i < 10; i++) {
@@ -41,6 +43,7 @@ for (int i = 0; i < 10; i++) {
 |checkBreakLoopTypes|[for, do, while]|Check for break statements in loop types|
 
 ## AvoidDecimalLiteralsInBigDecimalConstructor
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -56,6 +59,7 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
 (String) constructor be used in preference to this one.
 
 **Example(s):**
+
 ```
 BigDecimal bd = new BigDecimal(1.123);		// loss of precision, this would trigger the rule
 
@@ -65,6 +69,7 @@ BigDecimal bd = new BigDecimal(12);     	// preferred approach, ok for integer v
 ```
 
 ## AvoidMultipleUnaryOperators
+
 **Since:** 4.2
 
 **Priority:** Medium High (2)
@@ -73,6 +78,7 @@ The use of multiple unary operators may be problematic, and/or confusing.
 Ensure that the intended usage is not a bug, or consider simplifying the expression.
 
 **Example(s):**
+
 ```
 // These are typo bugs, or at best needlessly complex and confusing:
 int i = - -1;
@@ -94,6 +100,7 @@ int j = -~7;
 ```
 
 ## AvoidThreadGroup
+
 **Since:** 3.6
 
 **Priority:** Medium (3)
@@ -102,6 +109,7 @@ Avoid using java.lang.ThreadGroup; although it is intended to be used in a threa
 it contains methods that are not thread-safe.
 
 **Example(s):**
+
 ```
 public class Bar {
 	void buz() {
@@ -114,6 +122,7 @@ public class Bar {
 ```
 
 ## AvoidUsingHardCodedIP
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -122,6 +131,7 @@ Application with hard-coded IP addresses can become impossible to deploy in some
 Externalizing IP adresses is preferable.
 
 **Example(s):**
+
 ```
 public class Foo {
 	private String ip = "127.0.0.1"; 	// not recommended
@@ -136,6 +146,7 @@ public class Foo {
 |pattern|^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$|Regular Expression|
 
 ## AvoidUsingOctalValues
+
 **Since:** 3.9
 
 **Priority:** Medium (3)
@@ -144,6 +155,7 @@ Integer literals should not start with zero since this denotes that the rest of 
 interpreted as an octal value.
 
 **Example(s):**
+
 ```
 int i = 012;	// set i with 10 not 12
 int j = 010;	// set j with 8 not 10
@@ -157,6 +169,7 @@ k = i * j;		// set k with 80 not 120
 |strict|false|Detect violations between 00 and 07|
 
 ## BigIntegerInstantiation
+
 **Since:** 3.9
 
 **Priority:** Medium (3)
@@ -165,6 +178,7 @@ Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteg
 for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
 
 **Example(s):**
+
 ```
 BigInteger bi = new BigInteger(1);		// reference BigInteger.ONE instead
 BigInteger bi2 = new BigInteger("0");	// reference BigInteger.ZERO instead
@@ -174,6 +188,7 @@ bi4 = new BigInteger(0);				// reference BigInteger.ZERO instead
 ```
 
 ## BooleanInstantiation
+
 **Since:** 1.2
 
 **Priority:** Medium High (2)
@@ -181,12 +196,14 @@ bi4 = new BigInteger(0);				// reference BigInteger.ZERO instead
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
 
 **Example(s):**
+
 ```
 Boolean bar = new Boolean("true");		// unnecessary creation, just reference Boolean.TRUE;
 Boolean buz = Boolean.valueOf(false);	// ...., just reference Boolean.FALSE;
 ```
 
 ## BrokenNullCheck
+
 **Since:** 3.8
 
 **Priority:** Medium High (2)
@@ -195,6 +212,7 @@ The null check is broken since it will throw a NullPointerException itself.
 It is likely that you used || instead of && or vice versa.
 
 **Example(s):**
+
 ```
 public String bar(String string) {
   // should be &&
@@ -207,6 +225,7 @@ public String bar(String string) {
 ```
 
 ## CheckResultSet
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -215,6 +234,7 @@ Always check the return values of navigation methods (next, previous, first, las
 If the value return is 'false', it should be handled properly.
 
 **Example(s):**
+
 ```
 Statement stat = conn.createStatement();
 ResultSet rst = stat.executeQuery("SELECT name FROM person");
@@ -231,6 +251,7 @@ if (rst.next()) {	// result is properly examined and used
 ```
 
 ## CheckSkipResult
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -238,6 +259,7 @@ if (rst.next()) {	// result is properly examined and used
 The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.
 
 **Example(s):**
+
 ```
 public class Foo {
 
@@ -258,6 +280,7 @@ public class Foo {
 ```
 
 ## ClassCastExceptionWithToArray
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -267,6 +290,7 @@ the same class as the parameter of the toArray() method. Doing otherwise you wil
 in a ClassCastException.
 
 **Example(s):**
+
 ```
 Collection c = new ArrayList();
 Integer obj = new Integer(1);
@@ -280,6 +304,7 @@ Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
 ```
 
 ## CollapsibleIfStatements
+
 **Since:** 3.1
 
 **Priority:** Medium (3)
@@ -287,6 +312,7 @@ Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
 Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
 
 **Example(s):**
+
 ```
 void bar() {
 	if (x) {			// original implementation
@@ -304,6 +330,7 @@ void bar() {
 ```
 
 ## DontCallThreadRun
+
 **Since:** 4.3
 
 **Priority:** Medium Low (4)
@@ -311,6 +338,7 @@ void bar() {
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
 
 **Example(s):**
+
 ```
 Thread t = new Thread();
 t.run();            // use t.start() instead
@@ -318,6 +346,7 @@ new Thread().run(); // same violation
 ```
 
 ## DontUseFloatTypeForLoopIndices
+
 **Since:** 4.3
 
 **Priority:** Medium (3)
@@ -327,6 +356,7 @@ unless you're certain that float provides enough precision and you have a compel
 performance need (space or time).
 
 **Example(s):**
+
 ```
 public class Count {
   public static void main(String[] args) {
@@ -342,6 +372,7 @@ public class Count {
 ```
 
 ## DoubleCheckedLocking
+
 **Since:** 1.04
 
 **Priority:** High (1)
@@ -356,6 +387,7 @@ For more details refer to: http://www.javaworld.com/javaworld/jw-02-2001/jw-0209
 or http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
 
 **Example(s):**
+
 ```
 public class Foo {
 	/*volatile */ Object baz = null; // fix for Java5 and later: volatile
@@ -373,6 +405,7 @@ public class Foo {
 ```
 
 ## ExtendsObject
+
 **Since:** 5.0
 
 **Priority:** Medium Low (4)
@@ -380,12 +413,14 @@ public class Foo {
 No need to explicitly extend Object.
 
 **Example(s):**
+
 ```
 public class Foo extends Object { 	// not required
 }
 ```
 
 ## ForLoopShouldBeWhileLoop
+
 **Since:** 1.02
 
 **Priority:** Medium (3)
@@ -393,6 +428,7 @@ public class Foo extends Object { 	// not required
 Some for loops can be simplified to while loops, this makes them more concise.
 
 **Example(s):**
+
 ```
 public class Foo {
 	void bar() {
@@ -402,6 +438,7 @@ public class Foo {
 ```
 
 ## JumbledIncrementer
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -409,6 +446,7 @@ public class Foo {
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
 **Example(s):**
+
 ```
 public class JumbledIncrementerRule1 {
 	public void foo() {
@@ -422,6 +460,7 @@ public class JumbledIncrementerRule1 {
 ```
 
 ## MisplacedNullCheck
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -430,6 +469,7 @@ The null check here is misplaced. If the variable is null a NullPointerException
 Either the check is useless (the variable will never be "null") or it is incorrect.
 
 **Example(s):**
+
 ```
 public class Foo {
 	void bar() {
@@ -447,6 +487,7 @@ public class Foo {
 ```
 
 ## OverrideBothEqualsAndHashcode
+
 **Since:** 0.4
 
 **Priority:** Medium (3)
@@ -454,6 +495,7 @@ public class Foo {
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
 
 **Example(s):**
+
 ```
 public class Bar {		// poor, missing a hashcode() method
 	public boolean equals(Object o) {
@@ -478,6 +520,7 @@ public class Foo {		// perfect, both methods provided
 ```
 
 ## ReturnFromFinallyBlock
+
 **Since:** 1.05
 
 **Priority:** Medium (3)
@@ -485,6 +528,7 @@ public class Foo {		// perfect, both methods provided
 Avoid returning from a finally block, this can discard exceptions.
 
 **Example(s):**
+
 ```
 public class Bar {
 	public String foo() {
@@ -500,6 +544,7 @@ public class Bar {
 ```
 
 ## SimplifiedTernary
+
 **Since:** 5.4.0
 
 **Priority:** Medium (3)
@@ -515,6 +560,7 @@ or
 `condition && foo`  when the literalBoolean is false
 
 **Example(s):**
+
 ```
 public class Foo {
     public boolean test() {
@@ -536,6 +582,7 @@ public class Foo {
 ```
 
 ## UnconditionalIfStatement
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -543,6 +590,7 @@ public class Foo {
 Do not use "if" statements whose conditionals are always true or always false.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public void close() {

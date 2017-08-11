@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/codesize.xml
 ---
 ## CyclomaticComplexity
+
 **Since:** 1.03
 
 **Priority:** Medium (3)
@@ -17,6 +18,7 @@ Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate c
 high complexity, and 11+ is very high complexity.
 
 **Example(s):**
+
 ```
 public class Foo {		// This has a Cyclomatic Complexity = 12
 1   public void example()  {
@@ -65,6 +67,7 @@ public class Foo {		// This has a Cyclomatic Complexity = 12
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
 ## ExcessiveClassLength
+
 **Since:** 0.6
 
 **Priority:** Medium (3)
@@ -74,6 +77,7 @@ responsibilities that could be provided by external classes or functions. In bre
 apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public void bar1() {
@@ -102,6 +106,7 @@ public class Foo {
 |sigma||Sigma value|
 
 ## ExcessiveMethodLength
+
 **Since:** 0.6
 
 **Priority:** Medium (3)
@@ -112,6 +117,7 @@ scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
 
 **Example(s):**
+
 ```
 public void doSomething() {
 	System.out.println("Hello world!");
@@ -129,6 +135,7 @@ public void doSomething() {
 |sigma||Sigma value|
 
 ## ExcessiveParameterList
+
 **Since:** 0.9
 
 **Priority:** Medium (3)
@@ -137,6 +144,7 @@ Methods with numerous parameters are a challenge to maintain, especially if most
 same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
 
 **Example(s):**
+
 ```
 public void addPerson(		// too many arguments liable to be mixed up
 	int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
@@ -160,6 +168,7 @@ public void addPerson(		// preferred approach
 |sigma||Sigma value|
 
 ## ExcessivePublicCount
+
 **Since:** 1.04
 
 **Priority:** Medium (3)
@@ -170,6 +179,7 @@ smaller ones not only increases testability and reliability but also allows new 
 developed easily.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public String value;
@@ -193,6 +203,7 @@ public class Foo {
 |sigma||Sigma value|
 
 ## ModifiedCyclomaticComplexity
+
 **Since:** 5.1.2
 
 **Priority:** Medium (3)
@@ -204,6 +215,7 @@ high complexity, and 11+ is very high complexity. Modified complexity treats swi
 decision point.
 
 **Example(s):**
+
 ```
 public class Foo {    // This has a Cyclomatic Complexity = 9
 1   public void example()  {
@@ -252,6 +264,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
 ## NcssConstructorCount
+
 **Since:** 3.9
 
 **Priority:** Medium (3)
@@ -261,6 +274,7 @@ of code for a given constructor. NCSS ignores comments, and counts actual statem
 lines of code that are split are counted as one.
 
 **Example(s):**
+
 ```
 public class Foo extends Bar {
  public Foo() {
@@ -285,6 +299,7 @@ public class Foo extends Bar {
 |sigma||Sigma value|
 
 ## NcssMethodCount
+
 **Since:** 3.9
 
 **Priority:** Medium (3)
@@ -294,6 +309,7 @@ of code for a given method. NCSS ignores comments, and counts actual statements.
 lines of code that are split are counted as one.
 
 **Example(s):**
+
 ```
 public class Foo extends Bar {
  public int methd() {
@@ -318,6 +334,7 @@ public class Foo extends Bar {
 |sigma||Sigma value|
 
 ## NcssTypeCount
+
 **Since:** 3.9
 
 **Priority:** Medium (3)
@@ -327,6 +344,7 @@ of code for a given type. NCSS ignores comments, and counts actual statements. U
 lines of code that are split are counted as one.
 
 **Example(s):**
+
 ```
 public class Foo extends Bar {
  public Foo() {
@@ -351,6 +369,7 @@ public class Foo extends Bar {
 |sigma||Sigma value|
 
 ## NPathComplexity
+
 **Since:** 3.9
 
 **Priority:** Medium (3)
@@ -360,6 +379,7 @@ A threshold of 200 is generally considered the point where measures should be ta
 complexity and increase readability.
 
 **Example(s):**
+
 ```
 void bar() {	// this is something more complex than it needs to be,
 	if (y) {	// it should be broken down into smaller methods or functions
@@ -400,6 +420,7 @@ void bar() {	// this is something more complex than it needs to be,
 |sigma||Sigma value|
 
 ## StdCyclomaticComplexity
+
 **Since:** 5.1.2
 
 **Priority:** Medium (3)
@@ -410,6 +431,7 @@ Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate c
 high complexity, and 11+ is very high complexity.
 
 **Example(s):**
+
 ```
 public class Foo {    // This has a Cyclomatic Complexity = 12
 1   public void example()  {
@@ -458,6 +480,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
 ## TooManyFields
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -467,6 +490,7 @@ possibly through grouping related fields in new objects.  For example, a class w
 city/state/zip fields could park them within a single Address field.
 
 **Example(s):**
+
 ```
 public class Person {	// too many separate fields
    int birthYear;
@@ -489,6 +513,7 @@ public class Person {	// this is more manageable
 |maxfields|15|Max allowable fields|
 
 ## TooManyMethods
+
 **Since:** 4.2
 
 **Priority:** Medium (3)

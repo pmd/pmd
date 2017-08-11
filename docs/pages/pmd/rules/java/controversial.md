@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/controversial.xml
 ---
 ## AssignmentInOperand
+
 **Since:** 1.03
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/controversial.xml
 Avoid assignments in operands; this can make code more complicated and harder to read.
 
 **Example(s):**
+
 ```
 public void bar() {
     int x = 2;
@@ -33,6 +35,7 @@ public void bar() {
 |allowIf|false|Allow assignment within the conditional expression of an if statement|
 
 ## AtLeastOneConstructor
+
 **Since:** 1.04
 
 **Priority:** Medium (3)
@@ -40,6 +43,7 @@ public void bar() {
 Each class should declare at least one constructor.
 
 **Example(s):**
+
 ```
 public class Foo {
    // missing constructor
@@ -49,6 +53,7 @@ public class Foo {
 ```
 
 ## AvoidAccessibilityAlteration
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -58,6 +63,7 @@ as the interface PrivilegedAction, allows for the runtime alteration of variable
 method visibility, even if they are private. This violates the principle of encapsulation.
 
 **Example(s):**
+
 ```
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
@@ -89,6 +95,7 @@ public class Violation {
 ```
 
 ## AvoidFinalLocalVariable
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -96,6 +103,7 @@ public class Violation {
 Avoid using final local variables, turn them into fields.
 
 **Example(s):**
+
 ```
 public class MyClass {
     public void foo() {
@@ -105,6 +113,7 @@ public class MyClass {
 ```
 
 ## AvoidLiteralsInIfCondition
+
 **Since:** 4.2.6
 
 **Priority:** Medium (3)
@@ -114,6 +123,7 @@ or private members with descriptive names maintainability is enhanced. By defaul
 More exceptions can be defined with the property "ignoreMagicNumbers".
 
 **Example(s):**
+
 ```
 private static final int MAX_NUMBER_OF_REQUESTS = 10;
 
@@ -142,6 +152,7 @@ public void checkRequests() {
 |ignoreMagicNumbers|-1,0|Comma-separated list of magic numbers, that should be ignored|
 
 ## AvoidPrefixingMethodParameters
+
 **Since:** 5.0
 
 **Priority:** Medium Low (4)
@@ -151,6 +162,7 @@ To indicate whether or not a parameter will be modify in a method, its better to
 behavior with Javadoc.
 
 **Example(s):**
+
 ```
 // Not really clear
 public class Foo {
@@ -179,6 +191,7 @@ public class Foo {
 ```
 
 ## AvoidUsingNativeCode
+
 **Since:** 4.1
 
 **Priority:** Medium High (2)
@@ -187,6 +200,7 @@ Unnecessary reliance on Java Native Interface (JNI) calls directly reduces appli
 and increases the maintenance burden.
 
 **Example(s):**
+
 ```
 public class SomeJNIClass {
 
@@ -205,6 +219,7 @@ public class SomeJNIClass {
 ```
 
 ## AvoidUsingShortType
+
 **Since:** 4.1
 
 **Priority:** High (1)
@@ -215,6 +230,7 @@ and convert the int back to a short. Thus any storage gains found through use of
 adverse impacts on performance.
 
 **Example(s):**
+
 ```
 public class UsingShort {
    private short doNotUseShort = 0;
@@ -227,6 +243,7 @@ public class UsingShort {
 ```
 
 ## AvoidUsingVolatile
+
 **Since:** 4.1
 
 **Priority:** Medium High (2)
@@ -236,6 +253,7 @@ a good expertise of the Java Memory Model. Moreover, its range of action is some
 the volatile keyword should not be used for maintenance purpose and portability.
 
 **Example(s):**
+
 ```
 public class ThrDeux {
   private volatile String var1;	// not suggested
@@ -244,6 +262,7 @@ public class ThrDeux {
 ```
 
 ## CallSuperInConstructor
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -252,6 +271,7 @@ It is a good practice to call super() in a constructor. If super() is not called
 another constructor (such as an overloaded constructor) is called, this rule will not report it.
 
 **Example(s):**
+
 ```
 public class Foo extends Bar{
   public Foo() {
@@ -267,6 +287,7 @@ public class Foo extends Bar{
 ```
 
 ## DataflowAnomalyAnalysis
+
 **Since:** 3.9
 
 **Priority:** Low (5)
@@ -279,6 +300,7 @@ From those informations there can be found various problems.
 3. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
 
 **Example(s):**
+
 ```
 public void foo() {
   int buz = 5;
@@ -296,6 +318,7 @@ public void foo() {
 |maxPaths|1000|Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.|
 
 ## DefaultPackage
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -304,6 +327,7 @@ Use explicit scoping instead of accidental usage of default package private leve
 The rule allows methods and fields annotated with Guava's @VisibleForTesting.
 
 ## DoNotCallGarbageCollectionExplicitly
+
 **Since:** 4.2
 
 **Priority:** Medium High (2)
@@ -314,6 +338,7 @@ Moreover, "modern" jvms do a very good job handling garbage collections. If memo
 leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
 
 **Example(s):**
+
 ```
 public class GCCall {
     public GCCall() {
@@ -339,6 +364,7 @@ public class GCCall {
 ```
 
 ## DontImportSun
+
 **Since:** 1.5
 
 **Priority:** Medium Low (4)
@@ -346,12 +372,14 @@ public class GCCall {
 Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
 
 **Example(s):**
+
 ```
 import sun.misc.foo;
 public class Foo {}
 ```
 
 ## NullAssignment
+
 **Since:** 1.02
 
 **Priority:** Medium (3)
@@ -362,6 +390,7 @@ of assignment is an indication that the programmer doesn't completely understand
 NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.
 
 **Example(s):**
+
 ```
 public void bar() {
   Object x = null; // this is OK
@@ -373,6 +402,7 @@ public void bar() {
 ```
 
 ## OneDeclarationPerLine
+
 **Since:** 5.0
 
 **Priority:** Medium Low (4)
@@ -381,6 +411,7 @@ Java allows the use of several variables declaration of the same type on one lin
 can lead to quite messy code. This rule looks for several declarations on the same line.
 
 **Example(s):**
+
 ```
 String name;            // separate declarations
 String lastname;
@@ -399,6 +430,7 @@ String name,
 |strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|
 
 ## OnlyOneReturn
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -406,6 +438,7 @@ String name,
 A method should have only one exit point, and that should be the last statement in the method.
 
 **Example(s):**
+
 ```
 public class OneReturnOnly1 {
   public void foo(int x) {
@@ -418,6 +451,7 @@ public class OneReturnOnly1 {
 ```
 
 ## SuspiciousOctalEscape
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -434,6 +468,7 @@ e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
 the literal character "8".
 
 **Example(s):**
+
 ```
 public void foo() {
   // interpreted as octal 12, followed by character '8'
@@ -442,6 +477,7 @@ public void foo() {
 ```
 
 ## UnnecessaryConstructor
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -450,6 +486,7 @@ This rule detects when a constructor is not necessary; i.e., when there is only 
 its public, has an empty body, and takes no arguments.
 
 **Example(s):**
+
 ```
 public class Foo {
   public Foo() {}
@@ -457,6 +494,7 @@ public class Foo {
 ```
 
 ## UnnecessaryParentheses
+
 **Since:** 3.1
 
 **Priority:** Medium (3)
@@ -464,6 +502,7 @@ public class Foo {
 Sometimes expressions are wrapped in unnecessary parentheses, making them look like function calls.
 
 **Example(s):**
+
 ```
 public class Foo {
    boolean bar() {
@@ -473,6 +512,7 @@ public class Foo {
 ```
 
 ## UseConcurrentHashMap
+
 **Since:** 4.2.6
 
 **Priority:** Medium (3)
@@ -481,6 +521,7 @@ Since Java5 brought a new implementation of the Map designed for multi-threaded 
 perform efficient map reads without blocking other threads.
 
 **Example(s):**
+
 ```
 public class ConcurrentApp {
   public void getMyInstance() {
@@ -494,6 +535,7 @@ public class ConcurrentApp {
 ```
 
 ## UseObjectForClearerAPI
+
 **Since:** 4.2.6
 
 **Priority:** Medium (3)
@@ -506,6 +548,7 @@ point to pass extra data, you'll be able to do so by simply modifying or extendi
 your API.
 
 **Example(s):**
+
 ```
 public class MyClass {
   public void connect(String username,

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/j2ee.xml
 ---
 ## DoNotCallSystemExit
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ Web applications should not call System.exit(), since only the web container or 
 application server should stop the JVM. This rule also checks for the equivalent call Runtime.getRuntime().exit().
 
 **Example(s):**
+
 ```
 public void bar() {
     System.exit(0);                 // never call this when running in an application server!
@@ -25,6 +27,7 @@ public void foo() {
 ```
 
 ## DoNotUseThreads
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -32,6 +35,7 @@ public void foo() {
 The J2EE specification explicitly forbids the use of threads.
 
 **Example(s):**
+
 ```
 // This is not allowed
 public class UsingThread extends Thread {
@@ -47,6 +51,7 @@ public class OtherThread implements Runnable {
 ```
 
 ## LocalHomeNamingConvention
+
 **Since:** 4.0
 
 **Priority:** Medium Low (4)
@@ -54,6 +59,7 @@ public class OtherThread implements Runnable {
 The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
 
 **Example(s):**
+
 ```
 public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}// proper name
 
@@ -61,6 +67,7 @@ public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}// proper
 ```
 
 ## LocalInterfaceSessionNamingConvention
+
 **Since:** 4.0
 
 **Priority:** Medium Low (4)
@@ -68,6 +75,7 @@ public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}// proper
 The Local Interface of a Session EJB should be suffixed by 'Local'.
 
 **Example(s):**
+
 ```
 public interface MyLocal extends javax.ejb.EJBLocalObject {}				// proper name
 
@@ -75,6 +83,7 @@ public interface MyLocal extends javax.ejb.EJBLocalObject {}				// proper name
 ```
 
 ## MDBAndSessionBeanNamingConvention
+
 **Since:** 4.0
 
 **Priority:** Medium Low (4)
@@ -82,6 +91,7 @@ public interface MyLocal extends javax.ejb.EJBLocalObject {}				// proper name
 The EJB Specification states that any MessageDrivenBean or SessionBean should be suffixed by 'Bean'.
 
 **Example(s):**
+
 ```
 public class SomeBean implements SessionBean{}					// proper name
 
@@ -89,6 +99,7 @@ public class MissingTheProperSuffix implements SessionBean {}  	// non-standard 
 ```
 
 ## RemoteInterfaceNamingConvention
+
 **Since:** 4.0
 
 **Priority:** Medium Low (4)
@@ -96,6 +107,7 @@ public class MissingTheProperSuffix implements SessionBean {}  	// non-standard 
 Remote Interface of a Session EJB should not have a suffix.
 
 **Example(s):**
+
 ```
 /* Poor Session suffix */
  public interface BadSuffixSession extends javax.ejb.EJBObject {}
@@ -108,6 +120,7 @@ Remote Interface of a Session EJB should not have a suffix.
 ```
 
 ## RemoteSessionInterfaceNamingConvention
+
 **Since:** 4.0
 
 **Priority:** Medium Low (4)
@@ -115,6 +128,7 @@ Remote Interface of a Session EJB should not have a suffix.
 A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
 
 **Example(s):**
+
 ```
 public interface MyBeautifulHome extends javax.ejb.EJBHome {}		// proper name
 
@@ -122,6 +136,7 @@ public interface MissingProperSuffix extends javax.ejb.EJBHome {}	// non-standar
 ```
 
 ## StaticEJBFieldShouldBeFinal
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -131,6 +146,7 @@ with write access. However, static read-only fields are allowed. This ensures pr
 behavior especially when instances are distributed by the container on several JREs.
 
 **Example(s):**
+
 ```
 public class SomeEJB extends EJBObject implements EJBLocalHome {
 
@@ -141,6 +157,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
 ```
 
 ## UseProperClassLoader
+
 **Since:** 3.7
 
 **Priority:** Medium (3)
@@ -149,6 +166,7 @@ In J2EE, the getClassLoader() method might not work as expected. Use
 Thread.currentThread().getContextClassLoader() instead.
 
 **Example(s):**
+
 ```
 public class Foo {
  ClassLoader cl = Bar.class.getClassLoader();

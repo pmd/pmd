@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_jsp.html
 editmepath: ../pmd-jsp/src/main/resources/rulesets/jsp/basic.xml
 ---
 ## DuplicateJspImports
+
 **Since:** 3.7
 
 **Priority:** Medium (3)
@@ -14,11 +15,13 @@ editmepath: ../pmd-jsp/src/main/resources/rulesets/jsp/basic.xml
 Avoid duplicate import statements inside JSP's.
 
 **Example(s):**
+
 ```
 <%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
 ```
 
 ## IframeMissingSrcAttribute
+
 **Since:** 3.6
 
 **Priority:** Medium High (2)
@@ -27,6 +30,7 @@ IFrames which are missing a src element can cause security information popups in
 through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
 **Example(s):**
+
 ```
 <HTML><title>bad example><BODY>
 <iframe></iframe>
@@ -38,6 +42,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 ```
 
 ## JspEncoding
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -45,6 +50,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
 
 **Example(s):**
+
 ```
 Most browsers should be able to interpret the following headers:
                 
@@ -54,6 +60,7 @@ Most browsers should be able to interpret the following headers:
 ```
 
 ## NoClassAttribute
+
 **Since:** 3.6
 
 **Priority:** Medium High (2)
@@ -61,6 +68,7 @@ Most browsers should be able to interpret the following headers:
 Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 
 **Example(s):**
+
 ```
 <HTML> <BODY>
 <P class="MajorHeading">Some text</P>
@@ -68,6 +76,7 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 ```
 
 ## NoHtmlComments
+
 **Since:** 3.6
 
 **Priority:** Medium High (2)
@@ -77,6 +86,7 @@ In a production system, HTML comments increase the payload
 			little other purpose. Consider switching to JSP comments.
 
 **Example(s):**
+
 ```
 <HTML><title>bad example><BODY>
 <!-- HTML comment -->
@@ -88,6 +98,7 @@ In a production system, HTML comments increase the payload
 ```
 
 ## NoInlineScript
+
 **Since:** 4.0
 
 **Priority:** Medium (3)
@@ -96,6 +107,7 @@ Avoid inlining HTML script content.  Consider externalizing the HTML script usin
 Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
 
 **Example(s):**
+
 ```
 Most browsers should be able to interpret the following headers:
                 
@@ -105,6 +117,7 @@ Most browsers should be able to interpret the following headers:
 ```
 
 ## NoInlineStyleInformation
+
 **Since:** 3.6
 
 **Priority:** Medium (3)
@@ -112,11 +125,13 @@ Most browsers should be able to interpret the following headers:
 Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT> tags, or attributes like "align='center'".
 
 **Example(s):**
+
 ```
 <html><body><p align='center'><b>text</b></p></body></html>
 ```
 
 ## NoJspForward
+
 **Since:** 3.6
 
 **Priority:** Medium (3)
@@ -124,11 +139,13 @@ Style information should be put in CSS files, not in JSPs. Therefore, don't use 
 Do not do a forward from within a JSP file.
 
 **Example(s):**
+
 ```
 <jsp:forward page='UnderConstruction.jsp'/>
 ```
 
 ## NoLongScripts
+
 **Since:** 3.6
 
 **Priority:** Medium High (2)
@@ -136,6 +153,7 @@ Do not do a forward from within a JSP file.
 Scripts should be part of Tag Libraries, rather than part of JSP pages.
 
 **Example(s):**
+
 ```
 <HTML>
 <BODY>
@@ -161,6 +179,7 @@ onload=calcDays;
 ```
 
 ## NoScriptlets
+
 **Since:** 3.6
 
 **Priority:** Medium (3)
@@ -168,6 +187,7 @@ onload=calcDays;
 Scriptlets should be factored into Tag Libraries or JSP	declarations, rather than being part of JSP pages.
 
 **Example(s):**
+
 ```
 <HTML>
 <HEAD>
@@ -182,6 +202,7 @@ response.setHeader("Pragma", "No-cache");
 ```
 
 ## NoUnsanitizedJSPExpression
+
 **Since:** 5.1.4
 
 **Priority:** Medium (3)
@@ -190,6 +211,7 @@ Avoid using expressions without escaping / sanitizing. This could lead to cross 
 would be interpreted by the browser directly (e.g. "<script>alert('hello');</script>").
 
 **Example(s):**
+
 ```
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>

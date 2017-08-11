@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_xsl.html
 editmepath: ../pmd-xml/src/main/resources/rulesets/xsl/xpath.xml
 ---
 ## AvoidAxisNavigation
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-xml/src/main/resources/rulesets/xsl/xpath.xml
 Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut through 100% of the document in the worst case.  Also, try to avoid using 'descendant' or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means cutting through 100% of the document.
 
 **Example(s):**
+
 ```
 <xsl:variable name="var" select="//item/descendant::child"/>
 ```
@@ -25,6 +27,7 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
 |checkSelfDescendantAbreviation|false|descendant::self abreviation, '//', will also trigger this rule.|
 
 ## UseConcatOnce
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -32,6 +35,7 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
 The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
 
 **Example(s):**
+
 ```
 <xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
  <xsl:variable name="var" select="concat("Welcome","to you ",$name))">

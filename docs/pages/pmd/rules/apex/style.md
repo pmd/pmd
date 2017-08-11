@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/style.xml
 ---
 ## AvoidGlobalModifier
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ Global classes should be avoided (especially in managed packages) as they can ne
 Many interfaces (e.g. Batch) required global modifiers in the past but don't require this anymore. Don't lock yourself in.
 
 **Example(s):**
+
 ```
 global class Unchangeable {
 	global UndeletableType unchangable(UndeletableType param) {
@@ -32,6 +34,7 @@ global class Unchangeable {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## AvoidLogicInTrigger
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -42,6 +45,7 @@ Therefore delegate the triggers work to a regular class (often called Trigger ha
 See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices
 
 **Example(s):**
+
 ```
 trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
 	for(Account acc : Trigger.new) {           
@@ -67,6 +71,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## ClassNamingConventions
+
 **Since:** 5.5.0
 
 **Priority:** High (1)
@@ -74,6 +79,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 Class names should always begin with an upper case character.
 
 **Example(s):**
+
 ```
 public class Foo {}
 ```
@@ -87,6 +93,7 @@ public class Foo {}
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## MethodNamingConventions
+
 **Since:** 5.5.0
 
 **Priority:** High (1)
@@ -94,6 +101,7 @@ public class Foo {}
 Method names should always begin with a lower case character, and should not contain underscores.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public void fooStuff() {
@@ -110,6 +118,7 @@ public class Foo {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## MethodWithSameNameAsEnclosingClass
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -117,6 +126,7 @@ public class Foo {
 Non-constructor methods should not have the same name as the enclosing class.
 
 **Example(s):**
+
 ```
 public class MyClass {
 	// this is OK because it is a constructor
@@ -135,6 +145,7 @@ public class MyClass {
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## VariableNamingConventions
+
 **Since:** 5.5.0
 
 **Priority:** High (1)
@@ -144,6 +155,7 @@ checks for final variables that should be fully capitalized and non-final variab
 that should not include underscores.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public static final Integer MY_NUM = 0;

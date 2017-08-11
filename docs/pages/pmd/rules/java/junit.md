@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/junit.xml
 ---
 ## JUnitAssertionsShouldIncludeMessage
+
 **Since:** 1.04
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ JUnit assertions should include an informative message - i.e., use the three-arg
 assertEquals(), not the two-argument version.
 
 **Example(s):**
+
 ```
 public class Foo extends TestCase {
  public void testSomething() {
@@ -27,6 +29,7 @@ public class Foo extends TestCase {
 ```
 
 ## JUnitSpelling
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -34,6 +37,7 @@ public class Foo extends TestCase {
 Some JUnit framework methods are easy to misspell.
 
 **Example(s):**
+
 ```
 import junit.framework.*;
 
@@ -44,6 +48,7 @@ public class Foo extends TestCase {
 ```
 
 ## JUnitStaticSuite
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -51,6 +56,7 @@ public class Foo extends TestCase {
 The suite() method in a JUnit test needs to be both public and static.
 
 **Example(s):**
+
 ```
 import junit.framework.*;
 
@@ -61,6 +67,7 @@ public class Foo extends TestCase {
 ```
 
 ## JUnitTestContainsTooManyAsserts
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -70,6 +77,7 @@ it is harder to verify correctness.  Consider breaking the test scenario into mu
 Customize the maximum number of assertions used by this Rule to suit your needs.
 
 **Example(s):**
+
 ```
 public class MyTestCase extends TestCase {
 	// Ok
@@ -94,6 +102,7 @@ public class MyTestCase extends TestCase {
 |maximumAsserts|1|Maximum number of Asserts in a test method|
 
 ## JUnitTestsShouldIncludeAssert
+
 **Since:** 2.0
 
 **Priority:** Medium (3)
@@ -102,6 +111,7 @@ JUnit tests should include at least one assertion.  This makes the tests more ro
 with messages provide the developer a clearer idea of what the test does.
 
 **Example(s):**
+
 ```
 public class Foo extends TestCase {
    public void testSomething() {
@@ -114,6 +124,7 @@ public class Foo extends TestCase {
 ```
 
 ## SimplifyBooleanAssertion
+
 **Since:** 3.6
 
 **Priority:** Medium (3)
@@ -129,6 +140,7 @@ as:
    assertFalse(expr);
 
 **Example(s):**
+
 ```
 public class SimpleTest extends TestCase {
    public void testX() {
@@ -139,6 +151,7 @@ public class SimpleTest extends TestCase {
 ```
 
 ## TestClassWithoutTestCases
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -147,6 +160,7 @@ Test classes end with the suffix Test. Having a non-test class with that name is
 since most people will assume it is a test case. Test classes have test methods named testXXX.
 
 **Example(s):**
+
 ```
 //Consider changing the name of the class if it is not a test
 //Consider adding test methods if it is a test
@@ -159,6 +173,7 @@ public class CarTest {
 ```
 
 ## UnnecessaryBooleanAssertion
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -169,6 +184,7 @@ statements like assertTrue(true) and assertFalse(false).  If you just want a tes
 an error, use the fail() method and provide an indication message of why it did.
 
 **Example(s):**
+
 ```
 public class SimpleTest extends TestCase {
 	public void testX() {
@@ -178,6 +194,7 @@ public class SimpleTest extends TestCase {
 ```
 
 ## UseAssertEqualsInsteadOfAssertTrue
+
 **Since:** 3.1
 
 **Priority:** Medium (3)
@@ -185,6 +202,7 @@ public class SimpleTest extends TestCase {
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
 
 **Example(s):**
+
 ```
 public class FooTest extends TestCase {
 	void testCode() {
@@ -196,6 +214,7 @@ public class FooTest extends TestCase {
 ```
 
 ## UseAssertNullInsteadOfAssertTrue
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -204,6 +223,7 @@ This rule detects JUnit assertions in object references equality. These assertio
 more specific methods, like assertNull, assertNotNull.
 
 **Example(s):**
+
 ```
 public class FooTest extends TestCase {
   void testCode() {
@@ -217,6 +237,7 @@ public class FooTest extends TestCase {
 ```
 
 ## UseAssertSameInsteadOfAssertTrue
+
 **Since:** 3.1
 
 **Priority:** Medium (3)
@@ -225,6 +246,7 @@ This rule detects JUnit assertions in object references equality. These assertio
 by more specific methods, like assertSame, assertNotSame.
 
 **Example(s):**
+
 ```
 public class FooTest extends TestCase {
  void testCode() {
@@ -236,6 +258,7 @@ public class FooTest extends TestCase {
 ```
 
 ## UseAssertTrueInsteadOfAssertEquals
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -243,6 +266,7 @@ public class FooTest extends TestCase {
 When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
 
 **Example(s):**
+
 ```
 public class MyTestCase extends TestCase {
 	public void testMyCase() {

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/complexity.xml
 ---
 ## AvoidDeeplyNestedIfStmts
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-apex/src/main/resources/rulesets/apex/complexity.xml
 Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public void bar(Integer x, Integer y, Integer z) {
@@ -38,6 +40,7 @@ public class Foo {
 |problemDepth|3|The if statement depth reporting threshold|
 
 ## ExcessiveClassLength
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -47,6 +50,7 @@ responsibilities that could be provided by external classes or functions. In bre
 apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public void bar1() {
@@ -76,6 +80,7 @@ public class Foo {
 |sigma||Sigma value|
 
 ## ExcessiveParameterList
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -84,6 +89,7 @@ Methods with numerous parameters are a challenge to maintain, especially if most
 same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
 
 **Example(s):**
+
 ```
 // too many arguments liable to be mixed up
 public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
@@ -107,6 +113,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 |sigma||Sigma value|
 
 ## ExcessivePublicCount
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -117,6 +124,7 @@ smaller ones not only increases testability and reliability but also allows new 
 developed easily.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public String value;
@@ -143,6 +151,7 @@ public class Foo {
 |sigma||Sigma value|
 
 ## NcssConstructorCount
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -152,6 +161,7 @@ of code for a given constructor. NCSS ignores comments, and counts actual statem
 lines of code that are split are counted as one.
 
 **Example(s):**
+
 ```
 public class Foo extends Bar {
 	//this constructor only has 1 NCSS lines
@@ -178,6 +188,7 @@ public class Foo extends Bar {
 |sigma||Sigma value|
 
 ## NcssMethodCount
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -187,6 +198,7 @@ of code for a given method. NCSS ignores comments, and counts actual statements.
 lines of code that are split are counted as one.
 
 **Example(s):**
+
 ```
 public class Foo extends Bar {
 	//this method only has 1 NCSS lines
@@ -212,6 +224,7 @@ public class Foo extends Bar {
 |sigma||Sigma value|
 
 ## NcssTypeCount
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -221,6 +234,7 @@ of code for a given type. NCSS ignores comments, and counts actual statements. U
 lines of code that are split are counted as one.
 
 **Example(s):**
+
 ```
 //this class only has 6 NCSS lines
 public class Foo extends Bar {
@@ -248,6 +262,7 @@ public class Foo extends Bar {
 |sigma||Sigma value|
 
 ## StdCyclomaticComplexity
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -258,6 +273,7 @@ Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate c
 high complexity, and 11+ is very high complexity.
 
 **Example(s):**
+
 ```
 // This has a Cyclomatic Complexity = 12
 	public class Foo {
@@ -310,6 +326,7 @@ high complexity, and 11+ is very high complexity.
 |reportLevel|10|Cyclomatic Complexity reporting threshold|
 
 ## TooManyFields
+
 **Since:** 5.5.0
 
 **Priority:** Medium (3)
@@ -319,6 +336,7 @@ possibly through grouping related fields in new objects.  For example, a class w
 city/state/zip fields could park them within a single Address field.
 
 **Example(s):**
+
 ```
 public class Person {
 	// too many separate fields

@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/comments.xml
 ---
 ## CommentContent
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/comments.xml
 A rule for the politically correct... we don't want to offend anyone.
 
 **Example(s):**
+
 ```
 //	OMG, this is horrible, Bob is an idiot !!!
 ```
@@ -27,6 +29,7 @@ A rule for the politically correct... we don't want to offend anyone.
 |wordsAreRegex|false|Use regular expressions|
 
 ## CommentDefaultAccessModifier
+
 **Since:** 5.4.0
 
 **Priority:** Medium (3)
@@ -36,6 +39,7 @@ To avoid mistakes if we want that a Method, Field or Nested class have a default
         By default the comment must be /* default */, if you want another, you have to provide a regex.
 
 **Example(s):**
+
 ```
 public class Foo {
             final String stringValue = "some string";
@@ -66,6 +70,7 @@ public class Foo {
 |regex||Regular expression|
 
 ## CommentRequired
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -73,6 +78,7 @@ public class Foo {
 Denotes whether comments are required (or unwanted) for specific language elements.
 
 **Example(s):**
+
 ```
 /**
 * 
@@ -93,6 +99,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 |headerCommentRequirement|Required|Header comments. Possible values: [Required, Ignored, Unwanted]|
 
 ## CommentSize
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -100,6 +107,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 Determines whether the dimensions of non-header comments found are within the specified limits.
 
 **Example(s):**
+
 ```
 /**
 *

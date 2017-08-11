@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/design.xml
 ---
 ## AbstractClassWithoutAbstractMethod
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -17,6 +18,7 @@ abstract methods. If the class is intended to be used as a base class only (not 
 directly) a protected constructor can be provided prevent direct instantiation.
 
 **Example(s):**
+
 ```
 public abstract class Foo {
   void int method1() { ... }
@@ -27,6 +29,7 @@ public abstract class Foo {
 ```
 
 ## AbstractClassWithoutAnyMethod
+
 **Since:** 4.2
 
 **Priority:** High (1)
@@ -36,6 +39,7 @@ that is not meant to be instantiated. In this case, it is probably better to use
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
 
 **Example(s):**
+
 ```
 public class abstract Example {
 	String field;
@@ -44,6 +48,7 @@ public class abstract Example {
 ```
 
 ## AccessorClassGeneration
+
 **Since:** 1.04
 
 **Priority:** Medium (3)
@@ -55,6 +60,7 @@ to invoke a new hidden package scope constructor that takes the interface as a s
 This turns a private constructor effectively into one with package scope, and is challenging to discern.
 
 **Example(s):**
+
 ```
 public class Outer {
  void method(){
@@ -67,6 +73,7 @@ public class Outer {
 ```
 
 ## AccessorMethodGeneration
+
 **Since:** 5.5.4
 
 **Priority:** Medium (3)
@@ -76,6 +83,7 @@ with package-private visibility. This adds overhead, and to the dex method count
 be avoided by changing the visibility of the field / method from private to package-private.
 
 **Example(s):**
+
 ```
 public class OuterClass {
     private int counter;
@@ -94,6 +102,7 @@ public class OuterClass {
 ```
 
 ## AssignmentToNonFinalStatic
+
 **Since:** 2.2
 
 **Priority:** Medium (3)
@@ -101,6 +110,7 @@ public class OuterClass {
 Identifies a possible unsafe usage of a static field.
 
 **Example(s):**
+
 ```
 public class StaticField {
    static int x;
@@ -111,6 +121,7 @@ public class StaticField {
 ```
 
 ## AvoidDeeplyNestedIfStmts
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -118,6 +129,7 @@ public class StaticField {
 Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
 
 **Example(s):**
+
 ```
 public class Foo {
   public void bar(int x, int y, int z) {
@@ -139,6 +151,7 @@ public class Foo {
 |problemDepth|3|The if statement depth reporting threshold|
 
 ## AvoidInstanceofChecksInCatchClause
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -146,6 +159,7 @@ public class Foo {
 Each caught exception type should be handled in its own catch clause.
 
 **Example(s):**
+
 ```
 try { // Avoid this
  // do something
@@ -162,6 +176,7 @@ try {  // Prefer this:
 ```
 
 ## AvoidProtectedFieldInFinalClass
+
 **Since:** 2.1
 
 **Priority:** Medium (3)
@@ -170,6 +185,7 @@ Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
 
 **Example(s):**
+
 ```
 public final class Bar {
   private int x;
@@ -179,6 +195,7 @@ public final class Bar {
 ```
 
 ## AvoidProtectedMethodInFinalClassNotExtending
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -188,6 +205,7 @@ only be allowed in final classes that extend other classes with protected method
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
 
 **Example(s):**
+
 ```
 public final class Foo {
   private int bar() {}
@@ -196,6 +214,7 @@ public final class Foo {
 ```
 
 ## AvoidReassigningParameters
+
 **Since:** 1.0
 
 **Priority:** Medium High (2)
@@ -203,6 +222,7 @@ public final class Foo {
 Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
 
 **Example(s):**
+
 ```
 public class Foo {
   private void foo(String bar) {
@@ -212,6 +232,7 @@ public class Foo {
 ```
 
 ## AvoidSynchronizedAtMethodLevel
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -221,6 +242,7 @@ Block-level synchronization helps to ensure that only the code that needs synchr
 gets it.
 
 **Example(s):**
+
 ```
 public class Foo {
   // Try to avoid this:
@@ -245,6 +267,7 @@ public class Foo {
 ```
 
 ## BadComparison
+
 **Since:** 1.8
 
 **Priority:** Medium (3)
@@ -253,11 +276,13 @@ Avoid equality comparisons with Double.NaN. Due to the implicit lack of represen
 precision when comparing floating point numbers these are likely to cause logic errors.
 
 **Example(s):**
+
 ```
 boolean x = (y == Double.NaN);
 ```
 
 ## ClassWithOnlyPrivateConstructorsShouldBeFinal
+
 **Since:** 4.1
 
 **Priority:** High (1)
@@ -266,6 +291,7 @@ A class with only private constructors should be final, unless the private const
 is invoked by a inner class.
 
 **Example(s):**
+
 ```
 public class Foo {  //Should be final
     private Foo() { }
@@ -273,6 +299,7 @@ public class Foo {  //Should be final
 ```
 
 ## CloseResource
+
 **Since:** 1.2.2
 
 **Priority:** Medium (3)
@@ -280,6 +307,7 @@ public class Foo {  //Should be final
 Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
 
 **Example(s):**
+
 ```
 public class Bar {
   public void foo() {
@@ -305,6 +333,7 @@ public class Bar {
 |closeTargets|[]|Methods which may close this resource|
 
 ## CompareObjectsWithEquals
+
 **Since:** 3.2
 
 **Priority:** Medium (3)
@@ -312,6 +341,7 @@ public class Bar {
 Use equals() to compare object references; avoid comparing them with ==.
 
 **Example(s):**
+
 ```
 class Foo {
   boolean bar(String a, String b) {
@@ -321,6 +351,7 @@ class Foo {
 ```
 
 ## ConfusingTernary
+
 **Since:** 1.9
 
 **Priority:** Medium (3)
@@ -336,6 +367,7 @@ rule makes the code easier to read.  Also, this resolves trivial ordering proble
 as "does the error case go first?" or "does the common case go first?".
 
 **Example(s):**
+
 ```
 boolean bar(int x, int y) {
   return (x != y) ? diff : same;
@@ -349,6 +381,7 @@ boolean bar(int x, int y) {
 |ignoreElseIf|false|Ignore conditions with an else-if case|
 
 ## ConstantsInInterface
+
 **Since:** 5.5
 
 **Priority:** Medium (3)
@@ -357,6 +390,7 @@ Avoid constants in interfaces. Interfaces should define types, constants are imp
 better placed in classes or enums. See Effective Java, item 19.
 
 **Example(s):**
+
 ```
 public interface ConstantInterface {
     public static final int CONST1 = 1; // violation, no fields allowed in interface!
@@ -387,6 +421,7 @@ public interface YetAnotherConstantInterface {
 |ignoreIfHasMethods|true|Whether to ignore constants in interfaces if the interface defines any methods|
 
 ## ConstructorCallsOverridableMethod
+
 **Since:** 1.04
 
 **Priority:** High (1)
@@ -400,6 +435,7 @@ this includes method calls throughout the control flow graph - i.e., if a constr
 private method bar() that calls a public method buz(), this denotes a problem.
 
 **Example(s):**
+
 ```
 public class SeniorClass {
   public SeniorClass(){
@@ -422,6 +458,7 @@ public class JuniorClass extends SeniorClass {
 ```
 
 ## DefaultLabelNotLastInSwitchStmt
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -429,6 +466,7 @@ public class JuniorClass extends SeniorClass {
 By convention, the default label should be the last label in a switch statement.
 
 **Example(s):**
+
 ```
 public class Foo {
   void bar(int a) {
@@ -445,6 +483,7 @@ public class Foo {
 ```
 
 ## EmptyMethodInAbstractClassShouldBeAbstract
+
 **Since:** 4.1
 
 **Priority:** High (1)
@@ -453,6 +492,7 @@ Empty or auto-generated methods in an abstract class should be tagged as abstrac
 usage by developers who should be implementing their own versions in the concrete subclasses.
 
 **Example(s):**
+
 ```
 public abstract class ShouldBeAbstract {
     public Object couldBeAbstract() {
@@ -466,6 +506,7 @@ public abstract class ShouldBeAbstract {
 ```
 
 ## EqualsNull
+
 **Since:** 1.9
 
 **Priority:** High (1)
@@ -473,6 +514,7 @@ public abstract class ShouldBeAbstract {
 Tests for null should not use the equals() method. The '==' operator should be used instead.
 
 **Example(s):**
+
 ```
 String x = "foo";
 
@@ -486,6 +528,7 @@ if (x == null) { 	// preferred
 ```
 
 ## FieldDeclarationsShouldBeAtStartOfClass
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -493,6 +536,7 @@ if (x == null) { 	// preferred
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
 
 **Example(s):**
+
 ```
 public class HelloWorldBean {
 
@@ -517,6 +561,7 @@ public class HelloWorldBean {
 |ignoreEnumDeclarations|true|Ignore Enum Declarations that precede fields.|
 
 ## FinalFieldCouldBeStatic
+
 **Since:** 1.1
 
 **Priority:** Medium (3)
@@ -525,6 +570,7 @@ If a final field is assigned to a compile-time constant, it could be made static
 in each object at runtime.
 
 **Example(s):**
+
 ```
 public class Foo {
   public final int BAR = 42; // this could be static and save some space
@@ -532,6 +578,7 @@ public class Foo {
 ```
 
 ## GodClass
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -545,6 +592,7 @@ Using Software Metrics to Characterize, Evaluate, and Improve the Design
 of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
 
 ## IdempotentOperations
+
 **Since:** 2.0
 
 **Priority:** Medium (3)
@@ -552,6 +600,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
 Avoid idempotent operations - they have no effect.
 
 **Example(s):**
+
 ```
 public class Foo {
  public void bar() {
@@ -562,6 +611,7 @@ public class Foo {
 ```
 
 ## ImmutableField
+
 **Since:** 2.0
 
 **Priority:** Medium (3)
@@ -570,6 +620,7 @@ Identifies private fields whose values never change once they are initialized ei
 of the field or by a constructor.  This helps in converting existing classes to becoming immutable ones.
 
 **Example(s):**
+
 ```
 public class Foo {
   private int x; // could be final
@@ -583,6 +634,7 @@ public class Foo {
 ```
 
 ## InstantiationToGetClass
+
 **Since:** 2.0
 
 **Priority:** Medium Low (4)
@@ -590,6 +642,7 @@ public class Foo {
 Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
 
 **Example(s):**
+
 ```
 // replace this
 Class c = new String().getClass();
@@ -599,6 +652,7 @@ Class c = String.class;
 ```
 
 ## LogicInversion
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -606,6 +660,7 @@ Class c = String.class;
 Use opposite operator instead of negating the whole expression with a logic complement operator.
 
 **Example(s):**
+
 ```
 public boolean bar(int a, int b) {
 
@@ -622,6 +677,7 @@ public boolean bar(int a, int b) {
 ```
 
 ## MissingBreakInSwitch
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -630,6 +686,7 @@ Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
 
 **Example(s):**
+
 ```
 public void bar(int status) {
     switch(status) {
@@ -651,6 +708,7 @@ public void bar(int status) {
 ```
 
 ## MissingStaticMethodInNonInstantiatableClass
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -658,6 +716,7 @@ public void bar(int status) {
 A class that has private constructors and does not have any static methods or fields cannot be used.
 
 **Example(s):**
+
 ```
 // This class is unusable, since it cannot be
 // instantiated (private constructor),
@@ -670,6 +729,7 @@ public class Foo {
 ```
 
 ## NonCaseLabelInSwitchStatement
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -678,6 +738,7 @@ A non-case label (e.g. a named break/continue label) was present in a switch sta
 This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
 
 **Example(s):**
+
 ```
 public class Foo {
   void bar(int a) {
@@ -695,6 +756,7 @@ public class Foo {
 ```
 
 ## NonStaticInitializer
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -704,6 +766,7 @@ invoking the constructor).  While this is a valid language construct, it is rare
 confusing.
 
 **Example(s):**
+
 ```
 public class MyClass {
  // this block gets run before any call to a constructor
@@ -714,6 +777,7 @@ public class MyClass {
 ```
 
 ## NonThreadSafeSingleton
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -731,6 +795,7 @@ performance penalty. [Reference](http://www.cs.umd.edu/~pugh/java/memoryModel/Do
 See Effective Java, item 48.
 
 **Example(s):**
+
 ```
 private static Foo foo = null;
 
@@ -751,6 +816,7 @@ public static Foo getFoo() {
 |checkNonStaticMethods|true|Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.|
 
 ## OptimizableToArrayCall
+
 **Since:** 1.8
 
 **Priority:** Medium (3)
@@ -760,6 +826,7 @@ collection. Initial arrays that are too small are discarded in favour of new one
 that are the proper size.
 
 **Example(s):**
+
 ```
 List foos = getFoos();
 
@@ -772,6 +839,7 @@ Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
 ```
 
 ## PositionLiteralsFirstInCaseInsensitiveComparisons
+
 **Since:** 5.1
 
 **Priority:** Medium (3)
@@ -780,6 +848,7 @@ Position literals first in comparisons, if the second argument is null then Null
 can be avoided, they will just return false.
 
 **Example(s):**
+
 ```
 class Foo {
   boolean bar(String x) {
@@ -789,6 +858,7 @@ class Foo {
 ```
 
 ## PositionLiteralsFirstInComparisons
+
 **Since:** 3.3
 
 **Priority:** Medium (3)
@@ -797,6 +867,7 @@ Position literals first in comparisons, if the second argument is null then Null
 can be avoided, they will just return false.
 
 **Example(s):**
+
 ```
 class Foo {
   boolean bar(String x) {
@@ -806,6 +877,7 @@ class Foo {
 ```
 
 ## PreserveStackTrace
+
 **Since:** 3.7
 
 **Priority:** Medium (3)
@@ -815,6 +887,7 @@ new exception will cause the original stack trace to be lost making it difficult
 effectively.
 
 **Example(s):**
+
 ```
 public class Foo {
     void good() {
@@ -840,6 +913,7 @@ public class Foo {
 ```
 
 ## ReturnEmptyArrayRatherThanNull
+
 **Since:** 4.2
 
 **Priority:** High (1)
@@ -849,6 +923,7 @@ null reference. This removes the need for null checking all results and avoids i
 NullPointerExceptions.
 
 **Example(s):**
+
 ```
 public class Example {
     // Not a good idea...
@@ -866,6 +941,7 @@ public class Example {
 ```
 
 ## SimpleDateFormatNeedsLocale
+
 **Since:** 2.0
 
 **Priority:** Medium (3)
@@ -874,6 +950,7 @@ Be sure to specify a Locale when creating SimpleDateFormat instances to ensure t
 formatting is used.
 
 **Example(s):**
+
 ```
 public class Foo {
   // Should specify Locale.US (or whatever)
@@ -882,6 +959,7 @@ public class Foo {
 ```
 
 ## SimplifyBooleanExpressions
+
 **Since:** 1.05
 
 **Priority:** Medium (3)
@@ -889,6 +967,7 @@ public class Foo {
 Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.
 
 **Example(s):**
+
 ```
 public class Bar {
   // can be simplified to
@@ -900,6 +979,7 @@ public class Bar {
 ```
 
 ## SimplifyBooleanReturns
+
 **Since:** 0.9
 
 **Priority:** Medium (3)
@@ -908,6 +988,7 @@ Avoid unnecessary if-then-else statements when returning a boolean. The result o
 the conditional test can be returned instead.
 
 **Example(s):**
+
 ```
 public boolean isBarEqualTo(int x) {
 
@@ -925,6 +1006,7 @@ public boolean isBarEqualTo(int x) {
 ```
 
 ## SimplifyConditional
+
 **Since:** 3.1
 
 **Priority:** Medium (3)
@@ -932,6 +1014,7 @@ public boolean isBarEqualTo(int x) {
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
 
 **Example(s):**
+
 ```
 class Foo {
   void bar(Object x) {
@@ -943,6 +1026,7 @@ class Foo {
 ```
 
 ## SingleMethodSingleton
+
 **Since:** 5.4
 
 **Priority:** Medium High (2)
@@ -952,6 +1036,7 @@ is that the instance created using the overloaded method is not cached and so,
  for each call and new objects will be created for every invocation.
 
 **Example(s):**
+
 ```
 public class Singleton {
 
@@ -970,6 +1055,7 @@ public static Singleton getInstance(Object obj){
 ```
 
 ## SingletonClassReturningNewInstance
+
 **Since:** 5.4
 
 **Priority:** Medium High (2)
@@ -979,6 +1065,7 @@ is that the instance created using the overloaded method is not cached and so,
  for each call and new objects will be created for every invocation.
 
 **Example(s):**
+
 ```
 class Singleton {
 	private static Singleton instance = null;
@@ -991,6 +1078,7 @@ class Singleton {
 ```
 
 ## SingularField
+
 **Since:** 3.1
 
 **Priority:** Medium (3)
@@ -1000,6 +1088,7 @@ object to provide them to other methods. They may be better implemented as local
 within those methods.
 
 **Example(s):**
+
 ```
 public class Foo {
     private int x;  // no reason to exist at the Foo instance level
@@ -1018,6 +1107,7 @@ public class Foo {
 |checkInnerClasses|false|Check inner classes|
 
 ## SwitchDensity
+
 **Since:** 1.02
 
 **Priority:** Medium (3)
@@ -1027,6 +1117,7 @@ is overloaded.  Consider moving the statements into new methods or creating subc
 on the switch variable.
 
 **Example(s):**
+
 ```
 public class Foo {
   public void bar(int x) {
@@ -1052,6 +1143,7 @@ public class Foo {
 |sigma||Sigma value|
 
 ## SwitchStmtsShouldHaveDefault
+
 **Since:** 1.0
 
 **Priority:** Medium (3)
@@ -1059,6 +1151,7 @@ public class Foo {
 All switch statements should include a default option to catch any unspecified values.
 
 **Example(s):**
+
 ```
 public void bar() {
     int x = 2;
@@ -1071,6 +1164,7 @@ public void bar() {
 ```
 
 ## TooFewBranchesForASwitchStatement
+
 **Since:** 4.2
 
 **Priority:** Medium (3)
@@ -1080,6 +1174,7 @@ cases is ill-advised, since switches are not as easy to understand as if-then st
 if-then statement to increase code readability.
 
 **Example(s):**
+
 ```
 // With a minimumNumberCaseForASwitch of 3
 public class Foo {
@@ -1102,6 +1197,7 @@ public class Foo {
 |minimumNumberCaseForASwitch|3|Minimum number of branches for a switch|
 
 ## UncommentedEmptyConstructor
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -1112,6 +1208,7 @@ constructors it is easier to distinguish between intentional (commented)
 and unintentional empty constructors.
 
 **Example(s):**
+
 ```
 public Foo() {
   // This constructor is intentionally empty. Nothing special is needed here.
@@ -1125,6 +1222,7 @@ public Foo() {
 |ignoreExplicitConstructorInvocation|false|Ignore explicit constructor invocation when deciding whether constructor is empty or not|
 
 ## UncommentedEmptyMethodBody
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -1135,12 +1233,14 @@ it is easier to distinguish between intentional (commented) and unintentional
 empty methods.
 
 **Example(s):**
+
 ```
 public void doSomething() {
 }
 ```
 
 ## UnnecessaryLocalBeforeReturn
+
 **Since:** 3.3
 
 **Priority:** Medium (3)
@@ -1148,6 +1248,7 @@ public void doSomething() {
 Avoid the creation of unnecessary local variables
 
 **Example(s):**
+
 ```
 public class Foo {
    public int foo() {
@@ -1164,6 +1265,7 @@ public class Foo {
 |statementOrderMatters|true|If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.|
 
 ## UnsynchronizedStaticDateFormatter
+
 **Since:** 3.6
 
 **Priority:** Medium (3)
@@ -1173,6 +1275,7 @@ for each thread. If multiple threads must access a static formatter, the formatt
 synchronized either on method or block level.
 
 **Example(s):**
+
 ```
 public class Foo {
     private static final SimpleDateFormat sdf = new SimpleDateFormat();
@@ -1186,6 +1289,7 @@ public class Foo {
 ```
 
 ## UseCollectionIsEmpty
+
 **Since:** 3.9
 
 **Priority:** Medium (3)
@@ -1194,6 +1298,7 @@ The isEmpty() method on java.util.Collection is provided to determine if a colle
 Comparing the value of size() to 0 does not convey intent as well as the isEmpty() method.
 
 **Example(s):**
+
 ```
 public class Foo {
 	void good() {
@@ -1213,6 +1318,7 @@ public class Foo {
 ```
 
 ## UseLocaleWithCaseConversions
+
 **Since:** 2.0
 
 **Priority:** Medium (3)
@@ -1221,6 +1327,7 @@ When doing String.toLowerCase()/toUpperCase() conversions, use Locales to avoids
 have unusual conventions, i.e. Turkish.
 
 **Example(s):**
+
 ```
 class Foo {
  // BAD
@@ -1238,6 +1345,7 @@ class Foo {
 ```
 
 ## UseNotifyAllInsteadOfNotify
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -1246,6 +1354,7 @@ Thread.notify() awakens a thread monitoring the object. If more than one thread 
 one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.
 
 **Example(s):**
+
 ```
 void bar() {
     x.notify();
@@ -1256,6 +1365,7 @@ void bar() {
 ```
 
 ## UseUtilityClass
+
 **Since:** 0.3
 
 **Priority:** Medium (3)
@@ -1267,6 +1377,7 @@ remember to add a private constructor to prevent instantiation.
 (Note, that this use was known before PMD 5.1.0 as UseSingleton).
 
 **Example(s):**
+
 ```
 public class MaybeAUtility {
   public static void foo() {}
@@ -1275,6 +1386,7 @@ public class MaybeAUtility {
 ```
 
 ## UseVarargs
+
 **Since:** 5.0
 
 **Priority:** Medium Low (4)
@@ -1284,6 +1396,7 @@ sugar provides flexibility for users of these methods and constructors, allowing
 having to deal with the creation of an array.
 
 **Example(s):**
+
 ```
 public class Foo {
    public void foo(String s, Object[] args) {

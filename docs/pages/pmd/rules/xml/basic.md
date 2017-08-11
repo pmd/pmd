@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_xml.html
 editmepath: ../pmd-xml/src/main/resources/rulesets/xml/basic.xml
 ---
 ## MistypedCDATASection
+
 **Since:** 5.0
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-xml/src/main/resources/rulesets/xml/basic.xml
 An XML CDATA section begins with a <!CDATA[ marker, which has only one [, and ends with a ]]> marker, which has only two ].
 
 **Example(s):**
+
 ```
 An extra [ looks like &lt;!CDATA[[]]&gt;, and an extra ] looks like &lt;!CDATA[]]]&gt;.
 ```

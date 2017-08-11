@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/naming.xml
 ---
 ## AbstractNaming
+
 **Since:** 1.4
 
 **Priority:** Medium (3)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/naming.xml
 Abstract classes should be named 'AbstractXXX'.
 
 **Example(s):**
+
 ```
 public abstract class Foo { // should be AbstractFoo
 }
@@ -26,6 +28,7 @@ public abstract class Foo { // should be AbstractFoo
 |strict|true|Also flag classes, that are named Abstract, but are not abstract.|
 
 ## AvoidDollarSigns
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -33,12 +36,14 @@ public abstract class Foo { // should be AbstractFoo
 Avoid using dollar signs in variable/method/class/interface names.
 
 **Example(s):**
+
 ```
 public class Fo$o {  // not a recommended name
 }
 ```
 
 ## AvoidFieldNameMatchingMethodName
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -48,6 +53,7 @@ having information (field) and actions (method) is not clear naming. Developers 
 Smalltalk often prefer this approach as the methods denote accessor methods.
 
 **Example(s):**
+
 ```
 public class Foo {
 	Object bar;
@@ -58,6 +64,7 @@ public class Foo {
 ```
 
 ## AvoidFieldNameMatchingTypeName
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -66,6 +73,7 @@ It is somewhat confusing to have a field name matching the declaring class name.
 This probably means that type and/or field names should be chosen more carefully.
 
 **Example(s):**
+
 ```
 public class Foo extends Bar {
 	int foo;	// There is probably a better name that can be used
@@ -73,6 +81,7 @@ public class Foo extends Bar {
 ```
 
 ## BooleanGetMethodName
+
 **Since:** 4.0
 
 **Priority:** Medium Low (4)
@@ -82,6 +91,7 @@ I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the u
 prefix for these methods.
 
 **Example(s):**
+
 ```
 public boolean getFoo(); 	// bad
 public boolean isFoo(); 	// ok
@@ -95,6 +105,7 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
 |checkParameterizedMethods|false|Check parameterized methods|
 
 ## ClassNamingConventions
+
 **Since:** 1.2
 
 **Priority:** High (1)
@@ -102,11 +113,13 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
 Class names should always begin with an upper case character.
 
 **Example(s):**
+
 ```
 public class Foo {}
 ```
 
 ## GenericsNaming
+
 **Since:** 4.2.6
 
 **Priority:** Medium Low (4)
@@ -114,6 +127,7 @@ public class Foo {}
 Names for references to generic values should be limited to a single uppercase letter.
 
 **Example(s):**
+
 ```
 public interface GenericDao<E extends BaseModel, K extends Serializable> extends BaseDao {
    // This is ok...
@@ -133,6 +147,7 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
 ```
 
 ## LongVariable
+
 **Since:** 0.3
 
 **Priority:** Medium (3)
@@ -140,6 +155,7 @@ public interface GenericDao<EF extends BaseModel, K extends Serializable> {
 Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.
 
 **Example(s):**
+
 ```
 public class Something {
 	int reallyLongIntName = -3;  			// VIOLATION - Field
@@ -159,6 +175,7 @@ public class Something {
 |minimum|17|The variable length reporting threshold|
 
 ## MethodNamingConventions
+
 **Since:** 1.2
 
 **Priority:** High (1)
@@ -166,6 +183,7 @@ public class Something {
 Method names should always begin with a lower case character, and should not contain underscores.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public void fooStuff() {
@@ -180,6 +198,7 @@ public class Foo {
 |checkNativeMethods|true|Check native methods|
 
 ## MethodWithSameNameAsEnclosingClass
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -187,6 +206,7 @@ public class Foo {
 Non-constructor methods should not have the same name as the enclosing class.
 
 **Example(s):**
+
 ```
 public class MyClass {
 
@@ -197,6 +217,7 @@ public class MyClass {
 ```
 
 ## MisleadingVariableName
+
 **Since:** 3.4
 
 **Priority:** Medium (3)
@@ -204,6 +225,7 @@ public class MyClass {
 Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
 
 **Example(s):**
+
 ```
 public class Foo {
     private int m_foo; // OK
@@ -214,6 +236,7 @@ public class Foo {
 ```
 
 ## NoPackage
+
 **Since:** 3.3
 
 **Priority:** Medium (3)
@@ -221,6 +244,7 @@ public class Foo {
 Detects when a class or interface does not have a package definition.
 
 **Example(s):**
+
 ```
 // no package declaration
 public class ClassInDefaultPackage {
@@ -228,6 +252,7 @@ public class ClassInDefaultPackage {
 ```
 
 ## PackageCase
+
 **Since:** 3.3
 
 **Priority:** Medium (3)
@@ -235,6 +260,7 @@ public class ClassInDefaultPackage {
 Detects when a package definition contains uppercase characters.
 
 **Example(s):**
+
 ```
 package com.MyCompany;  // should be lowercase name
 
@@ -243,6 +269,7 @@ public class SomeClass {
 ```
 
 ## ShortClassName
+
 **Since:** 5.0
 
 **Priority:** Medium Low (4)
@@ -250,6 +277,7 @@ public class SomeClass {
 Short Classnames with fewer than e.g. five characters are not recommended.
 
 **Example(s):**
+
 ```
 public class Foo {
 }
@@ -262,6 +290,7 @@ public class Foo {
 |minimum|5|Number of characters that are required as a minimum for a class name.|
 
 ## ShortMethodName
+
 **Since:** 0.3
 
 **Priority:** Medium (3)
@@ -269,6 +298,7 @@ public class Foo {
 Method names that are very short are not helpful to the reader.
 
 **Example(s):**
+
 ```
 public class ShortMethod {
 	public void a( int i ) { // Violation
@@ -283,6 +313,7 @@ public class ShortMethod {
 |minimum|3|Number of characters that are required as a minimum for a method name.|
 
 ## ShortVariable
+
 **Since:** 0.3
 
 **Priority:** Medium (3)
@@ -290,6 +321,7 @@ public class ShortMethod {
 Fields, local variables, or parameter names that are very short are not helpful to the reader.
 
 **Example(s):**
+
 ```
 public class Something {
     private int q = 15;                         // field - too short
@@ -312,6 +344,7 @@ public class Something {
 |minimum|3|Number of characters that are required as a minimum for a variable name.|
 
 ## SuspiciousConstantFieldName
+
 **Since:** 2.0
 
 **Priority:** Medium (3)
@@ -320,6 +353,7 @@ Field names using all uppercase characters - Sun's Java naming conventions indic
 be declared as final.
 
 **Example(s):**
+
 ```
 public class Foo {
  // this is bad, since someone could accidentally
@@ -330,6 +364,7 @@ public class Foo {
 ```
 
 ## SuspiciousEqualsMethodName
+
 **Since:** 2.0
 
 **Priority:** Medium High (2)
@@ -338,6 +373,7 @@ The method name and parameter number are suspiciously close to equals(Object), w
 intention to override the equals(Object) method.
 
 **Example(s):**
+
 ```
 public class Foo {
    public int equals(Object o) {
@@ -353,6 +389,7 @@ public class Foo {
 ```
 
 ## SuspiciousHashcodeMethodName
+
 **Since:** 1.5
 
 **Priority:** Medium (3)
@@ -361,6 +398,7 @@ The method name and return type are suspiciously close to hashCode(), which may 
 to override the hashCode() method.
 
 **Example(s):**
+
 ```
 public class Foo {
 	public int hashcode() {	// oops, this probably was supposed to be 'hashCode'
@@ -370,6 +408,7 @@ public class Foo {
 ```
 
 ## VariableNamingConventions
+
 **Since:** 1.2
 
 **Priority:** High (1)
@@ -379,6 +418,7 @@ checks for final variables that should be fully capitalized and non-final variab
 that should not include underscores.
 
 **Example(s):**
+
 ```
 public class Foo {
    public static final int MY_NUM = 0;

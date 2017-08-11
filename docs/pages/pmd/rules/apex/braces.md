@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/braces.xml
 ---
 ## ForLoopsMustUseBraces
+
 **Since:** 5.6.0
 
 **Priority:** Medium (3)
@@ -16,6 +17,7 @@ indentation is lost then it becomes difficult to separate the code being control
 from the rest.
 
 **Example(s):**
+
 ```
 for (int i = 0; i < 42; i++) // not recommended
     foo();
@@ -34,6 +36,7 @@ for (int i = 0; i < 42; i++) { // preferred approach
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## IfElseStmtsMustUseBraces
+
 **Since:** 5.6.0
 
 **Priority:** Medium (3)
@@ -43,6 +46,7 @@ or indentation is lost then it becomes difficult to separate the code being cont
 from the rest.
 
 **Example(s):**
+
 ```
 // this is OK
 if (foo) x++;
@@ -63,6 +67,7 @@ if (foo)
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## IfStmtsMustUseBraces
+
 **Since:** 5.6.0
 
 **Priority:** Medium (3)
@@ -72,6 +77,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **Example(s):**
+
 ```
 if (foo)	// not recommended
 	x++;
@@ -90,6 +96,7 @@ if (foo) {	// preferred approach
 |cc_block_highlighting|false|Code Climate Block Highlighting|
 
 ## WhileLoopsMustUseBraces
+
 **Since:** 5.6.0
 
 **Priority:** Medium (3)
@@ -99,6 +106,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 **Example(s):**
+
 ```
 while (true)	// not recommended
       x++;

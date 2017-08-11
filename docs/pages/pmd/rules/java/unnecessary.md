@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/unnecessary.xml
 ---
 ## UnnecessaryConversionTemporary
+
 **Since:** 0.1
 
 **Priority:** Medium (3)
@@ -15,6 +16,7 @@ Avoid the use temporary objects when converting primitives to Strings. Use the s
 on the wrapper classes instead.
 
 **Example(s):**
+
 ```
 public String convert(int x) {
 	String foo = new Integer(x).toString();	// this wastes an object
@@ -24,6 +26,7 @@ public String convert(int x) {
 ```
 
 ## UnnecessaryFinalModifier
+
 **Since:** 3.0
 
 **Priority:** Medium (3)
@@ -33,6 +36,7 @@ tagged as such. Similarly, methods that can't be overridden (private methods, me
 methods of enum instance) do not need to be tagged either.
 
 **Example(s):**
+
 ```
 public final class Foo {
     // This final modifier is not necessary, since the class is final
@@ -43,6 +47,7 @@ public final class Foo {
 ```
 
 ## UnnecessaryModifier
+
 **Since:** 1.02
 
 **Priority:** Medium (3)
@@ -54,6 +59,7 @@ Nested enums are automatically `static`.
 For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
 
 **Example(s):**
+
 ```
 public @interface Annotation {
   public abstract void bar(); 		// both abstract and public are ignored by the compiler
@@ -76,6 +82,7 @@ public class Bar {
 ```
 
 ## UnnecessaryReturn
+
 **Since:** 1.3
 
 **Priority:** Medium (3)
@@ -83,6 +90,7 @@ public class Bar {
 Avoid the use of unnecessary return statements.
 
 **Example(s):**
+
 ```
 public class Foo {
   public void bar() {
@@ -93,6 +101,7 @@ public class Foo {
 ```
 
 ## UnusedNullCheckInEquals
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -100,6 +109,7 @@ public class Foo {
 After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
 
 **Example(s):**
+
 ```
 public class Test {
 
@@ -139,6 +149,7 @@ public class Test {
 ```
 
 ## UselessOperationOnImmutable
+
 **Since:** 3.5
 
 **Priority:** Medium (3)
@@ -147,6 +158,7 @@ An operation on an Immutable object (String, BigDecimal or BigInteger) won't cha
 since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
 
 **Example(s):**
+
 ```
 import java.math.*;
 
@@ -163,6 +175,7 @@ class Test {
 ```
 
 ## UselessOverridingMethod
+
 **Since:** 3.3
 
 **Priority:** Medium (3)
@@ -170,6 +183,7 @@ class Test {
 The overriding method merely calls the same method defined in a superclass.
 
 **Example(s):**
+
 ```
 public void foo(String bar) {
   super.foo(bar);      // why bother overriding?
@@ -192,6 +206,7 @@ public Long getId() {
 |ignoreAnnotations|false|Ignore annotations|
 
 ## UselessParentheses
+
 **Since:** 5.0
 
 **Priority:** Medium Low (4)
@@ -199,6 +214,7 @@ public Long getId() {
 Useless parentheses should be removed.
 
 **Example(s):**
+
 ```
 public class Foo {
 
@@ -214,6 +230,7 @@ public class Foo {
 ```
 
 ## UselessQualifiedThis
+
 **Since:** 5.4.0
 
 **Priority:** Medium (3)
@@ -221,6 +238,7 @@ public class Foo {
 Look for qualified this usages in the same class.
 
 **Example(s):**
+
 ```
 public class Foo {
     final Foo otherFoo = Foo.this;  // use "this" directly

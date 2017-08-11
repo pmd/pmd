@@ -7,6 +7,7 @@ sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/imports.xml
 ---
 ## DontImportJavaLang
+
 **Since:** 0.5
 
 **Priority:** Medium Low (4)
@@ -14,6 +15,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/imports.xml
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
 
 **Example(s):**
+
 ```
 import java.lang.String;	// this is unnecessary
 
@@ -27,6 +29,7 @@ public class Foo {}
 ```
 
 ## DuplicateImports
+
 **Since:** 0.5
 
 **Priority:** Medium Low (4)
@@ -34,6 +37,7 @@ public class Foo {}
 Duplicate or overlapping import statements should be avoided.
 
 **Example(s):**
+
 ```
 import java.lang.String;
 import java.lang.*;
@@ -41,6 +45,7 @@ public class Foo {}
 ```
 
 ## ImportFromSamePackage
+
 **Since:** 1.02
 
 **Priority:** Medium (3)
@@ -48,6 +53,7 @@ public class Foo {}
 There is no need to import a type that lives in the same package.
 
 **Example(s):**
+
 ```
 package foo;
  
@@ -58,6 +64,7 @@ package foo;
 ```
 
 ## TooManyStaticImports
+
 **Since:** 4.1
 
 **Priority:** Medium (3)
@@ -68,6 +75,7 @@ Readers of your code (including you, a few months after you wrote it) will not k
 which class a static member comes from (Sun 1.5 Language Guide).
 
 **Example(s):**
+
 ```
 import static Lennon;
 import static Ringo;
@@ -83,6 +91,7 @@ import static Yoko; // Too much !
 |maximumStaticImports|4|All static imports can be disallowed by setting this to 0|
 
 ## UnnecessaryFullyQualifiedName
+
 **Since:** 5.0
 
 **Priority:** Medium Low (4)
@@ -91,6 +100,7 @@ Import statements allow the use of non-fully qualified names.  The use of a full
 which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
 
 **Example(s):**
+
 ```
 import java.util.List;
 
@@ -101,6 +111,7 @@ public class Foo {
 ```
 
 ## UnusedImports
+
 **Since:** 1.0
 
 **Priority:** Medium Low (4)
@@ -108,6 +119,7 @@ public class Foo {
 Avoid the use of unused import statements to prevent unwanted dependencies.
 
 **Example(s):**
+
 ```
 // this is bad
 import java.io.File;
