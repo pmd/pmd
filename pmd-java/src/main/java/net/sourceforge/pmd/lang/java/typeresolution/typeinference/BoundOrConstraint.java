@@ -137,11 +137,11 @@ public abstract class BoundOrConstraint {
     public abstract List<BoundOrConstraint> reduce();
 
     public void addVariablesToSet(Set<Variable> variables) {
-        if(leftTypeVariable != null) {
+        if (leftTypeVariable != null) {
             variables.add(leftTypeVariable);
         }
 
-        if(rightTypeVariable != null) {
+        if (rightTypeVariable != null) {
             variables.add(rightTypeVariable);
         }
     }

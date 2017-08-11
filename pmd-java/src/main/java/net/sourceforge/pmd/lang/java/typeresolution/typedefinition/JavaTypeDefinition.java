@@ -10,7 +10,6 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -329,7 +328,7 @@ public class JavaTypeDefinition implements TypeDefinition {
             destinationSet.add(clazz);
             getErasedSuperTypeSet(clazz.getSuperclass(), destinationSet);
 
-            for(Class<?> interfaceType : clazz.getInterfaces()) {
+            for (Class<?> interfaceType : clazz.getInterfaces()) {
                 getErasedSuperTypeSet(interfaceType, destinationSet);
             }
         }
@@ -345,8 +344,12 @@ public class JavaTypeDefinition implements TypeDefinition {
     }
 
     public JavaTypeDefinition getAsSuper(Class<?> superClazz) {
-        for(JavaTypeDefinition superTypeDef : getSuperTypeSet()) {
-            if(superTypeDef.clazz == superClazz) {
+        if (clazz == superClazz) { // optimize for same class calls
+            return this;
+        }
+
+        for (JavaTypeDefinition superTypeDef : getSuperTypeSet()) {
+            if (superTypeDef.clazz == superClazz) {
                 return superTypeDef;
             }
         }

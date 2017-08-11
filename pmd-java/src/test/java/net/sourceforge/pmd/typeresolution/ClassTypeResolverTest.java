@@ -15,13 +15,11 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.JavaTypeDefinitionEquals;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 
@@ -92,6 +90,7 @@ import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.Converter;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericClass;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.JavaTypeDefinitionEquals;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;

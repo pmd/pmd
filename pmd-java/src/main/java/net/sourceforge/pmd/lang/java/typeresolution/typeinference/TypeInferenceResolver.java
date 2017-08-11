@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution.typeinference;
 
-import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
-
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.EQUALITY;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 
@@ -19,6 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
 public final class TypeInferenceResolver {
@@ -39,11 +39,14 @@ public final class TypeInferenceResolver {
             }
         }
 
+        // step 1 - EC
         Set<Class<?>> erasedCandidateSet = getErasedCandidateSet(types);
+        // step 2 - MEC
         Set<Class<?>> minimalSet = getMinimalErasedCandidateSet(erasedCandidateSet);
 
         List<JavaTypeDefinition> candidates = new ArrayList<>();
 
+        // for each element G n MEC
         for (Class<?> erasedSupertype : minimalSet) {
             JavaTypeDefinition lci = types.get(0).getAsSuper(erasedSupertype);
 
@@ -65,17 +68,21 @@ public final class TypeInferenceResolver {
         JavaTypeDefinition result = candidates.get(0);
 
         for (JavaTypeDefinition candidate : candidates) {
-            if (containsType(candidate, result)) {
+            if (MethodTypeResolution.isSubtypeable(candidate, result)) {
                 result = candidate;
-            } else if (!containsType(result, candidate)) { // TODO: add support for compound types
+            } else if (!MethodTypeResolution.isSubtypeable(result, candidate)) {
+                // TODO: add support for compound types
                 throw new ResolutionFailed();
-            }
+            } // else: result contains candidate, nothing else to do
         }
 
         return result;
     }
 
-    private static JavaTypeDefinition intersect(JavaTypeDefinition first, JavaTypeDefinition second) {
+    /**
+     * @return the intersection of the two types
+     */
+    public static JavaTypeDefinition intersect(JavaTypeDefinition first, JavaTypeDefinition second) {
         if (first.equals(second)) { // two types equal
             return first;
         } else if (first.getType() == second.getType()) {
@@ -90,38 +97,30 @@ public final class TypeInferenceResolver {
     }
 
     /**
-     * @return true, if parameter contains argument
+     * Merge two types of the same class to something both can be assigned to and is most specific.
      */
-    public static boolean containsType(JavaTypeDefinition parameter, JavaTypeDefinition argument) {
-        if (!MethodTypeResolution.isSubtypeable(parameter, argument)) {
-            return false; // class can't be converted even with unchecked conversion
-        }
-
-        // TODO: wildcards, checking generic arguments properly
-        if (parameter.equals(argument)) {
-            // we don't care about List<String> is assigable to Collection<String> or Collection<? extends Object>
-            return true; // we don't yet care about wildcards like, List<String> is assignable to List<? extends Object>
-        } else {
-            return false;
-        }
-    }
-
     public static JavaTypeDefinition merge(JavaTypeDefinition first, JavaTypeDefinition second) {
         if (first.getType() != second.getType()) {
             throw new IllegalStateException("Must be called with typedefinitions of the same class");
         }
 
+        if (!first.isGeneric()) {
+            return first;
+        }
+
+
         JavaTypeDefinition[] mergedGeneric = new JavaTypeDefinition[first.getTypeParameterCount()];
 
         for (int i = 0; i < first.getTypeParameterCount(); ++i) {
-            if (containsType(first.getGenericType(i), second.getGenericType(i))) {
+            if (MethodTypeResolution.isSubtypeable(first.getGenericType(i), second.getGenericType(i))) {
                 mergedGeneric[i] = first.getGenericType(i);
-            } else if (containsType(second.getGenericType(i), first.getGenericType(i))) {
+            } else if (MethodTypeResolution.isSubtypeable(second.getGenericType(i), first.getGenericType(i))) {
                 mergedGeneric[i] = second.getGenericType(i);
             } else {
                 return JavaTypeDefinition.forClass(Object.class);
                 // TODO: Generic types of the same class can be merged like so:
-                // List<Integer> List<Double> -> List<? extends Number> but we don't have wildcards yet
+                // List<Integer> List<Double> -> List<? extends Number>
+                // but we don't have wildcards yet
             }
         }
 
@@ -175,15 +174,47 @@ public final class TypeInferenceResolver {
 
             // Note: since the Combinations class enumerates the power set from least numerous to most numerous sets
             // the above requirement is satisfied
+
+            List<Variable> variablesToResolve = null;
+
             for (List<Variable> variableSet : new Combinations(uninstantiatedVariables)) {
                 if (isProperSubsetOfVariables(variableSet, instantiations, variableDependencies, bounds)) {
-                    // TODO: resolve variables
+                    variablesToResolve = variableSet;
+                    break;
                 }
+            }
+
+            if (variablesToResolve == null) {
+                throw new ResolutionFailed();
+            }
+
+            // if there are least upper bounds
+            for (Variable var : variablesToResolve) {
+                List<JavaTypeDefinition> lowerBounds = getLowerBoundsOf(var, bounds);
+                // TODO: should call incorporation
+                instantiations.put(var, lub(lowerBounds));
+            }
+
+            uninstantiatedVariables.removeAll(variablesToResolve);
+        }
+
+        return instantiations;
+    }
+
+    public static List<JavaTypeDefinition> getLowerBoundsOf(Variable var, List<Bound> bounds) {
+        List<JavaTypeDefinition> result = new ArrayList<>();
+        for (Bound bound : bounds) {
+            if (bound.ruleType() == SUBTYPE && bound.rightVariable() == var) {
+                // TODO: add support for variables depending on other variables
+                if (bound.isLeftVariable()) {
+                    throw new ResolutionFailed();
+                }
+
+                result.add(bound.leftProper());
             }
         }
 
-
-        return instantiations;
+        return result;
     }
 
     /**
@@ -204,10 +235,11 @@ public final class TypeInferenceResolver {
                                                     Map<Variable, Set<Variable>> dependencies,
                                                     List<Bound> bounds) {
 
-        // search the bounds for an
+
         for (Variable unresolvedVariable : variables) {
             for (Variable dependency : dependencies.get(unresolvedVariable)) {
                 if (!instantiations.containsKey(dependency)
+                        && unresolvedVariable != dependency
                         && !boundsHaveAnEqualityBetween(variables, dependency, bounds)) {
                     return false;
                 }
@@ -247,7 +279,7 @@ public final class TypeInferenceResolver {
         private List<Variable> resultList = new ArrayList<>();
         private List<Variable> unmodifyableViewOfResult = Collections.unmodifiableList(resultList);
 
-        public Combinations(List<Variable> permuteThis) {
+        Combinations(List<Variable> permuteThis) {
             this.permuteThis = permuteThis;
             this.n = permuteThis.size();
             this.k = 0;

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tools.ant.taskdefs.Java;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -27,6 +26,11 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
+
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther2;
 
 public class TypeInferenceTest {
     private JavaTypeDefinition number = JavaTypeDefinition.forClass(Number.class);
@@ -320,10 +324,21 @@ public class TypeInferenceTest {
     @Test
     public void testLeastUpperBound() {
         List<JavaTypeDefinition> lowerBounds = new ArrayList<>();
-        lowerBounds.add(JavaTypeDefinition.forClass(String.class));
-        lowerBounds.add(JavaTypeDefinition.forClass(.class));
+        lowerBounds.add(JavaTypeDefinition.forClass(SuperClassA.class));
+        lowerBounds.add(JavaTypeDefinition.forClass(SuperClassAOther.class));
+        lowerBounds.add(JavaTypeDefinition.forClass(SuperClassAOther2.class));
 
-        JavaTypeDefinition result = TypeInferenceResolver.lub(lowerBounds);
+        assertEquals(TypeInferenceResolver.lub(lowerBounds), JavaTypeDefinition.forClass(SuperClassA2.class));
+    }
+
+    @Test
+    public void testResolution() {
+        List<Bound> bounds = new ArrayList<>();
+        bounds.add(new Bound(JavaTypeDefinition.forClass(SuperClassA.class), alpha, SUBTYPE));
+        bounds.add(new Bound(JavaTypeDefinition.forClass(SuperClassAOther.class), alpha, SUBTYPE));
+        Map<Variable, JavaTypeDefinition> result = TypeInferenceResolver.resolveVariables(bounds);
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(alpha), JavaTypeDefinition.forClass(SuperClassA2.class));
     }
 
     private List<Constraint> incorporationResult(Bound firstBound, Bound secondBound) {

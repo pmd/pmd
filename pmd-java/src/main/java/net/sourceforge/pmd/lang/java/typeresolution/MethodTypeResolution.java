@@ -500,7 +500,21 @@ public final class MethodTypeResolution {
 
         // this covers arrays, simple class/interface cases
         if (parameter.getType().isAssignableFrom(argument.getType())) {
-            return true;
+            if (!parameter.isGeneric() || parameter.isRawType() || argument.isRawType()) {
+                return true;
+            }
+
+            // parameter is a non-raw generic type
+            // argument is a non-generic or a non-raw generic type
+
+            // example result: List<String>.getAsSuper(Collection) becomes Collection<String>
+            JavaTypeDefinition argSuper = argument.getAsSuper(parameter.getType());
+            // argSuper can't be null because isAssignableFrom check above returned true
+
+            // right now we only check if generic arguments are the same
+            // TODO: add support for wildcard types
+            // (future note: can't call subtype as it is recursively, infinite types)
+            return parameter.equals(argSuper);
         }
 
         int indexOfParameter = PRIMITIVE_SUBTYPE_ORDER.indexOf(parameter.getType());
@@ -532,12 +546,12 @@ public final class MethodTypeResolution {
     public static List<JavaTypeDefinition> getMethodExplicitTypeArugments(Node node) {
         ASTMemberSelector memberSelector = node.getFirstChildOfType(ASTMemberSelector.class);
         if (memberSelector == null) {
-            return Collections.emptyList(); // empty list
+            return Collections.emptyList();
         }
 
         ASTTypeArguments typeArguments = memberSelector.getFirstChildOfType(ASTTypeArguments.class);
         if (typeArguments == null) {
-            return Collections.emptyList(); // empty list
+            return Collections.emptyList();
         }
 
         List<JavaTypeDefinition> result = new ArrayList<>();
