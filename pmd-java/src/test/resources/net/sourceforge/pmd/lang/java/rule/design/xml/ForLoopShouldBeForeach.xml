@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data>
     <test-code>
-        <description>Simple failure case</description>
+        <description>Positive with list</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
         public class MyClass {
@@ -13,4 +13,97 @@
         }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Positive with lower or equal</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          void loop(List<String> lo) {
+            for (int i = 0; i <= lo.size() - 1; i++) {
+              System.out.println(lo.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+-
+    <test-code>
+        <description>Usage of index var outside get</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            for (int i = 0; i < l.size(); i++) {
+              System.out.println(i + ": " + l.get(i));
+
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Subclass of List</description>
+        <!-- TODO -> violation, may use typeresolution -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(ArrayList<String> l) {
+            for (int i = 0; i < l.size(); i++) {
+              System.out.println(l.get(i));
+
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Get called on another list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            List<String> l2 = new ArrayList<>(l);
+            for (int i = 0; i < l.size(); i++) {
+              System.out.println(l2.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Backwards iteration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            for (int i = l.size() - 1; i > 0; i--) {
+              System.out.println(i + ": " + l.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Index var initialized outside for init</description>
+        <!-- TODO -> violation? maybe it's not even in the scope of this rule -> create AvoidEmptyForInit? -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            int i = 0;
+            for (; i < l.size(); i++) {
+              System.out.println(l.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+
 </test-data>
