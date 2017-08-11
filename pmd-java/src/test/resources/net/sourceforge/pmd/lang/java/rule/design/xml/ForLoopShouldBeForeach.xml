@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description>Simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            for (int i = 0; i < l.size(); i++) {
+              System.out.println(l.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+</test-data>
