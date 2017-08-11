@@ -135,7 +135,7 @@
     </test-code>
 
     <test-code>
-        <description>Consider iterators</description>
+        <description>TODO Consider iterators</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
         class Foo {
@@ -150,5 +150,22 @@
         }
         ]]></code>
     </test-code>
+
+
+    <test-code>
+        <description>Index var starts after zero</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            for (int i = 1; i < filters.size(); i++) {
+              builder.append(' ').append(getOperator()).append(' ');
+              builder.append(filters.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
 
 </test-data>

@@ -19,6 +19,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -36,18 +38,20 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
         final ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
         final ASTExpression guardCondition = node.getFirstChildOfType(ASTExpression.class);
 
-        if (init == null && update == null || guardCondition == null) { // The loop may be replaced with a while
+        if (init == null && update == null || guardCondition == null) {
             return super.visit(node, data);
         }
 
         Entry<VariableNameDeclaration, List<NameOccurrence>> indexDecl = getIndexVarDeclaration(init, update);
         List<NameOccurrence> occurrences = indexDecl.getValue();
-
-
         VariableNameDeclaration index = indexDecl.getKey();
-        if (index == null || occurrences == null || !"int".equals(index.getTypeImage())) {
+
+        if (index == null || occurrences == null
+            || !"int".equals(index.getTypeImage())
+            || !indexStartsAtZero(index)) {
             return super.visit(node, data);
         }
+
 
         String itName = index.getName();
         String iterableName = getIterableNameOrNullToAbort(guardCondition, itName);
@@ -57,7 +61,8 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        VariableNameDeclaration iterableDeclaration = findDeclaration(iterableName, node.getScope()).getKey();
+        Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo = findDeclaration(iterableName, node.getScope());
+        VariableNameDeclaration iterableDeclaration = iterableInfo == null ? null : iterableInfo.getKey();
 
         if (iterableDeclaration == null) {
             return super.visit(node, data);
@@ -102,7 +107,7 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
 
         Node name;
         try {
-            name = update.findChildNodesWithXPath(getSimpleForStatementXpath(null)).get(0);
+            name = update.findChildNodesWithXPath(getSimpleForUpdateXpath(null)).get(0);
         } catch (JaxenException je) {
             throw new RuntimeException(je);
         }
@@ -119,18 +124,43 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
      * @return true if there's only one update statement of the form i++ or ++i.
      */
     private boolean isForUpdateSimpleEnough(ASTForUpdate update, String itName) {
-        return update.hasDescendantMatchingXPath(getSimpleForStatementXpath(itName));
+        return update.hasDescendantMatchingXPath(getSimpleForUpdateXpath(itName));
     }
 
 
-    private String getSimpleForStatementXpath(String itName) {
-        return "//StatementExpressionList[count(*)=1]"
+    private String getSimpleForUpdateXpath(String itName) {
+        return "./StatementExpressionList[count(*)=1]"
             + "/StatementExpression"
             + "/*[self::PostfixExpression and @Image='++' or self::PreIncrementExpression]"
             + "/PrimaryExpression"
             + "/PrimaryPrefix"
             + "/Name"
             + (itName == null ? "" : ("[@Image='" + itName + "']"));
+    }
+
+
+    /* We only report loops with int initializers starting at zero. */
+    private boolean indexStartsAtZero(VariableNameDeclaration index) {
+        ASTVariableDeclaratorId name = (ASTVariableDeclaratorId) index.getNode();
+        ASTVariableDeclarator declarator = name.getFirstParentOfType(ASTVariableDeclarator.class);
+
+        if (declarator == null) {
+            return false;
+        }
+
+        try {
+            List<Node> zeroLiteral = declarator.findChildNodesWithXPath
+                ("./VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0' and "
+                     + "@StringLiteral='false']");
+            if (!zeroLiteral.isEmpty()) {
+                return true;
+            }
+        } catch (JaxenException je) {
+            throw new RuntimeException(je);
+        }
+
+        return false;
+
     }
 
 
@@ -153,13 +183,13 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
 
                 try {
                     List<Node> left = guardCondition.findChildNodesWithXPath(
-                        "//RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='" + itName + "']");
+                        "./RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='" + itName + "']");
 
                     List<Node> right = guardCondition.findChildNodesWithXPath(
-                        "//RelationalExpression[@Image='<']/PrimaryExpression/PrimaryPrefix"
+                        "./RelationalExpression[@Image='<']/PrimaryExpression/PrimaryPrefix"
                             + "/Name[matches(@Image,'\\w+\\.(size|length)')]"
                             + "|"
-                            + "//RelationalExpression[@Image='<=']/AdditiveExpression[count(*)=2 and "
+                            + "./RelationalExpression[@Image='<=']/AdditiveExpression[count(*)=2 and "
                             + "@Image='-' and PrimaryExpression/PrimaryPrefix/Literal[@Image='1']]"
                             + "/PrimaryExpression/PrimaryPrefix/Name[matches(@Image,'\\w+\\.(size|length)')]");
 

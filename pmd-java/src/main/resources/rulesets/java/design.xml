@@ -2015,8 +2015,12 @@ public class OuterClass {
         <example><![CDATA[
 public class MyClass {
   void loop(List<String> l) {
-    for (int i = 0; i < l.size(); i++) {
+    for (int i = 0; i < l.size(); i++) { // pre Java 1.5
       System.out.println(l.get(i));
+    }
+
+    for (String s : l) {        // post Java 1.5
+      System.out.println(s);
     }
   }
 }
