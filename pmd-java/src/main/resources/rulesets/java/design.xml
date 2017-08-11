@@ -2002,12 +2002,12 @@ public class OuterClass {
         </example>
     </rule>
 
-    <rule name="ForLoopShouldBeForeach"
+    <rule name="ForLoopCanBeForeach"
           language="java"
           since="1.5"
-          message="This for loop can be replaced by a foreach loop"
-          class="net.sourceforge.pmd.lang.java.rule.design.ForLoopShouldBeForeachRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ForLoopShouldBeForeach">
+          message="This 'for' loop can be replaced by a 'foreach' loop"
+          class="net.sourceforge.pmd.lang.java.rule.design.ForLoopCanBeForeachRule"
+          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ForLoopCanBeForeach">
         <description>
             TODO
         </description>

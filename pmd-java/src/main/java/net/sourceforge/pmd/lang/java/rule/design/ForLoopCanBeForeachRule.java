@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 /**
  * @author Clément Fournier
  */
-public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
+public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
@@ -43,6 +43,12 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
         }
 
         Entry<VariableNameDeclaration, List<NameOccurrence>> indexDecl = getIndexVarDeclaration(init, update);
+
+        if (indexDecl == null) {
+            return super.visit(node, data);
+        }
+
+
         List<NameOccurrence> occurrences = indexDecl.getValue();
         VariableNameDeclaration index = indexDecl.getKey();
 
@@ -79,7 +85,7 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
     }
 
 
-    /* Finds the declaration of the index variable to find its name occurrences */
+    /* Finds the declaration of the index variable and its occurrences */
     private Entry<VariableNameDeclaration, List<NameOccurrence>> getIndexVarDeclaration(ASTForInit init, ASTForUpdate update) {
         if (init == null) {
             return guessIndexVarFromUpdate(update);
@@ -105,9 +111,12 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
     /** Does a best guess to find the index variable, gives up if the update has several statements */
     private Entry<VariableNameDeclaration, List<NameOccurrence>> guessIndexVarFromUpdate(ASTForUpdate update) {
 
-        Node name;
+        Node name = null;
         try {
-            name = update.findChildNodesWithXPath(getSimpleForUpdateXpath(null)).get(0);
+            List<Node> match = update.findChildNodesWithXPath(getSimpleForUpdateXpath(null));
+            if (!match.isEmpty()) {
+                name = match.get(0);
+            }
         } catch (JaxenException je) {
             throw new RuntimeException(je);
         }
@@ -124,7 +133,7 @@ public class ForLoopShouldBeForeachRule extends AbstractJavaRule {
      * @return true if there's only one update statement of the form i++ or ++i.
      */
     private boolean isForUpdateSimpleEnough(ASTForUpdate update, String itName) {
-        return update.hasDescendantMatchingXPath(getSimpleForUpdateXpath(itName));
+        return update != null && update.hasDescendantMatchingXPath(getSimpleForUpdateXpath(itName));
     }
 
 

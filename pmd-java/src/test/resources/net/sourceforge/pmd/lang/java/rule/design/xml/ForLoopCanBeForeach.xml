@@ -46,8 +46,7 @@
     </test-code>
 
     <test-code>
-        <description>Subclass of List</description>
-        <!-- TODO -> violation, may use typeresolution -->
+        <description>TODO Subclass of List</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
         public class MyClass {
@@ -82,7 +81,7 @@
         <code><![CDATA[
         public class MyClass {
           void loop(List<String> l) {
-            for (int i = l.size() - 1; i > 0; i--) {
+            for (int i = l.size() - 1; i > 0; i-= 1) {
               System.out.println(i + ": " + l.get(i));
             }
           }
@@ -167,5 +166,27 @@
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Prefix increment should work</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        class AbstractApexNode {
+         Node[] children;
+
+          public Object childrenAccept(ApexParserVisitor visitor, Object data) {
+            if (children != null) {
+              for (int i = 0; i < children.length; ++i) {
+                @SuppressWarnings("unchecked")
+                // we know that the children here are all ApexNodes
+                ApexNode<T> apexNode = (ApexNode<T>) children[i];
+                apexNode.jjtAccept(visitor, data);
+              }
+            }
+            return data;
+          }
+        }
+        ]]></code>
+    </test-code>
 
 </test-data>
