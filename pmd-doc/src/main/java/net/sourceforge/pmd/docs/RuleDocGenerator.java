@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.docs;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -40,21 +38,25 @@ public class RuleDocGenerator {
     private static final String RULESET_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}/${ruleset.name}.md";
     private static final String RULESET_INDEX_PERMALINK_PATTERN = "pmd_rules_${language.tersename}_${ruleset.name}.html";
 
-    private Path root;
+    private final Path root;
+    private final FileWriter writer;
 
-    public void generate(Path root) {
+    public RuleDocGenerator(FileWriter writer, Path root) {
         this.root = Objects.requireNonNull(root, "Root directory must be provided");
+        this.writer = Objects.requireNonNull(writer, "A file writer must be provided");
 
         Path docsDir = root.resolve("docs");
         if (!Files.exists(docsDir) || !Files.isDirectory(docsDir)) {
             throw new IllegalArgumentException("Couldn't find \"docs\" subdirectory");
         }
+    }
 
-        Map<Language, List<RuleSet>> rulesets;
+    public void generate(Iterator<RuleSet> rulesets) {
+        Map<Language, List<RuleSet>> sortedRulesets;
         try {
-            rulesets = loadAndSortRulesets();
-            generateLanguageIndex(rulesets);
-            generateRuleSetIndex(rulesets);
+            sortedRulesets = sortRulesets(rulesets);
+            generateLanguageIndex(sortedRulesets);
+            generateRuleSetIndex(sortedRulesets);
 
         } catch (RuleSetNotFoundException | IOException e) {
             throw new RuntimeException(e);
@@ -65,23 +67,20 @@ public class RuleDocGenerator {
         return root.resolve(FilenameUtils.normalize(filename));
     }
 
-    private Map<Language, List<RuleSet>> loadAndSortRulesets() throws RuleSetNotFoundException {
-        RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        Iterator<RuleSet> registeredRuleSets = ruleSetFactory.getRegisteredRuleSets();
+    private Map<Language, List<RuleSet>> sortRulesets(Iterator<RuleSet> rulesets) throws RuleSetNotFoundException {
+        Map<Language, List<RuleSet>> rulesetsByLanguage = new HashMap<>();
 
-        Map<Language, List<RuleSet>> rulesets = new HashMap<>();
-
-        while (registeredRuleSets.hasNext()) {
-            RuleSet ruleset = registeredRuleSets.next();
+        while (rulesets.hasNext()) {
+            RuleSet ruleset = rulesets.next();
             Language language = getRuleSetLanguage(ruleset);
 
-            if (!rulesets.containsKey(language)) {
-                rulesets.put(language, new ArrayList<RuleSet>());
+            if (!rulesetsByLanguage.containsKey(language)) {
+                rulesetsByLanguage.put(language, new ArrayList<RuleSet>());
             }
-            rulesets.get(language).add(ruleset);
+            rulesetsByLanguage.get(language).add(ruleset);
         }
 
-        for (List<RuleSet> rulesetsOfOneLanguage : rulesets.values()) {
+        for (List<RuleSet> rulesetsOfOneLanguage : rulesetsByLanguage.values()) {
             Collections.sort(rulesetsOfOneLanguage, new Comparator<RuleSet>() {
                 @Override
                 public int compare(RuleSet o1, RuleSet o2) {
@@ -89,7 +88,7 @@ public class RuleDocGenerator {
                 }
             });
         }
-        return rulesets;
+        return rulesetsByLanguage;
     }
 
     /**
@@ -152,7 +151,7 @@ public class RuleDocGenerator {
             }
 
             System.out.println("Generated " + path);
-            Files.write(path, lines, StandardCharsets.UTF_8);
+            writer.write(path, lines);
         }
     }
 
@@ -219,6 +218,7 @@ public class RuleDocGenerator {
 
                 for (Rule rule : getSortedRules(ruleset)) {
                     lines.add("## " + rule.getName());
+                    lines.add("");
                     if (rule.getSince() != null) {
                         lines.add("**Since:** " + rule.getSince());
                         lines.add("");
@@ -230,6 +230,7 @@ public class RuleDocGenerator {
                     lines.add("");
                     if (!rule.getExamples().isEmpty()) {
                         lines.add("**Example(s):**");
+                        lines.add("");
                         for (String example : rule.getExamples()) {
                             lines.add("```");
                             lines.add(StringUtils.stripToEmpty(example));
@@ -260,8 +261,7 @@ public class RuleDocGenerator {
                     }
                 }
 
-                Files.createDirectories(path.getParent());
-                Files.write(path, lines, StandardCharsets.UTF_8);
+                writer.write(path, lines);
                 System.out.println("Generated " + path);
             }
         }
