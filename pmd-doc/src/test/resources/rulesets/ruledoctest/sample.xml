@@ -105,4 +105,8 @@ Just some description of a deprecated rule.
  </properties>
  </rule>
 
+<rule name="RenamedRule" ref="JumbledIncrementer"/>
+
+<rule name="MovedRule" ref="rulesets/java/basic.xml/JumbledIncrementer"/>
+
 </ruleset>

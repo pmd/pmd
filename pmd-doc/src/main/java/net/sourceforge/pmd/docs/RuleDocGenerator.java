@@ -30,6 +30,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class RuleDocGenerator {
@@ -147,10 +148,30 @@ public class RuleDocGenerator {
                     String link = RULESET_INDEX_PERMALINK_PATTERN
                             .replace("${language.tersename}", languageTersename)
                             .replace("${ruleset.name}", getRuleSetFilename(ruleset));
-                    link += "#" + rule.getName().toLowerCase(Locale.ROOT);
-                    lines.add("*   [" + rule.getName() + "](" + link + "): "
-                            + (rule.isDeprecated() ? DEPRECATION_LABEL_SMALL : "")
-                            + getShortRuleDescription(rule));
+                    if (rule instanceof RuleReference) {
+                        RuleReference ref = (RuleReference) rule;
+                        if (ruleset.getFileName().equals(ref.getRuleSetReference().getRuleSetFileName())) {
+                            // rule renamed within same ruleset
+                            lines.add("*   [" + rule.getName() + "](" + link + "#" + rule.getName().toLowerCase(Locale.ROOT) + "): "
+                                    + DEPRECATION_LABEL_SMALL
+                                    + "The rule has been renamed. Use instead "
+                                    + "[" + ref.getRule().getName() + "](" + link + "#" + ref.getRule().getName().toLowerCase(Locale.ROOT) + ").");
+                        } else {
+                            // rule moved to another ruleset...
+                            String otherLink = RULESET_INDEX_PERMALINK_PATTERN
+                                    .replace("${language.tersename}", languageTersename)
+                                    .replace("${ruleset.name}", getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
+                            lines.add("*   [" + rule.getName() + "](" + link + "#" + rule.getName().toLowerCase(Locale.ROOT) + "): "
+                                    + DEPRECATION_LABEL_SMALL
+                                    + "The rule has been moved to another ruleset. Use instead "
+                                    + "[" + ref.getRule().getName() + "](" + otherLink + "#" + ref.getRule().getName().toLowerCase(Locale.ROOT) + ").");
+                        }
+                    } else {
+                        link += "#" + rule.getName().toLowerCase(Locale.ROOT);
+                        lines.add("*   [" + rule.getName() + "](" + link + "): "
+                                + (rule.isDeprecated() ? DEPRECATION_LABEL_SMALL : "")
+                                + getShortRuleDescription(rule));
+                    }
                 }
                 lines.add("");
             }
@@ -181,7 +202,11 @@ public class RuleDocGenerator {
      * @return
      */
     private static String getRuleSetFilename(RuleSet ruleset) {
-        return FilenameUtils.getBaseName(StringUtils.chomp(ruleset.getFileName()));
+        return getRuleSetFilename(ruleset.getFileName());
+    }
+
+    private static String getRuleSetFilename(String rulesetFileName) {
+        return FilenameUtils.getBaseName(StringUtils.chomp(rulesetFileName));
     }
 
     private static String getRuleSetDescriptionSingleLine(RuleSet ruleset) {
@@ -224,6 +249,29 @@ public class RuleDocGenerator {
                 for (Rule rule : getSortedRules(ruleset)) {
                     lines.add("## " + rule.getName());
                     lines.add("");
+
+                    if (rule instanceof RuleReference) {
+                        RuleReference ref = (RuleReference) rule;
+                        if (ruleset.getFileName().equals(ref.getRuleSetReference().getRuleSetFileName())) {
+                            // rule renamed within same ruleset
+                            lines.add(DEPRECATION_LABEL);
+                            lines.add("");
+                            lines.add("This rule has been renamed. Use instead: ["
+                                    + ref.getRule().getName() + "](" + "#" + ref.getRule().getName().toLowerCase(Locale.ROOT) + ")");
+                            lines.add("");
+                        } else {
+                            // rule moved to another ruleset
+                            String otherLink = RULESET_INDEX_PERMALINK_PATTERN
+                                    .replace("${language.tersename}", languageTersename)
+                                    .replace("${ruleset.name}", getRuleSetFilename(ref.getRuleSetReference().getRuleSetFileName()));
+                            lines.add(DEPRECATION_LABEL);
+                            lines.add("");
+                            lines.add("The rule has been moved to another ruleset. Use instead: ["
+                                    + ref.getRule().getName() + "](" + otherLink + "#" + ref.getRule().getName().toLowerCase(Locale.ROOT) + ")");
+                            lines.add("");
+                        }
+                    }
+
                     if (rule.isDeprecated()) {
                         lines.add(DEPRECATION_LABEL);
                         lines.add("");

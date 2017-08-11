@@ -38,6 +38,32 @@ public class JumbledIncrementerRule1 {
 }
 ```
 
+## MovedRule
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pmd_rules_java_basic.html#jumbledincrementer)
+
+**Since:** 1.0
+
+**Priority:** Medium (3)
+
+Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+
+**Example(s):**
+
+```
+public class JumbledIncrementerRule1 {
+    public void foo() {
+        for (int i = 0; i < 10; i++) {          // only references 'i'
+            for (int k = 0; k < 20; i++) {      // references both 'i' and 'k'
+                System.out.println("Hello");
+            }
+        }
+    }
+}
+```
+
 ## OverrideBothEqualsAndHashcode
 
 **Since:** 0.4
@@ -67,6 +93,32 @@ public class Foo {      // perfect, both methods provided
     }
     public int hashCode() {
       // return some hash value
+    }
+}
+```
+
+## RenamedRule
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincrementer)
+
+**Since:** 1.0
+
+**Priority:** Medium (3)
+
+Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+
+**Example(s):**
+
+```
+public class JumbledIncrementerRule1 {
+    public void foo() {
+        for (int i = 0; i < 10; i++) {          // only references 'i'
+            for (int k = 0; k < 20; i++) {      // references both 'i' and 'k'
+                System.out.println("Hello");
+            }
+        }
     }
 }
 ```
