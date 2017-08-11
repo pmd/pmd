@@ -6,6 +6,16 @@ folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../rulesets/ruledoctest/sample.xml
 ---
+## DeprecatedSample
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** 1.0
+
+**Priority:** Medium (3)
+
+Just some description of a deprecated rule.
+
 ## JumbledIncrementer
 
 **Since:** 1.0

@@ -38,6 +38,9 @@ public class RuleDocGenerator {
     private static final String RULESET_INDEX_FILENAME_PATTERN = "docs/pages/pmd/rules/${language.tersename}/${ruleset.name}.md";
     private static final String RULESET_INDEX_PERMALINK_PATTERN = "pmd_rules_${language.tersename}_${ruleset.name}.html";
 
+    private static final String DEPRECATION_LABEL_SMALL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;\">Deprecated</span> ";
+    private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> ";
+
     private final Path root;
     private final FileWriter writer;
 
@@ -145,7 +148,9 @@ public class RuleDocGenerator {
                             .replace("${language.tersename}", languageTersename)
                             .replace("${ruleset.name}", getRuleSetFilename(ruleset));
                     link += "#" + rule.getName().toLowerCase(Locale.ROOT);
-                    lines.add("*   [" + rule.getName() + "](" + link + "): " + getShortRuleDescription(rule));
+                    lines.add("*   [" + rule.getName() + "](" + link + "): "
+                            + (rule.isDeprecated() ? DEPRECATION_LABEL_SMALL : "")
+                            + getShortRuleDescription(rule));
                 }
                 lines.add("");
             }
@@ -219,6 +224,10 @@ public class RuleDocGenerator {
                 for (Rule rule : getSortedRules(ruleset)) {
                     lines.add("## " + rule.getName());
                     lines.add("");
+                    if (rule.isDeprecated()) {
+                        lines.add(DEPRECATION_LABEL);
+                        lines.add("");
+                    }
                     if (rule.getSince() != null) {
                         lines.add("**Since:** " + rule.getSince());
                         lines.add("");

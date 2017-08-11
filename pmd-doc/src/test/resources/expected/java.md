@@ -8,5 +8,6 @@ List of rulesets and rules contained in each ruleset.
 *   [Sample](pmd_rules_java_sample.html): Sample ruleset to test rule doc generation.
 
 ## Sample
+*   [DeprecatedSample](pmd_rules_java_sample.html#deprecatedsample): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Just some description of a deprecated rule.
 *   [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer): Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 *   [OverrideBothEqualsAndHashcode](pmd_rules_java_sample.html#overridebothequalsandhashcode): Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or ov...

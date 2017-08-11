@@ -82,4 +82,27 @@ public class JumbledIncrementerRule1 {
  ]]>
      </example>
      </rule>
+
+<rule name="DeprecatedSample"
+      language="java"
+      since="1.0"
+      message="Sample rule, which is deprecated"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
+      externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#deprecatedsample"
+      deprecated="true">
+ <description>
+Just some description of a deprecated rule.
+ </description>
+ <priority>3</priority>
+ <properties>
+     <property name="xpath">
+         <value>
+<![CDATA[
+//ForStatement
+]]>
+         </value>
+     </property>
+ </properties>
+ </rule>
+
 </ruleset>
