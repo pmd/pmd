@@ -52,6 +52,11 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         List<NameOccurrence> occurrences = indexDecl.getValue();
         VariableNameDeclaration index = indexDecl.getKey();
 
+        if ("Iterator".equals(index.getTypeImage()) && isReplaceableIteratorLoop(indexDecl, guardCondition, update)) {
+            addViolation(data, node);
+        }
+
+
         if (index == null || occurrences == null
             || !"int".equals(index.getTypeImage())
             || !indexStartsAtZero(index)) {
@@ -74,10 +79,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        if (iterableDeclaration.isArray() && loopOverArrayCanBeReplaced(node, occurrences, iterableDeclaration)) {
+        if (iterableDeclaration.isArray() && isReplaceableArrayLoop(node, occurrences, iterableDeclaration)) {
             addViolation(data, node);
         } else if ("List".equals(iterableDeclaration.getTypeImage())
-            && loopOverListCanBeReplaced(node, occurrences, iterableDeclaration)) {
+            && isReplaceableListLoop(node, occurrences, iterableDeclaration)) {
             addViolation(data, node);
         }
 
@@ -158,9 +163,9 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         }
 
         try {
-            List<Node> zeroLiteral = declarator.findChildNodesWithXPath
-                ("./VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0' and "
-                     + "@StringLiteral='false']");
+            List<Node> zeroLiteral = declarator.findChildNodesWithXPath(
+                "./VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0' and "
+                    + "@StringLiteral='false']");
             if (!zeroLiteral.isEmpty()) {
                 return true;
             }
@@ -219,8 +224,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
-    private boolean loopOverArrayCanBeReplaced(ASTForStatement stmt, List<NameOccurrence> occurrences,
-                                               VariableNameDeclaration arrayDeclaration) {
+    private boolean isReplaceableArrayLoop(ASTForStatement stmt, List<NameOccurrence> occurrences,
+                                           VariableNameDeclaration arrayDeclaration) {
         String arrayName = arrayDeclaration.getName();
 
 
@@ -245,24 +250,17 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                 return false;
             }
 
-            Node prefix = suffix.jjtGetParent().jjtGetChild(0);
-
-            if (!(prefix instanceof ASTPrimaryPrefix) && prefix.jjtGetNumChildren() != 1
-                && !(prefix.jjtGetChild(0) instanceof ASTName)) {
-                return false;
-            }
-
-            String varImage = prefix.jjtGetChild(0).getImage();
-
-            return (arrayName).equals(varImage);
-
+            return suffix.hasDescendantMatchingXPath("./Expression/PrimaryExpression[count(*)"
+                                                         + "=1]/PrimaryPrefix/Name[@Image='" + occ.getImage() + "']")
+                && suffix.hasDescendantMatchingXPath("../PrimaryPrefix/Name[@Image='" + arrayName + "']")
+                && !suffix.hasDescendantMatchingXPath("../../AssignmentOperator");
         }
         return false;
     }
 
 
-    private boolean loopOverListCanBeReplaced(ASTForStatement stmt, List<NameOccurrence> occurrences,
-                                              VariableNameDeclaration listDeclaration) {
+    private boolean isReplaceableListLoop(ASTForStatement stmt, List<NameOccurrence> occurrences,
+                                          VariableNameDeclaration listDeclaration) {
 
         String listName = listDeclaration.getName();
 
@@ -320,4 +318,39 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
         return null;
     }
+
+
+    private boolean isReplaceableIteratorLoop(Entry<VariableNameDeclaration, List<NameOccurrence>> indexInfo,
+                                              ASTExpression guardCondition, ASTForUpdate update) {
+
+        String indexName = indexInfo.getKey().getName();
+
+        if (indexName == null) {
+            return false;
+        }
+
+        if (!guardCondition.hasDescendantMatchingXPath(
+            "./PrimaryExpression/PrimaryPrefix/Name[@Image='" + indexName + ".hasNext']")) {
+            return false;
+        }
+
+        List<NameOccurrence> occurrences = indexInfo.getValue();
+
+        if (occurrences.size() > 2) {
+            return false;
+        }
+
+        for (NameOccurrence occ : indexInfo.getValue()) {
+            String image = occ.getLocation().getImage();
+
+            if (occ.getLocation() instanceof ASTName
+                && ((indexName + ".hasNext").equals(image) || (indexName + ".next").equals(image))) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+
 }

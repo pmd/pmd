@@ -135,7 +135,7 @@
 
     <test-code>
         <description>TODO Consider iterators</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
         class Foo {
           void loop() {
@@ -188,5 +188,45 @@
         }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Index inside arithmetic expression should whitelist the loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class BenchMarker {
+          private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
+            for (int i = 0; i < args.length; i++) {
+              if (args[i].equals(name)) {
+                return args[i + 1];
+              }
+            }
+            return defaultValue;
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Array assignment whitelists the loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class StringPropertyTest {
+          private String newString() {
+            int strLength = randomInt(1, MAX_STRING_LENGTH);
+
+            char[] chars = new char[strLength];
+            for (int i = 0; i < chars.length; i++) {
+              chars[i] = randomCharIn(CHARSET);
+            }
+            return new String(chars);
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+
+
 
 </test-data>
