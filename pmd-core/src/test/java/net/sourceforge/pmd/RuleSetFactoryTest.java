@@ -431,6 +431,7 @@ public class RuleSetFactoryTest {
     public void testDirectDeprecatedRule() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(DIRECT_DEPRECATED_RULE);
         assertNotNull("Direct Deprecated Rule", r);
+        assertTrue(r.isDeprecated());
     }
 
     @Test
