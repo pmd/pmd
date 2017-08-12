@@ -5,7 +5,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode {
+import java.util.List;
+
+public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
+
+    private JavaQualifiedName qualifiedName;
+
     public ASTEnumDeclaration(int id) {
         super(id);
     }
@@ -18,4 +23,36 @@ public class ASTEnumDeclaration extends AbstractJavaAccessTypeNode {
         return visitor.visit(this, data);
     }
 
+    public boolean isNested() {
+        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
+            || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+    }
+
+    @Override
+    public JavaQualifiedName getQualifiedName() {
+        if (qualifiedName == null) {
+            if (isNested()) {
+                ASTAnyTypeDeclaration parent = this.getFirstParentOfType(ASTAnyTypeDeclaration.class);
+                JavaQualifiedName parentQN = parent.getQualifiedName();
+                qualifiedName = JavaQualifiedName.ofNestedClass(parentQN, this.getImage());
+                return qualifiedName;
+            }
+
+            qualifiedName = JavaQualifiedName.ofOuterClass(this);
+        }
+
+        return qualifiedName;
+    }
+
+    @Override
+    public TypeKind getTypeKind() {
+        return TypeKind.ENUM;
+    }
+
+
+    @Override
+    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTEnumBody.class)
+            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+    }
 }

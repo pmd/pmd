@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
@@ -29,6 +30,7 @@ public class ApexParser {
     private String suppressMarker = "NOPMD";
 
     public ApexParser(ApexParserOptions parserOptions) {
+        ApexJorjeLogging.disableLogging();
         this.parserOptions = parserOptions;
 
         if (parserOptions.getSuppressMarker() != null) {

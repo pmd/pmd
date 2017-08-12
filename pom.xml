@@ -264,7 +264,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <checkstyle.version>2.17</checkstyle.version>
         <pmd.plugin.version>3.8</pmd.plugin.version>
         <java.version>1.7</java.version>
-        <jacoco.version>0.7.5.201505241946</jacoco.version>
         <ant.version>1.9.6</ant.version>
         <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
         <antlr.version>4.5.2-1</antlr.version>
@@ -541,19 +540,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 </executions>
             </plugin>
             <plugin>
-              <groupId>org.jacoco</groupId>
-              <artifactId>jacoco-maven-plugin</artifactId>
-              <version>${jacoco.version}</version>
-              <executions>
-                  <execution>
-                      <id>default-prepare-agent</id>
-                      <goals>
-                          <goal>prepare-agent</goal>
-                      </goals>
-                  </execution>
-              </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <executions>
@@ -739,18 +725,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         </reports>
                     </reportSet>
                 </reportSets>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>${surefire.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
             </plugin>
 
             <plugin>
@@ -1016,6 +990,32 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         </plugin>
                     </plugins>
                 </pluginManagement>
+            </build>
+        </profile>
+
+        <profile>
+            <id>coveralls</id>
+            <build>
+                <plugins>
+                    <plugin>
+                      <groupId>org.jacoco</groupId>
+                      <artifactId>jacoco-maven-plugin</artifactId>
+                      <version>0.7.9</version>
+                      <executions>
+                          <execution>
+                              <id>default-prepare-agent</id>
+                              <goals>
+                                  <goal>prepare-agent</goal>
+                              </goals>
+                          </execution>
+                      </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.eluder.coveralls</groupId>
+                        <artifactId>coveralls-maven-plugin</artifactId>
+                        <version>4.3.0</version>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>

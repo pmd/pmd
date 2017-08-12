@@ -4,48 +4,74 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.List;
+import java.util.Map;
+
+import net.sourceforge.pmd.PackagedPropertyDescriptor;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.modules.PackagedPropertyModule;
+
 /**
+ * Multi-valued property restricting the type of its values to some packages.
+ *
+ * @param <T> The type of the values
  *
  * @author Brian Remedios
- * @param <T>
+ * @version Refactored June 2017 (6.0.0)
  */
-public abstract class AbstractMultiPackagedProperty<T> extends AbstractPackagedProperty<T> {
+/* default */ abstract class AbstractMultiPackagedProperty<T> extends AbstractMultiValueProperty<T>
+    implements PackagedPropertyDescriptor<List<T>> {
 
-    protected static final char DELIMITER = '|';
+
+    protected final PackagedPropertyModule<T> module;
+
 
     /**
-     * Constructor for AbstractMultiPackagedProperty.
+     * Create a packaged property.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefault
-     *            T
-     * @param theLegalPackageNames
-     *            String[]
-     * @param theUIOrder
-     *            float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param theDefault     Default value
+     * @param theUIOrder     UI order
+     * @param module
+     *
+     * @throws IllegalArgumentException
      */
-    protected AbstractMultiPackagedProperty(String theName, String theDescription, T theDefault,
-            String[] theLegalPackageNames, float theUIOrder) {
-        super(theName, theDescription, theDefault, theLegalPackageNames, theUIOrder);
+    protected AbstractMultiPackagedProperty(String theName, String theDescription, List<T> theDefault,
+                                            float theUIOrder, boolean isDefinedExternally,
+                                            PackagedPropertyModule<T> module) {
+        super(theName, theDescription, theDefault, theUIOrder, MULTI_VALUE_DELIMITER, isDefinedExternally);
+        this.module = module;
     }
 
-    /**
-     * @return boolean
-     * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-     */
+
     @Override
-    public boolean isMultiValue() {
-        return true;
+    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
+        super.addAttributesTo(attributes);
+        module.addAttributesTo(attributes);
     }
 
-    /**
-     * @return String
-     */
+
     @Override
-    protected String defaultAsString() {
-        return asDelimitedString(defaultValue());
+    protected String valueErrorFor(T value) {
+        if (value == null) {
+            String err = super.valueErrorFor(null);
+            if (err != null) {
+                return err;
+            }
+        }
+
+        return module.valueErrorFor(value);
+    }
+
+
+    @Override
+    public String[] legalPackageNames() {
+        return module.legalPackageNames();
+    }
+
+
+    protected String[] packageNamesIn(Map<PropertyDescriptorField, String> params) {
+        return module.packageNamesIn(params);
     }
 }

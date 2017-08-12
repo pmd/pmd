@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.properties;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.ReportException;
-import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
@@ -26,10 +25,12 @@ public class PropertyAccessorTest {
 
     private Rule rule;
 
+
     @Before
     public void setUpSingleRule() {
         rule = new NonRuleWithAllPropertyTypes();
     }
+
 
     @Test
     public void testIntegers() {
@@ -37,9 +38,10 @@ public class PropertyAccessorTest {
         assertSame(rule.getProperty(NonRuleWithAllPropertyTypes.SINGLE_INT), 0);
 
         rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_INT,
-                new Integer[] { NumericConstants.ZERO, NumericConstants.ONE });
-        assertArrayEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_INT), new Integer[] { 0, 1 });
+                         Arrays.asList(NumericConstants.ZERO, NumericConstants.ONE));
+        assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_INT), Arrays.asList(0, 1));
     }
+
 
     @Test
     public void testBooleans() {
@@ -47,9 +49,10 @@ public class PropertyAccessorTest {
         rule.setProperty(NonRuleWithAllPropertyTypes.SINGLE_BOOL, Boolean.FALSE);
         assertFalse(rule.getProperty(NonRuleWithAllPropertyTypes.SINGLE_BOOL));
 
-        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_BOOL, new Boolean[] { Boolean.TRUE, Boolean.FALSE });
-        assertArrayEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_BOOL), new Boolean[] { true, false });
+        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_BOOL, Arrays.asList(Boolean.TRUE, Boolean.FALSE));
+        assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_BOOL), Arrays.asList(true, false));
     }
+
 
     @Ignore
     @Test
@@ -74,13 +77,14 @@ public class PropertyAccessorTest {
          */
     }
 
+
     @Test
     public void testStrings() {
         rule.setProperty(NonRuleWithAllPropertyTypes.SINGLE_STR, "brian");
         assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.SINGLE_STR), "brian");
 
-        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_STR, new String[] { "hello", "world" });
-        assertTrue(CollectionUtil.arraysAreEqual(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_STR),
-                new String[] { "hello", "world" }));
+        rule.setProperty(NonRuleWithAllPropertyTypes.MULTI_STR, "hello", "world");
+        assertEquals(rule.getProperty(NonRuleWithAllPropertyTypes.MULTI_STR),
+                     Arrays.asList("hello", "world"));
     }
 }

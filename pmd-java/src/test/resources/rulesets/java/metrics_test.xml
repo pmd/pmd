@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<ruleset name="Metrics testing ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/3.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/3.0.0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+
+    <description>
+        Metrics testing ruleset. Each metric is tested through a dummy rule.
+    </description>
+
+    <rule name="CycloTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.CycloTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="NcssTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NcssTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="WmcTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.WmcTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="LocTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.LocTestRule"
+          metrics="true">
+    </rule>
+
+    <rule name="NPathTest"
+          message = "''{0}'' has value {1}."
+          class="net.sourceforge.pmd.lang.java.metrics.impl.NPathTestRule"
+          metrics="true">
+    </rule>
+
+</ruleset>

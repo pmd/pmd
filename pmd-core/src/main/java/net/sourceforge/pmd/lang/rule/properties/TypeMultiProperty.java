@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.modules.TypePropertyModule;
 
 /**
  * Defines a property that supports multiple class types, even for primitive
@@ -19,126 +19,94 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
+public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<TypeMultiProperty>(
-            Class[].class, PACKAGED_FIELD_TYPES_BY_KEY) {
+    /** Factory. */
+    public static final PropertyDescriptorFactory<List<Class>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Class>(Class.class, PACKAGED_FIELD_TYPES_BY_KEY) {
+            @Override
+            public TypeMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                char delimiter = delimiterIn(valuesById);
+                return new TypeMultiProperty(nameIn(valuesById),
+                                             descriptionIn(valuesById),
+                                             defaultValueIn(valuesById),
+                                             legalPackageNamesIn(valuesById, delimiter),
+                                             0f);
+            }
+        }; // @formatter:on
 
-        @Override
-        public TypeMultiProperty createWith(Map<String, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new TypeMultiProperty(nameIn(valuesById), descriptionIn(valuesById), defaultValueIn(valuesById),
-                    legalPackageNamesIn(valuesById, delimiter), 0f);
-        }
-    };
-
-    /**
-     * Constructor for TypeProperty.
-     *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theDefaults
-     *            Class[]
-     * @param legalPackageNames
-     *            String[]
-     * @param theUIOrder
-     *            float
-     * @throws IllegalArgumentException
-     */
-    public TypeMultiProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
-            float theUIOrder) {
-        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
-
-    }
 
     /**
      * Constructor for TypeProperty.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param theTypeDefaults
-     *            String
-     * @param legalPackageNames
-     *            String[]
-     * @param theUIOrder
-     *            float
+     * @param theName           String
+     * @param theDescription    String
+     * @param theDefaults       Class[]
+     * @param legalPackageNames String[]
+     * @param theUIOrder        float
+     *
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, String[] legalPackageNames,
-            float theUIOrder) {
-        this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder);
+    public TypeMultiProperty(String theName, String theDescription, List<Class> theDefaults,
+                             String[] legalPackageNames, float theUIOrder) {
+        this(theName, theDescription, theDefaults, legalPackageNames, theUIOrder, false);
 
     }
 
+
+    /** Master constructor. */
+    private TypeMultiProperty(String theName, String theDescription, List<Class> theTypeDefaults,
+                              String[] legalPackageNames, float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, theTypeDefaults, theUIOrder, isDefinedExternally,
+              new TypePropertyModule(legalPackageNames, theTypeDefaults));
+    }
+
+
+    /**
+     * Constructor for TypeProperty.
+     *
+     * @param theName           String
+     * @param theDescription    String
+     * @param theTypeDefaults   String
+     * @param legalPackageNames String[]
+     * @param theUIOrder        float
+     *
+     * @throws IllegalArgumentException
+     */
     public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults,
-            Map<String, String> otherParams, float theUIOrder) {
-        this(theName, theDescription, typesFrom(theTypeDefaults), packageNamesIn(otherParams), theUIOrder);
+                             String[] legalPackageNames, float theUIOrder) {
+        this(theName, theDescription, typesFrom(theTypeDefaults),
+             legalPackageNames,
+             theUIOrder, false);
+
     }
 
-    /**
-     * @param classesStr
-     *            String
-     * @return Class[]
-     */
-    public static Class<?>[] typesFrom(String classesStr) {
-        String[] values = StringUtil.substringsOf(classesStr, DELIMITER);
 
-        Class<?>[] classes = new Class<?>[values.length];
-        for (int i = 0; i < values.length; i++) {
-            classes[i] = TypeProperty.classFrom(values[i]);
-        }
-        return classes;
+    private static List<Class> typesFrom(String valueString) {
+        return ValueParser.Companion.parsePrimitives(valueString, MULTI_VALUE_DELIMITER, ValueParser.CLASS_PARSER);
     }
 
-    /**
-     * @param item
-     *            Object
-     * @return String
-     */
+
     @Override
-    protected String packageNameOf(Object item) {
-        return ((Class<?>) item).getName();
+    public Class<Class> type() {
+        return Class.class;
     }
 
-    /**
-     * @return Class
-     * @see PropertyDescriptor#type()
-     */
+
     @Override
-    public Class<Class[]> type() {
-        return Class[].class;
+    public String asString(Class value) {
+        return value == null ? "" : value.getName();
     }
 
-    /**
-     * @return String
-     */
+
     @Override
-    protected String itemTypeName() {
-        return "type";
+    protected Class createFrom(String toParse) {
+        return ValueParser.CLASS_PARSER.valueOf(toParse);
     }
 
-    /**
-     * @param value
-     *            Object
-     * @return String
-     */
-    @Override
-    protected String asString(Object value) {
-        return value == null ? "" : ((Class<?>) value).getName();
-    }
 
-    /**
-     * @param valueString
-     *            String
-     * @return Object
-     * @see PropertyDescriptor#valueFrom(String)
-     */
     @Override
-    public Class<?>[] valueFrom(String valueString) {
+    public List<Class> valueFrom(String valueString) {
         return typesFrom(valueString);
     }
 }

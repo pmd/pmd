@@ -4,6 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.basic;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.PropertySource;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -22,19 +28,27 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
     public static final String CHECK_DO = "do";
     public static final String CHECK_WHILE = "while";
 
-    private static final String[] ALL_LOOP_TYPES_LABELS = new String[] { CHECK_FOR, CHECK_DO, CHECK_WHILE };
-    private static final String[] ALL_LOOP_TYPES_VALUES = ALL_LOOP_TYPES_LABELS;
-    private static final int[] ALL_LOOP_TYPES_DEFAULTS = new int[] { 0, 1, 2 };
+    private static final Map<String, String> LOOP_TYPES_MAPPINGS;
+    private static final List<String> DEFAULTS = Arrays.asList(CHECK_FOR, CHECK_DO, CHECK_WHILE);
+
+    static {
+        Map<String, String> mappings = new HashMap<>();
+        mappings.put(CHECK_FOR, CHECK_FOR);
+        mappings.put(CHECK_DO, CHECK_DO);
+        mappings.put(CHECK_WHILE, CHECK_WHILE);
+        LOOP_TYPES_MAPPINGS = Collections.unmodifiableMap(mappings);
+    }
 
     public static final EnumeratedMultiProperty<String> CHECK_BREAK_LOOP_TYPES = new EnumeratedMultiProperty<>(
-            "checkBreakLoopTypes", "Check for break statements in loop types", ALL_LOOP_TYPES_LABELS,
-            ALL_LOOP_TYPES_VALUES, ALL_LOOP_TYPES_DEFAULTS, 1);
+        "checkBreakLoopTypes", "Check for break statements in loop types", LOOP_TYPES_MAPPINGS, DEFAULTS,
+        String.class, 1);
     public static final EnumeratedMultiProperty<String> CHECK_CONTINUE_LOOP_TYPES = new EnumeratedMultiProperty<>(
-            "checkContinueLoopTypes", "Check for continue statements in loop types", ALL_LOOP_TYPES_LABELS,
-            ALL_LOOP_TYPES_VALUES, ALL_LOOP_TYPES_DEFAULTS, 2);
+        "checkContinueLoopTypes", "Check for continue statements in loop types", LOOP_TYPES_MAPPINGS, DEFAULTS,
+        String.class, 2);
     public static final EnumeratedMultiProperty<String> CHECK_RETURN_LOOP_TYPES = new EnumeratedMultiProperty<>(
-            "checkReturnLoopTypes", "Check for return statements in loop types", ALL_LOOP_TYPES_LABELS,
-            ALL_LOOP_TYPES_VALUES, ALL_LOOP_TYPES_DEFAULTS, 3);
+        "checkReturnLoopTypes", "Check for return statements in loop types", LOOP_TYPES_MAPPINGS, DEFAULTS,
+        String.class, 3);
+
 
     public AvoidBranchingStatementAsLastInLoopRule() {
         definePropertyDescriptor(CHECK_BREAK_LOOP_TYPES);
@@ -46,6 +60,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
         addRuleChainVisit(ASTReturnStatement.class);
     }
 
+
     @Override
     public Object visit(ASTBreakStatement node, Object data) {
         // skip breaks, that are within a switch statement
@@ -55,15 +70,6 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
         return check(CHECK_BREAK_LOOP_TYPES, node, data);
     }
 
-    @Override
-    public Object visit(ASTContinueStatement node, Object data) {
-        return check(CHECK_CONTINUE_LOOP_TYPES, node, data);
-    }
-
-    @Override
-    public Object visit(ASTReturnStatement node, Object data) {
-        return check(CHECK_RETURN_LOOP_TYPES, node, data);
-    }
 
     protected Object check(EnumeratedMultiProperty<String> property, Node node, Object data) {
         Node parent = node.getNthParent(5);
@@ -83,21 +89,23 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
         return data;
     }
 
+
     protected boolean hasPropertyValue(EnumeratedMultiProperty<String> property, String value) {
-        final Object[] values = getProperty(property);
-        for (int i = 0; i < values.length; i++) {
-            if (value.equals(values[i])) {
-                return true;
-            }
-        }
-        return false;
+        return getProperty(property).contains(value);
     }
 
-    public boolean checksNothing() {
 
-        return getProperty(CHECK_BREAK_LOOP_TYPES).length == 0 && getProperty(CHECK_CONTINUE_LOOP_TYPES).length == 0
-                && getProperty(CHECK_RETURN_LOOP_TYPES).length == 0;
+    @Override
+    public Object visit(ASTContinueStatement node, Object data) {
+        return check(CHECK_CONTINUE_LOOP_TYPES, node, data);
     }
+
+
+    @Override
+    public Object visit(ASTReturnStatement node, Object data) {
+        return check(CHECK_RETURN_LOOP_TYPES, node, data);
+    }
+
 
     /**
      * @see PropertySource#dysfunctionReason()
@@ -105,5 +113,12 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
     @Override
     public String dysfunctionReason() {
         return checksNothing() ? "All loop types are ignored" : null;
+    }
+
+
+    public boolean checksNothing() {
+
+        return getProperty(CHECK_BREAK_LOOP_TYPES).size() == 0 && getProperty(CHECK_CONTINUE_LOOP_TYPES).size() == 0
+            && getProperty(CHECK_RETURN_LOOP_TYPES).size() == 0;
     }
 }

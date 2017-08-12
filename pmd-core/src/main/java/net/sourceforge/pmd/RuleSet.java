@@ -16,6 +16,8 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.benchmark.Benchmark;
 import net.sourceforge.pmd.benchmark.Benchmarker;
 import net.sourceforge.pmd.cache.ChecksumAware;
@@ -24,7 +26,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;
 
@@ -179,7 +180,7 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addRuleByReference(final String ruleSetFileName, final Rule rule) {
-            if (StringUtil.isEmpty(ruleSetFileName)) {
+            if (StringUtils.isBlank(ruleSetFileName)) {
                 throw new RuntimeException(
                         "Adding a rule by reference is not allowed with an empty rule set file name.");
             }
@@ -246,7 +247,7 @@ public class RuleSet implements ChecksumAware {
          */
         public RuleSetBuilder addRuleSetByReference(final RuleSet ruleSet, final boolean allRules,
                 final String... excludes) {
-            if (StringUtil.isEmpty(ruleSet.getFileName())) {
+            if (StringUtils.isBlank(ruleSet.getFileName())) {
                 throw new RuntimeException(
                         "Adding a rule by reference is not allowed with an empty rule set file name.");
             }

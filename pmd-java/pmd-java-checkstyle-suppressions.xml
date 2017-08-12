@@ -7,6 +7,10 @@
 
     <suppress files="[\\/]src[\\/]main[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]lang[\\/]java[\\/]rule[\\/]AbstractJavaRule\.java"
         checks="AvoidStarImport" />
-    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]ExtraTopLevelClass\.java"
-        checks="OneTopLevelClass" />
+    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
+              checks="AvoidStarImport" />
+    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
+              checks="HideUtilityClassConstructor" />
+    <suppress files="[\\/]src[\\/]test[\\/]java[\\/]net[\\/]sourceforge[\\/]pmd[\\/]typeresolution[\\/]testdata[\\/]*"
+              checks="OneTopLevelClass" />
 </suppressions>

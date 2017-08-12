@@ -5,7 +5,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable {
+import net.sourceforge.pmd.lang.ast.SignedNode;
+import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+
+public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration> {
+
 
     public ASTFieldDeclaration(int id) {
         super(id);
@@ -136,5 +140,11 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
             return decl.getImage();
         }
         return null;
+    }
+
+
+    @Override
+    public JavaFieldSignature getSignature() {
+        return JavaFieldSignature.buildFor(this);
     }
 }

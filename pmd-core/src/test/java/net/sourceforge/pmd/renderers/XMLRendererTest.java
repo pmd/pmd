@@ -17,6 +17,7 @@ import org.xml.sax.InputSource;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
@@ -60,6 +61,13 @@ public class XMLRendererTest extends AbstractRendererTst {
     public String getExpectedError(ProcessingError error) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
                 + "\" timestamp=\"2014-10-06T19:30:51.222\">" + PMD.EOL + "<error filename=\"file\" msg=\"Error\"/>"
+                + PMD.EOL + "</pmd>" + PMD.EOL;
+    }
+
+    @Override
+    public String getExpectedError(ConfigurationError error) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + "<pmd version=\"" + PMD.VERSION
+                + "\" timestamp=\"2014-10-06T19:30:51.222\">" + PMD.EOL + "<configerror rule=\"Foo\" msg=\"a configuration error\"/>"
                 + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 

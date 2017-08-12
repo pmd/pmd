@@ -152,6 +152,17 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 writer.write(buf.toString());
             }
         }
+        
+        // config errors
+        for (final Report.ConfigurationError ce : configErrors) {
+            buf.setLength(0);
+            buf.append("<configerror ").append("rule=\"");
+            StringUtil.appendXmlEscaped(buf, ce.rule().getName(), useUTF8);
+            buf.append("\" msg=\"");
+            StringUtil.appendXmlEscaped(buf, ce.issue(), useUTF8);
+            buf.append("\"/>").append(PMD.EOL);
+            writer.write(buf.toString());
+        }
 
         writer.write("</pmd>" + PMD.EOL);
     }

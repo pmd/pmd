@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,13 +76,13 @@ public class CloseResourceRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         if (closeTargets.isEmpty() && getProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
-            closeTargets.addAll(Arrays.asList(getProperty(CLOSE_TARGETS_DESCRIPTOR)));
+            closeTargets.addAll(getProperty(CLOSE_TARGETS_DESCRIPTOR));
         }
         if (getProperty(USE_CLOSE_AS_DEFAULT_TARGET) && !closeTargets.contains("close")) {
             closeTargets.add("close");
         }
         if (types.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
-            types.addAll(Arrays.asList(getProperty(TYPES_DESCRIPTOR)));
+            types.addAll(getProperty(TYPES_DESCRIPTOR));
         }
         if (simpleTypes.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
             for (String type : getProperty(TYPES_DESCRIPTOR)) {

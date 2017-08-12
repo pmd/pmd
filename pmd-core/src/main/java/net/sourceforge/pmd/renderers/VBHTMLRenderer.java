@@ -101,7 +101,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
         if (!errors.isEmpty()) {
             sb.setLength(0);
             sb.append("<table border=\"0\" width=\"80%\">");
-            sb.append("<tr id=TableHeader><td><font class=title>&nbsp;Problems found</font></td></tr>");
+            sb.append("<tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;Problems found</font></td></tr>");
             boolean colorize = false;
             for (Report.ProcessingError error : errors) {
                 if (colorize) {
@@ -110,7 +110,27 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
                     sb.append("<tr id=RowColor2>");
                 }
                 colorize = !colorize;
-                sb.append("<td><font class=body>").append(error).append("\"</font></td></tr>");
+                sb.append("<td><font class=body>").append(error.getFile()).append("</font></td>");
+                sb.append("<td><font class=body>").append(error.getMsg()).append("</font></td></tr>");
+            }
+            sb.append("</table>");
+            writer.write(sb.toString());
+        }
+        
+        if (!configErrors.isEmpty()) {
+            sb.setLength(0);
+            sb.append("<table border=\"0\" width=\"80%\">");
+            sb.append("<tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;Configuration problems found</font></td></tr>");
+            boolean colorize = false;
+            for (Report.ConfigurationError error : configErrors) {
+                if (colorize) {
+                    sb.append("<tr id=RowColor1>");
+                } else {
+                    sb.append("<tr id=RowColor2>");
+                }
+                colorize = !colorize;
+                sb.append("<td><font class=body>").append(error.rule().getName()).append("</font></td>");
+                sb.append("<td><font class=body>").append(error.issue()).append("</font></td></tr>");
             }
             sb.append("</table>");
             writer.write(sb.toString());

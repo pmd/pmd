@@ -178,4 +178,21 @@ public class NotificationPacket {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#468 False positive when qualifying with this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final int[] a;
+
+    public Foo(int[] b) {
+        this.a = new int[b.length];
+        for (int i = 0; i < b.length; i++) {
+            this.a[i] = b[i];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

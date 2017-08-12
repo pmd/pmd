@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
@@ -34,6 +35,10 @@ public abstract class AbstractRendererTst {
     public abstract String getExpectedMultiple();
 
     public String getExpectedError(ProcessingError error) {
+        return "";
+    }
+    
+    public String getExpectedError(ConfigurationError error) {
         return "";
     }
 
@@ -119,6 +124,15 @@ public abstract class AbstractRendererTst {
         Report rep = new Report();
         Report.ProcessingError err = new Report.ProcessingError("Error", "file");
         rep.addError(err);
+        String actual = ReportTest.render(getRenderer(), rep);
+        assertEquals(filter(getExpectedError(err)), filter(actual));
+    }
+    
+    @Test
+    public void testConfigError() throws Exception {
+        Report rep = new Report();
+        Report.ConfigurationError err = new Report.ConfigurationError(new FooRule(), "a configuration error");
+        rep.addConfigError(err);
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }

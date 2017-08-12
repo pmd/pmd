@@ -117,20 +117,20 @@
 
     <test-code>
         <description>Testing new parameter showClassMethods</description>
-        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="reportClasses">false</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="basic-violation"/>
     </test-code>
 
     <test-code>
         <description>Testing new parameter showMethodsMethods</description>
-        <rule-property name="showMethodsComplexity">false</rule-property>
+        <rule-property name="reportMethods">false</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="basic-violation"/>
     </test-code>
 
     <test-code>
-        <description>Testing default value of showClassMethods and showClassesComplexity</description>
+        <description>Testing default value of showClassMethods and reportClasses</description>
         <expected-problems>2</expected-problems>
         <code-ref id="basic-violation"/>
     </test-code>
@@ -152,10 +152,10 @@
     </code-fragment>
 
     <test-code>
-        <description>#984 Cyclomatic complexity should treat constructors like methods: 1 - showMethodsComplexity=true
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 1 - reportMethods=true
         </description>
-        <rule-property name="showClassesComplexity">false</rule-property>
-        <rule-property name="showMethodsComplexity">true</rule-property>
+        <rule-property name="reportClasses">false</rule-property>
+        <rule-property name="reportMethods">true</rule-property>
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="constructor-violation"/>
@@ -163,10 +163,10 @@
 
     <test-code>
         <description>#984 Cyclomatic complexity should treat constructors like methods: 2 -
-            showMethodsComplexity=false
+            reportMethods=false
         </description>
-        <rule-property name="showClassesComplexity">false</rule-property>
-        <rule-property name="showMethodsComplexity">false</rule-property>
+        <rule-property name="reportClasses">false</rule-property>
+        <rule-property name="reportMethods">false</rule-property>
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="constructor-violation"/>
@@ -211,8 +211,8 @@
 
     <test-code>
         <description>Standard Cyclo should count empty switch labels too</description>
-        <rule-property name="showClassesComplexity">false</rule-property>
-        <rule-property name="showMethodsComplexity">true</rule-property>
+        <rule-property name="reportClasses">false</rule-property>
+        <rule-property name="reportMethods">true</rule-property>
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
@@ -223,8 +223,8 @@
 
     <test-code>
         <description>IgnoreBooleanPaths Cyclo should not count empty switch labels</description>
-        <rule-property name="showClassesComplexity">false</rule-property>
-        <rule-property name="showMethodsComplexity">true</rule-property>
+        <rule-property name="reportClasses">false</rule-property>
+        <rule-property name="reportMethods">true</rule-property>
         <rule-property name="cycloVersion">ignoreBooleanPaths</rule-property>
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
@@ -253,7 +253,7 @@
 
     <test-code>
         <description>Standard Cyclo should count boolean paths</description>
-        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="reportClasses">false</rule-property>
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
@@ -264,7 +264,7 @@
 
     <test-code>
         <description>IgnoreBooleanPaths Cyclo should not count boolean paths</description>
-        <rule-property name="showClassesComplexity">false</rule-property>
+        <rule-property name="reportClasses">false</rule-property>
         <rule-property name="cycloVersion">ignoreBooleanPaths</rule-property>
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>

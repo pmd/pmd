@@ -4,89 +4,80 @@
 
 package net.sourceforge.pmd.lang.rule.properties;
 
+import static net.sourceforge.pmd.lang.rule.properties.ValueParser.BOOLEAN_PARSER;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptorFactory;
-import net.sourceforge.pmd.lang.rule.properties.factories.BasicPropertyDescriptorFactory;
+import net.sourceforge.pmd.PropertyDescriptorField;
+import net.sourceforge.pmd.lang.rule.properties.ValueParser.Companion;
 
 /**
  * Defines a property type that supports multiple Boolean values.
  *
  * @author Brian Remedios
  */
-public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
+public final class BooleanMultiProperty extends AbstractMultiValueProperty<Boolean> {
 
-    public static final PropertyDescriptorFactory FACTORY = new BasicPropertyDescriptorFactory<StringMultiProperty>(
-            String[].class) {
-        @Override
-        public BooleanMultiProperty createWith(Map<String, String> valuesById) {
-            char delimiter = delimiterIn(valuesById);
-            return new BooleanMultiProperty(nameIn(valuesById), descriptionIn(valuesById),
-                    booleanValuesIn(defaultValueIn(valuesById), delimiter), 0f);
-        }
-    };
+    /** Factory. */
+    public static final PropertyDescriptorFactory<List<Boolean>> FACTORY // @formatter:off
+        = new MultiValuePropertyDescriptorFactory<Boolean>(Boolean.class) {
+            @Override
+            public BooleanMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
+                char delimiter = delimiterIn(valuesById);
+                return new BooleanMultiProperty(nameIn(valuesById),
+                                                descriptionIn(valuesById),
+                                                Companion.parsePrimitives(defaultValueIn(valuesById), delimiter, BOOLEAN_PARSER),
+                                                0f,
+                                                isDefinedExternally);
+            }
+        }; // @formatter:on
+
 
     /**
-     * Constructor for BooleanMultiProperty that allows for multiple values.
+     * Constructor using an array of defaults.
      *
-     * @param theName
-     *            String
-     * @param theDescription
-     *            String
-     * @param defaultValues
-     *            Boolean[]
-     * @param theUIOrder
-     *            float
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
      */
     public BooleanMultiProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder) {
-        super(theName, theDescription, defaultValues, theUIOrder);
+        this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, false);
     }
 
-    /**
-     * @return Class
-     * @see net.sourceforge.pmd.PropertyDescriptor#type()
-     */
-    @Override
-    public Class<Boolean[]> type() {
-        return Boolean[].class;
+
+    /** Master constructor. */
+    private BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues,
+                                 float theUIOrder, boolean isDefinedExternally) {
+        super(theName, theDescription, defaultValues, theUIOrder, isDefinedExternally);
     }
 
-    /**
-     * @return boolean
-     * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-     */
-    @Override
-    public boolean isMultiValue() {
-        return true;
-    }
 
     /**
-     * Creates and returns a Boolean instance from a raw string
+     * Constructor using a list of defaults.
      *
-     * @param value
-     *            String
-     * @return Object
+     * @param theName        Name
+     * @param theDescription Description
+     * @param defaultValues  List of defaults
+     * @param theUIOrder     UI order
      */
-    @Override
-    protected Object createFrom(String value) {
-        return Boolean.valueOf(value);
+    public BooleanMultiProperty(String theName, String theDescription, List<Boolean> defaultValues, float theUIOrder) {
+        this(theName, theDescription, defaultValues, theUIOrder, false);
     }
 
-    /**
-     * @param size
-     *            int
-     * @return Object[]
-     */
+
     @Override
-    protected Boolean[] arrayFor(int size) {
-        return new Boolean[size];
+    protected Boolean createFrom(String toParse) {
+        return BOOLEAN_PARSER.valueOf(toParse);
     }
 
-    /**
-     * @return String
-     */
+
     @Override
-    protected String defaultAsString() {
-        return asDelimitedString(defaultValue());
+    public Class<Boolean> type() {
+        return Boolean.class;
     }
+
 }

@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
 public class YAHTMLRendererTest extends AbstractRendererTst {
@@ -74,6 +75,11 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedError(ProcessingError error) {
+        return getExpected();
+    }
+
+    @Override
+    public String getExpectedError(ConfigurationError error) {
         return getExpected();
     }
 }
