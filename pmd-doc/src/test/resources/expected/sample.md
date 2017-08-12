@@ -10,19 +10,32 @@ editmepath: ../rulesets/ruledoctest/sample.xml
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Just some description of a deprecated rule.
 
+```
+//ForStatement
+```
+
 ## JumbledIncrementer
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+
+```
+//ForStatement
+ [
+  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+  =
+  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+ ]
+```
 
 **Example(s):**
 
@@ -44,11 +57,20 @@ public class JumbledIncrementerRule1 {
 
 The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pmd_rules_java_basic.html#jumbledincrementer)
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+
+```
+//ForStatement
+ [
+  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+  =
+  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+ ]
+```
 
 **Example(s):**
 
@@ -66,11 +88,13 @@ public class JumbledIncrementerRule1 {
 
 ## OverrideBothEqualsAndHashcode
 
-**Since:** 0.4
+**Since:** PMD 0.4
 
 **Priority:** Medium (3)
 
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/master/net/sourceforge/pmd/lang/java/rule/basic/OverrideBothEqualsAndHashcodeRule.java)
 
 **Example(s):**
 
@@ -103,11 +127,20 @@ public class Foo {      // perfect, both methods provided
 
 This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincrementer)
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+
+```
+//ForStatement
+ [
+  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+  =
+  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+ ]
+```
 
 **Example(s):**
 

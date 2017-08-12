@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.docs;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -41,6 +42,8 @@ public class RuleDocGenerator {
 
     private static final String DEPRECATION_LABEL_SMALL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;\">Deprecated</span> ";
     private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> ";
+
+    private static final String GITHUB_SOURCE_LINK = "https://github.com/pmd/pmd/blob/master/";
 
     private final Path root;
     private final FileWriter writer;
@@ -277,7 +280,7 @@ public class RuleDocGenerator {
                         lines.add("");
                     }
                     if (rule.getSince() != null) {
-                        lines.add("**Since:** " + rule.getSince());
+                        lines.add("**Since:** PMD " + rule.getSince());
                         lines.add("");
                     }
                     lines.add("**Priority:** " + rule.getPriority() + " (" + rule.getPriority().getPriority() + ")");
@@ -285,6 +288,20 @@ public class RuleDocGenerator {
 
                     lines.add(StringUtils.stripToEmpty(rule.getDescription()));
                     lines.add("");
+
+                    if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
+                        lines.add("```");
+                        lines.add(StringUtils.stripToEmpty(rule.getProperty(XPathRule.XPATH_DESCRIPTOR)));
+                        lines.add("```");
+                        lines.add("");
+                    } else {
+                        lines.add("**This rule is defined by the following Java class:** "
+                                + "[" + rule.getRuleClass() + "]("
+                                + GITHUB_SOURCE_LINK + getRuleClassSourceFilepath(rule.getRuleClass())
+                                + ")");
+                        lines.add("");
+                    }
+
                     if (!rule.getExamples().isEmpty()) {
                         lines.add("**Example(s):**");
                         lines.add("");
@@ -358,7 +375,7 @@ public class RuleDocGenerator {
                 return super.visitFile(file, attrs);
             }
         });
-        
+
         if (!foundPathResult.isEmpty()) {
             Path foundPath = foundPathResult.get(0);
             foundPath = root.relativize(foundPath);
@@ -366,5 +383,30 @@ public class RuleDocGenerator {
         }
 
         return StringUtils.chomp(ruleset.getFileName());
+    }
+
+    private String getRuleClassSourceFilepath(String ruleClass) throws IOException {
+        final String relativeSourceFilename = ruleClass.replaceAll("\\.", File.separator) + ".java";
+        final List<Path> foundPathResult = new LinkedList<>();
+
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                String path = file.toString();
+                if (path.contains("src") && path.endsWith(relativeSourceFilename)) {
+                    foundPathResult.add(file);
+                    return FileVisitResult.TERMINATE;
+                }
+                return super.visitFile(file, attrs);
+            }
+        });
+
+        if (!foundPathResult.isEmpty()) {
+            Path foundPath = foundPathResult.get(0);
+            foundPath = root.relativize(foundPath);
+            return FilenameUtils.normalize(foundPath.toString(), true);
+        }
+
+        return FilenameUtils.normalize(relativeSourceFilename, true);
     }
 }
