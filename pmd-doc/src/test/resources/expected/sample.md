@@ -100,7 +100,9 @@ public class JumbledIncrementerRule1 {
 
 **Minimum Language Version:** Java 1.5
 
-Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+Override both `public boolean Object.equals(Object other)`, and `public int Object.hashCode()`, or override neither.
+Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
+delegating to your superclass.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/master/net/sourceforge/pmd/lang/java/rule/basic/OverrideBothEqualsAndHashcodeRule.java)
 
