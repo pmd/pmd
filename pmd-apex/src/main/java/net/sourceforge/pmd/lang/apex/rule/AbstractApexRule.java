@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.apex.ast.ASTAnnotationParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTArrayLoadExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTArrayStoreExpression;
@@ -22,8 +23,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTBridgeMethodCreator;
+import net.sourceforge.pmd.lang.apex.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTCatchBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTClassRefExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTConstructorPreamble;
 import net.sourceforge.pmd.lang.apex.ast.ASTConstructorPreambleStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -33,7 +36,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
@@ -43,20 +45,26 @@ import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTIllegalStoreExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTInstanceOfExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTJavaMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTJavaVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMapEntryNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethodBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTModifier;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierOrAnnotation;
+import net.sourceforge.pmd.lang.apex.ast.ASTMultiStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTNestedExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNestedStoreExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewKeyValueObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewListInitExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewListLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewMapInitExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewMapLiteralExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewSetInitExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewSetLiteralExpression;
@@ -72,10 +80,10 @@ import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTStatementExecuted;
 import net.sourceforge.pmd.lang.apex.ast.ASTSuperMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSuperVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTTestNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTThisMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThisVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
@@ -346,11 +354,6 @@ public abstract class AbstractApexRule extends AbstractRule
     }
 
     @Override
-    public Object visit(ASTDottedExpression node, Object data) {
-        return visit((ApexNode<?>) node, data);
-    }
-
-    @Override
     public Object visit(ASTExpression node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
@@ -412,11 +415,6 @@ public abstract class AbstractApexRule extends AbstractRule
 
     @Override
     public Object visit(ASTNewMapLiteralExpression node, Object data) {
-        return visit((ApexNode<?>) node, data);
-    }
-
-    @Override
-    public Object visit(ASTNewNameValueObjectExpression node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
 
@@ -491,11 +489,6 @@ public abstract class AbstractApexRule extends AbstractRule
     }
 
     @Override
-    public Object visit(ASTTestNode node, Object data) {
-        return visit((ApexNode<?>) node, data);
-    }
-
-    @Override
     public Object visit(ASTThisMethodCallExpression node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
@@ -532,6 +525,61 @@ public abstract class AbstractApexRule extends AbstractRule
 
     @Override
     public Object visit(ASTVariableExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTAnnotationParameter node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTCastExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTConstructorPreamble node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTIllegalStoreExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTMethodBlockStatement node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTModifier node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTMultiStatement node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTNestedExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTNestedStoreExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTNewKeyValueObjectExpression node, Object data) {
+        return visit((ApexNode<?>) node, data);
+    }
+
+    @Override
+    public Object visit(ASTStatementExecuted node, Object data) {
         return visit((ApexNode<?>) node, data);
     }
 }

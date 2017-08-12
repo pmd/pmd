@@ -112,18 +112,47 @@
 			<scope>test</scope>
 		</dependency>
 
-		 <dependency>
-	        <groupId>apex</groupId>
-	        <artifactId>apex-jorje-ide</artifactId>
-	        <version>1.0-sfdc-187-SNAPSHOT-55042bfc2e</version>
-	    </dependency>
+        <dependency>
+            <groupId>apex</groupId>
+            <artifactId>apex-jorje-data</artifactId>
+            <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
+        </dependency>
 
-		<dependency>
-	        <groupId>apex</groupId>
-	        <artifactId>apex-jorje-semantic</artifactId>
-	        <version>1.0-sfdc-187-SNAPSHOT-55042bfc2e</version>
-            <classifier>tests</classifier>
-	    </dependency>
+         <dependency>
+            <groupId>apex</groupId>
+            <artifactId>apex-jorje-ide</artifactId>
+            <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
+        </dependency>
+
+         <dependency>
+            <groupId>apex</groupId>
+            <artifactId>apex-jorje-parser</artifactId>
+            <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
+        </dependency>
+
+         <dependency>
+            <groupId>apex</groupId>
+            <artifactId>apex-jorje-semantic</artifactId>
+            <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
+        </dependency>
+
+         <dependency>
+            <groupId>apex</groupId>
+            <artifactId>apex-jorje-services</artifactId>
+            <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
+        </dependency>
+
+         <dependency>
+            <groupId>apex</groupId>
+            <artifactId>apex-jorje-tools</artifactId>
+            <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>22.0</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.antlr</groupId>

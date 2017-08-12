@@ -82,11 +82,11 @@ public class Foo {
 	Integer a4; 
 	Integer a5; 
 	interface Bar {
-		Integer a6; 
-		Integer a7; 
-		Integer a8; 
-		Integer a9; 
-		Integer a10; 
+		static Integer a6; 
+		static Integer a7; 
+		static Integer a8; 
+		static Integer a9; 
+		static Integer a10; 
 	}
 }
 		]]></code>

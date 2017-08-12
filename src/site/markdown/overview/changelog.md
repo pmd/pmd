@@ -14,6 +14,7 @@ This is a major release.
     *   [Metrics Framework](#Metrics_Framework)
     *   [Configuration Error Reporting](#Configuration_Error_Reporting)
     *   [Java Symbol Table](#Java_Symbol_Table)
+    *   [Apex Parser Update](#Apex_Parser_Update)
     *   [Modified Rules](#Modified_Rules)
     *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
@@ -83,14 +84,29 @@ and include them to such reports.
 
 #### Java Symbol Table
 
-*   A [bug in symbol table](https://github.com/pmd/pmd/pull/549/commits/0958621ca884a8002012fc7738308c8dfc24b97c) prevented
-    the symbol table analysis to properly match primitive arrays types. The issue [affected the `java-unsedcode/UnusedPrivateMethod`](https://github.com/pmd/pmd/issues/521)
-    rule, but other rules may now produce improved results as consequence of this fix.
+A [bug in symbol table](https://github.com/pmd/pmd/pull/549/commits/0958621ca884a8002012fc7738308c8dfc24b97c) prevented
+the symbol table analysis to properly match primitive arrays types. The issue [affected the `java-unsedcode/UnusedPrivateMethod`](https://github.com/pmd/pmd/issues/521)
+rule, but other rules may now produce improved results as consequence of this fix.
+
+#### Apex Parser Update
+
+The Apex parser version was bumped, from `1.0-sfdc-187` to `1.0-sfdc-224`. This update let us take full advatange
+of the latest improvements from Salesforce, but introduces some breaking changes:
+*   `BlockStatements` are now created for all control structures, even if no brace is used. We have therefore added
+    a `hasCurlyBrace` method to differentiate between both scenarios.
+*   New AST node types are available. In particular `CastExpression`, `ConstructorPreamble`, `IllegalStoreExpression`,
+    `MethodBlockStatement`, `Modifier`, `MultiStatement`, `NestedExpression`, `NestedStoreExpression`,
+    `NewKeyValueObjectExpression` and `StatementExecuted`
+*   Some nodes have been removed. Such is the case of `TestNode`, `DottedExpression` and `NewNameValueObjectExpression`
+    (replaced by `NewKeyValueObjectExpression`)
+
+Al existing rules have been updated to reflect these changes. If you have custom rules, be sure to update them.
 
 ### Fixed Issues
 
 *   apex
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
+    *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
     *   [#500](https://github.com/pmd/pmd/issues/500): \[apex] Running through CLI shows jorje optimization messages
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters

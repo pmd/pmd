@@ -31,7 +31,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-
+for loop without increment
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -45,7 +45,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-
+for loop without condition and increment
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -59,7 +59,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-
+for loop without initializer, condition and increment
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -72,15 +72,26 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-for-each
-     ]]></description>
+        <description>for-each, not ok</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  void foo() {   
   for (Account a : accounts) 
        foo();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>for-each, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {   
+  for (Account a : accounts) {
+       foo();
+  }
  }
 }
      ]]></code>
