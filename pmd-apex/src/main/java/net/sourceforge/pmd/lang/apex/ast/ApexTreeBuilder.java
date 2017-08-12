@@ -108,7 +108,7 @@ import apex.jorje.semantic.exception.Errors;
 
 public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
-    private static final Map<Class<? extends AstNode>, Constructor<? extends ApexNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
+    private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractApexNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
     static {
         register(Annotation.class, ASTAnnotation.class);
@@ -201,7 +201,7 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         register(WhileLoopStatement.class, ASTWhileLoopStatement.class);
     }
 
-    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends ApexNode<T>> nodeAdapterType) {
+    private static <T extends AstNode> void register(Class<T> nodeType, Class<? extends AbstractApexNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getConstructor(nodeType));
         } catch (SecurityException e) {
@@ -217,20 +217,22 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     // The Apex nodes with children to build.
     private Stack<AstNode> parents = new Stack<>();
 
-    private SourceCodePositioner sourceCodePositioner;
+    private final SourceCodePositioner sourceCodePositioner;
+    private final String sourceCode;
 
     public ApexTreeBuilder(String sourceCode) {
+        this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
     }
 
     AdditionalPassScope scope = new AdditionalPassScope(new Errors());
 
-    static <T extends AstNode> ApexNode<T> createNodeAdapter(T node) {
+    static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
         try {
             @SuppressWarnings("unchecked")
             // the register function makes sure only ApexNode<T> can be added,
             // where T is "T extends AstNode".
-            Constructor<? extends ApexNode<T>> constructor = (Constructor<? extends ApexNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
+            Constructor<? extends AbstractApexNode<T>> constructor = (Constructor<? extends AbstractApexNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE
                     .get(node.getClass());
             if (constructor == null) {
                 throw new IllegalArgumentException(
@@ -248,8 +250,9 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     public <T extends AstNode> ApexNode<T> build(T astNode) {
         // Create a Node
-        ApexNode<T> node = createNodeAdapter(astNode);
-        calculateLineNumbers(node);
+        AbstractApexNode<T> node = createNodeAdapter(astNode);
+        node.calculateLineNumbers(sourceCodePositioner);
+        node.handleSourceCode(sourceCode);
 
         // Append to parent
         Node parent = nodes.isEmpty() ? null : nodes.peek();
@@ -266,11 +269,6 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         parents.pop();
 
         return node;
-    }
-
-    private void calculateLineNumbers(ApexNode<?> node) {
-        AbstractApexNode<?> apexNode = (AbstractApexNode<?>) node;
-        apexNode.calculateLineNumbers(sourceCodePositioner);
     }
 
     private boolean visit(AstNode node) {

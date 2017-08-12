@@ -32,7 +32,6 @@ public class ApexLexerTest {
         int tokenCount = 0;
         while (token.getType() != Token.EOF) {
             tokenCount++;
-            System.out.println(token);
             token = lexer.nextToken();
         }
         Assert.assertEquals(43, tokenCount);
@@ -45,6 +44,5 @@ public class ApexLexerTest {
         ApexParser parser = new ApexParser(new CommonTokenStream(lexer));
         CompilationUnit compilationUnit = parser.compilationUnit();
         Assert.assertNotNull(compilationUnit);
-        System.out.println(compilationUnit);
     }
 }

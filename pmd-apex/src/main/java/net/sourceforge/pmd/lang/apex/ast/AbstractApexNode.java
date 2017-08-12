@@ -44,6 +44,10 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractNode i
         }
     }
 
+    protected void handleSourceCode(String source) {
+        // default implementation does nothing
+    }
+
     @Override
     public int getBeginLine() {
         if (this.beginLine > 0) {
