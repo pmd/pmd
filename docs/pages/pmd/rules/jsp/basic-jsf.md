@@ -8,11 +8,15 @@ editmepath: ../pmd-jsp/src/main/resources/rulesets/jsp/basic-jsf.xml
 ---
 ## DontNestJsfInJstlIteration
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium (3)
 
 Do not nest JSF component custom actions inside a custom action that iterates over its body.
+
+```
+//Element[ @Name="c:forEach" ] // Element[ @NamespacePrefix="h" or @NamespacePrefix="f" ]
+```
 
 **Example(s):**
 

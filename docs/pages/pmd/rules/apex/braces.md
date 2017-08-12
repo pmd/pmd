@@ -8,13 +8,21 @@ editmepath: ../pmd-apex/src/main/resources/rulesets/apex/braces.xml
 ---
 ## ForLoopsMustUseBraces
 
-**Since:** 5.6.0
+**Since:** PMD 5.6.0
 
 **Priority:** Medium (3)
 
 Avoid using 'for' statements without using surrounding braces. If the code formatting or
 indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.
+
+```
+//ForLoopStatement
+[child::ExpressionStatement]
+|
+//ForEachStatement
+[child::ExpressionStatement]
+```
 
 **Example(s):**
 
@@ -37,13 +45,21 @@ for (int i = 0; i < 42; i++) { // preferred approach
 
 ## IfElseStmtsMustUseBraces
 
-**Since:** 5.6.0
+**Since:** PMD 5.6.0
 
 **Priority:** Medium (3)
 
 Avoid using if..else statements without using surrounding braces. If the code formatting
 or indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.
+
+```
+//ExpressionStatement[parent::IfBlockStatement]
+|
+//ExpressionStatement[parent::IfElseBlockStatement]
+|
+//IfElseBlockStatement[parent::IfBlockStatement]
+```
 
 **Example(s):**
 
@@ -68,13 +84,17 @@ if (foo)
 
 ## IfStmtsMustUseBraces
 
-**Since:** 5.6.0
+**Since:** PMD 5.6.0
 
 **Priority:** Medium (3)
 
 Avoid using if statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
+
+```
+//IfBlockStatement/ExpressionStatement
+```
 
 **Example(s):**
 
@@ -97,13 +117,17 @@ if (foo) {	// preferred approach
 
 ## WhileLoopsMustUseBraces
 
-**Since:** 5.6.0
+**Since:** PMD 5.6.0
 
 **Priority:** Medium (3)
 
 Avoid using 'while' statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
+
+```
+//WhileLoopStatement/ExpressionStatement
+```
 
 **Example(s):**
 

@@ -8,12 +8,14 @@ editmepath: ../pmd-apex/src/main/resources/rulesets/apex/apexunit.xml
 ---
 ## ApexUnitTestClassShouldHaveAsserts
 
-**Since:** 5.5.1
+**Since:** PMD 5.5.1
 
 **Priority:** Medium (3)
 
 Apex unit tests should include at least one assertion.  This makes the tests more robust, and using assert
             with messages provide the developer a clearer idea of what the test does.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestClassShouldHaveAsserts](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/apexunit/ApexUnitTestClassShouldHaveAsserts.java)
 
 **Example(s):**
 
@@ -39,11 +41,13 @@ public class Foo {
 
 ## ApexUnitTestShouldNotUseSeeAllDataTrue
 
-**Since:** 5.5.1
+**Since:** PMD 5.5.1
 
 **Priority:** Medium (3)
 
 Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestShouldNotUseSeeAllDataTrue](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/apexunit/ApexUnitTestShouldNotUseSeeAllDataTrue.java)
 
 **Example(s):**
 

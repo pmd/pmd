@@ -8,12 +8,14 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/unnecessary.xml
 ---
 ## UnnecessaryConversionTemporary
 
-**Since:** 0.1
+**Since:** PMD 0.1
 
 **Priority:** Medium (3)
 
 Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods
 on the wrapper classes instead.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UnnecessaryConversionTemporaryRule.java)
 
 **Example(s):**
 
@@ -27,13 +29,23 @@ public String convert(int x) {
 
 ## UnnecessaryFinalModifier
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
 When a class has the final modifier, all the methods are automatically final and do not need to be
 tagged as such. Similarly, methods that can't be overridden (private methods, methods of anonymous classes,
 methods of enum instance) do not need to be tagged either.
+
+```
+//ClassOrInterfaceDeclaration[@Final='true' and @Interface='false']
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+        [count(./Annotation/MarkerAnnotation/Name[@Image='SafeVarargs' or @Image='java.lang.SafeVarargs']) = 0]
+    /MethodDeclaration[@Final='true']
+| //MethodDeclaration[@Final='true' and @Private='true']
+| //EnumConstant/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
+| //AllocationExpression/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
+```
 
 **Example(s):**
 
@@ -48,7 +60,7 @@ public final class Foo {
 
 ## UnnecessaryModifier
 
-**Since:** 1.02
+**Since:** PMD 1.02
 
 **Priority:** Medium (3)
 
@@ -57,6 +69,8 @@ Classes, interfaces or annotations nested in an interface or annotation are auto
 (all nested interfaces and annotations are automatically static).
 Nested enums are automatically `static`.
 For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UnnecessaryModifierRule.java)
 
 **Example(s):**
 
@@ -83,11 +97,13 @@ public class Bar {
 
 ## UnnecessaryReturn
 
-**Since:** 1.3
+**Since:** PMD 1.3
 
 **Priority:** Medium (3)
 
 Avoid the use of unnecessary return statements.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UnnecessaryReturnRule.java)
 
 **Example(s):**
 
@@ -102,11 +118,21 @@ public class Foo {
 
 ## UnusedNullCheckInEquals
 
-**Since:** 3.5
+**Since:** PMD 3.5
 
 **Priority:** Medium (3)
 
 After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
+
+```
+(//PrimaryPrefix[ends-with(Name/@Image, '.equals') and Name/@Image != 'Arrays.equals'] | //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)])
+ /following-sibling::PrimarySuffix/Arguments/ArgumentList/Expression
+ /PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix
+ /Name[@Image = ./../../../../../../../../../../Expression/ConditionalAndExpression
+ /EqualityExpression[@Image="!=" and count(./preceding-sibling::*)=0 and
+ ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+  /PrimaryExpression/PrimaryPrefix/Name/@Image]
+```
 
 **Example(s):**
 
@@ -150,12 +176,14 @@ public class Test {
 
 ## UselessOperationOnImmutable
 
-**Since:** 3.5
+**Since:** PMD 3.5
 
 **Priority:** Medium (3)
 
 An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
 since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOperationOnImmutableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UselessOperationOnImmutableRule.java)
 
 **Example(s):**
 
@@ -176,11 +204,13 @@ class Test {
 
 ## UselessOverridingMethod
 
-**Since:** 3.3
+**Since:** PMD 3.3
 
 **Priority:** Medium (3)
 
 The overriding method merely calls the same method defined in a superclass.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOverridingMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unnecessary/UselessOverridingMethodRule.java)
 
 **Example(s):**
 
@@ -207,11 +237,61 @@ public Long getId() {
 
 ## UselessParentheses
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
 
 Useless parentheses should be removed.
+
+```
+//Expression/PrimaryExpression/PrimaryPrefix/Expression
+[count(*)=1][count(./CastExpression)=0][count(./ConditionalExpression[@Ternary='true'])=0]
+[not(./AdditiveExpression[//Literal[@StringLiteral='true']])]
+|
+//Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    count(./CastExpression)=0 and
+    count(./EqualityExpression/MultiplicativeExpression)=0 and
+    count(./ConditionalExpression[@Ternary='true'])=0 and
+    count(./ConditionalOrExpression)=0]
+|
+//Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    count(./CastExpression)=0 and
+    count(./ConditionalExpression[@Ternary='true'])=0 and
+    count(./EqualityExpression/MultiplicativeExpression)=0]
+|
+//Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    count(./CastExpression)=0 and
+    count(./EqualityExpression)=0]
+|
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])]/PrimaryExpression[1]/PrimaryPrefix/Expression[
+    count(*)=1 and
+    not(./CastExpression) and
+    not(./AdditiveExpression[@Image = '-']) and
+    not(./ShiftExpression) and
+    not(./RelationalExpression) and
+    not(./InstanceOfExpression) and
+    not(./EqualityExpression) and
+    not(./AndExpression) and
+    not(./ExclusiveOrExpression) and
+    not(./InclusiveOrExpression) and
+    not(./ConditionalAndExpression) and
+    not(./ConditionalOrExpression) and
+    not(./ConditionalExpression)]
+|
+//Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[
+    count(*)=1 and
+    count(./CastExpression)=0 and
+    count(./AndExpression)=0 and
+    count(./InclusiveOrExpression)=0 and
+    count(./ExclusiveOrExpression)=0 and
+    count(./ConditionalExpression)=0 and
+    count(./ConditionalAndExpression)=0 and
+    count(./ConditionalOrExpression)=0 and
+    count(./EqualityExpression)=0]
+```
 
 **Example(s):**
 
@@ -231,11 +311,20 @@ public class Foo {
 
 ## UselessQualifiedThis
 
-**Since:** 5.4.0
+**Since:** PMD 5.4.0
 
 **Priority:** Medium (3)
 
 Look for qualified this usages in the same class.
+
+```
+//PrimaryExpression
+[PrimaryPrefix/Name[@Image]]
+[PrimarySuffix[@Arguments='false']]
+[not(PrimarySuffix/MemberSelector)]
+[ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
+/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
+```
 
 **Example(s):**
 

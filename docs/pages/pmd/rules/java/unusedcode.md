@@ -8,11 +8,13 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/unusedcode.xml
 ---
 ## UnusedFormalParameter
 
-**Since:** 0.8
+**Since:** PMD 0.8
 
 **Priority:** Medium (3)
 
 Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedFormalParameterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedFormalParameterRule.java)
 
 **Example(s):**
 
@@ -32,11 +34,13 @@ public class Foo {
 
 ## UnusedLocalVariable
 
-**Since:** 0.1
+**Since:** PMD 0.1
 
 **Priority:** Medium (3)
 
 Detects when a local variable is declared and/or assigned, but not used.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedLocalVariableRule.java)
 
 **Example(s):**
 
@@ -50,11 +54,13 @@ public class Foo {
 
 ## UnusedPrivateField
 
-**Since:** 0.1
+**Since:** PMD 0.1
 
 **Priority:** Medium (3)
 
 Detects when a private field is declared and/or assigned a value, but not used.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateFieldRule.java)
 
 **Example(s):**
 
@@ -71,11 +77,13 @@ public class Something {
 
 ## UnusedPrivateMethod
 
-**Since:** 0.7
+**Since:** PMD 0.7
 
 **Priority:** Medium (3)
 
 Unused Private Method detects when a private method is declared but is unused.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedPrivateMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/unusedcode/UnusedPrivateMethodRule.java)
 
 **Example(s):**
 

@@ -8,11 +8,15 @@ editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/TomKytesDespair.xml
 ---
 ## TomKytesDespair
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** Medium (3)
 
 "WHEN OTHERS THEN NULL" hides all errors - (Re)RAISE an exception or call RAISE_APPLICATION_ERROR
+
+```
+//ExceptionHandler[QualifiedName/@Image='OTHERS' and upper-case(Statement/UnlabelledStatement/Expression/@Image)='NULL']
+```
 
 **Example(s):**
 

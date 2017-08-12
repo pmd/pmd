@@ -8,11 +8,13 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/comments.xml
 ---
 ## CommentContent
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 A rule for the politically correct... we don't want to offend anyone.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentContentRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentContentRule.java)
 
 **Example(s):**
 
@@ -30,13 +32,15 @@ A rule for the politically correct... we don't want to offend anyone.
 
 ## CommentDefaultAccessModifier
 
-**Since:** 5.4.0
+**Since:** PMD 5.4.0
 
 **Priority:** Medium (3)
 
 To avoid mistakes if we want that a Method, Field or Nested class have a default access modifier
         we must add a comment at the beginning of the Method, Field or Nested class.
         By default the comment must be /* default */, if you want another, you have to provide a regex.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentDefaultAccessModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentDefaultAccessModifierRule.java)
 
 **Example(s):**
 
@@ -71,11 +75,13 @@ public class Foo {
 
 ## CommentRequired
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** Medium (3)
 
 Denotes whether comments are required (or unwanted) for specific language elements.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentRequiredRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentRequiredRule.java)
 
 **Example(s):**
 
@@ -100,11 +106,13 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 
 ## CommentSize
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Determines whether the dimensions of non-header comments found are within the specified limits.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentSizeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentSizeRule.java)
 
 **Example(s):**
 

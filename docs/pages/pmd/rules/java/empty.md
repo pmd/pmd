@@ -8,13 +8,22 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/empty.xml
 ---
 ## EmptyCatchBlock
 
-**Since:** 0.1
+**Since:** PMD 0.1
 
 **Priority:** Medium (3)
 
 Empty Catch Block finds instances where an exception is caught, but nothing is done.  
 In most circumstances, this swallows an exception which should either be acted on 
 or reported.
+
+```
+//CatchStatement
+ [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
+ [FormalParameter/Type/ReferenceType
+   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
+ ]
+ [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
+```
 
 **Example(s):**
 
@@ -37,11 +46,15 @@ public void doSomething() {
 
 ## EmptyFinallyBlock
 
-**Since:** 0.4
+**Since:** PMD 0.4
 
 **Priority:** Medium (3)
 
 Empty finally blocks serve no purpose and should be removed.
+
+```
+//FinallyStatement[count(Block/BlockStatement) = 0]
+```
 
 **Example(s):**
 
@@ -59,11 +72,16 @@ public class Foo {
 
 ## EmptyIfStmt
 
-**Since:** 0.1
+**Since:** PMD 0.1
 
 **Priority:** Medium (3)
 
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
+
+```
+//IfStatement/Statement
+ [EmptyStatement or Block[count(*) = 0]]
+```
 
 **Example(s):**
 
@@ -79,11 +97,15 @@ public class Foo {
 
 ## EmptyInitializer
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Empty initializers serve no purpose and should be removed.
+
+```
+//Initializer/Block[count(*)=0]
+```
 
 **Example(s):**
 
@@ -99,11 +121,15 @@ public class Foo {
 
 ## EmptyStatementBlock
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Empty block statements serve no purpose and should be removed.
+
+```
+//BlockStatement/Statement/Block[count(*) = 0]
+```
 
 **Example(s):**
 
@@ -122,13 +148,26 @@ public class Foo {
 
 ## EmptyStatementNotInLoop
 
-**Since:** 1.5
+**Since:** PMD 1.5
 
 **Priority:** Medium (3)
 
 An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for' 
 or 'while' loop is probably a bug.  It could also be a double semicolon, which has no purpose
 and should be removed.
+
+```
+//EmptyStatement
+ [not(
+       ../../../ForStatement
+       or ../../../WhileStatement
+       or ../../../BlockStatement/ClassOrInterfaceDeclaration
+       or ../../../../../../ForStatement/Statement[1]
+        /Block[1]/BlockStatement[1]/Statement/EmptyStatement
+       or ../../../../../../WhileStatement/Statement[1]
+        /Block[1]/BlockStatement[1]/Statement/EmptyStatement)
+ ]
+```
 
 **Example(s):**
 
@@ -143,11 +182,15 @@ public void doit() {
 
 ## EmptyStaticInitializer
 
-**Since:** 1.5
+**Since:** PMD 1.5
 
 **Priority:** Medium (3)
 
 An empty static initializer serve no purpose and should be removed.
+
+```
+//Initializer[@Static='true']/Block[count(*)=0]
+```
 
 **Example(s):**
 
@@ -161,11 +204,15 @@ public class Foo {
 
 ## EmptySwitchStatements
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Empty switch statements serve no purpose and should be removed.
+
+```
+//SwitchStatement[count(*) = 1]
+```
 
 **Example(s):**
 
@@ -181,11 +228,15 @@ public void bar() {
 
 ## EmptySynchronizedBlock
 
-**Since:** 1.3
+**Since:** PMD 1.3
 
 **Priority:** Medium (3)
 
 Empty synchronized blocks serve no purpose and should be removed.
+
+```
+//SynchronizedStatement/Block[1][count(*) = 0]
+```
 
 **Example(s):**
 
@@ -201,11 +252,15 @@ public class Foo {
 
 ## EmptyTryBlock
 
-**Since:** 0.4
+**Since:** PMD 0.4
 
 **Priority:** Medium (3)
 
 Avoid empty try blocks - what's the point?
+
+```
+//TryStatement[not(ResourceSpecification)]/Block[1][count(*) = 0]
+```
 
 **Example(s):**
 
@@ -222,13 +277,17 @@ public class Foo {
 
 ## EmptyWhileStmt
 
-**Since:** 0.2
+**Since:** PMD 0.2
 
 **Priority:** Medium (3)
 
 Empty While Statement finds all instances where a while statement does nothing.  
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+
+```
+//WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
+```
 
 **Example(s):**
 

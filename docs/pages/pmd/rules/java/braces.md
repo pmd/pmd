@@ -8,13 +8,17 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/braces.xml
 ---
 ## ForLoopsMustUseBraces
 
-**Since:** 0.7
+**Since:** PMD 0.7
 
 **Priority:** Medium (3)
 
 Avoid using 'for' statements without using curly braces. If the code formatting or 
 indentation is lost then it becomes difficult to separate the code being controlled 
 from the rest.
+
+```
+//ForStatement[not(Statement/Block)]
+```
 
 **Example(s):**
 
@@ -25,13 +29,20 @@ for (int i = 0; i < 42; i++)
 
 ## IfElseStmtsMustUseBraces
 
-**Since:** 0.2
+**Since:** PMD 0.2
 
 **Priority:** Medium (3)
 
 Avoid using if..else statements without using surrounding braces. If the code formatting 
 or indentation is lost then it becomes difficult to separate the code being controlled 
 from the rest.
+
+```
+//Statement
+ [parent::IfStatement[@Else='true']]
+ [not(child::Block)]
+ [not(child::IfStatement)]
+```
 
 **Example(s):**
 
@@ -48,13 +59,17 @@ if (foo)
 
 ## IfStmtsMustUseBraces
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Avoid using if statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
+
+```
+//IfStatement[count(*) < 3][not(Statement/Block)]
+```
 
 **Example(s):**
 
@@ -69,13 +84,17 @@ if (foo) {	// preferred approach
 
 ## WhileLoopsMustUseBraces
 
-**Since:** 0.7
+**Since:** PMD 0.7
 
 **Priority:** Medium (3)
 
 Avoid using 'while' statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
+
+```
+//WhileStatement[not(Statement/Block)]
+```
 
 **Example(s):**
 

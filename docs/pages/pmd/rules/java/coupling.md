@@ -8,12 +8,14 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/coupling.xml
 ---
 ## CouplingBetweenObjects
 
-**Since:** 1.04
+**Since:** PMD 1.04
 
 **Priority:** Medium (3)
 
 This rule counts the number of unique attributes, local variables, and return types within an object. 
 A number higher than the specified threshold can indicate a high degree of coupling.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.CouplingBetweenObjectsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/CouplingBetweenObjectsRule.java)
 
 **Example(s):**
 
@@ -44,13 +46,15 @@ public class Foo {
 
 ## ExcessiveImports
 
-**Since:** 1.04
+**Since:** PMD 1.04
 
 **Priority:** Medium (3)
 
 A high number of imports can indicate a high degree of coupling within an object. This rule 
 counts the number of unique imports and reports a violation if the count is above the 
 user-specified threshold.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.ExcessiveImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/ExcessiveImportsRule.java)
 
 **Example(s):**
 
@@ -73,7 +77,7 @@ public class Foo {
 
 ## LawOfDemeter
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
@@ -83,6 +87,8 @@ Andrew Hunt, David Thomas, and Ward Cunningham. The Pragmatic Programmer. From J
 K.J. Lieberherr and I.M. Holland. Assuring good style for object-oriented programs. Software, IEEE, 6(5):38–48, 1989.;
 http://www.ccs.neu.edu/home/lieber/LoD.html;
 http://en.wikipedia.org/wiki/Law_of_Demeter
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.LawOfDemeterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/LawOfDemeterRule.java)
 
 **Example(s):**
 
@@ -112,13 +118,15 @@ public class Foo {
 
 ## LooseCoupling
 
-**Since:** 0.7
+**Since:** PMD 0.7
 
 **Priority:** Medium (3)
 
 The use of implementation types as object references limits your ability to use alternate
 implementations in the future as requirements change. Whenever available, referencing objects 
 by their interface types provides much more flexibility.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.LooseCouplingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/LooseCouplingRule.java)
 
 **Example(s):**
 
@@ -140,12 +148,14 @@ public Set getFoo() {
 
 ## LoosePackageCoupling
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Avoid using classes from the configured package hierarchy outside of the package hierarchy, 
 except when using one of the configured allowed classes.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.coupling.LoosePackageCouplingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/coupling/LoosePackageCouplingRule.java)
 
 **Example(s):**
 

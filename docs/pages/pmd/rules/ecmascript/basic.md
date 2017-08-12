@@ -8,12 +8,26 @@ editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/basic.xml
 ---
 ## AssignmentInOperand
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium High (2)
 
 Avoid assignments in operands; this can make code more complicated and harder to read.  This is sometime
 indicative of the bug where the assignment operator '=' was used instead of the equality operator '=='.
+
+```
+//IfStatement[$allowIf = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+	//WhileLoop[$allowWhile = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+	//DoLoop[$allowWhile = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+	//ForLoop[$allowFor = "false"]/child::node()[2]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+   //ConditionalExpression[$allowTernary = "false"]/child::node()[1]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+|
+   //ConditionalExpression[$allowTernaryResults = "false"]/child::node()[position() = 2 or position() = 3]/descendant-or-self::node()[self::Assignment or self::UnaryExpression[$allowIncrementDecrement = "false" and (@Image = "--" or @Image = "++")]]
+```
 
 **Example(s):**
 
@@ -42,11 +56,17 @@ function getX() {
 
 ## AvoidTrailingComma
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** High (1)
 
 This rule helps improve code portability due to differences in browser treatment of trailing commas in object or array literals.
+
+```
+//ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
+|
+	//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
+```
 
 **Example(s):**
 
@@ -69,13 +89,15 @@ function(arg) {
 
 ## ConsistentReturn
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium High (2)
 
 ECMAScript does provide for return types on functions, and therefore there is no solid rule as to their usage.
 However, when a function does use returns they should all have a value, or all with no value.  Mixed return
 usage is likely a bug, or at best poor style.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.ecmascript.rule.basic.ConsistentReturnRule](https://github.com/pmd/pmd/blob/master/pmd-javascript/src/main/java/net/sourceforge/pmd/lang/ecmascript/rule/basic/ConsistentReturnRule.java)
 
 **Example(s):**
 
@@ -107,12 +129,21 @@ function bar() {
 
 ## EqualComparison
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Using == in condition may lead to unexpected results, as the variables are automatically casted to be of the
       same type. The === operator avoids the casting.
+
+```
+//InfixExpression[(@Image = "==" or @Image = "!=")
+  and
+ (child::KeywordLiteral[@Image = "true" or @Image = "false"]
+ or
+ child::NumberLiteral)
+]
+```
 
 **Example(s):**
 
@@ -137,12 +168,16 @@ if (someVar != 3) {
 
 ## GlobalVariable
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** High (1)
 
 This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
 Global variables can lead to side-effects that are hard to debug.
+
+```
+//Assignment[Name/@GlobalName = 'true']
+```
 
 **Example(s):**
 
@@ -158,12 +193,20 @@ function(arg) {
 
 ## InnaccurateNumericLiteral
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium High (2)
 
 The numeric literal will have at different value at runtime, which can happen if you provide too much
 precision in a floating point number.  This may result in numeric calculations being in error.
+
+```
+//NumberLiteral[
+	@Image != @Number
+	and translate(@Image, "e", "E") != @Number
+	and concat(@Image, ".0") != @Number
+	and @Image != substring-before(translate(@Number, ".", ""), "E")]
+```
 
 **Example(s):**
 
@@ -179,7 +222,7 @@ var z = 1.12345678901234567; // Not good
 
 ## ScopeForInVariable
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** High (1)
 
@@ -189,6 +232,10 @@ existing value of the variable in the outer scope when the body of the for-in is
 has finished, the variable will contain the last value used in the for-in, and the original value from before
 the for-in loop will be gone.  Since the for-in variable name is most likely intended to be a temporary name, it
 is better to explicitly scope the variable name to the nearest enclosing scope with 'var'.
+
+```
+//ForInLoop[not(child::VariableDeclaration)]/Name[1]
+```
 
 **Example(s):**
 
@@ -223,12 +270,22 @@ function bar() {
 
 ## UnreachableCode
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** High (1)
 
 A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
 will never execute.  This is a bug, or extremely poor style.
+
+```
+//ReturnStatement[following-sibling::node()]
+|
+	//ContinueStatement[following-sibling::node()]
+|
+	//BreakStatement[following-sibling::node()]
+|
+	//ThrowStatement[following-sibling::node()]
+```
 
 **Example(s):**
 
@@ -247,11 +304,19 @@ function bar() {
 
 ## UseBaseWithParseInt
 
-**Since:** 5.0.1
+**Since:** PMD 5.0.1
 
 **Priority:** High (1)
 
 TODO
+
+```
+//FunctionCall/Name[
+     @Image = 'parseInt'
+     and
+     count(../*) < 3
+]
+```
 
 **Example(s):**
 

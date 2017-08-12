@@ -8,11 +8,13 @@ editmepath: ../pmd-visualforce/src/main/resources/rulesets/vf/security.xml
 ---
 ## VfCsrf
 
-**Since:** 5.6.0
+**Since:** PMD 5.6.0
 
 **Priority:** Medium (3)
 
 Avoid calling VF action upon page load as the action becomes vulnerable to CSRF.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.vf.rule.security.VfCsrfRule](https://github.com/pmd/pmd/blob/master/pmd-visualforce/src/main/java/net/sourceforge/pmd/lang/vf/rule/security/VfCsrfRule.java)
 
 **Example(s):**
 
@@ -22,11 +24,13 @@ Avoid calling VF action upon page load as the action becomes vulnerable to CSRF.
 
 ## VfUnescapeEl
 
-**Since:** 5.6.0
+**Since:** PMD 5.6.0
 
 **Priority:** Medium (3)
 
 Avoid unescaped user controlled content in EL as it results in XSS.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.vf.rule.security.VfUnescapeElRule](https://github.com/pmd/pmd/blob/master/pmd-visualforce/src/main/java/net/sourceforge/pmd/lang/vf/rule/security/VfUnescapeElRule.java)
 
 **Example(s):**
 

@@ -8,11 +8,17 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-java.xml
 ---
 ## AvoidPrintStackTrace
 
-**Since:** 3.2
+**Since:** PMD 3.2
 
 **Priority:** Medium (3)
 
 Avoid printStackTrace(); use a logger call instead.
+
+```
+//PrimaryExpression
+ [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
+ [PrimarySuffix[not(boolean(Arguments/ArgumentList/Expression))]]
+```
 
 **Example(s):**
 
@@ -30,12 +36,14 @@ class Foo {
 
 ## GuardLogStatementJavaUtil
 
-**Since:** 5.1.0
+**Since:** PMD 5.1.0
 
 **Priority:** Medium High (2)
 
 Whenever using a log level, one should check if the loglevel is actually enabled, or
 otherwise skip the associate String creation and manipulation.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.GuardLogStatementJavaUtilRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/GuardLogStatementJavaUtilRule.java)
 
 **Example(s):**
 
@@ -54,11 +62,13 @@ otherwise skip the associate String creation and manipulation.
 
 ## InvalidSlf4jMessageFormat
 
-**Since:** 5.5.0
+**Since:** PMD 5.5.0
 
 **Priority:** Low (5)
 
 Check for messages in slf4j loggers with non matching number of arguments and placeholders.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.InvalidSlf4jMessageFormatRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/InvalidSlf4jMessageFormatRule.java)
 
 **Example(s):**
 
@@ -70,11 +80,20 @@ LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The except
 
 ## LoggerIsNotStaticFinal
 
-**Since:** 2.0
+**Since:** PMD 2.0
 
 **Priority:** Medium High (2)
 
 In most cases, the Logger reference can be declared as static and final.
+
+```
+//VariableDeclarator
+ [parent::FieldDeclaration]
+ [../Type/ReferenceType
+  /ClassOrInterfaceType[@Image='Logger']
+   and
+  (..[@Final='false'] or ..[@Static = 'false'] ) ]
+```
 
 **Example(s):**
 
@@ -88,11 +107,13 @@ public class Foo{
 
 ## MoreThanOneLogger
 
-**Since:** 2.0
+**Since:** PMD 2.0
 
 **Priority:** Medium High (2)
 
 Normally only one logger is used in each class.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.logging.MoreThanOneLoggerRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/logging/MoreThanOneLoggerRule.java)
 
 **Example(s):**
 
@@ -107,13 +128,21 @@ public class Foo {
 
 ## SystemPrintln
 
-**Since:** 2.1
+**Since:** PMD 2.1
 
 **Priority:** Medium High (2)
 
 References to System.(out|err).print are usually intended for debugging purposes and can remain in
 the codebase even in production code. By using a logger one can enable/disable this behaviour at
 will (and by priority) and avoid clogging the Standard out log.
+
+```
+//Name[
+    starts-with(@Image, 'System.out.print')
+    or
+    starts-with(@Image, 'System.err.print')
+    ]
+```
 
 **Example(s):**
 

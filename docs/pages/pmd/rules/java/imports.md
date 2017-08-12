@@ -8,11 +8,13 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/imports.xml
 ---
 ## DontImportJavaLang
 
-**Since:** 0.5
+**Since:** PMD 0.5
 
 **Priority:** Medium Low (4)
 
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/DontImportJavaLangRule.java)
 
 **Example(s):**
 
@@ -30,11 +32,13 @@ public class Foo {}
 
 ## DuplicateImports
 
-**Since:** 0.5
+**Since:** PMD 0.5
 
 **Priority:** Medium Low (4)
 
 Duplicate or overlapping import statements should be avoided.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/DuplicateImportsRule.java)
 
 **Example(s):**
 
@@ -46,11 +50,13 @@ public class Foo {}
 
 ## ImportFromSamePackage
 
-**Since:** 1.02
+**Since:** PMD 1.02
 
 **Priority:** Medium (3)
 
 There is no need to import a type that lives in the same package.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/ImportFromSamePackageRule.java)
 
 **Example(s):**
 
@@ -65,7 +71,7 @@ package foo;
 
 ## TooManyStaticImports
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
@@ -73,6 +79,10 @@ If you overuse the static import feature, it can make your program unreadable an
 unmaintainable, polluting its namespace with all the static members you import. 
 Readers of your code (including you, a few months after you wrote it) will not know 
 which class a static member comes from (Sun 1.5 Language Guide).
+
+```
+.[count(ImportDeclaration[@Static = 'true']) > $maximumStaticImports]
+```
 
 **Example(s):**
 
@@ -92,12 +102,14 @@ import static Yoko; // Too much !
 
 ## UnnecessaryFullyQualifiedName
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
 
 Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
 which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnnecessaryFullyQualifiedNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnnecessaryFullyQualifiedNameRule.java)
 
 **Example(s):**
 
@@ -112,11 +124,13 @@ public class Foo {
 
 ## UnusedImports
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium Low (4)
 
 Avoid the use of unused import statements to prevent unwanted dependencies.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/imports/UnusedImportsRule.java)
 
 **Example(s):**
 

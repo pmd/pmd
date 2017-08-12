@@ -8,11 +8,17 @@ editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/braces.xml
 ---
 ## ForLoopsMustUseBraces
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Avoid using 'for' statements without using curly braces.
+
+```
+//ForLoop[not(child::Scope)]
+|
+	//ForInLoop[not(child::Scope)]
+```
 
 **Example(s):**
 
@@ -29,11 +35,17 @@ for (var i = 0; i < 42; i++)
 
 ## IfElseStmtsMustUseBraces
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Avoid using if..else statements without using curly braces.
+
+```
+//ExpressionStatement[parent::IfStatement[@Else = "true"]]
+   [not(child::Scope)]
+   [not(child::IfStatement)]
+```
 
 **Example(s):**
 
@@ -54,11 +66,15 @@ else
 
 ## IfStmtsMustUseBraces
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Avoid using if statements without using curly braces.
+
+```
+//IfStatement[@Else = "false" and not(child::Scope)]
+```
 
 **Example(s):**
 
@@ -75,11 +91,15 @@ if (foo)
 
 ## WhileLoopsMustUseBraces
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Avoid using 'while' statements without using curly braces.
+
+```
+//WhileLoop[not(child::Scope)]
+```
 
 **Example(s):**
 

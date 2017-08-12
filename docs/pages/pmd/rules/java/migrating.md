@@ -8,11 +8,15 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/migrating.xml
 ---
 ## AvoidAssertAsIdentifier
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium High (2)
 
 Use of the term 'assert' will conflict with newer versions of Java since it is a reserved word.
+
+```
+//VariableDeclaratorId[@Image='assert']
+```
 
 **Example(s):**
 
@@ -26,11 +30,15 @@ public class A {
 
 ## AvoidEnumAsIdentifier
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium High (2)
 
 Use of the term 'enum' will conflict with newer versions of Java since it is a reserved word.
+
+```
+//VariableDeclaratorId[@Image='enum']
+```
 
 **Example(s):**
 
@@ -44,12 +52,19 @@ public class A {
 
 ## ByteInstantiation
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium High (2)
 
 Calling new Byte() causes memory allocation that can be avoided by the static Byte.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+
+```
+//PrimaryPrefix/AllocationExpression
+[not (ArrayDimsAndInits)
+and (ClassOrInterfaceType/@Image='Byte'
+or ClassOrInterfaceType/@Image='java.lang.Byte')]
+```
 
 **Example(s):**
 
@@ -61,12 +76,20 @@ public class Foo {
 
 ## IntegerInstantiation
 
-**Since:** 3.5
+**Since:** PMD 3.5
 
 **Priority:** Medium High (2)
 
 Calling new Integer() causes memory allocation that can be avoided by the static Integer.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+
+```
+//PrimaryPrefix
+ /AllocationExpression
+  [not (ArrayDimsAndInits)
+   and (ClassOrInterfaceType/@Image='Integer'
+    or ClassOrInterfaceType/@Image='java.lang.Integer')]
+```
 
 **Example(s):**
 
@@ -78,12 +101,18 @@ public class Foo {
 
 ## JUnit4SuitesShouldUseSuiteAnnotation
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium (3)
 
 In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicated
 through the @RunWith(Suite.class) annotation.
+
+```
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
+[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[@Image='Test' or @Image = 'junit.framework.Test']]
+[not(MethodDeclaration/Block//ClassOrInterfaceType[@Image='JUnit4TestAdapter'])]
+```
 
 **Example(s):**
 
@@ -103,12 +132,18 @@ public class GoodTest {
 
 ## JUnit4TestShouldUseAfterAnnotation
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium (3)
 
 In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. 
 JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test
+
+```
+//CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
+[count(Annotation//Name[@Image='After'])=0]
+```
 
 **Example(s):**
 
@@ -127,12 +162,18 @@ public class MyTest2 {
 
 ## JUnit4TestShouldUseBeforeAnnotation
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium (3)
 
 In JUnit 3, the setUp method was used to set up all data entities required in running tests. 
 JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests
+
+```
+//CompilationUnit[not(ImportDeclaration/Name[starts-with(@Image, "org.testng")])]
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
+[count(Annotation//Name[@Image='Before'])=0]
+```
 
 **Example(s):**
 
@@ -151,12 +192,17 @@ public class MyTest2 {
 
 ## JUnit4TestShouldUseTestAnnotation
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium (3)
 
 In JUnit 3, the framework executed all methods which started with the word test as a unit test. 
 In JUnit 4, only methods annotated with the @Test annotation are executed.
+
+```
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public='true']/MethodDeclarator[starts-with(@Image,'test')]]
+[count(Annotation//Name[@Image='Test'])=0]
+```
 
 **Example(s):**
 
@@ -175,11 +221,13 @@ public class MyTest {
 
 ## JUnitUseExpected
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium (3)
 
 In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.migrating.JUnitUseExpectedRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/migrating/JUnitUseExpectedRule.java)
 
 **Example(s):**
 
@@ -203,12 +251,20 @@ public class MyTest {
 
 ## LongInstantiation
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium High (2)
 
 Calling new Long() causes memory allocation that can be avoided by the static Long.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+
+```
+//PrimaryPrefix
+/AllocationExpression
+[not (ArrayDimsAndInits)
+and (ClassOrInterfaceType/@Image='Long'
+or ClassOrInterfaceType/@Image='java.lang.Long')]
+```
 
 **Example(s):**
 
@@ -220,11 +276,15 @@ public class Foo {
 
 ## ReplaceEnumerationWithIterator
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
 Consider replacing Enumeration usages with the newer java.util.Iterator
+
+```
+//ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
+```
 
 **Example(s):**
 
@@ -242,11 +302,15 @@ public class Foo implements Enumeration {
 
 ## ReplaceHashtableWithMap
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
 Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.
+
+```
+//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']
+```
 
 **Example(s):**
 
@@ -260,11 +324,15 @@ public class Foo {
 
 ## ReplaceVectorWithList
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
+
+```
+//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']
+```
 
 **Example(s):**
 
@@ -278,12 +346,20 @@ public class Foo {
 
 ## ShortInstantiation
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium High (2)
 
 Calling new Short() causes memory allocation that can be avoided by the static Short.valueOf().
 It makes use of an internal cache that recycles earlier instances making it more memory efficient.
+
+```
+//PrimaryPrefix
+/AllocationExpression
+[not (ArrayDimsAndInits)
+and (ClassOrInterfaceType/@Image='Short'
+or ClassOrInterfaceType/@Image='java.lang.Short')]
+```
 
 **Example(s):**
 

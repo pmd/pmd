@@ -8,11 +8,15 @@ editmepath: ../pmd-xml/src/main/resources/rulesets/xml/basic.xml
 ---
 ## MistypedCDATASection
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 An XML CDATA section begins with a <!CDATA[ marker, which has only one [, and ends with a ]]> marker, which has only two ].
+
+```
+//cdata-section[starts-with(@Image,'[') or ends-with(@Image,']')]
+```
 
 **Example(s):**
 

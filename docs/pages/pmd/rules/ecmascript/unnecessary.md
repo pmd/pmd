@@ -8,7 +8,7 @@ editmepath: ../pmd-javascript/src/main/resources/rulesets/ecmascript/unnecessary
 ---
 ## NoElseReturn
 
-**Since:** 5.5.0
+**Since:** PMD 5.5.0
 
 **Priority:** Medium (3)
 
@@ -16,6 +16,10 @@ The else block in a if-else-construct is unnecessary if the `if` block contains 
     Then the content of the else block can be put outside.
     
     See also: http://eslint.org/docs/rules/no-else-return
+
+```
+//IfStatement[@Else="true"][Scope[1]/ReturnStatement]
+```
 
 **Example(s):**
 
@@ -36,13 +40,21 @@ return z;
 
 ## UnnecessaryBlock
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 An unnecessary Block is present.  Such Blocks are often used in other languages to
     introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
     be misleading.  Considering removing this unnecessary Block.
+
+```
+//Block[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+			or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+|
+	//Scope[not(parent::FunctionNode or parent::IfStatement or parent::ForLoop or parent::ForInLoop
+			or parent::WhileLoop or parent::DoLoop or parent::TryStatement or parent::CatchClause)]
+```
 
 **Example(s):**
 
@@ -59,11 +71,15 @@ if (bar) {
 
 ## UnnecessaryParentheses
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
 
 Unnecessary parentheses should be removed.
+
+```
+//ParenthesizedExpression/ParenthesizedExpression
+```
 
 **Example(s):**
 

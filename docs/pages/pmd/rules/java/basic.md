@@ -8,12 +8,14 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/basic.xml
 ---
 ## AvoidBranchingStatementAsLastInLoop
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium High (2)
 
 Using a branching statement as the last part of a loop may be a bug, and/or is confusing.
 Ensure that the usage is not a bug, or consider using another approach.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.AvoidBranchingStatementAsLastInLoopRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/AvoidBranchingStatementAsLastInLoopRule.java)
 
 **Example(s):**
 
@@ -44,7 +46,7 @@ for (int i = 0; i < 10; i++) {
 
 ## AvoidDecimalLiteralsInBigDecimalConstructor
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
@@ -58,6 +60,28 @@ The (String) constructor, on the other hand, is perfectly predictable: 'new BigD
 exactly equal to 0.1, as one would expect.  Therefore, it is generally recommended that the
 (String) constructor be used in preference to this one.
 
+```
+//AllocationExpression
+[ClassOrInterfaceType[@Image="BigDecimal"]]
+[Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
+    [
+        Literal[(not(ends-with(@Image,'"'))) and contains(@Image,".")]
+        or
+        Name[ancestor::Block/BlockStatement/LocalVariableDeclaration
+                [Type[PrimitiveType[@Image='double' or @Image='float']
+                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
+                /VariableDeclarator/VariableDeclaratorId/@Image = @Image
+            ]
+        or
+        Name[ancestor::MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter
+                [Type[PrimitiveType[@Image='double' or @Image='float']
+                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
+                /VariableDeclaratorId/@Image = @Image
+            ]
+    ]
+]
+```
+
 **Example(s):**
 
 ```
@@ -70,12 +94,14 @@ BigDecimal bd = new BigDecimal(12);     	// preferred approach, ok for integer v
 
 ## AvoidMultipleUnaryOperators
 
-**Since:** 4.2
+**Since:** PMD 4.2
 
 **Priority:** Medium High (2)
 
 The use of multiple unary operators may be problematic, and/or confusing.
 Ensure that the intended usage is not a bug, or consider simplifying the expression.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.AvoidMultipleUnaryOperatorsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/AvoidMultipleUnaryOperatorsRule.java)
 
 **Example(s):**
 
@@ -101,12 +127,17 @@ int j = -~7;
 
 ## AvoidThreadGroup
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium (3)
 
 Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
 it contains methods that are not thread-safe.
+
+```
+//AllocationExpression/ClassOrInterfaceType[pmd-java:typeof(@Image, 'java.lang.ThreadGroup')]|
+//PrimarySuffix[contains(@Image, 'getThreadGroup')]
+```
 
 **Example(s):**
 
@@ -123,12 +154,14 @@ public class Bar {
 
 ## AvoidUsingHardCodedIP
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 Application with hard-coded IP addresses can become impossible to deploy in some cases.
 Externalizing IP adresses is preferable.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingHardCodedIPRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/AvoidUsingHardCodedIPRule.java)
 
 **Example(s):**
 
@@ -147,12 +180,14 @@ public class Foo {
 
 ## AvoidUsingOctalValues
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Medium (3)
 
 Integer literals should not start with zero since this denotes that the rest of literal will be
 interpreted as an octal value.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingOctalValuesRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/AvoidUsingOctalValuesRule.java)
 
 **Example(s):**
 
@@ -170,12 +205,14 @@ k = i * j;		// set k with 80 not 120
 
 ## BigIntegerInstantiation
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Medium (3)
 
 Don't create instances of already existing BigInteger (BigInteger.ZERO, BigInteger.ONE) and
 for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TEN)
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/BigIntegerInstantiationRule.java)
 
 **Example(s):**
 
@@ -189,11 +226,13 @@ bi4 = new BigInteger(0);				// reference BigInteger.ZERO instead
 
 ## BooleanInstantiation
 
-**Since:** 1.2
+**Since:** PMD 1.2
 
 **Priority:** Medium High (2)
 
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.BooleanInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/BooleanInstantiationRule.java)
 
 **Example(s):**
 
@@ -204,12 +243,14 @@ Boolean buz = Boolean.valueOf(false);	// ...., just reference Boolean.FALSE;
 
 ## BrokenNullCheck
 
-**Since:** 3.8
+**Since:** PMD 3.8
 
 **Priority:** Medium High (2)
 
 The null check is broken since it will throw a NullPointerException itself.
 It is likely that you used || instead of && or vice versa.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.BrokenNullCheckRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/BrokenNullCheckRule.java)
 
 **Example(s):**
 
@@ -226,12 +267,14 @@ public String bar(String string) {
 
 ## CheckResultSet
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 Always check the return values of navigation methods (next, previous, first, last) of a ResultSet.
 If the value return is 'false', it should be handled properly.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.CheckResultSetRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/CheckResultSetRule.java)
 
 **Example(s):**
 
@@ -252,11 +295,13 @@ if (rst.next()) {	// result is properly examined and used
 
 ## CheckSkipResult
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/CheckSkipResultRule.java)
 
 **Example(s):**
 
@@ -281,13 +326,25 @@ public class Foo {
 
 ## ClassCastExceptionWithToArray
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
 When deriving an array of a specific class from your Collection, one should provide an array of
 the same class as the parameter of the toArray() method. Doing otherwise you will will result
 in a ClassCastException.
+
+```
+//CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image !=
+"Object"]]/PrimaryExpression
+[
+ PrimaryPrefix/Name[ends-with(@Image, '.toArray')]
+ and
+ PrimarySuffix/Arguments[count(*) = 0]
+and
+count(PrimarySuffix) = 1
+]
+```
 
 **Example(s):**
 
@@ -305,11 +362,20 @@ Integer[] b = (Integer [])c.toArray(new Integer[c.size()]);
 
 ## CollapsibleIfStatements
 
-**Since:** 3.1
+**Since:** PMD 3.1
 
 **Priority:** Medium (3)
 
 Sometimes two consecutive 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+
+```
+//IfStatement[@Else='false']/Statement
+ /IfStatement[@Else='false']
+ |
+//IfStatement[@Else='false']/Statement
+ /Block[count(BlockStatement)=1]/BlockStatement
+  /Statement/IfStatement[@Else='false']
+```
 
 **Example(s):**
 
@@ -331,11 +397,26 @@ void bar() {
 
 ## DontCallThreadRun
 
-**Since:** 4.3
+**Since:** PMD 4.3
 
 **Priority:** Medium Low (4)
 
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
+
+```
+//StatementExpression/PrimaryExpression
+[
+    PrimaryPrefix
+    [
+        ./Name[ends-with(@Image, '.run') or @Image = 'run']
+        and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
+        [../../../Type/ReferenceType[ClassOrInterfaceType/@Image = 'Thread']]
+        or (
+        ./AllocationExpression/ClassOrInterfaceType[@Image = 'Thread']
+        and ../PrimarySuffix[@Image = 'run'])
+    ]
+]
+```
 
 **Example(s):**
 
@@ -347,13 +428,18 @@ new Thread().run(); // same violation
 
 ## DontUseFloatTypeForLoopIndices
 
-**Since:** 4.3
+**Since:** PMD 4.3
 
 **Priority:** Medium (3)
 
 Don't use floating point for loop indices. If you must use floating point, use double
 unless you're certain that float provides enough precision and you have a compelling
 performance need (space or time).
+
+```
+//ForStatement/ForInit/LocalVariableDeclaration
+/Type/PrimitiveType[@Image="float"]
+```
 
 **Example(s):**
 
@@ -373,7 +459,7 @@ public class Count {
 
 ## DoubleCheckedLocking
 
-**Since:** 1.04
+**Since:** PMD 1.04
 
 **Priority:** High (1)
 
@@ -385,6 +471,8 @@ Note: With Java 5, you can make Double checked locking work, if you declare the 
 
 For more details refer to: http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html
 or http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/DoubleCheckedLockingRule.java)
 
 **Example(s):**
 
@@ -406,11 +494,15 @@ public class Foo {
 
 ## ExtendsObject
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
 
 No need to explicitly extend Object.
+
+```
+//ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
+```
 
 **Example(s):**
 
@@ -421,11 +513,20 @@ public class Foo extends Object { 	// not required
 
 ## ForLoopShouldBeWhileLoop
 
-**Since:** 1.02
+**Since:** PMD 1.02
 
 **Priority:** Medium (3)
 
 Some for loops can be simplified to while loops, this makes them more concise.
+
+```
+//ForStatement
+ [count(*) > 1]
+ [not(LocalVariableDeclaration)]
+ [not(ForInit)]
+ [not(ForUpdate)]
+ [not(Type and Expression and Statement)]
+```
 
 **Example(s):**
 
@@ -439,11 +540,20 @@ public class Foo {
 
 ## JumbledIncrementer
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
+
+```
+//ForStatement
+ [
+  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+  =
+  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+ ]
+```
 
 **Example(s):**
 
@@ -461,12 +571,32 @@ public class JumbledIncrementerRule1 {
 
 ## MisplacedNullCheck
 
-**Since:** 3.5
+**Since:** PMD 3.5
 
 **Priority:** Medium (3)
 
 The null check here is misplaced. If the variable is null a NullPointerException will be thrown.
 Either the check is useless (the variable will never be "null") or it is incorrect.
+
+```
+//Expression
+    /*[self::ConditionalOrExpression or self::ConditionalAndExpression]
+    /descendant::PrimaryExpression/PrimaryPrefix
+    /Name[starts-with(@Image,
+        concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression
+            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+            /PrimaryExpression/PrimaryPrefix
+            /Name[count(../../PrimarySuffix)=0]/@Image,".")
+        )
+     ]
+     [count(ancestor::ConditionalAndExpression/EqualityExpression
+            [@Image='!=']
+            [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+            [starts-with(following-sibling::*/PrimaryExpression/PrimaryPrefix/Name/@Image,
+                concat(./PrimaryExpression/PrimaryPrefix/Name/@Image, '.'))]
+      ) = 0
+     ]
+```
 
 **Example(s):**
 
@@ -488,11 +618,13 @@ public class Foo {
 
 ## OverrideBothEqualsAndHashcode
 
-**Since:** 0.4
+**Since:** PMD 0.4
 
 **Priority:** Medium (3)
 
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/OverrideBothEqualsAndHashcodeRule.java)
 
 **Example(s):**
 
@@ -521,11 +653,15 @@ public class Foo {		// perfect, both methods provided
 
 ## ReturnFromFinallyBlock
 
-**Since:** 1.05
+**Since:** PMD 1.05
 
 **Priority:** Medium (3)
 
 Avoid returning from a finally block, this can discard exceptions.
+
+```
+//FinallyStatement//ReturnStatement
+```
 
 **Example(s):**
 
@@ -545,7 +681,7 @@ public class Bar {
 
 ## SimplifiedTernary
 
-**Since:** 5.4.0
+**Since:** PMD 5.4.0
 
 **Priority:** Medium (3)
 
@@ -558,6 +694,12 @@ These expressions can be simplified respectively to
 or
 `!condition || foo` when the literalBoolean is true
 `condition && foo`  when the literalBoolean is false
+
+```
+//ConditionalExpression[@Ternary='true'][not(PrimaryExpression/*/Literal) and (Expression/PrimaryExpression/*/Literal/BooleanLiteral)]
+|
+//ConditionalExpression[@Ternary='true'][not(Expression/PrimaryExpression/*/Literal) and (PrimaryExpression/*/Literal/BooleanLiteral)]
+```
 
 **Example(s):**
 
@@ -583,11 +725,17 @@ public class Foo {
 
 ## UnconditionalIfStatement
 
-**Since:** 1.5
+**Since:** PMD 1.5
 
 **Priority:** Medium (3)
 
 Do not use "if" statements whose conditionals are always true or always false.
+
+```
+//IfStatement/Expression
+ [count(PrimaryExpression)=1]
+ /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+```
 
 **Example(s):**
 

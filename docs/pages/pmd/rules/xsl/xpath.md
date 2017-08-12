@@ -8,11 +8,28 @@ editmepath: ../pmd-xml/src/main/resources/rulesets/xsl/xpath.xml
 ---
 ## AvoidAxisNavigation
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut through 100% of the document in the worst case.  Also, try to avoid using 'descendant' or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means cutting through 100% of the document.
+
+```
+//node()[
+  contains(@select,'preceeding::')
+  or
+  contains(@select,'following::')
+  or
+  contains(@select,'descendant::')
+  or 
+  contains(@select,'descendant-self::')
+  or (
+    ($checkSelfDescendantAbreviation = 'true' )
+    and
+    contains(@select,'//')
+    )
+]
+```
 
 **Example(s):**
 
@@ -28,11 +45,15 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
 
 ## UseConcatOnce
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
+
+```
+//node()[contains(substring-after(@select,'concat'),'concat')]
+```
 
 **Example(s):**
 

@@ -8,12 +8,14 @@ editmepath: ../pmd-apex/src/main/resources/rulesets/apex/style.xml
 ---
 ## AvoidGlobalModifier
 
-**Since:** 5.5.0
+**Since:** PMD 5.5.0
 
 **Priority:** Medium (3)
 
 Global classes should be avoided (especially in managed packages) as they can never be deleted or changed in signature. Always check twice if something needs to be global.
 Many interfaces (e.g. Batch) required global modifiers in the past but don't require this anymore. Don't lock yourself in.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.style.AvoidGlobalModifierRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/style/AvoidGlobalModifierRule.java)
 
 **Example(s):**
 
@@ -35,7 +37,7 @@ global class Unchangeable {
 
 ## AvoidLogicInTrigger
 
-**Since:** 5.5.0
+**Since:** PMD 5.5.0
 
 **Priority:** Medium (3)
 
@@ -43,6 +45,8 @@ As triggers do not allow methods like regular classes they are less flexible and
 Therefore delegate the triggers work to a regular class (often called Trigger handler class).
 
 See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.style.AvoidLogicInTriggerRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/style/AvoidLogicInTriggerRule.java)
 
 **Example(s):**
 
@@ -72,11 +76,13 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 
 ## ClassNamingConventions
 
-**Since:** 5.5.0
+**Since:** PMD 5.5.0
 
 **Priority:** High (1)
 
 Class names should always begin with an upper case character.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.style.ClassNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/style/ClassNamingConventionsRule.java)
 
 **Example(s):**
 
@@ -94,11 +100,13 @@ public class Foo {}
 
 ## MethodNamingConventions
 
-**Since:** 5.5.0
+**Since:** PMD 5.5.0
 
 **Priority:** High (1)
 
 Method names should always begin with a lower case character, and should not contain underscores.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.style.MethodNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/style/MethodNamingConventionsRule.java)
 
 **Example(s):**
 
@@ -119,11 +127,13 @@ public class Foo {
 
 ## MethodWithSameNameAsEnclosingClass
 
-**Since:** 5.5.0
+**Since:** PMD 5.5.0
 
 **Priority:** Medium (3)
 
 Non-constructor methods should not have the same name as the enclosing class.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.style.MethodWithSameNameAsEnclosingClassRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/style/MethodWithSameNameAsEnclosingClassRule.java)
 
 **Example(s):**
 
@@ -146,13 +156,15 @@ public class MyClass {
 
 ## VariableNamingConventions
 
-**Since:** 5.5.0
+**Since:** PMD 5.5.0
 
 **Priority:** High (1)
 
 A variable naming conventions rule - customize this to your liking.  Currently, it
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.style.VariableNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/style/VariableNamingConventionsRule.java)
 
 **Example(s):**
 

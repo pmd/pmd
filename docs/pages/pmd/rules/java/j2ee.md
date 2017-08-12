@@ -8,12 +8,20 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/j2ee.xml
 ---
 ## DoNotCallSystemExit
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 Web applications should not call System.exit(), since only the web container or the
 application server should stop the JVM. This rule also checks for the equivalent call Runtime.getRuntime().exit().
+
+```
+//Name[
+    starts-with(@Image,'System.exit')
+    or
+    (starts-with(@Image,'Runtime.getRuntime') and ../../PrimarySuffix[ends-with(@Image,'exit')])
+]
+```
 
 **Example(s):**
 
@@ -28,11 +36,15 @@ public void foo() {
 
 ## DoNotUseThreads
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 The J2EE specification explicitly forbids the use of threads.
+
+```
+//ClassOrInterfaceType[@Image = 'Thread' or @Image = 'Runnable']
+```
 
 **Example(s):**
 
@@ -52,11 +64,25 @@ public class OtherThread implements Runnable {
 
 ## LocalHomeNamingConvention
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium Low (4)
 
 The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
+
+```
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])
+    )
+    and
+    not
+    (
+        ends-with(@Image,'LocalHome')
+    )
+]
+```
 
 **Example(s):**
 
@@ -68,11 +94,25 @@ public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}// proper
 
 ## LocalInterfaceSessionNamingConvention
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium Low (4)
 
 The Local Interface of a Session EJB should be suffixed by 'Local'.
+
+```
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])
+    )
+    and
+    not
+    (
+        ends-with(@Image,'Local')
+    )
+]
+```
 
 **Example(s):**
 
@@ -84,11 +124,27 @@ public interface MyLocal extends javax.ejb.EJBLocalObject {}				// proper name
 
 ## MDBAndSessionBeanNamingConvention
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium Low (4)
 
 The EJB Specification states that any MessageDrivenBean or SessionBean should be suffixed by 'Bean'.
+
+```
+//TypeDeclaration/ClassOrInterfaceDeclaration
+[
+    (
+        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
+        or
+        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'MessageDrivenBean')])
+    )
+    and
+    not
+    (
+        ends-with(@Image,'Bean')
+    )
+]
+```
 
 **Example(s):**
 
@@ -100,11 +156,28 @@ public class MissingTheProperSuffix implements SessionBean {}  	// non-standard 
 
 ## RemoteInterfaceNamingConvention
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium Low (4)
 
 Remote Interface of a Session EJB should not have a suffix.
+
+```
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')])
+    )
+    and
+    (
+        ends-with(@Image,'Session')
+        or
+        ends-with(@Image,'EJB')
+        or
+        ends-with(@Image,'Bean')
+    )
+]
+```
 
 **Example(s):**
 
@@ -121,11 +194,25 @@ Remote Interface of a Session EJB should not have a suffix.
 
 ## RemoteSessionInterfaceNamingConvention
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium Low (4)
 
 A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
+
+```
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
+    )
+    and
+    not
+    (
+        ends-with(@Image,'Home')
+    )
+]
+```
 
 **Example(s):**
 
@@ -137,13 +224,35 @@ public interface MissingProperSuffix extends javax.ejb.EJBHome {}	// non-standar
 
 ## StaticEJBFieldShouldBeFinal
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 According to the J2EE specification, an EJB should not have any static fields
 with write access. However, static read-only fields are allowed. This ensures proper
 behavior especially when instances are distributed by the container on several JREs.
+
+```
+//ClassOrInterfaceDeclaration[
+    (
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])
+    or
+    (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')])
+    )
+    and
+    (./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[
+         (./FieldDeclaration[@Static = 'true'])
+         and
+         (./FieldDeclaration[@Final = 'false'])
+    ])
+]
+```
 
 **Example(s):**
 
@@ -158,12 +267,16 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
 
 ## UseProperClassLoader
 
-**Since:** 3.7
+**Since:** PMD 3.7
 
 **Priority:** Medium (3)
 
 In J2EE, the getClassLoader() method might not work as expected. Use 
 Thread.currentThread().getContextClassLoader() instead.
+
+```
+//PrimarySuffix[@Image='getClassLoader']
+```
 
 **Example(s):**
 

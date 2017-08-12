@@ -8,11 +8,13 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/controversial.xml
 ---
 ## AssignmentInOperand
 
-**Since:** 1.03
+**Since:** PMD 1.03
 
 **Priority:** Medium (3)
 
 Avoid assignments in operands; this can make code more complicated and harder to read.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.AssignmentInOperandRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/AssignmentInOperandRule.java)
 
 **Example(s):**
 
@@ -36,11 +38,22 @@ public void bar() {
 
 ## AtLeastOneConstructor
 
-**Since:** 1.04
+**Since:** PMD 1.04
 
 **Priority:** Medium (3)
 
 Each class should declare at least one constructor.
+
+```
+//ClassOrInterfaceDeclaration[
+  not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)
+  and
+  (@Static = 'false')
+  and
+  (count(./descendant::MethodDeclaration[@Static = 'true']) < 1)
+]
+  [@Interface='false']
+```
 
 **Example(s):**
 
@@ -54,13 +67,38 @@ public class Foo {
 
 ## AvoidAccessibilityAlteration
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
 as the interface PrivilegedAction, allows for the runtime alteration of variable, class, or
 method visibility, even if they are private. This violates the principle of encapsulation.
+
+```
+//PrimaryExpression[
+                        (
+                        (PrimarySuffix[
+                                ends-with(@Image,'getDeclaredConstructors')
+                                        or
+                                ends-with(@Image,'getDeclaredConstructor')
+                                        or
+                                ends-with(@Image,'setAccessible')
+                                ])
+                        or
+                        (PrimaryPrefix/Name[
+                                ends-with(@Image,'getDeclaredConstructor')
+                                or
+                                ends-with(@Image,'getDeclaredConstructors')
+                                or
+                                starts-with(@Image,'AccessibleObject.setAccessible')
+                                ])
+                        )
+                        and
+                        (//ImportDeclaration/Name[
+                                contains(@Image,'java.security.PrivilegedAction')])
+                ]
+```
 
 **Example(s):**
 
@@ -96,11 +134,24 @@ public class Violation {
 
 ## AvoidFinalLocalVariable
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 Avoid using final local variables, turn them into fields.
+
+```
+//LocalVariableDeclaration[
+  @Final = 'true'
+  and not(../../ForStatement)
+  and
+  (
+    (count(VariableDeclarator/VariableInitializer) = 0)
+    or
+    (VariableDeclarator/VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal)
+  )
+]
+```
 
 **Example(s):**
 
@@ -114,13 +165,20 @@ public class MyClass {
 
 ## AvoidLiteralsInIfCondition
 
-**Since:** 4.2.6
+**Since:** PMD 4.2.6
 
 **Priority:** Medium (3)
 
 Avoid using hard-coded literals in conditional statements. By declaring them as static variables
 or private members with descriptive names maintainability is enhanced. By default, the literals "-1" and "0" are ignored.
 More exceptions can be defined with the property "ignoreMagicNumbers".
+
+```
+//IfStatement/Expression/*/PrimaryExpression/PrimaryPrefix/Literal
+[not(NullLiteral)]
+[not(BooleanLiteral)]
+[empty(index-of(tokenize($ignoreMagicNumbers, ','), @Image))]
+```
 
 **Example(s):**
 
@@ -153,13 +211,19 @@ public void checkRequests() {
 
 ## AvoidPrefixingMethodParameters
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
 
 Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability.
 To indicate whether or not a parameter will be modify in a method, its better to document method
 behavior with Javadoc.
+
+```
+//MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
+        pmd:matches(@Image,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
+]
+```
 
 **Example(s):**
 
@@ -192,12 +256,16 @@ public class Foo {
 
 ## AvoidUsingNativeCode
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium High (2)
 
 Unnecessary reliance on Java Native Interface (JNI) calls directly reduces application portability
 and increases the maintenance burden.
+
+```
+//Name[starts-with(@Image,'System.loadLibrary')]
+```
 
 **Example(s):**
 
@@ -220,7 +288,7 @@ public class SomeJNIClass {
 
 ## AvoidUsingShortType
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** High (1)
 
@@ -228,6 +296,10 @@ Java uses the 'short' type to reduce memory usage, not to optimize calculation. 
 arithmetic capabilities for the short type: the JVM must convert the short into an int, do the proper calculation
 and convert the int back to a short. Thus any storage gains found through use of the 'short' type may be offset by
 adverse impacts on performance.
+
+```
+//PrimitiveType[@Image = 'short'][name(../..) != 'CastExpression']
+```
 
 **Example(s):**
 
@@ -244,13 +316,19 @@ public class UsingShort {
 
 ## AvoidUsingVolatile
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium High (2)
 
 Use of the keyword 'volatile' is generally used to fine tune a Java application, and therefore, requires
 a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore,
 the volatile keyword should not be used for maintenance purpose and portability.
+
+```
+//FieldDeclaration[
+                                contains(@Volatile,'true')
+                        ]
+```
 
 **Example(s):**
 
@@ -263,12 +341,19 @@ public class ThrDeux {
 
 ## CallSuperInConstructor
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
 It is a good practice to call super() in a constructor. If super() is not called but
 another constructor (such as an overloaded constructor) is called, this rule will not report it.
+
+```
+//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
+/ClassOrInterfaceBody
+ /ClassOrInterfaceBodyDeclaration
+ /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
+```
 
 **Example(s):**
 
@@ -288,7 +373,7 @@ public class Foo extends Bar{
 
 ## DataflowAnomalyAnalysis
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Low (5)
 
@@ -298,6 +383,8 @@ From those informations there can be found various problems.
 1. UR - Anomaly: There is a reference to a variable that was not defined before. This is a bug and leads to an error.
 2. DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.
 3. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.DataflowAnomalyAnalysisRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/DataflowAnomalyAnalysisRule.java)
 
 **Example(s):**
 
@@ -319,16 +406,27 @@ public void foo() {
 
 ## DefaultPackage
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
 Use explicit scoping instead of accidental usage of default package private level.
 The rule allows methods and fields annotated with Guava's @VisibleForTesting.
 
+```
+//ClassOrInterfaceDeclaration[@Interface='false']
+/ClassOrInterfaceBody
+/ClassOrInterfaceBodyDeclaration
+[not(Annotation//Name[ends-with(@Image, 'VisibleForTesting')])]
+[
+FieldDeclaration[@PackagePrivate='true']
+or MethodDeclaration[@PackagePrivate='true']
+]
+```
+
 ## DoNotCallGarbageCollectionExplicitly
 
-**Since:** 4.2
+**Since:** PMD 4.2
 
 **Priority:** Medium High (2)
 
@@ -336,6 +434,18 @@ Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() ar
 same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
 Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
 leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
+
+```
+//Name[
+(starts-with(@Image, 'System.') and
+(starts-with(@Image, 'System.gc') or
+starts-with(@Image, 'System.runFinalization'))) or
+(
+starts-with(@Image,'Runtime.getRuntime') and
+../../PrimarySuffix[ends-with(@Image,'gc')]
+)
+]
+```
 
 **Example(s):**
 
@@ -365,11 +475,13 @@ public class GCCall {
 
 ## DontImportSun
 
-**Since:** 1.5
+**Since:** PMD 1.5
 
 **Priority:** Medium Low (4)
 
 Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.DontImportSunRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/DontImportSunRule.java)
 
 **Example(s):**
 
@@ -380,7 +492,7 @@ public class Foo {}
 
 ## NullAssignment
 
-**Since:** 1.02
+**Since:** PMD 1.02
 
 **Priority:** Medium (3)
 
@@ -388,6 +500,8 @@ Assigning a "null" to a variable (outside of its declaration) is usually bad for
 of assignment is an indication that the programmer doesn't completely understand what is going on in the code.
 
 NOTE: This sort of assignment may used in some cases to dereference objects and encourage garbage collection.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/NullAssignmentRule.java)
 
 **Example(s):**
 
@@ -403,12 +517,18 @@ public void bar() {
 
 ## OneDeclarationPerLine
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
 
 Java allows the use of several variables declaration of the same type on one line. However, it
 can lead to quite messy code. This rule looks for several declarations on the same line.
+
+```
+//LocalVariableDeclaration
+   [count(VariableDeclarator) > 1]
+   [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
+```
 
 **Example(s):**
 
@@ -431,11 +551,13 @@ String name,
 
 ## OnlyOneReturn
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 A method should have only one exit point, and that should be the last statement in the method.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.OnlyOneReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/OnlyOneReturnRule.java)
 
 **Example(s):**
 
@@ -452,7 +574,7 @@ public class OneReturnOnly1 {
 
 ## SuspiciousOctalEscape
 
-**Since:** 1.5
+**Since:** PMD 1.5
 
 **Priority:** Medium (3)
 
@@ -467,6 +589,8 @@ Any octal escape sequence followed by non-octal digits can be confusing,
 e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
 the literal character "8".
 
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.controversial.SuspiciousOctalEscapeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/controversial/SuspiciousOctalEscapeRule.java)
+
 **Example(s):**
 
 ```
@@ -478,12 +602,22 @@ public void foo() {
 
 ## UnnecessaryConstructor
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 This rule detects when a constructor is not necessary; i.e., when there is only one constructor,
 its public, has an empty body, and takes no arguments.
+
+```
+//ClassOrInterfaceBody[count(ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)=1]
+/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
+[@Public='true']
+[not(FormalParameters/*)]
+[not(BlockStatement)]
+[not(NameList)]
+[count(ExplicitConstructorInvocation/Arguments/ArgumentList/Expression)=0]
+```
 
 **Example(s):**
 
@@ -495,11 +629,20 @@ public class Foo {
 
 ## UnnecessaryParentheses
 
-**Since:** 3.1
+**Since:** PMD 3.1
 
 **Priority:** Medium (3)
 
 Sometimes expressions are wrapped in unnecessary parentheses, making them look like function calls.
+
+```
+//Expression
+           /PrimaryExpression
+            /PrimaryPrefix
+             /Expression[count(*)=1]
+              /PrimaryExpression
+              /PrimaryPrefix
+```
 
 **Example(s):**
 
@@ -513,12 +656,17 @@ public class Foo {
 
 ## UseConcurrentHashMap
 
-**Since:** 4.2.6
+**Since:** PMD 4.2.6
 
 **Priority:** Medium (3)
 
 Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
 perform efficient map reads without blocking other threads.
+
+```
+//Type[../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
+/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
+```
 
 **Example(s):**
 
@@ -536,7 +684,7 @@ public class ConcurrentApp {
 
 ## UseObjectForClearerAPI
 
-**Since:** 4.2.6
+**Since:** PMD 4.2.6
 
 **Priority:** Medium (3)
 
@@ -546,6 +694,12 @@ as a simple series of Strings, you may think of using an Object to represent all
 API (such as doWork(Workload workload), rather than a tedious series of Strings) and more importantly, if you need at some
 point to pass extra data, you'll be able to do so by simply modifying or extending Workload without any modification to
 your API.
+
+```
+//MethodDeclaration[@Public]/MethodDeclarator/FormalParameters[
+     count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String']) > 3
+]
+```
 
 **Example(s):**
 

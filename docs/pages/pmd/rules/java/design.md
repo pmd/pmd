@@ -8,7 +8,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/design.xml
 ---
 ## AbstractClassWithoutAbstractMethod
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
@@ -16,6 +16,14 @@ The abstract class does not contain any abstract methods. An abstract class sugg
 an incomplete implementation, which is to be completed by subclasses implementing the
 abstract methods. If the class is intended to be used as a base class only (not to be instantiated
 directly) a protected constructor can be provided prevent direct instantiation.
+
+```
+//ClassOrInterfaceDeclaration
+ [@Abstract='true'
+  and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
+  [count(ImplementsList)=0]
+  [count(.//ExtendsList)=0]
+```
 
 **Example(s):**
 
@@ -30,13 +38,21 @@ public abstract class Foo {
 
 ## AbstractClassWithoutAnyMethod
 
-**Since:** 4.2
+**Since:** PMD 4.2
 
 **Priority:** High (1)
 
 If an abstract class does not provides any methods, it may be acting as a simple data container
 that is not meant to be instantiated. In this case, it is probably better to use a private or
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
+
+```
+//ClassOrInterfaceDeclaration[
+	(@Abstract = 'true')
+	and
+	(count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0)
+]
+```
 
 **Example(s):**
 
@@ -49,7 +65,7 @@ public class abstract Example {
 
 ## AccessorClassGeneration
 
-**Since:** 1.04
+**Since:** PMD 1.04
 
 **Priority:** Medium (3)
 
@@ -58,6 +74,8 @@ generation of an accessor. A factory method, or non-privatization of the constru
 situation. The generated class file is actually an interface.  It gives the accessing class the ability
 to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
 This turns a private constructor effectively into one with package scope, and is challenging to discern.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorClassGenerationRule.java)
 
 **Example(s):**
 
@@ -74,13 +92,15 @@ public class Outer {
 
 ## AccessorMethodGeneration
 
-**Since:** 5.5.4
+**Since:** PMD 5.5.4
 
 **Priority:** Medium (3)
 
 When accessing a private field / method from another class, the Java compiler will generate a accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AccessorMethodGenerationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AccessorMethodGenerationRule.java)
 
 **Example(s):**
 
@@ -103,11 +123,13 @@ public class OuterClass {
 
 ## AssignmentToNonFinalStatic
 
-**Since:** 2.2
+**Since:** PMD 2.2
 
 **Priority:** Medium (3)
 
 Identifies a possible unsafe usage of a static field.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AssignmentToNonFinalStaticRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AssignmentToNonFinalStaticRule.java)
 
 **Example(s):**
 
@@ -122,11 +144,13 @@ public class StaticField {
 
 ## AvoidDeeplyNestedIfStmts
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AvoidDeeplyNestedIfStmtsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AvoidDeeplyNestedIfStmtsRule.java)
 
 **Example(s):**
 
@@ -152,11 +176,20 @@ public class Foo {
 
 ## AvoidInstanceofChecksInCatchClause
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
 Each caught exception type should be handled in its own catch clause.
+
+```
+//CatchStatement/FormalParameter
+ /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
+  /Name[
+   @Image = ./ancestor::Block/preceding-sibling::FormalParameter
+    /VariableDeclaratorId/@Image
+  ]
+```
 
 **Example(s):**
 
@@ -177,12 +210,18 @@ try {  // Prefer this:
 
 ## AvoidProtectedFieldInFinalClass
 
-**Since:** 2.1
+**Since:** PMD 2.1
 
 **Priority:** Medium (3)
 
 Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
+
+```
+//ClassOrInterfaceDeclaration[@Final='true']
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+/FieldDeclaration[@Protected='true']
+```
 
 **Example(s):**
 
@@ -196,13 +235,19 @@ public final class Bar {
 
 ## AvoidProtectedMethodInFinalClassNotExtending
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** Medium (3)
 
 Do not use protected methods in most final classes since they cannot be subclassed. This should
 only be allowed in final classes that extend other classes with protected methods (whose
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
+
+```
+//ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
+```
 
 **Example(s):**
 
@@ -215,11 +260,13 @@ public final class Foo {
 
 ## AvoidReassigningParameters
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium High (2)
 
 Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.AvoidReassigningParametersRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/AvoidReassigningParametersRule.java)
 
 **Example(s):**
 
@@ -233,13 +280,17 @@ public class Foo {
 
 ## AvoidSynchronizedAtMethodLevel
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
 Method-level synchronization can cause problems when new code is added to the method.
 Block-level synchronization helps to ensure that only the code that needs synchronization
 gets it.
+
+```
+//MethodDeclaration[@Synchronized='true']
+```
 
 **Example(s):**
 
@@ -268,12 +319,18 @@ public class Foo {
 
 ## BadComparison
 
-**Since:** 1.8
+**Since:** PMD 1.8
 
 **Priority:** Medium (3)
 
 Avoid equality comparisons with Double.NaN. Due to the implicit lack of representation
 precision when comparing floating point numbers these are likely to cause logic errors.
+
+```
+//EqualityExpression[@Image='==']
+ /PrimaryExpression/PrimaryPrefix
+ /Name[@Image='Double.NaN' or @Image='Float.NaN']
+```
 
 **Example(s):**
 
@@ -283,12 +340,20 @@ boolean x = (y == Double.NaN);
 
 ## ClassWithOnlyPrivateConstructorsShouldBeFinal
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** High (1)
 
 A class with only private constructors should be final, unless the private constructor
 is invoked by a inner class.
+
+```
+TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
+[@Final = 'false']
+[count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = 'true']) >= 1 ]
+[count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = 'true') or (@Protected = 'true') or (@PackagePrivate = 'true')]) = 0 ]
+[not(.//ClassOrInterfaceDeclaration)]
+```
 
 **Example(s):**
 
@@ -300,11 +365,13 @@ public class Foo {  //Should be final
 
 ## CloseResource
 
-**Since:** 1.2.2
+**Since:** PMD 1.2.2
 
 **Priority:** Medium (3)
 
 Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.CloseResourceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CloseResourceRule.java)
 
 **Example(s):**
 
@@ -334,11 +401,13 @@ public class Bar {
 
 ## CompareObjectsWithEquals
 
-**Since:** 3.2
+**Since:** PMD 3.2
 
 **Priority:** Medium (3)
 
 Use equals() to compare object references; avoid comparing them with ==.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.CompareObjectsWithEqualsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/CompareObjectsWithEqualsRule.java)
 
 **Example(s):**
 
@@ -352,7 +421,7 @@ class Foo {
 
 ## ConfusingTernary
 
-**Since:** 1.9
+**Since:** PMD 1.9
 
 **Priority:** Medium (3)
 
@@ -365,6 +434,8 @@ as:
 Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
 as "does the error case go first?" or "does the common case go first?".
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ConfusingTernaryRule.java)
 
 **Example(s):**
 
@@ -382,12 +453,16 @@ boolean bar(int x, int y) {
 
 ## ConstantsInInterface
 
-**Since:** 5.5
+**Since:** PMD 5.5
 
 **Priority:** Medium (3)
 
 Avoid constants in interfaces. Interfaces should define types, constants are implementation details
 better placed in classes or enums. See Effective Java, item 19.
+
+```
+//ClassOrInterfaceDeclaration[@Interface='true'][$ignoreIfHasMethods='false' or not(.//MethodDeclaration)]//FieldDeclaration
+```
 
 **Example(s):**
 
@@ -422,7 +497,7 @@ public interface YetAnotherConstantInterface {
 
 ## ConstructorCallsOverridableMethod
 
-**Since:** 1.04
+**Since:** PMD 1.04
 
 **Priority:** High (1)
 
@@ -433,6 +508,8 @@ process completely within itself, losing the ability to call super().  If the de
 contains a call to an overridable method, the subclass may be completely uninstantiable.   Note that
 this includes method calls throughout the control flow graph - i.e., if a constructor Foo() calls a
 private method bar() that calls a public method buz(), this denotes a problem.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ConstructorCallsOverridableMethodRule.java)
 
 **Example(s):**
 
@@ -459,11 +536,17 @@ public class JuniorClass extends SeniorClass {
 
 ## DefaultLabelNotLastInSwitchStmt
 
-**Since:** 1.5
+**Since:** PMD 1.5
 
 **Priority:** Medium (3)
 
 By convention, the default label should be the last label in a switch statement.
+
+```
+//SwitchStatement
+ [not(SwitchLabel[position() = last()][@Default='true'])]
+ [SwitchLabel[@Default='true']]
+```
 
 **Example(s):**
 
@@ -484,12 +567,30 @@ public class Foo {
 
 ## EmptyMethodInAbstractClassShouldBeAbstract
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** High (1)
 
 Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate
 usage by developers who should be implementing their own versions in the concrete subclasses.
+
+```
+//ClassOrInterfaceDeclaration[@Abstract = 'true']
+                        /ClassOrInterfaceBody
+                        /ClassOrInterfaceBodyDeclaration
+                        /MethodDeclaration[@Abstract = 'false' and @Native = 'false']
+                        [
+                            ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = 'true' )
+                            or
+                            ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image = '0']) = 'true' )
+                            or
+                            ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal[string-length(@Image) = 2]) = 'true' )
+                            or
+                            (./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/EmptyStatement)
+                            or
+                            ( count (./Block/*) = 0 )
+                        ]
+```
 
 **Example(s):**
 
@@ -507,11 +608,27 @@ public abstract class ShouldBeAbstract {
 
 ## EqualsNull
 
-**Since:** 1.9
+**Since:** PMD 1.9
 
 **Priority:** High (1)
 
 Tests for null should not use the equals() method. The '==' operator should be used instead.
+
+```
+//PrimaryExpression
+  [
+    PrimaryPrefix[Name[ends-with(@Image, 'equals')]]
+      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
+          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+
+    or
+
+    PrimarySuffix[ends-with(@Image, 'equals')]
+      [following-sibling::node()/Arguments/ArgumentList[count(Expression)=1]
+          /Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+
+  ]
+```
 
 **Example(s):**
 
@@ -529,11 +646,13 @@ if (x == null) { 	// preferred
 
 ## FieldDeclarationsShouldBeAtStartOfClass
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.FieldDeclarationsShouldBeAtStartOfClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/FieldDeclarationsShouldBeAtStartOfClassRule.java)
 
 **Example(s):**
 
@@ -562,12 +681,19 @@ public class HelloWorldBean {
 
 ## FinalFieldCouldBeStatic
 
-**Since:** 1.1
+**Since:** PMD 1.1
 
 **Priority:** Medium (3)
 
 If a final field is assigned to a compile-time constant, it could be made static, thus saving overhead
 in each object at runtime.
+
+```
+//FieldDeclaration
+ [@Final='true' and @Static='false']
+   /VariableDeclarator/VariableInitializer/Expression
+    /PrimaryExpression[not(PrimarySuffix)]/PrimaryPrefix/Literal
+```
 
 **Example(s):**
 
@@ -579,7 +705,7 @@ public class Foo {
 
 ## GodClass
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
@@ -591,13 +717,17 @@ Michele Lanza and Radu Marinescu. Object-Oriented Metrics in Practice:
 Using Software Metrics to Characterize, Evaluate, and Improve the Design
 of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
 
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.GodClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/GodClassRule.java)
+
 ## IdempotentOperations
 
-**Since:** 2.0
+**Since:** PMD 2.0
 
 **Priority:** Medium (3)
 
 Avoid idempotent operations - they have no effect.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.IdempotentOperationsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/IdempotentOperationsRule.java)
 
 **Example(s):**
 
@@ -612,12 +742,14 @@ public class Foo {
 
 ## ImmutableField
 
-**Since:** 2.0
+**Since:** PMD 2.0
 
 **Priority:** Medium (3)
 
 Identifies private fields whose values never change once they are initialized either in the declaration
 of the field or by a constructor.  This helps in converting existing classes to becoming immutable ones.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ImmutableFieldRule.java)
 
 **Example(s):**
 
@@ -635,11 +767,20 @@ public class Foo {
 
 ## InstantiationToGetClass
 
-**Since:** 2.0
+**Since:** PMD 2.0
 
 **Priority:** Medium Low (4)
 
 Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
+
+```
+//PrimarySuffix
+ [@Image='getClass']
+ [parent::PrimaryExpression
+  [PrimaryPrefix/AllocationExpression]
+  [count(PrimarySuffix) = 2]
+ ]
+```
 
 **Example(s):**
 
@@ -653,11 +794,15 @@ Class c = String.class;
 
 ## LogicInversion
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium (3)
 
 Use opposite operator instead of negating the whole expression with a logic complement operator.
+
+```
+//UnaryExpressionNotPlusMinus[@Image='!']/PrimaryExpression/PrimaryPrefix/Expression[EqualityExpression or RelationalExpression]
+```
 
 **Example(s):**
 
@@ -678,12 +823,24 @@ public boolean bar(int a, int b) {
 
 ## MissingBreakInSwitch
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
 Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
+
+```
+//SwitchStatement
+[(count(.//BreakStatement)
+ + count(BlockStatement//Statement/ReturnStatement)
+ + count(BlockStatement//Statement/ContinueStatement)
+ + count(BlockStatement//Statement/ThrowStatement)
+ + count(BlockStatement//Statement/IfStatement[@Else='true' and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
+ + count(SwitchLabel[name(following-sibling::node()) = 'SwitchLabel'])
+ + count(SwitchLabel[count(following-sibling::node()) = 0])
+  < count (SwitchLabel))]
+```
 
 **Example(s):**
 
@@ -709,11 +866,53 @@ public void bar(int status) {
 
 ## MissingStaticMethodInNonInstantiatableClass
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
 A class that has private constructors and does not have any static methods or fields cannot be used.
+
+```
+//ClassOrInterfaceDeclaration[@Nested='false']
+[
+  (
+    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)>0
+    and
+    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true'])
+  )
+  and
+  count(.//MethodDeclaration[@Static='true'])=0
+  and
+  count(.//FieldDeclaration[@Private='false'][@Static='true'])=0
+  and
+  count(.//ClassOrInterfaceDeclaration[@Nested='true']
+           [@Public='true']
+           [@Static='true']
+           [count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public='true']) > 0]
+           [count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
+                    [@Public='true']
+                    [./ResultType/Type/ReferenceType/ClassOrInterfaceType
+                        [@Image = //ClassOrInterfaceDeclaration[@Nested='false']/@Image]
+                    ]
+            ) > 0]
+        ) = 0
+  and
+  count(//ClassOrInterfaceDeclaration
+            [@Nested='true']
+            [@Static='true']
+            [@Public='true']
+            [.//MethodDeclaration
+              [@Public='true']
+              [.//ReturnStatement//AllocationExpression
+                [ClassOrInterfaceType
+                    [@Image = //ClassOrInterfaceDeclaration/@Image]
+                ]
+                [./Arguments//PrimaryPrefix/@ThisModifier='true']
+              ]
+            ]
+       ) = 0
+]
+```
 
 **Example(s):**
 
@@ -730,12 +929,16 @@ public class Foo {
 
 ## NonCaseLabelInSwitchStatement
 
-**Since:** 1.5
+**Since:** PMD 1.5
 
 **Priority:** Medium (3)
 
 A non-case label (e.g. a named break/continue label) was present in a switch statement.
 This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
+
+```
+//SwitchStatement//BlockStatement/Statement/LabeledStatement
+```
 
 **Example(s):**
 
@@ -757,13 +960,17 @@ public class Foo {
 
 ## NonStaticInitializer
 
-**Since:** 1.5
+**Since:** PMD 1.5
 
 **Priority:** Medium (3)
 
 A non-static initializer block will be called any time a constructor is invoked (just prior to
 invoking the constructor).  While this is a valid language construct, it is rarely used and is
 confusing.
+
+```
+//Initializer[@Static='false']
+```
 
 **Example(s):**
 
@@ -778,7 +985,7 @@ public class MyClass {
 
 ## NonThreadSafeSingleton
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
@@ -793,6 +1000,8 @@ guarantee it to work unless the variable is declared as `volatile`, adding an un
 performance penalty. [Reference](http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html)
 
 See Effective Java, item 48.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NonThreadSafeSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NonThreadSafeSingletonRule.java)
 
 **Example(s):**
 
@@ -817,13 +1026,23 @@ public static Foo getFoo() {
 
 ## OptimizableToArrayCall
 
-**Since:** 1.8
+**Since:** PMD 1.8
 
 **Priority:** Medium (3)
 
 Calls to a collection's toArray() method should specify target arrays sized to match the size of the
 collection. Initial arrays that are too small are discarded in favour of new ones that have to be created
 that are the proper size.
+
+```
+//PrimaryExpression
+[PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
+[
+PrimarySuffix/Arguments/ArgumentList/Expression
+ /PrimaryExpression/PrimaryPrefix/AllocationExpression
+ /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0']
+]
+```
 
 **Example(s):**
 
@@ -840,12 +1059,29 @@ Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
 
 ## PositionLiteralsFirstInCaseInsensitiveComparisons
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** Medium (3)
 
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
+
+```
+//PrimaryExpression[
+        PrimaryPrefix[Name
+                [
+    (ends-with(@Image, '.equalsIgnoreCase'))
+                ]
+        ]
+        [
+                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal)
+    and
+    ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
+        ]
+]
+[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
+[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
+```
 
 **Example(s):**
 
@@ -859,12 +1095,29 @@ class Foo {
 
 ## PositionLiteralsFirstInComparisons
 
-**Since:** 3.3
+**Since:** PMD 3.3
 
 **Priority:** Medium (3)
 
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
+
+```
+//PrimaryExpression[
+        PrimaryPrefix[Name
+                [
+	(ends-with(@Image, '.equals'))
+                ]
+        ]
+        [
+                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])
+	and
+	( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
+        ]
+]
+[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
+[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
+```
 
 **Example(s):**
 
@@ -878,13 +1131,15 @@ class Foo {
 
 ## PreserveStackTrace
 
-**Since:** 3.7
+**Since:** PMD 3.7
 
 **Priority:** Medium (3)
 
 Throwing a new exception from a catch block without passing the original exception into the
 new exception will cause the original stack trace to be lost making it difficult to debug
 effectively.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/PreserveStackTraceRule.java)
 
 **Example(s):**
 
@@ -914,13 +1169,22 @@ public class Foo {
 
 ## ReturnEmptyArrayRatherThanNull
 
-**Since:** 4.2
+**Since:** PMD 4.2
 
 **Priority:** High (1)
 
 For any method that returns an array, it is a better to return an empty array rather than a
 null reference. This removes the need for null checking all results and avoids inadvertent
 NullPointerExceptions.
+
+```
+//MethodDeclaration
+                        [
+                        (./ResultType/Type[@Array='true'])
+                        and
+                        (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
+                        ]
+```
 
 **Example(s):**
 
@@ -942,12 +1206,18 @@ public class Example {
 
 ## SimpleDateFormatNeedsLocale
 
-**Since:** 2.0
+**Since:** PMD 2.0
 
 **Priority:** Medium (3)
 
 Be sure to specify a Locale when creating SimpleDateFormat instances to ensure that locale-appropriate
 formatting is used.
+
+```
+//AllocationExpression
+ [ClassOrInterfaceType[@Image='SimpleDateFormat']]
+ [Arguments[@ArgumentCount=1]]
+```
 
 **Example(s):**
 
@@ -960,11 +1230,16 @@ public class Foo {
 
 ## SimplifyBooleanExpressions
 
-**Since:** 1.05
+**Since:** PMD 1.05
 
 **Priority:** Medium (3)
 
 Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.
+
+```
+//EqualityExpression/PrimaryExpression
+ /PrimaryPrefix/Literal/BooleanLiteral
+```
 
 **Example(s):**
 
@@ -980,12 +1255,14 @@ public class Bar {
 
 ## SimplifyBooleanReturns
 
-**Since:** 0.9
+**Since:** PMD 0.9
 
 **Priority:** Medium (3)
 
 Avoid unnecessary if-then-else statements when returning a boolean. The result of
 the conditional test can be returned instead.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SimplifyBooleanReturnsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SimplifyBooleanReturnsRule.java)
 
 **Example(s):**
 
@@ -1007,11 +1284,38 @@ public boolean isBarEqualTo(int x) {
 
 ## SimplifyConditional
 
-**Since:** 3.1
+**Since:** PMD 3.1
 
 **Priority:** Medium (3)
 
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
+
+```
+//Expression
+ [ConditionalOrExpression
+ [EqualityExpression[@Image='==']
+  //NullLiteral
+  and
+  UnaryExpressionNotPlusMinus
+   [@Image='!']//InstanceOfExpression[PrimaryExpression
+     //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
+      /PrimaryExpression/PrimaryPrefix/Name/@Image]
+  and
+  (count(UnaryExpressionNotPlusMinus) + 1 = count(*))
+ ]
+or
+ConditionalAndExpression
+ [EqualityExpression[@Image='!=']//NullLiteral
+ and
+InstanceOfExpression
+ [PrimaryExpression[count(PrimarySuffix[@ArrayDereference='true'])=0]
+  //Name[not(contains(@Image,'.'))]/@Image = ancestor::ConditionalAndExpression
+   /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]
+ and
+(count(InstanceOfExpression) + 1 = count(*))
+ ]
+]
+```
 
 **Example(s):**
 
@@ -1027,13 +1331,15 @@ class Foo {
 
 ## SingleMethodSingleton
 
-**Since:** 5.4
+**Since:** PMD 5.4
 
 **Priority:** Medium High (2)
 
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
 is that the instance created using the overloaded method is not cached and so,
  for each call and new objects will be created for every invocation.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingleMethodSingletonRule.java)
 
 **Example(s):**
 
@@ -1056,13 +1362,15 @@ public static Singleton getInstance(Object obj){
 
 ## SingletonClassReturningNewInstance
 
-**Since:** 5.4
+**Since:** PMD 5.4
 
 **Priority:** Medium High (2)
 
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
 is that the instance created using the overloaded method is not cached and so,
  for each call and new objects will be created for every invocation.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingletonClassReturningNewInstanceRule.java)
 
 **Example(s):**
 
@@ -1079,13 +1387,15 @@ class Singleton {
 
 ## SingularField
 
-**Since:** 3.1
+**Since:** PMD 3.1
 
 **Priority:** Medium (3)
 
 Fields whose scopes are limited to just single methods do not rely on the containing
 object to provide them to other methods. They may be better implemented as local variables
 within those methods.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingularFieldRule.java)
 
 **Example(s):**
 
@@ -1108,13 +1418,15 @@ public class Foo {
 
 ## SwitchDensity
 
-**Since:** 1.02
+**Since:** PMD 1.02
 
 **Priority:** Medium (3)
 
 A high ratio of statements to labels in a switch statement implies that the switch statement
 is overloaded.  Consider moving the statements into new methods or creating subclasses based
 on the switch variable.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SwitchDensityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.java)
 
 **Example(s):**
 
@@ -1144,11 +1456,15 @@ public class Foo {
 
 ## SwitchStmtsShouldHaveDefault
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 All switch statements should include a default option to catch any unspecified values.
+
+```
+//SwitchStatement[not(SwitchLabel[@Default='true'])]
+```
 
 **Example(s):**
 
@@ -1165,13 +1481,19 @@ public void bar() {
 
 ## TooFewBranchesForASwitchStatement
 
-**Since:** 4.2
+**Since:** PMD 4.2
 
 **Priority:** Medium (3)
 
 Switch statements are indended to be used to support complex branching behaviour. Using a switch for only a few
 cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
 if-then statement to increase code readability.
+
+```
+//SwitchStatement[
+    (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
+]
+```
 
 **Example(s):**
 
@@ -1198,7 +1520,7 @@ public class Foo {
 
 ## UncommentedEmptyConstructor
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
@@ -1206,6 +1528,10 @@ Uncommented Empty Constructor finds instances where a constructor does not
 contain statements, but there is no comment. By explicitly commenting empty
 constructors it is easier to distinguish between intentional (commented)
 and unintentional empty constructors.
+
+```
+//ConstructorDeclaration[@Private='false'][count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+```
 
 **Example(s):**
 
@@ -1223,7 +1549,7 @@ public Foo() {
 
 ## UncommentedEmptyMethodBody
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
@@ -1231,6 +1557,10 @@ Uncommented Empty Method Body finds instances where a method body does not conta
 statements, but there is no comment. By explicitly commenting empty method bodies
 it is easier to distinguish between intentional (commented) and unintentional
 empty methods.
+
+```
+//MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = 'false']
+```
 
 **Example(s):**
 
@@ -1241,11 +1571,13 @@ public void doSomething() {
 
 ## UnnecessaryLocalBeforeReturn
 
-**Since:** 3.3
+**Since:** PMD 3.3
 
 **Priority:** Medium (3)
 
 Avoid the creation of unnecessary local variables
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UnnecessaryLocalBeforeReturnRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UnnecessaryLocalBeforeReturnRule.java)
 
 **Example(s):**
 
@@ -1266,13 +1598,15 @@ public class Foo {
 
 ## UnsynchronizedStaticDateFormatter
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium (3)
 
 SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
 for each thread. If multiple threads must access a static formatter, the formatter must be
 synchronized either on method or block level.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UnsynchronizedStaticDateFormatterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UnsynchronizedStaticDateFormatterRule.java)
 
 **Example(s):**
 
@@ -1290,12 +1624,14 @@ public class Foo {
 
 ## UseCollectionIsEmpty
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Medium (3)
 
 The isEmpty() method on java.util.Collection is provided to determine if a collection has any elements.
 Comparing the value of size() to 0 does not convey intent as well as the isEmpty() method.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UseCollectionIsEmptyRule.java)
 
 **Example(s):**
 
@@ -1319,12 +1655,28 @@ public class Foo {
 
 ## UseLocaleWithCaseConversions
 
-**Since:** 2.0
+**Since:** PMD 2.0
 
 **Priority:** Medium (3)
 
 When doing String.toLowerCase()/toUpperCase() conversions, use Locales to avoids problems with languages that
 have unusual conventions, i.e. Turkish.
+
+```
+//PrimaryExpression
+[
+PrimaryPrefix
+[Name[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+
+or
+
+PrimarySuffix
+[ends-with(@Image, 'toLowerCase') or ends-with(@Image, 'toUpperCase')]
+[following-sibling::PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+]
+[not(PrimaryPrefix/Name[ends-with(@Image, 'toHexString')])]
+```
 
 **Example(s):**
 
@@ -1346,12 +1698,23 @@ class Foo {
 
 ## UseNotifyAllInsteadOfNotify
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
 Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
 one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.
+
+```
+//StatementExpression/PrimaryExpression
+[PrimarySuffix/Arguments[@ArgumentCount = '0']]
+[
+PrimaryPrefix[./Name[@Image='notify' or ends-with(@Image,'.notify')]
+or ../PrimarySuffix/@Image='notify'
+or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
+]
+]
+```
 
 **Example(s):**
 
@@ -1366,7 +1729,7 @@ void bar() {
 
 ## UseUtilityClass
 
-**Since:** 0.3
+**Since:** PMD 0.3
 
 **Priority:** Medium (3)
 
@@ -1375,6 +1738,8 @@ Note that this doesn't apply to abstract classes, since their subclasses may
 well include non-static methods.  Also, if you want this class to be a utility class,
 remember to add a private constructor to prevent instantiation.
 (Note, that this use was known before PMD 5.1.0 as UseSingleton).
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UseUtilityClassRule.java)
 
 **Example(s):**
 
@@ -1387,13 +1752,32 @@ public class MaybeAUtility {
 
 ## UseVarargs
 
-**Since:** 5.0
+**Since:** PMD 5.0
 
 **Priority:** Medium Low (4)
 
 Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
 sugar provides flexibility for users of these methods and constructors, allowing them to avoid
 having to deal with the creation of an array.
+
+```
+//FormalParameters/FormalParameter
+    [position()=last()]
+    [@Array='true']
+    [@Varargs='false']
+    [not (./Type/ReferenceType[@Array='true'][PrimitiveType[@Image='byte']])]
+    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
+    [not (./Type/PrimitiveType[@Image='byte'])]
+    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
+    [not(
+        ancestor::MethodDeclaration
+            [@Public='true' and @Static='true']
+            [child::ResultType[@Void='true']] and
+        ancestor::MethodDeclarator[@Image='main'] and
+        ..[@ParameterCount='1'] and
+        ./Type/ReferenceType[ClassOrInterfaceType[@Image='String']]
+    )]
+```
 
 **Example(s):**
 

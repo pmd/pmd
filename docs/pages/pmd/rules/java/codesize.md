@@ -10,7 +10,7 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/codesize.xml
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
-**Since:** 1.03
+**Since:** PMD 1.03
 
 **Priority:** Medium (3)
 
@@ -18,6 +18,8 @@ Complexity directly affects maintenance costs is determined by the number of dec
 plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/CyclomaticComplexityRule.java)
 
 **Example(s):**
 
@@ -70,13 +72,15 @@ public class Foo {		// This has a Cyclomatic Complexity = 12
 
 ## ExcessiveClassLength
 
-**Since:** 0.6
+**Since:** PMD 0.6
 
 **Priority:** Medium (3)
 
 Excessive class file lengths are usually indications that the class may be burdened with excessive 
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more managable and ripe for reuse.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessiveClassLengthRule.java)
 
 **Example(s):**
 
@@ -109,7 +113,7 @@ public class Foo {
 
 ## ExcessiveMethodLength
 
-**Since:** 0.6
+**Since:** PMD 0.6
 
 **Priority:** Medium (3)
 
@@ -117,6 +121,8 @@ When methods are excessively long this usually indicates that the method is doin
 name/signature might suggest. They also become challenging for others to digest since excessive 
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveMethodLengthRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessiveMethodLengthRule.java)
 
 **Example(s):**
 
@@ -138,12 +144,14 @@ public void doSomething() {
 
 ## ExcessiveParameterList
 
-**Since:** 0.9
+**Since:** PMD 0.9
 
 **Priority:** Medium (3)
 
 Methods with numerous parameters are a challenge to maintain, especially if most of them share the
 same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveParameterListRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessiveParameterListRule.java)
 
 **Example(s):**
 
@@ -171,7 +179,7 @@ public void addPerson(		// preferred approach
 
 ## ExcessivePublicCount
 
-**Since:** 1.04
+**Since:** PMD 1.04
 
 **Priority:** Medium (3)
 
@@ -179,6 +187,8 @@ Classes with large numbers of public methods and attributes require disproportio
 since combinational side effects grow rapidly and increase risk. Refactoring these classes into
 smaller ones not only increases testability and reliability but also allows new variations to be
 developed easily.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ExcessivePublicCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ExcessivePublicCountRule.java)
 
 **Example(s):**
 
@@ -208,7 +218,7 @@ public class Foo {
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
-**Since:** 5.1.2
+**Since:** PMD 5.1.2
 
 **Priority:** Medium (3)
 
@@ -217,6 +227,8 @@ plus one for the method entry.  The decision points include 'if', 'while', 'for'
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
 decision point.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.ModifiedCyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/ModifiedCyclomaticComplexityRule.java)
 
 **Example(s):**
 
@@ -269,13 +281,15 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
 
 ## NcssConstructorCount
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Medium (3)
 
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NcssConstructorCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NcssConstructorCountRule.java)
 
 **Example(s):**
 
@@ -304,13 +318,15 @@ public class Foo extends Bar {
 
 ## NcssMethodCount
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Medium (3)
 
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NcssMethodCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NcssMethodCountRule.java)
 
 **Example(s):**
 
@@ -339,13 +355,15 @@ public class Foo extends Bar {
 
 ## NcssTypeCount
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Medium (3)
 
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NcssTypeCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NcssTypeCountRule.java)
 
 **Example(s):**
 
@@ -374,13 +392,15 @@ public class Foo extends Bar {
 
 ## NPathComplexity
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Medium (3)
 
 The NPath complexity of a method is the number of acyclic execution paths through that method.
 A threshold of 200 is generally considered the point where measures should be taken to reduce 
 complexity and increase readability.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/NPathComplexityRule.java)
 
 **Example(s):**
 
@@ -427,7 +447,7 @@ void bar() {	// this is something more complex than it needs to be,
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
-**Since:** 5.1.2
+**Since:** PMD 5.1.2
 
 **Priority:** Medium (3)
 
@@ -435,6 +455,8 @@ Complexity directly affects maintenance costs is determined by the number of dec
 plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.StdCyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/StdCyclomaticComplexityRule.java)
 
 **Example(s):**
 
@@ -487,13 +509,15 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
 
 ## TooManyFields
 
-**Since:** 3.0
+**Since:** PMD 3.0
 
 **Priority:** Medium (3)
 
 Classes that have too many fields can become unwieldy and could be redesigned to have fewer fields,
 possibly through grouping related fields in new objects.  For example, a class with individual 
 city/state/zip fields could park them within a single Address field.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codesize.TooManyFieldsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codesize/TooManyFieldsRule.java)
 
 **Example(s):**
 
@@ -520,12 +544,27 @@ public class Person {	// this is more manageable
 
 ## TooManyMethods
 
-**Since:** 4.2
+**Since:** PMD 4.2
 
 **Priority:** Medium (3)
 
 A class with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
 have more fine grained objects.
+
+```
+//ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+     [
+      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration/MethodDeclarator[
+         not (
+                starts-with(@Image,'get')
+                or
+                starts-with(@Image,'set')
+                or
+                starts-with(@Image,'is')
+            )
+      ]) > $maxmethods
+   ]
+```
 
 **This rule has the following properties:**
 

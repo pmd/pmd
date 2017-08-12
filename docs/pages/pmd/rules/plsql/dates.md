@@ -8,11 +8,20 @@ editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/dates.xml
 ---
 ## TO_DATE_TO_CHAR
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** Medium (3)
 
 TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-veriable)
+
+```
+//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_DATE' 
+                             and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 
+                                                         and .//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_CHAR'  
+                                                                                  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 
+                                                                                 ] 
+                   ]
+```
 
 **Example(s):**
 
@@ -34,11 +43,15 @@ END date_utilities ;
 
 ## TO_DATEWithoutDateFormat
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** Medium (3)
 
 TO_DATE without date format- use TO_DATE(expression, date-format)
+
+```
+//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_DATE'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ]
+```
 
 **Example(s):**
 
@@ -73,11 +86,15 @@ END date_utilities ;
 
 ## TO_TIMESTAMPWithoutDateFormat
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** Medium (3)
 
 TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
+
+```
+//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_TIMESTAMP'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ]
+```
 
 **Example(s):**
 

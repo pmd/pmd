@@ -8,11 +8,13 @@ editmepath: ../pmd-jsp/src/main/resources/rulesets/jsp/basic.xml
 ---
 ## DuplicateJspImports
 
-**Since:** 3.7
+**Since:** PMD 3.7
 
 **Priority:** Medium (3)
 
 Avoid duplicate import statements inside JSP's.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.jsp.rule.basic.DuplicateJspImportsRule](https://github.com/pmd/pmd/blob/master/pmd-jsp/src/main/java/net/sourceforge/pmd/lang/jsp/rule/basic/DuplicateJspImportsRule.java)
 
 **Example(s):**
 
@@ -22,12 +24,16 @@ Avoid duplicate import statements inside JSP's.
 
 ## IframeMissingSrcAttribute
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium High (2)
 
 IFrames which are missing a src element can cause security information popups in IE if you are accessing the page
 through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
+
+```
+//Element[upper-case(@Name)="IFRAME"][count(Attribute[upper-case(@Name)="SRC" ]) = 0]
+```
 
 **Example(s):**
 
@@ -43,11 +49,21 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 
 ## JspEncoding
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium (3)
 
 A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
+
+```
+//CompilationUnit/Content[
+not(Element[@Name="meta"][
+   Attribute[@Name="content"]/AttributeValue[contains(lower-case(@Image),"charset=utf-8")]
+]) 
+and 
+    not(JspDirective[@Name='page']/JspDirectiveAttribute[@Name='contentType'][contains(lower-case(@Value),"charset=utf-8")])
+]
+```
 
 **Example(s):**
 
@@ -61,11 +77,15 @@ Most browsers should be able to interpret the following headers:
 
 ## NoClassAttribute
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium High (2)
 
 Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
+
+```
+//Attribute[ upper-case(@Name)="CLASS" ]
+```
 
 **Example(s):**
 
@@ -77,13 +97,17 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 
 ## NoHtmlComments
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium High (2)
 
 In a production system, HTML comments increase the payload
 			between the application server to the client, and serve
 			little other purpose. Consider switching to JSP comments.
+
+```
+//CommentTag
+```
 
 **Example(s):**
 
@@ -99,12 +123,16 @@ In a production system, HTML comments increase the payload
 
 ## NoInlineScript
 
-**Since:** 4.0
+**Since:** PMD 4.0
 
 **Priority:** Medium (3)
 
 Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the "script" element.
 Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
+
+```
+//HtmlScript[@Image != '']
+```
 
 **Example(s):**
 
@@ -118,11 +146,13 @@ Most browsers should be able to interpret the following headers:
 
 ## NoInlineStyleInformation
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium (3)
 
 Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT> tags, or attributes like "align='center'".
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule](https://github.com/pmd/pmd/blob/master/pmd-jsp/src/main/java/net/sourceforge/pmd/lang/jsp/rule/basic/NoInlineStyleInformationRule.java)
 
 **Example(s):**
 
@@ -132,11 +162,15 @@ Style information should be put in CSS files, not in JSPs. Therefore, don't use 
 
 ## NoJspForward
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium (3)
 
 Do not do a forward from within a JSP file.
+
+```
+//Element[ @Name="jsp:forward" ]
+```
 
 **Example(s):**
 
@@ -146,11 +180,15 @@ Do not do a forward from within a JSP file.
 
 ## NoLongScripts
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium High (2)
 
 Scripts should be part of Tag Libraries, rather than part of JSP pages.
+
+```
+// HtmlScript [ (@EndLine - @BeginLine > 10) ]
+```
 
 **Example(s):**
 
@@ -180,11 +218,17 @@ onload=calcDays;
 
 ## NoScriptlets
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium (3)
 
 Scriptlets should be factored into Tag Libraries or JSP	declarations, rather than being part of JSP pages.
+
+```
+//JspScriptlet
+					|
+					//Element[ upper-case(@Name)="JSP:SCRIPTLET" ]
+```
 
 **Example(s):**
 
@@ -203,12 +247,14 @@ response.setHeader("Pragma", "No-cache");
 
 ## NoUnsanitizedJSPExpression
 
-**Since:** 5.1.4
+**Since:** PMD 5.1.4
 
 **Priority:** Medium (3)
 
 Avoid using expressions without escaping / sanitizing. This could lead to cross site scripting - as the expression
 would be interpreted by the browser directly (e.g. "<script>alert('hello');</script>").
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.jsp.rule.basic.NoUnsanitizedJSPExpressionRule](https://github.com/pmd/pmd/blob/master/pmd-jsp/src/main/java/net/sourceforge/pmd/lang/jsp/rule/basic/NoUnsanitizedJSPExpressionRule.java)
 
 **Example(s):**
 

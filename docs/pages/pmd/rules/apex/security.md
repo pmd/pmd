@@ -8,12 +8,14 @@ editmepath: ../pmd-apex/src/main/resources/rulesets/apex/security.xml
 ---
 ## ApexBadCrypto
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 The rule makes sure you are using randomly generated IVs and keys for `Crypto` calls.
 Hard-wiring these values greatly compromises the security of encrypted data.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexBadCryptoRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexBadCryptoRule.java)
 
 **Example(s):**
 
@@ -36,13 +38,15 @@ public without sharing class Foo {
 
 ## ApexCRUDViolation
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 The rule validates you are checking for access permissions before a SOQL/SOSL/DML operation.
 Since Apex runs in system mode not having proper permissions checks results in escalation of 
 privilege and may produce runtime errors. This check forces you to handle such scenarios.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexCRUDViolationRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexCRUDViolationRule.java)
 
 **Example(s):**
 
@@ -73,12 +77,14 @@ public class Foo {
 
 ## ApexCSRF
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 Check to avoid making DML operations in Apex class constructor/init method. This prevents
 modification of the database just by accessing a page.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexCSRFRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexCSRFRule.java)
 
 **Example(s):**
 
@@ -104,7 +110,7 @@ public class Foo {
 
 ## ApexDangerousMethods
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
@@ -116,6 +122,8 @@ For the time being, it reports:
 opens the door to several attacks and requires manual validation, which is unreliable.
 * Calling `System.debug` passing sensitive data as parameter, which could lead to exposure
 of private data.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexDangerousMethodsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexDangerousMethodsRule.java)
 
 **Example(s):**
 
@@ -137,12 +145,14 @@ public class Foo {
 
 ## ApexInsecureEndpoint
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 Checks against accessing endpoints under plain **http**. You should always use
 **https** for security.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexInsecureEndpointRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexInsecureEndpointRule.java)
 
 **Example(s):**
 
@@ -165,12 +175,14 @@ public without sharing class Foo {
 
 ## ApexOpenRedirect
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 Checks against redirects to user-controlled locations. This prevents attackers from
 redirecting users to phishing sites.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexOpenRedirectRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexOpenRedirectRule.java)
 
 **Example(s):**
 
@@ -193,12 +205,14 @@ public without sharing class Foo {
 
 ## ApexSharingViolations
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 Detect classes declared without explicit sharing mode if DML methods are used. This
 forces the developer to take access restrictions into account before modifying objects.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexSharingViolationsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexSharingViolationsRule.java)
 
 **Example(s):**
 
@@ -218,11 +232,13 @@ public without sharing class Foo {
 
 ## ApexSOQLInjection
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 Detects the usage of untrusted / unescaped variables in DML queries.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexSOQLInjectionRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexSOQLInjectionRule.java)
 
 **Example(s):**
 
@@ -244,7 +260,7 @@ public class Foo {
 
 ## ApexSuggestUsingNamedCred
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
@@ -261,6 +277,8 @@ You should refrain from hardcoding credentials:
 Instead, you should use *Named Credentials* and a callout endpoint.
 
 For more information, you can check [this](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_named_credentials.htm)
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexSuggestUsingNamedCredRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexSuggestUsingNamedCredRule.java)
 
 **Example(s):**
 
@@ -284,13 +302,15 @@ public class Foo {
 
 ## ApexXSSFromEscapeFalse
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 Reports on calls to `addError` with disabled escaping. The message passed to `addError`
 will be displayed directly to the user in the UI, making it prime ground for XSS
 attacks if unescaped.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexXSSFromEscapeFalseRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexXSSFromEscapeFalseRule.java)
 
 **Example(s):**
 
@@ -310,12 +330,14 @@ public without sharing class Foo {
 
 ## ApexXSSFromURLParam
 
-**Since:** 5.5.3
+**Since:** PMD 5.5.3
 
 **Priority:** Medium (3)
 
 Makes sure that all values obtained from URL parameters are properly escaped / sanitized
 to avoid XSS attacks.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.security.ApexXSSFromURLParamRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/security/ApexXSSFromURLParamRule.java)
 
 **Example(s):**
 

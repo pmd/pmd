@@ -8,11 +8,13 @@ editmepath: ../pmd-java/src/main/resources/rulesets/java/strings.xml
 ---
 ## AppendCharacterWithChar
 
-**Since:** 3.5
+**Since:** PMD 3.5
 
 **Priority:** Medium (3)
 
 Avoid concatenating characters as strings in StringBuffer/StringBuilder.append methods.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.AppendCharacterWithCharRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/AppendCharacterWithCharRule.java)
 
 **Example(s):**
 
@@ -26,11 +28,13 @@ sb.append('a');		// use this instead
 
 ## AvoidDuplicateLiterals
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.AvoidDuplicateLiteralsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/AvoidDuplicateLiteralsRule.java)
 
 **Example(s):**
 
@@ -57,12 +61,16 @@ private void bar() {
 
 ## AvoidStringBufferField
 
-**Since:** 4.2
+**Since:** PMD 4.2
 
 **Priority:** Medium (3)
 
 StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks
 if held within objects with long lifetimes.
+
+```
+//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
+```
 
 **Example(s):**
 
@@ -74,12 +82,14 @@ public class Foo {
 
 ## ConsecutiveAppendsShouldReuse
 
-**Since:** 5.1
+**Since:** PMD 5.1
 
 **Priority:** Medium (3)
 
 Consecutive calls to StringBuffer/StringBuilder .append should be chained, reusing the target object. This can improve the performance
 by producing a smaller bytecode, reducing overhead and improving inlining. A complete analysis can be found [here](https://github.com/pmd/pmd/issues/202#issuecomment-274349067)
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveAppendsShouldReuseRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/ConsecutiveAppendsShouldReuseRule.java)
 
 **Example(s):**
 
@@ -97,11 +107,13 @@ buf.append("Hello").append(foo).append("World"); // good
 
 ## ConsecutiveLiteralAppends
 
-**Since:** 3.5
+**Since:** PMD 3.5
 
 **Priority:** Medium (3)
 
 Consecutively calling StringBuffer/StringBuilder.append with String literals
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveLiteralAppendsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/ConsecutiveLiteralAppendsRule.java)
 
 **Example(s):**
 
@@ -119,7 +131,7 @@ buf.append("Hello World");        				 // good
 
 ## InefficientEmptyStringCheck
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium (3)
 
@@ -128,6 +140,8 @@ creates a new String object just to check its size. Consider creating a static f
 loops through a string, checking Character.isWhitespace() on each character and returning
 false if a non-whitespace character is found. You can refer to Apache's StringUtils#isBlank (in commons-lang)
 or Spring's StringUtils#hasText (in the Springs framework) for existing implementations.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.InefficientEmptyStringCheckRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/InefficientEmptyStringCheckRule.java)
 
 **Example(s):**
 
@@ -141,12 +155,14 @@ public void bar(String string) {
 
 ## InefficientStringBuffering
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
 Avoid concatenating non-literals in a StringBuffer constructor or append() since intermediate buffers will
 need to be be created and destroyed by the JVM.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.InefficientStringBufferingRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/InefficientStringBufferingRule.java)
 
 **Example(s):**
 
@@ -161,7 +177,7 @@ sb.append(System.getProperty("java.io.tmpdir"));
 
 ## InsufficientStringBufferDeclaration
 
-**Since:** 3.6
+**Since:** PMD 3.6
 
 **Priority:** Medium (3)
 
@@ -170,6 +186,8 @@ during runtime. This rule attempts to determine the total number the characters 
 passed into StringBuffer.append(), but represents a best guess "worst case" scenario. An empty
 StringBuffer/StringBuilder constructor initializes the object to 16 characters. This default
 is assumed if the length of the constructor can not be determined.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.InsufficientStringBufferDeclarationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/InsufficientStringBufferDeclarationRule.java)
 
 **Example(s):**
 
@@ -183,7 +201,7 @@ good.append("This is a long string, which is pre-sized");
 
 ## StringBufferInstantiationWithChar
 
-**Since:** 3.9
+**Since:** PMD 3.9
 
 **Priority:** Medium Low (4)
 
@@ -202,6 +220,16 @@ new StringBuilder("hello world")  // 11 + 16 = 27
 new StringBuilder('C')	 //  chr(C) = 67
 new StringBuilder("A")   //  1 + 16 = 17
 
+```
+//AllocationExpression/ClassOrInterfaceType
+[@Image='StringBuffer' or @Image='StringBuilder']
+/../Arguments/ArgumentList/Expression/PrimaryExpression
+/PrimaryPrefix/
+Literal
+  [starts-with(@Image, "'")]
+  [ends-with(@Image, "'")]
+```
+
 **Example(s):**
 
 ```
@@ -217,11 +245,13 @@ StringBuilder sb4 = new StringBuilder("c");
 
 ## StringInstantiation
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium High (2)
 
 Avoid instantiating String objects; this is usually unnecessary since they are immutable and can be safely shared.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.StringInstantiationRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/StringInstantiationRule.java)
 
 **Example(s):**
 
@@ -231,11 +261,13 @@ private String bar = new String("bar"); // just do a String bar = "bar";
 
 ## StringToString
 
-**Since:** 1.0
+**Since:** PMD 1.0
 
 **Priority:** Medium (3)
 
 Avoid calling toString() on objects already known to be string instances; this is unnecessary.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.StringToStringRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/StringToStringRule.java)
 
 **Example(s):**
 
@@ -248,11 +280,13 @@ private String baz() {
 
 ## UnnecessaryCaseChange
 
-**Since:** 3.3
+**Since:** PMD 3.3
 
 **Priority:** Medium (3)
 
 Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.UnnecessaryCaseChangeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/UnnecessaryCaseChangeRule.java)
 
 **Example(s):**
 
@@ -264,12 +298,20 @@ boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");	 // another unneces
 
 ## UseEqualsToCompareStrings
 
-**Since:** 4.1
+**Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 Using '==' or '!=' to compare strings only works if intern version is used on both sides.
 Use the equals() method instead.
+
+```
+//EqualityExpression/PrimaryExpression
+[(PrimaryPrefix/Literal
+   [starts-with(@Image, '"')]
+   [ends-with(@Image, '"')]
+and count(PrimarySuffix) = 0)]
+```
 
 **Example(s):**
 
@@ -283,11 +325,13 @@ public boolean test(String s) {
 
 ## UseIndexOfChar
 
-**Since:** 3.5
+**Since:** PMD 3.5
 
 **Priority:** Medium (3)
 
 Use String.indexOf(char) when checking for the index of a single character; it executes faster.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.UseIndexOfCharRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/UseIndexOfCharRule.java)
 
 **Example(s):**
 
@@ -301,11 +345,13 @@ if (s.indexOf('d') {}
 
 ## UselessStringValueOf
 
-**Since:** 3.8
+**Since:** PMD 3.8
 
 **Priority:** Medium (3)
 
 No need to call String.valueOf to append to a string; just use the valueOf() argument directly.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.UselessStringValueOfRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/UselessStringValueOfRule.java)
 
 **Example(s):**
 
@@ -320,12 +366,14 @@ public String convert(int i) {
 
 ## UseStringBufferLength
 
-**Since:** 3.4
+**Since:** PMD 3.4
 
 **Priority:** Medium (3)
 
 Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
 or StringBuffer.toString().length() == ...
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.strings.UseStringBufferLengthRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/strings/UseStringBufferLengthRule.java)
 
 **Example(s):**
 
