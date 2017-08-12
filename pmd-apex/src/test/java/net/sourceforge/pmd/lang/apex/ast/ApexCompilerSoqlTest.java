@@ -17,7 +17,7 @@ public class ApexCompilerSoqlTest {
 
     private static final String CODE = "public class Foo {\n"
             + "   public List<SObject> test1() {\n"
-            + "       return Database.query(\"Select Id from Account LIMIT 100\");\n"
+            + "       return Database.query(\'Select Id from Account LIMIT 100\');\n"
             + "   }\n"
             + "}\n";
 
