@@ -1756,6 +1756,8 @@ public class MaybeAUtility {
 
 **Priority:** Medium Low (4)
 
+**Minimum Language Version:** Java 1.5
+
 Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
 sugar provides flexibility for users of these methods and constructors, allowing them to avoid
 having to deal with the creation of an array.

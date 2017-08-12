@@ -83,6 +83,8 @@ public class MyClass {
 
 **Priority:** Medium (3)
 
+**Minimum Language Version:** Java 1.5
+
 If a class implements cloneable the return type of the method clone() must be the class name. That way, the caller
 of the clone method doesn't need to cast the returned clone to the correct type.
 
