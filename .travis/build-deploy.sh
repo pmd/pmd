@@ -3,6 +3,25 @@ set -e
 
 source .travis/common-functions.sh
 
+function push_docs() {
+    if git diff docs --quiet; then
+        echo "No changes in docs..."
+    else
+        echo "Found changes in docs..."
+
+        if [ "$TRAVIS_BRANCH" == "master" ]; then
+            git config user.name "Travis CI (pmd-bot)"
+            git config user.email "adangel+pmd-bot@users.sourceforge.net"
+            git add -A docs
+            git commit -m "Update documentation"
+            git push git@github.com:pmd/pmd.git master
+        else
+            echo "Not on master branch, won't commit+push"
+        fi
+    fi
+}
+
+
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec | tail -1)
 echo "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
 
@@ -19,6 +38,7 @@ elif travis_isPush; then
     elif [[ "$VERSION" == *-SNAPSHOT ]]; then
         echo "This is a snapshot build"
         ./mvnw deploy -Possrh -B -V
+        push_docs
     else
         # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.
         echo "This is some other build, probably during release: commit with a non-snapshot version on branch master..."
