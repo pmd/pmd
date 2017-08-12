@@ -286,6 +286,12 @@ public class RuleDocGenerator {
                     lines.add("**Priority:** " + rule.getPriority() + " (" + rule.getPriority().getPriority() + ")");
                     lines.add("");
 
+                    if (rule.getMinimumLanguageVersion() != null) {
+                        lines.add("**Minimum Language Version:** "
+                                + rule.getLanguage().getName() + " " + rule.getMinimumLanguageVersion().getVersion());
+                        lines.add("");
+                    }
+
                     lines.add(StringUtils.stripToEmpty(rule.getDescription()));
                     lines.add("");
 

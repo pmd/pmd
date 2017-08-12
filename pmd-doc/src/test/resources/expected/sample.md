@@ -51,6 +51,12 @@ public class JumbledIncrementerRule1 {
 }
 ```
 
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|sampleAdditionalProperty|the value|This is a additional property for tests|
+
 ## MovedRule
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
@@ -91,6 +97,8 @@ public class JumbledIncrementerRule1 {
 **Since:** PMD 0.4
 
 **Priority:** Medium (3)
+
+**Minimum Language Version:** Java 1.5
 
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
 
@@ -155,3 +163,9 @@ public class JumbledIncrementerRule1 {
     }
 }
 ```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|sampleAdditionalProperty|the value|This is a additional property for tests|
