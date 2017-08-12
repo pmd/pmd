@@ -527,8 +527,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         if (usesTypeResolution()) {
             rule.setUsesTypeResolution();
         }
-        if (usesMetrics()) {
-            rule.setUsesMetrics();
+        if (usesMultifile()) {
+            rule.setUsesMultifile();
         }
         rule.setDescription(getDescription());
         for (final String example : getExamples()) {

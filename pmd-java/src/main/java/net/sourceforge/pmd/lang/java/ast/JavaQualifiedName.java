@@ -63,7 +63,7 @@ public final class JavaQualifiedName implements QualifiedName {
     }
 
 
-    /** Factorises the functionality of makeOperationof() */
+    /** Factorises the functionality of ofOperation() */
     private static JavaQualifiedName ofOperation(JavaQualifiedName parent, String opName, ASTFormalParameters params) {
         JavaQualifiedName qname = new JavaQualifiedName();
 
@@ -115,10 +115,26 @@ public final class JavaQualifiedName implements QualifiedName {
     }
 
 
-    // Might be useful with type resolution
+    /**
+     * Gets the qualified name of a class.
+     *
+     * @param clazz Class object
+     *
+     * @return The qualified name of the class, or null if the class is null
+     */
     public static JavaQualifiedName ofClass(Class<?> clazz) {
-        throw new UnsupportedOperationException();
+        if (clazz == null) {
+            return null;
+        }
+
+        String name = clazz.getName();
+        if (name.indexOf('.') < 0) {
+            name = '.' + name;
+        }
+
+        return ofString(name);
     }
+
 
     /**
      * Parses a qualified name given in the format defined for this implementation. The format

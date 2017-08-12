@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import static net.sourceforge.pmd.lang.java.metrics.JavaMetricsVisitorTest.parseAndVisitForClass;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -14,6 +14,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -48,6 +49,7 @@ public class ProjectMemoizerTest {
 
     @Test
     public void forceMemoizationTest() {
+
         ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
 
         List<Integer> reference = visitWith(acu, true);
@@ -89,6 +91,12 @@ public class ProjectMemoizerTest {
         return result;
     }
 
+
+    static ASTCompilationUnit parseAndVisitForClass(Class<?> clazz) {
+        ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(clazz);
+        ParserTstUtil.getDefaultLanguageVersionHandler().getMetricsVisitorFacade().start(acu);
+        return acu;
+    }
 
     private class RandomOperationMetric extends AbstractJavaOperationMetric {
 

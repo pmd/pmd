@@ -167,6 +167,13 @@ public class SourceCodeProcessor {
         }
     }
 
+    private void multifileAnalysis(Node rootNode, LanguageVersionHandler languageVersionHandler) {
+        long start = System.nanoTime();
+        languageVersionHandler.getMultifileFacade().start(rootNode);
+        long end = System.nanoTime();
+        Benchmarker.mark(Benchmark.Multifile, end - start, 0);
+    }
+
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
         LanguageVersion languageVersion = ctx.getLanguageVersion();
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
@@ -177,6 +184,7 @@ public class SourceCodeProcessor {
         Language language = languageVersion.getLanguage();
         usesDFA(languageVersion, rootNode, ruleSets, language);
         usesTypeResolution(languageVersion, rootNode, ruleSets, language);
+        multifileAnalysis(rootNode, languageVersionHandler);
         usesMetrics(languageVersion, rootNode, ruleSets, language);
 
         List<Node> acus = Collections.singletonList(rootNode);

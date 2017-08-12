@@ -95,5 +95,14 @@ public interface LanguageVersionHandler {
      */
     VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
 
+
+    /**
+     * Gets the visitor that performs multifile data gathering.
+     *
+     * @return The visitor starter
+     */
+    VisitorStarter getMultifileFacade();
+
+
     DFAGraphRule getDFAGraphRule();
 }

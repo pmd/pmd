@@ -195,7 +195,7 @@ public class RuleSetWriter {
             return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(),
                     rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
                     rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
-                    rule.getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule.usesMetrics(),
+                    rule.getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule.usesMultifile(),
                     rule.getDescription(),
                     rule.getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
                     rule.getExamples());

@@ -2,18 +2,19 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.multifile;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiedName;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
 /**
  * Statistics about a class, enum, interface, or annotation. Stores information about the contained members and their
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
  *
  * @author Clément Fournier
  */
-/* default */ class ClassStats {
+final class ClassStats implements ClassMirror {
 
     private Map<JavaOperationSignature, Set<String>> operations = new HashMap<>();
     private Map<JavaFieldSignature, Set<String>> fields = new HashMap<>();
@@ -57,7 +58,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
      *
      * @return The new ClassStats or the one that was found. Can return null if createIfNotFound is unset
      */
-    /* default */ ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
+    ClassStats getNestedClassStats(String className, boolean createIfNotFound) {
         if (createIfNotFound && !nestedClasses.containsKey(className)) {
             nestedClasses.put(className, new ClassStats());
         }
@@ -71,7 +72,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
      * @param name The name of the operation
      * @param sig  The signature of the operation
      */
-    /* default */ void addOperation(String name, JavaOperationSignature sig) {
+    void addOperation(String name, JavaOperationSignature sig) {
         if (!operations.containsKey(sig)) {
             operations.put(sig, new HashSet<String>());
         }
@@ -85,7 +86,7 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
      * @param name The name of the field
      * @param sig  The signature of the field
      */
-    /* default */ void addField(String name, JavaFieldSignature sig) {
+    void addField(String name, JavaFieldSignature sig) {
         if (!fields.containsKey(sig)) {
             fields.put(sig, new HashSet<String>());
         }
@@ -93,16 +94,8 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
     }
 
 
-    /**
-     * Checks whether the class declares an operation by the name given which is covered by the signature mask.
-     *
-     * @param name The name of the operation to look for
-     * @param mask The mask covering accepted signatures
-     *
-     * @return True if the class declares an operation by the name given which is covered by the signature mask, false
-     * otherwise
-     */
-    /* default */ boolean hasMatchingSig(String name, JavaOperationSigMask mask) {
+    @Override
+    public boolean hasMatchingSig(String name, JavaOperationSigMask mask) {
         // Indexing on signatures optimises this type of request
         for (JavaOperationSignature sig : operations.keySet()) {
             if (mask.covers(sig)) {
@@ -115,16 +108,8 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
     }
 
 
-    /**
-     * Checks whether the class declares a field by the name given which is covered by the signature mask.
-     *
-     * @param name The name of the field to look for
-     * @param mask The mask covering accepted signatures
-     *
-     * @return True if the class declares a field by the name given which is covered by the signature mask, false
-     * otherwise
-     */
-    /* default */ boolean hasMatchingSig(String name, JavaFieldSigMask mask) {
+    @Override
+    public boolean hasMatchingSig(String name, JavaFieldSigMask mask) {
         for (JavaFieldSignature sig : fields.keySet()) {
             if (mask.covers(sig)) {
                 if (fields.get(sig).contains(name)) {
@@ -133,6 +118,34 @@ import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
             }
         }
         return false;
+    }
+
+
+    @Override
+    public int countMatchingOpSigs(JavaOperationSigMask sigMask) {
+        int sum = 0;
+
+        for (Entry<JavaOperationSignature, Set<String>> e : operations.entrySet()) {
+            if (sigMask.covers(e.getKey())) {
+                sum += e.getValue().size();
+            }
+        }
+
+        return sum;
+    }
+
+
+    @Override
+    public int countMatchingFieldSigs(JavaFieldSigMask sigMask) {
+        int sum = 0;
+
+        for (Entry<JavaFieldSignature, Set<String>> e : fields.entrySet()) {
+            if (sigMask.covers(e.getKey())) {
+                sum += e.getValue().size();
+            }
+        }
+
+        return sum;
     }
 
 }

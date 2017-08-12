@@ -2,22 +2,21 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics;
+package net.sourceforge.pmd.lang.java.multifile;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
- * Wraps the visitor.
- *
  * @author Clément Fournier
  */
-public class JavaMetricsVisitorFacade extends JavaParserVisitorAdapter {
+public class MultifileVisitorFacade extends JavaParserVisitorAdapter {
 
     public void initializeWith(ASTCompilationUnit rootNode) {
-        JavaMetricsFacade facade = JavaMetrics.getFacade();
-        JavaMetricsVisitor visitor = new JavaMetricsVisitor(facade.getLanguageSpecificProjectMemoizer());
+        PackageStats projectMirror = MultifileFacade.getTopLevelPackageStats();
+        MultifileVisitor visitor = new MultifileVisitor(projectMirror);
         rootNode.jjtAccept(visitor, null);
     }
+
 
 }
