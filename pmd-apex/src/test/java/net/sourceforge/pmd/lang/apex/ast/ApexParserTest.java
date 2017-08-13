@@ -121,7 +121,7 @@ public class ApexParserTest {
     /**
      * See bug #1485
      * 
-     * @see <a href="https://sourceforge.net/p/pmd/bugs/1485/">#1485</a>
+     * @see <a href="https://sourceforge.net/p/pmd/bugs/1485/">#1485 [apex] Analysis of some apex classes cause a stackoverflow error</a>
      */
     @Test
     public void stackOverflowDuringClassParsing() throws Exception {
@@ -130,7 +130,7 @@ public class ApexParserTest {
         Assert.assertNotNull(rootNode);
 
         int count = visitPosition(rootNode, 0);
-        Assert.assertEquals(586, count);
+        Assert.assertEquals(489, count);
     }
 
     private int visitPosition(Node node, int count) {

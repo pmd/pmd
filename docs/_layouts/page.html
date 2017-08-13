@@ -41,7 +41,12 @@ layout: default
 
     {% if site.github_editme_path %}
 
-    <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{page.path}}" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
+        {% assign editmepath = page.path %}
+        {% if page.editmepath %}
+            {% assign editmepath = page.editmepath %}
+        {% endif %}
+
+    <a target="_blank" href="https://github.com/{{site.github_editme_path}}{{editmepath}}" class="btn btn-default githubEditButton" role="button"><i class="fa fa-github fa-lg"></i> Edit me</a>
 
     {% endif %}
 

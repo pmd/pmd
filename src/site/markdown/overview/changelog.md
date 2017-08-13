@@ -13,6 +13,8 @@ This is a major release.
     *   [Java Type Resolution](#Java_Type_Resolution)
     *   [Metrics Framework](#Metrics_Framework)
     *   [Configuration Error Reporting](#Configuration_Error_Reporting)
+    *   [Java Symbol Table](#Java_Symbol_Table)
+    *   [Apex Parser Update](#Apex_Parser_Update)
     *   [Modified Rules](#Modified_Rules)
     *   [Removed Rules](#Removed_Rules)
 * [Fixed Issues](#Fixed_Issues)
@@ -79,10 +81,32 @@ and include them to such reports.
 *   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
     long time ago to `UseUtilityClass`.
 
+
+#### Java Symbol Table
+
+A [bug in symbol table](https://github.com/pmd/pmd/pull/549/commits/0958621ca884a8002012fc7738308c8dfc24b97c) prevented
+the symbol table analysis to properly match primitive arrays types. The issue [affected the `java-unsedcode/UnusedPrivateMethod`](https://github.com/pmd/pmd/issues/521)
+rule, but other rules may now produce improved results as consequence of this fix.
+
+#### Apex Parser Update
+
+The Apex parser version was bumped, from `1.0-sfdc-187` to `1.0-sfdc-224`. This update let us take full advatange
+of the latest improvements from Salesforce, but introduces some breaking changes:
+*   `BlockStatements` are now created for all control structures, even if no brace is used. We have therefore added
+    a `hasCurlyBrace` method to differentiate between both scenarios.
+*   New AST node types are available. In particular `CastExpression`, `ConstructorPreamble`, `IllegalStoreExpression`,
+    `MethodBlockStatement`, `Modifier`, `MultiStatement`, `NestedExpression`, `NestedStoreExpression`,
+    `NewKeyValueObjectExpression` and `StatementExecuted`
+*   Some nodes have been removed. Such is the case of `TestNode`, `DottedExpression` and `NewNameValueObjectExpression`
+    (replaced by `NewKeyValueObjectExpression`)
+
+Al existing rules have been updated to reflect these changes. If you have custom rules, be sure to update them.
+
 ### Fixed Issues
 
 *   apex
     *   [#488](https://github.com/pmd/pmd/pull/488): \[apex] Use Apex lexer for CPD
+    *   [#489](https://github.com/pmd/pmd/pull/489): \[apex] Update Apex compiler
     *   [#500](https://github.com/pmd/pmd/issues/500): \[apex] Running through CLI shows jorje optimization messages
 *   cpp
     *   [#448](https://github.com/pmd/pmd/issues/448): \[cpp] Write custom CharStream to handle continuation characters
@@ -91,10 +115,14 @@ and include them to such reports.
     *   [#487](https://github.com/pmd/pmd/pull/487): \[java] Fix typeresolution for anonymous extending object
     *   [#496](https://github.com/pmd/pmd/issues/496): \[java] processing error on generics inherited from enclosing class
     *   [#527](https://github.com/pmd/pmd/issues/527): \[java] Lombok getter annotation on enum is not recognized correctly
+*   java-comments
+    *   [#536](https://github.com/pmd/pmd/issues/536): \[java] CommentDefaultAccessModifierRule ignores constructors
 *   java-controversial
     *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
 *   java-sunsecure
     *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive
+*   java-unusedcode
+    *   [#521](https://github.com/pmd/pmd/issues/521): \[java] UnusedPrivateMethod returns false positives with primitive data type in map argument
 *   java-unnecessarycode
     *   [#412](https://github.com/pmd/pmd/issues/412): \[java] java-unnecessarycode/UnnecessaryFinalModifier missing cases
 
@@ -129,8 +157,9 @@ and include them to such reports.
 *   [#524](https://github.com/pmd/pmd/pull/524): \[java] Add support for explicit type arguments with method invocation - [Bendegúz Nagy](https://github.com/WinterGrascph)
 *   [#525](https://github.com/pmd/pmd/pull/525): \[core] Fix line ending and not ignored files issues - [Matias Comercio](https://github.com/MatiasComercio)
 *   [#528](https://github.com/pmd/pmd/pull/528): \[core] Fix typo - [Ayoub Kaanich](https://github.com/kayoub5)
+*   [#529](https://github.com/pmd/pmd/pull/529): \[java] Abstracted the Java metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#530](https://github.com/pmd/pmd/pull/530): \[java] Fix issue #527: Lombok getter annotation on enum is not recognized correctly - [Clément Fournier](https://github.com/oowekyala)
 *   [#535](https://github.com/pmd/pmd/pull/535): \[apex] Fix broken Apex visitor adapter - [Clément Fournier](https://github.com/oowekyala)
-*   [#529](https://github.com/pmd/pmd/pull/529): \[java] Abstracted the Java metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#542](https://github.com/pmd/pmd/pull/542): \[java] Metrics abstraction - [Clément Fournier](https://github.com/oowekyala)
+*   [#548](https://github.com/pmd/pmd/pull/548): \[java] Metrics documentation - [Clément Fournier](https://github.com/oowekyala)
 

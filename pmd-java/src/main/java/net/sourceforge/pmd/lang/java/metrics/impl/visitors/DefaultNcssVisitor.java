@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -216,6 +217,12 @@ public class DefaultNcssVisitor extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTInitializer node, Object data) {
+        ((MutableInt) data).increment();
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTAssertStatement node, Object data) {
         ((MutableInt) data).increment();
         return super.visit(node, data);
     }
