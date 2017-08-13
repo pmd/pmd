@@ -92,7 +92,7 @@ List of rulesets and rules contained in each ruleset.
 
 ## Comments
 *   [CommentContent](pmd_rules_java_comments.html#commentcontent): A rule for the politically correct... we don't want to offend anyone.
-*   [CommentDefaultAccessModifier](pmd_rules_java_comments.html#commentdefaultaccessmodifier): To avoid mistakes if we want that a Method, Field or Nested class have a default access modifier ...
+*   [CommentDefaultAccessModifier](pmd_rules_java_comments.html#commentdefaultaccessmodifier): To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default acc...
 *   [CommentRequired](pmd_rules_java_comments.html#commentrequired): Denotes whether comments are required (or unwanted) for specific language elements.
 *   [CommentSize](pmd_rules_java_comments.html#commentsize): Determines whether the dimensions of non-header comments found are within the specified limits.
 

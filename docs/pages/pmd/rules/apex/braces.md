@@ -17,11 +17,9 @@ indentation is lost then it becomes difficult to separate the code being control
 from the rest.
 
 ```
-//ForLoopStatement
-[child::ExpressionStatement]
+//ForLoopStatement/BlockStatement[@CurlyBrace='false']
 |
-//ForEachStatement
-[child::ExpressionStatement]
+//ForEachStatement/BlockStatement[@CurlyBrace='false']
 ```
 
 **Example(s):**
@@ -54,11 +52,9 @@ or indentation is lost then it becomes difficult to separate the code being cont
 from the rest.
 
 ```
-//ExpressionStatement[parent::IfBlockStatement]
+//IfBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
 |
-//ExpressionStatement[parent::IfElseBlockStatement]
-|
-//IfElseBlockStatement[parent::IfBlockStatement]
+//IfElseBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
 ```
 
 **Example(s):**
@@ -93,7 +89,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 ```
-//IfBlockStatement/ExpressionStatement
+//IfBlockStatement/BlockStatement[@CurlyBrace='false']
 ```
 
 **Example(s):**
@@ -126,7 +122,7 @@ formatting or indentation is lost then it becomes difficult to separate the code
 controlled from the rest.
 
 ```
-//WhileLoopStatement/ExpressionStatement
+//WhileLoopStatement/BlockStatement[@CurlyBrace='false']
 ```
 
 **Example(s):**

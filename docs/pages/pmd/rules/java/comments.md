@@ -36,9 +36,9 @@ A rule for the politically correct... we don't want to offend anyone.
 
 **Priority:** Medium (3)
 
-To avoid mistakes if we want that a Method, Field or Nested class have a default access modifier
-        we must add a comment at the beginning of the Method, Field or Nested class.
-        By default the comment must be /* default */, if you want another, you have to provide a regex.
+To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
+        we must add a comment at the beginning of it's declaration.
+        By default the comment must be /* default */, if you want another, you have to provide a regexp.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.comments.CommentDefaultAccessModifierRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/comments/CommentDefaultAccessModifierRule.java)
 
