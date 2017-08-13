@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -82,6 +83,14 @@ public class CommentDefaultAccessModifierRule extends AbstractCommentRule {
         // check for nested classes
         if (decl.isNested() && shouldReport(decl)) {
             addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "nested class"));
+        }
+        return super.visit(decl, data);
+    }
+
+    @Override
+    public Object visit(final ASTConstructorDeclaration decl, Object data) {
+        if (shouldReport(decl)) {
+            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "constructor"));
         }
         return super.visit(decl, data);
     }

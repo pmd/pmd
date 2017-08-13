@@ -471,7 +471,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>1.6.8</version>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -945,6 +945,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <module>pmd-apex</module>
                 <module>pmd-java8</module>
                 <module>pmd-ui</module>
+                <module>pmd-doc</module>
             </modules>
         </profile>
 

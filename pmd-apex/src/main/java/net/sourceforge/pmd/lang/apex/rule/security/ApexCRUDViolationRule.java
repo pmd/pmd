@@ -25,14 +25,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewKeyValueObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
@@ -326,16 +325,13 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             }
 
             // see if getDescribe()
-            final ASTDottedExpression dottedExpr = ref.getFirstChildOfType(ASTDottedExpression.class);
-            if (dottedExpr != null) {
-                final ASTMethodCallExpression nestedMethodCall = dottedExpr
-                        .getFirstChildOfType(ASTMethodCallExpression.class);
-                if (nestedMethodCall != null) {
-                    if (isLastMethodName(nestedMethodCall, S_OBJECT_TYPE, GET_DESCRIBE)) {
-                        String resolvedType = getType(nestedMethodCall);
-                        if (!typeToDMLOperationMapping.get(resolvedType).contains(method)) {
-                            typeToDMLOperationMapping.put(resolvedType, method);
-                        }
+            final ASTMethodCallExpression nestedMethodCall = ref
+                    .getFirstChildOfType(ASTMethodCallExpression.class);
+            if (nestedMethodCall != null) {
+                if (isLastMethodName(nestedMethodCall, S_OBJECT_TYPE, GET_DESCRIBE)) {
+                    String resolvedType = getType(nestedMethodCall);
+                    if (!typeToDMLOperationMapping.get(resolvedType).contains(method)) {
+                        typeToDMLOperationMapping.put(resolvedType, method);
                     }
                 }
             }
@@ -392,7 +388,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return;
         }
 
-        final ASTNewNameValueObjectExpression newObj = node.getFirstChildOfType(ASTNewNameValueObjectExpression.class);
+        final ASTNewKeyValueObjectExpression newObj = node.getFirstChildOfType(ASTNewKeyValueObjectExpression.class);
         if (newObj != null) {
             final String type = Helper.getFQVariableName(newObj);
             validateCRUDCheckPresent(node, data, crudMethod, type);
