@@ -1413,6 +1413,7 @@ public void doSomething() {
           since="3.4"
           message="Document empty constructor"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UncommentedEmptyConstructor">
       <description>
 Uncommented Empty Constructor finds instances where a constructor does not
@@ -1427,7 +1428,7 @@ and unintentional empty constructors.
     <![CDATA[
 //ConstructorDeclaration[@Private='false']
                         [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
-                        [not(../Annotation/MarkerAnnotation/Name[@Image='Inject'])]
+                        [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'javax.inject.Inject', 'Inject')])]
 ]]>
              </value>
           </property>
