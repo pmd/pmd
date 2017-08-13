@@ -8,10 +8,12 @@ import static net.sourceforge.pmd.lang.apex.metrics.ApexMetricsVisitorTest.parse
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -34,50 +36,19 @@ import apex.jorje.semantic.ast.compilation.Compilation;
  */
 public class ApexProjectMirrorTest {
 
-    private static ApexNode<Compilation> acu
-        = parseAndVisitForString("public with sharing class MetadataDeployController \n"
-                                     + "{\n"
-                                     + "\tprivate class Foo {\n"
-                                     + "}\n"
-                                     + "\n"
-                                     + "\tglobal String ZipData { get; set; }\t\n"
-                                     + "\t\n"
-                                     + "\tpublic MetadataService.AsyncResult AsyncResult {get; private set;}\n"
-                                     + "\t\n"
-                                     + "\tpublic String getPackageXml(String page)\n"
-                                     + "\t{\n"
-                                     + "\t\treturn '<?xml version=\"1.0\" encoding=\"UTF-8\"?>' + \n"
-                                     + "\t\t\t'<Package xmlns=\"http://soap.sforce.com/2006/04/metadata\">' + \n"
-                                     + "    \t\t\t'<types>' + \n"
-                                     + "        \t\t\t'<members>HelloWorld</members>' +\n"
-                                     + "        \t\t\t'<name>ApexClass</name>' + \n"
-                                     + "    \t\t\t'</types>' + \n"
-                                     + "    \t\t\t'<version>26.0</version>' + \n"
-                                     + "\t\t\t'</Package>';\t\t\n"
-                                     + "\t}\n"
-                                     + "\t\n"
-                                     + "\tpublic String getHelloWorldMetadata()\n"
-                                     + "\t{\n"
-                                     + "\t\treturn '<?xml version=\"1.0\" encoding=\"UTF-8\"?>' +\n"
-                                     + "\t\t\t'<ApexClass xmlns=\"http://soap.sforce.com/2006/04/metadata\">' +\n"
-                                     + "\t\t\t    '<apiVersion>28.0</apiVersion>' + \n"
-                                     + "\t\t\t    '<status>Active</status>' +\n"
-                                     + "\t\t\t'</ApexClass>';\t\t\n"
-                                     + "\t}\n"
-                                     + "\t\n"
-                                     + "\tpublic String getHelloWorld()\t\n"
-                                     + "\t{\n"
-                                     + "\t\treturn 'public class HelloWorld' + \n"
-                                     + "\t\t\t'{' + \n"
-                                     + "\t\t\t\t'public static void helloWorld()' +\n"
-                                     + "\t\t\t\t'{' + \n"
-                                     + "\t\t\t\t\t'System.debug(\\' Hello World\\');' +\n"
-                                     + "\t\t\t\t'}' +\n"
-                                     + "\t\t\t'}';\n"
-                                     + "\t}"
-                                     + "}");
+    private static ApexNode<Compilation> acu;
     private MetricKey<ASTUserClassOrInterface<?>> classMetricKey = MetricKeyUtil.of(new RandomClassMetric(), null);
     private MetricKey<ASTMethod> opMetricKey = MetricKeyUtil.of(new RandomOperationMetric(), null);
+
+
+    static {
+        try {
+            acu = parseAndVisitForString(
+                IOUtils.toString(ApexMetricsVisitorTest.class.getResourceAsStream("MetadataDeployController.cls")));
+        } catch (IOException ioe) {
+            // Should definitely not happen
+        }
+    }
 
 
     @Test

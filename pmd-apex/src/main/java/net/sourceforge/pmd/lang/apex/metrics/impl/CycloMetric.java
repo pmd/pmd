@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.metrics.impl.visitors.StandardCycloVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
-import apex.jorje.semantic.ast.expression.BooleanExpressionType;
+import apex.jorje.data.ast.BooleanOp;
 
 /**
  * See the doc for the Java metric.
@@ -44,8 +44,8 @@ public class CycloMetric extends AbstractApexOperationMetric {
         int complexity = 0;
 
         for (ASTBooleanExpression sub : subs) {
-            BooleanExpressionType type = sub.getNode().getBooleanExpressionType();
-            if (type != null && (type == BooleanExpressionType.OR || type == BooleanExpressionType.AND)) {
+            BooleanOp op = sub.getNode().getOp();
+            if (op != null && (op == BooleanOp.AND || op == BooleanOp.OR)) {
                 complexity++;
             }
         }

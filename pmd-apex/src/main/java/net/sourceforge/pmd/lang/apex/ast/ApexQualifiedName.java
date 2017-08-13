@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,7 +21,6 @@ import apex.jorje.semantic.symbol.type.TypeInfo;
  */
 public class ApexQualifiedName implements QualifiedName {
 
-    private static final Pattern FORMAT = Pattern.compile("(\\w+)__(\\w+)(.(\\w+))?(#(\\w+))?"); // TODO
 
     private final String nameSpace;
     private final String[] classes;
@@ -36,11 +34,9 @@ public class ApexQualifiedName implements QualifiedName {
     }
 
 
-
     public String getOperation() {
         return operation;
     }
-
 
 
     public String[] getClasses() {
@@ -117,6 +113,20 @@ public class ApexQualifiedName implements QualifiedName {
     }
 
 
+    /**
+     * Parses a string conforming to the format defined below and returns an ApexQualifiedName.
+     *
+     * <p>Here are some examples of the format:
+     * <ul>
+     * <li> {@code namespace__OuterClass.InnerClass}: name of an inner class
+     * <li> {@code namespace__Class#method(String, int)}: name of an operation
+     * </ul>
+     *
+     * @param toParse The string to parse
+     *
+     * @return An ApexQualifiedName, or null if the string couldn't be parsed
+     */
+    // private static final Pattern FORMAT = Pattern.compile("(\\w+)__(\\w+)(.(\\w+))?(#(\\w+))?"); // TODO
     public static ApexQualifiedName ofString(String toParse) {
         throw new UnsupportedOperationException();
     }

@@ -11,10 +11,10 @@
 
     <rule name="CyclomaticComplexity"
           message="The {0} ''{1}'' has a{2} cyclomatic complexity of {3}."
-          since="1.03"
+          since="6.0.0"
           class="net.sourceforge.pmd.lang.apex.metrics.rule.CyclomaticComplexityRule"
           metrics="true"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/codesize.html#CyclomaticComplexity">
+          externalInfoUrl="${pmd.website.baseurl}/rules/apex/metrics.html#CyclomaticComplexity">
         <description>
             <![CDATA[
 The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
