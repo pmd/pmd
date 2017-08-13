@@ -77,30 +77,47 @@ detection strategies.
 ### 1. Groundwork
 
 * Create a class implementing `QualifiedName`. This implementation must be tailored to the target language so 
-that it can indentify unambiguously any class and operation in the analysed project (see `JavaQualifiedName`). You 
-must implement `equals`, `hashCode` and `toString`.
+  that it can indentify unambiguously any class and operation in the analysed project. You 
+  must implement `equals`, `hashCode` and `toString`.
+  [Example](https://github.com/pmd/pmd/blob/52d78d2fa97913cf73814d0307a1c1ae6125a437/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/ast/JavaQualifiedName.java)
 * Determine the AST nodes that correspond to class and method declaration in your language. These types are 
-referred hereafter as `T` and `O`, respectively. Both these types must implement the interface `QualifiableNode`, which 
-means they must expose a `getQualifiedName` method to give access to their qualified name.
+  referred hereafter as `T` and `O`, respectively. Both these types must implement the interface `QualifiableNode`, 
+  which means they must expose a `getQualifiedName` method to give access to their qualified name.
 
-### 2. Implement the project memoizer
-* Create a class extending `BasicProjectMemoizer<T, O>`. That's all.
+### 2. Implement and wire the project memoizer
+* Create a class extending `BasicProjectMemoizer<T, O>`. There's no abstract functionality to implement.
+  [Example](https://github.com/pmd/pmd/blob/52d78d2fa97913cf73814d0307a1c1ae6125a437/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaProjectMemoizer.java)
+* Create an AST visitor that fills the project memoizer with memoizers. For that, you use `BasicProjectMemoizer`'s 
+  `addClassMemoizer` and `addOperationMemoizer` methods with a qualified name. 
+  [Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetricsVisitor.java)
+* Create a façade class for your visitor. This class extends a `*ParserVisitorAdapter` class and only overrides the 
+  `initializeWith(Node)` method. It's supposed to make your real visitor accept the node in parameter. 
+  [Example](https://github.com/pmd/pmd/blob/52d78d2fa97913cf73814d0307a1c1ae6125a437/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetricsVisitorFacade.java)
+* Override the `getMetricsVisitorFacade()` method in your language's handler (e.g. `ApexHandler`). This method gives 
+  back a `VisitorStarter` which initializes your façade with a `Node`. 
+  [Example](https://github.com/pmd/pmd/blob/52d78d2fa97913cf73814d0307a1c1ae6125a437/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/AbstractJavaHandler.java#L100-L108)
+* Your project memoizer should now get filled when the `metrics` attribute is set to `true` in the rule XML.
 
 ### 3. Implement the façade
 * Create a class extending `AbstractMetricsComputer<T, O>`. This object will be responsible for calculating metrics 
-given a memoizer, a node and info about the metric. Typically, this object is stateless so you might as well make it 
-a singleton.
+  given a memoizer, a node and info about the metric. Typically, this object is stateless so you might as well make it 
+  a singleton.
+  [Example](https://github.com/pmd/pmd/blob/52d78d2fa97913cf73814d0307a1c1ae6125a437/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetricsComputer.java)
 * Create a class extending `AbstractMetricsFacade<T, O>`. This class needs a reference to your `ProjectMemoizer` and 
-your `MetricsComputer`. It backs the real end user façade, and handles user provided parameters before delegating to 
-your `MetricsComputer`.
+  your `MetricsComputer`. It backs the real end user façade, and handles user provided parameters before delegating to 
+  your `MetricsComputer`.
+  [Example](https://github.com/pmd/pmd/blob/52d78d2fa97913cf73814d0307a1c1ae6125a437/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetricsFacade.java)
 * Create the static façade of your framework. This one has an instance of your `MetricsFaçade` object and delegates 
-static methods to that instance.
+  static methods to that instance.
+  [Example](https://github.com/pmd/pmd/blob/52d78d2fa97913cf73814d0307a1c1ae6125a437/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.java)
 * Create classes `AbstractOperationMetric` and `AbstractClassMetric`. These must implement `Metric<T>` and 
-`Metric<O>`, respectively. They typically provide defaults for the `supports` method of each metric. 
+  `Metric<O>`, respectively. They typically provide defaults for the `supports` method of each metric. 
+  [Example](https://github.com/pmd/pmd/blob/52d78d2fa97913cf73814d0307a1c1ae6125a437/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/AbstractJavaOperationMetric.java)
 * Create enums `ClassMetricKey` and `OperationMetricKey`. These must implement `MetricKey<T>` and `MetricKey<O>`. The
- enums list all available metric keys for your language.
+  enums list all available metric keys for your language.
+  [Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.java)
 * Create metrics by extending your base classes, reference them in your enums, and you can start using them with your
- façade!
+  façade!
 
 {% include important.html content="The following section will be moved when multifile analysis and metrics are separated" %}
 
