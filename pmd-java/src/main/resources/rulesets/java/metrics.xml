@@ -15,7 +15,7 @@
           class="net.sourceforge.pmd.lang.java.metrics.rule.CyclomaticComplexityRule"
           metrics="true"
           externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity">
-        <description>
+        <description><![CDATA[
             The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
             in a single method makes its behaviour hard to read and change.
 
@@ -28,7 +28,7 @@
             high complexity, and 11+ is very high complexity.
 
             Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
-            into subcomponents.
+            into subcomponents.]]>
         </description>
         <priority>3</priority>
         <example>
