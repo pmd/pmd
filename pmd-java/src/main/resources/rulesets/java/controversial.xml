@@ -249,15 +249,14 @@ Sometimes expressions are wrapped in unnecessary parentheses, making them look l
       <priority>3</priority>
       <properties>
           <property name="xpath">
-              <value>
-                  <![CDATA[
-          //Expression
-           /PrimaryExpression
+              <value><![CDATA[
+           //PrimaryExpression[count(*)=1 or PrimaryPrefix/Expression/PrimaryExpression]
             /PrimaryPrefix
-             /Expression[count(*)=1]
-              /PrimaryExpression
-              /PrimaryPrefix]]>
-              </value>
+             /Expression
+              /*[self::PrimaryExpression
+                 or self::AdditiveExpression
+                 or self::CastExpression]
+              ]]></value>
           </property>
       </properties>
       <example>
