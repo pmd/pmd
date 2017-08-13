@@ -14,12 +14,11 @@ import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUndeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpdateStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlUpsertStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTDottedExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
-import net.sourceforge.pmd.lang.apex.ast.ASTNewNameValueObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewKeyValueObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
@@ -32,7 +31,7 @@ import apex.jorje.data.ast.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.data.ast.TypeRef.ClassTypeRef;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
-import apex.jorje.semantic.ast.expression.NewNameValueObjectExpression;
+import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression;
 import apex.jorje.semantic.ast.expression.VariableExpression;
 import apex.jorje.semantic.ast.member.Field;
 import apex.jorje.semantic.ast.member.Parameter;
@@ -132,21 +131,17 @@ public final class Helper {
         if (Helper.isMethodName(methodNode, methodName)) {
             final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
             if (reference != null) {
-                final ASTDottedExpression dottedExpression = reference.getFirstChildOfType(ASTDottedExpression.class);
-                if (dottedExpression != null) {
-                    final ASTMethodCallExpression nestedMethod = dottedExpression
-                            .getFirstChildOfType(ASTMethodCallExpression.class);
-                    if (nestedMethod != null) {
-                        String[] newMethodNames = Arrays.copyOf(methodNames, methodNames.length - 1);
-                        return isMethodCallChain(nestedMethod, newMethodNames);
-                    } else {
-                        String[] newClassName = Arrays.copyOf(methodNames, methodNames.length - 1);
-                        if (newClassName.length == 1) {
-                            return Helper.isMethodName(methodNode, newClassName[0], methodName);
-                        }
+                final ASTMethodCallExpression nestedMethod = reference
+                        .getFirstChildOfType(ASTMethodCallExpression.class);
+                if (nestedMethod != null) {
+                    String[] newMethodNames = Arrays.copyOf(methodNames, methodNames.length - 1);
+                    return isMethodCallChain(nestedMethod, newMethodNames);
+                } else {
+                    String[] newClassName = Arrays.copyOf(methodNames, methodNames.length - 1);
+                    if (newClassName.length == 1) {
+                        return Helper.isMethodName(methodNode, newClassName[0], methodName);
                     }
                 }
-
             }
         }
 
@@ -206,8 +201,8 @@ public final class Helper {
         return sb.toString();
     }
 
-    static String getFQVariableName(final ASTNewNameValueObjectExpression variable) {
-        NewNameValueObjectExpression n = variable.getNode();
+    static String getFQVariableName(final ASTNewKeyValueObjectExpression variable) {
+        NewKeyValueObjectExpression n = variable.getNode();
         String objType = "";
         try {
             // no other way to get this field, Apex Jorje does not expose it

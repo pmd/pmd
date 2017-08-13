@@ -23,9 +23,6 @@ import apex.jorje.semantic.compiler.SourceFile;
 import apex.jorje.semantic.compiler.sfdc.AccessEvaluator;
 import apex.jorje.semantic.compiler.sfdc.QueryValidator;
 import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
-import apex.jorje.semantic.tester.EmptySymbolProvider;
-import apex.jorje.semantic.tester.TestAccessEvaluator;
-import apex.jorje.semantic.tester.TestQueryValidators;
 import com.google.common.collect.ImmutableList;
 
 /**

@@ -3,7 +3,7 @@
 
 entries:
 - title: sidebar
-  product: PMD Project
+  product: PMD
   version: "!PMD_VERSION!"
   folders:
 
@@ -79,7 +79,7 @@ entries:
       url: /pmd_rules_java.html
       output: web, pdf
     - title: JavaScript Rules
-      url: /pmd_rules_javascript.html
+      url: /pmd_rules_ecmascript.html
       output: web, pdf
     - title: JSP Rules
       url: /pmd_rules_jsp.html
@@ -87,11 +87,17 @@ entries:
     - title: PLSQL Rules
       url: /pmd_rules_plsql.html
       output: web, pdf
+    - title: VisualForce Rules
+      url: /pmd_rules_vf.html
+      output: web, pdf
     - title: Apache Velocity Rules
       url: /pmd_rules_vm.html
       output: web, pdf
-    - title: XML and XSL Rules
+    - title: XML Rules
       url: /pmd_rules_xml.html
+      output: web, pdf
+    - title: XSL Rules
+      url: /pmd_rules_xsl.html
       output: web, pdf
   - title: Language Specific Documentation
     output: web, pdf
@@ -99,7 +105,7 @@ entries:
     - title: JSP Support
       url: /pmd_languages_jsp.html
       output: web, pdf
-    - title: Index of Java code metrics
+    - title: Java code metrics
       url: /pmd_java_metrics_index.html
       output: web, pdf
   - title: Developer Documentation

@@ -280,17 +280,7 @@ public class X {
 }
         ]]></code>
     </test-code>
-    
-    <test-code>
-        <description>#1399 False positive for VariableNamingConventions with annotation @interface</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public @interface Relation {
-    Integer NO_REVERSE_RELATION = -1;
-}
-        ]]></code>
-    </test-code>
-    
+
     <test-code>
         <description>Inner exception</description>
         <expected-problems>0</expected-problems>
