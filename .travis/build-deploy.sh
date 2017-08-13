@@ -4,7 +4,7 @@ set -e
 source .travis/common-functions.sh
 
 function push_docs() {
-    if git diff docs --quiet; then
+    if git diff --quiet docs; then
         echo "No changes in docs..."
     else
         echo "Found changes in docs..."
@@ -14,7 +14,7 @@ function push_docs() {
             git config user.email "adangel+pmd-bot@users.sourceforge.net"
             git add -A docs
             git commit -m "Update documentation"
-            git push git@github.com:pmd/pmd.git master
+            git push git@github.com:pmd/pmd.git HEAD:master
         else
             echo "Not on master branch, won't commit+push"
         fi
