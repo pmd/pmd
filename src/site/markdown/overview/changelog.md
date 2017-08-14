@@ -50,6 +50,9 @@ on the new metrics framework for object-oriented metrics.
 There are already a couple of metrics (e.g. ATFD, WMC, Cyclo, LoC) implemented. More metrics are planned.
 Based on those metrics, rules like "GodClass" detection can be implemented more easily.
 
+The Metrics framework has been abstracted and is available in `pmd-core` for other languages. With this
+PMD release, the metrics framework is supported for both Java and Apex.
+
 #### Configuration Error Reporting
 
 For a long time reports have been notified of configuration errors on rules, but they have remained hidden.
@@ -81,7 +84,6 @@ and include them to such reports.
 *   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
     long time ago to `UseUtilityClass`.
 
-
 #### Java Symbol Table
 
 A [bug in symbol table](https://github.com/pmd/pmd/pull/549/commits/0958621ca884a8002012fc7738308c8dfc24b97c) prevented
@@ -90,8 +92,9 @@ rule, but other rules may now produce improved results as consequence of this fi
 
 #### Apex Parser Update
 
-The Apex parser version was bumped, from `1.0-sfdc-187` to `1.0-sfdc-224`. This update let us take full advatange
+The Apex parser version was bumped, from `1.0-sfdc-187` to `1.0-sfdc-224`. This update let us take full advantage
 of the latest improvements from Salesforce, but introduces some breaking changes:
+
 *   `BlockStatements` are now created for all control structures, even if no brace is used. We have therefore added
     a `hasCurlyBrace` method to differentiate between both scenarios.
 *   New AST node types are available. In particular `CastExpression`, `ConstructorPreamble`, `IllegalStoreExpression`,
@@ -100,7 +103,7 @@ of the latest improvements from Salesforce, but introduces some breaking changes
 *   Some nodes have been removed. Such is the case of `TestNode`, `DottedExpression` and `NewNameValueObjectExpression`
     (replaced by `NewKeyValueObjectExpression`)
 
-Al existing rules have been updated to reflect these changes. If you have custom rules, be sure to update them.
+All existing rules have been updated to reflect these changes. If you have custom rules, be sure to update them.
 
 ### Fixed Issues
 
@@ -161,5 +164,5 @@ Al existing rules have been updated to reflect these changes. If you have custom
 *   [#530](https://github.com/pmd/pmd/pull/530): \[java] Fix issue #527: Lombok getter annotation on enum is not recognized correctly - [Clément Fournier](https://github.com/oowekyala)
 *   [#535](https://github.com/pmd/pmd/pull/535): \[apex] Fix broken Apex visitor adapter - [Clément Fournier](https://github.com/oowekyala)
 *   [#542](https://github.com/pmd/pmd/pull/542): \[java] Metrics abstraction - [Clément Fournier](https://github.com/oowekyala)
+*   [#545](https://github.com/pmd/pmd/pull/545): \[apex] Apex metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#548](https://github.com/pmd/pmd/pull/548): \[java] Metrics documentation - [Clément Fournier](https://github.com/oowekyala)
-
