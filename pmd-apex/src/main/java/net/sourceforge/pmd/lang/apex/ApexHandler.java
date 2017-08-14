@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsVisitorFacade;
 import net.sourceforge.pmd.lang.apex.rule.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
@@ -51,6 +52,16 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
         return new VisitorStarter() {
             public void start(Node rootNode) {
                 new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
+            }
+        };
+    }
+
+    @Override
+    public VisitorStarter getMetricsVisitorFacade() {
+        return new VisitorStarter() {
+            @Override
+            public void start(Node rootNode) {
+                new ApexMetricsVisitorFacade().initializeWith((ApexNode<?>) rootNode);
             }
         };
     }
