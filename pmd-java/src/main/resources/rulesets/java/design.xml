@@ -11,18 +11,16 @@ are suggested.
   </description>
 
   <rule name="UseUtilityClass"
-  		  since="0.3"
+        since="0.3"
         message="All methods are static.  Consider using a utility class instead. Alternatively, you could add a private constructor or make the class abstract to silence this warning."
         class="net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseUtilityClass">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#useutilityclass">
     <description>
-    	<![CDATA[
 For classes that only have static methods, consider making them utility classes.
 Note that this doesn't apply to abstract classes, since their subclasses may
 well include non-static methods.  Also, if you want this class to be a utility class,
 remember to add a private constructor to prevent instantiation.
 (Note, that this use was known before PMD 5.1.0 as UseSingleton).
-		]]>
     </description>
       <priority>3</priority>
     <example>
@@ -35,12 +33,11 @@ public class MaybeAUtility {
     </example>
   </rule>
 
-
   <rule name="SimplifyBooleanReturns"
-  		  since="0.9"
+        since="0.9"
         message="Avoid unnecessary if..then..else statements when returning booleans"
         class="net.sourceforge.pmd.lang.java.rule.design.SimplifyBooleanReturnsRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SimplifyBooleanReturns">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanreturns">
     <description>
 Avoid unnecessary if-then-else statements when returning a boolean. The result of
 the conditional test can be returned instead.
@@ -49,28 +46,26 @@ the conditional test can be returned instead.
     <example>
 <![CDATA[
 public boolean isBarEqualTo(int x) {
-
-	if (bar == x) {		 // this bit of code...
-		return true;
-	} else {
-		return false;
+    if (bar == x) {      // this bit of code...
+        return true;
+    } else {
+        return false;
     }
 }
 
 public boolean isBarEqualTo(int x) {
-
-   	return bar == x;	// can be replaced with this
+    return bar == x;    // can be replaced with this
 }
 ]]>
     </example>
   </rule>
 
-    <rule 	name="SimplifyBooleanExpressions"
-   			language="java"
-    		since="1.05"
-          	message="Avoid unnecessary comparisons in boolean expressions"
-          	class="net.sourceforge.pmd.lang.rule.XPathRule"
-          	externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SimplifyBooleanExpressions">
+  <rule name="SimplifyBooleanExpressions"
+        language="java"
+        since="1.05"
+        message="Avoid unnecessary comparisons in boolean expressions"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanexpressions">
       <description>
 Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.
       </description>
@@ -99,11 +94,11 @@ public class Bar {
     </rule>
 
   <rule name="SwitchStmtsShouldHaveDefault"
-   		language="java"
-  		  since="1.0"
+        language="java"
+        since="1.0"
         message="Switch statements should have a default label"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SwitchStmtsShouldHaveDefault">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#switchstmtsshouldhavedefault">
     <description>
 All switch statements should include a default option to catch any unspecified values.
     </description>
@@ -124,7 +119,7 @@ public void bar() {
     switch (x) {
       case 1: int j = 6;
       case 2: int j = 8;
-      				// missing default: here
+          // missing default: here
     }
 }
 ]]>
@@ -132,10 +127,10 @@ public void bar() {
     </rule>
 
   <rule name="AvoidDeeplyNestedIfStmts"
-  		  since="1.0"
+        since="1.0"
         message="Deeply nested if..then statements are hard to read"
         class="net.sourceforge.pmd.lang.java.rule.design.AvoidDeeplyNestedIfStmtsRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidDeeplyNestedIfStmts">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiddeeplynestedifstmts">
     <description>
 Avoid creating deeply nested if-then statements since they are harder to read and error-prone to maintain.
     </description>
@@ -157,12 +152,11 @@ public class Foo {
     </example>
     </rule>
 
-
-    <rule name="AvoidReassigningParameters"
-    	  since="1.0"
+  <rule name="AvoidReassigningParameters"
+        since="1.0"
         message="Avoid reassigning parameters such as ''{0}''"
         class="net.sourceforge.pmd.lang.java.rule.design.AvoidReassigningParametersRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidReassigningParameters">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidreassigningparameters">
     <description>
 Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.
     </description>
@@ -178,11 +172,11 @@ public class Foo {
     </example>
   </rule>
 
-    <rule name="SwitchDensity"
-    		 since="1.02"
-          message="A high ratio of statements to labels in a switch statement.  Consider refactoring."
-          class="net.sourceforge.pmd.lang.java.rule.design.SwitchDensityRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SwitchDensity">
+  <rule name="SwitchDensity"
+        since="1.02"
+        message="A high ratio of statements to labels in a switch statement.  Consider refactoring."
+        class="net.sourceforge.pmd.lang.java.rule.design.SwitchDensityRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#switchdensity">
       <description>
 A high ratio of statements to labels in a switch statement implies that the switch statement
 is overloaded.  Consider moving the statements into new methods or creating subclasses based
@@ -208,11 +202,11 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="ConstructorCallsOverridableMethod"
-    		 since="1.04"
-          message="Overridable {0} called during object construction"
-          class="net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ConstructorCallsOverridableMethod">
+  <rule name="ConstructorCallsOverridableMethod"
+        since="1.04"
+        message="Overridable {0} called during object construction"
+        class="net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#constructorcallsoverridablemethod">
       <description>
 Calling overridable methods during construction poses a risk of invoking methods on an incompletely
 constructed object and can be difficult to debug.
@@ -247,11 +241,11 @@ public class JuniorClass extends SeniorClass {
       </example>
     </rule>
 
-    <rule name="AccessorClassGeneration"
-    		 since="1.04"
-          message="Avoid instantiation through private constructors from outside of the constructor's class."
-          class="net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AccessorClassGeneration">
+  <rule name="AccessorClassGeneration"
+        since="1.04"
+        message="Avoid instantiation through private constructors from outside of the constructor's class."
+        class="net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#accessorclassgeneration">
       <description>
 Instantiation by way of private constructors from outside of the constructor's class often causes the
 generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
@@ -274,12 +268,12 @@ public class Outer {
       </example>
     </rule>
 
-    <rule name="FinalFieldCouldBeStatic"
-   		language="java"
-    		 since="1.1"
-          message="This final field could be made static"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#FinalFieldCouldBeStatic">
+  <rule name="FinalFieldCouldBeStatic"
+        language="java"
+        since="1.1"
+        message="This final field could be made static"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#finalfieldcouldbestatic">
       <description>
 If a final field is assigned to a compile-time constant, it could be made static, thus saving overhead
 in each object at runtime.
@@ -308,10 +302,10 @@ public class Foo {
 
 
   <rule name="CloseResource"
-  		  since="1.2.2"
+        since="1.2.2"
         message="Ensure that resources like this {0} object are closed after use"
         class="net.sourceforge.pmd.lang.java.rule.design.CloseResourceRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#CloseResource">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#closeresource">
     <description>
 Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
     </description>
@@ -335,12 +329,12 @@ public class Bar {
     </example>
   </rule>
 
-    <rule name="NonStaticInitializer"
-   		language="java"
-    		  since="1.5"
-           message="Non-static initializers are confusing"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#NonStaticInitializer">
+  <rule name="NonStaticInitializer"
+        language="java"
+        since="1.5"
+        message="Non-static initializers are confusing"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#nonstaticinitializer">
        <description>
 A non-static initializer block will be called any time a constructor is invoked (just prior to
 invoking the constructor).  While this is a valid language construct, it is rarely used and is
@@ -359,21 +353,21 @@ confusing.
        <example>
    <![CDATA[
 public class MyClass {
- // this block gets run before any call to a constructor
+  // this block gets run before any call to a constructor
   {
-   System.out.println("I am about to construct myself");
+    System.out.println("I am about to construct myself");
   }
 }
    ]]>
        </example>
      </rule>
 
-    <rule name="DefaultLabelNotLastInSwitchStmt"
-   		language="java"
-    		  since="1.5"
-           message="The default label should be the last label in a switch statement"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#DefaultLabelNotLastInSwitchStmt">
+  <rule name="DefaultLabelNotLastInSwitchStmt"
+        language="java"
+        since="1.5"
+        message="The default label should be the last label in a switch statement"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#defaultlabelnotlastinswitchstmt">
        <description>
 By convention, the default label should be the last label in a switch statement.
        </description>
@@ -406,12 +400,12 @@ public class Foo {
        </example>
      </rule>
 
-    <rule name="NonCaseLabelInSwitchStatement"
-   		language="java"
-    		  since="1.5"
-           message="A non-case label was present in a switch statement"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#NonCaseLabelInSwitchStatement">
+  <rule name="NonCaseLabelInSwitchStatement"
+        language="java"
+        since="1.5"
+        message="A non-case label was present in a switch statement"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#noncaselabelinswitchstatement">
        <description>
 A non-case label (e.g. a named break/continue label) was present in a switch statement.
 This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
@@ -445,12 +439,12 @@ public class Foo {
        </example>
      </rule>
 
-    <rule name="OptimizableToArrayCall"
-   		language="java"
-    		 since="1.8"
-          message="This call to Collection.toArray() may be optimizable"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#OptimizableToArrayCall">
+  <rule name="OptimizableToArrayCall"
+        language="java"
+        since="1.8"
+        message="This call to Collection.toArray() may be optimizable"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#optimizabletoarraycall">
       <description>
 Calls to a collection's toArray() method should specify target arrays sized to match the size of the
 collection. Initial arrays that are too small are discarded in favour of new ones that have to be created
@@ -468,7 +462,6 @@ PrimarySuffix/Arguments/ArgumentList/Expression
  /PrimaryExpression/PrimaryPrefix/AllocationExpression
  /ArrayDimsAndInits/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image='0']
 ]
-
                   ]]>
               </value>
           </property>
@@ -488,12 +481,12 @@ Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
     </rule>
 
 
-    <rule name="BadComparison"
-   		language="java"
-    		 since="1.8"
-          message="Avoid equality comparisons with Double.NaN"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#BadComparison">
+  <rule name="BadComparison"
+        language="java"
+        since="1.8"
+        message="Avoid equality comparisons with Double.NaN"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#badcomparison">
       <description>
 Avoid equality comparisons with Double.NaN. Due to the implicit lack of representation
 precision when comparing floating point numbers these are likely to cause logic errors.
@@ -517,12 +510,12 @@ boolean x = (y == Double.NaN);
       </example>
     </rule>
 
-    <rule name="EqualsNull"
-   		language="java"
-    			since="1.9"
-            message="Avoid using equals() to compare against null"
-            class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#EqualsNull">
+  <rule name="EqualsNull"
+        language="java"
+        since="1.9"
+        message="Avoid using equals() to compare against null"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#equalsnull">
         <description>
 Tests for null should not use the equals() method. The '==' operator should be used instead.
         </description>
@@ -552,28 +545,25 @@ Tests for null should not use the equals() method. The '==' operator should be u
        <![CDATA[
 String x = "foo";
 
-if (x.equals(null)) { // bad form
-   	doSomething();
-	}
+if (x.equals(null)) {   // bad form
+    doSomething();
+}
 
-if (x == null) { 	// preferred
-   	doSomething();
-	}
+if (x == null) {        // preferred
+    doSomething();
+}
     ]]>
         </example>
         </rule>
 
-      <rule name="ConfusingTernary"
+  <rule name="ConfusingTernary"
         since="1.9"
         message="Avoid if (x != y) ..; else ..;"
         class="net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ConfusingTernary">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#confusingternary">
         <description>
 Avoid negation within an "if" expression with an "else" clause.  For example, rephrase:
-
-  if (x != y) diff(); else same();
-as:
-  if (x == y) same(); else diff();
+`if (x != y) diff(); else same();` as: `if (x == y) same(); else diff();`.
 
 Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
@@ -583,18 +573,18 @@ as "does the error case go first?" or "does the common case go first?".
         <example>
           <![CDATA[
 boolean bar(int x, int y) {
-  return (x != y) ? diff : same;
- }
+    return (x != y) ? diff : same;
+}
           ]]>
         </example>
       </rule>
 
-    <rule name="InstantiationToGetClass"
-   		language="java"
-    		 since="2.0"
-          message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#InstantiationToGetClass">
+  <rule name="InstantiationToGetClass"
+        language="java"
+        since="2.0"
+        message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#instantiationtogetclass">
       <description>
 Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
       </description>
@@ -615,21 +605,20 @@ Avoid instantiating an object just to call getClass() on it; use the .class publ
         </properties>
         <example>
     <![CDATA[
-  // replace this
+// replace this
 Class c = new String().getClass();
 
-  // with this:
+// with this:
 Class c = String.class;
-
     ]]>
         </example>
       </rule>
 
-    <rule name="IdempotentOperations"
-    		 since="2.0"
-          message="Avoid idempotent operations (like assigning a variable to itself)."
-          class="net.sourceforge.pmd.lang.java.rule.design.IdempotentOperationsRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#IdempotentOperations">
+  <rule name="IdempotentOperations"
+        since="2.0"
+        message="Avoid idempotent operations (like assigning a variable to itself)."
+        class="net.sourceforge.pmd.lang.java.rule.design.IdempotentOperationsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#idempotentoperations">
       <description>
 Avoid idempotent operations - they have no effect.
       </description>
@@ -647,13 +636,12 @@ public class Foo {
       </example>
     </rule>
 
-    <rule
-        name="SimpleDateFormatNeedsLocale"
-   		language="java"
+  <rule name="SimpleDateFormatNeedsLocale"
+        language="java"
         since="2.0"
         message="When instantiating a SimpleDateFormat object, specify a Locale"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SimpleDateFormatNeedsLocale">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simpledateformatneedslocale">
         <description>
 Be sure to specify a Locale when creating SimpleDateFormat instances to ensure that locale-appropriate
 formatting is used.
@@ -680,11 +668,11 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="ImmutableField"
-    		 since="2.0"
-          message="Private field ''{0}'' could be made final; it is only initialized in the declaration or constructor."
-          class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ImmutableField">
+  <rule name="ImmutableField"
+        since="2.0"
+        message="Private field ''{0}'' could be made final; it is only initialized in the declaration or constructor."
+        class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#immutablefield">
       <description>
 Identifies private fields whose values never change once they are initialized either in the declaration
 of the field or by a constructor.  This helps in converting existing classes to becoming immutable ones.
@@ -706,12 +694,12 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="UseLocaleWithCaseConversions"
-          language="java"
-          since="2.0"
-          message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseLocaleWithCaseConversions">
+  <rule name="UseLocaleWithCaseConversions"
+        language="java"
+        since="2.0"
+        message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#uselocalewithcaseconversions">
       <description>
 When doing String.toLowerCase()/toUpperCase() conversions, use Locales to avoids problems with languages that
 have unusual conventions, i.e. Turkish.
@@ -741,28 +729,29 @@ PrimarySuffix
         <example>
     <![CDATA[
 class Foo {
- // BAD
- if (x.toLowerCase().equals("list")) { }
- /*
- This will not match "LIST" when in Turkish locale
- The above could be
- if (x.toLowerCase(Locale.US).equals("list")) { }
- or simply
- if (x.equalsIgnoreCase("list")) { }
- */
- // GOOD
- String z = a.toLowerCase(Locale.EN);
+    // BAD
+    if (x.toLowerCase().equals("list")) { }
+
+    /*
+     * This will not match "LIST" when in Turkish locale
+     * The above could be
+     * if (x.toLowerCase(Locale.US).equals("list")) { }
+     * or simply
+     * if (x.equalsIgnoreCase("list")) { }
+     */
+    // GOOD
+    String z = a.toLowerCase(Locale.EN);
 }
     ]]>
         </example>
     </rule>
 
-    <rule name="AvoidProtectedFieldInFinalClass"
-   		language="java"
-    			 since="2.1"
-             message="Avoid protected fields in a final class.  Change to private or package access."
-             class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidProtectedFieldInFinalClass">
+  <rule name="AvoidProtectedFieldInFinalClass"
+        language="java"
+        since="2.1"
+        message="Avoid protected fields in a final class.  Change to private or package access."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidprotectedfieldinfinalclass">
          <description>
 Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
@@ -790,11 +779,11 @@ public final class Bar {
          </example>
        </rule>
 
-     <rule name="AssignmentToNonFinalStatic"
-     		  since="2.2"
-           message="Possible unsafe assignment to a non-final static field in a constructor."
-           class="net.sourceforge.pmd.lang.java.rule.design.AssignmentToNonFinalStaticRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AssignmentToNonFinalStatic">
+  <rule name="AssignmentToNonFinalStatic"
+        since="2.2"
+        message="Possible unsafe assignment to a non-final static field in a constructor."
+        class="net.sourceforge.pmd.lang.java.rule.design.AssignmentToNonFinalStaticRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#assignmenttononfinalstatic">
        <description>
 Identifies a possible unsafe usage of a static field.
        </description>
@@ -811,12 +800,12 @@ public class StaticField {
        </example>
      </rule>
 
-    <rule name="MissingStaticMethodInNonInstantiatableClass"
-   		language="java"
-    		 since="3.0"
-          message="Class cannot be instantiated and does not provide any static methods or fields"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#MissingStaticMethodInNonInstantiatableClass">
+  <rule name="MissingStaticMethodInNonInstantiatableClass"
+        language="java"
+        since="3.0"
+        message="Class cannot be instantiated and does not provide any static methods or fields"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#missingstaticmethodinnoninstantiatableclass">
       <description>
 A class that has private constructors and does not have any static methods or fields cannot be used.
       </description>
@@ -883,13 +872,12 @@ public class Foo {
       </example>
     </rule>
 
-
-    <rule name="AvoidSynchronizedAtMethodLevel"
-   		language="java"
-    		 since="3.0"
-          message="Use block level rather than method level synchronization"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidSynchronizedAtMethodLevel">
+  <rule name="AvoidSynchronizedAtMethodLevel"
+        language="java"
+        since="3.0"
+        message="Use block level rather than method level synchronization"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidsynchronizedatmethodlevel">
       <description>
 Method-level synchronization can cause problems when new code is added to the method.
 Block-level synchronization helps to ensure that only the code that needs synchronization
@@ -931,12 +919,12 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="MissingBreakInSwitch"
-          language="java"
-          since="3.0"
-          message="A switch statement does not contain a break"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#MissingBreakInSwitch">
+  <rule name="MissingBreakInSwitch"
+        language="java"
+        since="3.0"
+        message="A switch statement does not contain a break"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#missingbreakinswitch">
       <description>
 Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
@@ -982,13 +970,12 @@ public void bar(int status) {
       </example>
     </rule>
 
-
-    <rule name="UseNotifyAllInsteadOfNotify"
-   		language="java"
-    		 since="3.0"
-          message="Call Thread.notifyAll() rather than Thread.notify()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseNotifyAllInsteadOfNotify">
+  <rule name="UseNotifyAllInsteadOfNotify"
+        language="java"
+        since="3.0"
+        message="Call Thread.notifyAll() rather than Thread.notify()"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#usenotifyallinsteadofnotify">
       <description>
 Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
 one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.
@@ -1001,10 +988,11 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
 //StatementExpression/PrimaryExpression
 [PrimarySuffix/Arguments[@ArgumentCount = '0']]
 [
-PrimaryPrefix[./Name[@Image='notify' or ends-with(@Image,'.notify')]
-or ../PrimarySuffix/@Image='notify'
-or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
-]
+    PrimaryPrefix[
+        ./Name[@Image='notify' or ends-with(@Image,'.notify')]
+        or ../PrimarySuffix/@Image='notify'
+        or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
+    ]
 ]
     ]]>
               </value>
@@ -1022,12 +1010,12 @@ or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
       </example>
     </rule>
 
-    <rule name="AvoidInstanceofChecksInCatchClause"
-   		language="java"
-    		 since="3.0"
-          message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidInstanceofChecksInCatchClause">
+  <rule name="AvoidInstanceofChecksInCatchClause"
+        language="java"
+        since="3.0"
+        message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidinstanceofchecksincatchclause">
       <description>
 Each caught exception type should be handled in its own catch clause.
       </description>
@@ -1049,27 +1037,28 @@ Each caught exception type should be handled in its own catch clause.
       <example>
 <![CDATA[
 try { // Avoid this
- // do something
+    // do something
 } catch (Exception ee) {
- if (ee instanceof IOException) {
-  cleanup();
- }
+    if (ee instanceof IOException) {
+        cleanup();
+    }
 }
+
 try {  // Prefer this:
- // do something
+    // do something
 } catch (IOException ee) {
- cleanup();
+    cleanup();
 }
 ]]>
       </example>
     </rule>
 
-    <rule name="AbstractClassWithoutAbstractMethod"
-   		language="java"
-    		 since="3.0"
-          message="This abstract class does not have any abstract methods"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AbstractClassWithoutAbstractMethod">
+  <rule name="AbstractClassWithoutAbstractMethod"
+        language="java"
+        since="3.0"
+        message="This abstract class does not have any abstract methods"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutabstractmethod">
       <description>
 The abstract class does not contain any abstract methods. An abstract class suggests
 an incomplete implementation, which is to be completed by subclasses implementing the
@@ -1101,12 +1090,12 @@ public abstract class Foo {
       </example>
     </rule>
 
-    <rule name="SimplifyConditional"
-   		language="java"
-    		 since="3.1"
-              message="No need to check for null before an instanceof"
-              class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SimplifyConditional">
+  <rule name="SimplifyConditional"
+        language="java"
+        since="3.1"
+        message="No need to check for null before an instanceof"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifyconditional">
           <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
           </description>
@@ -1155,11 +1144,11 @@ class Foo {
            </example>
         </rule>
 
-<rule  name="CompareObjectsWithEquals"
-  since="3.2"
-  message="Use equals() to compare object references."
-  class="net.sourceforge.pmd.lang.java.rule.design.CompareObjectsWithEqualsRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#CompareObjectsWithEquals">
+  <rule name="CompareObjectsWithEquals"
+        since="3.2"
+        message="Use equals() to compare object references."
+        class="net.sourceforge.pmd.lang.java.rule.design.CompareObjectsWithEqualsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#compareobjectswithequals">
   <description>
 Use equals() to compare object references; avoid comparing them with ==.
   </description>
@@ -1176,13 +1165,12 @@ class Foo {
   </example>
 </rule>
 
-
-<rule name="PositionLiteralsFirstInComparisons"
-   		language="java"
-  since="3.3"
-  message="Position literals first in String comparisons"
-  class="net.sourceforge.pmd.lang.rule.XPathRule"
-  externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PositionLiteralsFirstInComparisons">
+  <rule name="PositionLiteralsFirstInComparisons"
+        language="java"
+        since="3.3"
+        message="Position literals first in String comparisons"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#positionliteralsfirstincomparisons">
   <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
@@ -1193,20 +1181,15 @@ can be avoided, they will just return false.
           <value>
               <![CDATA[
 //PrimaryExpression[
-        PrimaryPrefix[Name
-                [
-	(ends-with(@Image, '.equals'))
-                ]
-        ]
+    PrimaryPrefix[Name[(ends-with(@Image, '.equals'))]]
         [
-                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])
-	and
-	( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
+            (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])
+            and
+            ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
         ]
 ]
 [not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
 [not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
-
           ]]>
           </value>
       </property>
@@ -1223,13 +1206,12 @@ class Foo {
   </example>
 </rule>
 
-
-<rule name="PositionLiteralsFirstInCaseInsensitiveComparisons"
+  <rule name="PositionLiteralsFirstInCaseInsensitiveComparisons"
         language="java"
-  since="5.1"
-  message="Position literals first in String comparisons for EqualsIgnoreCase"
-  class="net.sourceforge.pmd.lang.rule.XPathRule"
-  externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PositionLiteralsFirstInCaseInsensitiveComparisons">
+        since="5.1"
+        message="Position literals first in String comparisons for EqualsIgnoreCase"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#positionliteralsfirstincaseinsensitivecomparisons">
   <description>
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
@@ -1271,11 +1253,11 @@ class Foo {
 </rule>
 
 
-    <rule name="UnnecessaryLocalBeforeReturn"
-          since="3.3"
-          message="Consider simply returning the value vs storing it in local variable ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.design.UnnecessaryLocalBeforeReturnRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UnnecessaryLocalBeforeReturn">
+  <rule name="UnnecessaryLocalBeforeReturn"
+        since="3.3"
+        message="Consider simply returning the value vs storing it in local variable ''{0}''"
+        class="net.sourceforge.pmd.lang.java.rule.design.UnnecessaryLocalBeforeReturnRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#unnecessarylocalbeforereturn">
       <description>
 Avoid the creation of unnecessary local variables
       </description>
@@ -1292,11 +1274,11 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="NonThreadSafeSingleton"
-    since="3.4"
-    message="Singleton is not thread safe"
-    class="net.sourceforge.pmd.lang.java.rule.design.NonThreadSafeSingletonRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#NonThreadSafeSingleton">
+  <rule name="NonThreadSafeSingleton"
+        since="3.4"
+        message="Singleton is not thread safe"
+        class="net.sourceforge.pmd.lang.java.rule.design.NonThreadSafeSingletonRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#nonthreadsafesingleton">
         <description>
 Non-thread safe singletons can result in bad state changes. Eliminate
 static singletons if possible by instantiating the object directly. Static
@@ -1324,66 +1306,67 @@ public static Foo getFoo() {
         ]]></example>
     </rule>
 
-<rule name="SingleMethodSingleton"
-		since="5.4"
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SingleMethodSingleton"
-		message="Class contains multiple getInstance methods. Please review."
-		class="net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule">
-<description>
+  <rule name="SingleMethodSingleton"
+        since="5.4"
+        message="Class contains multiple getInstance methods. Please review."
+        class="net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#singlemethodsingleton">
+    <description>
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
 is that the instance created using the overloaded method is not cached and so,
- for each call and new objects will be created for every invocation.
-</description>
-<priority>2</priority>
-<example><![CDATA[
+for each call and new objects will be created for every invocation.
+    </description>
+    <priority>2</priority>
+    <example><![CDATA[
 public class Singleton {
 
-   private static Singleton singleton = new Singleton( );
+    private static Singleton singleton = new Singleton( );
 
-  private Singleton(){ }
+    private Singleton(){ }
 
-public static Singleton getInstance( ) {
-	  return singleton;
-}
-public static Singleton getInstance(Object obj){
-	Singleton singleton = (Singleton) obj;
-	return singleton;			//violation
-}
+    public static Singleton getInstance( ) {
+        return singleton;
+    }
+
+    public static Singleton getInstance(Object obj){
+        Singleton singleton = (Singleton) obj;
+        return singleton;           //violation
+    }
 }
 ]]>
-</example>
-</rule>
+    </example>
+  </rule>
 
-<rule name="SingletonClassReturningNewInstance"
-		since="5.4"
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SingletonClassReturningNewInstance"
-		message="getInstance method always creates a new object and hence does not comply to Singleton Design Pattern behaviour. Please review"
-		class="net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule">
-<description>
+  <rule name="SingletonClassReturningNewInstance"
+        since="5.4"
+        message="getInstance method always creates a new object and hence does not comply to Singleton Design Pattern behaviour. Please review"
+        class="net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#singletonclassreturningnewinstance">
+    <description>
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
 is that the instance created using the overloaded method is not cached and so,
- for each call and new objects will be created for every invocation.
-</description>
-<priority>2</priority>
-<example><![CDATA[
+for each call and new objects will be created for every invocation.
+    </description>
+    <priority>2</priority>
+    <example><![CDATA[
 class Singleton {
-	private static Singleton instance = null;
-	public static Singleton getInstance() {
-	synchronized(Singleton.class){
-		return new Singleton();
-	}
-	}
+    private static Singleton instance = null;
+    public static Singleton getInstance() {
+        synchronized(Singleton.class) {
+            return new Singleton();
+        }
+    }
 }
 ]]>
-</example>
-</rule>
+    </example>
+  </rule>
 
-    <rule name="UncommentedEmptyMethodBody"
-          language="java"
-          since="3.4"
-          message="Document empty method body"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UncommentedEmptyMethodBody">
+  <rule name="UncommentedEmptyMethodBody"
+        language="java"
+        since="3.4"
+        message="Document empty method body"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#uncommentedemptymethodbody">
       <description>
 Uncommented Empty Method Body finds instances where a method body does not contain
 statements, but there is no comment. By explicitly commenting empty method bodies
@@ -1408,12 +1391,12 @@ public void doSomething() {
       </example>
     </rule>
 
-    <rule name="UncommentedEmptyConstructor"
-   		language="java"
-          since="3.4"
-          message="Document empty constructor"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UncommentedEmptyConstructor">
+  <rule name="UncommentedEmptyConstructor"
+        language="java"
+        since="3.4"
+        message="Document empty constructor"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#uncommentedemptyconstructor">
       <description>
 Uncommented Empty Constructor finds instances where a constructor does not
 contain statements, but there is no comment. By explicitly commenting empty
@@ -1441,10 +1424,10 @@ public Foo() {
     </rule>
 
   <rule name="UnsynchronizedStaticDateFormatter"
-      since="3.6"
-      message="Static DateFormatter objects should be accessed in a synchronized manner"
-      class="net.sourceforge.pmd.lang.java.rule.design.UnsynchronizedStaticDateFormatterRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UnsynchronizedStaticDateFormatter">
+        since="3.6"
+        message="Static DateFormatter objects should be accessed in a synchronized manner"
+        class="net.sourceforge.pmd.lang.java.rule.design.UnsynchronizedStaticDateFormatterRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#unsynchronizedstaticdateformatter">
       <description>
 SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
 for each thread. If multiple threads must access a static formatter, the formatter must be
@@ -1467,10 +1450,10 @@ public class Foo {
     </rule>
 
   <rule name="PreserveStackTrace"
-      since="3.7"
-      message="New exception is thrown in catch block, original stack trace may be lost"
-      class="net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#PreserveStackTrace">
+        since="3.7"
+        message="New exception is thrown in catch block, original stack trace may be lost"
+        class="net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#preservestacktrace">
       <description>
 Throwing a new exception from a catch block without passing the original exception into the
 new exception will cause the original stack trace to be lost making it difficult to debug
@@ -1504,11 +1487,11 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="UseCollectionIsEmpty"
-         since="3.9"
-         message="Substitute calls to size() == 0 (or size() != 0, size() &gt; 0, size() &lt; 1) with calls to isEmpty()"
-         class="net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseCollectionIsEmpty">
+  <rule name="UseCollectionIsEmpty"
+        since="3.9"
+        message="Substitute calls to size() == 0 (or size() != 0, size() &gt; 0, size() &lt; 1) with calls to isEmpty()"
+        class="net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#usecollectionisempty">
          <description>
 The isEmpty() method on java.util.Collection is provided to determine if a collection has any elements.
 Comparing the value of size() to 0 does not convey intent as well as the isEmpty() method.
@@ -1517,30 +1500,30 @@ Comparing the value of size() to 0 does not convey intent as well as the isEmpty
       <example>
     <![CDATA[
 public class Foo {
-	void good() {
-       	List foo = getList();
-		if (foo.isEmpty()) {
-			// blah
-		}
-   	}
+    void good() {
+        List foo = getList();
+        if (foo.isEmpty()) {
+            // blah
+        }
+    }
 
     void bad() {
-   	    List foo = getList();
-			if (foo.size() == 0) {
-				// blah
-			}
-    	}
+        List foo = getList();
+        if (foo.size() == 0) {
+            // blah
+        }
+    }
 }
     ]]>
       </example>
     </rule>
 
-    <rule name="ClassWithOnlyPrivateConstructorsShouldBeFinal"
-   		language="java"
-          since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          message="A class which only has private constructors should be final"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ClassWithOnlyPrivateConstructorsShouldBeFinal">
+  <rule name="ClassWithOnlyPrivateConstructorsShouldBeFinal"
+        language="java"
+        since="4.1"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="A class which only has private constructors should be final"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">
         <description>
 A class with only private constructors should be final, unless the private constructor
 is invoked by a inner class.
@@ -1565,12 +1548,12 @@ public class Foo {  //Should be final
     </rule>
 
 
-    <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
-   		language="java"
-          since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          message="An empty method in an abstract class should be abstract instead"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#EmptyMethodInAbstractClassShouldBeAbstract">
+  <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
+        language="java"
+        since="4.1"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="An empty method in an abstract class should be abstract instead"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#emptymethodinabstractclassshouldbeabstract">
         <description>
 Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate
 usage by developers who should be implementing their own versions in the concrete subclasses.
@@ -1600,7 +1583,7 @@ usage by developers who should be implementing their own versions in the concret
             </property>
         </properties>
         <example>
-        	<![CDATA[
+            <![CDATA[
 public abstract class ShouldBeAbstract {
     public Object couldBeAbstract() {
         // Should be abstract method ?
@@ -1610,21 +1593,19 @@ public abstract class ShouldBeAbstract {
     public void couldBeAbstract() {
     }
 }
-	     	]]>
-    	</example>
-    </rule>
+]]>
+    </example>
+  </rule>
 
-    <rule name="SingularField"
-          since="3.1"
-          message="Perhaps ''{0}'' could be replaced by a local variable."
-          class="net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule"
-      	externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#SingularField">
-		<description>
-      		<![CDATA[
+  <rule name="SingularField"
+        since="3.1"
+        message="Perhaps ''{0}'' could be replaced by a local variable."
+        class="net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#singularfield">
+    <description>
 Fields whose scopes are limited to just single methods do not rely on the containing
 object to provide them to other methods. They may be better implemented as local variables
 within those methods.
-			]]>
       </description>
       <priority>3</priority>
       <example><![CDATA[
@@ -1638,12 +1619,12 @@ public class Foo {
    ]]></example>
     </rule>
 
-    <rule	name="ReturnEmptyArrayRatherThanNull"
-   		language="java"
-         since="4.2"
-        	class="net.sourceforge.pmd.lang.rule.XPathRule"
-        	message="Return an empty array rather than 'null'."
-        	externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ReturnEmptyArrayRatherThanNull">
+  <rule name="ReturnEmptyArrayRatherThanNull"
+        language="java"
+        since="4.2"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="Return an empty array rather than 'null'."
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#returnemptyarrayratherthannull">
         <description>
 For any method that returns an array, it is a better to return an empty array rather than a
 null reference. This removes the need for null checking all results and avoids inadvertent
@@ -1668,40 +1649,38 @@ NullPointerExceptions.
 public class Example {
     // Not a good idea...
     public int[] badBehavior() {
-                   // ...
+        // ...
         return null;
     }
 
     // Good behavior
     public String[] bonnePratique() {
-      //...
-     return new String[0];
+        //...
+        return new String[0];
     }
 }
             ]]></example>
     </rule>
 
-    <rule	name="AbstractClassWithoutAnyMethod"
-   		language="java"
-         since="4.2"
-        	class="net.sourceforge.pmd.lang.rule.XPathRule"
-        	message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
-        	externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AbstractClassWithoutAnyMethod">
+  <rule name="AbstractClassWithoutAnyMethod"
+        language="java"
+        since="4.2"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="No abstract method which means that the keyword is most likely used to prevent instantiation. Use a private or protected constructor instead."
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#abstractclasswithoutanymethod">
         <description>
 If an abstract class does not provides any methods, it may be acting as a simple data container
 that is not meant to be instantiated. In this case, it is probably better to use a private or
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
-	   </description>
+       </description>
         <priority>1</priority>
         <properties>
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ClassOrInterfaceDeclaration[
-	(@Abstract = 'true')
-	and
-	(count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0)
-]
+//ClassOrInterfaceDeclaration
+    [@Abstract = 'true']
+    [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
                     ]]>
                 </value>
             </property>
@@ -1709,21 +1688,21 @@ protected constructor in order to prevent instantiation than make the class misl
         <example>
             <![CDATA[
 public class abstract Example {
-	String field;
-	int otherField;
+    String field;
+    int otherField;
 }
             ]]>
         </example>
     </rule>
 
-        <rule name="TooFewBranchesForASwitchStatement"
-            language="java"
-            since="4.2"
-            class="net.sourceforge.pmd.lang.rule.XPathRule"
-            message="A switch with less than three branches is inefficient, use a 'if statement' instead."
-            externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#TooFewBranchesForASwitchStatement">
+  <rule name="TooFewBranchesForASwitchStatement"
+        language="java"
+        since="4.2"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="A switch with less than three branches is inefficient, use a 'if statement' instead."
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#toofewbranchesforaswitchstatement">
         <description>
-Switch statements are indended to be used to support complex branching behaviour. Using a switch for only a few
+Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
 cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
 if-then statement to increase code readability.
         </description>
@@ -1758,16 +1737,15 @@ public class Foo {
         </example>
     </rule>
 
-
-	<rule 	name="LogicInversion"
-	        language="java"
-			since="5.0"
-			class="net.sourceforge.pmd.lang.rule.XPathRule"
-        	message="Use opposite operator instead of the logic complement operator."
-			externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#LogicInversion">
+  <rule name="LogicInversion"
+        language="java"
+        since="5.0"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="Use opposite operator instead of the logic complement operator."
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#logicinversion">
     <description>
 Use opposite operator instead of negating the whole expression with a logic complement operator.
-	</description>
+    </description>
     <priority>3</priority>
     <properties>
        <property name="xpath">
@@ -1796,13 +1774,13 @@ public boolean bar(int a, int b) {
     </example>
   </rule>
 
-    <rule name="UseVarargs"
-	  		language="java"
-	  		minimumLanguageVersion="1.5"
-	  		since="5.0"
-         message="Consider using varargs for methods or constructors which take an array the last parameter."
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-	  		externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#UseVarargs">
+  <rule name="UseVarargs"
+        language="java"
+        minimumLanguageVersion="1.5"
+        since="5.0"
+        message="Consider using varargs for methods or constructors which take an array the last parameter."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#usevarargs">
         <description>
 Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic
 sugar provides flexibility for users of these methods and constructors, allowing them to avoid
@@ -1833,23 +1811,23 @@ having to deal with the creation of an array.
         </properties>
         <example><![CDATA[
 public class Foo {
-   public void foo(String s, Object[] args) {
-      // Do something here...
-   }
+    public void foo(String s, Object[] args) {
+        // Do something here...
+    }
 
-   public void bar(String s, Object... args) {
-      // Ahh, varargs tastes much better...
-   }
+    public void bar(String s, Object... args) {
+        // Ahh, varargs tastes much better...
+    }
 }
         ]]></example>
     </rule>
 
   <rule name="FieldDeclarationsShouldBeAtStartOfClass"
-      language="java"
-      since="5.0"
-      message="Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes."
-      class="net.sourceforge.pmd.lang.java.rule.design.FieldDeclarationsShouldBeAtStartOfClassRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#FieldDeclarationsShouldBeAtStartOfClass">
+        language="java"
+        since="5.0"
+        message="Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes."
+        class="net.sourceforge.pmd.lang.java.rule.design.FieldDeclarationsShouldBeAtStartOfClassRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#fielddeclarationsshouldbeatstartofclass">
     <description>
 Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.
     </description>
@@ -1872,17 +1850,20 @@ public class HelloWorldBean {
     </example>
   </rule>
 
-    <rule name="GodClass"
+  <rule name="GodClass"
         language="java"
         since="5.0"
         message="Possible God class"
         class="net.sourceforge.pmd.lang.java.rule.design.GodClassRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#GodClass">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#godclass">
         <description>
 The God Class rule detects the God Class design flaw using metrics. God classes do too many things,
 are very big and overly complex. They should be split apart to be more object-oriented.
 The rule uses the detection strategy described in "Object-Oriented Metrics in Practice".
-The violations are reported against the entire class. See also the references:
+The violations are reported against the entire class.
+
+See also the references:
+
 Michele Lanza and Radu Marinescu. Object-Oriented Metrics in Practice:
 Using Software Metrics to Characterize, Evaluate, and Improve the Design
 of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
@@ -1890,12 +1871,12 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
         <priority>3</priority>
     </rule>
 
-    <rule name="AvoidProtectedMethodInFinalClassNotExtending"
-   		language="java"
-             since="5.1"
-             message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
-             class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AvoidProtectedMethodInFinalClassNotExtending">
+  <rule name="AvoidProtectedMethodInFinalClassNotExtending"
+        language="java"
+        since="5.1"
+        message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidprotectedmethodinfinalclassnotextending">
          <description>
 Do not use protected methods in most final classes since they cannot be subclassed. This should
 only be allowed in final classes that extend other classes with protected methods (whose
@@ -1923,12 +1904,12 @@ public final class Foo {
          </example>
        </rule>
 
-    <rule name="ConstantsInInterface"
-   		  language="java"
-          since="5.5"
-          message="Avoid constants in interfaces. Interfaces define types, constants are implementation details better placed in classes or enums. See Effective Java, item 19."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#ConstantsInInterface">
+  <rule name="ConstantsInInterface"
+        language="java"
+        since="5.5"
+        message="Avoid constants in interfaces. Interfaces define types, constants are implementation details better placed in classes or enums. See Effective Java, item 19."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#constantsininterface">
         <description>
 Avoid constants in interfaces. Interfaces should define types, constants are implementation details
 better placed in classes or enums. See Effective Java, item 19.
@@ -1948,9 +1929,9 @@ better placed in classes or enums. See Effective Java, item 19.
 <![CDATA[
 public interface ConstantInterface {
     public static final int CONST1 = 1; // violation, no fields allowed in interface!
-    static final int CONST2 = 1; // violation, no fields allowed in interface!
-    final int CONST3 = 1; // violation, no fields allowed in interface!
-    int CONST4 = 1; // violation, no fields allowed in interface!
+    static final int CONST2 = 1;        // violation, no fields allowed in interface!
+    final int CONST3 = 1;               // violation, no fields allowed in interface!
+    int CONST4 = 1;                     // violation, no fields allowed in interface!
 }
 
 // with ignoreIfHasMethods = false
@@ -1970,12 +1951,12 @@ public interface YetAnotherConstantInterface {
         </example>
     </rule>
 
-    <rule name="AccessorMethodGeneration"
-   	      language="java"
-          since="5.5.4"
-          message="Avoid autogenerated methods to access private fields and methods of inner / outer classes"
-          class="net.sourceforge.pmd.lang.java.rule.design.AccessorMethodGenerationRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/design.html#AccessorMethodGeneration">
+  <rule name="AccessorMethodGeneration"
+        language="java"
+        since="5.5.4"
+        message="Avoid autogenerated methods to access private fields and methods of inner / outer classes"
+        class="net.sourceforge.pmd.lang.java.rule.design.AccessorMethodGenerationRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#accessormethodgeneration">
         <description>
 When accessing a private field / method from another class, the Java compiler will generate a accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
