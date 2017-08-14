@@ -25,7 +25,7 @@ import apex.jorje.services.Version;
  *
  * @author a.subramanian
  */
-public class ApexUnitTestShouldNotUseSeeAllDataTrue extends AbstractApexUnitTestRule {
+public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnitTestRule {
 
     @Override
     public Object visit(final ASTUserClass node, final Object data) {

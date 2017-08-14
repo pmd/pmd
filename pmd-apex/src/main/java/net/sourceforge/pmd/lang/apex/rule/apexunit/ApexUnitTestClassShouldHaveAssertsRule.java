@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
  *
  * @author a.subramanian
  */
-public class ApexUnitTestClassShouldHaveAsserts extends AbstractApexUnitTestRule {
+public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTestRule {
 
     private static final Set<String> ASSERT_METHODS = new HashSet<>();
 
