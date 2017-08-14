@@ -14,7 +14,7 @@
           since="1.03"
           class="net.sourceforge.pmd.lang.java.metrics.rule.CyclomaticComplexityRule"
           metrics="true"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#CyclomaticComplexity">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#cyclomaticcomplexity">
         <description><![CDATA[
             The complexity of methods directly affects maintenance costs and readability. Concentrating too much decisional logic
             in a single method makes its behaviour hard to read and change.
@@ -66,7 +66,7 @@ class Foo {
           since="3.9"
           class="net.sourceforge.pmd.lang.java.metrics.rule.NcssCountRule"
           metrics="true"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NcssCount">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#NcssCount">
         <description>
             This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
             of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual
@@ -109,7 +109,7 @@ class Foo {                         // +1, total Ncss = 12
           message="The {0} ''{1}'' has an NPath complexity of {2}"
           class="net.sourceforge.pmd.lang.java.metrics.rule.NPathComplexityRule"
           metrics="true"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/codesize.html#NPathComplexity">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_metrics.html#NPathComplexity">
         <description>
             The NPath complexity of a method is the number of acyclic execution paths through that method.
             While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
