@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 
 public final class TypeInferenceResolver {
 
-    public static class ResolutionFailed extends RuntimeException {
+    public static class ResolutionFailedException extends RuntimeException {
 
     }
 
@@ -52,7 +52,7 @@ public final class TypeInferenceResolver {
 
             for (JavaTypeDefinition type : types) {
                 if (lci == null) {
-                    throw new ResolutionFailed();
+                    throw new ResolutionFailedException();
                 }
 
                 lci = intersect(lci, type.getAsSuper(erasedSupertype));
@@ -62,7 +62,7 @@ public final class TypeInferenceResolver {
         }
 
         if (candidates.isEmpty()) {
-            throw new ResolutionFailed();
+            throw new ResolutionFailedException();
         }
 
         JavaTypeDefinition result = candidates.get(0);
@@ -72,7 +72,7 @@ public final class TypeInferenceResolver {
                 result = candidate;
             } else if (!MethodTypeResolution.isSubtypeable(result, candidate)) {
                 // TODO: add support for compound types
-                throw new ResolutionFailed();
+                throw new ResolutionFailedException();
             } // else: result contains candidate, nothing else to do
         }
 
@@ -93,7 +93,7 @@ public final class TypeInferenceResolver {
             }
         }
 
-        throw new ResolutionFailed();
+        throw new ResolutionFailedException();
     }
 
     /**
@@ -185,7 +185,7 @@ public final class TypeInferenceResolver {
             }
 
             if (variablesToResolve == null) {
-                throw new ResolutionFailed();
+                throw new ResolutionFailedException();
             }
 
             // if there are least upper bounds
@@ -207,7 +207,7 @@ public final class TypeInferenceResolver {
             if (bound.ruleType() == SUBTYPE && bound.rightVariable() == var) {
                 // TODO: add support for variables depending on other variables
                 if (bound.isLeftVariable()) {
-                    throw new ResolutionFailed();
+                    throw new ResolutionFailedException();
                 }
 
                 result.add(bound.leftProper());
