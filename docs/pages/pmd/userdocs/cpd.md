@@ -429,7 +429,7 @@ For Linux:
 
 Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
-![CPD Screenshot after running on the JDK 8 java.lang package](/images/userdocs/screenshot_cpd.png)
+{% include image.html file="userdocs/screenshot_cpd.png" alt="CPD Screenshot after running on the JDK 8 java.lang package" %}
 
 
 ## Suppression
