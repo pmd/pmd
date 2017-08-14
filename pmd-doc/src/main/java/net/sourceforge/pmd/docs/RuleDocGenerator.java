@@ -247,6 +247,7 @@ public class RuleDocGenerator {
                 lines.add("folder: pmd/rules/" + languageTersename);
                 lines.add("sidebaractiveurl: /" + LANGUAGE_INDEX_PERMALINK_PATTERN.replace("${language.tersename}", languageTersename));
                 lines.add("editmepath: ../" + getRuleSetSourceFilepath(ruleset));
+                lines.add("keywords: " + getRuleSetKeywords(ruleset));
                 lines.add("---");
 
                 for (Rule rule : getSortedRules(ruleset)) {
@@ -345,6 +346,14 @@ public class RuleDocGenerator {
                 System.out.println("Generated " + path);
             }
         }
+    }
+
+    private String getRuleSetKeywords(RuleSet ruleset) {
+        List<String> ruleNames = new LinkedList<>();
+        for (Rule rule : ruleset.getRules()) {
+            ruleNames.add(rule.getName());
+        }
+        return ruleset.getName() + ", " + StringUtils.join(ruleNames, ", ");
     }
 
     private List<Rule> getSortedRules(RuleSet ruleset) {
