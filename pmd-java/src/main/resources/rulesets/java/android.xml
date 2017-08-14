@@ -10,10 +10,11 @@ To get better results, make sure that the auxclasspath is defined for type resol
   </description>
 
   <rule name="CallSuperFirst"
-      since="4.2.5" language="java"
+      since="4.2.5"
+      language="java"
       message="super should be called at the start of the method"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/android.html#CallSuperFirst">
+      externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_android.html#callsuperfirst">
     <description>Super should be called at the start of the method</description>
     <priority>3</priority>
     <properties>
@@ -42,20 +43,21 @@ To get better results, make sure that the auxclasspath is defined for type resol
     </properties>
     <example><![CDATA[
 public class DummyActivity extends Activity {
-	public void onCreate(Bundle bundle) {
-     // missing call to super.onCreate(bundle)
-		foo();
-	}
+    public void onCreate(Bundle bundle) {
+        // missing call to super.onCreate(bundle)
+        foo();
+    }
 }
 ]]>
     </example>
   </rule>
 
   <rule name="CallSuperLast"
-      since="4.2.5" language="java"
+      since="4.2.5"
+      language="java"
       message="super should be called at the end of the method"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/android.html#CallSuperLast">
+      externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_android.html#callsuperlast">
     <description>Super should be called at the end of the method</description>
     <priority>3</priority>
     <properties>
@@ -84,20 +86,21 @@ public class DummyActivity extends Activity {
     <example>
       <![CDATA[
 public class DummyActivity extends Activity {
-	public void onPause() {
-		foo();
-		// missing call to super.onPause()
-	}
+    public void onPause() {
+        foo();
+        // missing call to super.onPause()
+    }
 }
 ]]>
     </example>
   </rule>
 
   <rule name="DoNotHardCodeSDCard"
-      since="4.2.6" language="java"
+      since="4.2.6"
+      language="java"
       message="Do not hardcode /sdcard."
       class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/android.html#DoNotHardCodeSDCard">
+      externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_android.html#donothardcodesdcard">
     <description>Use Environment.getExternalStorageDirectory() instead of "/sdcard"</description>
     <priority>3</priority>
     <properties>
@@ -108,11 +111,11 @@ public class DummyActivity extends Activity {
     <example>
       <![CDATA[
 public class MyActivity extends Activity {
-	protected void foo() {
-		String storageLocation = "/sdcard/mypackage";	// hard-coded, poor approach
+    protected void foo() {
+        String storageLocation = "/sdcard/mypackage";   // hard-coded, poor approach
 
-		storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
-	}
+       storageLocation = Environment.getExternalStorageDirectory() + "/mypackage"; // preferred approach
+    }
 }
 ]]>
     </example>

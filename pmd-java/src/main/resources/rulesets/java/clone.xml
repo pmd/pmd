@@ -9,11 +9,11 @@ The Clone Implementation ruleset contains a collection of rules that find questi
   </description>
 
     <rule name="ProperCloneImplementation"
-   		language="java"
-    		since="1.4"
-         message="Object clone() should be implemented with super.clone()"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#ProperCloneImplementation">
+          language="java"
+          since="1.4"
+          message="Object clone() should be implemented with super.clone()"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_clone.html#propercloneimplementation">
      <description>
 Object clone() should be implemented with super.clone().
      </description>
@@ -47,11 +47,11 @@ class Foo{
      </rule>
 
     <rule name="CloneThrowsCloneNotSupportedException"
-   		language="java"
-    		since="1.9"
-         message="clone() method should throw CloneNotSupportedException"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-         externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneThrowsCloneNotSupportedException">
+          language="java"
+          since="1.9"
+          message="clone() method should throw CloneNotSupportedException"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_clone.html#clonethrowsclonenotsupportedexception">
          <description>
 The method clone() should throw a CloneNotSupportedException.
          </description>
@@ -76,22 +76,22 @@ and count(NameList/Name[contains
          </properties>
          <example>
              <![CDATA[
- public class MyClass implements Cloneable{
-     public Object clone() { // will cause an error
-          MyClass clone = (MyClass)super.clone();
-          return clone;
-     }
- }
+public class MyClass implements Cloneable{
+    public Object clone() { // will cause an error
+         MyClass clone = (MyClass)super.clone();
+         return clone;
+    }
+}
     ]]>
          </example>
      </rule>
 
     <rule name="CloneMethodMustImplementCloneable"
-   		language="java"
-    	  since="1.9"
-        message="clone() method should be implemented only if implementing Cloneable interface"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneMethodMustImplementCloneable">
+          language="java"
+          since="1.9"
+          message="clone() method should be implemented only if implementing Cloneable interface"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_clone.html#clonemethodmustimplementcloneable">
         <description>
 The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException.
         </description>
@@ -112,7 +112,6 @@ and Block[count(BlockStatement)=1]
 /BlockStatement/Statement/ThrowStatement/Expression
 /PrimaryExpression/PrimaryPrefix/AllocationExpression
 /ClassOrInterfaceType[@Image = 'CloneNotSupportedException'])]]
-
                     ]]>
                 </value>
             </property>
@@ -134,7 +133,7 @@ public class MyClass {
         since="5.4.0"
         message="The return type of the clone() method must be the class name when implements Cloneable"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneMethodReturnTypeMustMatchClassName">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_clone.html#clonemethodreturntypemustmatchclassname">
         <description>
 If a class implements cloneable the return type of the method clone() must be the class name. That way, the caller
 of the clone method doesn't need to cast the returned clone to the correct type.
@@ -178,7 +177,7 @@ public class Foo implements Cloneable {
         since="5.4.0"
         message="clone() method must be public if the class implements Cloneable"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/clone.html#CloneMethodMustBePublic">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_clone.html#clonemethodmustbepublic">
         <description>
 The java Manual says "By convention, classes that implement this interface should override
 Object.clone (which is protected) with a public method."
@@ -189,10 +188,8 @@ Object.clone (which is protected) with a public method."
                 <value>
                     <![CDATA[
 //MethodDeclaration[@Public='false']
-[
-MethodDeclarator/@Image = 'clone'
-and MethodDeclarator/FormalParameters/@ParameterCount = 0
-]
+  [MethodDeclarator/@Image = 'clone']
+  [MethodDeclarator/FormalParameters/@ParameterCount = 0]
                     ]]>
                 </value>
             </property>

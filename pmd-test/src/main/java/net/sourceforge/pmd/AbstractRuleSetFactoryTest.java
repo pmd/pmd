@@ -18,12 +18,14 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -115,8 +117,11 @@ public abstract class AbstractRuleSetFactoryTest {
                     messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute"
                             + PMD.EOL;
                 } else {
-                    String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/rules/"
-                            + fileName.replaceAll("rulesets/", "").replaceAll(".xml", "") + ".html#" + rule.getName();
+                    String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/pmd_rules_"
+                            + language.getTerseName() + "_"
+                            + FilenameUtils.getBaseName(fileName)
+                            + ".html#"
+                            + rule.getName().toLowerCase(Locale.ROOT);
                     if (rule.getExternalInfoUrl() == null
                             || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
                         invalidExternalInfoURL++;
