@@ -19,7 +19,7 @@
     </dependencies>
 </project>
      ]]></code>
-        <source-type>xml</source-type>
+        <source-type>pom</source-type>
     </test-code>
     <test-code>
         <description>Simple POM file with violation</description>
@@ -40,6 +40,6 @@
     </dependencies>
 </project>
      ]]></code>
-        <source-type>xml</source-type>
+        <source-type>pom</source-type>
     </test-code>
 </test-data>
