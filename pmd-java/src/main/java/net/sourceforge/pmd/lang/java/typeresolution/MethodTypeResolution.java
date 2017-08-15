@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -12,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -22,11 +24,10 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver.ResolutionFailedException;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 
-import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
-import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 
 public final class MethodTypeResolution {
     private MethodTypeResolution() {}
@@ -134,7 +135,7 @@ public final class MethodTypeResolution {
                         }
                     }
 
-                    methodType = parameterizeStrictInvocation(context, methodType.getMethod(), argList);
+                    methodType = parameterizeInvocation(context, methodType.getMethod(), argList);
                 }
 
                 // check subtypeability of each argument to the corresponding parameter
@@ -162,17 +163,18 @@ public final class MethodTypeResolution {
     }
 
 
-    public static MethodType parameterizeStrictInvocation(JavaTypeDefinition context, Method method,
-                                                          ASTArgumentList argList) {
+    public static MethodType parameterizeInvocation(JavaTypeDefinition context, Method method,
+                                                    ASTArgumentList argList) {
 
         // variables are set up by the call to produceInitialBounds
         List<Variable> variables = new ArrayList<>();
         List<Bound> initialBounds = new ArrayList<>();
         produceInitialBounds(method, context, variables, initialBounds);
 
-        List<Constraint> initialConstraints = produceInitialConstraints(method, argList, variables);
+        List<JavaTypeDefinition> resolvedTypeParameters = TypeInferenceResolver
+                .inferTypes(produceInitialConstraints(method, argList, variables), initialBounds, variables);
 
-        return null;
+        return getTypeDefOfMethod(context, method, resolvedTypeParameters);
     }
 
     public static List<Constraint> produceInitialConstraints(Method method, ASTArgumentList argList,
@@ -184,14 +186,16 @@ public final class MethodTypeResolution {
 
         // TODO: add support for variable arity methods
         for (int i = 0; i < methodParameters.length; i++) {
-            int typeParamIndex;
-            if (methodParameters[i] instanceof TypeVariable
-                    && (typeParamIndex = JavaTypeDefinition
-                    .getGenericTypeIndex(methodTypeParameters, ((TypeVariable) methodParameters[i]).getName())) != -1) {
+            int typeParamIndex = -1;
+            if (methodParameters[i] instanceof TypeVariable) {
+                typeParamIndex = JavaTypeDefinition
+                        .getGenericTypeIndex(methodTypeParameters, ((TypeVariable) methodParameters[i]).getName());
+            }
 
+            if (typeParamIndex != -1) {
                 // TODO: we are cheating here, it should be a contraint of the form 'var -> expression' not 'var->type'
-                result.add(new Constraint(variables.get(typeParamIndex),
-                                          ((TypeNode) argList.jjtGetChild(i)).getTypeDefinition(), LOOSE_INVOCATION));
+                result.add(new Constraint(((TypeNode) argList.jjtGetChild(i)).getTypeDefinition(),
+                                          variables.get(typeParamIndex), LOOSE_INVOCATION));
             }
         }
 
@@ -222,10 +226,13 @@ public final class MethodTypeResolution {
                 // appears in the set; if this results in no proper upper bounds for αl (only dependencies), then the
                 // bound α <: Object also appears in the set.
 
-                int boundVarIndex;
-                if (bound instanceof TypeVariable
-                        && (boundVarIndex = JavaTypeDefinition
-                        .getGenericTypeIndex(typeVariables, ((TypeVariable) bound).getName())) != -1) {
+                int boundVarIndex = -1;
+                if (bound instanceof TypeVariable) {
+                    boundVarIndex =
+                            JavaTypeDefinition.getGenericTypeIndex(typeVariables, ((TypeVariable) bound).getName());
+                }
+
+                if (boundVarIndex != -1) {
                     initialBounds.add(new Bound(variables.get(currVarIndex), variables.get(boundVarIndex), SUBTYPE));
                 } else {
                     currVarHasNoProperUpperBound = false;
@@ -436,13 +443,6 @@ public final class MethodTypeResolution {
         // search the class
         for (Method method : contextClass.getDeclaredMethods()) {
             if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
-                if (isGeneric(method) && typeArguments.size() == 0) {
-                    // TODO: do generic implicit methods
-                    // this disables invocations which could match generic methods and have no explicit type args
-                    result.clear();
-                    return result;
-                }
-
                 result.add(getTypeDefOfMethod(context, method, typeArguments));
             }
         }
@@ -496,7 +496,7 @@ public final class MethodTypeResolution {
                 // if the method isn't vararg, then arity matches
                 && (method.isVarArgs() || (argArity == getArity(method)))
                 // isn't generic or arity of type arguments matches that of parameters
-                && (!isGeneric(method) || typeArguments == null
+                && (!isGeneric(method) || typeArguments.isEmpty()
                 || method.getTypeParameters().length == typeArguments.size())) {
 
             return true;
