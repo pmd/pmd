@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -20,11 +21,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
-import net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType;
-import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver.ResolutionFailedException;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 
 public final class MethodTypeResolution {
@@ -105,17 +106,37 @@ public final class MethodTypeResolution {
         // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
 
+        outter:
         for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
             MethodType methodType = methodsToSearch.get(methodIndex);
-            if (!methodType.isParameterized()) {
-                methodType = parameterizeStrictInvocation(context, methodType.getMethod(), argList);
-            }
 
             if (argList == null) {
                 selectedMethods.add(methodType);
 
                 // vararg methods are considered fixed arity here
             } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
+                if (!methodType.isParameterized()) {
+                    // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.1
+                    // ...
+                    //  To test for applicability by strict invocation:
+                    //  ... or if there exists an i (1 ≤ i ≤ n) such that ei is pertinent to applicability
+                    // (§15.12.2.2) and either i) ei is a standalone expression of a primitive type but Fi is a
+                    // reference type, or ii) Fi is a primitive type but ei is not a standalone expression of a
+                    // primitive type; then the method is not applicable and there is no need to proceed with inference.
+                    Class<?>[] methodParameterTypes = methodType.getMethod().getParameterTypes();
+                    for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                        if (((ASTExpression) argList.jjtGetChild(argIndex)).isStandAlonePrimitive()) {
+                            if (!methodParameterTypes[argIndex].isPrimitive()) {
+                                continue outter; // this method is not applicable
+                            }
+                        } else if (methodParameterTypes[argIndex].isPrimitive()) {
+                            continue outter; // this method is not applicable
+                        }
+                    }
+
+                    methodType = parameterizeStrictInvocation(context, methodType.getMethod(), argList);
+                }
+
                 // check subtypeability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
 
@@ -144,28 +165,53 @@ public final class MethodTypeResolution {
     public static MethodType parameterizeStrictInvocation(JavaTypeDefinition context, Method method,
                                                           ASTArgumentList argList) {
 
-        // variables are set up by the call to getInitialBounds
+        // variables are set up by the call to produceInitialBounds
         List<Variable> variables = new ArrayList<>();
-        List<Bound> initialBound = getInitialBounds(method, context, variables);
+        List<Bound> initialBounds = new ArrayList<>();
+        produceInitialBounds(method, context, variables, initialBounds);
+
+        List<Constraint> initialConstraints = produceInitialConstraints(method, argList, variables);
 
         return null;
     }
 
+    public static List<Constraint> produceInitialConstraints(Method method, ASTArgumentList argList,
+                                                             List<Variable> variables) {
+        List<Constraint> result = new ArrayList<>();
 
-    public static List<Bound> getInitialBounds(Method method, JavaTypeDefinition context, List<Variable> variables) {
+        Type[] methodParameters = method.getGenericParameterTypes();
+        TypeVariable<Method>[] methodTypeParameters = method.getTypeParameters();
+
+        // TODO: add support for variable arity methods
+        for (int i = 0; i < methodParameters.length; i++) {
+            int typeParamIndex;
+            if (methodParameters[i] instanceof TypeVariable
+                    && (typeParamIndex = JavaTypeDefinition
+                    .getGenericTypeIndex(methodTypeParameters, ((TypeVariable) methodParameters[i]).getName())) != -1) {
+
+                // TODO: we are cheating here, it should be a contraint of the form 'var -> expression' not 'var->type'
+                result.add(new Constraint(variables.get(typeParamIndex),
+                                          ((TypeNode) argList.jjtGetChild(i)).getTypeDefinition(), LOOSE_INVOCATION));
+            }
+        }
+
+        return result;
+    }
+
+
+    public static void produceInitialBounds(Method method, JavaTypeDefinition context,
+                                            List<Variable> variables, List<Bound> initialBounds) {
         // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.1.3
         // When inference begins, a bound set is typically generated from a list of type parameter declarations P1,
         // ..., Pp and associated inference variables α1, ..., αp. Such a bound set is constructed as follows. For
         // each l (1 ≤ l ≤ p):
-        
+
         TypeVariable<Method>[] typeVariables = method.getTypeParameters();
 
         variables.clear();
         for (int i = 0; i < typeVariables.length; ++i) {
             variables.add(new Variable());
         }
-
-        List<Bound> result = new ArrayList<>();
 
         for (int currVarIndex = 0; currVarIndex < typeVariables.length; ++currVarIndex) {
             Type[] bounds = typeVariables[currVarIndex].getBounds();
@@ -180,20 +226,20 @@ public final class MethodTypeResolution {
                 if (bound instanceof TypeVariable
                         && (boundVarIndex = JavaTypeDefinition
                         .getGenericTypeIndex(typeVariables, ((TypeVariable) bound).getName())) != -1) {
-                    result.add(new Bound(variables.get(currVarIndex), variables.get(boundVarIndex), SUBTYPE));
+                    initialBounds.add(new Bound(variables.get(currVarIndex), variables.get(boundVarIndex), SUBTYPE));
                 } else {
                     currVarHasNoProperUpperBound = false;
-                    result.add(new Bound(variables.get(currVarIndex), context.resolveTypeDefinition(bound), SUBTYPE));
+                    initialBounds.add(new Bound(variables.get(currVarIndex), context.resolveTypeDefinition(bound),
+                                                SUBTYPE));
                 }
             }
 
             // If Pl has no TypeBound, the bound αl <: Object appears in the set.
             if (currVarHasNoProperUpperBound) {
-                result.add(new Bound(variables.get(currVarIndex), JavaTypeDefinition.forClass(Object.class), SUBTYPE));
+                initialBounds.add(new Bound(variables.get(currVarIndex), JavaTypeDefinition.forClass(Object.class),
+                                            SUBTYPE));
             }
         }
-
-        return result;
     }
 
 

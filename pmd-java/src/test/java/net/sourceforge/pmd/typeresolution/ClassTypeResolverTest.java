@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.typeresolution;
 
 import static junit.framework.TestCase.assertTrue;
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
 import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -22,11 +23,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
-import net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
-import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericMethods;
+import net.sourceforge.pmd.typeresolution.testdata.GenericMethods;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther2;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 
@@ -1514,7 +1519,7 @@ public class ClassTypeResolverTest {
     @Test
     public void testJavaTypeDefinitionGetSuperTypeSet() {
         JavaTypeDefinition originalTypeDef = JavaTypeDefinition.forClass(List.class,
-                                                                  JavaTypeDefinition.forClass(Integer.class));
+                                                                         JavaTypeDefinition.forClass(Integer.class));
         Set<JavaTypeDefinition> set = originalTypeDef.getSuperTypeSet();
 
         assertEquals(set.size(), 4);
@@ -1543,8 +1548,9 @@ public class ClassTypeResolverTest {
         JavaTypeDefinition context = JavaTypeDefinition.forClass(GenericMethods.class,
                                                                  JavaTypeDefinition.forClass(Thread.class));
         List<Variable> variables = new ArrayList<>();
+        List<Bound> initialBounds = new ArrayList<>();
         Method method = GenericMethods.class.getMethod("foo");
-        List<Bound> initialBounds = MethodTypeResolution.getInitialBounds(method, context, variables);
+        MethodTypeResolution.produceInitialBounds(method, context, variables, initialBounds);
 
         assertEquals(initialBounds.size(), 6);
         // A
@@ -1562,6 +1568,40 @@ public class ClassTypeResolverTest {
         // D
         assertTrue(initialBounds.contains(new Bound(variables.get(3),
                                                     JavaTypeDefinition.forClass(Thread.class), SUBTYPE)));
+    }
+
+    @Test
+    public void testMethodInitialConstraints() throws NoSuchMethodException, JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericMethods.class);
+
+        List<AbstractJavaNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//ArgumentList"),
+                AbstractJavaNode.class);
+
+        assertEquals(expressions.size(), 1);
+
+        List<Variable> variables = new ArrayList<>();
+        for (int i = 0; i < 2; ++i) {
+            variables.add(new Variable());
+        }
+        Method method = GenericMethods.class.getMethod("bar", Object.class, Object.class,
+                                                       Integer.class, Object.class);
+        ASTArgumentList argList = (ASTArgumentList) expressions.get(0);
+
+        List<Constraint> constraints = MethodTypeResolution.produceInitialConstraints(method, argList, variables);
+
+        assertEquals(constraints.size(), 3);
+        // A
+        assertTrue(constraints.contains(new Constraint(variables.get(0),
+                                                       JavaTypeDefinition.forClass(SuperClassA.class),
+                                                       LOOSE_INVOCATION)));
+        assertTrue(constraints.contains(new Constraint(variables.get(0),
+                                                       JavaTypeDefinition.forClass(SuperClassAOther.class),
+                                                       LOOSE_INVOCATION)));
+        // B
+        assertTrue(constraints.contains(new Constraint(variables.get(1),
+                                                       JavaTypeDefinition.forClass(SuperClassAOther2.class),
+                                                       LOOSE_INVOCATION)));
     }
 
 

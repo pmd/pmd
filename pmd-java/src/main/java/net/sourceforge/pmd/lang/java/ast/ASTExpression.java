@@ -20,4 +20,30 @@ public class ASTExpression extends AbstractJavaTypeNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public boolean isStandAlonePrimitive() {
+        if(jjtGetNumChildren() != 1) {
+            return false;
+        }
+
+        ASTPrimaryExpression primaryExpression = getFirstChildOfType(ASTPrimaryExpression.class);
+
+        if(primaryExpression == null || primaryExpression.jjtGetNumChildren() != 1) {
+            return false;
+        }
+
+        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+
+        if(primaryPrefix == null || primaryPrefix.jjtGetNumChildren() != 1) {
+            return false;
+        }
+
+        ASTLiteral literal = primaryPrefix.getFirstChildOfType(ASTLiteral.class);
+
+        if(literal == null || literal.jjtGetNumChildren() != 0) {
+            return false;
+        }
+
+        return true;
+    }
 }

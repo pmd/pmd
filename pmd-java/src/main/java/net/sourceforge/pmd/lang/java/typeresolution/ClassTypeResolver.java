@@ -362,7 +362,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         // First try: com.package.SomeClass.staticField.otherField
         // Second try: com.package.SomeClass.staticField
         // Third try: com.package.SomeClass <- found a class!
-        for (String reducedImage = node.getImage();;) {
+        for (String reducedImage = node.getImage(); ; ) {
             populateType(node, reducedImage);
             if (node.getType() != null) {
                 break; // we found a class!
@@ -418,7 +418,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             previousType = JavaTypeDefinition.forClass(node.getType());
         } else { // non-static field or method
             if (dotSplitImage.length == 1 && astArguments != null) { // method
-                List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
+                List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0],
+                                                                     Collections.<JavaTypeDefinition>emptyList(),
                                                                      methodArgsArity, accessingClass);
 
                 previousType = getBestMethodReturnType(node.getTypeDefinition(), methods, astArgumentList);
