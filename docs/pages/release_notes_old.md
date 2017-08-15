@@ -1,4 +1,7 @@
-# Old Changelog
+---
+title: Old Release Notes
+permalink: pmd_release_notes_old.html
+---
 
 Previous versions of PMD can be downloaded here:
 http://sourceforge.net/projects/pmd/files/pmd/

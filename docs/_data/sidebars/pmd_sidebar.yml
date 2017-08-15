@@ -27,6 +27,9 @@ entries:
       url: /index.html
       output: web, pdf
       type: homepage
+    - title: "Release Notes"
+      url: /pmd_release_notes.html
+      output: web, pdf
     - title: Getting Started
       url: /pmd_userdocs_getting_started.html
       output: web, pdf
@@ -68,6 +71,9 @@ entries:
       output: web, pdf
     - title: What does 'PMD' mean?
       url: /pmd_userdocs_meaning.html
+      output: web, pdf
+    - title: Old Release Notes
+      url: /pmd_release_notes_old.html
       output: web, pdf
   - title: Rule Reference
     output: web, pdf

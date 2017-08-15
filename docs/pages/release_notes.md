@@ -1,4 +1,8 @@
-# PMD Release Notes
+---
+title: PMD Release Notes
+permalink: pmd_release_notes.html
+keywords: changelog, release notes
+---
 
 ## ????? - 6.0.0-SNAPSHOT
 
@@ -8,18 +12,18 @@ This is a major release.
 
 ### Table Of Contents
 
-* [New and noteworthy](#New_and_noteworthy)
-    *   [Revamped Apex CPD](#Revamped_Apex_CPD)
-    *   [Java Type Resolution](#Java_Type_Resolution)
-    *   [Metrics Framework](#Metrics_Framework)
-    *   [Configuration Error Reporting](#Configuration_Error_Reporting)
-    *   [Java Symbol Table](#Java_Symbol_Table)
-    *   [Apex Parser Update](#Apex_Parser_Update)
-    *   [Modified Rules](#Modified_Rules)
-    *   [Removed Rules](#Removed_Rules)
-* [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
-* [External Contributions](#External_Contributions)
+* [New and noteworthy](#new-and-noteworthy)
+    *   [Revamped Apex CPD](#revamped-apex-cpd)
+    *   [Java Type Resolution](#java-type-resolution)
+    *   [Metrics Framework](#metrics-framework)
+    *   [Configuration Error Reporting](#configuration-error-reporting)
+    *   [Java Symbol Table](#java-symbol-table)
+    *   [Apex Parser Update](#apex-parser-update)
+    *   [Modified Rules](#modified-rules)
+    *   [Removed Rules](#removed-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
 
 ### New and noteworthy
 
@@ -27,12 +31,12 @@ This is a major release.
 
 We are now using the Apex Jorje Lexer to tokenize Apex code for CPD. This change means:
 
-    *   All comments are now ignored for CPD. This is consistent with how other languages such as Java and Groovy work.
-    *   Tokenization honors the language specification, which improves accuracy.
+*   All comments are now ignored for CPD. This is consistent with how other languages such as Java and Groovy work.
+*   Tokenization honors the language specification, which improves accuracy.
 
 CPD will therefore have less false positives and false negatives.
 
-#### Java Type Resolution
+#### Java Type Resolution
 
 As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph)'s work on type resolution for Java continues.
 For this release he has extended support for method calls for both instance and static methods.
