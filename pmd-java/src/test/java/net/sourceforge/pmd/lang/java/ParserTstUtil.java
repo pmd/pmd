@@ -120,75 +120,92 @@ public class ParserTstUtil {
         return cu;
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava13(String code) {
-        return parseJava("1.3", code);
+        return parseJava(getLanguageVersionHandler("1.3"), code);
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava14(String code) {
-        return parseJava("1.4", code);
+        return parseJava(getLanguageVersionHandler("1.4"), code);
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava15(String code) {
-        return parseJava("1.5", code);
+        return parseJava(getLanguageVersionHandler("1.5"), code);
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava17(String code) {
-        return parseJava("1.7", code);
+        return parseJava(getLanguageVersionHandler("1.7"), code);
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava18(String code) {
-        return parseJava("1.8", code);
+        return parseJava(getLanguageVersionHandler("1.8"), code);
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava13(Class<?> source) {
         return parseJava13(getSourceFromClass(source));
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava14(Class<?> source) {
         return parseJava14(getSourceFromClass(source));
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava15(Class<?> source) {
         return parseJava15(getSourceFromClass(source));
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava17(Class<?> source) {
         return parseJava17(getSourceFromClass(source));
     }
 
-    /** @see #parseJava(String, String)  */
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava18(Class<?> source) {
         return parseJava18(getSourceFromClass(source));
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String) */
+    public static ASTCompilationUnit parseJavaDefaultVersion(String source) {
+        return parseJava(getDefaultLanguageVersionHandler(), source);
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String) */
+    public static ASTCompilationUnit parseJavaDefaultVersion(Class<?> source) {
+        return parseJavaDefaultVersion(getSourceFromClass(source));
+    }
+
+
+    public static LanguageVersionHandler getLanguageVersionHandler(String version) {
+        return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version).getLanguageVersionHandler();
+    }
+
+    public static LanguageVersionHandler getDefaultLanguageVersionHandler() {
+        return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
     }
 
 
     /**
      * Parses Java code and executes the symbol table visitor.
      *
-     * @param version The Java version to use
-     * @param code    The source code
+     * @param languageVersionHandler The version handler for the wanted version
+     * @param code                   The source code
      *
      * @return The compilation unit
      */
-    public static ASTCompilationUnit parseJava(String version, String code) {
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version);
-        LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+    public static ASTCompilationUnit parseJava(LanguageVersionHandler languageVersionHandler, String code) {
         ASTCompilationUnit rootNode = (ASTCompilationUnit) languageVersionHandler
                 .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
         languageVersionHandler.getSymbolFacade().start(rootNode);
         return rootNode;
     }
 
-    private static String getSourceFromClass(Class<?> clazz) {
+    public static String getSourceFromClass(Class<?> clazz) {
         String sourceFile = clazz.getName().replace('.', '/') + ".java";
         InputStream is = ParserTstUtil.class.getClassLoader().getResourceAsStream(sourceFile);
         if (is == null) {
