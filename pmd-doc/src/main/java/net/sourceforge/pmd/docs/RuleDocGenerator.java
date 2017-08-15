@@ -48,6 +48,16 @@ public class RuleDocGenerator {
     private final Path root;
     private final FileWriter writer;
 
+    /** Maintains mapping from pmd terse language name to rouge highlighter language */
+    private static final Map<String, String> LANGUAGE_HIGHLIGHT_MAPPER = new HashMap<>();
+
+    static {
+        LANGUAGE_HIGHLIGHT_MAPPER.put("ecmascript", "javascript");
+        LANGUAGE_HIGHLIGHT_MAPPER.put("pom", "xml");
+        LANGUAGE_HIGHLIGHT_MAPPER.put("apex", "java");
+        LANGUAGE_HIGHLIGHT_MAPPER.put("plsql", "sql");
+    }
+
     public RuleDocGenerator(FileWriter writer, Path root) {
         this.root = Objects.requireNonNull(root, "Root directory must be provided");
         this.writer = Objects.requireNonNull(writer, "A file writer must be provided");
@@ -313,7 +323,7 @@ public class RuleDocGenerator {
                         lines.add("**Example(s):**");
                         lines.add("");
                         for (String example : rule.getExamples()) {
-                            lines.add("```");
+                            lines.add("``` " + mapLanguageForHighlighting(languageTersename));
                             lines.add(StringUtils.stripToEmpty(example));
                             lines.add("```");
                             lines.add("");
@@ -346,6 +356,20 @@ public class RuleDocGenerator {
                 System.out.println("Generated " + path);
             }
         }
+    }
+
+    /**
+     * Simply maps PMD languages to rouge languages
+     *
+     * @param languageTersename
+     * @return
+     * @see <a href="https://github.com/jneen/rouge/wiki/List-of-supported-languages-and-lexers">List of supported languages</a>
+     */
+    private static String mapLanguageForHighlighting(String languageTersename) {
+        if (LANGUAGE_HIGHLIGHT_MAPPER.containsKey(languageTersename)) {
+            return LANGUAGE_HIGHLIGHT_MAPPER.get(languageTersename);
+        }
+        return languageTersename;
     }
 
     private String getRuleSetKeywords(RuleSet ruleset) {

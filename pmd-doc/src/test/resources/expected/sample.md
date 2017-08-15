@@ -40,7 +40,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **Example(s):**
 
-```
+``` java
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
@@ -81,7 +81,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **Example(s):**
 
-```
+``` java
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
@@ -109,7 +109,7 @@ delegating to your superclass.
 
 **Example(s):**
 
-```
+``` java
 public class Bar {      // poor, missing a hashcode() method
     public boolean equals(Object o) {
       // do some comparison
@@ -155,7 +155,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **Example(s):**
 
-```
+``` java
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'

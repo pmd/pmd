@@ -87,6 +87,9 @@ entries:
     - title: PLSQL Rules
       url: /pmd_rules_plsql.html
       output: web, pdf
+    - title: Maven POM Rules
+      url: /pmd_rules_pom.html
+      output: web, pdf
     - title: VisualForce Rules
       url: /pmd_rules_vf.html
       output: web, pdf
@@ -165,4 +168,3 @@ entries:
     - title: Adding metrics support to a language
       url: /pmd_devdocs_adding_metrics_support_to_language.html
       output: web, pdf
-
