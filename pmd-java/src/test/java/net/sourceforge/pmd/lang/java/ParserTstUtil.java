@@ -27,7 +27,11 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
-public abstract class ParserTst {
+public class ParserTstUtil {
+
+    private ParserTstUtil() {
+
+    }
 
     private static class Collector<E> implements InvocationHandler {
         private Class<E> clazz = null;
@@ -61,11 +65,11 @@ public abstract class ParserTst {
         }
     }
 
-    public <E> Set<E> getNodes(Class<E> clazz, String javaCode) {
+    public static <E> Set<E> getNodes(Class<E> clazz, String javaCode) {
         return getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion(), clazz, javaCode);
     }
 
-    protected <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String javaCode) {
+    public static <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String javaCode) {
         Collector<E> coll = new Collector<>(clazz);
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         ASTCompilationUnit cu = (ASTCompilationUnit) languageVersionHandler
@@ -76,7 +80,7 @@ public abstract class ParserTst {
         return (Set<E>) coll.getCollection();
     }
 
-    protected <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) {
+    public static <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) {
         Collector<E> coll = new Collector<>(clazz, new ArrayList<E>());
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
                 .getDefaultVersion().getLanguageVersionHandler();
@@ -93,7 +97,7 @@ public abstract class ParserTst {
         return (List<E>) coll.getCollection();
     }
 
-    public <E> String dumpNodes(List<E> list) {
+    public static <E> String dumpNodes(List<E> list) {
         StringBuilder sb = new StringBuilder();
         int index = 0;
         for (E item : list) {
@@ -103,7 +107,7 @@ public abstract class ParserTst {
         return sb.toString();
     }
 
-    protected ASTCompilationUnit buildDFA(String javaCode) {
+    public static ASTCompilationUnit buildDFA(String javaCode) {
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
                 .getDefaultVersion().getLanguageVersionHandler();
         ASTCompilationUnit cu = (ASTCompilationUnit) languageVersionHandler
@@ -117,52 +121,52 @@ public abstract class ParserTst {
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava13(String code) {
+    public static ASTCompilationUnit parseJava13(String code) {
         return parseJava("1.3", code);
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava14(String code) {
+    public static ASTCompilationUnit parseJava14(String code) {
         return parseJava("1.4", code);
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava15(String code) {
+    public static ASTCompilationUnit parseJava15(String code) {
         return parseJava("1.5", code);
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava17(String code) {
+    public static ASTCompilationUnit parseJava17(String code) {
         return parseJava("1.7", code);
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava18(String code) {
+    public static ASTCompilationUnit parseJava18(String code) {
         return parseJava("1.8", code);
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava13(Class<?> source) {
+    public static ASTCompilationUnit parseJava13(Class<?> source) {
         return parseJava13(getSourceFromClass(source));
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava14(Class<?> source) {
+    public static ASTCompilationUnit parseJava14(Class<?> source) {
         return parseJava14(getSourceFromClass(source));
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava15(Class<?> source) {
+    public static ASTCompilationUnit parseJava15(Class<?> source) {
         return parseJava15(getSourceFromClass(source));
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava17(Class<?> source) {
+    public static ASTCompilationUnit parseJava17(Class<?> source) {
         return parseJava17(getSourceFromClass(source));
     }
 
     /** @see #parseJava(String, String)  */
-    protected ASTCompilationUnit parseJava18(Class<?> source) {
+    public static ASTCompilationUnit parseJava18(Class<?> source) {
         return parseJava18(getSourceFromClass(source));
     }
 
@@ -175,7 +179,7 @@ public abstract class ParserTst {
      *
      * @return The compilation unit
      */
-    protected ASTCompilationUnit parseJava(String version, String code) {
+    public static ASTCompilationUnit parseJava(String version, String code) {
         LanguageVersion languageVersion = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version);
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         ASTCompilationUnit rootNode = (ASTCompilationUnit) languageVersionHandler
@@ -184,9 +188,9 @@ public abstract class ParserTst {
         return rootNode;
     }
 
-    private String getSourceFromClass(Class<?> clazz) {
+    private static String getSourceFromClass(Class<?> clazz) {
         String sourceFile = clazz.getName().replace('.', '/') + ".java";
-        InputStream is = ParserTst.class.getClassLoader().getResourceAsStream(sourceFile);
+        InputStream is = ParserTstUtil.class.getClassLoader().getResourceAsStream(sourceFile);
         if (is == null) {
             throw new IllegalArgumentException(
                 "Unable to find source file " + sourceFile + " for " + clazz);

@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ASTLocalVariableDeclarationTest extends ParserTst {
+public class ASTLocalVariableDeclarationTest {
 
     @Test
     public void testSingleDimArray() {

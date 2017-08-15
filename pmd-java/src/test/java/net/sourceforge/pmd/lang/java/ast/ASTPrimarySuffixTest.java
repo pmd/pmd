@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -11,9 +12,8 @@ import java.util.Set;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ParserTst;
 
-public class ASTPrimarySuffixTest extends ParserTst {
+public class ASTPrimarySuffixTest {
 
     @Test
     public void testArrayDereference() {

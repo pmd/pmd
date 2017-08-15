@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -11,9 +12,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
-public class FieldDeclTest extends ParserTst {
+public class FieldDeclTest {
 
     public String makeAccessJavaCode(String[] access) {
         String result = "public class Test { ";

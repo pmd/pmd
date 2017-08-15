@@ -4,15 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava13;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava14;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava17;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.java.ParserTst;
-
-public class JDKVersionTest extends ParserTst {
+public class JDKVersionTest {
 
     private static String loadSource(String name) {
         try {
