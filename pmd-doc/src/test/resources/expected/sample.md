@@ -72,11 +72,11 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 ```
 //ForStatement
- [
-  ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
-  =
-  ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
- ]
+  [
+    ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+    =
+    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+  ]
 ```
 
 **Example(s):**
