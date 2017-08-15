@@ -1,31 +1,35 @@
 <?xml version="1.0"?>
 
 <ruleset name="Basic JSP"
-	xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 
-	<description>Rules concerning basic JSP guidelines.</description>
+  <description>
+Rules concerning basic JSP guidelines.
+  </description>
 
-	<rule name="NoLongScripts" language="jsp" since="3.6"
-		message="Avoid having long scripts (e.g. Javascript) inside a JSP file."
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoLongScripts">
-		<description>
+  <rule name="NoLongScripts"
+        language="jsp"
+        since="3.6"
+        message="Avoid having long scripts (e.g. Javascript) inside a JSP file."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nolongscripts">
+    <description>
 Scripts should be part of Tag Libraries, rather than part of JSP pages.
-		</description>
-		<priority>2</priority>
-		<properties>
-			<property name="xpath">
-				<value>
-					<![CDATA[ 
-// HtmlScript [ (@EndLine - @BeginLine > 10) ]
-				]]>
-				</value>
-			</property>
-		</properties>
-		<example>
-			<![CDATA[
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//HtmlScript[(@EndLine - @BeginLine > 10)]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 <HTML>
 <BODY>
 <!--Java Script-->
@@ -47,127 +51,140 @@ onload=calcDays;
 </SCRIPT>
 </BODY>
 </HTML>
-			]]>
-		</example>
-	</rule>
+]]>
+    </example>
+  </rule>
 
-	<rule name="NoScriptlets" language="jsp" since="3.6"
-		message="Avoid having scriptlets inside a JSP file."
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoScriptlets">
-		<description>
+  <rule name="NoScriptlets"
+        language="jsp"
+        since="3.6"
+        message="Avoid having scriptlets inside a JSP file."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#noscriptlets">
+    <description>
 Scriptlets should be factored into Tag Libraries or JSP	declarations, rather than being part of JSP pages.
-		</description>
-		<priority>3</priority>
-		<properties>
-			<property name="xpath">
-				<value>
-					<![CDATA[
-					//JspScriptlet
-					|
-					//Element[ upper-case(@Name)="JSP:SCRIPTLET" ]
-					]]>
-				</value>
-			</property>
-		</properties>
-		<example>
-			<![CDATA[ 
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//JspScriptlet
+|
+//Element[ upper-case(@Name)="JSP:SCRIPTLET" ]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 <HTML>
 <HEAD>
 <%
 response.setHeader("Pragma", "No-cache");
 %>
 </HEAD>
-	<BODY>
-		<jsp:scriptlet>String title = "Hello world!";</jsp:scriptlet>
-	</BODY>
+    <BODY>
+        <jsp:scriptlet>String title = "Hello world!";</jsp:scriptlet>
+    </BODY>
 </HTML>
-					 ]]>
-		</example>
-	</rule>
+]]>
+    </example>
+  </rule>
 
-	<rule name="NoInlineStyleInformation" since="3.6"
-		message="Avoid having style information in JSP files."
-		class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoInlineStyleInformation">
-		<description><![CDATA[ 
-Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT> tags, or attributes like "align='center'". ]]>
-		</description>
-		<priority>3</priority>
-		<example>
-			<![CDATA[
+  <rule name="NoInlineStyleInformation"
+        since="3.6"
+        message="Avoid having style information in JSP files."
+        class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#noinlinestyleinformation">
+    <description>
+Style information should be put in CSS files, not in JSPs. Therefore, don't use &lt;B> or &lt;FONT>
+tags, or attributes like "align='center'".
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
 <html><body><p align='center'><b>text</b></p></body></html>
-			]]>
-		</example>
-	</rule>
+]]>
+    </example>
+  </rule>
 
-
-	<rule name="NoClassAttribute" language="jsp" since="3.6"
-		message="Do not use an attribute called 'class'."
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoClassAttribute">
-		<description>
+  <rule name="NoClassAttribute"
+        language="jsp"
+        since="3.6"
+        message="Do not use an attribute called 'class'."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#noclassattribute">
+    <description>
 Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
-		</description>
-		<priority>2</priority>
-		<properties>
-			<property name="xpath">
-				<value>
-					<![CDATA[ //Attribute[ upper-case(@Name)="CLASS" ]  ]]>
-				</value>
-			</property>
-		</properties>
-		<example>
-			<![CDATA[
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//Attribute[ upper-case(@Name)="CLASS" ]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 <HTML> <BODY>
 <P class="MajorHeading">Some text</P>
 </BODY> </HTML>
-			]]>
-		</example>
-	</rule>
+]]>
+    </example>
+  </rule>
 
-	<rule name="NoJspForward" language="jsp" since="3.6"
-		message="Do not do a forward from within a JSP file."
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoJspForward">
-		<description>
+  <rule name="NoJspForward"
+        language="jsp"
+        since="3.6"
+        message="Do not do a forward from within a JSP file."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nojspforward">
+    <description>
 Do not do a forward from within a JSP file.
-		</description>
-		<priority>3</priority>
-		<properties>
-			<property name="xpath">
-				<value>
-					<![CDATA[ //Element[ @Name="jsp:forward" ]  ]]>
-				</value>
-			</property>
-		</properties>
-		<example>
-			<![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//Element[ @Name="jsp:forward" ]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 <jsp:forward page='UnderConstruction.jsp'/>
-			]]>
-		</example>
-	</rule>
+]]>
+    </example>
+  </rule>
 
-	<rule name="IframeMissingSrcAttribute" language="jsp" since="3.6"
-		message="IFrames must have a src attribute."
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#IframeMissingSrcAttribute">
-		<description>
+  <rule name="IframeMissingSrcAttribute"
+        language="jsp"
+        since="3.6"
+        message="IFrames must have a src attribute."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#iframemissingsrcattribute">
+    <description>
 IFrames which are missing a src element can cause security information popups in IE if you are accessing the page
 through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
-		</description>
-		<priority>2</priority>
-		<properties>
-			<property name="xpath">
-				<value>
-					<![CDATA[ 
-	//Element[upper-case(@Name)="IFRAME"][count(Attribute[upper-case(@Name)="SRC" ]) = 0]
-					 ]]>
-				</value>
-			</property>
-		</properties>
-		<example>
-			<![CDATA[
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//Element[upper-case(@Name)="IFRAME"][count(Attribute[upper-case(@Name)="SRC" ]) = 0]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 <HTML><title>bad example><BODY>
 <iframe></iframe>
 </BODY> </HTML>
@@ -175,31 +192,33 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 <HTML><title>good example><BODY>
 <iframe src="foo"></iframe>
 </BODY> </HTML>
-			]]>
-		</example>
-	</rule>
+]]>
+    </example>
+  </rule>
 
-	<rule name="NoHtmlComments" language="jsp" since="3.6"
-		message="Use JSP comments instead of HTML comments"
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoHtmlComments">
-		<description>
-			In a production system, HTML comments increase the payload
-			between the application server to the client, and serve
-			little other purpose. Consider switching to JSP comments.
-		</description>
-		<priority>2</priority>
-		<properties>
-			<property name="xpath">
-				<value>
-					<![CDATA[ 
-	//CommentTag
-					 ]]>
-				</value>
-			</property>
-		</properties>
-		<example>
-			<![CDATA[
+  <rule name="NoHtmlComments"
+        language="jsp"
+        since="3.6"
+        message="Use JSP comments instead of HTML comments"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nohtmlcomments">
+    <description>
+In a production system, HTML comments increase the payload
+between the application server to the client, and serve
+little other purpose. Consider switching to JSP comments.
+    </description>
+    <priority>2</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//CommentTag
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 <HTML><title>bad example><BODY>
 <!-- HTML comment -->
 </BODY> </HTML>
@@ -207,38 +226,40 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 <HTML><title>good example><BODY>
 <%-- JSP comment --%>
 </BODY> </HTML>
-			]]>
-		</example>
-	</rule>
+]]>
+    </example>
+  </rule>
 
-	<rule name="DuplicateJspImports" since="3.7"
-		message="Avoid duplicate imports such as ''{0}''"
-		class="net.sourceforge.pmd.lang.jsp.rule.basic.DuplicateJspImportsRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#DuplicateJspImports">
-		<description><![CDATA[Avoid duplicate import statements inside JSP's. ]]>
-		</description>
-		<priority>3</priority>
-		<example>
-			<![CDATA[ 
+  <rule name="DuplicateJspImports"
+        since="3.7"
+        message="Avoid duplicate imports such as ''{0}''"
+        class="net.sourceforge.pmd.lang.jsp.rule.basic.DuplicateJspImportsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#duplicatejspimports">
+    <description>
+Avoid duplicate import statements inside JSP's.
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
 <%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
-			 ]]>
-		</example>
-	</rule>
+]]>
+    </example>
+  </rule>
 
-	<rule name="JspEncoding" language="jsp" since="4.0"
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		message="JSP file should use UTF-8 encoding"
-		externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#JspEncoding">
-		<description>
-			<![CDATA[
+  <rule name="JspEncoding"
+        language="jsp"
+        since="4.0"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="JSP file should use UTF-8 encoding"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#jspencoding">
+    <description>
 A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
-            ]]>
-		</description>
-		<priority>3</priority>
-		<properties>
-			<property name="xpath">
-				<value>
-					<![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //CompilationUnit/Content[
 not(Element[@Name="meta"][
    Attribute[@Name="content"]/AttributeValue[contains(lower-case(@Image),"charset=utf-8")]
@@ -246,70 +267,71 @@ not(Element[@Name="meta"][
 and 
     not(JspDirective[@Name='page']/JspDirectiveAttribute[@Name='contentType'][contains(lower-case(@Value),"charset=utf-8")])
 ]
-                    ]]>
-				</value>
-			</property>
-		</properties>
-		<example>
-			<![CDATA[
-                Most browsers should be able to interpret the following headers:
-                
-                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-                    
-                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
-            ]]>
-		</example>
-	</rule>
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
+Most browsers should be able to interpret the following headers:
 
-    <rule
-        name="NoInlineScript" language="jsp" since="4.0"
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+]]>
+    </example>
+  </rule>
+
+  <rule name="NoInlineScript"
+        language="jsp"
+        since="4.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Avoiding inlining HTML script content"
-        externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoInlineScript">
-        <description>
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#noinlinescript">
+    <description>
 Avoid inlining HTML script content.  Consider externalizing the HTML script using the 'src' attribute on the "script" element.
 Externalized script could be reused between pages.  Browsers can also cache the script, reducing overall download bandwidth.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //HtmlScript[@Image != '']
-                    ]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-            <![CDATA[
-                Most browsers should be able to interpret the following headers:
-                
-                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-                    
-                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
-            ]]>
-        </example>
-    </rule>
-    
-    <rule
-        name="NoUnsanitizedJSPExpression" since="5.1.4"
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
+Most browsers should be able to interpret the following headers:
+
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+]]>
+    </example>
+  </rule>
+
+  <rule name="NoUnsanitizedJSPExpression"
+        since="5.1.4"
         class="net.sourceforge.pmd.lang.jsp.rule.basic.NoUnsanitizedJSPExpressionRule"
         message="Using unsanitized JSP expression can lead to Cross Site Scripting (XSS) attacks"
-        externalInfoUrl="${pmd.website.baseurl}/rules/jsp/basic.html#NoUnsanitizedJSPExpression">
-        <description>
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_basic.html#nounsanitizedjspexpression">
+    <description>
 Avoid using expressions without escaping / sanitizing. This could lead to cross site scripting - as the expression
 would be interpreted by the browser directly (e.g. "&lt;script&gt;alert('hello');&lt;/script&gt;").
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 ${expression}                    <!-- don't use this -->
 ${fn:escapeXml(expression)}      <!-- instead, escape it -->
 <c:out value="${expression}" />  <!-- or use c:out -->
-            ]]>
-        </example>
-    </rule>
-    
+]]>
+    </example>
+  </rule>
+
 </ruleset>
