@@ -57,7 +57,7 @@ after_deploy: bash .travis/release.sh
 notifications:
   email:
     recipients:
-    - adangel@users.sourceforge.net
+    - andreas.dangel@adangel.org
     on_success: always
     on_failure: always
 cache:
