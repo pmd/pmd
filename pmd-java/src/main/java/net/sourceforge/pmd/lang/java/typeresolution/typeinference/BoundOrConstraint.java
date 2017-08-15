@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.typeresolution.typeinference;
 
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -134,4 +135,36 @@ public abstract class BoundOrConstraint {
     }
 
     public abstract List<BoundOrConstraint> reduce();
+
+    public void addVariablesToSet(Set<Variable> variables) {
+        if (leftTypeVariable != null) {
+            variables.add(leftTypeVariable);
+        }
+
+        if (rightTypeVariable != null) {
+            variables.add(rightTypeVariable);
+        }
+    }
+
+    /**
+     * @return true, if the left-hand side mentions variables
+     */
+    public boolean leftHasMentionedVariable() {
+        return leftTypeVariable != null;
+    }
+
+    /**
+     * @return true, if the right-hand side mentions variales
+     */
+    public boolean rightHasMentionedVariable() {
+        return rightTypeVariable != null;
+    }
+
+    public Variable getLeftMentionedVariable() {
+        return leftTypeVariable;
+    }
+
+    public Variable getRightMentionedVariable() {
+        return rightTypeVariable;
+    }
 }
