@@ -8,18 +8,15 @@ import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathUnawareOperationVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.StandardCycloVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
-import net.sourceforge.pmd.lang.metrics.ResultOption;
+
 
 /**
  * McCabe's Cyclomatic Complexity. Number of independent paths through a block of code [1, 2]. Formally, given that the
@@ -53,13 +50,22 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  * @author Clément Fournier
  * @since June 2017
  */
-public final class CycloMetric {
+public final class CycloMetric extends AbstractJavaOperationMetric {
 
-    private CycloMetric() {
-
-    }
 
     // TODO:cf Cyclo should develop factorized boolean operators to count them
+
+
+    @Override
+    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+
+        JavaParserVisitor visitor = (CycloVersion.IGNORE_BOOLEAN_PATHS == version)
+                                    ? new CycloPathUnawareOperationVisitor()
+                                    : new StandardCycloVisitor();
+
+        MutableInt cyclo = (MutableInt) node.jjtAccept(visitor, new MutableInt(1));
+        return (double) cyclo.getValue();
+    }
 
 
     /**
@@ -96,28 +102,6 @@ public final class CycloMetric {
     public enum CycloVersion implements MetricVersion {
         /** Do not count the paths in boolean expressions as decision points. */
         IGNORE_BOOLEAN_PATHS
-    }
-
-    public static final class CycloOperationMetric extends AbstractJavaOperationMetric {
-
-        @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-
-            JavaParserVisitor visitor = (CycloVersion.IGNORE_BOOLEAN_PATHS == version)
-                                        ? new CycloPathUnawareOperationVisitor()
-                                        : new StandardCycloVisitor();
-
-            MutableInt cyclo = (MutableInt) node.jjtAccept(visitor, new MutableInt(1));
-            return (double) cyclo.getValue();
-        }
-    }
-
-    public static final class CycloClassMetric extends AbstractJavaClassMetric {
-
-        @Override
-        public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-            return 1 + JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, version, ResultOption.AVERAGE);
-        }
     }
 
 }
