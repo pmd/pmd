@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.typeresolution;
 
 import static junit.framework.TestCase.assertTrue;
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
@@ -13,6 +14,7 @@ import static org.junit.Assert.assertSame;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -20,6 +22,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.GenericMethods;
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
 
@@ -1531,6 +1538,31 @@ public class ClassTypeResolverTest {
         assertTrue(set.contains(List.class));
     }
 
+    @Test
+    public void testMethodInitialBounds() throws NoSuchMethodException {
+        JavaTypeDefinition context = JavaTypeDefinition.forClass(GenericMethods.class,
+                                                                 JavaTypeDefinition.forClass(Thread.class));
+        List<Variable> variables = new ArrayList<>();
+        Method method = GenericMethods.class.getMethod("foo");
+        List<Bound> initialBounds = MethodTypeResolution.getInitialBounds(method, context, variables);
+
+        assertEquals(initialBounds.size(), 6);
+        // A
+        assertTrue(initialBounds.contains(new Bound(variables.get(0),
+                                                    JavaTypeDefinition.forClass(Object.class), SUBTYPE)));
+        // B
+        assertTrue(initialBounds.contains(new Bound(variables.get(1),
+                                                    JavaTypeDefinition.forClass(Number.class), SUBTYPE)));
+        assertTrue(initialBounds.contains(new Bound(variables.get(1),
+                                                    JavaTypeDefinition.forClass(Runnable.class), SUBTYPE)));
+        // C
+        assertTrue(initialBounds.contains(new Bound(variables.get(2), variables.get(3), SUBTYPE)));
+        assertTrue(initialBounds.contains(new Bound(variables.get(2),
+                                                    JavaTypeDefinition.forClass(Object.class), SUBTYPE)));
+        // D
+        assertTrue(initialBounds.contains(new Bound(variables.get(3),
+                                                    JavaTypeDefinition.forClass(Thread.class), SUBTYPE)));
+    }
 
 
     private Class<?> getChildType(Node node, int childIndex) {

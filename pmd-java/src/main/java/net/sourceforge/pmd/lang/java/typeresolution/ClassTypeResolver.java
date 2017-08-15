@@ -421,7 +421,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
                                                                      methodArgsArity, accessingClass);
 
-                previousType = getBestMethodReturnType(methods, astArgumentList, null);
+                previousType = getBestMethodReturnType(node.getTypeDefinition(), methods, astArgumentList);
             } else { // field
                 previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0],
                                                                     accessingClass);
@@ -453,7 +453,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                                 Collections.<JavaTypeDefinition>emptyList(),
                                                                 methodArgsArity, accessingClass);
 
-                previousType = getBestMethodReturnType(methods, astArgumentList, null);
+                previousType = getBestMethodReturnType(previousType, methods, astArgumentList);
             } else { // field
                 previousType = getFieldType(previousType, dotSplitImage[i], accessingClass);
             }
@@ -903,7 +903,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                                         currentChildImage,
                                                                         typeArguments, methodArgsArity, accessingClass);
 
-                        currentChild.setTypeDefinition(getBestMethodReturnType(methods, astArgumentList, null));
+                        currentChild.setTypeDefinition(getBestMethodReturnType(previousChild.getTypeDefinition(),
+                                                                               methods, astArgumentList));
                     } else { // field
                         currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
                                                                     currentChildImage, accessingClass));

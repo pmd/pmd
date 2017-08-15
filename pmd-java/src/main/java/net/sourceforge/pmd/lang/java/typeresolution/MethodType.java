@@ -19,10 +19,21 @@ public class MethodType {
     private final List<JavaTypeDefinition> argTypes;
     private final Method method;
 
-    public MethodType(JavaTypeDefinition returnType, List<JavaTypeDefinition> argTypes, Method method) {
+    private MethodType(JavaTypeDefinition returnType, List<JavaTypeDefinition> argTypes, Method method) {
         this.returnType = returnType;
-        this.argTypes = Collections.unmodifiableList(argTypes);
+        this.argTypes = argTypes;
         this.method = method;
+    }
+
+    /**
+     * @return An unparameterized MethodType
+     */
+    public static MethodType build(Method method) {
+        return new MethodType(null, null, method);
+    }
+
+    public static MethodType build(JavaTypeDefinition returnType, List<JavaTypeDefinition> argTypes, Method method) {
+        return new MethodType(returnType, Collections.unmodifiableList(argTypes), method);
     }
 
     public JavaTypeDefinition getReturnType() {
@@ -68,5 +79,9 @@ public class MethodType {
                 .append(", argTypes=").append(argTypes)
                 .append(']')
                 .toString();
+    }
+
+    public boolean isParameterized() {
+        return returnType != null && argTypes != null;
     }
 }
