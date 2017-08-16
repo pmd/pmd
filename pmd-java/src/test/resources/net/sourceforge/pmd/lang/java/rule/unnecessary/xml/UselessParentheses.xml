@@ -370,4 +370,81 @@ public class Useless {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Typecast</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          public void bar(Object o) {
+            return ((Exception) o).getMessage();
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+          public class Foo {
+            private String getData(final String header) {
+              String result = ("[" + header + ":" + Utils.decode(header) + "]");
+              return result;
+            }
+          }
+         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression modified</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+          public class Foo {
+            private String getData(final String header) {
+              String result = ("[" + header + ":" + Utils.decode(header) + "]").foo();
+              return result;
+            }
+          }
+         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Parentheses around cast</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          public void bar(Object o) {
+            return ((String) "doo");
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Parentheses around call chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          public void bar(Object o) {
+             return (a.bar()).foo();
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Unreported call chain</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          public void bar(Object o) {
+             return a.bar().foo();
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+
 </test-data>
