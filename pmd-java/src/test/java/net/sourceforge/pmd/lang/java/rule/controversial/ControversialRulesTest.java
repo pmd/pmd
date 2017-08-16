@@ -30,7 +30,6 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule(RULESET, "OneDeclarationPerLine");
         addRule(RULESET, "SuspiciousOctalEscape");
         addRule(RULESET, "UnnecessaryConstructor");
-        addRule(RULESET, "UnnecessaryParentheses");
         addRule(RULESET, "UseConcurrentHashMap");
         addRule(RULESET, "UseObjectForClearerAPI");
     }
