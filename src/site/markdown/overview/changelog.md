@@ -79,6 +79,9 @@ and include them to such reports.
     It will now flag anonymous class' methods marked as final (can't be overridden, so it's pointless), along with
     final methods overridden / defined within enum instances.
 
+*   The rule `UnnecessaryParentheses` (ruleset `java-controversial`) has been merged into `UselessParentheses`
+    (ruleset `java-unnecessary`). The rule covers all scenarios previously covered by either rule.
+
 #### Removed Rules
 
 *   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
@@ -122,6 +125,7 @@ All existing rules have been updated to reflect these changes. If you have custo
     *   [#536](https://github.com/pmd/pmd/issues/536): \[java] CommentDefaultAccessModifierRule ignores constructors
 *   java-controversial
     *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
+    *   [#537](https://github.com/pmd/pmd/issues/537): \[java] UnnecessaryParentheses fails to detect obvious scenario
 *   java-sunsecure
     *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive
 *   java-unusedcode
@@ -167,6 +171,7 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   [#545](https://github.com/pmd/pmd/pull/545): \[apex] Apex metrics framework - [Clément Fournier](https://github.com/oowekyala)
 *   [#548](https://github.com/pmd/pmd/pull/548): \[java] Metrics documentation - [Clément Fournier](https://github.com/oowekyala)
 *   [#550](https://github.com/pmd/pmd/pull/550): \[java] Add basic resolution to type inference - [Bendegúz Nagy](https://github.com/WinterGrascph)
+*   [#554](https://github.com/pmd/pmd/pull/554): \[java] Fix #537: UnnecessaryParentheses fails to detect obvious scenario - [Clément Fournier](https://github.com/oowekyala)
 *   [#555](https://github.com/pmd/pmd/pull/555): \[java] Changed metrics/CyclomaticComplexityRule to use WMC when reporting classes - [Clément Fournier](https://github.com/oowekyala)
 *   [#557](https://github.com/pmd/pmd/pull/557): \[java] Fix NPath metric not counting ternaries correctly - [Clément Fournier](https://github.com/oowekyala)
 
