@@ -76,6 +76,9 @@ and include them to such reports.
     It will now flag anonymous class' methods marked as final (can't be overridden, so it's pointless), along with
     final methods overridden / defined within enum instances.
 
+*   The rule `UncommentedEmptyConstructor` (ruleset `java-design`) will now ignore empty constructors annotated with
+    `javax.inject.Inject`.
+
 #### Removed Rules
 
 *   The deprecated rule `UseSingleton` has been removed from the ruleset `java-design`. The rule has been renamed
@@ -119,6 +122,8 @@ Al existing rules have been updated to reflect these changes. If you have custom
     *   [#536](https://github.com/pmd/pmd/issues/536): \[java] CommentDefaultAccessModifierRule ignores constructors
 *   java-controversial
     *   [#408](https://github.com/pmd/pmd/issues/408): \[java] DFA not analyzing asserts
+*   java-design
+    *   [#357](https://github.com/pmd/pmd/issues/357): \[java] UncommentedEmptyConstructor consider annotations on Constructor
 *   java-sunsecure
     *   [#468](https://github.com/pmd/pmd/issues/468): \[java] ArrayIsStoredDirectly false positive
 *   java-unusedcode
@@ -162,4 +167,5 @@ Al existing rules have been updated to reflect these changes. If you have custom
 *   [#535](https://github.com/pmd/pmd/pull/535): \[apex] Fix broken Apex visitor adapter - [Clément Fournier](https://github.com/oowekyala)
 *   [#542](https://github.com/pmd/pmd/pull/542): \[java] Metrics abstraction - [Clément Fournier](https://github.com/oowekyala)
 *   [#548](https://github.com/pmd/pmd/pull/548): \[java] Metrics documentation - [Clément Fournier](https://github.com/oowekyala)
+*   [#556](https://github.com/pmd/pmd/pull/556): \[java] Fix #357: UncommentedEmptyConstructor consider annotations on Constructor - [Clément Fournier](https://github.com/oowekyala)
 
