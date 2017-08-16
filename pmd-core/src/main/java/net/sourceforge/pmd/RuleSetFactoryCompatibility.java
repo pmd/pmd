@@ -70,7 +70,7 @@ public class RuleSetFactoryCompatibility {
 
         // PMD 6.0.0
         addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
-        addFilterRuleMoved("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
+        addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
 
     }
 

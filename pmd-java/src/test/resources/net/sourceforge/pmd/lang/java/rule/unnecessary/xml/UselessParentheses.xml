@@ -372,18 +372,6 @@ public class Useless {
     </test-code>
 
     <test-code>
-        <description>From controversial/UnnecessaryParentheses: Typecast</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-        public class Foo {
-          public void bar(Object o) {
-            return ((Exception) o).getMessage();
-          }
-        }
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -445,6 +433,28 @@ public class Useless {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: bad, returning variable in parens</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          int bar(int y) {
+            return (y);
+          }
+        }
+        ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>From controversial/UnnecessaryParentheses: Failure case, returning literal</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          int bar() {
+            String a = ((String) "foo");
+          }
+        }
+        ]]></code>
+    </test-code>
 
 </test-data>
