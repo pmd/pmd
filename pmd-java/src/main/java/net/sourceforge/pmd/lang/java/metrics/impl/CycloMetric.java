@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -13,8 +14,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathUnawareOperationVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.StandardCycloVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathAwareDecorator;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloBaseVisitor;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
 
@@ -36,7 +38,7 @@ import net.sourceforge.pmd.lang.metrics.MetricVersion;
  * control flow statement in itself.
  * </ul>
  *
- * <p>Version {@link CycloVersion#IGNORE_BOOLEAN_PATHS}: Boolean operators are not counted, which means that empty
+ * <p>Version {@link CycloOptions#IGNORE_BOOLEAN_PATHS}: Boolean operators are not counted, which means that empty
  * fall-through cases in {@code switch} statements are not counted as well.
  *
  * <p>References:
@@ -58,10 +60,12 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
+        Set<MetricOption> options = version.getOptions();
+        JavaParserVisitor visitor = new CycloBaseVisitor();
 
-        JavaParserVisitor visitor = (CycloVersion.IGNORE_BOOLEAN_PATHS == version)
-                                    ? new CycloPathUnawareOperationVisitor()
-                                    : new StandardCycloVisitor();
+        if (!options.contains(CycloOptions.IGNORE_BOOLEAN_PATHS)) {
+            visitor = new CycloPathAwareDecorator(visitor);
+        }
 
         MutableInt cyclo = (MutableInt) node.jjtAccept(visitor, new MutableInt(1));
         return (double) cyclo.getValue();
@@ -98,8 +102,8 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
     }
 
 
-    /** Variants of CYCLO. */
-    public enum CycloVersion implements MetricVersion {
+    /** Options for CYCLO. */
+    public enum CycloOptions implements MetricOption {
         /** Do not count the paths in boolean expressions as decision points. */
         IGNORE_BOOLEAN_PATHS
     }

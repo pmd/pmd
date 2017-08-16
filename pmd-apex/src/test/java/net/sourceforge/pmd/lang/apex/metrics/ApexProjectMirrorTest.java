@@ -37,8 +37,8 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 public class ApexProjectMirrorTest {
 
     private static ApexNode<Compilation> acu;
-    private MetricKey<ASTUserClassOrInterface<?>> classMetricKey = MetricKeyUtil.of(new RandomClassMetric(), null);
-    private MetricKey<ASTMethod> opMetricKey = MetricKeyUtil.of(new RandomOperationMetric(), null);
+    private MetricKey<ASTUserClassOrInterface<?>> classMetricKey = MetricKeyUtil.of(null, new RandomClassMetric());
+    private MetricKey<ASTMethod> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
 
 
     static {

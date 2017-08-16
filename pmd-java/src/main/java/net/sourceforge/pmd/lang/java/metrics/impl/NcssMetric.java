@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
+import java.util.Set;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.DefaultNcssVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.JavaNcssVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssBaseVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssCountImportsDecorator;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
 /**
@@ -20,8 +23,8 @@ import net.sourceforge.pmd.lang.metrics.MetricVersion;
  * <p>The standard version's precise rules for counting statements comply with <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS
  * rules</a>. The only difference is that import and package statements are not counted.
  *
- * <p>Version {@link NcssVersion#JAVANCSS}: Import and package statements are counted. This version fully complies with
- * JavaNcss rules.
+ * <p>Option {@link NcssOption#COUNT_IMPORTS}: Import and package statements are counted. Using that alone makes the
+ * metric fully comply with JavaNcss rules.
  *
  * @author Clément Fournier
  * @see LocMetric
@@ -31,9 +34,9 @@ public final class NcssMetric {
 
 
     /** Variants of NCSS. */
-    public enum NcssVersion implements MetricVersion {
-        /** JavaNCSS compliant cyclo visitor. */
-        JAVANCSS
+    public enum NcssOption implements MetricOption {
+        /** Counts import and package statement. This makes the metric JavaNCSS compliant. */
+        COUNT_IMPORTS
     }
 
     public static final class NcssClassMetric extends AbstractJavaClassMetric {
@@ -46,9 +49,14 @@ public final class NcssMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricVersion version) {
-            JavaParserVisitor visitor = (NcssVersion.JAVANCSS == version)
-                                        ? new JavaNcssVisitor()
-                                        : new DefaultNcssVisitor();
+            Set<MetricOption> options = version.getOptions();
+            JavaParserVisitor visitor = new NcssBaseVisitor();
+
+            if (options.contains(NcssOption.COUNT_IMPORTS)) {
+                visitor = new NcssCountImportsDecorator(visitor);
+            }
+
+            // decorate
 
             MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
             return (double) ncss.getValue();
@@ -66,9 +74,12 @@ public final class NcssMetric {
 
         @Override
         public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-            JavaParserVisitor visitor = (NcssVersion.JAVANCSS.equals(version))
-                                        ? new JavaNcssVisitor()
-                                        : new DefaultNcssVisitor();
+            Set<MetricOption> options = version.getOptions();
+            JavaParserVisitor visitor = new NcssBaseVisitor();
+
+            if (options.contains(NcssOption.COUNT_IMPORTS)) {
+                visitor = new NcssCountImportsDecorator(visitor);
+            }
 
             MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));
             return (double) ncss.getValue();

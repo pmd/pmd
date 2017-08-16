@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.DefaultNpathVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NpathBaseVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
 
 /**
@@ -19,7 +19,7 @@ public class NpathMetric extends AbstractJavaOperationMetric {
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-        return (Integer) node.jjtAccept(new DefaultNpathVisitor(), null);
+        return (Integer) node.jjtAccept(new NpathBaseVisitor(), null);
     }
 
 }

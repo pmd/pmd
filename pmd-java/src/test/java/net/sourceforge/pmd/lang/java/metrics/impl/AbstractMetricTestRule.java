@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +16,12 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.Metric.Version;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 
 /**
  * Abstract test rule for a metric. Tests of metrics use the standard framework for rule testing, using one dummy rule
@@ -29,15 +31,16 @@ import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
  */
 public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
-    private final EnumeratedProperty<MetricVersion> versionDescriptor = new EnumeratedProperty<>(
+    private final EnumeratedMultiProperty<MetricOption> versionDescriptor = new EnumeratedMultiProperty<>(
         "metricVersion", "Choose a variant of the metric or the standard",
-        versionMappings(), Version.STANDARD, MetricVersion.class, 3.0f);
+        optionMappings(), Collections.<MetricOption>emptyList(), MetricOption.class, 3.0f);
     private final BooleanProperty reportClassesDescriptor = new BooleanProperty(
         "reportClasses", "Add class violations to the report", isReportClasses(), 2.0f);
     private final BooleanProperty reportMethodsDescriptor = new BooleanProperty(
         "reportMethods", "Add method violations to the report", isReportMethods(), 3.0f);
     private final DoubleProperty reportLevelDescriptor = new DoubleProperty(
         "reportLevel", "Minimum value required to report", -1., Double.POSITIVE_INFINITY, defaultReportLevel(), 3.0f);
+
     private MetricVersion metricVersion;
     private boolean reportClasses;
     private boolean reportMethods;
@@ -109,10 +112,8 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
      *
      * @return A map of labels to versions
      */
-    protected Map<String, MetricVersion> versionMappings() {
-        Map<String, MetricVersion> mappings = new HashMap<>();
-        mappings.put("standard", Version.STANDARD);
-        return mappings;
+    protected Map<String, MetricOption> optionMappings() {
+        return new HashMap<>();
     }
 
 

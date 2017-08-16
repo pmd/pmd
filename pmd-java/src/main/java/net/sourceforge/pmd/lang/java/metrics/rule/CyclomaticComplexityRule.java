@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics.rule;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,12 +15,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloVersion;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOptions;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
-import net.sourceforge.pmd.lang.metrics.Metric.Version;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
-import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
@@ -35,23 +35,22 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     private static final IntegerProperty METHOD_LEVEL_DESCRIPTOR = new IntegerProperty(
         "methodReportLevel", "Cyclomatic complexity reporting threshold", 1, 50, 10, 1.0f);
 
-    private static final Map<String, MetricVersion> VERSION_MAP;
+    private static final Map<String, MetricOption> VERSION_MAP;
 
 
     static {
         VERSION_MAP = new HashMap<>();
-        VERSION_MAP.put("standard", Version.STANDARD);
-        VERSION_MAP.put("ignoreBooleanPaths", CycloVersion.IGNORE_BOOLEAN_PATHS);
+        VERSION_MAP.put("ignoreBooleanPaths", CycloOptions.IGNORE_BOOLEAN_PATHS);
     }
 
 
-    private static final EnumeratedProperty<MetricVersion> CYCLO_VERSION_DESCRIPTOR = new EnumeratedProperty<>(
-        "cycloVersion", "Choose a variant of Cyclo or the standard",
-        VERSION_MAP, Version.STANDARD, MetricVersion.class, 3.0f);
+    private static final EnumeratedMultiProperty<MetricOption> CYCLO_VERSION_DESCRIPTOR = new EnumeratedMultiProperty<>(
+        "cycloOptions", "Choose options for the computation of Cyclo",
+        VERSION_MAP, Collections.<MetricOption>emptyList(), MetricOption.class, 3.0f);
 
     private int methodReportLevel;
     private int classReportLevel;
-    private MetricVersion cycloVersion = Version.STANDARD;
+    private MetricOption[] cycloOptions;
 
 
     public CyclomaticComplexityRule() {
@@ -65,7 +64,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         methodReportLevel = getProperty(METHOD_LEVEL_DESCRIPTOR);
         classReportLevel = getProperty(CLASS_LEVEL_DESCRIPTOR);
-        cycloVersion = getProperty(CYCLO_VERSION_DESCRIPTOR);
+        cycloOptions = getProperty(CYCLO_VERSION_DESCRIPTOR).toArray(new MetricOption[0]);
 
         super.visit(node, data);
         return data;
@@ -78,10 +77,10 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         super.visit(node, data);
 
         if (JavaClassMetricKey.WMC.supports(node)) {
-            int classWmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node, cycloVersion);
+            int classWmc = (int) JavaMetrics.get(JavaClassMetricKey.WMC, node, cycloOptions);
 
             if (classWmc >= classReportLevel) {
-                int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloVersion, ResultOption.HIGHEST);
+                int classHighest = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, ResultOption.HIGHEST, cycloOptions);
 
                 String[] messageParams = {node.getTypeKind().name().toLowerCase(),
                                           node.getImage(),
@@ -98,7 +97,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     @Override
     public final Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
 
-        int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloVersion);
+        int cyclo = (int) JavaMetrics.get(JavaOperationMetricKey.CYCLO, node, cycloOptions);
         if (cyclo >= methodReportLevel) {
             addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                                    node.getQualifiedName().getOperation(),

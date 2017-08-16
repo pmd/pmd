@@ -25,7 +25,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
  */
-public class CycloPathUnawareOperationVisitor extends JavaParserVisitorAdapter {
+public class CycloBaseVisitor extends JavaParserVisitorAdapter {
+
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {

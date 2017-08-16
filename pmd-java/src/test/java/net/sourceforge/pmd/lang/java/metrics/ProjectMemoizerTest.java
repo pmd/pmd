@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
-import net.sourceforge.pmd.lang.metrics.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
@@ -32,8 +31,8 @@ import net.sourceforge.pmd.lang.metrics.MetricVersion;
  */
 public class ProjectMemoizerTest {
 
-    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(new RandomClassMetric(), null);
-    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = MetricKeyUtil.of(new RandomOperationMetric(), null);
+    private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(null, new RandomClassMetric());
+    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
 
 
     @Test
@@ -72,7 +71,8 @@ public class ProjectMemoizerTest {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
                 MetricMemoizer<ASTMethodOrConstructorDeclaration> op = toplevel.getOperationMemoizer(node.getQualifiedName());
-                result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force, Version.STANDARD, op));
+                result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force,
+                                                                                  MetricVersion.ofOptions(), op));
                 return super.visit(node, data);
             }
 
@@ -80,7 +80,8 @@ public class ProjectMemoizerTest {
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
                 MetricMemoizer<ASTAnyTypeDeclaration> clazz = toplevel.getClassMemoizer(node.getQualifiedName());
-                result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force, Version.STANDARD, clazz));
+                result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force,
+                                                                             MetricVersion.ofOptions(), clazz));
                 return super.visit(node, data);
             }
         }, null);

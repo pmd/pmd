@@ -7,9 +7,8 @@ package net.sourceforge.pmd.lang.java.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
-import net.sourceforge.pmd.lang.metrics.MetricVersion;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
 
@@ -50,10 +49,10 @@ public final class JavaMetrics {
      * @param key  The key identifying the metric to be computed
      * @param node The node on which to compute the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node) {
-        return FACADE.computeForType(key, node, Version.STANDARD);
+        return FACADE.computeForType(key, node);
     }
 
 
@@ -63,12 +62,12 @@ public final class JavaMetrics {
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
-     * @param version The version of the metric
+     * @param options The options of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version) {
-        return FACADE.computeForType(key, node, version);
+    public static double get(MetricKey<ASTAnyTypeDeclaration> key, ASTAnyTypeDeclaration node, MetricOption... options) {
+        return FACADE.computeForType(key, node, options);
     }
 
 
@@ -78,10 +77,10 @@ public final class JavaMetrics {
      * @param key  The key identifying the metric to be computed
      * @param node The node on which to compute the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node) {
-        return FACADE.computeForOperation(key, node, Version.STANDARD);
+        return FACADE.computeForOperation(key, node);
     }
 
 
@@ -90,12 +89,13 @@ public final class JavaMetrics {
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
-     * @param version The version of the metric
+     * @param options The options of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node, MetricVersion version) {
-        return FACADE.computeForOperation(key, node, version);
+    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTMethodOrConstructorDeclaration node,
+                             MetricOption... options) {
+        return FACADE.computeForOperation(key, node, options);
     }
 
 
@@ -103,15 +103,15 @@ public final class JavaMetrics {
      * Compute the sum, average, or highest value of the standard operation metric on all operations of the class node.
      * The type of operation is specified by the {@link ResultOption} parameter.
      *
-     * @param key    The key identifying the metric to be computed
-     * @param node   The node on which to compute the metric
-     * @param option The result option to use
+     * @param key          The key identifying the metric to be computed
+     * @param node         The node on which to compute the metric
+     * @param resultOption The result option to use
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, ResultOption option) {
-        return FACADE.computeWithResultOption(key, node, Version.STANDARD, option);
+    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, ResultOption resultOption) {
+        return FACADE.computeWithResultOption(key, node, resultOption);
     }
 
 
@@ -119,17 +119,17 @@ public final class JavaMetrics {
      * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The type
      * of operation is specified by the {@link ResultOption} parameter.
      *
-     * @param key     The key identifying the metric to be computed
-     * @param node    The node on which to compute the metric
-     * @param version The version of the metric
-     * @param option  The result option to use
+     * @param key          The key identifying the metric to be computed
+     * @param node         The node on which to compute the metric
+     * @param resultOption The result option to use
+     * @param options      The version of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node, MetricVersion version,
-                             ResultOption option) {
-        return FACADE.computeWithResultOption(key, node, version, option);
+    public static double get(MetricKey<ASTMethodOrConstructorDeclaration> key, ASTAnyTypeDeclaration node,
+                             ResultOption resultOption, MetricOption... options) {
+        return FACADE.computeWithResultOption(key, node, resultOption, options);
     }
 
 }

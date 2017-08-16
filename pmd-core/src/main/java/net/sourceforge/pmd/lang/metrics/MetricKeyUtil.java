@@ -19,17 +19,18 @@ public class MetricKeyUtil {
 
     }
 
+
     /**
      * Creates a new metric key holding a metric which can be computed on a class.
      *
      * TODO:cf Move that to the MetricKey interface once we upgrade the compiler
      *
-     * @param metric The metric to use
      * @param name   The name of the metric
+     * @param metric The metric to use
      *
      * @return The metric key
      */
-    public static <T extends Node> MetricKey<T> of(final Metric<T> metric, final String name) {
+    public static <T extends Node> MetricKey<T> of(final String name, final Metric<T> metric) {
         return new MetricKey<T>() {
             @Override
             public String name() {

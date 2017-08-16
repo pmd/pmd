@@ -41,7 +41,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
  */
-public class DefaultNcssVisitor extends JavaParserVisitorAdapter {
+public class NcssBaseVisitor extends JavaParserVisitorAdapter {
 
 
     @Override

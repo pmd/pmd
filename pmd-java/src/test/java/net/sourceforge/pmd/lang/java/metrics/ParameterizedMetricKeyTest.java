@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
+import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricVersion;
 import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
 
@@ -25,18 +26,21 @@ import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
  */
 public class ParameterizedMetricKeyTest {
 
+    private static final MetricVersion DUMMY_VERSION_1 = MetricVersion.ofOptions(Options.DUMMY1, Options.DUMMY2);
+    private static final MetricVersion DUMMY_VERSION_2 = MetricVersion.ofOptions(Options.DUMMY2);
+
     @Test
     public void testIdentity() {
         for (JavaClassMetricKey key : JavaClassMetricKey.values()) {
-            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, Version.DUMMY1);
-            ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(key, Version.DUMMY1);
+            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
+            ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
             assertEquals(key1, key2);
             assertTrue(key1 == key2);
         }
 
         for (JavaOperationMetricKey key : JavaOperationMetricKey.values()) {
-            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, Version.DUMMY1);
-            ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(key, Version.DUMMY1);
+            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
+            ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
             assertEquals(key1, key2);
             assertTrue(key1 == key2);
         }
@@ -46,15 +50,15 @@ public class ParameterizedMetricKeyTest {
     @Test
     public void testVersioning() {
         for (JavaClassMetricKey key : JavaClassMetricKey.values()) {
-            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, Version.DUMMY1);
-            ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(key, Version.DUMMY2);
+            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
+            ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_2);
             assertNotEquals(key1, key2);
             assertFalse(key1 == key2);
         }
 
         for (JavaOperationMetricKey key : JavaOperationMetricKey.values()) {
-            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, Version.DUMMY1);
-            ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(key, Version.DUMMY2);
+            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
+            ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_2);
             assertNotEquals(key1, key2);
             assertFalse(key1 == key2);
         }
@@ -64,9 +68,9 @@ public class ParameterizedMetricKeyTest {
     @Test
     public void testToString() {
         for (JavaClassMetricKey key : JavaClassMetricKey.values()) {
-            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, Version.DUMMY1);
+            ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(key, DUMMY_VERSION_1);
             assertTrue(key1.toString().contains(key1.key.name()));
-            assertTrue(key1.toString().contains(key1.version.name()));
+            assertTrue(key1.toString().contains(key1.version.toString()));
         }
     }
 
@@ -74,29 +78,23 @@ public class ParameterizedMetricKeyTest {
     @Test
     public void testAdHocMetricKey() {
 
-        MetricKey<ASTAnyTypeDeclaration> adHocKey = MetricKeyUtil.of(null, "metric");
+        MetricKey<ASTAnyTypeDeclaration> adHocKey = MetricKeyUtil.of("metric", null);
 
-        MetricVersion adHocVersion = new MetricVersion() {
-            @Override
-            public String name() {
-                return "version";
-            }
-        };
 
-        ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(adHocKey, adHocVersion);
-        ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(adHocKey, adHocVersion);
+        ParameterizedMetricKey key1 = ParameterizedMetricKey.getInstance(adHocKey, DUMMY_VERSION_1);
+        ParameterizedMetricKey key2 = ParameterizedMetricKey.getInstance(adHocKey, DUMMY_VERSION_1);
 
         assertNotNull(key1);
         assertNotNull(key2);
         assertTrue(key1 == key2);
         assertEquals(key1, key2);
         assertTrue(key1.toString().contains(key1.key.name()));
-        assertTrue(key1.toString().contains(key1.version.name()));
+        assertTrue(key1.toString().contains(key1.version.toString()));
 
     }
 
 
-    private enum Version implements MetricVersion {
+    private enum Options implements MetricOption {
         DUMMY1,
         DUMMY2
     }
