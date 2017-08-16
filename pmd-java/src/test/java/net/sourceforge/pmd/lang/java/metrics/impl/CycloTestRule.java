@@ -20,7 +20,7 @@ public class CycloTestRule extends AbstractMetricTestRule {
 
     @Override
     protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.CYCLO;
+        return null;
     }
 
 

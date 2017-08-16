@@ -104,6 +104,7 @@
                 e.printStackTrace();
               } catch (ThemAll pokemon) {
                 pokemon.train();
+                assert pokemon.level > 12;
               } finally {
                 // Do nothing
               }
@@ -125,11 +126,11 @@
         <rule-property name="reportClasses">true</rule-property>
         <expected-problems>5</expected-problems>
         <expected-messages>
-            <message>'com.company.money.Foo' has value 65 highest 20.</message>
+            <message>'com.company.money.Foo' has value 66 highest 21.</message>
             <message>'com.company.money.Foo#Foo()' has value 2.</message>
             <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
             <message>'com.company.money.Foo#foo()' has value 14.</message>
-            <message>'com.company.money.Foo#main(String)' has value 20.</message>
+            <message>'com.company.money.Foo#main(String)' has value 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -140,11 +141,11 @@
         <rule-property name="metricVersion">javaNcss</rule-property>
         <expected-problems>5</expected-problems>
         <expected-messages>
-            <message>'com.company.money.Foo' has value 68 highest 20.</message>
+            <message>'com.company.money.Foo' has value 69 highest 21.</message>
             <message>'com.company.money.Foo#Foo()' has value 2.</message>
             <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
             <message>'com.company.money.Foo#foo()' has value 14.</message>
-            <message>'com.company.money.Foo#main(String)' has value 20.</message>
+            <message>'com.company.money.Foo#main(String)' has value 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>

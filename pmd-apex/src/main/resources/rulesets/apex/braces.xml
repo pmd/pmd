@@ -24,7 +24,7 @@ controlled from the rest.
            <property name="xpath">
                <value>
                    <![CDATA[
-//IfBlockStatement/ExpressionStatement
+//IfBlockStatement/BlockStatement[@CurlyBrace='false']
                    ]]>
                </value>
            </property>
@@ -59,7 +59,7 @@ controlled from the rest.
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileLoopStatement/ExpressionStatement
+//WhileLoopStatement/BlockStatement[@CurlyBrace='false']
 ]]>
                 </value>
             </property>
@@ -92,11 +92,9 @@ from the rest.
              <property name="xpath">
                  <value>
 <![CDATA[
-//ExpressionStatement[parent::IfBlockStatement]
+//IfBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
 |
-//ExpressionStatement[parent::IfElseBlockStatement]
-|
-//IfElseBlockStatement[parent::IfBlockStatement]
+//IfElseBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
  ]]>
                  </value>
              </property>
@@ -131,11 +129,9 @@ from the rest.
              <property name="xpath">
                  <value>
  <![CDATA[
-//ForLoopStatement
-[child::ExpressionStatement]
+//ForLoopStatement/BlockStatement[@CurlyBrace='false']
 |
-//ForEachStatement
-[child::ExpressionStatement]
+//ForEachStatement/BlockStatement[@CurlyBrace='false']
  ]]>
                  </value>
              </property>

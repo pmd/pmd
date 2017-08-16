@@ -9,15 +9,20 @@ import java.lang.reflect.Field;
 import apex.jorje.data.ast.Identifier;
 import apex.jorje.semantic.ast.compilation.UserClass;
 
-public class ASTUserClass extends ApexRootNode<UserClass> {
+public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClassOrInterface<UserClass> {
+
+    private ApexQualifiedName qname;
+
 
     public ASTUserClass(UserClass userClass) {
         super(userClass);
     }
 
+
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
 
     @Override
     public String getImage() {
@@ -30,5 +35,28 @@ public class ASTUserClass extends ApexRootNode<UserClass> {
             e.printStackTrace();
         }
         return super.getImage();
+    }
+
+
+    @Override
+    public ApexQualifiedName getQualifiedName() {
+        if (qname == null) {
+
+            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+
+            if (parent != null) {
+                qname = ApexQualifiedName.ofNestedClass(parent.getQualifiedName(), this);
+            } else {
+                qname = ApexQualifiedName.ofOuterClass(this);
+            }
+        }
+
+        return qname;
+    }
+
+
+    @Override
+    public TypeKind getTypeKind() {
+        return TypeKind.CLASS;
     }
 }

@@ -567,6 +567,10 @@ public class RuleSetFactory {
         rule.setRuleSetName(ruleSetBuilder.getName());
         rule.setExternalInfoUrl(ruleElement.getAttribute(EXTERNAL_INFO_URL));
 
+        if (hasAttributeSetTrue(ruleElement, "deprecated")) {
+            rule.setDeprecated(true);
+        }
+
         if (hasAttributeSetTrue(ruleElement, "dfa")) {
             rule.setUsesDFA();
         }

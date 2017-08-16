@@ -12,8 +12,10 @@ import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class JavaTypeDefinition implements TypeDefinition {
     // contains TypeDefs where only the clazz field is used
@@ -21,11 +23,14 @@ public class JavaTypeDefinition implements TypeDefinition {
 
     private final Class<?> clazz;
     private final List<JavaTypeDefinition> genericArgs;
+    // cached because calling clazz.getTypeParameters().length create a new array every time
+    private final int typeParameterCount;
     private final boolean isGeneric;
     private final JavaTypeDefinition enclosingClass;
 
     private JavaTypeDefinition(final Class<?> clazz) {
         this.clazz = clazz;
+        this.typeParameterCount = clazz.getTypeParameters().length;
 
         final TypeVariable<?>[] typeParameters;
         // the anonymous class can't have generics, but we may be binding generics from super classes
@@ -64,10 +69,7 @@ public class JavaTypeDefinition implements TypeDefinition {
 
         final JavaTypeDefinition newDef = new JavaTypeDefinition(clazz);
 
-        // We can only cache types without generics, since their values are context-based
-        if (!newDef.isGeneric) {
-            CLASS_TYPE_DEF_CACHE.put(clazz, newDef);
-        }
+        CLASS_TYPE_DEF_CACHE.put(clazz, newDef);
 
         return newDef;
     }
@@ -80,9 +82,7 @@ public class JavaTypeDefinition implements TypeDefinition {
         // With generics there is no cache
         final JavaTypeDefinition typeDef = new JavaTypeDefinition(clazz);
 
-        for (final JavaTypeDefinition generic : boundGenerics) {
-            typeDef.genericArgs.add(generic);
-        }
+        Collections.addAll(typeDef.genericArgs, boundGenerics);
 
         return typeDef;
     }
@@ -237,7 +237,7 @@ public class JavaTypeDefinition implements TypeDefinition {
     }
 
     public int getTypeParameterCount() {
-        return clazz.getTypeParameters().length;
+        return typeParameterCount;
     }
 
     public boolean isArrayType() {
@@ -251,5 +251,109 @@ public class JavaTypeDefinition implements TypeDefinition {
                 .append(", isGeneric=").append(isGeneric)
                 .append(']').toString();
 
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof JavaTypeDefinition)) {
+            return false;
+        }
+
+        // raw vs raw
+        // we assume that this covers raw types, because they are cached
+        if (this == obj) {
+            return true;
+        }
+
+        JavaTypeDefinition otherTypeDef = (JavaTypeDefinition) obj;
+
+        if (clazz != otherTypeDef.clazz) {
+            return false;
+        }
+
+
+        // This should cover
+        // raw vs proper
+        // proper vs raw
+        // proper vs proper
+
+        // Note: we have to force raw types to compute their generic args, class Stuff<? extends List<Stuff>>
+        // Stuff a;
+        // Stuff<? extends List<Stuff>> b;
+        // Stuff<List<Stuff>> c;
+        // all of the above should be equal
+
+        for (int i = 0; i < getTypeParameterCount(); ++i) {
+            // Note: we assume that cycles can only exist because of raw types
+            if (!getGenericType(i).equals(otherTypeDef.getGenericType(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return clazz.hashCode();
+    }
+
+    public Set<JavaTypeDefinition> getSuperTypeSet() {
+        return getSuperTypeSet(new HashSet<JavaTypeDefinition>());
+    }
+
+    private Set<JavaTypeDefinition> getSuperTypeSet(Set<JavaTypeDefinition> destinationSet) {
+        destinationSet.add(this);
+
+        if (this.clazz != Object.class) {
+
+            resolveTypeDefinition(clazz.getGenericSuperclass()).getSuperTypeSet(destinationSet);
+
+            for (Type type : clazz.getGenericInterfaces()) {
+                resolveTypeDefinition(type).getSuperTypeSet(destinationSet);
+            }
+        }
+
+        return destinationSet;
+    }
+
+    public Set<Class<?>> getErasedSuperTypeSet() {
+        Set<Class<?>> result = new HashSet<>();
+        result.add(Object.class);
+        return getErasedSuperTypeSet(this.clazz, result);
+    }
+
+    private static Set<Class<?>> getErasedSuperTypeSet(Class<?> clazz, Set<Class<?>> destinationSet) {
+        if (clazz != null) {
+            destinationSet.add(clazz);
+            getErasedSuperTypeSet(clazz.getSuperclass(), destinationSet);
+
+            for (Class<?> interfaceType : clazz.getInterfaces()) {
+                getErasedSuperTypeSet(interfaceType, destinationSet);
+            }
+        }
+
+        return destinationSet;
+    }
+
+    /**
+     * @return true if clazz is generic and had not been parameterized
+     */
+    public boolean isRawType() {
+        return isGeneric() && CLASS_TYPE_DEF_CACHE.containsKey(getType());
+    }
+
+    public JavaTypeDefinition getAsSuper(Class<?> superClazz) {
+        if (clazz == superClazz) { // optimize for same class calls
+            return this;
+        }
+
+        for (JavaTypeDefinition superTypeDef : getSuperTypeSet()) {
+            if (superTypeDef.clazz == superClazz) {
+                return superTypeDef;
+            }
+        }
+
+        return null;
     }
 }

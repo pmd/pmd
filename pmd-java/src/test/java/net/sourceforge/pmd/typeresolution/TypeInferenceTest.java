@@ -12,8 +12,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -24,6 +26,11 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver;
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
+
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther2;
 
 public class TypeInferenceTest {
     private JavaTypeDefinition number = JavaTypeDefinition.forClass(Number.class);
@@ -278,7 +285,7 @@ public class TypeInferenceTest {
     @Test
     public void testIncorporationSubtypeAndSubtype() {
         List<Constraint> result;
-        
+
         // ### Original rule 4. : S <: α and α <: T imply ‹S <: T›
         result = incorporationResult(new Bound(s, alpha, EQUALITY), new Bound(alpha, t, SUBTYPE));
         assertEquals(result.size(), 1);
@@ -289,6 +296,49 @@ public class TypeInferenceTest {
         assertEquals(result.size(), 1);
         testBoundOrConstraint(result.get(0), s, t, SUBTYPE, Constraint.class);
 
+    }
+
+    @Test
+    public void testErasedCandidateSet() {
+        List<JavaTypeDefinition> types = new ArrayList<>();
+        types.add(JavaTypeDefinition.forClass(List.class));
+        types.add(JavaTypeDefinition.forClass(Set.class));
+
+        Set<Class<?>> erasedCandidate = TypeInferenceResolver.getErasedCandidateSet(types);
+
+        assertEquals(erasedCandidate.size(), 3);
+        assertTrue(erasedCandidate.contains(Object.class));
+        assertTrue(erasedCandidate.contains(Collection.class));
+        assertTrue(erasedCandidate.contains(Iterable.class));
+    }
+
+    @Test
+    public void testMinimalErasedCandidateSet() {
+        Set<Class<?>> minimalSet = TypeInferenceResolver.getMinimalErasedCandidateSet(
+                JavaTypeDefinition.forClass(List.class).getErasedSuperTypeSet());
+
+        assertEquals(minimalSet.size(), 1);
+        assertTrue(minimalSet.contains(List.class));
+    }
+
+    @Test
+    public void testLeastUpperBound() {
+        List<JavaTypeDefinition> lowerBounds = new ArrayList<>();
+        lowerBounds.add(JavaTypeDefinition.forClass(SuperClassA.class));
+        lowerBounds.add(JavaTypeDefinition.forClass(SuperClassAOther.class));
+        lowerBounds.add(JavaTypeDefinition.forClass(SuperClassAOther2.class));
+
+        assertEquals(TypeInferenceResolver.lub(lowerBounds), JavaTypeDefinition.forClass(SuperClassA2.class));
+    }
+
+    @Test
+    public void testResolution() {
+        List<Bound> bounds = new ArrayList<>();
+        bounds.add(new Bound(JavaTypeDefinition.forClass(SuperClassA.class), alpha, SUBTYPE));
+        bounds.add(new Bound(JavaTypeDefinition.forClass(SuperClassAOther.class), alpha, SUBTYPE));
+        Map<Variable, JavaTypeDefinition> result = TypeInferenceResolver.resolveVariables(bounds);
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(alpha), JavaTypeDefinition.forClass(SuperClassA2.class));
     }
 
     private List<Constraint> incorporationResult(Bound firstBound, Bound secondBound) {
