@@ -185,4 +185,17 @@ public class WebAgent {
         ]]>
         </code>
     </test-code>
+
+    <test-code>
+        <description>#357 UncommentedEmptyConstructor consider fully qualified annotations on Constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          @javax.inject.Inject MyClass() {
+
+          }
+        }
+        ]]>
+        </code>
+    </test-code>
 </test-data>
