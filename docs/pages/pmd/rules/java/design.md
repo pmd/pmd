@@ -1530,7 +1530,9 @@ constructors it is easier to distinguish between intentional (commented)
 and unintentional empty constructors.
 
 ```
-//ConstructorDeclaration[@Private='false'][count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+//ConstructorDeclaration[@Private='false']
+                        [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+                        [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'javax.inject.Inject', 'Inject')])]
 ```
 
 **Example(s):**
