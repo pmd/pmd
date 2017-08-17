@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.metrics;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
-import net.sourceforge.pmd.lang.metrics.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
@@ -16,6 +15,7 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  * User-bound façade of the Apex metrics framework.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public final class ApexMetrics {
 
@@ -49,25 +49,25 @@ public final class ApexMetrics {
      * @param key  The key identifying the metric to be computed
      * @param node The node on which to compute the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node) {
-        return FACADE.computeForType(key, node, Version.STANDARD);
+        return FACADE.computeForType(key, node, MetricOptions.emptyOptions());
     }
 
 
     /**
-     * Computes a metric identified by its code on a class AST node, possibly selecting a variant with the {@code
-     * MetricOptions} parameter.
+     * Computes a metric identified by its code on a class AST node, possibly selecting metric options with the {@code
+     * options} parameter.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
-     * @param version The version of the metric
+     * @param options The version of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node, MetricOptions version) {
-        return FACADE.computeForType(key, node, version);
+    public static double get(MetricKey<ASTUserClassOrInterface<?>> key, ASTUserClass node, MetricOptions options) {
+        return FACADE.computeForType(key, node, options);
     }
 
 
@@ -77,24 +77,25 @@ public final class ApexMetrics {
      * @param key  The key identifying the metric to be computed
      * @param node The node on which to compute the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
     public static double get(MetricKey<ASTMethod> key, ASTMethod node) {
-        return FACADE.computeForOperation(key, node, Version.STANDARD);
+        return FACADE.computeForOperation(key, node, MetricOptions.emptyOptions());
     }
 
 
     /**
-     * Computes a metric identified by its key on a operation AST node.
+     * Computes a metric identified by its key on a operation AST node, possibly selecting metric options with the
+     * {@code options} parameter.
      *
      * @param key     The key identifying the metric to be computed
      * @param node    The node on which to compute the metric
-     * @param version The version of the metric
+     * @param options The version of the metric
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static double get(MetricKey<ASTMethod> key, ASTMethod node, MetricOptions version) {
-        return FACADE.computeForOperation(key, node, version);
+    public static double get(MetricKey<ASTMethod> key, ASTMethod node, MetricOptions options) {
+        return FACADE.computeForOperation(key, node, options);
     }
 
 
@@ -102,15 +103,15 @@ public final class ApexMetrics {
      * Compute the sum, average, or highest value of the standard operation metric on all operations of the class node.
      * The type of operation is specified by the {@link ResultOption} parameter.
      *
-     * @param key    The key identifying the metric to be computed
-     * @param node   The node on which to compute the metric
-     * @param option The result option to use
+     * @param key          The key identifying the metric to be computed
+     * @param node         The node on which to compute the metric
+     * @param resultOption The result option to use
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, ResultOption option) {
-        return FACADE.computeWithResultOption(key, node, Version.STANDARD, option);
+    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, ResultOption resultOption) {
+        return FACADE.computeWithResultOption(key, node, MetricOptions.emptyOptions(), resultOption);
     }
 
 
@@ -118,17 +119,17 @@ public final class ApexMetrics {
      * Compute the sum, average, or highest value of the operation metric on all operations of the class node. The type
      * of operation is specified by the {@link ResultOption} parameter.
      *
-     * @param key     The key identifying the metric to be computed
-     * @param node    The node on which to compute the metric
-     * @param version The version of the metric
-     * @param option  The result option to use
+     * @param key          The key identifying the metric to be computed
+     * @param node         The node on which to compute the metric
+     * @param options      The version of the metric
+     * @param resultOption The result option to use
      *
-     * @return The value of the metric, or {@code Double.NaN} if the value couln't be computed or {@code option} is
+     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed or {@code option} is
      * {@code null}
      */
-    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, MetricOptions version,
-                             ResultOption option) {
-        return FACADE.computeWithResultOption(key, node, version, option);
+    public static double get(MetricKey<ASTMethod> key, ASTUserClassOrInterface<?> node, MetricOptions options,
+                             ResultOption resultOption) {
+        return FACADE.computeWithResultOption(key, node, options, resultOption);
     }
 
 

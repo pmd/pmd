@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter;
 import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexClassMetric;
 import net.sourceforge.pmd.lang.apex.metrics.impl.AbstractApexOperationMetric;
-import net.sourceforge.pmd.lang.metrics.Metric.Version;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricKeyUtil;
 import net.sourceforge.pmd.lang.metrics.MetricMemoizer;
@@ -86,7 +85,8 @@ public class ApexProjectMirrorTest {
             @Override
             public Object visit(ASTMethod node, Object data) {
                 MetricMemoizer<ASTMethod> op = toplevel.getOperationMemoizer(node.getQualifiedName());
-                result.add((int) ApexMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force, Version.STANDARD, op));
+                result.add((int) ApexMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force,
+                                                                                  MetricOptions.emptyOptions(), op));
                 return super.visit(node, data);
             }
 
@@ -94,7 +94,8 @@ public class ApexProjectMirrorTest {
             @Override
             public Object visit(ASTUserClass node, Object data) {
                 MetricMemoizer<ASTUserClassOrInterface<?>> clazz = toplevel.getClassMemoizer(node.getQualifiedName());
-                result.add((int) ApexMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force, Version.STANDARD, clazz));
+                result.add((int) ApexMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force,
+                                                                             MetricOptions.emptyOptions(), clazz));
                 return super.visit(node, data);
             }
         }, null);
