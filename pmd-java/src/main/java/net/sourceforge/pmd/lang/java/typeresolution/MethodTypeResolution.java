@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +22,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceResolver.ResolutionFailedException;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
+
 
 public final class MethodTypeResolution {
     private MethodTypeResolution() {}
@@ -92,21 +102,42 @@ public final class MethodTypeResolution {
      * Look for methods be subtypeability.
      * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.2
      */
-    public static List<MethodType> selectMethodsFirstPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
-                                                           List<JavaTypeDefinition> typeArgs) {
+    public static List<MethodType> selectMethodsFirstPhase(JavaTypeDefinition context,
+                                                           List<MethodType> methodsToSearch, ASTArgumentList argList) {
+        // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
 
-        for (MethodType methodType : methodsToSearch) {
-            if (isGeneric(methodType.getMethod().getDeclaringClass())
-                    && (typeArgs == null || typeArgs.size() == 0)) {
-                // TODO: type interference
-            }
+        outter:
+        for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
+            MethodType methodType = methodsToSearch.get(methodIndex);
 
             if (argList == null) {
                 selectedMethods.add(methodType);
 
                 // vararg methods are considered fixed arity here
             } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
+                if (!methodType.isParameterized()) {
+                    // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.1
+                    // ...
+                    //  To test for applicability by strict invocation:
+                    //  ... or if there exists an i (1 ≤ i ≤ n) such that ei is pertinent to applicability
+                    // (§15.12.2.2) and either i) ei is a standalone expression of a primitive type but Fi is a
+                    // reference type, or ii) Fi is a primitive type but ei is not a standalone expression of a
+                    // primitive type; then the method is not applicable and there is no need to proceed with inference.
+                    Class<?>[] methodParameterTypes = methodType.getMethod().getParameterTypes();
+                    for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                        if (((ASTExpression) argList.jjtGetChild(argIndex)).isStandAlonePrimitive()) {
+                            if (!methodParameterTypes[argIndex].isPrimitive()) {
+                                continue outter; // this method is not applicable
+                            }
+                        } else if (methodParameterTypes[argIndex].isPrimitive()) {
+                            continue outter; // this method is not applicable
+                        }
+                    }
+
+                    methodType = parameterizeInvocation(context, methodType.getMethod(), argList);
+                }
+
                 // check subtypeability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
 
@@ -131,17 +162,106 @@ public final class MethodTypeResolution {
         return selectedMethods;
     }
 
+
+    public static MethodType parameterizeInvocation(JavaTypeDefinition context, Method method,
+                                                    ASTArgumentList argList) {
+
+        // variables are set up by the call to produceInitialBounds
+        List<Variable> variables = new ArrayList<>();
+        List<Bound> initialBounds = new ArrayList<>();
+        produceInitialBounds(method, context, variables, initialBounds);
+
+        List<JavaTypeDefinition> resolvedTypeParameters = TypeInferenceResolver
+                .inferTypes(produceInitialConstraints(method, argList, variables), initialBounds, variables);
+
+        return getTypeDefOfMethod(context, method, resolvedTypeParameters);
+    }
+
+    public static List<Constraint> produceInitialConstraints(Method method, ASTArgumentList argList,
+                                                             List<Variable> variables) {
+        List<Constraint> result = new ArrayList<>();
+
+        Type[] methodParameters = method.getGenericParameterTypes();
+        TypeVariable<Method>[] methodTypeParameters = method.getTypeParameters();
+
+        // TODO: add support for variable arity methods
+        for (int i = 0; i < methodParameters.length; i++) {
+            int typeParamIndex = -1;
+            if (methodParameters[i] instanceof TypeVariable) {
+                typeParamIndex = JavaTypeDefinition
+                        .getGenericTypeIndex(methodTypeParameters, ((TypeVariable) methodParameters[i]).getName());
+            }
+
+            if (typeParamIndex != -1) {
+                // TODO: we are cheating here, it should be a contraint of the form 'var -> expression' not 'var->type'
+                result.add(new Constraint(((TypeNode) argList.jjtGetChild(i)).getTypeDefinition(),
+                                          variables.get(typeParamIndex), LOOSE_INVOCATION));
+            }
+        }
+
+        return result;
+    }
+
+
+    public static void produceInitialBounds(Method method, JavaTypeDefinition context,
+                                            List<Variable> variables, List<Bound> initialBounds) {
+        // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.1.3
+        // When inference begins, a bound set is typically generated from a list of type parameter declarations P1,
+        // ..., Pp and associated inference variables α1, ..., αp. Such a bound set is constructed as follows. For
+        // each l (1 ≤ l ≤ p):
+
+        TypeVariable<Method>[] typeVariables = method.getTypeParameters();
+
+        variables.clear();
+        for (int i = 0; i < typeVariables.length; ++i) {
+            variables.add(new Variable());
+        }
+
+        for (int currVarIndex = 0; currVarIndex < typeVariables.length; ++currVarIndex) {
+            Type[] bounds = typeVariables[currVarIndex].getBounds();
+            boolean currVarHasNoProperUpperBound = true;
+
+            for (Type bound : bounds) {
+                // Otherwise, for each type T delimited by & in the TypeBound, the bound αl <: T[P1:=α1, ..., Pp:=αp]
+                // appears in the set; if this results in no proper upper bounds for αl (only dependencies), then the
+                // bound α <: Object also appears in the set.
+
+                int boundVarIndex = -1;
+                if (bound instanceof TypeVariable) {
+                    boundVarIndex =
+                            JavaTypeDefinition.getGenericTypeIndex(typeVariables, ((TypeVariable) bound).getName());
+                }
+
+                if (boundVarIndex != -1) {
+                    initialBounds.add(new Bound(variables.get(currVarIndex), variables.get(boundVarIndex), SUBTYPE));
+                } else {
+                    currVarHasNoProperUpperBound = false;
+                    initialBounds.add(new Bound(variables.get(currVarIndex), context.resolveTypeDefinition(bound),
+                                                SUBTYPE));
+                }
+            }
+
+            // If Pl has no TypeBound, the bound αl <: Object appears in the set.
+            if (currVarHasNoProperUpperBound) {
+                initialBounds.add(new Bound(variables.get(currVarIndex), JavaTypeDefinition.forClass(Object.class),
+                                            SUBTYPE));
+            }
+        }
+    }
+
+
     /**
      * Look for methods be method conversion.
      * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.3
      */
-    public static List<MethodType> selectMethodsSecondPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
-                                                            List<JavaTypeDefinition> typeArgs) {
+    public static List<MethodType> selectMethodsSecondPhase(List<MethodType> methodsToSearch, ASTArgumentList argList) {
+        // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
 
-        for (MethodType methodType : methodsToSearch) {
-            if (isGeneric(methodType.getMethod().getDeclaringClass()) && typeArgs.size() == 0) {
-                // TODO: look at type interference, weep again
+        for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
+            MethodType methodType = methodsToSearch.get(methodIndex);
+            if (!methodType.isParameterized()) {
+                throw new ResolutionFailedException();
             }
 
             if (argList == null) {
@@ -177,13 +297,14 @@ public final class MethodTypeResolution {
      * Look for methods considering varargs as well.
      * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.4
      */
-    public static List<MethodType> selectMethodsThirdPhase(List<MethodType> methodsToSearch, ASTArgumentList argList,
-                                                           List<JavaTypeDefinition> typeArgs) {
+    public static List<MethodType> selectMethodsThirdPhase(List<MethodType> methodsToSearch, ASTArgumentList argList) {
+        // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
 
-        for (MethodType methodType : methodsToSearch) {
-            if (isGeneric(methodType.getMethod().getDeclaringClass()) && typeArgs.size() == 0) {
-                // TODO: look at type interference, weep again
+        for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
+            MethodType methodType = methodsToSearch.get(methodIndex);
+            if (!methodType.isParameterized()) {
+                throw new ResolutionFailedException();
             }
 
             if (argList == null) {
@@ -226,25 +347,29 @@ public final class MethodTypeResolution {
      * Searches a list of methods by trying the three phases of method overload resolution.
      * https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2
      */
-    public static JavaTypeDefinition getBestMethodReturnType(List<MethodType> methods, ASTArgumentList arguments,
-                                                             List<JavaTypeDefinition> typeArgs) {
+    public static JavaTypeDefinition getBestMethodReturnType(JavaTypeDefinition context, List<MethodType> methods,
+                                                             ASTArgumentList arguments) {
 
-        List<MethodType> selectedMethods = selectMethodsFirstPhase(methods, arguments, typeArgs);
-        if (!selectedMethods.isEmpty()) {
-            return selectMostSpecificMethod(selectedMethods).getReturnType();
+        try {
+            List<MethodType> selectedMethods = selectMethodsFirstPhase(context, methods, arguments);
+            if (!selectedMethods.isEmpty()) {
+                return selectMostSpecificMethod(selectedMethods).getReturnType();
+            }
+
+            selectedMethods = selectMethodsSecondPhase(methods, arguments);
+            if (!selectedMethods.isEmpty()) {
+                return selectMostSpecificMethod(selectedMethods).getReturnType();
+            }
+
+            selectedMethods = selectMethodsThirdPhase(methods, arguments);
+            if (!selectedMethods.isEmpty()) {
+                return selectMostSpecificMethod(selectedMethods).getReturnType();
+            }
+
+            return null;
+        } catch (ResolutionFailedException e) {
+            return null;
         }
-
-        selectedMethods = selectMethodsSecondPhase(methods, arguments, typeArgs);
-        if (!selectedMethods.isEmpty()) {
-            return selectMostSpecificMethod(selectedMethods).getReturnType();
-        }
-
-        selectedMethods = selectMethodsThirdPhase(methods, arguments, typeArgs);
-        if (!selectedMethods.isEmpty()) {
-            return selectMostSpecificMethod(selectedMethods).getReturnType();
-        }
-
-        return null;
     }
 
     /**
@@ -318,13 +443,6 @@ public final class MethodTypeResolution {
         // search the class
         for (Method method : contextClass.getDeclaredMethods()) {
             if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
-                if (isGeneric(method) && typeArguments.size() == 0) {
-                    // TODO: do generic implicit methods
-                    // this disables invocations which could match generic methods and have no explicit type args
-                    result.clear();
-                    return result;
-                }
-
                 result.add(getTypeDefOfMethod(context, method, typeArguments));
             }
         }
@@ -347,6 +465,10 @@ public final class MethodTypeResolution {
 
     public static MethodType getTypeDefOfMethod(JavaTypeDefinition context, Method method,
                                                 List<JavaTypeDefinition> typeArguments) {
+        if (typeArguments.isEmpty() && isGeneric(method)) {
+            return MethodType.build(method);
+        }
+
         JavaTypeDefinition returnType = context.resolveTypeDefinition(method.getGenericReturnType(),
                                                                       method, typeArguments);
         List<JavaTypeDefinition> argTypes = new ArrayList<>();
@@ -355,7 +477,7 @@ public final class MethodTypeResolution {
             argTypes.add(context.resolveTypeDefinition(argType, method, typeArguments));
         }
 
-        return new MethodType(returnType, argTypes, method);
+        return MethodType.build(returnType, argTypes, method);
     }
 
 
@@ -374,7 +496,7 @@ public final class MethodTypeResolution {
                 // if the method isn't vararg, then arity matches
                 && (method.isVarArgs() || (argArity == getArity(method)))
                 // isn't generic or arity of type arguments matches that of parameters
-                && (!isGeneric(method) || typeArguments == null
+                && (!isGeneric(method) || typeArguments.isEmpty()
                 || method.getTypeParameters().length == typeArguments.size())) {
 
             return true;

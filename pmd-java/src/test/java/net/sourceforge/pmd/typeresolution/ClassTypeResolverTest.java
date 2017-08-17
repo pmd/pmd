@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.typeresolution;
 
 import static junit.framework.TestCase.assertTrue;
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.LOOSE_INVOCATION;
+import static net.sourceforge.pmd.lang.java.typeresolution.typeinference.InferenceRuleType.SUBTYPE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
@@ -13,12 +15,14 @@ import static org.junit.Assert.assertSame;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 
 import org.apache.commons.io.IOUtils;
 import org.jaxen.JaxenException;
@@ -31,6 +35,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -50,11 +55,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.lang.java.typeresolution.MethodType;
+import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Bound;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Constraint;
+import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousClassFromInterface;
 import net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.AnoymousExtendingObject;
@@ -73,6 +84,7 @@ import net.sourceforge.pmd.typeresolution.testdata.FieldAccessPrimaryGenericSimp
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessShadow;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessStatic;
 import net.sourceforge.pmd.typeresolution.testdata.FieldAccessSuper;
+import net.sourceforge.pmd.typeresolution.testdata.GenericMethodsImplicit;
 import net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
@@ -94,6 +106,8 @@ import net.sourceforge.pmd.typeresolution.testdata.dummytypes.JavaTypeDefinition
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.StaticMembers;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassA2;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther;
+import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassAOther2;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB;
 import net.sourceforge.pmd.typeresolution.testdata.dummytypes.SuperClassB2;
 
@@ -1477,6 +1491,26 @@ public class ClassTypeResolverTest {
         assertEquals("All expressions not tested", index, expressions.size());
     }
 
+
+    @Test
+    public void testMethodTypeInference() throws JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericMethodsImplicit.class);
+
+        List<AbstractJavaTypeNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression"),
+                AbstractJavaTypeNode.class);
+
+        int index = 0;
+
+        // SuperClassA2 a = bar((SuperClassA) null, (SuperClassAOther) null, null, (SuperClassAOther2) null);
+        assertEquals(SuperClassA2.class, expressions.get(index).getType());
+        assertEquals(SuperClassA2.class, getChildType(expressions.get(index), 0));
+        assertEquals(SuperClassA2.class, getChildType(expressions.get(index++), 1));
+
+        // Make sure we got them all
+        assertEquals("All expressions not tested", index, expressions.size());
+    }
+
     @Test
     public void testJavaTypeDefinitionEquals() {
         JavaTypeDefinition a = JavaTypeDefinition.forClass(Integer.class);
@@ -1507,7 +1541,7 @@ public class ClassTypeResolverTest {
     @Test
     public void testJavaTypeDefinitionGetSuperTypeSet() {
         JavaTypeDefinition originalTypeDef = JavaTypeDefinition.forClass(List.class,
-                                                                  JavaTypeDefinition.forClass(Integer.class));
+                                                                         JavaTypeDefinition.forClass(Integer.class));
         Set<JavaTypeDefinition> set = originalTypeDef.getSuperTypeSet();
 
         assertEquals(set.size(), 4);
@@ -1531,6 +1565,89 @@ public class ClassTypeResolverTest {
         assertTrue(set.contains(List.class));
     }
 
+    @Test
+    public void testMethodInitialBounds() throws NoSuchMethodException {
+        JavaTypeDefinition context = JavaTypeDefinition.forClass(GenericMethodsImplicit.class,
+                                                                 JavaTypeDefinition.forClass(Thread.class));
+        List<Variable> variables = new ArrayList<>();
+        List<Bound> initialBounds = new ArrayList<>();
+        Method method = GenericMethodsImplicit.class.getMethod("foo");
+        MethodTypeResolution.produceInitialBounds(method, context, variables, initialBounds);
+
+        assertEquals(initialBounds.size(), 6);
+        // A
+        assertTrue(initialBounds.contains(new Bound(variables.get(0),
+                                                    JavaTypeDefinition.forClass(Object.class), SUBTYPE)));
+        // B
+        assertTrue(initialBounds.contains(new Bound(variables.get(1),
+                                                    JavaTypeDefinition.forClass(Number.class), SUBTYPE)));
+        assertTrue(initialBounds.contains(new Bound(variables.get(1),
+                                                    JavaTypeDefinition.forClass(Runnable.class), SUBTYPE)));
+        // C
+        assertTrue(initialBounds.contains(new Bound(variables.get(2), variables.get(3), SUBTYPE)));
+        assertTrue(initialBounds.contains(new Bound(variables.get(2),
+                                                    JavaTypeDefinition.forClass(Object.class), SUBTYPE)));
+        // D
+        assertTrue(initialBounds.contains(new Bound(variables.get(3),
+                                                    JavaTypeDefinition.forClass(Thread.class), SUBTYPE)));
+    }
+
+    @Test
+    public void testMethodInitialConstraints() throws NoSuchMethodException, JaxenException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericMethodsImplicit.class);
+
+        List<AbstractJavaNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//ArgumentList"),
+                AbstractJavaNode.class);
+
+        List<Variable> variables = new ArrayList<>();
+        for (int i = 0; i < 2; ++i) {
+            variables.add(new Variable());
+        }
+        Method method = GenericMethodsImplicit.class.getMethod("bar", Object.class, Object.class,
+                                                               Integer.class, Object.class);
+        ASTArgumentList argList = (ASTArgumentList) expressions.get(0);
+
+        List<Constraint> constraints = MethodTypeResolution.produceInitialConstraints(method, argList, variables);
+
+        assertEquals(constraints.size(), 3);
+        // A
+        assertTrue(constraints.contains(new Constraint(JavaTypeDefinition.forClass(SuperClassA.class),
+                                                       variables.get(0), LOOSE_INVOCATION)));
+        assertTrue(constraints.contains(new Constraint(JavaTypeDefinition.forClass(SuperClassAOther.class),
+                                                       variables.get(0),
+                                                       LOOSE_INVOCATION)));
+        // B
+        assertTrue(constraints.contains(new Constraint(JavaTypeDefinition.forClass(SuperClassAOther2.class),
+                                                       variables.get(1),
+                                                       LOOSE_INVOCATION)));
+    }
+
+    @Test
+    public void testMethodParameterization() throws JaxenException, NoSuchMethodException {
+        ASTCompilationUnit acu = parseAndTypeResolveForClass15(GenericMethodsImplicit.class);
+
+        List<AbstractJavaNode> expressions = convertList(
+                acu.findChildNodesWithXPath("//ArgumentList"),
+                AbstractJavaNode.class);
+
+        JavaTypeDefinition context = JavaTypeDefinition.forClass(GenericMethodsImplicit.class,
+                                                                 JavaTypeDefinition.forClass(Thread.class));
+        Method method = GenericMethodsImplicit.class.getMethod("bar", Object.class, Object.class,
+                                                               Integer.class, Object.class);
+        ASTArgumentList argList = (ASTArgumentList) expressions.get(0);
+
+        MethodType inferedMethod = MethodTypeResolution.parameterizeInvocation(context, method, argList);
+
+        assertEquals(inferedMethod.getParameterTypes().get(0),
+                     JavaTypeDefinition.forClass(SuperClassA2.class));
+        assertEquals(inferedMethod.getParameterTypes().get(1),
+                     JavaTypeDefinition.forClass(SuperClassA2.class));
+        assertEquals(inferedMethod.getParameterTypes().get(2),
+                     JavaTypeDefinition.forClass(Integer.class));
+        assertEquals(inferedMethod.getParameterTypes().get(3),
+                     JavaTypeDefinition.forClass(SuperClassAOther2.class));
+    }
 
 
     private Class<?> getChildType(Node node, int childIndex) {
