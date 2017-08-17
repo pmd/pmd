@@ -10,6 +10,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.NcssCountImportsDecorator;
@@ -50,10 +51,10 @@ public final class NcssMetric {
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricOptions version) {
             Set<MetricOption> options = version.getOptions();
-            JavaParserVisitor visitor = new NcssBaseVisitor();
+            JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(NcssBaseVisitor.INSTANCE);
 
             if (options.contains(NcssOptions.COUNT_IMPORTS)) {
-                visitor = new NcssCountImportsDecorator(visitor);
+                visitor.decorateWith(new NcssCountImportsDecorator());
             }
 
             // decorate
@@ -75,10 +76,10 @@ public final class NcssMetric {
         @Override
         public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions version) {
             Set<MetricOption> options = version.getOptions();
-            JavaParserVisitor visitor = new NcssBaseVisitor();
+            JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(NcssBaseVisitor.INSTANCE);
 
             if (options.contains(NcssOptions.COUNT_IMPORTS)) {
-                visitor = new NcssCountImportsDecorator(visitor);
+                visitor.decorateWith(new NcssCountImportsDecorator());
             }
 
             MutableInt ncss = (MutableInt) node.jjtAccept(visitor, new MutableInt(0));

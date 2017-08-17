@@ -14,9 +14,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
 
@@ -26,11 +25,7 @@ import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
  */
-public class CycloPathAwareDecorator extends AbstractJavaParserVisitorDecorator {
-
-    public CycloPathAwareDecorator(JavaParserVisitor javaParserVisitor) {
-        super(javaParserVisitor);
-    }
+public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
 
 
     @Override

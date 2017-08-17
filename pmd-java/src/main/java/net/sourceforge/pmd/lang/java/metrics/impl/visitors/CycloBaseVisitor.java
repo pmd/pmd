@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
 
 /**
  * Visitor calculating cyclo without counting boolean operators.
@@ -25,8 +25,14 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric
  */
-public class CycloBaseVisitor extends JavaParserVisitorAdapter {
+public class CycloBaseVisitor extends JavaParserControllessVisitorAdapter {
 
+    /** Instance */
+    public static final CycloBaseVisitor INSTANCE = new CycloBaseVisitor();
+
+    protected CycloBaseVisitor() {
+
+    }
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {

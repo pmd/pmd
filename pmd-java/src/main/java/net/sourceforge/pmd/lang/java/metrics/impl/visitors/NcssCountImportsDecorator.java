@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 
 /**
  * Decorator which counts imports.
@@ -21,12 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
  */
-public class NcssCountImportsDecorator extends AbstractJavaParserVisitorDecorator {
-
-
-    public NcssCountImportsDecorator(JavaParserVisitor javaParserVisitor) {
-        super(javaParserVisitor);
-    }
+public class NcssCountImportsDecorator extends JavaParserVisitorDecorator {
 
 
     @Override

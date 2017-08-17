@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
 
 /**
  * Default visitor for the calculation of Ncss.
@@ -41,9 +41,14 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
  */
-public class NcssBaseVisitor extends JavaParserVisitorAdapter {
+public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
 
+    /** Instance */
+    public static final NcssBaseVisitor INSTANCE = new NcssBaseVisitor();
 
+    protected NcssBaseVisitor() {
+
+    }
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         ((MutableInt) data).increment();

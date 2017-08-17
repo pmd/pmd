@@ -19,7 +19,7 @@ public class NpathMetric extends AbstractJavaOperationMetric {
 
     @Override
     public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
-        return (Integer) node.jjtAccept(new NpathBaseVisitor(), null);
+        return (Integer) node.jjtAccept(NpathBaseVisitor.INSTANCE, null);
     }
 
 }
