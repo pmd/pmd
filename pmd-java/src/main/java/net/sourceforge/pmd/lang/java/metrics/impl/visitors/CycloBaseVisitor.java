@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
  */
 public class CycloBaseVisitor extends JavaParserControllessVisitorAdapter {
 
-    /** Instance */
+    /** Instance. */
     public static final CycloBaseVisitor INSTANCE = new CycloBaseVisitor();
 
     protected CycloBaseVisitor() {

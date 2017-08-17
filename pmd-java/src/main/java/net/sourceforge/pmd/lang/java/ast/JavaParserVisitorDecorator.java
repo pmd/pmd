@@ -5,9 +5,10 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Decorates a controlless visitor. This must be wrapped into a {@link JavaParserDecoratedVisitor} to work properly.
+ * Decorates a control less visitor. This must be wrapped into a {@link JavaParserDecoratedVisitor} to work properly.
  *
  * @author Clément Fournier
+ * @since 6.0.0
  */
 public class JavaParserVisitorDecorator implements JavaParserControllessVisitor {
 

@@ -8,9 +8,8 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOptions;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
-import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
  * Tests cyclo.
@@ -34,7 +33,7 @@ public class CycloTestRule extends AbstractMetricTestRule {
     @Override
     protected Map<String, MetricOption> optionMappings() {
         Map<String, MetricOption> mappings = super.optionMappings();
-        mappings.put("ignoreBooleanPaths", CycloOptions.IGNORE_BOOLEAN_PATHS);
+        mappings.put("ignoreBooleanPaths", CycloOption.IGNORE_BOOLEAN_PATHS);
         return mappings;
     }
 }

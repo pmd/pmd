@@ -138,7 +138,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
                 valueReport += " highest " + highest;
             }
             if (classValue >= reportLevel) {
-                addViolation(data, node, new String[] {node.getQualifiedName().toString(), valueReport,});
+                addViolation(data, node, new String[] {node.getQualifiedName().toString(), valueReport, });
             }
         }
         return super.visit(node, data);
@@ -150,7 +150,7 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         if (opKey != null && reportMethods && opKey.supports(node)) {
             int methodValue = (int) JavaMetrics.get(opKey, node, metricOptions);
             if (methodValue >= reportLevel) {
-                addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + methodValue,});
+                addViolation(data, node, new String[] {node.getQualifiedName().toString(), "" + methodValue, });
             }
         }
         return data;

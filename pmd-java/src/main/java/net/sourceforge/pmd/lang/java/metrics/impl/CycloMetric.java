@@ -14,9 +14,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathAwareDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloBaseVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathAwareDecorator;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
@@ -39,7 +38,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * control flow statement in itself.
  * </ul>
  *
- * <p>Version {@link CycloOptions#IGNORE_BOOLEAN_PATHS}: Boolean operators are not counted, which means that empty
+ * <p>Version {@link CycloOption#IGNORE_BOOLEAN_PATHS}: Boolean operators are not counted, which means that empty
  * fall-through cases in {@code switch} statements are not counted as well.
  *
  * <p>References:
@@ -64,7 +63,7 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
         Set<MetricOption> opts = options.getOptions();
         JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(CycloBaseVisitor.INSTANCE);
 
-        if (!opts.contains(CycloOptions.IGNORE_BOOLEAN_PATHS)) {
+        if (!opts.contains(CycloOption.IGNORE_BOOLEAN_PATHS)) {
             visitor.decorateWith(new CycloPathAwareDecorator());
         }
 
@@ -104,7 +103,7 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
 
 
     /** Options for CYCLO. */
-    public enum CycloOptions implements MetricOption {
+    public enum CycloOption implements MetricOption {
         /** Do not count the paths in boolean expressions as decision points. */
         IGNORE_BOOLEAN_PATHS
     }

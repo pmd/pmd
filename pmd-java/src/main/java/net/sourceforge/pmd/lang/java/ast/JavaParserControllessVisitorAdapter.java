@@ -5,8 +5,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * AST visitor that doesn't take over control (doesn't drive the visit itself). That's wrapped into a
- * {@link JavaParserDecoratedVisitor} to implement a decorator pattern over a visitor.
+ * AST visitor that doesn't take over control (doesn't drive the visit itself). That's wrapped into a {@link
+ * JavaParserDecoratedVisitor} to implement a decorator pattern over a visitor.
+ *
+ * @author Clément Fournier
+ * @since 6.0.0
  */
 public class JavaParserControllessVisitorAdapter implements JavaParserControllessVisitor {
 

@@ -15,9 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOptions;
+import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
-import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
@@ -37,18 +36,18 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     private static final IntegerProperty CLASS_REPORT_LEVEL_DESCRIPTOR = new IntegerProperty(
         "classReportLevel", "Metric reporting threshold for classes", 1, 1000, 250, 1.0f);
 
-    private static final Map<String, MetricOption> OPTION_MAP;
+    private static final Map<String, NcssOption> OPTION_MAP;
 
 
     static {
         OPTION_MAP = new HashMap<>();
-        OPTION_MAP.put("javaNcss", NcssOptions.COUNT_IMPORTS);
+        OPTION_MAP.put("javaNcss", NcssOption.COUNT_IMPORTS);
     }
 
 
-    private static final EnumeratedMultiProperty<MetricOption> NCSS_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
+    private static final EnumeratedMultiProperty<NcssOption> NCSS_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
         "ncssOptions", "Choose options for the calculation of Ncss",
-        OPTION_MAP, Collections.<MetricOption>emptyList(), MetricOption.class, 3.0f);
+        OPTION_MAP, Collections.<NcssOption>emptyList(), NcssOption.class, 3.0f);
 
 
     private int methodReportLevel;

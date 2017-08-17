@@ -5,9 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Type for use within the visitor decorator pattern.
+ * Visitor which doesn't take over control on the AST visit (it doesn't explore its children). This is used in our
+ * modified version of the decorator pattern on an AST visitor.
  *
  * @author Clément Fournier
+ * @since 6.0.0
+ *
+ * @see JavaParserDecoratedVisitor
+ * @see JavaParserVisitorDecorator
  */
 public interface JavaParserControllessVisitor extends JavaParserVisitor {
 }

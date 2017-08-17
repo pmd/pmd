@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
  */
 public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
-    /** Instance */
+    /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
 
     protected NpathBaseVisitor() {

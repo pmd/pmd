@@ -11,6 +11,9 @@ package net.sourceforge.pmd.lang.java.ast;
  * <p>Important! This modified decorator pattern compels you to use the data object as the accumulator for your result!
  * The {@code visit} methods or your decorators and base visitors must only perform side effects on this object, their
  * return values will be ignored.
+ *
+ * @author Clément Fournier
+ * @since 6.0.0
  */
 public class JavaParserDecoratedVisitor implements JavaParserVisitor {
 
@@ -24,7 +27,7 @@ public class JavaParserDecoratedVisitor implements JavaParserVisitor {
      *
      * @param baseVisitor The base visitor
      */
-    public JavaParserDecoratedVisitor(JavaParserControllessVisitorAdapter baseVisitor) {
+    public JavaParserDecoratedVisitor(JavaParserControllessVisitor baseVisitor) {
         this.visitor = baseVisitor;
     }
 

@@ -15,9 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOptions;
+import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
-import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
@@ -36,18 +35,18 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     private static final IntegerProperty METHOD_LEVEL_DESCRIPTOR = new IntegerProperty(
         "methodReportLevel", "Cyclomatic complexity reporting threshold", 1, 50, 10, 1.0f);
 
-    private static final Map<String, MetricOption> VERSION_MAP;
+    private static final Map<String, CycloOption> VERSION_MAP;
 
 
     static {
         VERSION_MAP = new HashMap<>();
-        VERSION_MAP.put("ignoreBooleanPaths", CycloOptions.IGNORE_BOOLEAN_PATHS);
+        VERSION_MAP.put("ignoreBooleanPaths", CycloOption.IGNORE_BOOLEAN_PATHS);
     }
 
 
-    private static final EnumeratedMultiProperty<MetricOption> CYCLO_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
+    private static final EnumeratedMultiProperty<CycloOption> CYCLO_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
         "cycloOptions", "Choose options for the computation of Cyclo",
-        VERSION_MAP, Collections.<MetricOption>emptyList(), MetricOption.class, 3.0f);
+        VERSION_MAP, Collections.<CycloOption>emptyList(), CycloOption.class, 3.0f);
 
     private int methodReportLevel;
     private int classReportLevel;
