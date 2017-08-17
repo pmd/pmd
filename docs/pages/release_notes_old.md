@@ -13,12 +13,6 @@ The PMD team is pleased to announce PMD 5.8.1.
 
 This is a bug fixing release.
 
-### Table Of Contents
-
-* [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
-* [External Contributions](#External_Contributions)
-
 ### Fixed Issues
 
 *   java
@@ -41,16 +35,6 @@ This is a bug fixing release.
 The PMD team is pleased to announce PMD 5.8.0.
 
 This is a minor release.
-
-### Table Of Contents
-
-* [New and noteworthy](#New_and_noteworthy)
-    *   [Java Type Resolution](#Java_Type_Resolution)
-    *   [Metrics Framework](#Metrics_Framework)
-    *   [Modified Rules](#Modified_Rules)
-    *   [Deprecated Rules](#Deprecated_Rules)
-* [Fixed Issues](#Fixed_Issues)
-* [External Contributions](#External_Contributions)
 
 ### New and noteworthy
 
@@ -164,13 +148,6 @@ The PMD team is pleased to announce PMD 5.7.0.
 
 This is a minor release.
 
-### Table Of Contents
-
-* [New and noteworthy](#New_and_noteworthy)
-* [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
-* [External Contributions](#External_Contributions)
-
 ### New and noteworthy
 
 #### Modified Rules
@@ -268,21 +245,6 @@ than PMD 5.5.1, when we first started working on it.
 
 Java developers will also appreciate the revamp of `CloneMethodMustImplementCloneable`,
 making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
-
-### Table Of Contents
-
-*   [New and noteworthy](#New_and_noteworthy)
-    *   [Incremental Analysis](#Incremental_Analysis)
-    *   [Visualforce Support](#Visualforce_support)
-    *   [Apex Security Rule Set](#Apex_Security_Rule_Set)
-    *   [Apex Braces Rule Set](#Apex_Braces_Rule_Set)
-    *   [New Rules](#New_Rules)
-    *   [Modified Rules](#Modified_Rules)
-    *   [CPD Suppression](#CPD_Suppression)
-    *   [CPD filelist command line option](#CPD_filelist_command_line_option)
-*   [Fixed Issues](#Fixed_Issues)
-*   [API Changes](#API_Changes)
-*   [External Contributions](#External_Contributions)
 
 ### New and noteworthy
 
@@ -841,11 +803,6 @@ This is a bug fixing release.
 The PMD team is pleased to announce PMD 5.5.5.
 
 
-### Table Of Contents
-
-* [Fixed Issues](#Fixed_Issues)
-* [External Contributions](#External_Contributions)
-
 ### Fixed Issues
 
 *   general:
@@ -878,14 +835,6 @@ The PMD team is pleased to announce PMD 5.5.5.
 
 The PMD team is pleased to announce PMD 5.5.4
 
-
-### Table Of Contents
-
-*   [New and noteworthy](#New_and_noteworthy)
-    *   [New Rules](#New_Rules)
-    *   [Modified Rules](#Modified_Rules)
-*   [Fixed Issues](#Fixed_Issues)
-*   [External Contributions](#External_Contributions)
 
 
 ### New and noteworthy
@@ -990,15 +939,6 @@ than PMD 5.5.1, when we first started working on it.
 
 Java developers will also appreciate the revamp of `CloneMethodMustImplementCloneable`,
 making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
-
-### Table Of Contents
-
-* [New and noteworthy](#New_and_noteworthy)
-    * [Apex Security Rule Set](#Apex_Security_Rule_Set)
-    * [Modified Rules](#Modified_Rules)
-* [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
-* [External Contributions](#External_Contributions)
 
 ### New and noteworthy
 
@@ -1593,14 +1533,6 @@ than PMD 5.4.2, when we first started working on it.
 
 Java developers will also appreciate the revamp of `CloneMethodMustImplementCloneable`,
 making it over 500X faster, and `PreserveStackTrace` which is now 7X faster.
-
-### Table Of Contents
-
-* [New and noteworthy](#New_and_noteworthy)
-    * [Modified Rules](#Modified_Rules)
-* [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
-* [External Contributions](#External_Contributions)
 
 ### New and noteworthy
 
