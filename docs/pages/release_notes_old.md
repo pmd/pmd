@@ -54,7 +54,7 @@ This is a minor release.
 
 ### New and noteworthy
 
-#### Java Type Resolution
+#### Java Type Resolution
 
 As part of Google Summer of Code 2017, [Bendegúz Nagy](https://github.com/WinterGrascph) has been working on completing type resolution for Java.
 His progress so far has allowed to properly resolve, in addition to previously supported statements:
@@ -360,7 +360,7 @@ public class without sharing Foo {
 ##### ApexCRUDViolation
 
 The rule validates you are checking for access permissions before a SOQL/SOSL/DML operation.
-Since Apex runs in system mode not having proper permissions checks results in escalation of 
+Since Apex runs in system mode not having proper permissions checks results in escalation of
 privilege and may produce runtime errors. This check forces you to handle such scenarios.
 
 For example, the following code is considered valid:
@@ -793,7 +793,7 @@ You need to use this, if you have a large project with many files, and you hit t
 *   [#289](https://github.com/pmd/pmd/pull/289): \[apex] Complex SOQL Crud check bug fixes
 *   [#296](https://github.com/pmd/pmd/pull/296): \[apex] Adding String.IsNotBlank to the whitelist to prevent False positives
 *   [#297](https://github.com/pmd/pmd/pull/297): \[core] CPD: Adding the --filelist option from pmd to cpd
-*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty() 
+*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty()
 *   [#307](https://github.com/pmd/pmd/pull/307): \[java] Fix false positive with UseStringBufferForStringAppendsRule
 *   [#308](https://github.com/pmd/pmd/pull/308): \[java] JUnitTestsShouldIncludeAssertRule supports @Rule annotated ExpectedExceptions
 *   [#313](https://github.com/pmd/pmd/pull/313): \[vf] Apex:iFrame not being detected - bug fix
@@ -869,7 +869,7 @@ The PMD team is pleased to announce PMD 5.5.5.
 *   [#280](https://github.com/pmd/pmd/pull/280): \[apex] Support for Aggregate Result in CRUD rules
 *   [#289](https://github.com/pmd/pmd/pull/289): \[apex] Complex SOQL Crud check bug fixes
 *   [#296](https://github.com/pmd/pmd/pull/296): \[apex] Adding String.IsNotBlank to the whitelist to prevent False positives
-*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty() 
+*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty()
 *   [#307](https://github.com/pmd/pmd/pull/307): \[java] Fix false positive with UseStringBufferForStringAppendsRule
 *   [#308](https://github.com/pmd/pmd/pull/308): \[java] JUnitTestsShouldIncludeAssertRule supports @Rule annotated ExpectedExceptions
 
@@ -1027,7 +1027,7 @@ public class without sharing Foo {
 ##### ApexCRUDViolation
 
 The rule validates you are checking for access permissions before a SOQL/SOSL/DML operation.
-Since Apex runs in system mode not having proper permissions checks results in escalation of 
+Since Apex runs in system mode not having proper permissions checks results in escalation of
 privilege and may produce runtime errors. This check forces you to handle such scenarios.
 
 For example, the following code is considered valid:
@@ -1519,7 +1519,7 @@ This is a bug fixing release.
 
 ### External Contributions
 
-*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty() 
+*   [#303](https://github.com/pmd/pmd/pull/303): \[java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty()
 *   [#307](https://github.com/pmd/pmd/pull/307): \[java] Fix false positive with UseStringBufferForStringAppendsRule
 *   [#308](https://github.com/pmd/pmd/pull/308): \[java] JUnitTestsShouldIncludeAssertRule supports @Rule annotated ExpectedExceptions
 
@@ -2503,7 +2503,7 @@ The binary package still contains all languages and can be used as usual. Have a
 * [#1228](https://sourceforge.net/p/pmd/bugs/1228/): UnusedPrivateMethod returns false positives
 * [#1230](https://sourceforge.net/p/pmd/bugs/1230/): UseCollectionIsEmpty gets false positives
 * [#1231](https://sourceforge.net/p/pmd/bugs/1231/): No Error Message on Missing Rule
-* [#1233](https://sourceforge.net/p/pmd/bugs/1233/): UnusedPrivateMethod: False positive : method called on returned object. 
+* [#1233](https://sourceforge.net/p/pmd/bugs/1233/): UnusedPrivateMethod: False positive : method called on returned object.
 * [#1234](https://sourceforge.net/p/pmd/bugs/1234/): Unused private methods still giving false positives in 5.1.3 snapshot
 * [#1235](https://sourceforge.net/p/pmd/bugs/1235/): scope dependencies in POM file
 * [#1239](https://sourceforge.net/p/pmd/bugs/1239/): StackOverflowError in AbstractTokenizer.parseString running CPD on >1MB JS file
@@ -2901,7 +2901,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 1006: Problem with implementation of getPackageNameImage method
     Fixed bug 1014: AvoidLiteralsInIfCondition must NOT consider null
     Fixed bug 1013: jnlp link for CPD is wrong
-    
+
     PMD Command Line Changes:
       Improved command line interface (CLI) parsing using JCommander.
       Note: this breaks compatibility, but should be easy to fix.
@@ -2909,14 +2909,14 @@ The binary package still contains all languages and can be used as usual. Have a
       With "-f" you select the report format (like text, html, ...)
       With "-R" you select the rulesets to be used.
       Example: pmd -d c:\data\pmd\pmd\test-data\Unused1.java -f xml -R rulesets/java/unusedcode.xml
-    
+
     Improved JSP parser to be less strict with not valid XML documents (like HTML). Thanks to Victor Bucutea.
     Fixed bgastviewer not working. Thanks to Victor Bucutea.
     Improved CPD: Support in CPD for IgnoreAnnotations and SuppressWarnings("CPD-START"). Thanks to Matthew Short.
     Fixed C# support for CPD - thanks to TIOBE Software.
-    
+
     New Ecmascript rules:
-    
+
         Basic ruleset: AvoidTrailingComma
 
 
@@ -2925,7 +2925,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 3515487: Inconsistent reference to ruleset file in documentation
     Fixed bug 3470274: Using Label for lines in XMLRenderer
     Fixed bug 3175710: NPE in InsufficientStringBufferDeclaration
-    
+
     CPD:
     - Exit with status code 4 when CPD detects code duplication (Patch ID: 3497021)
 
@@ -2937,13 +2937,13 @@ The binary package still contains all languages and can be used as usual. Have a
     internals and code organization to be improved to better handle additional
     languages.  This opportunity was used to remove depreciated APIs, and beat up
     any code which has thumbed its nose at the developers over the years. ;)
-    
+
     The following is relatively complete list of the major changes (this may not be
     100% accurate, see actual source code when in doubt):
-    
+
     Fixed bug (no number) - Fixed UseStringBufferLengthRule only worked once per class
     All StringBuffer-related rules now also catch StringBuilder-related issues in the same way
-    
+
         API Change - Unification of treatment of languages within PMD core:
            Added - net.sourceforge.pmd.lang.Language (now an 'enum')
            Added - net.sourceforge.pmd.lang.LanguageVersion
@@ -3010,14 +3010,14 @@ The binary package still contains all languages and can be used as usual. Have a
            Deleted - net.sourceforge.pmd.ast.TokenMgrError
            Deleted - net.sourceforge.pmd.jsp.ast.JspCharStream
            Deleted - net.sourceforge.pmd.jsp.ast.TokenMgrError
-    
+
         API Change - Generalize RuleViolation treatment
            Renamed - net.sourceforge.pmd.IRuleViolation to net.sourceforge.pmd.RuleViolation
            Renamed - net.sourceforge.pmd.RuleViolation to net.sourceforge.pmd.lang.rule.AbstractRuleViolation
            Added - net.sourceforge.pmd.RuleViolationComparator
            Added - net.sourceforge.pmd.lang.java.rule.JavaRuleViolation
            Added - net.sourceforge.pmd.lang.jsp.rule.JspRuleViolation
-    
+
         API Change - Generalize DFA treatment
            Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.lang.dfa.DataFlowNode
            Renamed - net.sourceforge.pmd.dfa.DataFlowNode to net.sourceforge.pmd.lang.dfa.AbstractDataFlowNode
@@ -3039,21 +3039,21 @@ The binary package still contains all languages and can be used as usual. Have a
            Renamed - net.sourceforge.pmd.dfa.variableaccess.VariableAccessVisitor to net.sourceforge.pmd.lang.java.dfa.VariableAccessVisitor
            Added - net.sourceforge.pmd.lang.java.dfa.JavaDataFlowNode
            Added - net.sourceforge.pmd.lang.DataFlowHandler
-    
+
        API Change - Generalize Symbol Table treatement
            Deleted - net.sourceforge.pmd.symboltable.JspSymbolFacade
            Deleted - net.sourceforge.pmd.symboltable.JspScopeAndDeclarationFinder
            Renamed - net.sourceforge.pmd.symboltable.* to net.sourceforge.pmd.lang.java.symboltable.*
-    
+
        API Change - Generalize Type Resolution treatment
            Renamed - net.sourceforge.pmd.typeresolution.* to net.sourceforge.pmd.lang.java.typeresolution.*
-    
+
         API Change - Generalize Property Descriptor treatment
            Renamed - net.sourceforge.pmd.properties.* to net.sourceforge.pmd.lang.rule.properties.*
            Renamed - net.sourceforge.pmd.properties.AbstractPMDProperty to net.sourceforge.pmd.lang.rule.properties.AbstractProperty
            Changed - net.sourceforge.pmd.properties.PropertyDescriptor to use Generics, and other changes
            Added - net.sourceforge.pmd.lang.rule.properties.* new types and other API changes
-    
+
         API Change - Generalize AST treatment
            Added - net.sourceforge.pmd.lang.ast.Node (interface extracted from old Node/SimpleNode)
            Added - net.sourceforge.pmd.lang.ast.AbstractNode
@@ -3069,7 +3069,7 @@ The binary package still contains all languages and can be used as usual. Have a
            Deleted - net.sourceforge.pmd.ast.AccessNodeInterface
            Deleted - net.sourceforge.pmd.jsp.ast.Node
            Deleted - net.sourceforge.pmd.jsp.ast.SimpleNode
-    
+
         API Change - General code reorganization/cleanup
            Renamed - net.sourceforge.pmd.AbstractDelegateRule to net.sourceforge.pmd.lang.rule.AbstractDelegateRule
            Renamed - net.sourceforge.pmd.MockRule to net.sourceforge.pmd.lang.rule.MockRule
@@ -3078,7 +3078,7 @@ The binary package still contains all languages and can be used as usual. Have a
            Renamed - net.sourceforge.pmd.util.AntLogHandler to net.sourceforge.pmd.util.log.AntLogHandler
            Renamed - net.sourceforge.pmd.util.ConsoleLogHandler to net.sourceforge.pmd.util.log.ConsoleLogHandler
            Renamed - net.sourceforge.pmd.util.PmdLogFormatter to net.sourceforge.pmd.util.log.PmdLogFormatter
-    
+
        API Change - Changes to Rule/RuleSet/RuleSets
           Removed - boolean Rule.include()
           Removed - void Rule.setInclude(boolean)
@@ -3116,7 +3116,7 @@ The binary package still contains all languages and can be used as usual. Have a
            Added - Rule.definePropertyDescriptor(PropertyDescriptor)
            Added - List<PropertyDescriptor> Rule.getPropertyDescriptors()
            Added - RuleSet.applies(Rule,LanguageVersion)
-    
+
        API Change - Changes to PMD class
           Renamed - PMD.EXCLUDE_MARKER to PMD.SUPPRESS_MARKER
           Removed - PMD.processFile(InputStream, RuleSet, RuleContext)
@@ -3130,7 +3130,7 @@ The binary package still contains all languages and can be used as usual. Have a
           Moved - PMD.setDefaultLanguageVersion(LanguageVersion) to Configuration.setDefaultLanguageVersion(LanguageVersion)
           Moved - PMD.setDefaultLanguageVersions(List<LanguageVersion>) to Configuration.setDefaultLanguageVersions(List<LanguageVersion>)
           Moved - PMD.createClasspathClassLoader(String) to Configuration.createClasspathClassLoader(String)
-    
+
        API Change - Changes to Node interface
           Renamed - Node.findChildrenOfType(Class) as Node.findDescendantsOfType(Class)
           Renamed - Node.getFirstChildOfType(Class) as Node.getFirstDescendantOfType(Class)
@@ -3138,13 +3138,13 @@ The binary package still contains all languages and can be used as usual. Have a
           Renamed - Node.getAsXml() as Node.getAsDocument()
           Added - Node.findChildrenOfType(Class), non recursive version
           Added - Node.getFirstChildOfType(Class), non recursive version
-    
+
        API Change - Remove deprecated APIs
           Removed - AccessNode.setXXX() methods, use AccessNode.setXXX(boolean) instead.
           Removed - PMDException.getReason()
           Removed - RuleSetFactory.createRuleSet(String,ClassLoader), use RuleSetFactory.setClassLoader(ClassLoader) and RuleSetFactory.createRuleSets(String) instead.
           Removed - net.sourceforge.pmd.cpd.FileFinder use net.sourceforge.pmd.util.FileFinder instead.
-    
+
        API Change - RuleSetFactory
             Added - RuleSetFactory.setClassLoader(ClassLoader)
             Added - RuleSetFactory.createRuleSets(List<RuleSetReferenceId>)
@@ -3157,7 +3157,7 @@ The binary package still contains all languages and can be used as usual. Have a
           Removed - RuleSetFactory.createRuleSet(InputStream, ClassLoader), use RuleSetFactory.createRuleSet(RuleSetReferenceId) instead.
           Removed - ExternalRuleID, use RuleSetReferenceId instead
           Removed - SimpleRuleSetNameMapper, use RuleSetReferenceId instead
-    
+
        API Change - Changes to Renderer class, and Renderer implementations
             Added - Renderer.getName()
             Added - Renderer.setName(String)
@@ -3171,9 +3171,9 @@ The binary package still contains all languages and can be used as usual. Have a
           Renamed - Renderer.showSuppressedViolations(boolean) to Renderer.setShowSuppressedViolations(boolean)
           Renamed - PapariTextRenderer to TextColorRenderer
           Renamed - OntheFlyRenderer to AbstractIncrementingRenderer
-    
+
     PMD command line changes:
-    
+
        Removed -lineprefix use -property linePrefix {value} instead
        Removed -linkprefix use -property linkPrefix {value} instead
        Removed -xslt use -property xsltFilename {value} instead
@@ -3186,9 +3186,9 @@ The binary package still contains all languages and can be used as usual. Have a
        Renamed 'papari' report to 'textcolor'
        Renamed -excludemarker option to -suppressmarker
        Renamed -cpus option to -threads
-    
+
     Ant changes:
-    
+
        Removed - <formatter> 'linkPrefix' attribute, use <param name="linkPrefix"> instead
        Removed - <formatter> 'linePrefix' attribute, use <param name="linePrefix"> instead
        Changed - <formatter> is optional - if not specified, falls back to "text" and console output.
@@ -3196,7 +3196,7 @@ The binary package still contains all languages and can be used as usual. Have a
          Added - <param name="name" value="value"/> as generic way to pass properties to Renderers on <formatter>
        Renamed - <pmd> 'excludeMarker' attribute to 'suppressMarker'
        Renamed - <pmd> 'cpus' attribute to 'threads'
-    
+
     Maven changes:
        The new maven coordinates are: net.sourceforge.pmd:pmd, e.g.
        <dependency>
@@ -3204,9 +3204,9 @@ The binary package still contains all languages and can be used as usual. Have a
          <artifactId>pmd</artifactId>
          <version>5.0</version>
        </dependency>
-    
+
     New features:
-    
+
     New Language 'ecmascript' added, for writing XPathRule and Java Rules against ECMAScript/JavaScript documents (must be standalone, not embedded in HTML).  Many thanks to Rhino!
     New Language 'xml' added, for writing XPathRules against XML documents
     New Language 'xsl' added, as a derivative from XML.
@@ -3218,7 +3218,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Rules can now use property values in messages, for example ${propertyName} will expand to the value of the 'propertyName' property on the Rule.
     Rules can now use violation specific values in messages, specifically ${variableName}, ${methodName}, ${className}, ${packageName}.
     New XPath function 'getCommentOn' can be used to search for strings in comments - Thanks to Andy Throgmorton
-    
+
     CPD:
     Add .hxx and .hpp as valid file extension for CPD - Thanks to Ryan Pavlik
     Add options to to the CPD command line task - Thanks to Cd-Man
@@ -3226,7 +3226,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fix small bug in Rule Designer UI
     Performance enhacement when parsing Javadoc (Patch ID: 3217201), thanks to Cd-Man
     Rework the XMLRenderer to use proper XML API and strictly uses the system value for encoding (Fix bug: 1435751)
-    
+
     Other changes:
     Rule property API upgrades:
       All numeric property descriptors can specify upper & lower limits
@@ -3269,7 +3269,7 @@ The binary package still contains all languages and can be used as usual. Have a
             * UnusedNullCheckInEquals
             * UselessParentheses
         Basic rulesets still includes a reference to those rules.
-    
+
     Fixed bug 2920057 - Fixed False + on CloseResource
     Fixed bug 1808110 - Fixed performance issues on PreserveStackTrace
     Fixed bug 2832322 - cpd.xml file tag path attribute should be entity-encoded
@@ -3308,7 +3308,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 3303811 - Deadlink on "Similar projects" page
     Fixed bug 3017616 - Updated documentation regarding Netbeans plugin - thanks to Jesse Glick
     Fixed bug 3427563 - Deprecated class (android.util.config) - thanks to Lukas Reschke for the patch
-    
+
     ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
     bin and java14/bin scripts:
         retroweaver version was not correct in java14/bin scripts
@@ -3354,9 +3354,9 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed character reference in xml report - thanks to Seko
     Enhanced SuspiciousEqualsMethodName rule - thanks to Andy Throgmorton
     Add a script to launch CPDGUI on Unix system - thanks to Tom Wheeler
-    
+
     New Java rules:
-    
+
         Basic ruleset: ExtendsObject,CheckSkipResult,AvoidBranchingStatementAsLastInLoop,DontCallThreadRun,DontUseFloatTypeForLoopIndices
         Controversial ruleset: AvoidLiteralsInIfCondition, AvoidPrefixingMethodParameters, OneDeclarationPerLine, UseConcurrentHashMap
         Coupling ruleset: LoosePackageCoupling,LawofDemeter
@@ -3369,18 +3369,18 @@ The binary package still contains all languages and can be used as usual. Have a
         Unnecessary ruleset: UselessParentheses
         JUnit ruleset: JUnitTestContainsTooManyAsserts, UseAssertTrueInsteadOfAssertEquals
         Logging with Jakarta Commons ruleset: GuardDebugLogging
-    
+
     New Java ruleset:
         android.xml: new rules specific to the Android platform
-    
+
     New JSP rules:
         Basic ruleset: NoInlineScript
-    
+
     New ECMAScript rules:
         Basic ruleset: AssignmentInOperand,ConsistentReturn,InnaccurateNumericLiteral,ScopeForInVariable,UnreachableCode,EqualComparison,GlobalVariable
         Braces ruleset: ForLoopsMustUseBraces,IfStmtsMustUseBraces,IfElseStmtsMustUseBraces,WhileLoopsMustUseBraces
         Unnecessary ruleset: UnnecessaryParentheses,UnnecessaryBlock
-    
+
     New XML rules:
         Basic ruleset: MistypedCDATASection
 
@@ -3397,7 +3397,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fix false negative for UseArraysAsList when the array was passed as method parameter - thanks to Andy Throgmorton
     Enhanced SuspiciousEqualsMethodName rule - thanks to Andy Throgmorton
     Add a script to launch CPDGUI on Unix system - thanks to Tom Wheeler
-    
+
     New Rule:
         Basic ruleset: DontCallThreadRun - thanks to Andy Throgmorton
         Logging with Jakarta Commons ruleset: GuardDebugLogging
@@ -3416,7 +3416,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 2835074 - False -: DoubleCheckedLocking with reversed null check
     Fixed bug 2826119 - False +: DoubleCheckedLocking warning with volatile field
     Fixed bug 2904832 - Type resolution not working for ASTType when using an inner class
-    
+
     Modify (and hopefully fixed) CPD algorithm thanks to a patch from Juan Jesús García de Soria.
     Correct -benchmark reporting of Rule visits via the RuleChain
     Fix issue with Type Resolution incorrectly handling of Classes with same name as a java.lang Class.
@@ -3424,11 +3424,11 @@ The binary package still contains all languages and can be used as usual. Have a
     The JSP/JSP parser can now handle <script>...</script> tags.  The AST HtmlScript node contains the content.
     Added Ecmascript as a supported language for CPD.
     Improved include/exclude pattern matching performance for ends-with type patterns.
-    
+
     Dependencies updates: asm updated to 3.2
-    
+
     Android ruleset: CallSuperLast rule now also checks for finish() redefinitions
-    
+
     New rule:
         Android: DoNotHardCodeSDCard
         Controversial : AvoidLiteralsInIfCondition (patch 2591627), UseConcurrentHashMap
@@ -3451,7 +3451,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug - JUnitTestsShouldIncludeAssert now detects Junit 4 Assert.assert...  constructs
     Fixed bug 2142986 - UselessOverridingMethod doesn't consider annotations
     Fixed bug 2027626 - False + : AvoidFinalLocalVariable
-    
+
     New rule:
         StrictExceptions : AvoidThrowingNewInstanceOfSameException
     New ruleset:
@@ -3489,7 +3489,7 @@ The binary package still contains all languages and can be used as usual. Have a
     All comment types are now stored in ASTCompilationUnit, not just formal ones
     Fixed false negative in UselessOverridingMethod
     Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithChar
-    
+
     New rule:
         Basic ruleset:  EmptyInitializer
 
@@ -3508,7 +3508,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
     Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
     Fixed bug 1808110 - PreserveStackTrace
-    
+
     AvoidDuplicateLiteralRule now has 'skipAnnotations' boolean property
     ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
     Update RuleSetWriter to handle non-Apache TRAX implementations, add an option to not use XML Namespaces
@@ -3529,7 +3529,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 1913536 - Rule Designer does not recognize JSP(XML)
     Add -auxclasspath option for specifying Type Resolution classpath from command line and auxclasspath nested element for ant task.
     Fixed formatting problems in loggers.
-    
+
     Ant task upgrade:
         Added a new attribute 'maxRuleCount' to indicate whether or not to fail the build if PMD finds that much violations.
 
@@ -3551,7 +3551,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed other false positives in EmptyMethodInAbstractClassShouldBeAbstract
     Fixed other issues in SimplifyBooleanReturns
     Modified AvoidReassigningParameter to also check constructor arguments for reassignement
-    
+
     New rules:
         Basic ruleset: AvoidMultipleUnaryOperators
         Controversial ruleset: DoNotCallGarbageCollectionExplicitly,UseObjectForClearerAPI
@@ -3559,14 +3559,14 @@ The binary package still contains all languages and can be used as usual. Have a
         Codesize : TooManyMethods
         StrictExceptions : DoNotThrowExceptionInFinally
         Strings : AvoidStringBufferField
-    
+
     Rule upgrade:
         CyclomaticComplexity now can be configured to display only class average complexity or method complexity, or both.
-    
+
     Designer upgrade:
         A new panel for symbols and a tooltips on AST node that displays line, column and access node attributes (private,
         static, abstract,...)
-    
+
     1.7 added as a valid option for targetjdk.
     New elements under <ruleset>: <exclude-pattern> to match files exclude from processing, with <include-pattern> to override.
     Rules can now be written which produce violations based upon aggregate file processing (i.e. cross/multiple file violations).
@@ -3594,7 +3594,7 @@ The binary package still contains all languages and can be used as usual. Have a
         Imports ruleset: TooManyStaticImports
         J2ee ruleset: DoNotCallSystemExit, StaticEJBFieldShouldBeFinal,DoNotUseThreads
         Strings ruleset: UseEqualsToCompareStrings
-    
+
     Fixed bug 674394  - fixed false positive in DuplicateImports for disambiguation import
     Fixed bug 631681  - fixed false positive in UnusedPrivateField when field is accessed by outer class
     Fixed bug 985989  - fixed false negative in ConstructorCallsOverridableMethod for inner static classes
@@ -3610,7 +3610,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixes bug 1796928 - fixed false positive in AvoidThrowingRawExceptionTypes, when a Type name is the same as a RawException.
     Fixed bug 1811506 - False - : UnusedFormalParameter (property "checkall" needs to be set)
     Fixed false negative in UnnecessaryCaseChange
-    
+
     The Java 1.5 source code parser is now the default for testcode used in PMD's unit tests.
     Added TypeResolution to the XPath rule. Use typeof function to determine if a node is of a particular type
     Adding a GenericLiteralChecker, a generic rule that require a regex as property. It will log a violation if a Literal is matched by the regex. See the new rule AvoidUsingHardCodedIP for an example.

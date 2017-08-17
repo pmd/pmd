@@ -141,6 +141,12 @@ All existing rules have been updated to reflect these changes. If you have custo
 *   The properties API (rule and report properties) have been revamped to be fully typesafe. This is everything
     around `net.sourceforge.pmd.PropertyDescriptor`.
 
+*   The rule classes `net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestClassShouldHaveAsserts`
+    and `net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestShouldNotUseSeeAllDataTrue` have been
+    renamed to `ApexUnitTestClassShouldHaveAssertsRule` and `ApexUnitTestShouldNotUseSeeAllDataTrueRule`,
+    respectively. This is to comply with the naming convention, that each rule class should be suffixed with "Rule".
+    This change has no impact on custom rulesets, since the rule names themselves didn't change.
+
 ### External Contributions
 
 *   [#420](https://github.com/pmd/pmd/pull/420): \[java] Fix UR anomaly in assert statements - [Clément Fournier](https://github.com/oowekyala)

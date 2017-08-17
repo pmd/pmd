@@ -10,7 +10,7 @@ folder: pmd/devdocs
 
 # XPath Rule tutorial
 
-{% include note.html content="For a translation to Gregorian, see [webhostinggeeks.com/science/xpath-sourceforge-ka](http://webhostinggeeks.com/science/xpath-sourceforge-ka)" %}
+{% include note.html content="For a translation to Georgian, see [webhostinggeeks.com/science/xpath-sourceforge-ka](http://webhostinggeeks.com/science/xpath-sourceforge-ka)" %}
 
 
 Writing PMD rules with XPath can be a bit easier than writing rules with Java code. Here’s an introduction on how to do that.
