@@ -245,10 +245,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-        <site>
-            <id>local</id>
-            <url>file:///tmp/pmd-site</url>
-        </site>
     </distributionManagement>
     <organization>
         <name>PMD</name>
@@ -270,7 +266,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot/${project.artifactId}</pmd.website.baseurl>
+        <pmd.website.baseurl>http://pmd.sourceforge.net/snapshot</pmd.website.baseurl>
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
@@ -383,18 +379,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.4</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.doxia</groupId>
-                            <artifactId>doxia-module-markdown</artifactId>
-                            <version>1.6</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
                     <configuration>
@@ -425,18 +409,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>1.9.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-build-tools-plugin</artifactId>
-                    <version>${pmd.build-tools.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>pmd-pre-site</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -503,19 +475,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>attach-site-descriptor</id>
-                        <goals>
-                            <goal>attach-descriptor</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -914,7 +873,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <profile>
             <id>pmd-release</id>
             <properties>
-                <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}/${project.artifactId}</pmd.website.baseurl>
+                <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}</pmd.website.baseurl>
             </properties>
             <build>
                 <plugins>
@@ -961,17 +920,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                  -->
                 <module>pmd-scala</module>
             </modules>
-        </profile>
-
-        <profile>
-            <id>site</id>
-            <!--
-                In order to build the site and build the aggregate javadoc report
-                javadoc needs to use java8 in order to be able to parse the java8 modules (apex, ui, ...)
-             -->
-            <properties>
-                <java.version>1.8</java.version>
-            </properties>
         </profile>
 
         <profile>

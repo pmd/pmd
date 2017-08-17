@@ -5,6 +5,7 @@ permalink: pmd_rules_java_javabeans.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/javabeans.xml
+keywords: JavaBeans, BeanMembersShouldSerialize, MissingSerialVersionUID
 ---
 ## BeanMembersShouldSerialize
 
@@ -21,7 +22,7 @@ naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accesso
 
 **Example(s):**
 
-```
+``` java
 private transient int someFoo;  // good, it's transient
 private static int otherFoo;    // also OK
 private int moreFoo;            // OK, has proper accessors, see below
@@ -66,11 +67,11 @@ and
 
 **Example(s):**
 
-```
+``` java
 public class Foo implements java.io.Serializable {
- String name;
- // Define serialization id to avoid serialization related bugs
- // i.e., public static final long serialVersionUID = 4328743;
+    String name;
+    // Define serialization id to avoid serialization related bugs
+    // i.e., public static final long serialVersionUID = 4328743;
 }
 ```
 

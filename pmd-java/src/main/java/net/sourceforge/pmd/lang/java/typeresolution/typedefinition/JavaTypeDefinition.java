@@ -96,7 +96,7 @@ public class JavaTypeDefinition implements TypeDefinition {
         return !genericArgs.isEmpty();
     }
 
-    private int getGenericTypeIndex(TypeVariable<?>[] typeParameters, final String parameterName) {
+    public static int getGenericTypeIndex(TypeVariable<?>[] typeParameters, final String parameterName) {
         for (int i = 0; i < typeParameters.length; i++) {
             if (typeParameters[i].getName().equals(parameterName)) {
                 return i;

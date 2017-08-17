@@ -5,6 +5,7 @@ permalink: pmd_rules_java_migrating.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/migrating.xml
+keywords: Migration, ReplaceVectorWithList, ReplaceHashtableWithMap, ReplaceEnumerationWithIterator, AvoidEnumAsIdentifier, AvoidAssertAsIdentifier, IntegerInstantiation, ByteInstantiation, ShortInstantiation, LongInstantiation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit4SuitesShouldUseSuiteAnnotation, JUnitUseExpected
 ---
 ## AvoidAssertAsIdentifier
 
@@ -20,11 +21,11 @@ Use of the term 'assert' will conflict with newer versions of Java since it is a
 
 **Example(s):**
 
-```
+``` java
 public class A {
-	public  class foo {
-		String assert = "foo";
-	}
+    public class Foo {
+        String assert = "foo";
+    }
 }
 ```
 
@@ -42,11 +43,11 @@ Use of the term 'enum' will conflict with newer versions of Java since it is a r
 
 **Example(s):**
 
-```
+``` java
 public class A {
-	public  class foo {
-		String enum = "foo";
-	}
+    public class Foo {
+        String enum = "foo";
+    }
 }
 ```
 
@@ -68,9 +69,9 @@ or ClassOrInterfaceType/@Image='java.lang.Byte')]
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	private Byte i = new Byte(0); // change to Byte i =	Byte.valueOf(0);
+    private Byte i = new Byte(0); // change to Byte i = Byte.valueOf(0);
 }
 ```
 
@@ -93,9 +94,9 @@ It makes use of an internal cache that recycles earlier instances making it more
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
+    private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
 }
 ```
 
@@ -116,11 +117,11 @@ through the @RunWith(Suite.class) annotation.
 
 **Example(s):**
 
-```
+``` java
 public class BadExample extends TestCase{
 
     public static Test suite(){
-    	return new Suite();
+        return new Suite();
     }
 }
 
@@ -147,7 +148,7 @@ JUnit 4 skips the tearDown method and executes all methods annotated with @After
 
 **Example(s):**
 
-```
+``` java
 public class MyTest {
     public void tearDown() {
         bad();
@@ -177,7 +178,7 @@ JUnit 4 skips the setUp method and executes all methods annotated with @Before b
 
 **Example(s):**
 
-```
+``` java
 public class MyTest {
     public void setUp() {
         bad();
@@ -206,13 +207,13 @@ In JUnit 4, only methods annotated with the @Test annotation are executed.
 
 **Example(s):**
 
-```
+``` java
 public class MyTest {
     public void testBad() {
         doSomething();
     }
 
-	@Test
+    @Test
     public void testGood() {
         doSomething();
     }
@@ -231,9 +232,9 @@ In JUnit4, use the @Test(expected) annotation to denote tests that should throw 
 
 **Example(s):**
 
-```
+``` java
 public class MyTest {
-	@Test
+    @Test
     public void testBad() {
         try {
             doSomething();
@@ -242,7 +243,7 @@ public class MyTest {
         }
     }
 
-	@Test(expected=Exception.class)
+    @Test(expected=Exception.class)
     public void testGood() {
         doSomething();
     }
@@ -268,9 +269,9 @@ or ClassOrInterfaceType/@Image='java.lang.Long')]
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	private Long i = new Long(0); // change to Long i = Long.valueOf(0);
+    private Long i = new Long(0); // change to Long i = Long.valueOf(0);
 }
 ```
 
@@ -288,7 +289,7 @@ Consider replacing Enumeration usages with the newer java.util.Iterator
 
 **Example(s):**
 
-```
+``` java
 public class Foo implements Enumeration {
     private int x = 42;
     public boolean hasMoreElements() {
@@ -314,11 +315,11 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	void bar() {
-		Hashtable h = new Hashtable();
-	}
+    void bar() {
+        Hashtable h = new Hashtable();
+    }
 }
 ```
 
@@ -336,11 +337,11 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
- void bar() {
-    Vector v = new Vector();
- }
+    void bar() {
+        Vector v = new Vector();
+    }
 }
 ```
 
@@ -363,9 +364,9 @@ or ClassOrInterfaceType/@Image='java.lang.Short')]
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	private Short i = new Short(0); // change to Short i = Short.valueOf(0);
+    private Short i = new Short(0); // change to Short i = Short.valueOf(0);
 }
 ```
 

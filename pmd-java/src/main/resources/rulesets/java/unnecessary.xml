@@ -7,69 +7,65 @@
   <description>
 The Unnecessary Ruleset contains a collection of rules for unnecessary code.
   </description>
-   
-	
-    <rule name="UnnecessaryConversionTemporary"
-    		 since="0.1"
-          message="Avoid unnecessary temporaries when converting primitives to Strings"
-          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryConversionTemporary">
-      <description>
+
+  <rule name="UnnecessaryConversionTemporary"
+        since="0.1"
+        message="Avoid unnecessary temporaries when converting primitives to Strings"
+        class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryConversionTemporaryRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#unnecessaryconversiontemporary">
+    <description>
 Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods
 on the wrapper classes instead.
-      </description>
-        <priority>3</priority>
-      <example>
-  <![CDATA[
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
 public String convert(int x) {
-	String foo = new Integer(x).toString();	// this wastes an object
-	
-	return Integer.toString(x);				// preferred approach
+    String foo = new Integer(x).toString(); // this wastes an object
+
+    return Integer.toString(x);             // preferred approach
 }
- ]]>
-      </example>
-    </rule>
+]]>
+    </example>
+  </rule>
 
-
-
-    <rule name="UnnecessaryReturn"
-    		 since="1.3"
-          message="Avoid unnecessary return statements"
-          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryReturn">
-      <description>
+  <rule name="UnnecessaryReturn"
+        since="1.3"
+        message="Avoid unnecessary return statements"
+        class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryReturnRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#unnecessaryreturn">
+    <description>
 Avoid the use of unnecessary return statements.
-      </description>
-      <priority>3</priority>
-      <example>
-		<![CDATA[
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
 public class Foo {
-  public void bar() {
-    int x = 42;
-    return;
-  }
+    public void bar() {
+        int x = 42;
+        return;
+    }
 }
-		]]>
-      </example>
-    </rule>
+]]>
+    </example>
+  </rule>
 
-
-    <rule name="UnnecessaryFinalModifier"
-    	  language="java"
-    	  since="3.0"
-	  message="Unnecessary final modifier in final class / private methods"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryFinalModifier">
-      <description>
+  <rule name="UnnecessaryFinalModifier"
+        language="java"
+        since="3.0"
+        message="Unnecessary final modifier in final class / private methods"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#unnecessaryfinalmodifier">
+    <description>
 When a class has the final modifier, all the methods are automatically final and do not need to be
 tagged as such. Similarly, methods that can't be overridden (private methods, methods of anonymous classes,
 methods of enum instance) do not need to be tagged either.
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-    <![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //ClassOrInterfaceDeclaration[@Final='true' and @Interface='false']
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         [count(./Annotation/MarkerAnnotation/Name[@Image='SafeVarargs' or @Image='java.lang.SafeVarargs']) = 0]
@@ -77,11 +73,11 @@ methods of enum instance) do not need to be tagged either.
 | //MethodDeclaration[@Final='true' and @Private='true']
 | //EnumConstant/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
 | //AllocationExpression/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
-    ]]>
-              </value>
-          </property>
-      </properties>
-      <example>
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public final class Foo {
     // This final modifier is not necessary, since the class is final
@@ -89,79 +85,79 @@ public final class Foo {
     private final void foo() {
     }
 }
-
 ]]>
-      </example>
-    </rule>
+    </example>
+  </rule>
 
-
-    <rule name="UselessOverridingMethod"
-    since="3.3"
-    message="Overriding method merely calls super"
-    class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOverridingMethodRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessOverridingMethod">
-        <description>
+  <rule name="UselessOverridingMethod"
+        since="3.3"
+        message="Overriding method merely calls super"
+        class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOverridingMethodRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#uselessoverridingmethod">
+    <description>
 The overriding method merely calls the same method defined in a superclass.
-        </description>
-        <priority>3</priority>
-        <example><![CDATA[
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
 public void foo(String bar) {
-  super.foo(bar);      // why bother overriding?
+    super.foo(bar);      // why bother overriding?
 }
 
 public String foo() {
-	return super.foo();  // why bother overriding?
+    return super.foo();  // why bother overriding?
 }
 
 @Id
 public Long getId() {
-  return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
+    return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
 }
-        ]]></example>
-    </rule>
+]]>
+    </example>
+  </rule>
 
-    <rule  name="UselessOperationOnImmutable"
-           since="3.5"
-           message="An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself"
-           class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOperationOnImmutableRule"
-           externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessOperationOnImmutable">
-      <description>
+  <rule name="UselessOperationOnImmutable"
+        since="3.5"
+        message="An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself"
+        class="net.sourceforge.pmd.lang.java.rule.unnecessary.UselessOperationOnImmutableRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#uselessoperationonimmutable">
+    <description>
 An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
 since the result of the operation is a new object. Therefore, ignoring the operation result is an error.
-      </description>
-      <priority>3</priority>
-      <example>
-    <![CDATA[
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
 import java.math.*;
 
 class Test {
-  void method1() {
-    BigDecimal bd=new BigDecimal(10);
-    bd.add(new BigDecimal(5)); 		// this will trigger the rule
-  }
-  void method2() {
-    BigDecimal bd=new BigDecimal(10);
-    bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
-  }
+    void method1() {
+        BigDecimal bd=new BigDecimal(10);
+        bd.add(new BigDecimal(5));      // this will trigger the rule
+    }
+    void method2() {
+        BigDecimal bd=new BigDecimal(10);
+        bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+    }
 }
-    ]]>
-      </example>
-    </rule>
+]]>
+    </example>
+  </rule>
 
-    <rule name="UnusedNullCheckInEquals"
-    		 language="java"
+  <rule name="UnusedNullCheckInEquals"
+        language="java"
         since="3.5"
         message="Invoke equals() on the object you''ve already ensured is not null"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnusedNullCheckInEquals">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#unusednullcheckinequals">
     <description>
 After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
     </description>
-	<priority>3</priority>
+    <priority>3</priority>
     <properties>
         <property name="xpath">
-        <value>
-        <![CDATA[
+            <value>
+<![CDATA[
 (//PrimaryPrefix[ends-with(Name/@Image, '.equals') and Name/@Image != 'Arrays.equals'] | //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)])
  /following-sibling::PrimarySuffix/Arguments/ArgumentList/Expression
  /PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix
@@ -169,66 +165,71 @@ After checking an object reference for null, you should invoke equals() on that 
  /EqualityExpression[@Image="!=" and count(./preceding-sibling::*)=0 and
  ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
   /PrimaryExpression/PrimaryPrefix/Name/@Image]
-        ]]>
-        </value>
+]]>
+            </value>
         </property>
     </properties>
-		<example>
-		<![CDATA[
+    <example>
+<![CDATA[
 public class Test {
 
-  public String method1() { return "ok";}
-  public String method2() { return null;}
+    public String method1() { return "ok";}
+    public String method2() { return null;}
 
-  public void method(String a) {
-    String b;
-	// I don't know it method1() can be "null"
-	// but I know "a" is not null..
-	// I'd better write a.equals(method1())
-	
-	if (a!=null && method1().equals(a)) { // will trigger the rule
-	//whatever
-	}
-	
-	if (method1().equals(a) && a != null) { // won't trigger the rule
-	//whatever
-	}
-	
-	if (a!=null && method1().equals(b)) { // won't trigger the rule
-	//whatever
-	}
-	
-	if (a!=null && "LITERAL".equals(a)) { // won't trigger the rule
-	//whatever
-	}
-	
-	if (a!=null && !a.equals("go")) { // won't trigger the rule
-	a=method2();
-	if (method1().equals(a)) {
-	//whatever
-	}
-  }
+    public void method(String a) {
+        String b;
+        // I don't know it method1() can be "null"
+        // but I know "a" is not null..
+        // I'd better write a.equals(method1())
+
+        if (a!=null && method1().equals(a)) { // will trigger the rule
+            //whatever
+        }
+
+        if (method1().equals(a) && a != null) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && method1().equals(b)) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && "LITERAL".equals(a)) { // won't trigger the rule
+            //whatever
+        }
+
+        if (a!=null && !a.equals("go")) { // won't trigger the rule
+            a=method2();
+            if (method1().equals(a)) {
+                //whatever
+            }
+        }
+    }
 }
-}
-				]]>
-			</example>
-		</rule>
+]]>
+    </example>
+  </rule>
 
   <rule name="UselessParentheses"
-  		language="java"
+        language="java"
         since="5.0"
         message="Useless parentheses."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessParentheses">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#uselessparentheses">
     <description>Useless parentheses should be removed.</description>
     <priority>4</priority>
     <properties>
        <property name="xpath">
           <value>
           <![CDATA[
-//Expression/PrimaryExpression/PrimaryPrefix/Expression
-[count(*)=1][count(./CastExpression)=0][count(./ConditionalExpression[@Ternary='true'])=0]
-[not(./AdditiveExpression[//Literal[@StringLiteral='true']])]
+//Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)>1]
+  /PrimaryPrefix/Expression
+    [not(./CastExpression)]
+    [not(./ConditionalExpression[@Ternary='true'])]
+    [not(./AdditiveExpression[//Literal[@StringLiteral='true']])]
+|
+//Expression[not(parent::PrimaryPrefix)]/PrimaryExpression[count(*)=1]
+  /PrimaryPrefix/Expression
 |
 //Expression/ConditionalAndExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
@@ -239,16 +240,17 @@ public class Test {
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
-    count(./CastExpression)=0 and
-    count(./ConditionalExpression[@Ternary='true'])=0 and
-    count(./EqualityExpression/MultiplicativeExpression)=0]
+    not(./CastExpression) and
+    not(./ConditionalExpression[@Ternary='true']) and
+    not(./EqualityExpression/MultiplicativeExpression)]
 |
 //Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
-    count(./CastExpression)=0 and
-    count(./EqualityExpression)=0]
+    not(./CastExpression) and
+    not(./EqualityExpression)]
 |
-//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])]/PrimaryExpression[1]/PrimaryPrefix/Expression[
+//Expression/AdditiveExpression[not(./PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])]
+  /PrimaryExpression[1]/PrimaryPrefix/Expression[
     count(*)=1 and
     not(./CastExpression) and
     not(./AdditiveExpression[@Image = '-']) and
@@ -265,59 +267,58 @@ public class Test {
 |
 //Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
-    count(./CastExpression)=0 and
-    count(./AndExpression)=0 and
-    count(./InclusiveOrExpression)=0 and
-    count(./ExclusiveOrExpression)=0 and
-    count(./ConditionalExpression)=0 and
-    count(./ConditionalAndExpression)=0 and
-    count(./ConditionalOrExpression)=0 and
-    count(./EqualityExpression)=0]
+    not(./CastExpression) and
+    not(./AndExpression) and
+    not(./InclusiveOrExpression) and
+    not(./ExclusiveOrExpression) and
+    not(./ConditionalExpression) and
+    not(./ConditionalAndExpression) and
+    not(./ConditionalOrExpression) and
+    not(./EqualityExpression)]
           ]]>
           </value>
        </property>
     </properties>
     <example>
-    <![CDATA[
+<![CDATA[
 public class Foo {
 
-   private int _bar1;
-   private Integer _bar2;
+    private int _bar1;
+    private Integer _bar2;
 
-   public void setBar(int n) {
-      _bar1 = Integer.valueOf((n)); // here
-      _bar2 = (n); // and here
-   }
-
+    public void setBar(int n) {
+        _bar1 = Integer.valueOf((n)); // here
+        _bar2 = (n); // and here
+    }
 }
-    ]]>
+]]>
     </example>
   </rule>
 
   <rule name="UselessQualifiedThis"
-      language="java"
-      since="5.4.0"
-      message="Useless qualified this usage in the same class."
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-      externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UselessQualifiedThis">
+        language="java"
+        since="5.4.0"
+        message="Useless qualified this usage in the same class."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#uselessqualifiedthis">
     <description>Look for qualified this usages in the same class.</description>
     <priority>3</priority>
     <properties>
-       <property name="xpath">
-          <value>
-          <![CDATA[
+        <property name="xpath">
+            <value>
+<![CDATA[
 //PrimaryExpression
 [PrimaryPrefix/Name[@Image]]
 [PrimarySuffix[@Arguments='false']]
 [not(PrimarySuffix/MemberSelector)]
 [ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
 /PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
-          ]]>
-          </value>
-       </property>
+]]>
+            </value>
+        </property>
     </properties>
     <example>
-    <![CDATA[
+<![CDATA[
 public class Foo {
     final Foo otherFoo = Foo.this;  // use "this" directly
 
@@ -342,45 +343,46 @@ public class Foo {
         final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
     }
 }
-    ]]>
+]]>
     </example>
   </rule>
 
-<rule name="UnnecessaryModifier"
-          language="java"
-          since="1.02"
-          message="Avoid modifiers which are implied by the context"
-          class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryModifierRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/unnecessary.html#UnnecessaryModifier">
-     <description>
+  <rule name="UnnecessaryModifier"
+        language="java"
+        since="1.02"
+        message="Avoid modifiers which are implied by the context"
+        class="net.sourceforge.pmd.lang.java.rule.unnecessary.UnnecessaryModifierRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_unnecessary.html#unnecessarymodifier">
+    <description>
 Fields in interfaces and annotations are automatically `public static final`, and methods are `public abstract`.
 Classes, interfaces or annotations nested in an interface or annotation are automatically `public static`
 (all nested interfaces and annotations are automatically static).
 Nested enums are automatically `static`.
 For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.
-     </description>
-        <priority>3</priority>
-     <example>
- <![CDATA[
- public @interface Annotation {
-  public abstract void bar(); 		// both abstract and public are ignored by the compiler
-  public static final int X = 0; 	// public, static, and final all ignored
-  public static class Bar {} 		// public, static ignored
-  public static interface Baz {} 	// ditto
+    </description>
+    <priority>3</priority>
+    <example>
+<![CDATA[
+public @interface Annotation {
+    public abstract void bar();     // both abstract and public are ignored by the compiler
+    public static final int X = 0;  // public, static, and final all ignored
+    public static class Bar {}      // public, static ignored
+    public static interface Baz {}  // ditto
 }
 public interface Foo {
-  public abstract void bar(); 		// both abstract and public are ignored by the compiler
-  public static final int X = 0; 	// public, static, and final all ignored
-  public static class Bar {} 		// public, static ignored
-  public static interface Baz {} 	// ditto
+    public abstract void bar();     // both abstract and public are ignored by the compiler
+    public static final int X = 0;  // public, static, and final all ignored
+    public static class Bar {}      // public, static ignored
+    public static interface Baz {}  // ditto
 }
 public class Bar {
-  public static interface Baz {} // static ignored
-  public static enum FoorBar { // static ignored
-    FOO;
-  }
+    public static interface Baz {}  // static ignored
+    public static enum FoorBar {    // static ignored
+        FOO;
+    }
 }
- ]]>
-     </example>
-     </rule>
+]]>
+    </example>
+  </rule>
+
 </ruleset>

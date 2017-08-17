@@ -5,6 +5,7 @@ permalink: pmd_rules_apex_performance.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/performance.xml
+keywords: Performance, AvoidSoqlInLoops, AvoidDmlStatementsInLoops
 ---
 ## AvoidDmlStatementsInLoops
 
@@ -18,15 +19,15 @@ Avoid DML statements inside loops to avoid hitting the DML governor limit. Inste
 
 **Example(s):**
 
-```
+``` java
 public class Something {
-	public void foo() {  
-		for (Integer i = 0; i < 151; i++) {
-		    Account account;
-		    ...
-		    insert account;
-		}
-	}
+    public void foo() {  
+        for (Integer i = 0; i < 151; i++) {
+            Account account;
+            // ...
+            insert account;
+        }
+    }
 }
 ```
 
@@ -50,13 +51,13 @@ New objects created within loops should be checked to see if they can created ou
 
 **Example(s):**
 
-```
+``` java
 public class Something {
-	public static void main( String as[] ) {  
-		for (Integer i = 0; i < 10; i++) {
-			List<Account> accounts = [SELECT Id FROM Account];
-		}
-	}
+    public static void main( String as[] ) {
+        for (Integer i = 0; i < 10; i++) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
 }
 ```
 

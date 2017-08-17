@@ -8,12 +8,12 @@
 These rules deal with different problems that can occur with JUnit tests.
   </description>
 
-    <rule name="JUnitStaticSuite"
-   		language="java"
-    		 since="1.0"
-          message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#JUnitStaticSuite">
+  <rule name="JUnitStaticSuite"
+        language="java"
+        since="1.0"
+        message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#junitstaticsuite">
       <description>
 The suite() method in a JUnit test needs to be both public and static.
       </description>
@@ -35,19 +35,19 @@ The suite() method in a JUnit test needs to be both public and static.
 import junit.framework.*;
 
 public class Foo extends TestCase {
-   public void suite() {}         // oops, should be static
-   private static void suite() {} // oops, should be public
+    public void suite() {}         // oops, should be static
+    private static void suite() {} // oops, should be public
 }
   ]]>
       </example>
       </rule>
 
   <rule name="JUnitSpelling"
-   		language="java"
-  		  since="1.0"
+        language="java"
+        since="1.0"
         message="You may have misspelled a JUnit framework method (setUp or tearDown)"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#JUnitSpelling">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#junitspelling">
     <description>
 Some JUnit framework methods are easy to misspell.
     </description>
@@ -71,18 +71,18 @@ Some JUnit framework methods are easy to misspell.
 import junit.framework.*;
 
 public class Foo extends TestCase {
-   public void setup() {}    // oops, should be setUp
-   public void TearDown() {} // oops, should be tearDown
+    public void setup() {}    // oops, should be setUp
+    public void TearDown() {} // oops, should be tearDown
 }
 ]]>
     </example>
     </rule>
 
-    <rule name="JUnitAssertionsShouldIncludeMessage"
-    		 since="1.04"
-          message="JUnit assertions should include a message"
-          class="net.sourceforge.pmd.lang.java.rule.junit.JUnitAssertionsShouldIncludeMessageRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#JUnitAssertionsShouldIncludeMessage">
+  <rule name="JUnitAssertionsShouldIncludeMessage"
+        since="1.04"
+        message="JUnit assertions should include a message"
+        class="net.sourceforge.pmd.lang.java.rule.junit.JUnitAssertionsShouldIncludeMessageRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#junitassertionsshouldincludemessage">
       <description>
 JUnit assertions should include an informative message - i.e., use the three-argument version of 
 assertEquals(), not the two-argument version.
@@ -91,22 +91,22 @@ assertEquals(), not the two-argument version.
       <example>
   <![CDATA[
 public class Foo extends TestCase {
- public void testSomething() {
-  assertEquals("foo", "bar");
-  // Use the form:
-  // assertEquals("Foo does not equals bar", "foo", "bar");
-  // instead
- }
+    public void testSomething() {
+        assertEquals("foo", "bar");
+        // Use the form:
+        // assertEquals("Foo does not equals bar", "foo", "bar");
+        // instead
+    }
 }
   ]]>
       </example>
     </rule>
 
-    <rule name="JUnitTestsShouldIncludeAssert"
-    		 since="2.0"
-          message="JUnit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.lang.java.rule.junit.JUnitTestsShouldIncludeAssertRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#JUnitTestsShouldIncludeAssert">
+  <rule name="JUnitTestsShouldIncludeAssert"
+        since="2.0"
+        message="JUnit tests should include assert() or fail()"
+        class="net.sourceforge.pmd.lang.java.rule.junit.JUnitTestsShouldIncludeAssertRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#junittestsshouldincludeassert">
         <description>
 JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert 
 with messages provide the developer a clearer idea of what the test does.
@@ -126,11 +126,11 @@ public class Foo extends TestCase {
         </example>
       </rule>
 
-    <rule name="TestClassWithoutTestCases"
-    		 since="3.0"
-          message="This class name ends with 'Test' but contains no test cases"
-          class="net.sourceforge.pmd.lang.java.rule.junit.TestClassWithoutTestCasesRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#TestClassWithoutTestCases">
+  <rule name="TestClassWithoutTestCases"
+        since="3.0"
+        message="This class name ends with 'Test' but contains no test cases"
+        class="net.sourceforge.pmd.lang.java.rule.junit.TestClassWithoutTestCasesRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#testclasswithouttestcases">
       <description>
 Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, 
 since most people will assume it is a test case. Test classes have test methods named testXXX.
@@ -150,12 +150,12 @@ public class CarTest {
       </example>
     </rule>
 
-    <rule name="UnnecessaryBooleanAssertion"
-   		language="java"
-    		 since="3.0"
-          message="assertTrue(true) or similar statements are unnecessary"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#UnnecessaryBooleanAssertion">
+  <rule name="UnnecessaryBooleanAssertion"
+        language="java"
+        since="3.0"
+        message="assertTrue(true) or similar statements are unnecessary"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#unnecessarybooleanassertion">
       <description>
 A JUnit test assertion with a boolean literal is unnecessary since it always will evaluate to the same thing.
 Consider using flow control (in case of assertTrue(false) or similar) or simply removing
@@ -185,20 +185,20 @@ UnaryExpressionNotPlusMinus[@Image='!']
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
-	public void testX() {
-		assertTrue(true);		 // serves no real purpose
-	}
+    public void testX() {
+        assertTrue(true);       // serves no real purpose
+    }
 }
 ]]>
           </example>
     </rule>
 
-    <rule name="UseAssertEqualsInsteadOfAssertTrue"
-   		language="java"
-    		 since="3.1"
-          message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#UseAssertEqualsInsteadOfAssertTrue">
+  <rule name="UseAssertEqualsInsteadOfAssertTrue"
+        language="java"
+        since="3.1"
+        message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#useassertequalsinsteadofasserttrue">
       <description>
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
       </description>
@@ -221,22 +221,22 @@ This rule detects JUnit assertions in object equality. These assertions should b
       <example>
 <![CDATA[
 public class FooTest extends TestCase {
-	void testCode() {
-		Object a, b;
-		assertTrue(a.equals(b)); 					// bad usage
-		assertEquals(?a should equals b?, a, b);	// good usage
-	}
+    void testCode() {
+        Object a, b;
+        assertTrue(a.equals(b));                    // bad usage
+        assertEquals(?a should equals b?, a, b);    // good usage
+    }
 }
 ]]>
       </example>
     </rule>
 
-   <rule name="UseAssertSameInsteadOfAssertTrue"
-   		language="java"
-   		 since="3.1"
-          message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#UseAssertSameInsteadOfAssertTrue">
+  <rule name="UseAssertSameInsteadOfAssertTrue"
+        language="java"
+        since="3.1"
+        message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#useassertsameinsteadofasserttrue">
       <description>
 This rule detects JUnit assertions in object references equality. These assertions should be made 
 by more specific methods, like assertSame, assertNotSame.
@@ -261,22 +261,22 @@ by more specific methods, like assertSame, assertNotSame.
       <example>
 <![CDATA[
 public class FooTest extends TestCase {
- void testCode() {
-  Object a, b;
-  assertTrue(a == b); // bad usage
-  assertSame(a, b);  // good usage
- }
+    void testCode() {
+        Object a, b;
+        assertTrue(a == b); // bad usage
+        assertSame(a, b);   // good usage
+    }
 }
 ]]>
       </example>
     </rule>
 
-    <rule name="UseAssertNullInsteadOfAssertTrue"
-   		language="java"
-           since="3.5"
-           message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-           externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#UseAssertNullInsteadOfAssertTrue">
+  <rule name="UseAssertNullInsteadOfAssertTrue"
+        language="java"
+        since="3.5"
+        message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#useassertnullinsteadofasserttrue">
        <description>
 This rule detects JUnit assertions in object references equality. These assertions should be made by 
 more specific methods, like assertNull, assertNotNull.
@@ -300,35 +300,36 @@ more specific methods, like assertNull, assertNotNull.
      </properties>
        <example>
  <![CDATA[
- public class FooTest extends TestCase {
-  void testCode() {
-   Object a = doSomething();
-   assertTrue(a==null); // bad usage
-   assertNull(a);  // good usage
-   assertTrue(a != null); // bad usage
-   assertNotNull(a);  // good usage
-  }
- }
- ]]>
+public class FooTest extends TestCase {
+    void testCode() {
+        Object a = doSomething();
+        assertTrue(a==null);    // bad usage
+        assertNull(a);          // good usage
+        assertTrue(a != null);  // bad usage
+        assertNotNull(a);       // good usage
+    }
+}
+]]>
        </example>
      </rule>
 
-    <rule name="SimplifyBooleanAssertion"
-   		language="java"
-       since="3.6"
-	    message="assertTrue(!expr) can be replaced by assertFalse(expr)"
+  <rule name="SimplifyBooleanAssertion"
+        language="java"
+        since="3.6"
+        message="assertTrue(!expr) can be replaced by assertFalse(expr)"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
-       externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#SimplifyBooleanAssertion">
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#simplifybooleanassertion">
       <description>
 Avoid negation in an assertTrue or assertFalse test.
 
 For example, rephrase:
 
-   assertTrue(!expr);
-   
+    assertTrue(!expr);
+
 as:
 
-   assertFalse(expr);
+    assertFalse(expr);
+
       </description>
       <priority>3</priority>
       <properties>
@@ -351,70 +352,68 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
-   public void testX() {
-     assertTrue("not empty", !r.isEmpty()); // replace with assertFalse("not empty", r.isEmpty())
-     assertFalse(!r.isEmpty()); // replace with assertTrue(r.isEmpty())
-   }
+    public void testX() {
+        assertTrue("not empty", !r.isEmpty());  // replace with assertFalse("not empty", r.isEmpty())
+        assertFalse(!r.isEmpty());              // replace with assertTrue(r.isEmpty())
+    }
 }
 ]]>
           </example>
     </rule>
-	<rule name="JUnitTestContainsTooManyAsserts"
-		language="java"
-		since="5.0"
-		message="JUnit tests should not contain more than ${maximumAsserts} assert(s)."
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#JUnitTestContainsTooManyAsserts">
-		<description>
+
+  <rule name="JUnitTestContainsTooManyAsserts"
+        language="java"
+        since="5.0"
+        message="JUnit tests should not contain more than ${maximumAsserts} assert(s)."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#junittestcontainstoomanyasserts">
+    <description>
 JUnit tests should not contain too many asserts.  Many asserts are indicative of a complex test, for which 
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.  
 Customize the maximum number of assertions used by this Rule to suit your needs.
-		</description>
-		<priority>3</priority>
-		<properties>
-            <property name="maximumAsserts" type="Integer" min="1" max="1000" description="Maximum number of Asserts in a test method" value="1"/>
-			<property name="xpath">
-				<value>
-<![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="maximumAsserts" type="Integer" min="1" max="1000" description="Maximum number of Asserts in a test method" value="1"/>
+        <property name="xpath">
+            <value><![CDATA[
 //MethodDeclarator[(@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[@Image='Test']) and count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
-]]>
-				</value>
-			</property>
-		</properties>
-		<example>
+            ]]></value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public class MyTestCase extends TestCase {
-	// Ok
-	public void testMyCaseWithOneAssert() {
-		boolean myVar = false;		
-		assertFalse("should be false", myVar);
-	}
+    // Ok
+    public void testMyCaseWithOneAssert() {
+        boolean myVar = false;
+        assertFalse("should be false", myVar);
+    }
 
-	// Bad, too many asserts (assuming max=1)
-	public void testMyCaseWithMoreAsserts() {
-		boolean myVar = false;		
-		assertFalse("myVar should be false", myVar);
-		assertEquals("should equals false", false, myVar);
-	}
+    // Bad, too many asserts (assuming max=1)
+    public void testMyCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false", myVar);
+        assertEquals("should equals false", false, myVar);
+    }
 }
 ]]>
-		</example>
-	</rule>
-	<rule name="UseAssertTrueInsteadOfAssertEquals"
-		language="java"
-		since="5.0"
-		message="Use assertTrue(x)/assertFalse(x) instead of assertEquals(true, x)/assertEquals(false, x)
-		or assertEquals(Boolean.TRUE, x)/assertEquals(Boolean.FALSE, x)."
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="${pmd.website.baseurl}/rules/java/junit.html#UseAssertTrueInsteadOfAssertEquals">
-		<description>
+    </example>
+  </rule>
+
+  <rule name="UseAssertTrueInsteadOfAssertEquals"
+        language="java"
+        since="5.0"
+        message="Use assertTrue(x)/assertFalse(x) instead of assertEquals(true, x)/assertEquals(false, x) or assertEquals(Boolean.TRUE, x)/assertEquals(Boolean.FALSE, x)."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_junit.html#useasserttrueinsteadofassertequals">
+    <description>
 When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
-		</description>
-		<priority>3</priority>
-		<properties>
-			<property name="xpath">
-				<value>
-<![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value><![CDATA[
 //PrimaryExpression[PrimaryPrefix/Name[@Image = 'assertEquals']]
 [
   PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
@@ -422,28 +421,28 @@ When asserting a value is the same as a literal or Boxed boolean, use assertTrue
   PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix
   /Name[(@Image = 'Boolean.TRUE' or @Image = 'Boolean.FALSE')]
 ]
-]]>
-			</value>
-			</property>
-		</properties>
-		<example>
+            ]]></value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 public class MyTestCase extends TestCase {
-	public void testMyCase() {
-		boolean myVar = true;
-		// Ok
-		assertTrue("myVar is true", myVar);
-		// Bad
-		assertEquals("myVar is true", true, myVar);
-		// Bad
-		assertEquals("myVar is false", false, myVar);
-		// Bad
-		assertEquals("myVar is true", Boolean.TRUE, myVar);
-		// Bad
-		assertEquals("myVar is false", Boolean.FALSE, myVar);
-	}
+    public void testMyCase() {
+        boolean myVar = true;
+        // Ok
+        assertTrue("myVar is true", myVar);
+        // Bad
+        assertEquals("myVar is true", true, myVar);
+        // Bad
+        assertEquals("myVar is false", false, myVar);
+        // Bad
+        assertEquals("myVar is true", Boolean.TRUE, myVar);
+        // Bad
+        assertEquals("myVar is false", Boolean.FALSE, myVar);
+    }
 }
 ]]>
-		</example>
-	</rule>
+    </example>
+  </rule>
+
 </ruleset>

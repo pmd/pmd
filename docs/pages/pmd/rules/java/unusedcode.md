@@ -5,6 +5,7 @@ permalink: pmd_rules_java_unusedcode.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/unusedcode.xml
+keywords: Unused Code, UnusedPrivateField, UnusedLocalVariable, UnusedPrivateMethod, UnusedFormalParameter
 ---
 ## UnusedFormalParameter
 
@@ -18,11 +19,11 @@ Avoid passing parameters to methods or constructors without actually referencing
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	private void bar(String howdy) {
-	// howdy is not used
-	}
+    private void bar(String howdy) {
+        // howdy is not used
+    }
 }
 ```
 
@@ -44,11 +45,11 @@ Detects when a local variable is declared and/or assigned, but not used.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public void doSomething() {
-		int i = 5; // Unused
-	}
+    public void doSomething() {
+        int i = 5; // Unused
+    }
 }
 ```
 
@@ -64,14 +65,14 @@ Detects when a private field is declared and/or assigned a value, but not used.
 
 **Example(s):**
 
-```
+``` java
 public class Something {
-  private static int FOO = 2; // Unused
-  private int i = 5; // Unused
-  private int j = 6;
-  public int addOne() {
-    return j++;
-  }
+    private static int FOO = 2; // Unused
+    private int i = 5; // Unused
+    private int j = 6;
+    public int addOne() {
+        return j++;
+    }
 }
 ```
 
@@ -87,9 +88,9 @@ Unused Private Method detects when a private method is declared but is unused.
 
 **Example(s):**
 
-```
+``` java
 public class Something {
-	private void foo() {} // unused
+    private void foo() {} // unused
 }
 ```
 

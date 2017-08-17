@@ -76,7 +76,7 @@ You can generate this yourself by:
 *   Run the batch file bin/designer.bat
 *   Paste the code into the left text area and click the “Go” button
 *   Note that there’s another panel and a textfield to test out XPath expressions; more on that later.
-*   Here’s a screenshot: ![designer screenshot](/images/devdocs/designer_screenshot.png)
+*   Here’s a screenshot: {% include image.html file="devdocs/designer_screenshot.png" alt="Designer Screenshot" %}
 
 So you can see in the example above that the AST for a `WhileStatement` looks kind of like this (excluding that expression gibberish for clarity):
 

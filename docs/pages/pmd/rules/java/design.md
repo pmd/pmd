@@ -5,6 +5,7 @@ permalink: pmd_rules_java_design.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/design.xml
+keywords: Design, UseUtilityClass, SimplifyBooleanReturns, SimplifyBooleanExpressions, SwitchStmtsShouldHaveDefault, AvoidDeeplyNestedIfStmts, AvoidReassigningParameters, SwitchDensity, ConstructorCallsOverridableMethod, AccessorClassGeneration, FinalFieldCouldBeStatic, CloseResource, NonStaticInitializer, DefaultLabelNotLastInSwitchStmt, NonCaseLabelInSwitchStatement, OptimizableToArrayCall, BadComparison, EqualsNull, ConfusingTernary, InstantiationToGetClass, IdempotentOperations, SimpleDateFormatNeedsLocale, ImmutableField, UseLocaleWithCaseConversions, AvoidProtectedFieldInFinalClass, AssignmentToNonFinalStatic, MissingStaticMethodInNonInstantiatableClass, AvoidSynchronizedAtMethodLevel, MissingBreakInSwitch, UseNotifyAllInsteadOfNotify, AvoidInstanceofChecksInCatchClause, AbstractClassWithoutAbstractMethod, SimplifyConditional, CompareObjectsWithEquals, PositionLiteralsFirstInComparisons, PositionLiteralsFirstInCaseInsensitiveComparisons, UnnecessaryLocalBeforeReturn, NonThreadSafeSingleton, SingleMethodSingleton, SingletonClassReturningNewInstance, UncommentedEmptyMethodBody, UncommentedEmptyConstructor, UnsynchronizedStaticDateFormatter, PreserveStackTrace, UseCollectionIsEmpty, ClassWithOnlyPrivateConstructorsShouldBeFinal, EmptyMethodInAbstractClassShouldBeAbstract, SingularField, ReturnEmptyArrayRatherThanNull, AbstractClassWithoutAnyMethod, TooFewBranchesForASwitchStatement, LogicInversion, UseVarargs, FieldDeclarationsShouldBeAtStartOfClass, GodClass, AvoidProtectedMethodInFinalClassNotExtending, ConstantsInInterface, AccessorMethodGeneration
 ---
 ## AbstractClassWithoutAbstractMethod
 
@@ -27,7 +28,7 @@ directly) a protected constructor can be provided prevent direct instantiation.
 
 **Example(s):**
 
-```
+``` java
 public abstract class Foo {
   void int method1() { ... }
   void int method2() { ... }
@@ -47,19 +48,17 @@ that is not meant to be instantiated. In this case, it is probably better to use
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
 
 ```
-//ClassOrInterfaceDeclaration[
-	(@Abstract = 'true')
-	and
-	(count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0)
-]
+//ClassOrInterfaceDeclaration
+    [@Abstract = 'true']
+    [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
 ```
 
 **Example(s):**
 
-```
+``` java
 public class abstract Example {
-	String field;
-	int otherField;
+    String field;
+    int otherField;
 }
 ```
 
@@ -79,7 +78,7 @@ This turns a private constructor effectively into one with package scope, and is
 
 **Example(s):**
 
-```
+``` java
 public class Outer {
  void method(){
   Inner ic = new Inner();//Causes generation of accessor class
@@ -104,7 +103,7 @@ be avoided by changing the visibility of the field / method from private to pack
 
 **Example(s):**
 
-```
+``` java
 public class OuterClass {
     private int counter;
     /* package */ int id;
@@ -133,7 +132,7 @@ Identifies a possible unsafe usage of a static field.
 
 **Example(s):**
 
-```
+``` java
 public class StaticField {
    static int x;
    public FinalFields(int y) {
@@ -154,7 +153,7 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   public void bar(int x, int y, int z) {
     if (x>y) {
@@ -193,18 +192,19 @@ Each caught exception type should be handled in its own catch clause.
 
 **Example(s):**
 
-```
+``` java
 try { // Avoid this
- // do something
+    // do something
 } catch (Exception ee) {
- if (ee instanceof IOException) {
-  cleanup();
- }
+    if (ee instanceof IOException) {
+        cleanup();
+    }
 }
+
 try {  // Prefer this:
- // do something
+    // do something
 } catch (IOException ee) {
- cleanup();
+    cleanup();
 }
 ```
 
@@ -225,7 +225,7 @@ Clarify your intent by using private or package access modifiers instead.
 
 **Example(s):**
 
-```
+``` java
 public final class Bar {
   private int x;
   protected int y;  // bar cannot be subclassed, so is y really private or package visible?
@@ -251,7 +251,7 @@ visibility cannot be reduced). Clarify your intent by using private or package a
 
 **Example(s):**
 
-```
+``` java
 public final class Foo {
   private int bar() {}
   protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
@@ -270,7 +270,7 @@ Reassigning values to incoming parameters is not recommended.  Use temporary loc
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   private void foo(String bar) {
     bar = "something else";
@@ -294,7 +294,7 @@ gets it.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   // Try to avoid this:
   synchronized void foo() {
@@ -334,7 +334,7 @@ precision when comparing floating point numbers these are likely to cause logic 
 
 **Example(s):**
 
-```
+``` java
 boolean x = (y == Double.NaN);
 ```
 
@@ -357,7 +357,7 @@ TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
 
 **Example(s):**
 
-```
+``` java
 public class Foo {  //Should be final
     private Foo() { }
 }
@@ -375,7 +375,7 @@ Ensure that resources (like Connection, Statement, and ResultSet objects) are al
 
 **Example(s):**
 
-```
+``` java
 public class Bar {
   public void foo() {
     Connection c = pool.getConnection();
@@ -411,7 +411,7 @@ Use equals() to compare object references; avoid comparing them with ==.
 
 **Example(s):**
 
-```
+``` java
 class Foo {
   boolean bar(String a, String b) {
     return a == b;
@@ -426,10 +426,7 @@ class Foo {
 **Priority:** Medium (3)
 
 Avoid negation within an "if" expression with an "else" clause.  For example, rephrase:
-
-  if (x != y) diff(); else same();
-as:
-  if (x == y) same(); else diff();
+`if (x != y) diff(); else same();` as: `if (x == y) same(); else diff();`.
 
 Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
@@ -439,10 +436,10 @@ as "does the error case go first?" or "does the common case go first?".
 
 **Example(s):**
 
-```
+``` java
 boolean bar(int x, int y) {
-  return (x != y) ? diff : same;
- }
+    return (x != y) ? diff : same;
+}
 ```
 
 **This rule has the following properties:**
@@ -466,12 +463,12 @@ better placed in classes or enums. See Effective Java, item 19.
 
 **Example(s):**
 
-```
+``` java
 public interface ConstantInterface {
     public static final int CONST1 = 1; // violation, no fields allowed in interface!
-    static final int CONST2 = 1; // violation, no fields allowed in interface!
-    final int CONST3 = 1; // violation, no fields allowed in interface!
-    int CONST4 = 1; // violation, no fields allowed in interface!
+    static final int CONST2 = 1;        // violation, no fields allowed in interface!
+    final int CONST3 = 1;               // violation, no fields allowed in interface!
+    int CONST4 = 1;                     // violation, no fields allowed in interface!
 }
 
 // with ignoreIfHasMethods = false
@@ -513,7 +510,7 @@ private method bar() that calls a public method buz(), this denotes a problem.
 
 **Example(s):**
 
-```
+``` java
 public class SeniorClass {
   public SeniorClass(){
       toString(); //may throw NullPointerException if overridden
@@ -550,7 +547,7 @@ By convention, the default label should be the last label in a switch statement.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   void bar(int a) {
    switch (a) {
@@ -594,7 +591,7 @@ usage by developers who should be implementing their own versions in the concret
 
 **Example(s):**
 
-```
+``` java
 public abstract class ShouldBeAbstract {
     public Object couldBeAbstract() {
         // Should be abstract method ?
@@ -632,16 +629,16 @@ Tests for null should not use the equals() method. The '==' operator should be u
 
 **Example(s):**
 
-```
+``` java
 String x = "foo";
 
-if (x.equals(null)) { // bad form
-   	doSomething();
-	}
+if (x.equals(null)) {   // bad form
+    doSomething();
+}
 
-if (x == null) { 	// preferred
-   	doSomething();
-	}
+if (x == null) {        // preferred
+    doSomething();
+}
 ```
 
 ## FieldDeclarationsShouldBeAtStartOfClass
@@ -656,7 +653,7 @@ Fields should be declared at the top of the class, before any method declaration
 
 **Example(s):**
 
-```
+``` java
 public class HelloWorldBean {
 
   // Field declared before methods / inner classes - OK
@@ -697,7 +694,7 @@ in each object at runtime.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   public final int BAR = 42; // this could be static and save some space
 }
@@ -712,7 +709,10 @@ public class Foo {
 The God Class rule detects the God Class design flaw using metrics. God classes do too many things,
 are very big and overly complex. They should be split apart to be more object-oriented.
 The rule uses the detection strategy described in "Object-Oriented Metrics in Practice".
-The violations are reported against the entire class. See also the references:
+The violations are reported against the entire class.
+
+See also the references:
+
 Michele Lanza and Radu Marinescu. Object-Oriented Metrics in Practice:
 Using Software Metrics to Characterize, Evaluate, and Improve the Design
 of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
@@ -731,7 +731,7 @@ Avoid idempotent operations - they have no effect.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
  public void bar() {
   int x = 2;
@@ -753,7 +753,7 @@ of the field or by a constructor.  This helps in converting existing classes to 
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   private int x; // could be final
   public Foo() {
@@ -784,11 +784,11 @@ Avoid instantiating an object just to call getClass() on it; use the .class publ
 
 **Example(s):**
 
-```
+``` java
 // replace this
 Class c = new String().getClass();
 
-  // with this:
+// with this:
 Class c = String.class;
 ```
 
@@ -806,7 +806,7 @@ Use opposite operator instead of negating the whole expression with a logic comp
 
 **Example(s):**
 
-```
+``` java
 public boolean bar(int a, int b) {
 
     if (!(a == b)) { // use !=
@@ -844,7 +844,7 @@ may indicate problematic behaviour. Empty cases are ignored as these indicate an
 
 **Example(s):**
 
-```
+``` java
 public void bar(int status) {
     switch(status) {
       case CANCELLED:
@@ -916,7 +916,7 @@ A class that has private constructors and does not have any static methods or fi
 
 **Example(s):**
 
-```
+``` java
 // This class is unusable, since it cannot be
 // instantiated (private constructor),
 // and no static method can be called.
@@ -942,7 +942,7 @@ This legal, but confusing. It is easy to mix up the case labels and the non-case
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   void bar(int a) {
    switch (a) {
@@ -974,11 +974,11 @@ confusing.
 
 **Example(s):**
 
-```
+``` java
 public class MyClass {
- // this block gets run before any call to a constructor
+  // this block gets run before any call to a constructor
   {
-   System.out.println("I am about to construct myself");
+    System.out.println("I am about to construct myself");
   }
 }
 ```
@@ -1005,7 +1005,7 @@ See Effective Java, item 48.
 
 **Example(s):**
 
-```
+``` java
 private static Foo foo = null;
 
 //multiple simultaneous callers may see partially initialized objects
@@ -1046,7 +1046,7 @@ PrimarySuffix/Arguments/ArgumentList/Expression
 
 **Example(s):**
 
-```
+``` java
 List foos = getFoos();
 
     // inefficient, the array will be discarded
@@ -1085,7 +1085,7 @@ can be avoided, they will just return false.
 
 **Example(s):**
 
-```
+``` java
 class Foo {
   boolean bar(String x) {
     return x.equalsIgnoreCase("2"); // should be "2".equalsIgnoreCase(x)
@@ -1104,15 +1104,11 @@ can be avoided, they will just return false.
 
 ```
 //PrimaryExpression[
-        PrimaryPrefix[Name
-                [
-	(ends-with(@Image, '.equals'))
-                ]
-        ]
+    PrimaryPrefix[Name[(ends-with(@Image, '.equals'))]]
         [
-                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])
-	and
-	( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
+            (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true'])
+            and
+            ( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
         ]
 ]
 [not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
@@ -1121,7 +1117,7 @@ can be avoided, they will just return false.
 
 **Example(s):**
 
-```
+``` java
 class Foo {
   boolean bar(String x) {
     return x.equals("2"); // should be "2".equals(x)
@@ -1143,7 +1139,7 @@ effectively.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     void good() {
         try{
@@ -1188,18 +1184,18 @@ NullPointerExceptions.
 
 **Example(s):**
 
-```
+``` java
 public class Example {
     // Not a good idea...
     public int[] badBehavior() {
-                   // ...
+        // ...
         return null;
     }
 
     // Good behavior
     public String[] bonnePratique() {
-      //...
-     return new String[0];
+        //...
+        return new String[0];
     }
 }
 ```
@@ -1221,7 +1217,7 @@ formatting is used.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   // Should specify Locale.US (or whatever)
   private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
@@ -1243,7 +1239,7 @@ Avoid unnecessary comparisons in boolean expressions, they serve no purpose and 
 
 **Example(s):**
 
-```
+``` java
 public class Bar {
   // can be simplified to
   // bar = isFoo();
@@ -1266,19 +1262,17 @@ the conditional test can be returned instead.
 
 **Example(s):**
 
-```
+``` java
 public boolean isBarEqualTo(int x) {
-
-	if (bar == x) {		 // this bit of code...
-		return true;
-	} else {
-		return false;
+    if (bar == x) {      // this bit of code...
+        return true;
+    } else {
+        return false;
     }
 }
 
 public boolean isBarEqualTo(int x) {
-
-   	return bar == x;	// can be replaced with this
+    return bar == x;    // can be replaced with this
 }
 ```
 
@@ -1319,7 +1313,7 @@ InstanceOfExpression
 
 **Example(s):**
 
-```
+``` java
 class Foo {
   void bar(Object x) {
     if (x != null && x instanceof Bar) {
@@ -1337,26 +1331,27 @@ class Foo {
 
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
 is that the instance created using the overloaded method is not cached and so,
- for each call and new objects will be created for every invocation.
+for each call and new objects will be created for every invocation.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingleMethodSingletonRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingleMethodSingletonRule.java)
 
 **Example(s):**
 
-```
+``` java
 public class Singleton {
 
-   private static Singleton singleton = new Singleton( );
+    private static Singleton singleton = new Singleton( );
 
-  private Singleton(){ }
+    private Singleton(){ }
 
-public static Singleton getInstance( ) {
-	  return singleton;
-}
-public static Singleton getInstance(Object obj){
-	Singleton singleton = (Singleton) obj;
-	return singleton;			//violation
-}
+    public static Singleton getInstance( ) {
+        return singleton;
+    }
+
+    public static Singleton getInstance(Object obj){
+        Singleton singleton = (Singleton) obj;
+        return singleton;           //violation
+    }
 }
 ```
 
@@ -1368,20 +1363,20 @@ public static Singleton getInstance(Object obj){
 
 Some classes contain overloaded getInstance. The problem with overloaded getInstance methods
 is that the instance created using the overloaded method is not cached and so,
- for each call and new objects will be created for every invocation.
+for each call and new objects will be created for every invocation.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.SingletonClassReturningNewInstanceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingletonClassReturningNewInstanceRule.java)
 
 **Example(s):**
 
-```
+``` java
 class Singleton {
-	private static Singleton instance = null;
-	public static Singleton getInstance() {
-	synchronized(Singleton.class){
-		return new Singleton();
-	}
-	}
+    private static Singleton instance = null;
+    public static Singleton getInstance() {
+        synchronized(Singleton.class) {
+            return new Singleton();
+        }
+    }
 }
 ```
 
@@ -1399,7 +1394,7 @@ within those methods.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     private int x;  // no reason to exist at the Foo instance level
     public void foo(int y) {
@@ -1430,7 +1425,7 @@ on the switch variable.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
   public void bar(int x) {
     switch (x) {
@@ -1468,13 +1463,13 @@ All switch statements should include a default option to catch any unspecified v
 
 **Example(s):**
 
-```
+``` java
 public void bar() {
     int x = 2;
     switch (x) {
       case 1: int j = 6;
       case 2: int j = 8;
-      				// missing default: here
+          // missing default: here
     }
 }
 ```
@@ -1485,7 +1480,7 @@ public void bar() {
 
 **Priority:** Medium (3)
 
-Switch statements are indended to be used to support complex branching behaviour. Using a switch for only a few
+Switch statements are intended to be used to support complex branching behaviour. Using a switch for only a few
 cases is ill-advised, since switches are not as easy to understand as if-then statements. In these cases use the
 if-then statement to increase code readability.
 
@@ -1497,7 +1492,7 @@ if-then statement to increase code readability.
 
 **Example(s):**
 
-```
+``` java
 // With a minimumNumberCaseForASwitch of 3
 public class Foo {
     public void bar() {
@@ -1530,12 +1525,14 @@ constructors it is easier to distinguish between intentional (commented)
 and unintentional empty constructors.
 
 ```
-//ConstructorDeclaration[@Private='false'][count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+//ConstructorDeclaration[@Private='false']
+                        [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+                        [not(../Annotation/MarkerAnnotation/Name[typeof(@Image, 'javax.inject.Inject', 'Inject')])]
 ```
 
 **Example(s):**
 
-```
+``` java
 public Foo() {
   // This constructor is intentionally empty. Nothing special is needed here.
 }
@@ -1564,7 +1561,7 @@ empty methods.
 
 **Example(s):**
 
-```
+``` java
 public void doSomething() {
 }
 ```
@@ -1581,7 +1578,7 @@ Avoid the creation of unnecessary local variables
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
    public int foo() {
      int x = doSomething();
@@ -1610,7 +1607,7 @@ synchronized either on method or block level.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     private static final SimpleDateFormat sdf = new SimpleDateFormat();
     void bar() {
@@ -1635,21 +1632,21 @@ Comparing the value of size() to 0 does not convey intent as well as the isEmpty
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	void good() {
-       	List foo = getList();
-		if (foo.isEmpty()) {
-			// blah
-		}
-   	}
+    void good() {
+        List foo = getList();
+        if (foo.isEmpty()) {
+            // blah
+        }
+    }
 
     void bad() {
-   	    List foo = getList();
-			if (foo.size() == 0) {
-				// blah
-			}
-    	}
+        List foo = getList();
+        if (foo.size() == 0) {
+            // blah
+        }
+    }
 }
 ```
 
@@ -1680,19 +1677,20 @@ PrimarySuffix
 
 **Example(s):**
 
-```
+``` java
 class Foo {
- // BAD
- if (x.toLowerCase().equals("list")) { }
- /*
- This will not match "LIST" when in Turkish locale
- The above could be
- if (x.toLowerCase(Locale.US).equals("list")) { }
- or simply
- if (x.equalsIgnoreCase("list")) { }
- */
- // GOOD
- String z = a.toLowerCase(Locale.EN);
+    // BAD
+    if (x.toLowerCase().equals("list")) { }
+
+    /*
+     * This will not match "LIST" when in Turkish locale
+     * The above could be
+     * if (x.toLowerCase(Locale.US).equals("list")) { }
+     * or simply
+     * if (x.equalsIgnoreCase("list")) { }
+     */
+    // GOOD
+    String z = a.toLowerCase(Locale.EN);
 }
 ```
 
@@ -1709,16 +1707,17 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
 //StatementExpression/PrimaryExpression
 [PrimarySuffix/Arguments[@ArgumentCount = '0']]
 [
-PrimaryPrefix[./Name[@Image='notify' or ends-with(@Image,'.notify')]
-or ../PrimarySuffix/@Image='notify'
-or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
-]
+    PrimaryPrefix[
+        ./Name[@Image='notify' or ends-with(@Image,'.notify')]
+        or ../PrimarySuffix/@Image='notify'
+        or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
+    ]
 ]
 ```
 
 **Example(s):**
 
-```
+``` java
 void bar() {
     x.notify();
     // If many threads are monitoring x, only one (and you won't know which) will be notified.
@@ -1743,7 +1742,7 @@ remember to add a private constructor to prevent instantiation.
 
 **Example(s):**
 
-```
+``` java
 public class MaybeAUtility {
   public static void foo() {}
   public static void bar() {}
@@ -1783,15 +1782,15 @@ having to deal with the creation of an array.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-   public void foo(String s, Object[] args) {
-      // Do something here...
-   }
+    public void foo(String s, Object[] args) {
+        // Do something here...
+    }
 
-   public void bar(String s, Object... args) {
-      // Ahh, varargs tastes much better...
-   }
+    public void bar(String s, Object... args) {
+        // Ahh, varargs tastes much better...
+    }
 }
 ```
 

@@ -84,3 +84,7 @@ folder: pmd/devdocs
 *   For each rule in this set you want to test, call `addRule` method in setUp of the unit test
     *   This triggers the unit test to read the corresponding XML file with rule test data *(see `EmptyForeachStmtRule.xml` for example)*
     *   This test XML file contains sample pieces of code which should trigger a specified number of violations of this rule. The unit test will execute the rule on this piece of code, and verify that the number of violations matches
+*   To verify the validity of the created ruleset, create a subclass of `AbstractRuleSetFactoryTest` (*see `RuleSetFactoryTest` in pmd-vm for example)*.
+    This will load all rulesets and verify, that all required attributes are provided.
+
+    *Note:* You'll need to add your ruleset to `rulesets.properties`, so that it can be found.

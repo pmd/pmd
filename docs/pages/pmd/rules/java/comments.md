@@ -5,6 +5,7 @@ permalink: pmd_rules_java_comments.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/comments.xml
+keywords: Comments, CommentRequired, CommentSize, CommentContent, CommentDefaultAccessModifier
 ---
 ## CommentContent
 
@@ -18,8 +19,8 @@ A rule for the politically correct... we don't want to offend anyone.
 
 **Example(s):**
 
-```
-//	OMG, this is horrible, Bob is an idiot !!!
+``` java
+//OMG, this is horrible, Bob is an idiot !!!
 ```
 
 **This rule has the following properties:**
@@ -44,7 +45,7 @@ To avoid mistakes if we want that a Method, Constructor, Field or Nested class h
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
             final String stringValue = "some string";
             String getString() {
@@ -85,11 +86,11 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 
 **Example(s):**
 
-```
+``` java
 /**
 * 
 *
-* @author George Bush
+* @author Jon Doe
 */
 ```
 
@@ -116,10 +117,10 @@ Determines whether the dimensions of non-header comments found are within the sp
 
 **Example(s):**
 
-```
+``` java
 /**
 *
-*	too many lines!
+*   too many lines!
 *
 *
 *

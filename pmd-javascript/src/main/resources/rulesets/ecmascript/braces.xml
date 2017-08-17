@@ -8,144 +8,144 @@
 The Braces Ruleset contains a collection of braces rules.
   </description>
 
-   <rule name="IfStmtsMustUseBraces"
-   		language="ecmascript"
-   		since="5.0"
-         message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#IfStmtsMustUseBraces">
-     <description>
+  <rule name="IfStmtsMustUseBraces"
+        language="ecmascript"
+        since="5.0"
+        message="Avoid using if statements without curly braces"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_braces.html#ifstmtsmustusebraces">
+    <description>
 Avoid using if statements without using curly braces.
-     </description>
-     <priority>3</priority>
-       <properties>
-           <property name="xpath">
-               <value>
-                   <![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //IfStatement[@Else = "false" and not(child::Scope)]
-                   ]]>
-               </value>
-           </property>
-       </properties>
-     <example>
- <![CDATA[
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
 // Ok
 if (foo) {
-   x++;
+    x++;
 }
 
 // Bad
 if (foo)
-   x++;
- ]]>
-     </example>
-     </rule>
+    x++;
+]]>
+    </example>
+  </rule>
 
-      <rule name="IfElseStmtsMustUseBraces"
-   		language="ecmascript"
-      	  since="5.0"
-           message="Avoid using 'if...else' statements without curly braces"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#IfElseStmtsMustUseBraces">
-       <description>
+  <rule name="IfElseStmtsMustUseBraces"
+        language="ecmascript"
+        since="5.0"
+        message="Avoid using 'if...else' statements without curly braces"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_braces.html#ifelsestmtsmustusebraces">
+    <description>
 Avoid using if..else statements without using curly braces.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //ExpressionStatement[parent::IfStatement[@Else = "true"]]
    [not(child::Scope)]
    [not(child::IfStatement)]
- ]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 // Ok
 if (foo) {
-   x++;
+    x++;
 } else {
-   y++;
+    y++;
 }
 
 // Bad
 if (foo)
-   x++;
+    x++;
 else
-   y++;
+    y++;
 ]]>
-       </example>
-     </rule>
+    </example>
+  </rule>
 
-    <rule name="WhileLoopsMustUseBraces"
-   		language="ecmascript"
-    		 since="5.0"
-          message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#WhileLoopsMustUseBraces">
-      <description>
+  <rule name="WhileLoopsMustUseBraces"
+        language="ecmascript"
+        since="5.0"
+        message="Avoid using 'while' statements without curly braces"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_braces.html#whileloopsmustusebraces">
+    <description>
 Avoid using 'while' statements without using curly braces.
-      </description>
-      <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //WhileLoop[not(child::Scope)]
 ]]>
-                </value>
-            </property>
-        </properties>
-      <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 // Ok
 while (true) {
-   x++;
+    x++;
 }
 
 // Bad
 while (true)
-   x++;
+    x++;
 ]]>
-      </example>
-    </rule>
+    </example>
+  </rule>
 
-     <rule name="ForLoopsMustUseBraces"
-   		language="ecmascript"
-     		  since="5.0"
-           message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/ecmascript/braces.html#ForLoopsMustUseBraces">
-       <description>
+  <rule name="ForLoopsMustUseBraces"
+        language="ecmascript"
+        since="5.0"
+        message="Avoid using 'for' statements without curly braces"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_braces.html#forloopsmustusebraces">
+    <description>
 Avoid using 'for' statements without using curly braces.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
-	//ForLoop[not(child::Scope)]
+//ForLoop[not(child::Scope)]
 |
-	//ForInLoop[not(child::Scope)]
+//ForInLoop[not(child::Scope)]
 ]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 // Ok
 for (var i = 0; i < 42; i++) {
-   foo();
+    foo();
 }
 
 // Bad
 for (var i = 0; i < 42; i++)
-   foo();
+    foo();
 ]]>
-       </example>
-     </rule>
+    </example>
+  </rule>
 
 </ruleset>

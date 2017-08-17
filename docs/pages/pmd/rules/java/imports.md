@@ -5,6 +5,7 @@ permalink: pmd_rules_java_imports.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/imports.xml
+keywords: Import Statements, DuplicateImports, DontImportJavaLang, UnusedImports, ImportFromSamePackage, TooManyStaticImports, UnnecessaryFullyQualifiedName
 ---
 ## DontImportJavaLang
 
@@ -18,14 +19,14 @@ Avoid importing anything from the package 'java.lang'.  These classes are automa
 
 **Example(s):**
 
-```
-import java.lang.String;	// this is unnecessary
+``` java
+import java.lang.String;    // this is unnecessary
 
 public class Foo {}
 
 // --- in another source code file...
 
-import java.lang.*;	// this is bad
+import java.lang.*;         // this is bad
 
 public class Foo {}
 ```
@@ -42,7 +43,7 @@ Duplicate or overlapping import statements should be avoided.
 
 **Example(s):**
 
-```
+``` java
 import java.lang.String;
 import java.lang.*;
 public class Foo {}
@@ -60,13 +61,13 @@ There is no need to import a type that lives in the same package.
 
 **Example(s):**
 
-```
+``` java
 package foo;
- 
- import foo.Buz; // no need for this
- import foo.*; // or this
- 
- public class Bar{}
+
+import foo.Buz;     // no need for this
+import foo.*;       // or this
+
+public class Bar{}
 ```
 
 ## TooManyStaticImports
@@ -86,7 +87,7 @@ which class a static member comes from (Sun 1.5 Language Guide).
 
 **Example(s):**
 
-```
+``` java
 import static Lennon;
 import static Ringo;
 import static George;
@@ -113,12 +114,12 @@ which is covered by an import statement is redundant.  Consider using the non-fu
 
 **Example(s):**
 
-```
+``` java
 import java.util.List;
 
 public class Foo {
-   private java.util.List list1; // Unnecessary FQN
-   private List list2; // More appropriate given import of 'java.util.List'
+    private java.util.List list1;   // Unnecessary FQN
+    private List list2;             // More appropriate given import of 'java.util.List'
 }
 ```
 
@@ -134,7 +135,7 @@ Avoid the use of unused import statements to prevent unwanted dependencies.
 
 **Example(s):**
 
-```
+``` java
 // this is bad
 import java.io.File;
 public class Foo {}

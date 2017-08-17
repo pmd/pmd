@@ -5,6 +5,7 @@ permalink: pmd_rules_vm_basic.html
 folder: pmd/rules/vm
 sidebaractiveurl: /pmd_rules_vm.html
 editmepath: ../pmd-vm/src/main/resources/rulesets/vm/basic.xml
+keywords: Basic Velocity, AvoidDeeplyNestedIfStmts, CollapsibleIfStatements, ExcessiveTemplateLength, AvoidReassigningParameters, EmptyIfStmt, EmptyForeachStmt, UnusedMacroParameter, NoInlineJavaScript, NoInlineStyles
 ---
 ## AvoidDeeplyNestedIfStmts
 

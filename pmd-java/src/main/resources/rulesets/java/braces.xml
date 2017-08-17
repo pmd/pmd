@@ -9,11 +9,11 @@ The Braces ruleset contains rules regarding the use and placement of braces.
   </description>
 
    <rule name="IfStmtsMustUseBraces"
-   		language="java"
-   		since="1.0"
+         language="java"
+         since="1.0"
          message="Avoid using if statements without curly braces"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/braces.html#IfStmtsMustUseBraces">
+         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_braces.html#ifstmtsmustusebraces">
      <description>
 Avoid using if statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
@@ -31,12 +31,11 @@ controlled from the rest.
        </properties>
      <example>
  <![CDATA[
+if (foo)    // not recommended
+    x++;
 
-if (foo)	// not recommended
-	x++;
-
-if (foo) {	// preferred approach
-	x++;
+if (foo) {  // preferred approach
+    x++;
 }
 
  ]]>
@@ -44,11 +43,11 @@ if (foo) {	// preferred approach
      </rule>
 
     <rule name="WhileLoopsMustUseBraces"
-   		language="java"
-    		 since="0.7"
+          language="java"
+          since="0.7"
           message="Avoid using 'while' statements without curly braces"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/braces.html#WhileLoopsMustUseBraces">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_braces.html#whileloopsmustusebraces">
       <description>
 Avoid using 'while' statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
@@ -66,10 +65,10 @@ controlled from the rest.
         </properties>
       <example>
 <![CDATA[
-while (true)	// not recommended
+while (true)    // not recommended
       x++;
       
-while (true) {	// preferred approach
+while (true) {  // preferred approach
       x++;
 }
 ]]>
@@ -81,7 +80,7 @@ while (true) {	// preferred approach
             since="0.2"
             message="Avoid using 'if...else' statements without curly braces"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
-            externalInfoUrl="${pmd.website.baseurl}/rules/java/braces.html#IfElseStmtsMustUseBraces">
+            externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_braces.html#ifelsestmtsmustusebraces">
        <description>
 Avoid using if..else statements without using surrounding braces. If the code formatting 
 or indentation is lost then it becomes difficult to separate the code being controlled 
@@ -104,7 +103,7 @@ from the rest.
 <![CDATA[
    // this is OK
 if (foo) x++;
-   
+
    // but this is not
 if (foo)
        x = x+1;
@@ -119,7 +118,7 @@ if (foo)
            since="0.7"
            message="Avoid using 'for' statements without curly braces"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
-           externalInfoUrl="${pmd.website.baseurl}/rules/java/braces.html#ForLoopsMustUseBraces">
+           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_braces.html#forloopsmustusebraces">
        <description>
 Avoid using 'for' statements without using curly braces. If the code formatting or 
 indentation is lost then it becomes difficult to separate the code being controlled 

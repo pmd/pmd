@@ -5,6 +5,7 @@ permalink: pmd_rules_java_strings.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/strings.xml
+keywords: String and StringBuffer, AvoidDuplicateLiterals, StringInstantiation, StringToString, InefficientStringBuffering, UnnecessaryCaseChange, UseStringBufferLength, AppendCharacterWithChar, ConsecutiveAppendsShouldReuse, ConsecutiveLiteralAppends, UseIndexOfChar, InefficientEmptyStringCheck, InsufficientStringBufferDeclaration, UselessStringValueOf, StringBufferInstantiationWithChar, UseEqualsToCompareStrings, AvoidStringBufferField
 ---
 ## AppendCharacterWithChar
 
@@ -18,12 +19,12 @@ Avoid concatenating characters as strings in StringBuffer/StringBuilder.append m
 
 **Example(s):**
 
-```
+``` java
 StringBuffer sb = new StringBuffer();
-sb.append("a");		 // avoid this
+sb.append("a");     // avoid this
 
 StringBuffer sb = new StringBuffer();
-sb.append('a');		// use this instead
+sb.append('a');     // use this instead
 ```
 
 ## AvoidDuplicateLiterals
@@ -38,14 +39,14 @@ Code containing duplicate String literals can usually be improved by declaring t
 
 **Example(s):**
 
-```
+``` java
 private void bar() {
      buz("Howdy");
      buz("Howdy");
      buz("Howdy");
      buz("Howdy");
- }
- private void buz(String x) {}
+}
+private void buz(String x) {}
 ```
 
 **This rule has the following properties:**
@@ -74,9 +75,9 @@ if held within objects with long lifetimes.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	private StringBuffer buffer;	// potential memory leak as an instance variable;
+    private StringBuffer buffer;    // potential memory leak as an instance variable;
 }
 ```
 
@@ -93,7 +94,7 @@ by producing a smaller bytecode, reducing overhead and improving inlining. A com
 
 **Example(s):**
 
-```
+``` java
 String foo = " ";
 
 StringBuffer buf = new StringBuffer();
@@ -117,10 +118,10 @@ Consecutively calling StringBuffer/StringBuilder.append with String literals
 
 **Example(s):**
 
-```
+``` java
 StringBuffer buf = new StringBuffer();
-buf.append("Hello").append(" ").append("World"); // poor
-buf.append("Hello World");        				 // good
+buf.append("Hello").append(" ").append("World");    // poor
+buf.append("Hello World");                          // good
 ```
 
 **This rule has the following properties:**
@@ -145,11 +146,11 @@ or Spring's StringUtils#hasText (in the Springs framework) for existing implemen
 
 **Example(s):**
 
-```
+``` java
 public void bar(String string) {
-	if (string != null && string.trim().size() > 0) {
-		doSomething();
-	}
+    if (string != null && string.trim().size() > 0) {
+        doSomething();
+    }
 }
 ```
 
@@ -166,11 +167,11 @@ need to be be created and destroyed by the JVM.
 
 **Example(s):**
 
-```
+``` java
 // Avoid this, two buffers are actually being created here
 StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
-    
-    // do this instead
+
+// do this instead
 StringBuffer sb = new StringBuffer("tmp = ");
 sb.append(System.getProperty("java.io.tmpdir"));
 ```
@@ -191,10 +192,10 @@ is assumed if the length of the constructor can not be determined.
 
 **Example(s):**
 
-```
+``` java
 StringBuffer bad = new StringBuffer();
 bad.append("This is a long string that will exceed the default 16 characters");
-        
+
 StringBuffer good = new StringBuffer(41);
 good.append("This is a long string, which is pre-sized");
 ```
@@ -208,17 +209,19 @@ good.append("This is a long string, which is pre-sized");
 Individual character values provided as initialization arguments will be converted into integers.
 This can lead to internal buffer sizes that are larger than expected. Some examples:
 
-new StringBuffer() 		//  16
-new StringBuffer(6)		//  6
+```
+new StringBuffer()      //  16
+new StringBuffer(6)     //  6
 new StringBuffer("hello world")  // 11 + 16 = 27
-new StringBuffer('A')	//  chr(A) = 65
+new StringBuffer('A')   //  chr(A) = 65
 new StringBuffer("A")   //  1 + 16 = 17 
 
-new StringBuilder() 		//  16
-new StringBuilder(6)		//  6
+new StringBuilder()     //  16
+new StringBuilder(6)    //  6
 new StringBuilder("hello world")  // 11 + 16 = 27
-new StringBuilder('C')	 //  chr(C) = 67
+new StringBuilder('C')   //  chr(C) = 67
 new StringBuilder("A")   //  1 + 16 = 17
+```
 
 ```
 //AllocationExpression/ClassOrInterfaceType
@@ -232,12 +235,12 @@ Literal
 
 **Example(s):**
 
-```
+``` java
 // misleading instantiation, these buffers
-	// are actually sized to 99 characters long
-StringBuffer  sb1 = new StringBuffer('c');   
+// are actually sized to 99 characters long
+StringBuffer  sb1 = new StringBuffer('c');
 StringBuilder sb2 = new StringBuilder('c');
-  
+
 // in these forms, just single characters are allocated
 StringBuffer  sb3 = new StringBuffer("c");
 StringBuilder sb4 = new StringBuilder("c");
@@ -255,7 +258,7 @@ Avoid instantiating String objects; this is usually unnecessary since they are i
 
 **Example(s):**
 
-```
+``` java
 private String bar = new String("bar"); // just do a String bar = "bar";
 ```
 
@@ -271,7 +274,7 @@ Avoid calling toString() on objects already known to be string instances; this i
 
 **Example(s):**
 
-```
+``` java
 private String baz() {
     String bar = "howdy";
     return bar.toString();
@@ -290,10 +293,10 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
 
 **Example(s):**
 
-```
-boolean answer1 = buz.toUpperCase().equals("baz");	 		// should be buz.equalsIgnoreCase("baz")
-    
-boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");	 // another unnecessary toUpperCase()
+``` java
+boolean answer1 = buz.toUpperCase().equals("baz");              // should be buz.equalsIgnoreCase("baz")
+
+boolean answer2 = buz.toUpperCase().equalsIgnoreCase("baz");    // another unnecessary toUpperCase()
 ```
 
 ## UseEqualsToCompareStrings
@@ -315,10 +318,10 @@ and count(PrimarySuffix) = 0)]
 
 **Example(s):**
 
-```
+``` java
 public boolean test(String s) {
-    if (s == "one") return true; 		// unreliable
-    if ("two".equals(s)) return true; 	// better
+    if (s == "one") return true;        // unreliable
+    if ("two".equals(s)) return true;   // better
     return false;
 }
 ```
@@ -335,11 +338,11 @@ Use String.indexOf(char) when checking for the index of a single character; it e
 
 **Example(s):**
 
-```
+``` java
 String s = "hello world";
-  // avoid this
+// avoid this
 if (s.indexOf("d") {}
-  // instead do this
+// instead do this
 if (s.indexOf('d') {}
 ```
 
@@ -355,12 +358,12 @@ No need to call String.valueOf to append to a string; just use the valueOf() arg
 
 **Example(s):**
 
-```
+``` java
 public String convert(int i) {
-	String s;
-	s = "a" + String.valueOf(i);	// not required
-	s = "a" + i; 					// preferred approach
-	return s;
+    String s;
+    s = "a" + String.valueOf(i);    // not required
+    s = "a" + i;                    // preferred approach
+    return s;
 }
 ```
 
@@ -377,11 +380,11 @@ or StringBuffer.toString().length() == ...
 
 **Example(s):**
 
-```
+``` java
 StringBuffer sb = new StringBuffer();
-    
-if (sb.toString().equals("")) {}	    // inefficient 
-    
-if (sb.length() == 0) {}	    		// preferred
+
+if (sb.toString().equals("")) {}        // inefficient
+
+if (sb.length() == 0) {}                // preferred
 ```
 

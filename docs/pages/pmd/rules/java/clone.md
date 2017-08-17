@@ -5,6 +5,7 @@ permalink: pmd_rules_java_clone.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/clone.xml
+keywords: Clone Implementation, ProperCloneImplementation, CloneThrowsCloneNotSupportedException, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneMethodMustBePublic
 ---
 ## CloneMethodMustBePublic
 
@@ -17,15 +18,13 @@ Object.clone (which is protected) with a public method."
 
 ```
 //MethodDeclaration[@Public='false']
-[
-MethodDeclarator/@Image = 'clone'
-and MethodDeclarator/FormalParameters/@ParameterCount = 0
-]
+  [MethodDeclarator/@Image = 'clone']
+  [MethodDeclarator/FormalParameters/@ParameterCount = 0]
 ```
 
 **Example(s):**
 
-```
+``` java
 public class Foo implements Cloneable {
     @Override
     protected Object clone() throws CloneNotSupportedException { // Violation, must be public
@@ -69,7 +68,7 @@ and Block[count(BlockStatement)=1]
 
 **Example(s):**
 
-```
+``` java
 public class MyClass {
  public Object clone() throws CloneNotSupportedException {
   return foo;
@@ -101,7 +100,7 @@ and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDec
 
 **Example(s):**
 
-```
+``` java
 public class Foo implements Cloneable {
     @Override
     protected Object clone() { // Violation, Object must be Foo
@@ -138,13 +137,13 @@ and count(NameList/Name[contains
 
 **Example(s):**
 
-```
+``` java
 public class MyClass implements Cloneable{
-     public Object clone() { // will cause an error
-          MyClass clone = (MyClass)super.clone();
-          return clone;
-     }
- }
+    public Object clone() { // will cause an error
+         MyClass clone = (MyClass)super.clone();
+         return clone;
+    }
+}
 ```
 
 ## ProperCloneImplementation
@@ -169,7 +168,7 @@ ClassOrInterfaceDeclaration[1]/@Image)
 
 **Example(s):**
 
-```
+``` java
 class Foo{
     public Object clone(){
         return new Foo(); // This is bad

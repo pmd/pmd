@@ -5,6 +5,7 @@ permalink: pmd_rules_xsl_xpath.html
 folder: pmd/rules/xsl
 sidebaractiveurl: /pmd_rules_xsl.html
 editmepath: ../pmd-xml/src/main/resources/rulesets/xsl/xpath.xml
+keywords: XPath in XSL, UseConcatOnce, AvoidAxisNavigation
 ---
 ## AvoidAxisNavigation
 
@@ -12,7 +13,10 @@ editmepath: ../pmd-xml/src/main/resources/rulesets/xsl/xpath.xml
 
 **Priority:** Medium (3)
 
-Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut through 100% of the document in the worst case.  Also, try to avoid using 'descendant' or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means cutting through 100% of the document.
+Avoid using the 'following' or 'preceeding' axes whenever possible, as these can cut
+through 100% of the document in the worst case.  Also, try to avoid using 'descendant'
+or 'descendant-self' axes, as if you're at the top of the Document, it necessarily means
+cutting through 100% of the document.
 
 ```
 //node()[
@@ -33,7 +37,7 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
 
 **Example(s):**
 
-```
+``` xsl
 <xsl:variable name="var" select="//item/descendant::child"/>
 ```
 
@@ -49,7 +53,8 @@ Avoid using the 'following' or 'preceeding' axes whenever possible, as these can
 
 **Priority:** Medium (3)
 
-The XPath concat() functions accepts as many arguments as required so you can have "concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
+The XPath concat() functions accepts as many arguments as required so you can have
+"concat($a,'b',$c)" rather than "concat($a,concat('b',$c)".
 
 ```
 //node()[contains(substring-after(@select,'concat'),'concat')]
@@ -57,8 +62,8 @@ The XPath concat() functions accepts as many arguments as required so you can ha
 
 **Example(s):**
 
-```
+``` xsl
 <xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
- <xsl:variable name="var" select="concat("Welcome","to you ",$name))">
+<xsl:variable name="var" select="concat("Welcome","to you ",$name))">
 ```
 

@@ -5,6 +5,7 @@ permalink: pmd_rules_apex_style.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/style.xml
+keywords: Style, VariableNamingConventions, MethodNamingConventions, ClassNamingConventions, MethodWithSameNameAsEnclosingClass, AvoidLogicInTrigger, AvoidGlobalModifier
 ---
 ## AvoidGlobalModifier
 
@@ -19,11 +20,11 @@ Many interfaces (e.g. Batch) required global modifiers in the past but don't req
 
 **Example(s):**
 
-```
+``` java
 global class Unchangeable {
-	global UndeletableType unchangable(UndeletableType param) {
-		// ...
-	}
+    global UndeletableType unchangable(UndeletableType param) {
+        // ...
+    }
 }
 ```
 
@@ -50,19 +51,19 @@ See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex
 
 **Example(s):**
 
-```
+``` java
 trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
-	for(Account acc : Trigger.new) {           
-		if(Trigger.isInsert) {
-			...
-		}
-		
-		...
-		
-		if(Trigger.isDelete) {
-			...
-		}
-	}
+    for(Account acc : Trigger.new) {
+        if(Trigger.isInsert) {
+            // ...
+        }
+
+        // ...
+
+        if(Trigger.isDelete) {
+            // ...
+        }
+    }
 }
 ```
 
@@ -86,7 +87,7 @@ Class names should always begin with an upper case character.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {}
 ```
 
@@ -110,10 +111,10 @@ Method names should always begin with a lower case character, and should not con
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public void fooStuff() {
-	}
+    public void fooStuff() {
+    }
 }
 ```
 
@@ -137,12 +138,12 @@ Non-constructor methods should not have the same name as the enclosing class.
 
 **Example(s):**
 
-```
+``` java
 public class MyClass {
-	// this is OK because it is a constructor
-	public MyClass() {}
-	// this is bad because it is a method
-	public void MyClass() {}
+    // this is OK because it is a constructor
+    public MyClass() {}
+    // this is bad because it is a method
+    public void MyClass() {}
 }
 ```
 
@@ -168,11 +169,11 @@ that should not include underscores.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public static final Integer MY_NUM = 0;
-	public String myTest = '';
-	DataModule dmTest = new DataModule();
+    public static final Integer MY_NUM = 0;
+    public String myTest = '';
+    DataModule dmTest = new DataModule();
 }
 ```
 

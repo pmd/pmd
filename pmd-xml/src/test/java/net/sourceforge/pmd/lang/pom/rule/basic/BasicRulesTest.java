@@ -13,5 +13,6 @@ public class BasicRulesTest extends SimpleAggregatorTst {
     @Override
     public void setUp() {
         addRule(RULESET, "ProjectVersionAsDependencyVersion");
+        addRule(RULESET, "InvalidDependencyTypes");
     }
 }

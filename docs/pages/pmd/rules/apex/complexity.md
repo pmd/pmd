@@ -5,6 +5,7 @@ permalink: pmd_rules_apex_complexity.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/complexity.xml
+keywords: Complexity, AvoidDeeplyNestedIfStmts, ExcessiveParameterList, ExcessiveClassLength, NcssMethodCount, NcssTypeCount, NcssConstructorCount, StdCyclomaticComplexity, TooManyFields, ExcessivePublicCount
 ---
 ## AvoidDeeplyNestedIfStmts
 
@@ -18,17 +19,17 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public void bar(Integer x, Integer y, Integer z) {
-		if (x>y) {
-			if (y>z) {
-				if (z==x) {
-					// !! too deep
-				}
-			}
-		}
-	}
+    public void bar(Integer x, Integer y, Integer z) {
+        if (x>y) {
+            if (y>z) {
+                if (z==x) {
+                    // !! too deep
+                }
+            }
+        }
+    }
 }
 ```
 
@@ -55,20 +56,20 @@ apart the code becomes more managable and ripe for reuse.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public void bar1() {
-		// 1000 lines of code
-	}
-	public void bar2() {
-		// 1000 lines of code
-	}
-	public void bar3() {
-		// 1000 lines of code
-	}
-	public void barN() {
-		// 1000 lines of code
-	}
+    public void bar1() {
+        // 1000 lines of code
+    }
+    public void bar2() {
+        // 1000 lines of code
+    }
+    public void bar3() {
+        // 1000 lines of code
+    }
+    public void barN() {
+        // 1000 lines of code
+    }
 }
 ```
 
@@ -96,14 +97,14 @@ same datatype. These situations usually denote the need for new objects to wrap 
 
 **Example(s):**
 
-```
+``` java
 // too many arguments liable to be mixed up
 public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
-	...
+    // ...
 }
 // preferred approach 
 public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
-	...
+    // ...
 }
 ```
 
@@ -133,17 +134,17 @@ developed easily.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public String value;
-	public Bar something;
-	public Variable var;
-	// [... more more public attributes ...]
-	
-	public void doWork() {}
-	public void doMoreWork() {}
-	public void doWorkAgain() {}
-	// [... more more public methods ...]
+    public String value;
+    public Bar something;
+    public Variable var;
+    // [... more more public attributes ...]
+
+    public void doWork() {}
+    public void doMoreWork() {}
+    public void doWorkAgain() {}
+    // [... more more public methods ...]
 }
 ```
 
@@ -172,17 +173,17 @@ lines of code that are split are counted as one.
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends Bar {
-	//this constructor only has 1 NCSS lines
-	public Foo() {
-		super();
-		
-		
-		
-		
-		super.foo();
-	}
+    //this constructor only has 1 NCSS lines
+    public Foo() {
+        super();
+
+
+
+
+        super.foo();
+}
 }
 ```
 
@@ -211,16 +212,16 @@ lines of code that are split are counted as one.
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends Bar {
-	//this method only has 1 NCSS lines
-	public Integer methd() {
-		super.methd();
-		
-		
-		
-		return 1;
-	}
+    //this method only has 1 NCSS lines
+    public Integer methd() {
+        super.methd();
+
+
+
+        return 1;
+    }
 }
 ```
 
@@ -249,18 +250,18 @@ lines of code that are split are counted as one.
 
 **Example(s):**
 
-```
+``` java
 //this class only has 6 NCSS lines
 public class Foo extends Bar {
-	public Foo() {
-		super();
-		
-		
-		
-		
-		
-		super.foo();
-	}
+    public Foo() {
+        super();
+
+
+
+
+
+        super.foo();
+    }
 }
 ```
 
@@ -290,44 +291,43 @@ high complexity, and 11+ is very high complexity.
 
 **Example(s):**
 
-```
+``` java
 // This has a Cyclomatic Complexity = 12
-	public class Foo {
-1		public void example() {
-2			if (a == b || (c == d && e == f)) {
-3				if (a1 == b1) {
-					fiddle();
-4				} else if a2 == b2) {
-					fiddle();
-				}  else {
-					fiddle();
-				}
-5			} else if (c == d) {
-6				while (c == d) {
-					fiddle();
-				}
-7			} else if (e == f) {
-8				for (int n = 0; n < h; n++) {
-					fiddle();
-				}
-			} else {
-				switch (z) {
-9					case 1:
-						fiddle();
-						break;
-10					case 2:
-						fiddle();
-						break;
-11					case 3:
-						fiddle();
-						break;
-12					default:
-						fiddle();
-						break;
-				}
-			}
-		}
-	}
+public class Foo {
+1   public void example() {
+2   if (a == b || (c == d && e == f)) {
+3       if (a1 == b1) {
+            fiddle();
+4       } else if a2 == b2) {
+            fiddle();
+        }  else {
+            fiddle();
+        }
+5   } else if (c == d) {
+6       while (c == d) {
+            fiddle();
+        }
+7   } else if (e == f) {
+8       for (int n = 0; n < h; n++) {
+            fiddle();
+        }
+    } else {
+        switch (z) {
+9           case 1:
+                fiddle();
+                break;
+10          case 2:
+                fiddle();
+                break;
+11          case 3:
+                fiddle();
+                break;
+12          default:
+                fiddle();
+                break;
+        }
+    }
+}
 ```
 
 **This rule has the following properties:**
@@ -355,20 +355,20 @@ city/state/zip fields could park them within a single Address field.
 
 **Example(s):**
 
-```
+``` java
 public class Person {
-	// too many separate fields
-	int birthYear;
-	int birthMonth;
-	int birthDate;
-	float height;
-	float weight;
+    // too many separate fields
+    int birthYear;
+    int birthMonth;
+    int birthDate;
+    float height;
+    float weight;
 }
 
 public class Person {
-	// this is more manageable
-	Date birthDate;
-	BodyMeasurements measurements;
+    // this is more manageable
+    Date birthDate;
+    BodyMeasurements measurements;
 }
 ```
 

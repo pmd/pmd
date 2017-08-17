@@ -60,7 +60,7 @@ export RELEASE_VERSION
 export DEVELOPMENT_VERSION
 export CURRENT_BRANCH
 
-echo "*   Update version/release info in **src/site/markdown/overview/changelog.md**."
+echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 echo "    ## $(date -u +%d-%B-%Y) - ${RELEASE_VERSION}"
 echo
@@ -97,7 +97,7 @@ cat <<EOF
 PMD ${RELEASE_VERSION} released
 
 * minor version with lots of bug fixes
-* Changelog: https://pmd.github.io/pmd-${RELEASE_VERSION}/overview/changelog.html
+* Release Notes: https://pmd.github.io/pmd-${RELEASE_VERSION}/pmd_release_notes.html
 * Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${RELEASE_VERSION}
 * Fixed Bugs: https://sourceforge.net/p/pmd/bugs/milestone/PMD-${RELEASE_VERSION}/
 * Documentation: https://pmd.github.io/pmd-${RELEASE_VERSION}/
@@ -113,11 +113,15 @@ echo
 echo
 echo
 echo "Prepare Next development version:"
-echo "*   Move version/release info from **src/site/markdown/overview/changelog.md** to **src/site/markdown/overview/changelog-old.md**."
-echo "*   Update version/release info in **src/site/markdown/overview/changelog.md**."
+echo "*   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**."
+echo "*   Update version/release info in **docs/pages/release_notes.md**."
 echo
 cat <<EOF
-# PMD Release Notes
+---
+title: PMD Release Notes
+permalink: pmd_release_notes.html
+keywords: changelog, release notes
+---
 
 ## ????? - ${DEVELOPMENT_VERSION}
 
@@ -127,10 +131,10 @@ This is a bug fixing release.
 
 ### Table Of Contents
 
-* [New and noteworthy](#New_and_noteworthy)
-* [Fixed Issues](#Fixed_Issues)
-* [API Changes](#API_Changes)
-* [External Contributions](#External_Contributions)
+* [New and noteworthy](#new-and-noteworthy)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
 
 ### New and noteworthy
 

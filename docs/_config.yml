@@ -46,15 +46,16 @@ feedback_disable: true
 # feedback_link: "http://helpy.io/"
 # if you uncomment the previous line, it changes where the feedback link points to
 
-highlighter: rouge
-# library used for syntax highlighting
 
 markdown: kramdown
+highlighter: rouge
 kramdown:
- input: GFM
- auto_ids: true
- hard_wrap: false
- syntax_highlighter: rouge
+  input: GFM
+  auto_ids: true
+  hard_wrap: false
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+      css_class: 'highlight'
 # filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
 
 collections:
@@ -101,4 +102,5 @@ description: "Intended as a documentation theme based on Jekyll for technical wr
 # the description is used in the feed.xml file
 
 # needed for sitemap.xml file only
-url: http://idratherbewriting.com
+url: http://pmd.sourceforge.net
+baseurl: ""

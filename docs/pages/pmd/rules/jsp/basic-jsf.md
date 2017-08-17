@@ -5,6 +5,7 @@ permalink: pmd_rules_jsp_basic-jsf.html
 folder: pmd/rules/jsp
 sidebaractiveurl: /pmd_rules_jsp.html
 editmepath: ../pmd-jsp/src/main/resources/rulesets/jsp/basic-jsf.xml
+keywords: Basic JSF, DontNestJsfInJstlIteration
 ---
 ## DontNestJsfInJstlIteration
 
@@ -20,11 +21,15 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
 
 **Example(s):**
 
-```
-<html> <body> <ul>
-		<c:forEach items='${books}' var='b'>
-			<li> <h:outputText value='#{b}' /> </li>
-		</c:forEach>
-</ul> </body> </html>
+``` jsp
+<html>
+  <body>
+    <ul>
+      <c:forEach items='${books}' var='b'>
+        <li> <h:outputText value='#{b}' /> </li>
+      </c:forEach>
+    </ul>
+  </body>
+</html>
 ```
 

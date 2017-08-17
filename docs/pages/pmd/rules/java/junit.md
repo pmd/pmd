@@ -5,6 +5,7 @@ permalink: pmd_rules_java_junit.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/junit.xml
+keywords: JUnit, JUnitStaticSuite, JUnitSpelling, JUnitAssertionsShouldIncludeMessage, JUnitTestsShouldIncludeAssert, TestClassWithoutTestCases, UnnecessaryBooleanAssertion, UseAssertEqualsInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, SimplifyBooleanAssertion, JUnitTestContainsTooManyAsserts, UseAssertTrueInsteadOfAssertEquals
 ---
 ## JUnitAssertionsShouldIncludeMessage
 
@@ -19,14 +20,14 @@ assertEquals(), not the two-argument version.
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends TestCase {
- public void testSomething() {
-  assertEquals("foo", "bar");
-  // Use the form:
-  // assertEquals("Foo does not equals bar", "foo", "bar");
-  // instead
- }
+    public void testSomething() {
+        assertEquals("foo", "bar");
+        // Use the form:
+        // assertEquals("Foo does not equals bar", "foo", "bar");
+        // instead
+    }
 }
 ```
 
@@ -49,12 +50,12 @@ Some JUnit framework methods are easy to misspell.
 
 **Example(s):**
 
-```
+``` java
 import junit.framework.*;
 
 public class Foo extends TestCase {
-   public void setup() {}    // oops, should be setUp
-   public void TearDown() {} // oops, should be tearDown
+    public void setup() {}    // oops, should be setUp
+    public void TearDown() {} // oops, should be tearDown
 }
 ```
 
@@ -75,12 +76,12 @@ The suite() method in a JUnit test needs to be both public and static.
 
 **Example(s):**
 
-```
+``` java
 import junit.framework.*;
 
 public class Foo extends TestCase {
-   public void suite() {}         // oops, should be static
-   private static void suite() {} // oops, should be public
+    public void suite() {}         // oops, should be static
+    private static void suite() {} // oops, should be public
 }
 ```
 
@@ -100,20 +101,20 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 
 **Example(s):**
 
-```
+``` java
 public class MyTestCase extends TestCase {
-	// Ok
-	public void testMyCaseWithOneAssert() {
-		boolean myVar = false;		
-		assertFalse("should be false", myVar);
-	}
+    // Ok
+    public void testMyCaseWithOneAssert() {
+        boolean myVar = false;
+        assertFalse("should be false", myVar);
+    }
 
-	// Bad, too many asserts (assuming max=1)
-	public void testMyCaseWithMoreAsserts() {
-		boolean myVar = false;		
-		assertFalse("myVar should be false", myVar);
-		assertEquals("should equals false", false, myVar);
-	}
+    // Bad, too many asserts (assuming max=1)
+    public void testMyCaseWithMoreAsserts() {
+        boolean myVar = false;
+        assertFalse("myVar should be false", myVar);
+        assertEquals("should equals false", false, myVar);
+    }
 }
 ```
 
@@ -136,7 +137,7 @@ with messages provide the developer a clearer idea of what the test does.
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends TestCase {
    public void testSomething() {
       Bar b = findBar();
@@ -157,11 +158,11 @@ Avoid negation in an assertTrue or assertFalse test.
 
 For example, rephrase:
 
-   assertTrue(!expr);
-   
+    assertTrue(!expr);
+
 as:
 
-   assertFalse(expr);
+    assertFalse(expr);
 
 ```
 //StatementExpression
@@ -177,12 +178,12 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
 
 **Example(s):**
 
-```
+``` java
 public class SimpleTest extends TestCase {
-   public void testX() {
-     assertTrue("not empty", !r.isEmpty()); // replace with assertFalse("not empty", r.isEmpty())
-     assertFalse(!r.isEmpty()); // replace with assertTrue(r.isEmpty())
-   }
+    public void testX() {
+        assertTrue("not empty", !r.isEmpty());  // replace with assertFalse("not empty", r.isEmpty())
+        assertFalse(!r.isEmpty());              // replace with assertTrue(r.isEmpty())
+    }
 }
 ```
 
@@ -199,7 +200,7 @@ since most people will assume it is a test case. Test classes have test methods 
 
 **Example(s):**
 
-```
+``` java
 //Consider changing the name of the class if it is not a test
 //Consider adding test methods if it is a test
 public class CarTest {
@@ -237,11 +238,11 @@ UnaryExpressionNotPlusMinus[@Image='!']
 
 **Example(s):**
 
-```
+``` java
 public class SimpleTest extends TestCase {
-	public void testX() {
-		assertTrue(true);		 // serves no real purpose
-	}
+    public void testX() {
+        assertTrue(true);       // serves no real purpose
+    }
 }
 ```
 
@@ -265,13 +266,13 @@ This rule detects JUnit assertions in object equality. These assertions should b
 
 **Example(s):**
 
-```
+``` java
 public class FooTest extends TestCase {
-	void testCode() {
-		Object a, b;
-		assertTrue(a.equals(b)); 					// bad usage
-		assertEquals(?a should equals b?, a, b);	// good usage
-	}
+    void testCode() {
+        Object a, b;
+        assertTrue(a.equals(b));                    // bad usage
+        assertEquals(?a should equals b?, a, b);    // good usage
+    }
 }
 ```
 
@@ -297,16 +298,16 @@ more specific methods, like assertNull, assertNotNull.
 
 **Example(s):**
 
-```
+``` java
 public class FooTest extends TestCase {
-  void testCode() {
-   Object a = doSomething();
-   assertTrue(a==null); // bad usage
-   assertNull(a);  // good usage
-   assertTrue(a != null); // bad usage
-   assertNotNull(a);  // good usage
-  }
- }
+    void testCode() {
+        Object a = doSomething();
+        assertTrue(a==null);    // bad usage
+        assertNull(a);          // good usage
+        assertTrue(a != null);  // bad usage
+        assertNotNull(a);       // good usage
+    }
+}
 ```
 
 ## UseAssertSameInsteadOfAssertTrue
@@ -331,13 +332,13 @@ by more specific methods, like assertSame, assertNotSame.
 
 **Example(s):**
 
-```
+``` java
 public class FooTest extends TestCase {
- void testCode() {
-  Object a, b;
-  assertTrue(a == b); // bad usage
-  assertSame(a, b);  // good usage
- }
+    void testCode() {
+        Object a, b;
+        assertTrue(a == b); // bad usage
+        assertSame(a, b);   // good usage
+    }
 }
 ```
 
@@ -361,21 +362,21 @@ When asserting a value is the same as a literal or Boxed boolean, use assertTrue
 
 **Example(s):**
 
-```
+``` java
 public class MyTestCase extends TestCase {
-	public void testMyCase() {
-		boolean myVar = true;
-		// Ok
-		assertTrue("myVar is true", myVar);
-		// Bad
-		assertEquals("myVar is true", true, myVar);
-		// Bad
-		assertEquals("myVar is false", false, myVar);
-		// Bad
-		assertEquals("myVar is true", Boolean.TRUE, myVar);
-		// Bad
-		assertEquals("myVar is false", Boolean.FALSE, myVar);
-	}
+    public void testMyCase() {
+        boolean myVar = true;
+        // Ok
+        assertTrue("myVar is true", myVar);
+        // Bad
+        assertEquals("myVar is true", true, myVar);
+        // Bad
+        assertEquals("myVar is false", false, myVar);
+        // Bad
+        assertEquals("myVar is true", Boolean.TRUE, myVar);
+        // Bad
+        assertEquals("myVar is false", Boolean.FALSE, myVar);
+    }
 }
 ```
 

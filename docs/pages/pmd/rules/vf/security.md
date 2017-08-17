@@ -5,6 +5,7 @@ permalink: pmd_rules_vf_security.html
 folder: pmd/rules/vf
 sidebaractiveurl: /pmd_rules_vf.html
 editmepath: ../pmd-visualforce/src/main/resources/rulesets/vf/security.xml
+keywords: Basic VF, VfUnescapeEl, VfCsrf
 ---
 ## VfCsrf
 
@@ -18,7 +19,7 @@ Avoid calling VF action upon page load as the action becomes vulnerable to CSRF.
 
 **Example(s):**
 
-```
+``` vf
 <apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >
 ```
 
@@ -34,7 +35,7 @@ Avoid unescaped user controlled content in EL as it results in XSS.
 
 **Example(s):**
 
-```
+``` vf
 <apex:outputText value="Potential XSS is {! here }" escape="false" />
 ```
 

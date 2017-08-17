@@ -5,6 +5,7 @@ permalink: pmd_rules_java_naming.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/naming.xml
+keywords: Naming, ShortVariable, LongVariable, ShortMethodName, VariableNamingConventions, MethodNamingConventions, ClassNamingConventions, AbstractNaming, AvoidDollarSigns, MethodWithSameNameAsEnclosingClass, SuspiciousHashcodeMethodName, SuspiciousConstantFieldName, SuspiciousEqualsMethodName, AvoidFieldNameMatchingTypeName, AvoidFieldNameMatchingMethodName, NoPackage, PackageCase, MisleadingVariableName, BooleanGetMethodName, ShortClassName, GenericsNaming
 ---
 ## AbstractNaming
 
@@ -27,7 +28,7 @@ Abstract classes should be named 'AbstractXXX'.
 
 **Example(s):**
 
-```
+``` java
 public abstract class Foo { // should be AbstractFoo
 }
 ```
@@ -50,7 +51,7 @@ Avoid using dollar signs in variable/method/class/interface names.
 
 **Example(s):**
 
-```
+``` java
 public class Fo$o {  // not a recommended name
 }
 ```
@@ -69,12 +70,12 @@ Smalltalk often prefer this approach as the methods denote accessor methods.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	Object bar;
-	// bar is data or an action or both?
-	void bar() {
-	}
+    Object bar;
+    // bar is data or an action or both?
+    void bar() {
+    }
 }
 ```
 
@@ -91,9 +92,9 @@ This probably means that type and/or field names should be chosen more carefully
 
 **Example(s):**
 
-```
+``` java
 public class Foo extends Bar {
-	int foo;	// There is probably a better name that can be used
+    int foo;    // There is probably a better name that can be used
 }
 ```
 
@@ -119,9 +120,9 @@ and not(../Annotation//Name[@Image = 'Override'])
 
 **Example(s):**
 
-```
-public boolean getFoo(); 	// bad
-public boolean isFoo(); 	// ok
+``` java
+public boolean getFoo();            // bad
+public boolean isFoo();             // ok
 public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
 ```
 
@@ -143,7 +144,7 @@ Class names should always begin with an upper case character.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {}
 ```
 
@@ -165,17 +166,17 @@ Names for references to generic values should be limited to a single uppercase l
 
 **Example(s):**
 
-```
+``` java
 public interface GenericDao<E extends BaseModel, K extends Serializable> extends BaseDao {
-   // This is ok...
+    // This is ok...
 }
 
 public interface GenericDao<E extends BaseModel, K extends Serializable> {
-   // Also this
+    // Also this
 }
 
 public interface GenericDao<e extends BaseModel, K extends Serializable> {
-   // 'e' should be an 'E'
+    // 'e' should be an 'E'
 }
 
 public interface GenericDao<EF extends BaseModel, K extends Serializable> {
@@ -197,12 +198,12 @@ Fields, formal arguments, or local variable names that are too long can make the
 
 **Example(s):**
 
-```
+``` java
 public class Something {
-	int reallyLongIntName = -3;  			// VIOLATION - Field
-	public static void main( String argumentsList[] ) { // VIOLATION - Formal
-		int otherReallyLongName = -5; 		// VIOLATION - Local
-		for (int interestingIntIndex = 0;	// VIOLATION - For
+    int reallyLongIntName = -3;             // VIOLATION - Field
+    public static void main( String argumentsList[] ) { // VIOLATION - Formal
+        int otherReallyLongName = -5;       // VIOLATION - Local
+        for (int interestingIntIndex = 0;   // VIOLATION - For
              interestingIntIndex < 10;
              interestingIntIndex ++ ) {
     }
@@ -227,10 +228,10 @@ Method names should always begin with a lower case character, and should not con
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public void fooStuff() {
-	}
+    public void fooStuff() {
+    }
 }
 ```
 
@@ -252,12 +253,12 @@ Non-constructor methods should not have the same name as the enclosing class.
 
 **Example(s):**
 
-```
+``` java
 public class MyClass {
 
-	public MyClass() {}			// this is OK because it is a constructor
-	
-	public void MyClass() {}	// this is bad because it is a method
+    public MyClass() {}         // this is OK because it is a constructor
+
+    public void MyClass() {}    // this is bad because it is a method
 }
 ```
 
@@ -277,10 +278,10 @@ Detects when a non-field has a name starting with 'm_'.  This usually denotes a 
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     private int m_foo; // OK
-    public void bar(String m_baz) {  // Bad
+    public void bar(String m_baz) { // Bad
       int m_boz = 42; // Bad
     }
 }
@@ -300,7 +301,7 @@ Detects when a class or interface does not have a package definition.
 
 **Example(s):**
 
-```
+``` java
 // no package declaration
 public class ClassInDefaultPackage {
 }
@@ -320,7 +321,7 @@ Detects when a package definition contains uppercase characters.
 
 **Example(s):**
 
-```
+``` java
 package com.MyCompany;  // should be lowercase name
 
 public class SomeClass {
@@ -341,7 +342,7 @@ Short Classnames with fewer than e.g. five characters are not recommended.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
 }
 ```
@@ -366,10 +367,10 @@ Method names that are very short are not helpful to the reader.
 
 **Example(s):**
 
-```
+``` java
 public class ShortMethod {
-	public void a( int i ) { // Violation
-	}
+    public void a( int i ) { // Violation
+    }
 }
 ```
 
@@ -396,7 +397,7 @@ Fields, local variables, or parameter names that are very short are not helpful 
 
 **Example(s):**
 
-```
+``` java
 public class Something {
     private int q = 15;                         // field - too short
     public static void main( String as[] ) {    // formal arg - too short
@@ -435,7 +436,7 @@ be declared as final.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
  // this is bad, since someone could accidentally
  // do PI = 2.71828; which is actually e
@@ -477,7 +478,7 @@ intention to override the equals(Object) method.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
    public int equals(Object o) {
      // oops, this probably was supposed to be boolean equals
@@ -504,11 +505,10 @@ to override the hashCode() method.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-	public int hashcode() {	// oops, this probably was supposed to be 'hashCode'
-	
-	}
+    public int hashcode() { // oops, this probably was supposed to be 'hashCode'
+    }
 }
 ```
 
@@ -526,11 +526,11 @@ that should not include underscores.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-   public static final int MY_NUM = 0;
-   public String myTest = "";
-   DataModule dmTest = new DataModule();
+    public static final int MY_NUM = 0;
+    public String myTest = "";
+    DataModule dmTest = new DataModule();
 }
 ```
 

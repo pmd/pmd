@@ -5,6 +5,7 @@ permalink: pmd_rules_java_braces.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/braces.xml
+keywords: Braces, IfStmtsMustUseBraces, WhileLoopsMustUseBraces, IfElseStmtsMustUseBraces, ForLoopsMustUseBraces
 ---
 ## ForLoopsMustUseBraces
 
@@ -22,7 +23,7 @@ from the rest.
 
 **Example(s):**
 
-```
+``` java
 for (int i = 0; i < 42; i++)
    foo();
 ```
@@ -46,10 +47,10 @@ from the rest.
 
 **Example(s):**
 
-```
+``` java
 // this is OK
 if (foo) x++;
-   
+
    // but this is not
 if (foo)
        x = x+1;
@@ -73,12 +74,12 @@ controlled from the rest.
 
 **Example(s):**
 
-```
-if (foo)	// not recommended
-	x++;
+``` java
+if (foo)    // not recommended
+    x++;
 
-if (foo) {	// preferred approach
-	x++;
+if (foo) {  // preferred approach
+    x++;
 }
 ```
 
@@ -98,11 +99,11 @@ controlled from the rest.
 
 **Example(s):**
 
-```
-while (true)	// not recommended
+``` java
+while (true)    // not recommended
       x++;
       
-while (true) {	// preferred approach
+while (true) {  // preferred approach
       x++;
 }
 ```

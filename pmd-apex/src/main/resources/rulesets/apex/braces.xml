@@ -8,135 +8,133 @@
 The Braces ruleset contains rules regarding the use and placement of braces.
   </description>
 
-   <rule name="IfStmtsMustUseBraces"
-   		language="apex"
-   		since="5.6.0"
-         message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/braces.html#IfStmtsMustUseBraces">
-     <description>
+  <rule name="IfStmtsMustUseBraces"
+        language="apex"
+        since="5.6.0"
+        message="Avoid using if statements without curly braces"
+        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_braces.html#ifstmtsmustusebraces">
+    <description>
 Avoid using if statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
-     </description>
-     <priority>3</priority>
-       <properties>
-           <property name="xpath">
-               <value>
-                   <![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //IfBlockStatement/BlockStatement[@CurlyBrace='false']
-                   ]]>
-               </value>
-           </property>
-       </properties>
-     <example>
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
  <![CDATA[
+if (foo)    // not recommended
+    x++;
 
-if (foo)	// not recommended
-	x++;
-
-if (foo) {	// preferred approach
-	x++;
+if (foo) {  // preferred approach
+    x++;
 }
+]]>
+    </example>
+  </rule>
 
- ]]>
-     </example>
-     </rule>
-
-    <rule name="WhileLoopsMustUseBraces"
-   		language="apex"
-    		 since="5.6.0"
-          message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/apex/braces.html#WhileLoopsMustUseBraces">
-      <description>
+  <rule name="WhileLoopsMustUseBraces"
+        language="apex"
+        since="5.6.0"
+        message="Avoid using 'while' statements without curly braces"
+        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_braces.html#whileloopsmustusebraces">
+    <description>
 Avoid using 'while' statements without using braces to surround the code block. If the code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
-      </description>
-      <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //WhileLoopStatement/BlockStatement[@CurlyBrace='false']
 ]]>
-                </value>
-            </property>
-        </properties>
-      <example>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
-while (true)	// not recommended
-      x++;
+while (true)    // not recommended
+    x++;
 
-while (true) {	// preferred approach
-      x++;
+while (true) {  // preferred approach
+    x++;
 }
 ]]>
-      </example>
-    </rule>
+    </example>
+  </rule>
 
-      <rule name="IfElseStmtsMustUseBraces"
-            language="apex"
-            since="5.6.0"
-            message="Avoid using 'if...else' statements without curly braces"
-            class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
-            externalInfoUrl="${pmd.website.baseurl}/rules/apex/braces.html#IfElseStmtsMustUseBraces">
-       <description>
+  <rule name="IfElseStmtsMustUseBraces"
+        language="apex"
+        since="5.6.0"
+        message="Avoid using 'if...else' statements without curly braces"
+        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_braces.html#ifelsestmtsmustusebraces">
+    <description>
 Avoid using if..else statements without using surrounding braces. If the code formatting
 or indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
 //IfBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
 |
 //IfElseBlockStatement/BlockStatement[@CurlyBrace='false'][count(child::*) > 0]
- ]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
-   // this is OK
+// this is OK
 if (foo) x++;
 
-   // but this is not
+// but this is not
 if (foo)
-       x = x+1;
-   else
-       x = x-1;
+    x = x+1;
+else
+    x = x-1;
 ]]>
-       </example>
-     </rule>
+    </example>
+  </rule>
 
-     <rule name="ForLoopsMustUseBraces"
-           language="apex"
-           since="5.6.0"
-           message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
-           externalInfoUrl="${pmd.website.baseurl}/rules/apex/braces.html#ForLoopsMustUseBraces">
-       <description>
+  <rule name="ForLoopsMustUseBraces"
+        language="apex"
+        since="5.6.0"
+        message="Avoid using 'for' statements without curly braces"
+        class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_braces.html#forloopsmustusebraces">
+    <description>
 Avoid using 'for' statements without using surrounding braces. If the code formatting or
 indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
- <![CDATA[
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
 //ForLoopStatement/BlockStatement[@CurlyBrace='false']
 |
 //ForEachStatement/BlockStatement[@CurlyBrace='false']
- ]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
 <![CDATA[
 for (int i = 0; i < 42; i++) // not recommended
     foo();
@@ -145,7 +143,7 @@ for (int i = 0; i < 42; i++) { // preferred approach
     foo();
 }
 ]]>
-       </example>
-     </rule>
+    </example>
+  </rule>
 
 </ruleset>

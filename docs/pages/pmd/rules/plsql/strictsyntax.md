@@ -5,6 +5,7 @@ permalink: pmd_rules_plsql_strictsyntax.html
 folder: pmd/rules/plsql
 sidebaractiveurl: /pmd_rules_plsql.html
 editmepath: ../pmd-plsql/src/main/resources/rulesets/plsql/strictsyntax.xml
+keywords: Strict Syntax, MisplacedPragma
 ---
 ## MisplacedPragma
 
@@ -22,7 +23,7 @@ https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
 
 **Example(s):**
 
-```
+``` sql
 create or replace package inline_pragma_error is
 
 end;

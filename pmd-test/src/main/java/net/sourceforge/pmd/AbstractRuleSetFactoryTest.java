@@ -17,13 +17,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -46,6 +51,12 @@ public abstract class AbstractRuleSetFactoryTest {
     private static ValidateDefaultHandler validateDefaultHandlerXsd;
     private static ValidateDefaultHandler validateDefaultHandlerDtd;
     private static SAXParser saxParser;
+
+    protected Set<String> validXPathClassNames = new HashSet<>();
+
+    public AbstractRuleSetFactoryTest() {
+        validXPathClassNames.add(XPathRule.class.getName());
+    }
 
     /**
      * Setups the XML parser with validation.
@@ -115,8 +126,11 @@ public abstract class AbstractRuleSetFactoryTest {
                     messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute"
                             + PMD.EOL;
                 } else {
-                    String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/rules/"
-                            + fileName.replaceAll("rulesets/", "").replaceAll(".xml", "") + ".html#" + rule.getName();
+                    String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/pmd_rules_"
+                            + language.getTerseName() + "_"
+                            + FilenameUtils.getBaseName(fileName)
+                            + ".html#"
+                            + rule.getName().toLowerCase(Locale.ROOT);
                     if (rule.getExternalInfoUrl() == null
                             || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
                         invalidExternalInfoURL++;
@@ -129,7 +143,7 @@ public abstract class AbstractRuleSetFactoryTest {
                 String expectedClassName = "net.sourceforge.pmd.lang." + language.getTerseName() + ".rule." + group
                         + "." + rule.getName() + "Rule";
                 if (!rule.getRuleClass().equals(expectedClassName)
-                        && !rule.getRuleClass().equals(XPathRule.class.getName())) {
+                        && !validXPathClassNames.contains(rule.getRuleClass())) {
                     invalidClassName++;
                     messages += "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value ("
                             + rule.getRuleClass() + "), it should be:" + expectedClassName + PMD.EOL;

@@ -5,6 +5,7 @@ permalink: pmd_rules_java_logging-java.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/logging-java.xml
+keywords: Java Logging, MoreThanOneLogger, LoggerIsNotStaticFinal, SystemPrintln, AvoidPrintStackTrace, GuardLogStatementJavaUtil, InvalidSlf4jMessageFormat
 ---
 ## AvoidPrintStackTrace
 
@@ -22,15 +23,15 @@ Avoid printStackTrace(); use a logger call instead.
 
 **Example(s):**
 
-```
+``` java
 class Foo {
-  void bar() {
-    try {
-     // do something
-    } catch (Exception e) {
-     e.printStackTrace();
-     }
-   }
+    void bar() {
+        try {
+            // do something
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
 ```
 
@@ -47,10 +48,12 @@ otherwise skip the associate String creation and manipulation.
 
 **Example(s):**
 
-```
+``` java
+//...
 // Add this for performance
-	if (log.isLoggable(Level.FINE)) { ...
- 	    log.fine("log something" + " and " + "concat strings");
+if (log.isLoggable(Level.FINE)) {
+    log.fine("log something" + " and " + "concat strings");
+}
 ```
 
 **This rule has the following properties:**
@@ -72,7 +75,7 @@ Check for messages in slf4j loggers with non matching number of arguments and pl
 
 **Example(s):**
 
-```
+``` java
 LOGGER.error("forget the arg {}");
 LOGGER.error("too many args {}", "arg1", "arg2");
 LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.
@@ -97,11 +100,11 @@ In most cases, the Logger reference can be declared as static and final.
 
 **Example(s):**
 
-```
+``` java
 public class Foo{
-    Logger log = Logger.getLogger(Foo.class.getName());					// not recommended
+    Logger log = Logger.getLogger(Foo.class.getName());                 // not recommended
 
-    static final Logger log = Logger.getLogger(Foo.class.getName());	// preferred approach
+    static final Logger log = Logger.getLogger(Foo.class.getName());    // preferred approach
 }
 ```
 
@@ -117,7 +120,7 @@ Normally only one logger is used in each class.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
     Logger log = Logger.getLogger(Foo.class.getName());
     // It is very rare to see two loggers on a class, normally
@@ -146,7 +149,7 @@ will (and by priority) and avoid clogging the Standard out log.
 
 **Example(s):**
 
-```
+``` java
 class Foo{
     Logger log = Logger.getLogger(Foo.class.getName());
     public void testA () {

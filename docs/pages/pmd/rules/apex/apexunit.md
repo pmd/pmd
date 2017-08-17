@@ -5,6 +5,7 @@ permalink: pmd_rules_apex_apexunit.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
 editmepath: ../pmd-apex/src/main/resources/rulesets/apex/apexunit.xml
+keywords: ApexUnit, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestShouldNotUseSeeAllDataTrue
 ---
 ## ApexUnitTestClassShouldHaveAsserts
 
@@ -15,11 +16,11 @@ editmepath: ../pmd-apex/src/main/resources/rulesets/apex/apexunit.xml
 Apex unit tests should include at least one assertion.  This makes the tests more robust, and using assert
             with messages provide the developer a clearer idea of what the test does.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestClassShouldHaveAsserts](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/apexunit/ApexUnitTestClassShouldHaveAsserts.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestClassShouldHaveAssertsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/apexunit/ApexUnitTestClassShouldHaveAssertsRule.java)
 
 **Example(s):**
 
-```
+``` java
 @isTest
 public class Foo {
    public static testMethod void testSomething() {
@@ -47,11 +48,11 @@ public class Foo {
 
 Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestShouldNotUseSeeAllDataTrue](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/apexunit/ApexUnitTestShouldNotUseSeeAllDataTrue.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.apexunit.ApexUnitTestShouldNotUseSeeAllDataTrueRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/apexunit/ApexUnitTestShouldNotUseSeeAllDataTrueRule.java)
 
 **Example(s):**
 
-```
+``` java
 @isTest(seeAllData = true)
 public class Foo {
    public static testMethod void testSomething() {

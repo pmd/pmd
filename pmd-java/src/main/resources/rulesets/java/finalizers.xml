@@ -9,12 +9,12 @@
 These rules deal with different problems that can occur with finalizers.
   </description>
 
-    <rule name="EmptyFinalizer"
-   		language="java"
-    		 since="1.5"
-          message="Avoid empty finalize methods"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#EmptyFinalizer">
+  <rule name="EmptyFinalizer"
+        language="java"
+        since="1.5"
+        message="Avoid empty finalize methods"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_finalizers.html#emptyfinalizer">
        <description>
 Empty finalize methods serve no purpose and should be removed.
        </description>
@@ -38,12 +38,12 @@ public class Foo {
        </example>
      </rule>
 
-    <rule name="FinalizeOnlyCallsSuperFinalize"
-   		language="java"
-    		 since="1.5"
-          message="Finalize should do something besides just calling super.finalize()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#FinalizeOnlyCallsSuperFinalize">
+  <rule name="FinalizeOnlyCallsSuperFinalize"
+        language="java"
+        since="1.5"
+        message="Finalize should do something besides just calling super.finalize()"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_finalizers.html#finalizeonlycallssuperfinalize">
        <description>
 If the finalize() is implemented, it should do something besides just calling super.finalize().
        </description>
@@ -66,18 +66,18 @@ If the finalize() is implemented, it should do something besides just calling su
        <example>
            <![CDATA[
 protected void finalize() {
-	super.finalize();
+    super.finalize();
 }
            ]]>
        </example>
      </rule>
 
-<rule name="FinalizeOverloaded"
-   		language="java"
-		since="1.5"
-      message="Finalize methods should not be overloaded"
-      class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#FinalizeOverloaded">
+  <rule name="FinalizeOverloaded"
+        language="java"
+        since="1.5"
+        message="Finalize methods should not be overloaded"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_finalizers.html#finalizeoverloaded">
    <description>
 Methods named finalize() should not have parameters.  It is confusing and most likely an attempt to
 overload Object.finalize(). It will not be called by the VM.
@@ -96,20 +96,20 @@ overload Object.finalize(). It will not be called by the VM.
    <example>
 <![CDATA[
 public class Foo {
-   // this is confusing and probably a bug
-   protected void finalize(int a) {
-   }
+    // this is confusing and probably a bug
+    protected void finalize(int a) {
+    }
 }
 ]]>
    </example>
  </rule>
 
-    <rule name="FinalizeDoesNotCallSuperFinalize"
-   		language="java"
-    		 since="1.5"
-          message="Last statement in finalize method should be a call to super.finalize()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#FinalizeDoesNotCallSuperFinalize">
+  <rule name="FinalizeDoesNotCallSuperFinalize"
+        language="java"
+        since="1.5"
+        message="Last statement in finalize method should be a call to super.finalize()"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_finalizers.html#finalizedoesnotcallsuperfinalize">
        <description>
 If the finalize() is implemented, its last action should be to call super.finalize.
        </description>
@@ -117,7 +117,7 @@ If the finalize() is implemented, its last action should be to call super.finali
         <properties>
             <property name="xpath">
                 <value>
-<!-- in english: a method declaration of finalize(), with no arguments, containing
+<!-- in English: a method declaration of finalize(), with no arguments, containing
 a block whose last statement is NOT a call to super.finalize -->
 <![CDATA[
 //MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
@@ -141,19 +141,19 @@ a block whose last statement is NOT a call to super.finalize -->
        <example>
 <![CDATA[
 protected void finalize() {
-	something();
-	// neglected to call super.finalize()
+    something();
+    // neglected to call super.finalize()
 }
 ]]>
        </example>
      </rule>
 
-    <rule name="FinalizeShouldBeProtected"
-   		language="java"
-    		 since="1.1"
-          message="If you override finalize(), make it protected"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#FinalizeShouldBeProtected">
+  <rule name="FinalizeShouldBeProtected"
+        language="java"
+        since="1.1"
+        message="If you override finalize(), make it protected"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_finalizers.html#finalizeshouldbeprotected">
       <description>
 When overriding the finalize(), the new method should be set as protected.  If made public, 
 other classes may invoke it at inappropriate times.
@@ -173,17 +173,17 @@ other classes may invoke it at inappropriate times.
       <example>
   <![CDATA[
 public void finalize() {
-	// do something
+    // do something
 }
   ]]>
       </example>
     </rule>
 
-    <rule name="AvoidCallingFinalize"
-    		 since="3.0"
-          message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.lang.java.rule.finalizers.AvoidCallingFinalizeRule"
-          externalInfoUrl="${pmd.website.baseurl}/rules/java/finalizers.html#AvoidCallingFinalize">
+  <rule name="AvoidCallingFinalize"
+        since="3.0"
+        message="Avoid calling finalize() explicitly"
+        class="net.sourceforge.pmd.lang.java.rule.finalizers.AvoidCallingFinalizeRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_finalizers.html#avoidcallingfinalize">
       <description>
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
 that there are no more references to the object. It should not be invoked by application logic.
@@ -192,8 +192,8 @@ that there are no more references to the object. It should not be invoked by app
       <example>
 <![CDATA[
 void foo() {
-	Bar b = new Bar();
-	b.finalize();
+    Bar b = new Bar();
+    b.finalize();
 }
 ]]>
       </example>

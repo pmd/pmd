@@ -5,6 +5,7 @@ permalink: pmd_rules_java_finalizers.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/rulesets/java/finalizers.xml
+keywords: Finalizer, EmptyFinalizer, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeDoesNotCallSuperFinalize, FinalizeShouldBeProtected, AvoidCallingFinalize
 ---
 ## AvoidCallingFinalize
 
@@ -19,10 +20,10 @@ that there are no more references to the object. It should not be invoked by app
 
 **Example(s):**
 
-```
+``` java
 void foo() {
-	Bar b = new Bar();
-	b.finalize();
+    Bar b = new Bar();
+    b.finalize();
 }
 ```
 
@@ -41,7 +42,7 @@ Empty finalize methods serve no purpose and should be removed.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
    protected void finalize() {}
 }
@@ -74,10 +75,10 @@ If the finalize() is implemented, its last action should be to call super.finali
 
 **Example(s):**
 
-```
+``` java
 protected void finalize() {
-	something();
-	// neglected to call super.finalize()
+    something();
+    // neglected to call super.finalize()
 }
 ```
 
@@ -101,9 +102,9 @@ If the finalize() is implemented, it should do something besides just calling su
 
 **Example(s):**
 
-```
+``` java
 protected void finalize() {
-	super.finalize();
+    super.finalize();
 }
 ```
 
@@ -123,11 +124,11 @@ overload Object.finalize(). It will not be called by the VM.
 
 **Example(s):**
 
-```
+``` java
 public class Foo {
-   // this is confusing and probably a bug
-   protected void finalize(int a) {
-   }
+    // this is confusing and probably a bug
+    protected void finalize(int a) {
+    }
 }
 ```
 
@@ -148,9 +149,9 @@ other classes may invoke it at inappropriate times.
 
 **Example(s):**
 
-```
+``` java
 public void finalize() {
-	// do something
+    // do something
 }
 ```
 

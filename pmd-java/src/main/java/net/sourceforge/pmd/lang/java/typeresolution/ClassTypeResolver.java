@@ -418,10 +418,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             previousType = JavaTypeDefinition.forClass(node.getType());
         } else { // non-static field or method
             if (dotSplitImage.length == 1 && astArguments != null) { // method
-                List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0], null,
+                List<MethodType> methods = getLocalApplicableMethods(node, dotSplitImage[0],
+                                                                     Collections.<JavaTypeDefinition>emptyList(),
                                                                      methodArgsArity, accessingClass);
 
-                previousType = getBestMethodReturnType(methods, astArgumentList, null);
+                TypeNode enclosingType = getEnclosingTypeDeclaration(node);
+                if (enclosingType == null) {
+                    return data; // we can't proceed, probably uncompiled sources
+                }
+
+                previousType = getBestMethodReturnType(enclosingType.getTypeDefinition(),
+                                                       methods, astArgumentList);
             } else { // field
                 previousType = getTypeDefinitionOfVariableFromScope(node.getScope(), dotSplitImage[0],
                                                                     accessingClass);
@@ -453,7 +460,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                                 Collections.<JavaTypeDefinition>emptyList(),
                                                                 methodArgsArity, accessingClass);
 
-                previousType = getBestMethodReturnType(methods, astArgumentList, null);
+                previousType = getBestMethodReturnType(previousType, methods, astArgumentList);
             } else { // field
                 previousType = getFieldType(previousType, dotSplitImage[i], accessingClass);
             }
@@ -903,7 +910,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                                                                         currentChildImage,
                                                                         typeArguments, methodArgsArity, accessingClass);
 
-                        currentChild.setTypeDefinition(getBestMethodReturnType(methods, astArgumentList, null));
+                        currentChild.setTypeDefinition(getBestMethodReturnType(previousChild.getTypeDefinition(),
+                                                                               methods, astArgumentList));
                     } else { // field
                         currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
                                                                     currentChildImage, accessingClass));

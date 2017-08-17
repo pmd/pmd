@@ -67,6 +67,11 @@ public class RuleSetFactoryCompatibility {
         // unused/UnusedModifier moved AND renamed, order is important!
         addFilterRuleMoved("java", "unusedcode", "unnecessary", "UnusedModifier");
         addFilterRuleRenamed("java", "unnecessary", "UnusedModifier", "UnnecessaryModifier");
+
+        // PMD 6.0.0
+        addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
+        addFilterRuleRenamed("java", "unnecessary", "UnnecessaryParentheses", "UselessParentheses");
+
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {
